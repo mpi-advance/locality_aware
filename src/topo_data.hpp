@@ -6,6 +6,7 @@
 
 #include <mpi.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 // Rank orderings : round robin, SMP, folded round robin
 #define RR 0
