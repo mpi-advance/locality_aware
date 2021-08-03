@@ -7,5 +7,5 @@ add_library(mpi_advance STATIC
     topo_data.hpp
     )
 
-target_link_libraries(mpi_advance ${MPI_LIBRARIES} )
+target_link_libraries(mpi_advance ${MPI_LIBRARIES} stdc++)
 

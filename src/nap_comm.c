@@ -6,11 +6,11 @@ int MPIX_Dist_graph_create_adjacent(
         int indegree,
         const int* sources,
         const int* source_indptr,
-        const int* source_indices,
         const int* global_source_indices,
         int outdegree,
         const int* destinations,
         const int* dest_indptr,
+        const int* dest_indices,
         const int* global_dest_indices,
         MPI_Info info,
         int reorder,
@@ -18,16 +18,17 @@ int MPIX_Dist_graph_create_adjacent(
 {
     MPIX_Comm* comm_dist_graph = (MPIX_Comm*)malloc(sizeof(MPIX_Comm));
 
+    int i;
     int start, end;
     int* sourceweights = (int*)malloc(indegree*sizeof(int));
-    for (int i = 0; i < indegree; i++)
+    for (i = 0; i < indegree; i++)
     {
         start = source_indptr[i];
         end = source_indptr[i+1];
         sourceweights[i] = (end - start);
     }
     int* destweights = (int*)malloc(outdegree*sizeof(int));
-    for (int i = 0; i < outdegree; i++)
+    for (i = 0; i < outdegree; i++)
     {
         start = dest_indptr[i];
         end = dest_indptr[i+1];
@@ -37,9 +38,10 @@ int MPIX_Dist_graph_create_adjacent(
     int err = MPI_Dist_graph_create_adjacent(comm_old, indegree, sources, sourceweights, 
             outdegree, destinations, destweights, info, reorder, &(comm_dist_graph->comm));
     
-    MPIX_NAPinit(indegree, sources, source_indptr, source_indices,
-            outdegree, destinations, dest_indptr, 
-            global_source_indices, global_dest_indices,
+    MPIX_NAPinit(
+            outdegree, destinations, dest_indptr, dest_indices,
+            indegree, sources, source_indptr,
+            global_dest_indices, global_source_indices,
             comm_old, &(comm_dist_graph->nap_comm));
 
     free(sourceweights);

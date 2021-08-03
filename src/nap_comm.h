@@ -15,9 +15,9 @@ typedef struct _MPIX_Comm
 extern "C"
 {
 #endif
-void MPIX_NAPinit(const int indegree, const int* sources, const int* source_indptr, const int* source_indices,
-        const int outdegree, const int* destinations, const int* dest_indptr,
-        const int* global_source_indices, const int* global_dest_indices,
+void MPIX_NAPinit(const int outdegree, const int* destinations, const int* dest_indptr, const int* dest_indices,
+        const int indegree, const int* sources, const int* source_indptr,
+        const int* global_dest_indices, const int* global_source_indices,
         const MPI_Comm old_comm, void** nap_comm_ptr);
 
 void MPIX_INAPsend(const void* buf, void* nap_comm,
@@ -39,11 +39,11 @@ int MPIX_Dist_graph_create_adjacent(
         int indegree,
         const int* sources,
         const int* source_indptr,
-        const int* source_indices,
         const int* global_source_indices,
         int outdegree,
         const int* destinations,
         const int* dest_indptr,
+        const int* dest_indices,
         const int* global_dest_indices,
         MPI_Info info,
         int reorder,
