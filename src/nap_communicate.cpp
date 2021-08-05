@@ -1,12 +1,10 @@
 #include "nap_communicate.hpp"
 
-
 /******************************************
  ****
  **** Main Methods
  ****
  ******************************************/
-
 // Node-Aware Version of Isend
 void MPIX_INAPsend(const void* buf, void* nap_comm_ptr,
         MPI_Datatype datatype, int tag,
@@ -23,10 +21,10 @@ void MPIX_INAPsend(const void* buf, void* nap_comm_ptr,
     int local_L_tag = tag + 3;
     int size, type_size, ctr;
 
-    char* local_L_recv_data = NULL;
     char* local_S_recv_data = NULL;
     char* global_send_buffer = NULL;
     char* L_send_buffer = NULL;
+    char* unpacked_buf = NULL;
     MPI_Request* send_requests = nap_comm->send_requests;
     MPI_Request* recv_requests = nap_comm->recv_requests;
     MPI_Request* L_send_requests = NULL;
@@ -41,17 +39,20 @@ void MPIX_INAPsend(const void* buf, void* nap_comm_ptr,
     if (nap_comm->local_S_comm->recv_data->size_msgs)
     {
         // Unpack previous recv into void*
-        char* unpacked_buf = MPIX_NAP_unpack(local_S_recv_data, 
+        unpacked_buf = MPIX_NAP_unpack(local_S_recv_data, 
                 nap_comm->local_S_comm->recv_data->size_msgs,
                 datatype, comm);
+    
+        if (local_S_recv_data) delete[] local_S_recv_data;
 
         // Initialize Isends for inter-node step (step 2 in nap comm)
-        MPIX_step_send(nap_comm->global_comm, local_S_recv_data, tag,
+        MPIX_step_send(nap_comm->global_comm, unpacked_buf, tag,
                 comm, datatype, send_requests, &global_send_buffer);
 
         // Free void* buffer (packed into char* buf)
-        delete[] unpacked_buf;
+        if (unpacked_buf) delete[] unpacked_buf;
     }
+
 
     if (nap_comm->local_L_comm->send_data->num_msgs)
     {
@@ -66,7 +67,6 @@ void MPIX_INAPsend(const void* buf, void* nap_comm_ptr,
     nap_send_data->local_L_buffer = L_send_buffer;
     nap_data->send_data = nap_send_data;
 
-    if (local_S_recv_data) delete[] local_S_recv_data;
 }
 
 // Node-Aware Version of Irecv
@@ -119,9 +119,11 @@ void MPIX_NAPwait(void* nap_comm_ptr)
     MPI_Comm mpi_comm = nap_data->mpi_comm;
 
     char* local_R_recv_data = NULL;
+    char* local_L_send_data = nap_send_data->local_L_buffer;
     char* local_L_recv_data = nap_recv_data->local_L_buffer;
     char* global_send_buffer = nap_send_data->global_buffer;
     char* global_recv_buffer = nap_recv_data->global_buffer;
+    char* unpacked_buf = NULL;
     MPI_Request* send_requests = nap_comm->send_requests;
     MPI_Request* recv_requests = nap_comm->recv_requests;
     MPI_Request* L_send_requests = NULL;
@@ -132,46 +134,55 @@ void MPIX_NAPwait(void* nap_comm_ptr)
     int local_R_tag = nap_recv_data->tag + 2;
 
     MPIX_step_waitall(nap_comm->global_comm, send_requests, recv_requests);
+    if (global_send_buffer)
+    {
+        delete[] global_send_buffer;
+        nap_send_data->global_buffer = NULL;
+    }
+
     if (nap_comm->local_L_comm->send_data->num_msgs)
         L_send_requests = &(send_requests[nap_comm->global_comm->send_data->num_msgs]);
     if (nap_comm->local_L_comm->recv_data->num_msgs)
         L_recv_requests = &(recv_requests[nap_comm->global_comm->recv_data->num_msgs]);
     MPIX_step_waitall(nap_comm->local_L_comm, L_send_requests, L_recv_requests);
-    if (nap_send_data->local_L_buffer)
+    if (local_L_send_data)
     {
-        delete[] nap_send_data->local_L_buffer;
+        delete[] local_L_send_data;
         nap_send_data->local_L_buffer = NULL;
     }
 
-    // Map recv buffers from final intra node steps to correct locations in
-    // recv_data
-    local_L_recv_data = nap_recv_data->local_L_buffer;
+
     if (local_L_recv_data)
     {
         MPIX_intra_recv_map(nap_comm->local_L_comm, local_L_recv_data, nap_recv_data->buf,
                 recv_type, nap_comm->topo_info->local_comm);
-        delete[] local_L_recv_data;
+        delete[] nap_recv_data->local_L_buffer;
         nap_recv_data->local_L_buffer = NULL;
     }
 
+
     // Final intra-node redistribution (step 3 in nap comm)
     // Unpack global_recv_buffer ot U[] (but don't know U here...)
-    char* unpacked_buf = NULL;
     if (nap_comm->global_comm->recv_data->size_msgs)
     {
         // Unpack previous recv into void*
         unpacked_buf = MPIX_NAP_unpack(global_recv_buffer, 
                 nap_comm->global_comm->recv_data->size_msgs,
                 recv_type, mpi_comm);
+
+        if (global_recv_buffer)
+        {
+            delete[] global_recv_buffer;
+            nap_recv_data->global_buffer = NULL;
+        }
     }
 
     // Initialize Isends for inter-node step (step 2 in nap comm)
-    MPIX_step_comm(nap_comm->local_R_comm, global_recv_buffer, &local_R_recv_data,
+    MPIX_step_comm(nap_comm->local_R_comm, unpacked_buf, &local_R_recv_data,
             local_R_tag, nap_comm->topo_info->local_comm, recv_type, recv_type,
             send_requests, recv_requests);
 
-    if (unpacked_buf)
-        delete[] unpacked_buf;
+    if (unpacked_buf) delete[] unpacked_buf;
     
     if (local_R_recv_data)
     {
@@ -179,9 +190,12 @@ void MPIX_NAPwait(void* nap_comm_ptr)
                 recv_type, nap_comm->topo_info->local_comm);
         delete[] local_R_recv_data;
     }
+
     nap_recv_data->buf = NULL;
     delete nap_send_data;
     delete nap_recv_data;
+    nap_data->send_data = NULL;
+    nap_data->recv_data = NULL;
 }
 
 
@@ -200,11 +214,8 @@ void MPIX_NAPinit(const int n_sends, const int* send_procs, const int* send_indp
     MPI_Comm_rank(mpi_comm, &rank);
     MPI_Comm_size(mpi_comm, &num_procs);
 
-    // Create topo_data object
-    topo_data* topology_info = new topo_data(mpi_comm);
-
     // Initialize structure
-    NAPComm* nap_comm = new NAPComm(topology_info);
+    NAPComm* nap_comm = new NAPComm(mpi_comm);
 
     // Find global send nodes
     std::vector<int> send_nodes;
@@ -217,11 +228,11 @@ void MPIX_NAPinit(const int n_sends, const int* send_procs, const int* send_indp
     form_local_comm(n_sends, send_procs, send_indptr, global_send_indices, send_node_to_local,
             nap_comm->local_S_comm->send_data, nap_comm->local_S_comm->recv_data,
             nap_comm->local_L_comm->send_data, recv_idx_nodes, mpi_comm,
-            topology_info, 19483);
+            nap_comm->topo_info, 19483);
 
     // Form global send data
     form_global_comm(nap_comm->local_S_comm->recv_data, nap_comm->global_comm->send_data,
-            recv_idx_nodes, mpi_comm, topology_info, 93284);
+            recv_idx_nodes, mpi_comm, nap_comm->topo_info, 93284);
 
     // Find global recv nodes
     std::vector<int> recv_nodes;
@@ -234,14 +245,14 @@ void MPIX_NAPinit(const int n_sends, const int* send_procs, const int* send_indp
     form_local_comm(n_recvs, recv_procs, recv_indptr, global_recv_indices, recv_node_to_local,
             nap_comm->local_R_comm->recv_data, nap_comm->local_R_comm->send_data,
             nap_comm->local_L_comm->recv_data, send_idx_nodes, mpi_comm,
-            topology_info, 32048);
+            nap_comm->topo_info, 32048);
 
     // Form global recv data
     form_global_comm(nap_comm->local_R_comm->send_data, nap_comm->global_comm->recv_data,
-            send_idx_nodes, mpi_comm, topology_info, 93284);
+            send_idx_nodes, mpi_comm, nap_comm->topo_info, 93284);
 
     // Update procs for global_comm send and recvs
-    update_global_comm(nap_comm, topology_info, mpi_comm);
+    update_global_comm(nap_comm, nap_comm->topo_info, mpi_comm);
 
     // Update send and receive indices
     int send_idx_size = send_indptr[n_sends];
@@ -266,8 +277,6 @@ void MPIX_NAPinit(const int n_sends, const int* send_procs, const int* send_indp
 void MPIX_NAPDestroy(void* nap_comm_ptr)
 {
     NAPComm* nap_comm = (NAPComm*) nap_comm_ptr;
-    topo_data* topo_info = nap_comm->topo_info;
-    delete topo_info;
     delete nap_comm;
 }
 
@@ -674,8 +683,8 @@ void update_global_comm(NAPComm* nap_comm, topo_data* topo_info, MPI_Comm mpi_co
         nap_comm->global_comm->recv_data->procs[i] = recv_nodes[node];
     }
 
-    delete[] requests;
-    delete[] send_buffer;
+    if (requests) delete[] requests;
+    if (send_buffer) delete[] send_buffer;
 }
 
 // Update indices:
@@ -729,10 +738,16 @@ void update_indices(NAPComm* nap_comm, std::map<int, int>& send_global_to_local,
     map_indices(nap_comm->local_L_comm->recv_data, recv_global_to_local);
 
     // Don't need local_S or global recv indices (just contiguous)
-    delete[] nap_comm->local_S_comm->recv_data->indices;
-    delete[] nap_comm->global_comm->recv_data->indices;
-    nap_comm->local_S_comm->recv_data->indices = NULL;
-    nap_comm->global_comm->recv_data->indices = NULL;
+    if (nap_comm->local_S_comm->recv_data->indices)
+    {
+        delete[] nap_comm->local_S_comm->recv_data->indices;
+        nap_comm->local_S_comm->recv_data->indices = NULL;
+    }
+    if (nap_comm->global_comm->recv_data->indices)
+    {
+        delete[] nap_comm->global_comm->recv_data->indices;
+        nap_comm->global_comm->recv_data->indices = NULL;
+    }
 }
 
 
@@ -740,6 +755,8 @@ void update_indices(NAPComm* nap_comm, std::map<int, int>& send_global_to_local,
 
 char* MPIX_NAP_unpack(char* packed_buf, int size, MPI_Datatype datatype, MPI_Comm comm)
 {
+    if (size == 0) return NULL;    
+
     int type_size, pack_size;
     int ctr = 0;
 
@@ -816,8 +833,8 @@ void MPIX_step_send(comm_pkg* comm, const void* send_data,
             MPI_Pack(&(data[idx*type_size]), 1, mpi_type, 
                     send_buffer, size, &ctr, mpi_comm);
         }
-        MPI_Isend(&send_buffer[prev_ctr], ctr - prev_ctr, MPI_PACKED, proc, tag,
-                mpi_comm, &send_requests[i]);
+        MPI_Isend(&(send_buffer[prev_ctr]), ctr - prev_ctr, MPI_PACKED, proc, tag,
+                mpi_comm, &(send_requests[i]));
         prev_ctr = ctr;
     }
 
@@ -831,6 +848,7 @@ void MPIX_step_recv(comm_pkg* comm,
 {
     int proc, start, end, size;
     char* recv_buffer = NULL;
+
     if (comm->recv_data->size_msgs)
     {
         MPI_Pack_size(comm->recv_data->size_msgs, mpi_type, mpi_comm, &size);
@@ -844,8 +862,8 @@ void MPIX_step_recv(comm_pkg* comm,
         start = comm->recv_data->indptr[i];
         end = comm->recv_data->indptr[i+1];
         MPI_Pack_size(end - start, mpi_type, mpi_comm, &size);
-        MPI_Irecv(&recv_buffer[ctr], size, MPI_PACKED, proc, tag,
-                mpi_comm, &recv_requests[i]);
+        MPI_Irecv(&(recv_buffer[ctr]), size, MPI_PACKED, proc, tag,
+                mpi_comm, &(recv_requests[i]));
         ctr += size;
     }
 
