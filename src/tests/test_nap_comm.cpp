@@ -256,17 +256,17 @@ TEST(RandomCommTest, TestsInTests)
     val = local_size*rank;
     for (int i = 0; i < local_size; i++)
     {
-        send_vals[i] = val++;
+        send_d_vals[i] = val++;
     }
     std::vector<double> std_recv_d_vals(recv_data.size_msgs);
     std::vector<double> nap_recv_d_vals(recv_data.size_msgs);
 
     // 1. Standard Communication
-    standard_communication(send_d_vals, std_recv_d_vals, 49345, MPI_INT, &send_data, &recv_data);
+    standard_communication(send_d_vals, std_recv_d_vals, 49345, MPI_DOUBLE, &send_data, &recv_data);
 
     // 2. Node-Aware Communication
-    MPIX_INAPsend(send_d_vals.data(), nap_comm, MPI_INT, 20423, MPI_COMM_WORLD);
-    MPIX_INAPrecv(nap_recv_d_vals.data(), nap_comm, MPI_INT, 20423, MPI_COMM_WORLD);
+    MPIX_INAPsend(send_d_vals.data(), nap_comm, MPI_DOUBLE, 20423, MPI_COMM_WORLD);
+    MPIX_INAPrecv(nap_recv_d_vals.data(), nap_comm, MPI_DOUBLE, 20423, MPI_COMM_WORLD);
     MPIX_NAPwait(nap_comm);
 
     // 3. Compare std_recv_vals and nap_recv_vals

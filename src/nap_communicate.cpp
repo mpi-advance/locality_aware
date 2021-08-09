@@ -34,7 +34,7 @@ void MPIX_INAPsend(const void* buf, void* nap_comm_ptr,
     // Initial intra-node redistribution (step 1 in nap comm)
     MPIX_step_comm(nap_comm->local_S_comm, buf, &local_S_recv_data,
             local_S_tag, nap_comm->topo_info->local_comm, datatype, datatype,
-            send_requests, recv_requests);
+            send_requests, recv_requests, false);
 
     if (nap_comm->local_S_comm->recv_data->size_msgs)
     {
@@ -58,7 +58,7 @@ void MPIX_INAPsend(const void* buf, void* nap_comm_ptr,
     {
         L_send_requests = &(send_requests[nap_comm->global_comm->send_data->num_msgs]);
         MPIX_step_send(nap_comm->local_L_comm, buf, local_L_tag, 
-                nap_comm->topo_info->local_comm, datatype, L_send_requests, &L_send_buffer);
+                nap_comm->topo_info->local_comm, datatype, L_send_requests, &L_send_buffer, false);
     }
 
     // Store global_send_requests and global_send_buffer, as to not free data
@@ -82,7 +82,6 @@ void MPIX_INAPrecv(void* buf, void* nap_comm_ptr,
     nap_recv_data->tag = tag;
     nap_recv_data->buf = buf;
     nap_recv_data->datatype = datatype;
-    MPI_Request* global_recv_requests = NULL;
     MPI_Request* recv_requests = nap_comm->recv_requests;
     MPI_Request* L_recv_requests = NULL;
     char* global_recv_buffer = NULL;
@@ -134,17 +133,18 @@ void MPIX_NAPwait(void* nap_comm_ptr)
     int local_R_tag = nap_recv_data->tag + 2;
 
     MPIX_step_waitall(nap_comm->global_comm, send_requests, recv_requests);
-    if (global_send_buffer)
-    {
-        delete[] global_send_buffer;
-        nap_send_data->global_buffer = NULL;
-    }
 
     if (nap_comm->local_L_comm->send_data->num_msgs)
         L_send_requests = &(send_requests[nap_comm->global_comm->send_data->num_msgs]);
     if (nap_comm->local_L_comm->recv_data->num_msgs)
         L_recv_requests = &(recv_requests[nap_comm->global_comm->recv_data->num_msgs]);
     MPIX_step_waitall(nap_comm->local_L_comm, L_send_requests, L_recv_requests);
+
+    if (global_send_buffer)
+    {
+        delete[] global_send_buffer;
+        nap_send_data->global_buffer = NULL;
+    }
     if (local_L_send_data)
     {
         delete[] local_L_send_data;
@@ -156,7 +156,7 @@ void MPIX_NAPwait(void* nap_comm_ptr)
     {
         MPIX_intra_recv_map(nap_comm->local_L_comm, local_L_recv_data, nap_recv_data->buf,
                 recv_type, nap_comm->topo_info->local_comm);
-        delete[] nap_recv_data->local_L_buffer;
+        delete[] local_L_recv_data;
         nap_recv_data->local_L_buffer = NULL;
     }
 
@@ -261,6 +261,7 @@ void MPIX_NAPinit(const int n_sends, const int* send_procs, const int* send_indp
     std::map<int, int> recv_global_to_local;
     for (int i = 0; i < send_idx_size; i++)
         send_global_to_local[global_send_indices[i]] = send_indices[i];
+        //send_global_to_local[global_send_indices[i]] = i;
     for (int i = 0; i < recv_idx_size; i++)
         recv_global_to_local[global_recv_indices[i]] = i;
     update_indices(nap_comm, send_global_to_local, recv_global_to_local);
@@ -376,7 +377,7 @@ void form_local_comm(const int orig_num_sends, const int* orig_send_procs,
     int local_rank, local_num_procs;
     MPI_Comm_rank(mpi_comm, &rank);
     MPI_Comm_size(mpi_comm, &num_procs);
-    MPI_Comm& local_comm = topo_info->local_comm;
+    MPI_Comm local_comm = topo_info->local_comm;
     MPI_Comm_rank(local_comm, &local_rank);
     MPI_Comm_size(local_comm, &local_num_procs);
 
@@ -789,13 +790,13 @@ void MPIX_step_waitall(comm_pkg* comm, MPI_Request* send_requests,
 // Intra-Node Communication
 void MPIX_step_comm(comm_pkg* comm, const void* send_data, char** recv_data,
         int tag, MPI_Comm local_comm, MPI_Datatype send_type, MPI_Datatype recv_type,
-        MPI_Request* send_requests, MPI_Request* recv_requests)
+        MPI_Request* send_requests, MPI_Request* recv_requests, bool pack)
 {
     char* send_buffer = NULL;
     char* recv_buffer = NULL;
 
     MPIX_step_send(comm, send_data, tag, local_comm, send_type,
-            send_requests, &send_buffer);
+            send_requests, &send_buffer, pack);
     MPIX_step_recv(comm, tag, local_comm, recv_type, recv_requests,
             &recv_buffer);
     MPIX_step_waitall(comm, send_requests, recv_requests); 
@@ -807,18 +808,20 @@ void MPIX_step_comm(comm_pkg* comm, const void* send_data, char** recv_data,
 // Inter-node Isend
 void MPIX_step_send(comm_pkg* comm, const void* send_data,
         int tag, MPI_Comm mpi_comm, MPI_Datatype mpi_type,
-        MPI_Request* send_requests, char** send_buffer_ptr)
+        MPI_Request* send_requests, char** send_buffer_ptr, bool pack)
 {
     int idx, proc, start, end;
     int size, type_size, addr;
     char* send_buffer = NULL;
     const char* data = reinterpret_cast<const char*>(send_data);
     MPI_Type_size(mpi_type, &type_size);
-    if (comm->send_data->size_msgs)
+    if (comm->send_data->num_msgs)
     {
         MPI_Pack_size(comm->send_data->size_msgs, mpi_type, mpi_comm, &size);
         send_buffer = new char[size];
     }
+
+int rank; MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
     int ctr = 0;
     int prev_ctr = 0;
@@ -827,12 +830,24 @@ void MPIX_step_send(comm_pkg* comm, const void* send_data,
         proc = comm->send_data->procs[i];
         start = comm->send_data->indptr[i];
         end = comm->send_data->indptr[i+1];
-        for (int j = start; j < end; j++)
-        {
-            idx = comm->send_data->indices[j];
-            MPI_Pack(&(data[idx*type_size]), 1, mpi_type, 
-                    send_buffer, size, &ctr, mpi_comm);
-        }
+        //if (pack)
+        //{
+            for (int j = start; j < end; j++)
+            {
+                idx = comm->send_data->indices[j];
+if (rank = 0) printf("Sending data[%d]\n", idx);
+                MPI_Pack(&(data[idx*type_size]), 1, mpi_type, 
+                        send_buffer, size, &ctr, mpi_comm);
+            }
+        //}
+        //else
+        //{
+        //    for (int j = start; j < end; j++)
+        //    {
+        //        MPI_Pack(&(data[j*type_size]), 1, mpi_type,
+        //                send_buffer, size, &ctr, mpi_comm);
+        //    }
+        //}
         MPI_Isend(&(send_buffer[prev_ctr]), ctr - prev_ctr, MPI_PACKED, proc, tag,
                 mpi_comm, &(send_requests[i]));
         prev_ctr = ctr;
@@ -849,7 +864,7 @@ void MPIX_step_recv(comm_pkg* comm,
     int proc, start, end, size;
     char* recv_buffer = NULL;
 
-    if (comm->recv_data->size_msgs)
+    if (comm->recv_data->num_msgs)
     {
         MPI_Pack_size(comm->recv_data->size_msgs, mpi_type, mpi_comm, &size);
         recv_buffer = new char[size];
@@ -874,10 +889,9 @@ void MPIX_step_recv(comm_pkg* comm,
 void MPIX_intra_recv_map(comm_pkg* comm, char* intra_recv_data, void* inter_recv_data,
         MPI_Datatype mpi_type, MPI_Comm mpi_comm)
 {
-    int idx, addr;
+    int idx;
     int size, type_size;
     char* char_ptr = reinterpret_cast<char*>(inter_recv_data);
-    int* int_ptr = reinterpret_cast<int*>(inter_recv_data);
     MPI_Type_size(mpi_type, &type_size);
     MPI_Pack_size(comm->recv_data->size_msgs, mpi_type, mpi_comm, &size);
 

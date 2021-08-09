@@ -198,6 +198,7 @@ TEST(RandomCommTest, TestsInTests)
     int first = local_size * rank;
     std::vector<int> global_send_idx(send_data.size_msgs);
     std::vector<int> global_recv_idx(recv_data.size_msgs);
+    std::vector<int> alltoallv_indices(send_data.size_msgs);
     int tag = 29354;
     for (int i = 0; i < send_data.num_msgs; i++)
     {
@@ -208,6 +209,7 @@ TEST(RandomCommTest, TestsInTests)
         {
             int idx = send_data.indices[j];
             global_send_idx[j] = first + idx;
+            alltoallv_indices[j] = j; // Alltoallv already sorts by index
         }
         MPI_Isend(&global_send_idx[start], end - start, MPI_INT, proc,
                 tag, MPI_COMM_WORLD, &send_data.requests[i]);
@@ -231,7 +233,7 @@ TEST(RandomCommTest, TestsInTests)
             recv_data.num_msgs, recv_data.procs.data(), recv_data.indptr.data(),
             global_recv_idx.data(),
             send_data.num_msgs, send_data.procs.data(),
-            send_data.indptr.data(), send_data.indices.data(),
+            send_data.indptr.data(), alltoallv_indices.data(),
             global_send_idx.data(),
             MPI_INFO_NULL, 0, &topo_comm
     );
@@ -246,11 +248,15 @@ TEST(RandomCommTest, TestsInTests)
     std::vector<int> std_recv_vals(recv_data.size_msgs);
     std::vector<int> nap_recv_vals(recv_data.size_msgs);
 
+    std::vector<int> alltoallv_send_vals(send_data.size_msgs);
+    for (int i = 0; i < send_data.size_msgs; i++)
+        alltoallv_send_vals[i] = send_vals[send_data.indices[i]];
+
     // 1. Standard Communication
     standard_communication(send_vals, std_recv_vals, 49345, MPI_INT, &send_data, &recv_data);
 
     // 2. Node-Aware Communication
-    MPIX_Neighbor_alltoallv(send_vals.data(), send_data.counts.data(),
+    MPIX_Neighbor_alltoallv(alltoallv_send_vals.data(), send_data.counts.data(),
             send_data.indptr.data(), MPI_INT,
             nap_recv_vals.data(), recv_data.counts.data(),
             recv_data.indptr.data(), MPI_INT,
@@ -261,28 +267,29 @@ TEST(RandomCommTest, TestsInTests)
     {
         ASSERT_EQ(std_recv_vals[i], nap_recv_vals[i]);
     }
-    
+
     std::vector<double> send_d_vals(local_size);
     val = local_size*rank;
     for (int i = 0; i < local_size; i++)
     {
-        send_vals[i] = val++;
+        send_d_vals[i] = val++;
     }
     std::vector<double> std_recv_d_vals(recv_data.size_msgs);
     std::vector<double> nap_recv_d_vals(recv_data.size_msgs);
 
+    std::vector<double> alltoallv_send_d_vals(send_data.size_msgs);
+    for (int i = 0; i < send_data.size_msgs; i++)
+        alltoallv_send_d_vals[i] = send_d_vals[send_data.indices[i]];
+
     // 1. Standard Communication
-    standard_communication(send_d_vals, std_recv_d_vals, 49345, MPI_INT, &send_data, &recv_data);
+    standard_communication(send_d_vals, std_recv_d_vals, 49345, MPI_DOUBLE, &send_data, &recv_data);
 
     // 2. Node-Aware Communication
-    MPIX_Neighbor_alltoallv(send_d_vals.data(), send_data.counts.data(),
-            send_data.indptr.data(), MPI_INT,
+    MPIX_Neighbor_alltoallv(alltoallv_send_d_vals.data(), send_data.counts.data(),
+            send_data.indptr.data(), MPI_DOUBLE,
             nap_recv_d_vals.data(), recv_data.counts.data(),
-            recv_data.indptr.data(), MPI_INT,
+            recv_data.indptr.data(), MPI_DOUBLE,
             topo_comm);
-    //MPIX_INAPsend(send_d_vals.data(), topo_comm->nap_comm, MPI_INT, 20423, MPI_COMM_WORLD);
-    //MPIX_INAPrecv(nap_recv_d_vals.data(), topo_comm->nap_comm, MPI_INT, 20423, MPI_COMM_WORLD);
-    //MPIX_NAPwait(topo_comm->nap_comm);
 
     // 3. Compare std_recv_vals and nap_recv_vals
     for (int i = 0; i < recv_data.size_msgs; i++)
@@ -290,10 +297,7 @@ TEST(RandomCommTest, TestsInTests)
         ASSERT_NEAR(std_recv_d_vals[i], nap_recv_d_vals[i], 1e-10);
     }
 
-    //MPIX_NAPDestroy(nap_comm);
     MPIX_Comm_free(topo_comm);
-    free(topo_comm);
-
     setenv("PPN", "16", 1);
 }
 

@@ -20,14 +20,16 @@ int MPIX_Dist_graph_create_adjacent(
 
     int i;
     int start, end;
-    int* sourceweights = (int*)malloc(indegree*sizeof(int));
+    int* sourceweights = (int*)malloc((indegree+1)*sizeof(int));
+    sourceweights[0] = 0;
     for (i = 0; i < indegree; i++)
     {
         start = source_indptr[i];
         end = source_indptr[i+1];
         sourceweights[i] = (end - start);
     }
-    int* destweights = (int*)malloc(outdegree*sizeof(int));
+    int* destweights = (int*)malloc((outdegree+1)*sizeof(int));
+    destweights[0] = 0;
     for (i = 0; i < outdegree; i++)
     {
         start = dest_indptr[i];
@@ -83,6 +85,7 @@ int MPIX_Comm_free(MPIX_Comm* comm_dist_graph)
 {
     MPI_Comm_free(&(comm_dist_graph->comm));
     MPIX_NAPDestroy(comm_dist_graph->nap_comm);
+    free(comm_dist_graph);
 
     return 0;
 }

@@ -26,7 +26,7 @@ struct topo_data{
     int rank_node;
     MPI_Comm local_comm;
 
-    topo_data(MPI_Comm mpi_comm)
+    topo_data(MPI_Comm mpi_comm = MPI_COMM_WORLD)
     {
         int rank, num_procs;
         MPI_Comm_rank(mpi_comm, &rank);
@@ -179,6 +179,9 @@ struct NAPData{
         send_data = NULL;
         recv_data = NULL;
     }
+
+    NAPData(const NAPData &other) = delete;
+    NAPData(NAPData &&other) = delete;
 
     ~NAPData()
     {
@@ -367,10 +370,10 @@ static void update_indices(NAPComm* nap_comm, std::map<int, int>& send_global_to
 static void MPIX_step_comm(comm_pkg* comm, const void* send_data, char** recv_data,
         int tag, MPI_Comm local_comm, MPI_Datatype send_type,
         MPI_Datatype recv_type, MPI_Request* send_requests,
-        MPI_Request* recv_requests);
+        MPI_Request* recv_requests, bool pack = true);
 static void MPIX_step_send(comm_pkg* comm, const void* send_data,
         int tag, MPI_Comm mpi_comm, MPI_Datatype datatype,
-        MPI_Request* send_request, char** send_buffer_ptr);
+        MPI_Request* send_request, char** send_buffer_ptr, bool pack = true);
 static void MPIX_step_recv(comm_pkg* comm,
         int tag, MPI_Comm mpi_comm, MPI_Datatype datatype,
         MPI_Request* recv_request, char** recv_buffer_ptr);
