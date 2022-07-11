@@ -199,11 +199,82 @@ void MPIX_NAPwait(void* nap_comm_ptr)
 }
 
 
+// Initialize NAPComm* structure for persistent MPI_Neighbor_alltoallv_init
+// Data is contiguous, so no send_indices
+void MPIX_NAPinit(const int n_sends, const int* send_procs, const int* send_indptr,
+        const int n_recvs, const int* recv_procs, const int* recv_indptr,
+        const int* global_send_indices, const int* global_recv_indices, 
+        const MPI_Comm mpi_comm, void** nap_comm_ptr)
+{
+    // Get MPI Information
+    int rank, num_procs;
+    MPI_Comm_rank(mpi_comm, &rank);
+    MPI_Comm_size(mpi_comm, &num_procs);
+
+    // Initialize structure
+    NAPComm* nap_comm = new NAPComm(mpi_comm);
+
+    // Find global send nodes
+    std::vector<int> send_nodes;
+    std::vector<int> send_node_to_local;
+    map_procs_to_nodes(nap_comm, n_sends, send_procs, send_indptr,
+            send_nodes, send_node_to_local, mpi_comm, true);
+
+    // Form initial send local comm
+    std::vector<int> recv_idx_nodes;
+    form_local_comm(n_sends, send_procs, send_indptr, global_send_indices, send_node_to_local,
+            nap_comm->local_S_comm->send_data, nap_comm->local_S_comm->recv_data,
+            nap_comm->local_L_comm->send_data, recv_idx_nodes, mpi_comm,
+            nap_comm->topo_info, 19483);
+
+    // Form global send data
+    form_global_comm(nap_comm->local_S_comm->recv_data, nap_comm->global_comm->send_data,
+            recv_idx_nodes, mpi_comm, nap_comm->topo_info, 93284);
+
+    // Find global recv nodes
+    std::vector<int> recv_nodes;
+    std::vector<int> recv_node_to_local;
+    map_procs_to_nodes(nap_comm, n_recvs, recv_procs, recv_indptr,
+            recv_nodes, recv_node_to_local, mpi_comm, false);
+
+    // Form final recv local comm
+    std::vector<int> send_idx_nodes;
+    form_local_comm(n_recvs, recv_procs, recv_indptr, global_recv_indices, recv_node_to_local,
+            nap_comm->local_R_comm->recv_data, nap_comm->local_R_comm->send_data,
+            nap_comm->local_L_comm->recv_data, send_idx_nodes, mpi_comm,
+            nap_comm->topo_info, 32048);
+
+    // Form global recv data
+    form_global_comm(nap_comm->local_R_comm->send_data, nap_comm->global_comm->recv_data,
+            send_idx_nodes, mpi_comm, nap_comm->topo_info, 93284);
+
+    // Update procs for global_comm send and recvs
+    update_global_comm(nap_comm, nap_comm->topo_info, mpi_comm);
+
+    // Update send and receive indices
+    int send_idx_size = send_indptr[n_sends];
+    int recv_idx_size = recv_indptr[n_recvs];
+    std::map<int, int> send_global_to_local;
+    std::map<int, int> recv_global_to_local;
+    for (int i = 0; i < send_idx_size; i++)
+        send_global_to_local[global_send_indices[i]] = i;
+        //send_global_to_local[global_send_indices[i]] = i;
+    for (int i = 0; i < recv_idx_size; i++)
+        recv_global_to_local[global_recv_indices[i]] = i;
+    update_indices(nap_comm, send_global_to_local, recv_global_to_local);
+
+
+    // Initialize final variable (MPI_Request arrays, etc.)
+    nap_comm->finalize();
+
+    // Copy to pointer for return
+    *nap_comm_ptr = (void**) nap_comm;
+}
 
 
 // Initialize NAPComm* structure, to be used for any number of
 // instances of communication
-void MPIX_NAPinit(const int n_sends, const int* send_procs, const int* send_indptr,
+void init_locality(const int n_sends, const int* send_procs, const int* send_indptr,
         const int* send_indices, const int n_recvs, const int* recv_procs,
         const int* recv_indptr, const int* global_send_indices,
         const int* global_recv_indices, const MPI_Comm mpi_comm,
@@ -275,13 +346,11 @@ void MPIX_NAPinit(const int n_sends, const int* send_procs, const int* send_indp
 }
 
 // Destroy NAPComm* structure
-void MPIX_NAPDestroy(void* nap_comm_ptr)
+void destroy_locality(void* nap_comm_ptr)
 {
     NAPComm* nap_comm = (NAPComm*) nap_comm_ptr;
     delete nap_comm;
 }
-
-
 
 /******************************************
  ****
@@ -821,7 +890,6 @@ void MPIX_step_send(comm_pkg* comm, const void* send_data,
         send_buffer = new char[size];
     }
 
-int rank; MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
     int ctr = 0;
     int prev_ctr = 0;
@@ -835,7 +903,6 @@ int rank; MPI_Comm_rank(MPI_COMM_WORLD, &rank);
             for (int j = start; j < end; j++)
             {
                 idx = comm->send_data->indices[j];
-if (rank = 0) printf("Sending data[%d]\n", idx);
                 MPI_Pack(&(data[idx*type_size]), 1, mpi_type, 
                         send_buffer, size, &ctr, mpi_comm);
             }
