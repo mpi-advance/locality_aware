@@ -3,6 +3,7 @@
 
 #include "mpi.h"
 #include "topology.h"
+#include "locality_comm.h"
 
 typedef struct _MPIX_Comm
 {

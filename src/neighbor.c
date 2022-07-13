@@ -188,6 +188,8 @@ int MPIX_Neighbor_alltoallv_init(
         MPI_Info info,
         MPIX_Request** request_ptr)
 {
+
+/*
     int tag = 304591;
     int indegree, outdegree, weighted;
     MPI_Dist_graph_neighbors_count(
@@ -312,6 +314,8 @@ int MPIX_Neighbor_alltoallv_init(
     *request_ptr = request;
 
     return 0;
+
+    */
 }
 
 
@@ -321,13 +325,23 @@ int MPIX_Neighbor_alltoallv_init(
 // 3. Start global
 int MPIX_Start(MPIX_Request* request)
 {
+    // Local L sends sendbuf
     if (request->local_L_n_msgs)
+    {
         MPI_Startall(request->local_L_n_msgs, request->local_L_requests);
+    }
+
+
+    // Local S sends sendbuf
     if (request->local_S_n_msgs)
     {
         MPI_Startall(request->local_S_n_msgs, request->local_S_requests);
         MPI_Waitall(request->local_S_n_msgs, request->local_S_requests);
+
+        // Copy into global->send_data->buffer
     }
+
+    // Global sends buffer in locality, sendbuf in standard
     if (request->global_n_msgs)
         MPI_Startall(request->global_n_msgs, request->global_requests);
 }
@@ -339,15 +353,31 @@ int MPIX_Start(MPIX_Request* request)
 // 3. Wait for local_L
 int MPIX_Wait(MPIX_Request* request)
 {
+
+    // Global waits for recvs
     if (request->global_n_msgs)
+    {
         MPI_Waitall(request->global_n_msgs, request->global_requests);
+
+        // Copy into local_R->send_data->buffer
+    }
+
+    // Wait for local_R recvs
     if (request->local_R_n_msgs)
     {
         MPI_Startall(request->local_R_n_msgs, request->local_R_requests);
         MPI_Waitall(request->local_R_n_msgs, request->local_R_requests);
+
+        // Copy into recvbuf
     }
+
+    // Wait for local_L recvs
     if (request->local_L_n_msgs)
+    {
         MPI_Waitall(request->local_L_n_msgs, request->local_L_requests);
+
+        // Copy into recvbuf
+    }
 }
 
 
@@ -363,7 +393,8 @@ int MPIX_Request_destroy(MPIX_Request* request)
         free(request->global_requests);
 
     // If Locality-Aware
-    destroy_localiy(request->nap_comm);
+    if (request->locality)
+        destroy_localiy(request->locality);
 
     free(request);
 }

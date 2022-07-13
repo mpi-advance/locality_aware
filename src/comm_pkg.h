@@ -16,7 +16,7 @@ void init_comm_pkg(CommPkg** comm_ptr, int _tag)
 
     init_comm_data(&(comm->send_data));
     init_comm_data(&(comm->recv_data));
-    tag = _tag;
+    comm->tag = _tag;
 
     *comm_ptr = comm;
 }

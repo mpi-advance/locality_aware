@@ -1,6 +1,9 @@
 #ifndef MPI_ADVANCE_COMM_DATA_H
 #define MPI_ADVANCE_COMM_DATA_H
 
+#include <stdlib.h>
+#include <stdio.h>
+
 typedef struct _CommData
 {
     int num_msgs;

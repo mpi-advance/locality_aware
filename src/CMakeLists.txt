@@ -1,9 +1,14 @@
 include_directories(".")
 
 add_library(mpi_advance STATIC 
-    nap_comm.h
-    nap_comm.c
-    nap_communicate.cpp
+    topology.h
+    topology.c
+    comm_data.h
+    comm_pkg.h
+    dist_graph.h
+    dist_graph.c
+    neighbor.h
+    neighbor.c
     )
 
 target_link_libraries(mpi_advance ${MPI_LIBRARIES} stdc++)
