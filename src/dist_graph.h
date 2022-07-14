@@ -2,7 +2,6 @@
 #define MPI_ADVANCE_DIST_GRAPH_H
 
 #include "mpi.h"
-#include "topology.h"
 #include "locality_comm.h"
 
 typedef struct _MPIX_Comm

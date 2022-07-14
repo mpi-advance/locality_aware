@@ -6,7 +6,7 @@
 
 
 #include "gtest/gtest.h"
-#include "src/nap_comm.h"
+#include "src/neighbor.h"
 #include <mpi.h>
 #include <math.h>
 #include <stdlib.h>

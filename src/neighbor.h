@@ -3,6 +3,8 @@
 
 #include <mpi.h>
 #include <stdlib.h>
+#include "locality_comm.h"
+#include "dist_graph.h"
 
 // NAPComm per Alltoallv_init, not per DistGraphCreateAdjacent!
 typedef struct _MPIX_Request
@@ -40,6 +42,7 @@ int MPIX_Neighbor_alltoallv_init(
         MPIX_Request** request_ptr);
 
 
+/*
 // Locality-Aware Extension to Persistent Neighbor Alltoallv
 // Needs global indices for each send and receive
 int MPIX_Neighbor_alltoallv_init(
@@ -56,7 +59,7 @@ int MPIX_Neighbor_alltoallv_init(
         MPIX_Comm* comm,
         MPI_Info info,
         MPIX_Request** request_ptr);
-
+*/
 
 // Starting locality-aware requests
 // 1. Start Local_L

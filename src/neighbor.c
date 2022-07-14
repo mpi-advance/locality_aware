@@ -1,6 +1,7 @@
 #include "neighbor.h"
+#include "locality_comm.h"
 
-int init_request(MPIX_Request** request_ptr)
+void init_request(MPIX_Request** request_ptr)
 {
     MPIX_Request* request = (MPIX_Request*)malloc(sizeof(MPIX_Request));
 
@@ -19,7 +20,7 @@ int init_request(MPIX_Request** request_ptr)
     *request_ptr = request;
 }
 
-int destroy_request(MPIX_Request* request)
+void destroy_request(MPIX_Request* request)
 {
     if (request->local_L_n_msgs)
         free(request->local_L_requests);
@@ -31,12 +32,12 @@ int destroy_request(MPIX_Request* request)
         free(request->global_requests);
 
     if (request->locality)
-        destroy_locality(request->locality);
+        destroy_locality_comm(request->locality);
 
     free(request);
 }
 
-int allocate_requests(int n_requests, MPI_Request** request_ptr)
+void allocate_requests(int n_requests, MPI_Request** request_ptr)
 {
     if (n_requests)
     {
@@ -46,15 +47,15 @@ int allocate_requests(int n_requests, MPI_Request** request_ptr)
     else *request_ptr = NULL;
 }
 
-int init_communication(void* sendbuf,
+int init_communication(const void* sendbuf,
         int n_sends,
-        int* send_procs,
-        int* send_ptr, 
+        const int* send_procs,
+        const int* send_ptr, 
         MPI_Datatype sendtype,
         void* recvbuf, 
         int n_recvs,
-        int* recv_procs,
-        int* recv_ptr,
+        const int* recv_procs,
+        const int* recv_ptr,
         MPI_Datatype recvtype,
         int tag,
         MPI_Comm comm,
@@ -171,6 +172,7 @@ int MPIX_Neighbor_alltoallv_init(
 }
 
 
+/*
 // Locality-Aware Extension to Persistent Neighbor Alltoallv
 // Needs global indices for each send and receive
 int MPIX_Neighbor_alltoallv_init(
@@ -189,7 +191,6 @@ int MPIX_Neighbor_alltoallv_init(
         MPIX_Request** request_ptr)
 {
 
-/*
     int tag = 304591;
     int indegree, outdegree, weighted;
     MPI_Dist_graph_neighbors_count(
@@ -315,8 +316,8 @@ int MPIX_Neighbor_alltoallv_init(
 
     return 0;
 
-    */
 }
+    */
 
 
 // Starting locality-aware requests
@@ -325,25 +326,29 @@ int MPIX_Neighbor_alltoallv_init(
 // 3. Start global
 int MPIX_Start(MPIX_Request* request)
 {
+    int ierr;
+
     // Local L sends sendbuf
     if (request->local_L_n_msgs)
     {
-        MPI_Startall(request->local_L_n_msgs, request->local_L_requests);
+        ierr = MPI_Startall(request->local_L_n_msgs, request->local_L_requests);
     }
 
 
     // Local S sends sendbuf
     if (request->local_S_n_msgs)
     {
-        MPI_Startall(request->local_S_n_msgs, request->local_S_requests);
-        MPI_Waitall(request->local_S_n_msgs, request->local_S_requests);
+        ierr = MPI_Startall(request->local_S_n_msgs, request->local_S_requests);
+        ierr = MPI_Waitall(request->local_S_n_msgs, request->local_S_requests, MPI_STATUSES_IGNORE);
 
         // Copy into global->send_data->buffer
     }
 
     // Global sends buffer in locality, sendbuf in standard
     if (request->global_n_msgs)
-        MPI_Startall(request->global_n_msgs, request->global_requests);
+        ierr = MPI_Startall(request->global_n_msgs, request->global_requests);
+
+    return ierr;
 }
 
 
@@ -353,11 +358,12 @@ int MPIX_Start(MPIX_Request* request)
 // 3. Wait for local_L
 int MPIX_Wait(MPIX_Request* request)
 {
+    int ierr;
 
     // Global waits for recvs
     if (request->global_n_msgs)
     {
-        MPI_Waitall(request->global_n_msgs, request->global_requests);
+        ierr = MPI_Waitall(request->global_n_msgs, request->global_requests, MPI_STATUSES_IGNORE);
 
         // Copy into local_R->send_data->buffer
     }
@@ -365,8 +371,8 @@ int MPIX_Wait(MPIX_Request* request)
     // Wait for local_R recvs
     if (request->local_R_n_msgs)
     {
-        MPI_Startall(request->local_R_n_msgs, request->local_R_requests);
-        MPI_Waitall(request->local_R_n_msgs, request->local_R_requests);
+        ierr = MPI_Startall(request->local_R_n_msgs, request->local_R_requests);
+        ierr = MPI_Waitall(request->local_R_n_msgs, request->local_R_requests, MPI_STATUSES_IGNORE);
 
         // Copy into recvbuf
     }
@@ -374,10 +380,12 @@ int MPIX_Wait(MPIX_Request* request)
     // Wait for local_L recvs
     if (request->local_L_n_msgs)
     {
-        MPI_Waitall(request->local_L_n_msgs, request->local_L_requests);
+        ierr = MPI_Waitall(request->local_L_n_msgs, request->local_L_requests, MPI_STATUSES_IGNORE);
 
         // Copy into recvbuf
     }
+
+    return ierr;
 }
 
 
@@ -394,9 +402,10 @@ int MPIX_Request_destroy(MPIX_Request* request)
 
     // If Locality-Aware
     if (request->locality)
-        destroy_localiy(request->locality);
+        destroy_locality_comm(request->locality);
 
     free(request);
+
+    return 0;
 }
 
-#endif

@@ -1,4 +1,5 @@
 #include "dist_graph.h"
+#include "topology.h"
 
 int MPIX_Dist_graph_create_adjacent(MPI_Comm comm_old, 
         int indegree,
