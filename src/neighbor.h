@@ -6,6 +6,12 @@
 #include "locality_comm.h"
 #include "dist_graph.h"
 
+// Declarations of C++ methods
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 // NAPComm per Alltoallv_init, not per DistGraphCreateAdjacent!
 typedef struct _MPIX_Request
 {
@@ -78,28 +84,9 @@ int MPIX_Wait(MPIX_Request* request, MPI_Status status);
 int MPIX_Request_free(MPIX_Request* request);
 
 
-// Declarations of C++ methods
-#ifdef __cplusplus
-extern "C"
-{
-#endif
 
-void init_locality(const int outdegree, const int* destinations, const int* dest_indptr, const int* dest_indices,
-        const int indegree, const int* sources, const int* source_indptr,
-        const int* global_dest_indices, const int* global_source_indices,
-        const MPI_Comm old_comm, void** nap_comm_ptr);
 
-void locality_send_init(const void* buf, void* nap_comm,
-        MPI_Datatype datatype, int tag,
-        MPI_Comm comm);
 
-void locality_recv_init(void* buf, void* nap_comm,
-        MPI_Datatype datatype, int tag,
-        MPI_Comm comm);
-
-void locality_wait(void* nap_comm);
-
-void destroy_locality(void* nap_comm_ptr);
 
 #ifdef __cplusplus
 }

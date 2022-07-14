@@ -4,6 +4,12 @@
 #include "mpi.h"
 #include "locality_comm.h"
 
+// Declarations of C++ methods
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 typedef struct _MPIX_Comm
 {
     MPI_Comm global_comm;
@@ -27,5 +33,10 @@ int MPIX_Dist_graph_create_adjacent(MPI_Comm comm_old,
         MPIX_Comm** comm_dist_graph_ptr);
 
 int MPIX_Comm_free(MPIX_Comm* comm_dist_graph);
+
+#ifdef __cplusplus
+}
+#endif
+
 
 #endif

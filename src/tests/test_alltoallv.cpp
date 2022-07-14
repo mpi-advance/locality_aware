@@ -249,20 +249,30 @@ TEST(RandomCommTest, TestsInTests)
     // 2. Node-Aware Communication
     MPIX_Comm* neighbor_comm;
     MPIX_Request* neighbor_request;
+    MPI_Status status;
     MPIX_Dist_graph_create_adjacent(MPI_COMM_WORLD,
-            recv_data.num_msgs, recv_data.procs.data(), recv_data.indptr.data(),
-            global_recv_idx.data(),
-            send_data.num_msgs, send_data.procs.data(),
+            recv_data.num_msgs, 
+            recv_data.procs.data(), 
+            recv_data.indptr.data(),
+            send_data.num_msgs, 
+            send_data.procs.data(),
             send_data.indptr.data(),
-            MPI_INFO_NULL, 0, &topo_comm
-    );
-    MPIX_Neighbor_alltoallv_init(alltoallv_send_vals.data(), send_data.counts.data(),
-            send_data.indptr.data(), MPI_INT,
-            nap_recv_vals.data(), recv_data.counts.data(),
-            recv_data.indptr.data(), MPI_INT,
-            neighbor_comm, &neighbor_request);
+            MPI_INFO_NULL, 
+            0, 
+            &neighbor_comm);
+    MPIX_Neighbor_alltoallv_init(alltoallv_send_vals.data(), 
+            send_data.counts.data(),
+            send_data.indptr.data(), 
+            MPI_INT,
+            nap_recv_vals.data(), 
+            recv_data.counts.data(),
+            recv_data.indptr.data(), 
+            MPI_INT,
+            neighbor_comm, 
+            MPI_INFO_NULL,
+            &neighbor_request);
     MPIX_Start(neighbor_request);
-    MPIX_Wait(neighbor_request);
+    MPIX_Wait(neighbor_request, status);
 
 /*    // 3. Compare std_recv_vals and nap_recv_vals
     for (int i = 0; i < recv_data.size_msgs; i++)
