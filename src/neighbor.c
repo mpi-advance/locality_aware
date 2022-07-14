@@ -356,7 +356,8 @@ int MPIX_Start(MPIX_Request* request)
 // 1. Wait for global
 // 2. Start and wait for local_R
 // 3. Wait for local_L
-int MPIX_Wait(MPIX_Request* request)
+// TODO : Currently ignores the status!
+int MPIX_Wait(MPIX_Request* request, MPI_Status status)
 {
     int ierr;
 
@@ -389,7 +390,7 @@ int MPIX_Wait(MPIX_Request* request)
 }
 
 
-int MPIX_Request_destroy(MPIX_Request* request)
+int MPIX_Request_free(MPIX_Request* request)
 {
     if (request->local_L_n_msgs)
         free(request->local_L_requests);
