@@ -1,5 +1,4 @@
 #include "neighbor.h"
-#include "locality_comm.h"
 
 void init_request(MPIX_Request** request_ptr)
 {

@@ -2,24 +2,14 @@
 #define MPI_ADVANCE_DIST_GRAPH_H
 
 #include "mpi.h"
-#include "locality_comm.h"
+#include "locality/locality_comm.h"
+#include "locality/topology.h"
 
 // Declarations of C++ methods
 #ifdef __cplusplus
 extern "C"
 {
 #endif
-
-typedef struct _MPIX_Comm
-{
-    MPI_Comm global_comm;
-    MPI_Comm local_comm;
-    MPI_Comm neighbor_comm;
-
-    int num_nodes;
-    int rank_node;
-    int ppn;
-} MPIX_Comm;
 
 int MPIX_Dist_graph_create_adjacent(MPI_Comm comm_old, 
         int indegree,

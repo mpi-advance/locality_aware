@@ -1,11 +1,12 @@
 #include "comm_data.h"
 
-void init_comm_data(CommData** comm_data_ptr)
+void init_comm_data(CommData** comm_data_ptr, MPI_Datatype datatype)
 {
     CommData* data = (CommData*)malloc(sizeof(CommData));
 
     data->num_msgs = 0;
     data->size_msgs = 0;
+    MPI_Type_size(datatype, &(data->datatype_size));
     data->procs = NULL;
     data->indptr = NULL;
     data->indices = NULL;
@@ -35,13 +36,10 @@ void init_num_msgs(CommData* data, int num_msgs)
     data->indptr[0] = 0;
 }
 
-void init_size_msgs(CommData* data, int size_msgs)
+void finalize_comm_data(CommData* data)
 {
-    data->size_msgs = size_msgs;
-    if (data->size_msgs)
-    {
-        data->indices = (int*)malloc(sizeof(int)*data->size_msgs);
-    }
+    data->buffer = (char*)malloc(data->size_msgs*data->datatype_size*sizeof(char));
+    data->indices = (int*)malloc(data->size_msgs*sizeof(int));
 }
 
 
