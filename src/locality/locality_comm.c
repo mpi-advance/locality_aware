@@ -33,3 +33,30 @@ void destroy_locality_comm(LocalityComm* locality)
     free(locality);
 }
 
+int MPIX_Comm_init(MPIX_Comm** comm_dist_graph_ptr, MPI_Comm global_comm)
+{
+    MPIX_Comm* comm_dist_graph = (MPIX_Comm*)malloc(sizeof(MPIX_Comm));
+    comm_dist_graph->global_comm = global_comm;
+
+    MPI_Comm_split_type(comm_dist_graph->global_comm,
+        MPI_COMM_TYPE_SHARED,
+        rank,
+        MPI_INFO_NULL,
+        &(comm_dist_graph->local_comm));
+
+    MPI_Comm_size(comm_dist_graph->local_comm, &(comm_dist_graph->ppn));
+    comm_dist_graph->num_nodes = ((num_procs-1) / comm_dist_graph->ppn) + 1;
+    comm_dist_graph->rank_node = get_node(comm_dist_graph, rank);
+    
+    *comm_dist_graph_ptr = comm_dist_graph;
+}
+
+int MPIX_Comm_free(MPIX_Comm* comm_dist_graph)
+{
+    MPI_Comm_free(&(comm_dist_graph->neighbor_comm));
+    MPI_Comm_free(&(comm_dist_graph->local_comm));
+
+    free(comm_dist_graph);
+}
+
+

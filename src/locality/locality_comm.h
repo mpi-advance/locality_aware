@@ -51,6 +51,10 @@ void init_locality_comm(LocalityComm** locality_ptr, const MPIX_Comm* comm,
 void finalize_locality_comm(LocalityComm* locality);
 void destroy_locality_comm(LocalityComm* locality);
 
+int MPIX_Comm_init(MPIX_Comm** comm_dist_graph_ptr, MPI_Comm global_comm);
+int MPIX_Comm_free(MPIX_Comm* comm_dist_graph);
+
+
 // Declarations of C++ methods
 #ifdef __cplusplus
 }

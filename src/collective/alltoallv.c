@@ -1,4 +1,5 @@
 #include "collective.h"
+#include "locality/locality_comm.h"
 
 
 // TODO : Want to each process to send (nearly) equal
@@ -22,12 +23,17 @@ int PMPI_Alltoallv(const void* sendbuf,
     MPI_Comm_rank(comm, &rank);
     MPI_Comm_size(comm, &num_procs);
 
+    MPIX_Comm* mpix_comm;
+    MPIX_Comm_init(&mpix_comm, comm);
+
+    LocalityComm* locality_comm;
+    init_locality_alltoallv(sendcounts, sdispls, sendtype, 
+            recvcounts, rdispls, recvtype, mpix_comm);
+
     // Create shared-memory (local) communicator
-    MPI_Comm local_comm;
     int local_rank, PPN;
-    MPI_Comm_split_type(comm, MPI_COMM_TYPE_SHARED, rank, MPI_INFO_NULL, &local_comm);
-    MPI_Comm_rank(local_comm, &local_rank);
-    MPI_Comm_size(local_comm, &PPN);
+    MPI_Comm_rank(mpix_comm->local_comm, &local_rank);
+    MPI_Comm_size(mpix_comm->local_comm, &PPN);
 
     // Calculate shared-memory (local) variables
     int num_nodes = num_procs / PPN;
@@ -104,11 +110,10 @@ int PMPI_Alltoallv(const void* sendbuf,
             send_nodes[start+j] = node_send_order[j*PPN + i];
             recv_nodes[start+j] = node_recv_order[j*PPN + i];
         }
-        
     }
 
     int* msg_counts = (int*)calloc(num_procs*sizeof(int));
-    start = local_send_displs[local_rank];
+    start = local_send_displs[local_rank];mpix_comm
     for (int i = 0; i < local_num_msgs; i++)
     {
         msg_counts[send_nodes[start+i] + local_rank]++;
@@ -167,14 +172,68 @@ int PMPI_Alltoallv(const void* sendbuf,
     }
 
     // CLEAN UP
-    free(send_nodes);
-    free(recv_nodes);
     free(node_send_order);
     free(node_recv_order);
     free(msg_counts);
     free(node_send_idx);
     free(node_recv_idx);
 
+    // Not currently persistent!  No need to write it in a way that can be re-run
+    // Just send locally and probe from each PPN for now!
+    // But, need to know sendcounts from previous steps... probably just want to use LocalityComm
+
+
+
+
+
+
+
+
+    // Form local_S
+    // Initialize structure
+    LocalityComm* locality_comm;
+    init_locality_comm(&locality_comm, mpix_comm, sendtype, recvtype);
+    
+    // All local num_msgs are PPN - 1
+    init_num_msgs(locality_comm->local_S_comm->send_data, PPN-1);
+    init_num_msgs(locality_comm->local_S_comm->recv_data, PPN-1);
+    for (int i = 0; i < PPN; i++)
+    {
+        size = 0;
+        start = local_send_displs[i];
+        end = local_send_displs[i+1];
+        for (int j = start; j < end; j++)
+        {
+            node = send_nodes[j];
+            for (int k = 0; k < PPN; k++)
+            {
+                proc = node*PPN+k;
+                size += sendcounts[proc];
+            }
+        }
+        locality_comm->local_S_comm->send_data->indptr[i+1] = 
+            local_comm->local_S_comm->send_data->indptr[i] + size;
+    }
+    locality_comm->local_S_comm->send_data->size_msgs = 
+        locality_comm->local_S_comm->send_data->indptr[PPN];
+    locality_comm->local_S_comm->send_data->indices = 
+        (int*)malloc(locality_comm->local_S_comm->send_data->size_msgs*sizeof(int));
+    for (int i = 0; i < PPN; i++)
+    {
+        size = 0;
+        start = local_send_displs[i];
+        end = local_send_displs[i+1];
+        for (int j = start; j < end; j++)
+        {
+            node = send_nodes[j];
+            for (int k = 0; k < PPN; k++)
+            {
+                proc = node*PPN+k;
+                size += sendcounts[proc];
+                locality_comm->local_S_comm->send_data->indices[ctr++] = 
+            }
+        }
+    }
 
     int first_msg = local_send_displs[local_rank];
     int n_msgs;
@@ -191,34 +250,75 @@ int PMPI_Alltoallv(const void* sendbuf,
      *      all data that needs to be send to any
      *      node with which local rank x communicates
      ************************************************/
-    n_msgs = 0;
+    ctr = 0;
+    next_ctr = ctr;
     for (int i = 0; i < PPN; i++)
     {
         start = local_send_displs[i];
         end = local_send_displs[i+1];
-        if (end - start)
+        for (int j = start; j < end; j++)
         {
-            MPI_Isend(&(send_buffer[start*send_msg_size*send_size]), 
-                    (end - start)*send_msg_size, 
-                    sendtype, 
-                    i, 
-                    tag, 
-                    local_comm, 
-                    &(local_requests[n_msgs++]));
+            node = send_nodes[j];
+            for (int k = 0; k < PPN; k++)
+            {
+                proc = node*PPN + k;
+                proc_start = sdispls[proc];
+                proc_end = sdispls[proc+1];
+                for (int l = proc_start; l < proc_end; l++)
+                {
+                    for (int m = 0; m < send_size; m++)
+                    {
+                        contig_buf[next_ctr*send_size+m] = send_buffer[l*send_size+m];
+                    }
+                    next_ctr++;
+                }
+            }
         }
-        if (local_num_msgs)
-        {
-            MPI_Irecv(&(tmpbuf[i*local_num_msgs*recv_msg_size*recv_size]), 
-                    local_num_msgs*recv_msg_size, 
-                    recvtype,
-                    i, 
-                    tag, 
-                    local_comm, 
-                    &(local_requests[n_msgs++]));
-        }
+        MPI_Isend(&(contig_buf[ctr*send_size]),
+                (next_ctr-ctr),
+                sendtype, 
+                i, 
+                tag, 
+                local_comm, 
+                 &(local_requests[i]));
     }
-    if (n_msgs)
-        MPI_Waitall(n_msgs, local_requests, MPI_STATUSES_IGNORE);
+
+    // Probe step 1 recvs
+    // TODO : recv all of the data to go to node m
+    // But I dont know which of the data goes to each 
+    // process on node m...
+    // Okay, I probably do want to use LocalityComm afterall
+    // ... just simplify the methods
+    //      1. all local_num_msgs = PPN
+    // What do I need to know that isn't needed in the alltoall?
+    // After this recv, tmp_buf consists of all data from local PPN to be send to any node in send_nodes
+    // e.g. [loc0, loc1, loc2, ..., locPPN-1]
+    // where loc = [mynode0, mynode1, ..., mynode<local_num_msgs-1>]
+    // What is the size of each mynode<n> within each loc<l>?
+    // Do we also need to sort by recvsizes??
+    ctr = 0;
+    next_ctr = ctr;
+    for (int i = 0; i < PPN; i++)
+    {
+        MPI_Probe(i, tag, local_comm, &status);
+        MPI_Get_count(status, recvtype, &count);
+        next_ctr += count;
+        MPI_Recv(&(tmp_buf[ctr*recv_size]),
+                count,
+                recvtype,
+                i,
+                tag,
+                local_comm,
+                &status);
+    }
+
+    MPI_Waitall(PPN, local_requests, MPI_STATUSES_IGNORE);
+
+    //Then, redistribute tmp_buf into contig_buf by node, and by loc within each node
+    // Then, global tmp_buf will consist of something like this:
+    // [myrecvnode0, myrecvnode1, ..., myrecvnode<local_num_recvs-1>]
+    // myrecvnode = [loc0, loc1, loc2, ..., locPPN-1] where loc is SOURCE
+    // Need to know, for each source
 
      /************************************************
      * Step 2 : non-local Alltoall
@@ -228,6 +328,8 @@ int PMPI_Alltoallv(const void* sendbuf,
     ctr = 0;
     next_ctr = ctr;
     n_msgs = 0;
+    start = local_send_displs[local_rank];
+    end = local_send_displs[local_rank+1];
     for (int i = 0; i < local_num_msgs; i++)
     {
         node = first_msg + i;

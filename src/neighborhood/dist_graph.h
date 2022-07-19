@@ -22,8 +22,6 @@ int MPIX_Dist_graph_create_adjacent(MPI_Comm comm_old,
         int reorder,
         MPIX_Comm** comm_dist_graph_ptr);
 
-int MPIX_Comm_free(MPIX_Comm* comm_dist_graph);
-
 #ifdef __cplusplus
 }
 #endif

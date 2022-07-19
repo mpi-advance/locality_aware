@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include "locality/locality_comm.h"
 #include "dist_graph.h"
+#include "persistent/persistent.h"
 
 // Declarations of C++ methods
 #ifdef __cplusplus
@@ -49,21 +50,7 @@ int MPIX_Neighbor_alltoallv_init(
         MPIX_Request** request_ptr);
 */
 
-// Starting locality-aware requests
-// 1. Start Local_L
-// 2. Start and wait for local_S
-// 3. Start global
-int MPIX_Start(MPIX_Request* request);
 
-
-// Wait for locality-aware requests
-// 1. Wait for global
-// 2. Start and wait for local_R
-// 3. Wait for local_L
-int MPIX_Wait(MPIX_Request* request, MPI_Status status);
-
-
-int MPIX_Request_free(MPIX_Request* request);
 
 
 
