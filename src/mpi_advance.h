@@ -6,6 +6,8 @@
 #include "locality/locality_comm.h"
 #include "locality/topology.h"
 
+#include "persistent/persistent.h"
+
 #include "collective/collective.h"
 
 #include "neighborhood/dist_graph.h"

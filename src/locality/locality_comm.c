@@ -35,6 +35,10 @@ void destroy_locality_comm(LocalityComm* locality)
 
 int MPIX_Comm_init(MPIX_Comm** comm_dist_graph_ptr, MPI_Comm global_comm)
 {
+    int rank, num_procs;
+    MPI_Comm_rank(global_comm, &rank);
+    MPI_Comm_size(global_comm, &num_procs);
+
     MPIX_Comm* comm_dist_graph = (MPIX_Comm*)malloc(sizeof(MPIX_Comm));
     comm_dist_graph->global_comm = global_comm;
 
