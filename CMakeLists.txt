@@ -2,7 +2,9 @@ cmake_minimum_required(VERSION 2.8)
 project(mpi_advance)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
+enable_language(C)
 enable_language(CXX)
+set(CMAKE_C_STANDARD 99)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_BUILD_TYPE Release)
 
