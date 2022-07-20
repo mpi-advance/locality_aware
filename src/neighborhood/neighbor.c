@@ -110,11 +110,13 @@ int init_communication(const void* sendbuf,
 int init_communicationw(const void* sendbuf,
         int n_sends,
         const int* send_procs,
+        const int* sendcounts, 
         const MPI_Aint* send_ptr, 
         MPI_Datatype* sendtypes,
         void* recvbuf, 
         int n_recvs,
         const int* recv_procs,
+        const int* recvcounts, 
         const MPI_Aint* recv_ptr,
         MPI_Datatype* recvtypes,
         int tag,
@@ -136,7 +138,7 @@ int init_communicationw(const void* sendbuf,
     for (int i = 0; i < n_recvs; i++)
     {
         start = (int)(recv_ptr[i]);
-        size = (int)(recv_ptr[i+1] - start);
+        size = recvcounts[i];
         MPI_Type_size(recvtypes[i], &recv_size);
 
         ierr += MPI_Recv_init(&(recv_buffer[ctr]), 
@@ -153,7 +155,7 @@ int init_communicationw(const void* sendbuf,
     for (int i = 0; i < n_sends; i++)
     {
         start = (int)(send_ptr[i]);
-        size = (int)(send_ptr[i+1] - start);
+        size = sendcounts[i];
         MPI_Type_size(sendtypes[i], &send_size);
 
         ierr += MPI_Send_init(&(send_buffer[ctr]),
@@ -282,11 +284,13 @@ int MPIX_Neighbor_alltoallw_init(
             sendbuf, 
             outdegree, 
             destinations,
+            sendcounts,
             sdispls,
             sendtypes,
             recvbuf,
             indegree,
             sources,
+            recvcounts,
             rdispls,
             recvtypes,
             tag,
