@@ -153,7 +153,7 @@ int init_communicationw(const void* sendbuf,
         size = (int)(send_ptr[i+1] - start);
         MPI_Type_size(sendtypes[i], &send_size);
 
-        ierr += MPI_Send_init(&(sendbuf[start*send_size]),
+        ierr += MPI_Send_init(&(send_buffer[start*send_size]),
                 size,
                 sendtypes[i],
                 send_procs[i],
