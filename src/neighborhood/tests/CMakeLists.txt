@@ -1,4 +1,8 @@
 add_executable(test_neighbor_alltoallv_init test_neighbor_alltoallv_init.cpp)
 target_link_libraries(test_neighbor_alltoallv_init mpi_advance googletest pthread )
-add_test(RandomNeighTest mpirun -n 16 ./test_neighbor_alltoallv_init)
+add_test(PersistentNeighAlltoallvTest mpirun -n 16 ./test_neighbor_alltoallv_init)
+
+add_executable(test_neighbor_alltoallw_init test_neighbor_alltoallw_init.cpp)
+target_link_libraries(test_neighbor_alltoallw_init mpi_advance googletest pthread )
+add_test(PersistentNeighAlltoallwTest mpirun -n 16 ./test_neighbor_alltoallw_init)
 

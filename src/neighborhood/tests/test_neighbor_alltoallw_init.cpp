@@ -22,7 +22,7 @@ struct MPIX_Data
     int size_msgs; 
     std::vector<int> procs;
     std::vector<int> counts;
-    std::vector<int> indptr;
+    std::vector<MPI_Aint> indptr;
     std::vector<int> indices;
     std::vector<MPI_Request> requests;
     std::vector<int> buffer;
@@ -198,7 +198,7 @@ TEST(RandomCommTest, TestsInTests)
     int first = local_size * rank;
     std::vector<int> global_send_idx(send_data.size_msgs);
     std::vector<int> global_recv_idx(recv_data.size_msgs);
-    std::vector<int> alltoallv_indices(send_data.size_msgs);
+    std::vector<int> alltoallw_indices(send_data.size_msgs);
     int tag = 29354;
     for (int i = 0; i < send_data.num_msgs; i++)
     {
@@ -209,7 +209,7 @@ TEST(RandomCommTest, TestsInTests)
         {
             int idx = send_data.indices[j];
             global_send_idx[j] = first + idx;
-            alltoallv_indices[j] = j; // Alltoallv already sorts by index
+            alltoallw_indices[j] = j; // Alltoallv already sorts by index
         }
         MPI_Isend(&global_send_idx[start], end - start, MPI_INT, proc,
                 tag, MPI_COMM_WORLD, &send_data.requests[i]);
@@ -239,12 +239,15 @@ TEST(RandomCommTest, TestsInTests)
     std::vector<int> std_recv_vals(recv_data.size_msgs);
     std::vector<int> nap_recv_vals(recv_data.size_msgs);
 
-    std::vector<int> alltoallv_send_vals(send_data.size_msgs);
+    std::vector<int> alltoallw_send_vals(send_data.size_msgs);
     for (int i = 0; i < send_data.size_msgs; i++)
-        alltoallv_send_vals[i] = send_vals[send_data.indices[i]];
+        alltoallw_send_vals[i] = send_vals[send_data.indices[i]];
 
     // 1. Standard Communication
     standard_communication(send_vals, std_recv_vals, 49345, MPI_INT, &send_data, &recv_data);
+
+    std::vector<MPI_Datatype> sendtypes(num_procs, MPI_INT);
+    std::vector<MPI_Datatype> recvtypes(num_procs, MPI_INT);
 
     // 2. Node-Aware Communication
     MPIX_Comm* neighbor_comm;
@@ -260,14 +263,14 @@ TEST(RandomCommTest, TestsInTests)
             MPI_INFO_NULL, 
             0, 
             &neighbor_comm);
-    MPIX_Neighbor_alltoallv_init(alltoallv_send_vals.data(), 
+    MPIX_Neighbor_alltoallw_init(alltoallw_send_vals.data(), 
             send_data.counts.data(),
             send_data.indptr.data(), 
-            MPI_INT,
+            sendtypes.data(),
             nap_recv_vals.data(), 
             recv_data.counts.data(),
             recv_data.indptr.data(), 
-            MPI_INT,
+            recvtypes.data(),
             neighbor_comm, 
             MPI_INFO_NULL,
             &neighbor_request);
@@ -279,6 +282,7 @@ TEST(RandomCommTest, TestsInTests)
     {
         ASSERT_EQ(std_recv_vals[i], nap_recv_vals[i]);
     }
+
 
     MPIX_Request_free(neighbor_request);
     MPIX_Comm_free(neighbor_comm);

@@ -110,12 +110,12 @@ int init_communication(const void* sendbuf,
 int init_communicationw(const void* sendbuf,
         int n_sends,
         const int* send_procs,
-        const int* send_ptr, 
+        const MPI_Aint* send_ptr, 
         MPI_Datatype* sendtypes,
         void* recvbuf, 
         int n_recvs,
         const int* recv_procs,
-        const int* recv_ptr,
+        const MPI_Aint* recv_ptr,
         MPI_Datatype* recvtypes,
         int tag,
         MPI_Comm comm,
@@ -238,11 +238,11 @@ int MPIX_Neighbor_alltoallv_init(
 int MPIX_Neighbor_alltoallw_init(
         const void* sendbuf,
         const int sendcounts[],
-        const int sdispls[],
+        const MPI_Aint sdispls[],
         MPI_Datatype* sendtypes,
         void* recvbuf,
         const int recvcounts[],
-        const int rdispls[],
+        const MPI_Aint rdispls[],
         MPI_Datatype* recvtypes,
         MPIX_Comm* comm,
         MPI_Info info,
@@ -297,10 +297,11 @@ int MPIX_Neighbor_alltoallw_init(
 
 
 
+
 /*
 // Locality-Aware Extension to Persistent Neighbor Alltoallv
 // Needs global indices for each send and receive
-int MPIX_Neighbor_alltoallv_init(
+int MPIX_Neighbor_alltoallv_init_nap(
         const void* sendbuf,
         const int sendcounts[],
         const int sdispls[],
@@ -442,6 +443,5 @@ int MPIX_Neighbor_alltoallv_init(
     return 0;
 
 }
-    */
 
-
+*/
