@@ -38,7 +38,7 @@ int MPIX_Start(MPIX_Request* request)
 // 2. Start and wait for local_R
 // 3. Wait for local_L
 // TODO : Currently ignores the status!
-int MPIX_Wait(MPIX_Request* request, MPI_Status status)
+int MPIX_Wait(MPIX_Request* request, MPI_Status* status)
 {
     int ierr;
 

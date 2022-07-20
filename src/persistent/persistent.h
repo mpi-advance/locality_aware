@@ -34,7 +34,7 @@ int MPIX_Start(MPIX_Request* request);
 // 1. Wait for global
 // 2. Start and wait for local_R
 // 3. Wait for local_L
-int MPIX_Wait(MPIX_Request* request, MPI_Status status);
+int MPIX_Wait(MPIX_Request* request, MPI_Status* status);
 
 
 int MPIX_Request_free(MPIX_Request* request);
