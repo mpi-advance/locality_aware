@@ -122,8 +122,7 @@ int init_communicationw(const void* sendbuf,
         int* n_request_ptr,
         MPI_Request** request_ptr)
 {
-    int ierr, size;
-    MPI_Aint start;
+    int ierr, start, size;
     int send_size, recv_size;
 
     char* send_buffer = (char*) sendbuf;
@@ -135,7 +134,7 @@ int init_communicationw(const void* sendbuf,
 
     for (int i = 0; i < n_recvs; i++)
     {
-        start = recv_ptr[i];
+        start = (int)(recv_ptr[i]);
         size = (int)(recv_ptr[i+1] - start);
         MPI_Type_size(recvtypes[i], &recv_size);
 
@@ -150,7 +149,7 @@ int init_communicationw(const void* sendbuf,
 
     for (int i = 0; i < n_sends; i++)
     {
-        start = send_ptr[i];
+        start = (int)(send_ptr[i]);
         size = (int)(send_ptr[i+1] - start);
         MPI_Type_size(sendtypes[i], &send_size);
 
