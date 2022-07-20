@@ -124,8 +124,7 @@ int init_communicationw(const void* sendbuf,
         int* n_request_ptr,
         MPI_Request** request_ptr)
 {
-    int ierr, start, size, ctr;
-    int send_size, recv_size;
+    int ierr;
 
     char* send_buffer = (char*) sendbuf;
     char* recv_buffer = (char*) recvbuf;
@@ -134,38 +133,26 @@ int init_communicationw(const void* sendbuf,
     *n_request_ptr = n_recvs+n_sends;
     allocate_requests(*n_request_ptr, &requests);
 
-    ctr = 0;
     for (int i = 0; i < n_recvs; i++)
     {
-        start = (int)(recv_ptr[i]);
-        size = recvcounts[i];
-        MPI_Type_size(recvtypes[i], &recv_size);
-
-        ierr += MPI_Recv_init(&(recv_buffer[ctr]), 
-                size, 
+        ierr += MPI_Recv_init(&(recv_buffer[recv_ptr[i]]), 
+                recvcounts[i], 
                 recvtypes[i], 
                 recv_procs[i],
                 tag,
                 comm, 
                 &(requests[i]));
-        ctr += (size*recv_size);
     }
 
-    ctr = 0;
     for (int i = 0; i < n_sends; i++)
     {
-        start = (int)(send_ptr[i]);
-        size = sendcounts[i];
-        MPI_Type_size(sendtypes[i], &send_size);
-
-        ierr += MPI_Send_init(&(send_buffer[ctr]),
-                size,
+        ierr += MPI_Send_init(&(send_buffer[send_ptr[i]]),
+                sendcounts[i],
                 sendtypes[i],
                 send_procs[i],
                 tag,
                 comm,
                 &(requests[n_recvs+i]));
-        ctr += (size*send_size);
     }
 
     *request_ptr = requests;

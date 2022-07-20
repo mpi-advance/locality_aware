@@ -25,10 +25,18 @@ void test_matrix(const char* filename)
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_rank(MPI_COMM_WORLD, &num_procs);
 
+    int int_size;
+    MPI_Type_size(MPI_INT, &int_size);
+
     // Read suitesparse matrix
     ParMat<MPI_Aint> A;
     readParMatrix(filename, A);
     form_comm(A);
+
+    for (int i = 0; i < A.send_comm.n_msgs; i++)
+        A.send_comm.ptr[i+1] *= int_size;
+    for (int i = 0; i < A.recv_comm.n_msgs; i++)
+        A.recv_comm.ptr[i+1] *= int_size;
 
     std::vector<int> send_vals(A.on_proc.n_rows);
     std::iota(send_vals.begin(), send_vals.end(), 0);

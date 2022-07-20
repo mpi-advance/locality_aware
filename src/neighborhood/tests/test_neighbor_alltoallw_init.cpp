@@ -39,10 +39,17 @@ TEST(RandomCommTest, TestsInTests)
     setenv("PPN", "4", 1);
 
     // Initial communication info (standard)
+    int int_size;
+    MPI_Type_size(MPI_INT, &int_size);
+
     int local_size = 10000; // Number of variables each rank stores
     MPIX_Data<MPI_Aint> send_data;
     MPIX_Data<MPI_Aint> recv_data;
     form_initial_communicator(local_size, &send_data, &recv_data);
+    for (int i = 0; i < send_data.num_msgs; i++)
+        send_data.indptr[i+1] *= int_size;
+    for (int i = 0; i < recv_data.num_msgs; i++)
+        recv_data.indptr[i+1] *= int_size;
 
     // Test correctness of communication
     std::vector<int> std_recv_vals(recv_data.size_msgs);
@@ -89,6 +96,7 @@ TEST(RandomCommTest, TestsInTests)
         }
     } */
 
+
     if (rank == 0) 
     {
         printf("Rank 0 send:");
@@ -98,7 +106,7 @@ TEST(RandomCommTest, TestsInTests)
         {
             printf("Displs[%d] = %ld, ", i, send_data.indptr[i]);
             for (int j = send_data.indptr[i]; j < send_data.indptr[i] + send_data.counts[i]; j++)
-                printf("sendbuf[%d] = %d, ", j, alltoallv_send_vals[j]);
+                printf("sendbuf[%d] = %d, ", j, alltoallv_send_vals[j/int_size]);
         }
         printf("\n");
     }
@@ -113,7 +121,7 @@ TEST(RandomCommTest, TestsInTests)
         {
             printf("Displs[%d] = %ld, ", i, send_data.indptr[i]);
             for (int j = send_data.indptr[i]; j < send_data.indptr[i] + send_data.counts[i]; j++)
-                printf("sendbuf[%d] = %d, ", j, alltoallv_send_vals[j]);
+                printf("sendbuf[%d] = %d, ", j, alltoallv_send_vals[j/int_size]);
         }
         printf("\n");
     }
@@ -153,7 +161,7 @@ TEST(RandomCommTest, TestsInTests)
         {
             printf("Displs[%d] = %ld, ", i, recv_data.indptr[i]);
             for (int j = recv_data.indptr[i]; j < recv_data.indptr[i] + recv_data.counts[i]; j++)
-                printf("recvbuf[%d] = %d, ", j, std_recv_vals[j]);
+                printf("recvbuf[%d] = %d, ", j, std_recv_vals[j/int_size]);
         }
         printf("\n");
     }
