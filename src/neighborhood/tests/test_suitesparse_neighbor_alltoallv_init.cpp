@@ -22,7 +22,7 @@
 void test_matrix(const char* filename)
 {
     // Read suitesparse matrix
-    ParMat<int> A;
+    ParMat A;
     readParMatrix(filename, A);
     form_comm(A);
 

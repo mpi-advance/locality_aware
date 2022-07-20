@@ -23,9 +23,13 @@ void form_initial_communicator(int local_size, MPIX_Data<U>* send_data, MPIX_Dat
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
 
+    int max_n = 2;
+    int max_s = 2;
+    // int max_s = local_size;
+
     // Declare Variables
     srand(49352034 + rank);
-    int n_sends = (rand() % 10) + 1; // Between 1 and 10 msgs sent
+    int n_sends = (rand() % max_n) + 1; // Between 1 and max_n msgs sent
     int first_idx = local_size * rank;
     int last_idx = local_size * (rank + 1) - 1;
     int tag = 4935;
@@ -61,7 +65,7 @@ void form_initial_communicator(int local_size, MPIX_Data<U>* send_data, MPIX_Dat
     send_data->indptr[0] = 0;
     for (int i = 0; i < send_data->num_msgs; i++)
     {
-        size = (rand() % local_size) + 1;
+        size = (rand() % max_s) + 1;
         for (int j = 0; j < size; j++)
         {
             send_data->indices.push_back(ctr++);
