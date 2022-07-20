@@ -122,7 +122,8 @@ int init_communicationw(const void* sendbuf,
         int* n_request_ptr,
         MPI_Request** request_ptr)
 {
-    int ierr, start, size;
+    int ierr, size;
+    MPI_Aint size;
     int send_size, recv_size;
 
     char* send_buffer = (char*) sendbuf;
