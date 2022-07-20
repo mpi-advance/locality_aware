@@ -107,6 +107,67 @@ int init_communication(const void* sendbuf,
 }
 
 
+int init_communicationw(const void* sendbuf,
+        int n_sends,
+        const int* send_procs,
+        const int* send_ptr, 
+        MPI_Datatype* sendtypes,
+        void* recvbuf, 
+        int n_recvs,
+        const int* recv_procs,
+        const int* recv_ptr,
+        MPI_Datatype* recvtypes,
+        int tag,
+        MPI_Comm comm,
+        int* n_request_ptr,
+        MPI_Request** request_ptr)
+{
+    int ierr, start, size;
+    int send_size, recv_size;
+
+    char* send_buffer = (char*) sendbuf;
+    char* recv_buffer = (char*) recvbuf;
+
+    MPI_Request* requests;
+    *n_request_ptr = n_recvs+n_sends;
+    allocate_requests(*n_request_ptr, &requests);
+
+    for (int i = 0; i < n_recvs; i++)
+    {
+        start = recv_ptr[i];
+        size = recv_ptr[i+1] - start;
+        MPI_Type_size(recvtypes[i], &recv_size);
+
+        ierr += MPI_Recv_init(&(recv_buffer[start*recv_size]), 
+                size, 
+                recvtypes[i], 
+                recv_procs[i],
+                tag,
+                comm, 
+                &(requests[i]));
+    }
+
+    for (int i = 0; i < n_sends; i++)
+    {
+        start = send_ptr[i];
+        size = send_ptr[i+1] - start;
+        MPI_Type_size(sendtypes[i], &send_size);
+
+        ierr += MPI_Send_init(&(sendbuf[start*send_size]),
+                size,
+                sendtypes[i],
+                send_procs[i],
+                tag,
+                comm,
+                &(requests[n_recvs+i]));
+    }
+
+    *request_ptr = requests;
+
+    return ierr;
+}
+
+
 // Standard Persistent Neighbor Alltoallv
 // Extension takes array of requests instead of single request
 // 'requests' must be of size indegree+outdegree!
@@ -169,6 +230,71 @@ int MPIX_Neighbor_alltoallv_init(
 
     return ierr;
 }
+
+
+// Standard Persistent Neighbor Alltoallv
+// Extension takes array of requests instead of single request
+// 'requests' must be of size indegree+outdegree!
+int MPIX_Neighbor_alltoallw_init(
+        const void* sendbuf,
+        const int sendcounts[],
+        const int sdispls[],
+        MPI_Datatype* sendtypes,
+        void* recvbuf,
+        const int recvcounts[],
+        const int rdispls[],
+        MPI_Datatype* recvtypes,
+        MPIX_Comm* comm,
+        MPI_Info info,
+        MPIX_Request** request_ptr)
+{
+    int ierr = 0;
+    int tag = 349526;
+
+    int indegree, outdegree, weighted;
+    ierr += MPI_Dist_graph_neighbors_count(
+            comm->neighbor_comm, 
+            &indegree, 
+            &outdegree, 
+            &weighted);
+
+    int sources[indegree];
+    int sourceweights[indegree];
+    int destinations[outdegree];
+    int destweights[outdegree];
+    ierr += MPI_Dist_graph_neighbors(
+            comm->neighbor_comm, 
+            indegree, 
+            sources, 
+            sourceweights,
+            outdegree, 
+            destinations, 
+            destweights);
+
+    MPIX_Request* request;
+    init_request(&request);
+
+    init_communicationw(
+            sendbuf, 
+            outdegree, 
+            destinations,
+            sdispls,
+            sendtypes,
+            recvbuf,
+            indegree,
+            sources,
+            rdispls,
+            recvtypes,
+            tag,
+            comm->neighbor_comm,
+            &(request->global_n_msgs),
+            &(request->global_requests));
+
+    *request_ptr = request;
+
+    return ierr;
+}
+
 
 
 /*

@@ -127,15 +127,11 @@ void init_alltoallv_locality(const int* send_sizes,
                 }
             }
         }
-    }
-
-    for (int i = 0; i < PPN; i++)
-    {
-        ctr = num_msgs;
-        if (i < extra) ctr++;
-
+        locality->local_S_comm->send_data->indptr[i+1] = 
+            locality->local_S_comm->send_data->size_msgs;
         MPI_Isend(&(sendbuf[idx]), ctr, MPI_INT, i, sendtag, local_comm, &(requests[i]));
     }
+
     std::vector<int> global_sizes(local_num_msgs*PPN);
     for (int i = 0; i < PPN; i++)
     {
@@ -157,6 +153,7 @@ void init_alltoallv_locality(const int* send_sizes,
         node = node_send_order[i*PPN + local_rank];
         for (int j = 0; j < PPN; j++)
         {
+            
 
 
 
