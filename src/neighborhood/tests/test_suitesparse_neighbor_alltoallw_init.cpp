@@ -70,7 +70,7 @@ void test_matrix(const char* filename)
             A.send_comm.counts.data(),
             A.send_comm.ptr.data(), 
             sendtypes.data(),
-            std_recv_vals.data(), 
+            neigh_recv_vals.data(), 
             A.recv_comm.counts.data(),
             A.recv_comm.ptr.data(), 
             recvtypes.data(),
