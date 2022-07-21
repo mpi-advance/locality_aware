@@ -30,6 +30,8 @@ int MPIX_Dist_graph_create_adjacent(MPI_Comm comm_old,
             &(comm_dist_graph->neighbor_comm));
 
     *comm_dist_graph_ptr = comm_dist_graph;
+
+    return 0;
 }
 
 

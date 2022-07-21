@@ -53,6 +53,8 @@ int MPIX_Comm_init(MPIX_Comm** comm_dist_graph_ptr, MPI_Comm global_comm)
     comm_dist_graph->rank_node = get_node(comm_dist_graph, rank);
     
     *comm_dist_graph_ptr = comm_dist_graph;
+
+    return 0;
 }
 
 int MPIX_Comm_free(MPIX_Comm* comm_dist_graph)
@@ -61,6 +63,8 @@ int MPIX_Comm_free(MPIX_Comm* comm_dist_graph)
     MPI_Comm_free(&(comm_dist_graph->local_comm));
 
     free(comm_dist_graph);
+
+    return 0;
 }
 
 

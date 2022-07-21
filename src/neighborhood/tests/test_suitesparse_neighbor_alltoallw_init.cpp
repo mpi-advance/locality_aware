@@ -26,17 +26,11 @@ void test_matrix(const char* filename)
     MPI_Comm_rank(MPI_COMM_WORLD, &num_procs);
 
     int int_size;
-    MPI_Type_size(MPI_INT, &int_size);
 
     // Read suitesparse matrix
     ParMat<MPI_Aint> A;
     readParMatrix(filename, A);
     form_comm(A);
-
-    for (int i = 0; i < A.send_comm.n_msgs; i++)
-        A.send_comm.ptr[i+1] *= int_size;
-    for (int i = 0; i < A.recv_comm.n_msgs; i++)
-        A.recv_comm.ptr[i+1] *= int_size;
 
     std::vector<int> send_vals(A.on_proc.n_rows);
     std::iota(send_vals.begin(), send_vals.end(), 0);
@@ -48,15 +42,21 @@ void test_matrix(const char* filename)
     std::vector<int> neigh_recv_vals(A.recv_comm.size_msgs);
     std::vector<int> new_recv_vals(A.recv_comm.size_msgs);
 
-    //communicate(A, send_vals, std_recv_vals, MPI_INT);
+    communicate(A, send_vals, std_recv_vals, MPI_INT);
+
+
+    int int_size = sizeof(int);
+    for (int i = 0; i < A.send_comm.n_msgs; i++)
+        A.send_comm.ptr[i+1] *= int_size;
+    for (int i = 0; i < A.recv_comm.n_msgs; i++)
+        A.recv_comm.ptr[i+1] *= int_size;
+
 
     std::vector<MPI_Datatype> sendtypes(A.send_comm.n_msgs, MPI_INT);
     std::vector<MPI_Datatype> recvtypes(A.recv_comm.n_msgs, MPI_INT);
 
-    MPI_Comm std_comm;
     MPI_Status status;
-    MPIX_Comm* neighbor_comm;
-    MPIX_Request* neighbor_request;
+    MPI_Comm std_comm;
 
     MPI_Dist_graph_create_adjacent(MPI_COMM_WORLD,
             A.recv_comm.n_msgs,
@@ -81,11 +81,15 @@ void test_matrix(const char* filename)
     // 3. Compare std_recv_vals and nap_recv_vals
     for (int i = 0; i < A.recv_comm.size_msgs; i++)
     {
-//        ASSERT_EQ(std_recv_vals[i], neigh_recv_vals[i]);
+        ASSERT_EQ(std_recv_vals[i], neigh_recv_vals[i]);
     }
+    MPI_Comm_free(&std_comm);
     
 
+    /*
     // 2. Node-Aware Communication
+    MPIX_Comm* neighbor_comm;
+    MPIX_Request* neighbor_request;
     MPIX_Dist_graph_create_adjacent(MPI_COMM_WORLD,
             A.recv_comm.n_msgs,
             A.recv_comm.procs.data(), 
@@ -116,10 +120,10 @@ void test_matrix(const char* filename)
     {
         ASSERT_EQ(std_recv_vals[i], new_recv_vals[i]);
     }
-
     MPIX_Request_free(neighbor_request);
     MPIX_Comm_free(neighbor_comm);
-    MPI_Comm_free(&std_comm);
+    */
+
 }
 
 int main(int argc, char** argv)

@@ -219,4 +219,6 @@ int PMPI_Alltoall(const void* sendbuf,
     free(contig_buf);
     free(local_requests);
     free(nonlocal_requests);
+
+    return 0;
 }
