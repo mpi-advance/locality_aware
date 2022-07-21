@@ -25,8 +25,6 @@ void test_matrix(const char* filename)
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_rank(MPI_COMM_WORLD, &num_procs);
 
-    int int_size;
-
     // Read suitesparse matrix
     ParMat<MPI_Aint> A;
     readParMatrix(filename, A);
