@@ -39,13 +39,11 @@ TEST(RandomCommTest, TestsInTests)
     setenv("PPN", "4", 1);
 
     // Initial communication info (standard)
-    int int_size;
-    MPI_Type_size(MPI_INT, &int_size);
-
     int local_size = 10000; // Number of variables each rank stores
     MPIX_Data<MPI_Aint> send_data;
     MPIX_Data<MPI_Aint> recv_data;
     form_initial_communicator(local_size, &send_data, &recv_data);
+    int int_size = sizeof(int);
     for (int i = 0; i < send_data.num_msgs; i++)
         send_data.indptr[i+1] *= int_size;
     for (int i = 0; i < recv_data.num_msgs; i++)
@@ -83,52 +81,6 @@ TEST(RandomCommTest, TestsInTests)
             0, 
             &std_comm);
 
-    /*printf("Rank %d sending %d msgs\n", rank, send_data.num_msgs);
-    for (int i = 0; i < send_data.num_msgs; i++)
-    {
-        printf("Rank %d sending %d (from %ld to %ld) to %d\n",
-                rank, send_data.counts[i],
-                send_data.indptr[i], send_data.indptr[i+1],
-                send_data.procs[i]);
-        for (MPI_Aint j = send_data.indptr[i]; j < send_data.indptr[i+1]; j++)
-        {
-            printf("Rank %d sending val[%ld] = %d\n", rank, j, alltoallv_send_vals[j]);
-        }
-    } */
-
-
-    if (rank == 0) 
-    {
-        printf("Rank 0 send:");
-        for (int i = 0; i < send_data.num_msgs; i++)
-            printf("Counts[%d] = %d, ", i, send_data.counts[i]);
-        for (int i = 0; i < send_data.num_msgs; i++)
-        {
-            printf("Displs[%d] = %ld, ", i, send_data.indptr[i]);
-            for (int j = send_data.indptr[i]; j < send_data.indptr[i] + send_data.counts[i]; j++)
-                printf("sendbuf[%d] = %d, ", j, alltoallv_send_vals[j/int_size]);
-        }
-        printf("\n");
-    }
-
-
-    if (rank == 1) 
-    {
-        printf("Rank 1 send:");
-        for (int i = 0; i < send_data.num_msgs; i++)
-            printf("Counts[%d] = %d, ", i, send_data.counts[i]);
-        for (int i = 0; i < send_data.num_msgs; i++)
-        {
-            printf("Displs[%d] = %ld, ", i, send_data.indptr[i]);
-            for (int j = send_data.indptr[i]; j < send_data.indptr[i] + send_data.counts[i]; j++)
-                printf("sendbuf[%d] = %d, ", j, alltoallv_send_vals[j/int_size]);
-        }
-        printf("\n");
-    }
-
-
-
-
     MPI_Neighbor_alltoallw(alltoallv_send_vals.data(), 
             send_data.counts.data(),
             send_data.indptr.data(), 
@@ -139,32 +91,6 @@ TEST(RandomCommTest, TestsInTests)
             recvtypes.data(),
             std_comm);
 
-
-    /*printf("Rank %d recvd %d msgs\n", rank, recv_data.num_msgs);
-    for (int i = 0; i < recv_data.num_msgs; i++)
-    {
-        printf("Rank %d recvd %d (from %ld to %ld) from %d\n",
-                rank, recv_data.counts[i],
-                recv_data.indptr[i], recv_data.indptr[i+1],
-                recv_data.procs[i]);
-        for (MPI_Aint j = recv_data.indptr[i]; j < recv_data.indptr[i+1]; j++)
-        {
-            printf("Rank %d recvd val[%ld] = %d\n", rank, j, std_recv_vals[j]);
-        }
-    } */
-    if (rank == 3)
-    {
-        printf("Rank 3 recv: ");
-        for (int i = 0; i < recv_data.num_msgs; i++)
-            printf("Counts[%d] = %d, ", i, recv_data.counts[i]);
-        for (int i = 0; i < recv_data.num_msgs; i++)
-        {
-            printf("Displs[%d] = %ld, ", i, recv_data.indptr[i]);
-            for (int j = recv_data.indptr[i]; j < recv_data.indptr[i] + recv_data.counts[i]; j++)
-                printf("recvbuf[%d] = %d, ", j, std_recv_vals[j/int_size]);
-        }
-        printf("\n");
-    }
 
     // 2. Node-Aware Communication
     MPIX_Dist_graph_create_adjacent(MPI_COMM_WORLD,

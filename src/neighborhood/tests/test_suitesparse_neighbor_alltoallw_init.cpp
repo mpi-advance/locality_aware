@@ -48,7 +48,7 @@ void test_matrix(const char* filename)
     std::vector<int> neigh_recv_vals(A.recv_comm.size_msgs);
     std::vector<int> new_recv_vals(A.recv_comm.size_msgs);
 
-    communicate(A, send_vals, std_recv_vals, MPI_INT);
+    //communicate(A, send_vals, std_recv_vals, MPI_INT);
 
     std::vector<MPI_Datatype> sendtypes(A.send_comm.n_msgs, MPI_INT);
     std::vector<MPI_Datatype> recvtypes(A.recv_comm.n_msgs, MPI_INT);
@@ -72,7 +72,7 @@ void test_matrix(const char* filename)
             A.send_comm.counts.data(),
             A.send_comm.ptr.data(), 
             sendtypes.data(),
-            neigh_recv_vals.data(), 
+            std_recv_vals.data(), 
             A.recv_comm.counts.data(),
             A.recv_comm.ptr.data(), 
             recvtypes.data(),

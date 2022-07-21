@@ -133,9 +133,11 @@ int init_communicationw(const void* sendbuf,
     *n_request_ptr = n_recvs+n_sends;
     allocate_requests(*n_request_ptr, &requests);
 
+    MPI_Aint lb, extent;
     for (int i = 0; i < n_recvs; i++)
     {
-        ierr += MPI_Recv_init(&(recv_buffer[recv_ptr[i]]), 
+        MPI_Type_get_extent(recvtypes[i], &lb, &extent);
+        ierr += MPI_Recv_init(recvbuf + recv_ptr[i] * extent, 
                 recvcounts[i], 
                 recvtypes[i], 
                 recv_procs[i],
@@ -146,7 +148,8 @@ int init_communicationw(const void* sendbuf,
 
     for (int i = 0; i < n_sends; i++)
     {
-        ierr += MPI_Send_init(&(send_buffer[send_ptr[i]]),
+        MPI_Type_get_extent(sendtypes[i], &lb, &extent);
+        ierr += MPI_Send_init(sendbuf + send_ptr[i] * extent,
                 sendcounts[i],
                 sendtypes[i],
                 send_procs[i],
@@ -267,23 +270,36 @@ int MPIX_Neighbor_alltoallw_init(
     MPIX_Request* request;
     init_request(&request);
 
-    init_communicationw(
-            sendbuf, 
-            outdegree, 
-            destinations,
-            sendcounts,
-            sdispls,
-            sendtypes,
-            recvbuf,
-            indegree,
-            sources,
-            recvcounts,
-            rdispls,
-            recvtypes,
-            tag,
-            comm->neighbor_comm,
-            &(request->global_n_msgs),
-            &(request->global_requests));
+    request->global_n_msgs = indegree+outdegree;
+    allocate_requests(request->global_n_msgs, &(request->global_requests));
+
+    const char* send_buffer = (const char*)(sendbuf);
+    char* recv_buffer = (char*)(recvbuf);
+    const int* send_buffer_int = (const int*)(sendbuf);
+    int* recv_buffer_int = (int*)(recvbuf);
+
+    for (int i = 0; i < outdegree; i++)
+    {
+        ierr += MPI_Send_init(&(send_buffer[sdispls[i]]),
+                sendcounts[i],
+                sendtypes[i],
+                destinations[i],
+                tag,
+                comm->neighbor_comm,
+                &(request->global_requests[indegree+i]));
+
+    }
+    for (int i = 0; i < indegree; i++)
+    {
+        ierr += MPI_Recv_init(&(recv_buffer[rdispls[i]]),
+                recvcounts[i], 
+                recvtypes[i], 
+                sources[i],
+                tag,
+                comm->neighbor_comm, 
+                &(request->global_requests[i]));
+
+    }
 
     *request_ptr = request;
 
