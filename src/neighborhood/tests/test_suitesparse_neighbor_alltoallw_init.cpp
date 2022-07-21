@@ -84,7 +84,6 @@ void test_matrix(const char* filename)
     MPI_Comm_free(&std_comm);
     
 
-    /*
     // 2. Node-Aware Communication
     MPIX_Comm* neighbor_comm;
     MPIX_Request* neighbor_request;
@@ -120,7 +119,6 @@ void test_matrix(const char* filename)
     }
     MPIX_Request_free(neighbor_request);
     MPIX_Comm_free(neighbor_comm);
-    */
 
 }
 
