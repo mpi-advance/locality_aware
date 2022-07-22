@@ -18,29 +18,31 @@ if (MPI_VERSION EQUAL 3)
 endif()
 
 #/////////////////////////// star information of google test ///////////////////////////////
-set(GOOGLETEST_ROOT external/googletest CACHE STRING "Google Test source root")
-#MESSAGE( STATUS "GOOGLETEST_ROOT: "    ${GOOGLETEST_ROOT} )
+if(ENABLE_UNIT_TESTS)
+    set(GOOGLETEST_ROOT external/googletest CACHE STRING "Google Test source root")
+    #MESSAGE( STATUS "GOOGLETEST_ROOT: "    ${GOOGLETEST_ROOT} )
 
-include_directories(
-    ${PROJECT_SOURCE_DIR}/${GOOGLETEST_ROOT}
-    ${PROJECT_SOURCE_DIR}/${GOOGLETEST_ROOT}/include
-    )
+    include_directories(
+        ${PROJECT_SOURCE_DIR}/${GOOGLETEST_ROOT}
+        ${PROJECT_SOURCE_DIR}/${GOOGLETEST_ROOT}/include
+        )
 
-#MESSAGE( STATUS "PROJECT_SOURCE_DIR: "    ${PROJECT_SOURCE_DIR} )
+    #MESSAGE( STATUS "PROJECT_SOURCE_DIR: "    ${PROJECT_SOURCE_DIR} )
 
-set(GOOGLETEST_SOURCES
-    ${PROJECT_SOURCE_DIR}/${GOOGLETEST_ROOT}/src/gtest-all.cc
-    ${PROJECT_SOURCE_DIR}/${GOOGLETEST_ROOT}/src/gtest_main.cc
-    )
-
-
-foreach(_source ${GOOGLETEST_SOURCES})
-    set_source_files_properties(${_source} PROPERTIES GENERATED 1)
-    #MESSAGE( STATUS "_source: "                 ${_source} )
-endforeach()
+    set(GOOGLETEST_SOURCES
+        ${PROJECT_SOURCE_DIR}/${GOOGLETEST_ROOT}/src/gtest-all.cc
+        ${PROJECT_SOURCE_DIR}/${GOOGLETEST_ROOT}/src/gtest_main.cc
+        )
 
 
-add_library(googletest STATIC ${GOOGLETEST_SOURCES})
+    foreach(_source ${GOOGLETEST_SOURCES})
+        set_source_files_properties(${_source} PROPERTIES GENERATED 1)
+        #MESSAGE( STATUS "_source: "                 ${_source} )
+    endforeach()
+
+
+    add_library(googletest STATIC ${GOOGLETEST_SOURCES})
+endif()
 #///////////////////////////// end information of google test //////////////////////////////
 
 include_directories(".")
