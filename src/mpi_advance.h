@@ -9,6 +9,7 @@
 #include "persistent/persistent.h"
 
 #include "collective/collective.h"
+#include "collective/allgather.h"
 
 #include "neighborhood/dist_graph.h"
 #include "neighborhood/neighbor.h"

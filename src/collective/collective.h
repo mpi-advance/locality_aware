@@ -4,20 +4,28 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <mpi.h>
+//#include <mpt.h>
 #include "utils.h"
+#include "allgather.h"
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif
 
-int PMPI_Alltoallv(const void* sendbuf,
-        const int* sendcounts,
-        const int* sdispls,
+int MPIX_Alltoall(const void* sendbuf,
+        const int sendcount,
         MPI_Datatype sendtype,
         void* recvbuf,
-        const int* recvcounts,
-        const int* rdispls,
+        const int recvcount,
+        MPI_Datatype recvtype,
+        MPI_Comm comm);
+
+int MPIX_Allgather(const void* sendbuf,
+        int sendcount,
+        MPI_Datatype sendtype,
+        void* recvbuf,
+        int recvcount,
         MPI_Datatype recvtype,
         MPI_Comm comm);
 

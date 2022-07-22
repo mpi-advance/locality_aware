@@ -2,8 +2,21 @@
 
 // TODO : Add Locality-Aware Bruck Alltoall Algorithm!
 
-
-int PMPI_Alltoall(const void* sendbuf,
+/**************************************************
+ * Locality-Aware Point-to-Point Alltoall
+ *  - Aggregates messages locally to reduce 
+ *      non-local communciation
+ *  - First redistributes on-node so that each
+ *      process holds all data for a subset
+ *      of other nodes
+ *  - Then, performs inter-node communication
+ *      during which each process exchanges
+ *      data with their assigned subset of nodes
+ *  - Finally, redistribute received data
+ *      on-node so that each process holds
+ *      the correct final data
+ *************************************************/
+int MPIX_Alltoall(const void* sendbuf,
         const int sendcount,
         MPI_Datatype sendtype,
         void* recvbuf,
@@ -98,9 +111,9 @@ int PMPI_Alltoall(const void* sendbuf,
         }
         if (local_num_msgs)
         {
-            MPI_Irecv(&(tmpbuf[i*local_num_msgs*recv_msg_size*recv_size]), 
-                    local_num_msgs*recv_msg_size, 
-                    recvtype,
+            MPI_Irecv(&(tmpbuf[i*local_num_msgs*send_msg_size*send_size]), 
+                    local_num_msgs*send_msg_size, 
+                    sendtype,
                     i, 
                     tag, 
                     local_comm, 
@@ -124,25 +137,37 @@ int PMPI_Alltoall(const void* sendbuf,
         proc = node*PPN + local_idx;
         for (int j = 0; j < PPN; j++)
         {
-            for (int k = 0; k < recv_msg_size; k++)
+            for (int k = 0; k < send_msg_size; k++)
             {
-                for (int l = 0; l < recv_size; l++)
+                for (int l = 0; l < send_size; l++)
                 {
-                    contig_buf[next_ctr*recv_size+l] = tmpbuf[(i*recv_msg_size +
-                            j*recv_msg_size*local_num_msgs + k)*recv_size + l];
+                    contig_buf[next_ctr*send_size+l] = tmpbuf[(i*send_msg_size +
+                            j*send_msg_size*local_num_msgs + k)*send_size + l];
                 }
                 next_ctr++;
             }
         }
         if (next_ctr - ctr)
         {
-            MPI_Isend(&(contig_buf[ctr*recv_size]), 
+            MPI_Isend(&(contig_buf[ctr*send_size]), 
                     next_ctr - ctr,
-                    recvtype, 
+                    sendtype, 
                     proc, 
                     tag, 
                     comm, 
                     &(nonlocal_requests[n_msgs++]));
+        }
+        ctr = next_ctr;
+    }
+
+    ctr = 0;
+    for (int i = 0; i < local_num_msgs; i++)
+    {
+        node = first_msg + i;
+        proc = node*PPN + local_idx;
+        next_ctr = ctr + PPN*send_msg_size;
+        if (next_ctr - ctr)
+        {
             MPI_Irecv(&(tmpbuf[ctr*recv_size]), 
                     next_ctr - ctr, 
                     recvtype, 

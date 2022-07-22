@@ -17,6 +17,7 @@
 
 int main(int argc, char** argv)
 {
+#define LOCAL_COMM_PPN4
     MPI_Init(&argc, &argv);
     ::testing::InitGoogleTest(&argc, argv);
     int temp=RUN_ALL_TESTS();
@@ -31,7 +32,7 @@ TEST(RandomCommTest, TestsInTests)
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
 
-    // Test Integer Allgathers
+    // Test Integer Alltoall
     int max_i = 10;
     int max_s = pow(2, max_i);
     srand(time(NULL));
@@ -49,7 +50,7 @@ TEST(RandomCommTest, TestsInTests)
             for (int j = 0; j < s; j++)
                 local_data[i*s + j] = rank*10000 + i*100 + j;
 
-        // Standard Allgather
+        // Standard Alltoall
         MPI_Alltoall(local_data.data(), 
                 s,
                 MPI_INT, 
@@ -59,7 +60,7 @@ TEST(RandomCommTest, TestsInTests)
                 MPI_COMM_WORLD);
 
         // Locality-Aware P2P Alltoall 
-        PMPI_Alltoall(local_data.data(), 
+        MPIX_Alltoall(local_data.data(), 
                 s, 
                 MPI_INT,
                 loc_p2p_alltoall.data(), 

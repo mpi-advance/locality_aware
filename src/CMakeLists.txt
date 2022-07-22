@@ -6,6 +6,7 @@ add_subdirectory(collective)
 add_subdirectory(neighborhood)
 
 add_library(mpi_advance STATIC
+    utils.h utils.cpp
     ${locality_SOURCES} ${locality_HEADERS}
     ${collective_SOURCES} ${collective_HEADERS}
     ${persistent_SOURCES} ${persistent_HEADERS}
