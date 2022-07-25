@@ -107,6 +107,8 @@ int allgather_p2p(const void *sendbuf, int sendcount, MPI_Datatype sendtype,
 
     MPI_Waitall(2*num_procs, requests, MPI_STATUSES_IGNORE);
     free(requests);
+
+    return 0;
 }
 
 int allgather_ring(const void *sendbuf, int sendcount, MPI_Datatype sendtype,
@@ -154,6 +156,8 @@ int allgather_ring(const void *sendbuf, int sendcount, MPI_Datatype sendtype,
         next_pos += recvcount;
         if (next_pos >= num_procs*recvcount) next_pos = 0;
     }
+
+    return 0;
 }
 
 
@@ -242,6 +246,8 @@ int allgather_loc_p2p(const void *sendbuf, int sendcount, MPI_Datatype sendtype,
     free(local_requests);
     if (num_msgs)
         free(nonlocal_requests);
+
+    return 0;
 }
 
 
@@ -306,6 +312,8 @@ int allgather_loc_bruck(const void *sendbuf, int sendcount, MPI_Datatype sendtyp
         rotate(recv_buffer, 
                 (num_nodes-local_node)*PPN*recvcount*recv_size,
                 num_procs*recvcount*recv_size);
+
+    return 0;
 }
 
 
@@ -400,8 +408,8 @@ int allgather_loc_ring(const void *sendbuf, int sendcount, MPI_Datatype sendtype
     int step_size = PPN*recvcount;
     int node_pos = local_node*PPN*recvcount;
 
-    char* tmpbuf0 = (int*)malloc(recvcount*sizeof(int));
-    char* tmpbuf1 = (int*)malloc(recvcount*sizeof(int));
+    char* tmpbuf0 = (char*)malloc(recvcount*recv_size*sizeof(char));
+    char* tmpbuf1 = (char*)malloc(recvcount*recv_size*sizeof(char));
     char* sendbuf_tmp = tmpbuf0;
     char* recvbuf_tmp = tmpbuf1;
     char* tmp_ptr;
@@ -437,5 +445,7 @@ int allgather_loc_ring(const void *sendbuf, int sendcount, MPI_Datatype sendtype
 
     free(tmpbuf0);
     free(tmpbuf1);
+
+    return 0;
 
 }

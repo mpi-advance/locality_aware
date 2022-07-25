@@ -9,7 +9,6 @@ set(collective_HEADERS
 set(collective_SOURCES
     collective/alltoall.c
     collective/allgather.c
-    collective/allgather.cpp
     PARENT_SCOPE
     )
 
