@@ -1,6 +1,7 @@
 #include "collective.h"
 
 // TODO : Add Locality-Aware Bruck Alltoall Algorithm!
+// TODO : Change to PMPI_Alltoall and test with profiling library!
 
 /**************************************************
  * Locality-Aware Point-to-Point Alltoall
@@ -23,17 +24,18 @@ int MPIX_Alltoall(const void* sendbuf,
         const int recvcount,
         MPI_Datatype recvtype,
         MPI_Comm comm)
-{
+{    
+    MPIX_Comm* mpi_comm;
+    MPIX_Comm_init(&mpi_comm, comm);
+
     int rank, num_procs;
-    MPI_Comm_rank(comm, &rank);
-    MPI_Comm_size(comm, &num_procs);
+    MPI_Comm_rank(mpi_comm->global_comm, &rank);
+    MPI_Comm_size(mpi_comm->global_comm, &num_procs);
 
     // Create shared-memory (local) communicator
-    MPI_Comm local_comm;
     int local_rank, PPN;
-    MPI_Comm_split_type(comm, MPI_COMM_TYPE_SHARED, rank, MPI_INFO_NULL, &local_comm);
-    MPI_Comm_rank(local_comm, &local_rank);
-    MPI_Comm_size(local_comm, &PPN);
+    MPI_Comm_rank(mpi_comm->local_comm, &local_rank);
+    MPI_Comm_size(mpi_comm->local_comm, &PPN);
 
     // Calculate shared-memory (local) variables
     int num_nodes = num_procs / PPN;
@@ -106,7 +108,7 @@ int MPIX_Alltoall(const void* sendbuf,
                     sendtype, 
                     i, 
                     tag, 
-                    local_comm, 
+                    mpi_comm->local_comm, 
                     &(local_requests[n_msgs++]));
         }
         if (local_num_msgs)
@@ -116,7 +118,7 @@ int MPIX_Alltoall(const void* sendbuf,
                     sendtype,
                     i, 
                     tag, 
-                    local_comm, 
+                    mpi_comm->local_comm, 
                     &(local_requests[n_msgs++]));
         }
     }
@@ -154,7 +156,7 @@ int MPIX_Alltoall(const void* sendbuf,
                     sendtype, 
                     proc, 
                     tag, 
-                    comm, 
+                    mpi_comm->global_comm, 
                     &(nonlocal_requests[n_msgs++]));
         }
         ctr = next_ctr;
@@ -173,7 +175,7 @@ int MPIX_Alltoall(const void* sendbuf,
                     recvtype, 
                     proc, 
                     tag,
-                    comm, 
+                    mpi_comm->global_comm, 
                     &(nonlocal_requests[n_msgs++]));
         }
         ctr = next_ctr;
@@ -216,7 +218,7 @@ int MPIX_Alltoall(const void* sendbuf,
                     recvtype,
                     i,
                     local_tag,
-                    local_comm,
+                    mpi_comm->local_comm,
                     &(local_requests[n_msgs++]));
         }
 
@@ -227,7 +229,7 @@ int MPIX_Alltoall(const void* sendbuf,
                     recvtype, 
                     i, 
                     local_tag, 
-                    local_comm, 
+                    mpi_comm->local_comm, 
                     &(local_requests[n_msgs++]));
         }
         ctr = next_ctr;
@@ -237,13 +239,13 @@ int MPIX_Alltoall(const void* sendbuf,
             MPI_STATUSES_IGNORE);
             
 
-    MPI_Comm_free(&local_comm);
-
     free(local_send_displs);
     free(tmpbuf);
     free(contig_buf);
     free(local_requests);
     free(nonlocal_requests);
+
+    MPIX_Comm_free(mpi_comm);
 
     return 0;
 }
