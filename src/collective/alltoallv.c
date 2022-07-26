@@ -135,60 +135,45 @@ int MPIX_Alltoallv(const void* sendbuf,
             MPI_INT, 
             mpi_comm->local_comm);
 
-    for (int i = 0; i < num_nodes; i++)
-    {
-        size = 0;
-        for (int j = 0; j < PPN; j++)
-        {
-            size += recvcounts[j];
-        }
-        node_sizes[i] = size;
-    }
-    int* local_R_send_node_sizes = (int*)malloc(local_num_msgs*PPN*sizeof(int));
-    MPI_Alltoallv(node_sizes,
-            local_recv_sizes,
-            local_recv_displs,
 
 
-    int* n_sends = (int*)malloc(num_procs*sizeof(int));
-    int* n_recvs = (int*)malloc(local_num_msgs*PPN*sizeof(int));
-    for (int i = 0; i < PPN; i++)
-    {
-        start = local_send_displs[i];
-        end = local_send_displs[i+1];
-        if (end - start)
-        {
-            MPI_Isend(&(sendcounts[start]),
-                    (end - start)*PPN, 
-                    MPI_INT, 
-                    i, 
-                    info_tag,
-                    mpi_comm->local_comm,
-                    &(local_requests[n_msgs++]));
-        }
-        if (local_num_msgs)
-        {
-            
-        }
+
     n_msgs = 0;
+    ctr = 0;
     for (int i = 0; i < PPN; i++)
     {
         start = local_send_displs[i];
         end = local_send_displs[i+1];
-        if (end - start)
+        size = 0;
+        for (int node = start; node < end; node++)
         {
-            MPI_Isend(&(send_buffer[start*send_msg_size*send_size]), 
-                    (end - start)*send_msg_size, 
+            size += node_sizes[node];
+        }
+        if (size)
+        {
+            MPI_Isend(&(send_buffer[ctr*send_size]), 
+                    size, 
                     sendtype, 
                     i, 
                     tag, 
                     mpi_comm->local_comm, 
                     &(local_requests[n_msgs++]));
         }
+        ctr += size;
+    }
+
+    ctr = 0;
+    for (int i = 0; i < PPN; i++)
+    {
+        size = 0;
+        for (int j = 0; j < local_num_msgs; j++)
+        {
+            size += local_S_recv_node_sizes[j];
+        }
         if (local_num_msgs)
         {
-            MPI_Irecv(&(tmpbuf[i*local_num_msgs*send_msg_size*send_size]), 
-                    local_num_msgs*send_msg_size, 
+            MPI_Irecv(&(tmpbuf[ctr*send_size]), 
+                    size, 
                     sendtype,
                     i, 
                     tag, 
@@ -199,11 +184,33 @@ int MPIX_Alltoallv(const void* sendbuf,
     if (n_msgs)
         MPI_Waitall(n_msgs, local_requests, MPI_STATUSES_IGNORE);
 
+
+    free(node_sizes);
+    free(local_send_sizes);
+    free(local_recv_sizes);
+    free(local_recv_displs);
+
      /************************************************
      * Step 2 : non-local Alltoall
      *      Local rank x exchanges data with 
      *      local rank x on nodes x, PPN+x, 2PPN+x, etc
      ************************************************/
+    int* local_S_recv_displs = (int*)malloc((PPN+1)*sizeof(int));
+    local_S_recv_displs[0] = 0;
+    for (int i = 0; i < PPN; i++)
+    {
+        size = 0;
+        for (int j = 0; j < local_num_msgs; j++)
+        {
+            size += local_S_recv_node_sizes[i*local_num_msgs+j];
+        }
+        local_S_recv_displs[i+1] = local_S_recv_displs[i] + size;
+    }
+
+        
+    free(local_S_recv_node_sizes);
+
+    // update local_R_recv_displs as stepping through tmpbuf...
     ctr = 0;
     next_ctr = ctr;
     n_msgs = 0;
@@ -213,15 +220,17 @@ int MPIX_Alltoallv(const void* sendbuf,
         proc = node*PPN + local_idx;
         for (int j = 0; j < PPN; j++)
         {
-            for (int k = 0; k < send_msg_size; k++)
+            start = local_S_recv_displs[j];
+            size = local_S_recv_node_sizes[j*PPN+i];
+            for (int k = 0; k < size; k++)
             {
                 for (int l = 0; l < send_size; l++)
                 {
-                    contig_buf[next_ctr*send_size+l] = tmpbuf[(i*send_msg_size +
-                            j*send_msg_size*local_num_msgs + k)*send_size + l];
+                    contig_buf[next_ctr*send_size+l] = tmpbuf[(start+k)*send_size + l];
                 }
                 next_ctr++;
             }
+            local_S_recv_displs[j] = start + size;
         }
         if (next_ctr - ctr)
         {
@@ -236,23 +245,64 @@ int MPIX_Alltoallv(const void* sendbuf,
         ctr = next_ctr;
     }
 
+
+
+
+
+    // Need to find sizes (opposite of send side performed above!)
+    for (int i = 0; i < num_nodes; i++)
+    {
+        size = 0;
+        for (int j = 0; j < PPN; j++)
+        {
+            size += recvcounts[j];
+        }
+        node_sizes[i] = size;
+    }
+    int* local_R_send_node_sizes = (int*)malloc(local_num_msgs*PPN*sizeof(int));
+    MPI_Alltoallv(node_sizes,
+            local_send_sizes,
+            local_send_displs,
+            MPI_INT,
+            local_S_recv_node_sizes, 
+            local_recv_sizes,
+            local_recv_displs,
+            MPI_INT, 
+            mpi_comm->local_comm);
+
+    int* local_R_send_displs = (int*)malloc((PPN+1)*sizeof(int));
+    local_R_send_displs[0] = 0;
+    for (int i = 0; i < local_num_msgs; i++)
+    {
+        size = 0;
+        for (int j = 0; j < PPN; j++)
+        {
+            size += local_R_send_node_sizes[i*PPN+j];
+        }
+        local_R_send_displs[i+1] = local_R_send_displs[i] + size;
+    }
+
+
+
+
     ctr = 0;
     for (int i = 0; i < local_num_msgs; i++)
     {
         node = first_msg + i;
         proc = node*PPN + local_idx;
-        next_ctr = ctr + PPN*send_msg_size;
-        if (next_ctr - ctr)
+        start = local_R_send_displs[i];
+        end = local_R_send_displs[i+1];
+        if (end - start)
         {
             MPI_Irecv(&(tmpbuf[ctr*recv_size]), 
-                    next_ctr - ctr, 
+                    end - start, 
                     recvtype, 
                     proc, 
                     tag,
                     mpi_comm->global_comm, 
                     &(nonlocal_requests[n_msgs++]));
         }
-        ctr = next_ctr;
+        ctr += (end - start);
     }
     if (n_msgs) 
         MPI_Waitall(n_msgs,
@@ -270,13 +320,15 @@ int MPIX_Alltoallv(const void* sendbuf,
     {
         for (int j = 0; j < local_num_msgs; j++)
         {
+            start = local_R_send_displs[k];
             for (int k = 0; k < PPN; k++)
             {
-                for (int l = 0; l < recvcount; l++)
+                size = local_R_send_node_sizes[j*PPN+k];
+                for (int l = 0; l < size; l++)
                 {
                     for (int m = 0; m < recv_size; m++)
                     {
-                        contig_buf[next_ctr*recv_size+m] = tmpbuf[((((j*PPN+k)*PPN+i)*recvcount)+l)*recv_size+m];
+                        contig_buf[next_ctr*recv_size+m] = tmpbuf[(start+l)*recv_size+m];
                     }
                     next_ctr++;
                 }
