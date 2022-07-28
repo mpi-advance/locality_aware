@@ -8,6 +8,7 @@ set(collective_HEADERS
 
 set(collective_SOURCES
     collective/alltoall.c
+    collective/alltoallv.c
     collective/allgather.c
     PARENT_SCOPE
     )
