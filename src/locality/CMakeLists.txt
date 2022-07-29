@@ -11,7 +11,6 @@ set(locality_HEADERS
 set(locality_SOURCES
     locality/comm_data.c
     locality/comm_pkg.c
-    #locality/locality.cpp
     locality/locality_comm.c
     locality/topology.c
     PARENT_SCOPE

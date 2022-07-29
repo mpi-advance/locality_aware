@@ -30,7 +30,6 @@ void destroy_locality_comm(LocalityComm* locality);
 
 
 
-
 // Declarations of C++ methods
 #ifdef __cplusplus
 }

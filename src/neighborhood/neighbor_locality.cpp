@@ -1,5 +1,5 @@
-#include "locality_comm.h"
-#include "topology.h"
+#include "neighbor.h"
+#include "persistent/persistent.h"
 #include <vector>
 #include <algorithm>
 #include <map>
@@ -40,134 +40,12 @@ void update_indices(LocalityComm* locality,
  **** Main Methods
  ****
  ******************************************/
-void init_alltoallv_locality(const int* send_sizes,
-        const int* send_indptr, 
-        const int* recv_sizes,
-        const int* recv_indptr,
-        MPI_Datatype sendtype,
-        MPI_Datatype recvtype,
-        const MPIX_Comm* mpix_comm,
-        MPIX_Request* request)
-{
-    // Get MPI Information
-    int rank, num_procs;
-    MPI_Comm_rank(mpix_comm->global_comm, &rank);
-    MPI_Comm_size(mpix_comm->global_comm, &num_procs);
-
-    // Initialize structure
-    LocalityComm* locality_comm;
-    init_locality_comm(&locality_comm, mpix_comm, sendtype, recvtype);
-
-    // Find node send and recv sizes (gathered per node)
-    int* send_nodes = (int*)malloc(num_nodes*sizeof(int));
-    int* recv_nodes = (int*)malloc(num_nodes*sizeof(int));
-    int* node_send_order = (int*)malloc(num_nodes*sizeof(int));
-    int* node_recv_order = (int*)malloc(num_nodes*sizeof(int));
-    for (int i = 0; i < num_nodes; i++)
-    {
-        node_send_order[i] = i;
-        node_recv_order[i] = i;
-        send_nodes[i] = 0;
-        recv_nodes[i] = 0;
-        for (int j = 0; j < PPN; j++)
-        {
-            send_nodes[i] += sendcounts[i*PPN+j];
-            recv_nodes[i] += recvcounts[i*PPN+j];
-        }
-    }
-    MPI_Allreduce(MPI_IN_PLACE, send_nodes, num_nodes, MPI_INT, MPI_SUM, local_comm);
-    MPI_Allreduce(MPI_IN_PLACE, recv_nodes, num_nodes, MPI_INT, MPI_SUM, local_comm);
-
-    // Sort node sends and recvs but aggregated message size
-    sort(num_nodes, node_send_order, send_nodes);
-    sort(num_nodes, node_recv_order, recv_nodes);
-
-    // Initialize global communication
-    int num_msgs = num_nodes / PPN; // TODO : this includes talking to self
-    int extra = num_nodes % PPN;
-    int local_num_msgs = num_msgs;
-    if (local_rank < extra) local_num_msgs++;
-    init_num_msgs(locality->global_comm->send_data, local_num_msgs);
-    init_num_msgs(locality->global_comm->recv_data, local_num_msgs);
-
-    init_num_msgs(locality->local_S_comm->send_data, PPN);
-    init_num_msgs(locality->local_S_comm->recv_data, PPN);
-    init_num_msgs(locality->local_R_comm->send_data, PPN);
-    init_num_msgs(locality->local_R_comm->recv_data, PPN);
-
-    init_size_msgs(locality->local_S_comm->send_data, sdispls[num_procs]);
-    init_size_msgs(locality->local_R_comm->recv_data, rdispls[num_procs]);
-
-
-    int* node_send_sizes = (int*)malloc(num_nodes*sizeof(int));
-    int* node_recv_sizes = (int*)malloc(num_nodes*sizeof(int));
-    int* sendbuf = (int*)malloc(num_procs);
-    int* recvbuf = (int*)malloc(local_num_msgs);
-    locality->local_S_comm->send_data->size_msgs = 0;
-    locality->local_R_comm->recv_data->size_msgs = 0;
-    int idx = 0;
-    MPI_Request* requests = new MPI_Request(2*PPN);
-    for (int i = 0; i < PPN; i++)
-    {
-        ctr = num_msgs; 
-        if (i < extra) ctr++;
-        for (int j = 0; j < ctr; j++)
-        {
-            node = node_send_order[j*PPN + i];
-            for (int k = 0; k < PPN; k++)
-            {
-                proc = get_global_proc(mpix_comm, node, k);
-                start = send_indptr[proc];
-                end = send_indptr[proc+1];
-                sendbuf[j*PPN + k] = end - start;
-                for (int l  = start; l < end; l++)
-                {
-                    locality->local_S_comm->send_data->indices[
-                        locality->local_S_comm->send_data->size_msgs++] = l;
-                }
-            }
-        }
-        locality->local_S_comm->send_data->indptr[i+1] = 
-            locality->local_S_comm->send_data->size_msgs;
-        MPI_Isend(&(sendbuf[idx]), ctr, MPI_INT, i, sendtag, local_comm, &(requests[i]));
-    }
-
-    std::vector<int> global_sizes(local_num_msgs*PPN);
-    for (int i = 0; i < PPN; i++)
-    {
-        // For each node, # i sends to node
-        MPI_Recv(recvbuf, local_num_msgs, MPI_INT, i, sendtag, local_comm, &status);
-        for (int  j = 0; j < local_num_msgs; j++)
-        {
-            global_sizes[j*PPN + i] = recvbuf[j];
-        }
-    }
-    MPI_Waitall(PPN, requests, MPI_STATUSES_IGNORE);
-
-
-    // Now have global sizes
-    // For node n, global_sizes[n+x] states size of message x going to node n (e.g. to node n from local proc x)
-    // Form global_comm->send_data now
-    for (int i = 0; i < local_num_msgs; i++)
-    {
-        node = node_send_order[i*PPN + local_rank];
-        for (int j = 0; j < PPN; j++)
-        {
-            
-
-
-
-
-
-
-}
 
 // Initialize NAPComm* structure, to be used for any number of
 // instances of communication
 void init_locality(const int n_sends, 
         const int* send_procs, 
         const int* send_indptr,
-        const int* send_indices, 
         const int n_recvs,
         const int* recv_procs,
         const int* recv_indptr,
@@ -266,32 +144,6 @@ void init_locality(const int n_sends,
     update_indices(locality_comm, 
             send_global_to_local, 
             recv_global_to_local);
-
-
-    // Initialize final variable (MPI_Request arrays, etc.)
-    finalize_locality_comm(locality_comm);
-
-    // Copy to pointer for return
-    request->locality = locality_comm;
-}
-
-void init_locality_alltoallv(LocalityComm** locality_comm_ptr,
-    const int* sendcounts,
-    const int* sdispls, 
-    const MPI_Datatype sendtype,
-    const int* recvcounts,
-    const int* rdispls,
-    const MPI_Datatype recvtype,
-    MPIX_Comm* mpix_comm)
-{
-    // Get MPI Information
-    int rank, num_procs;
-    MPI_Comm_rank(mpix_comm->global_comm, &rank);
-    MPI_Comm_size(mpix_comm->global_comm, &num_procs);
-
-    // Initialize structure
-    LocalityComm* locality_comm;
-    init_locality_comm(&locality_comm, mpix_comm, sendtype, recvtype);
 
 
     // Initialize final variable (MPI_Request arrays, etc.)

@@ -9,6 +9,7 @@ set(neighborhood_HEADERS
 set(neighborhood_SOURCES
     neighborhood/dist_graph.c
     neighborhood/neighbor.c
+    neighborhood/neighbor_locality.cpp
     PARENT_SCOPE
     )
 

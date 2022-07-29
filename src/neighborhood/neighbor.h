@@ -3,9 +3,9 @@
 
 #include <mpi.h>
 #include <stdlib.h>
-#include "locality/locality_comm.h"
 #include "dist_graph.h"
 #include "persistent/persistent.h"
+#include "locality/locality_comm.h"
 
 // Declarations of C++ methods
 #ifdef __cplusplus
@@ -68,8 +68,18 @@ int MPIX_Neighbor_alltoallw_init(
 */
 
 
-
-
+void init_locality(const int n_sends, 
+        const int* send_procs, 
+        const int* send_indptr,
+        const int n_recvs,
+        const int* recv_procs,
+        const int* recv_indptr,
+        const int* global_send_indices,
+        const int* global_recv_indices,
+        const MPI_Datatype sendtype, 
+        const MPI_Datatype recvtype,
+        const MPIX_Comm* mpix_comm,
+        MPIX_Request* request);
 
 
 

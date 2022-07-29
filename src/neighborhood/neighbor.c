@@ -307,12 +307,9 @@ int MPIX_Neighbor_alltoallw_init(
 }
 
 
-
-
-/*
 // Locality-Aware Extension to Persistent Neighbor Alltoallv
 // Needs global indices for each send and receive
-int MPIX_Neighbor_alltoallv_init_nap(
+int MPIX_Neighbor_locality_alltoallv_init(
         const void* sendbuf,
         const int sendcounts[],
         const int sdispls[],
@@ -359,15 +356,17 @@ int MPIX_Neighbor_alltoallv_init_nap(
     init_locality(outdegree, 
             destinations, 
             sdispls, 
-            dest_indices,
             indegree, 
             sources, 
             rdispls,
-            global_dest_indices,
-            global_source_indices,
-            comm->global_comm, // communicator used in dist_graph_create_adjacent 
+            global_sindices,
+            global_rindices,
+            sendtype,
+            recvtype,
+            comm, // communicator used in dist_graph_create_adjacent 
             request);
 
+/*
     // Local L Communication
     init_communication(sendbuf,
             request->nap_comm->local_L_comm->send_data->num_msgs,
@@ -449,10 +448,10 @@ int MPIX_Neighbor_alltoallv_init_nap(
             &(request->global_n_msgs),
             &(request->global_requests));
 
+*/
+
     *request_ptr = request;
 
     return 0;
 
 }
-
-*/
