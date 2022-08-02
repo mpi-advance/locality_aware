@@ -51,7 +51,7 @@ int MPIX_Neighbor_alltoallw_init(
 
 // Locality-Aware Extension to Persistent Neighbor Alltoallv
 // Needs global indices for each send and receive
-/*int MPIX_Neighbor_alltoallv_init_nap(
+int MPIX_Neighbor_locality_alltoallv_init(
         const void* sendbuf,
         const int sendcounts[],
         const int sdispls[],
@@ -65,7 +65,7 @@ int MPIX_Neighbor_alltoallw_init(
         MPIX_Comm* comm,
         MPI_Info info,
         MPIX_Request** request_ptr);
-*/
+
 
 
 void init_locality(const int n_sends, 

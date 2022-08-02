@@ -21,6 +21,9 @@ typedef struct _MPIX_Request
     MPI_Request* global_requests;
 
     LocalityComm* locality;
+
+    void* recvbuf; // pointer to recvbuf (where final data goes)
+    int recv_size;
 } MPIX_Request;
 
 // Starting locality-aware requests

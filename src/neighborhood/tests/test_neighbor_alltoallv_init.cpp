@@ -83,7 +83,8 @@ TEST(RandomCommTest, TestsInTests)
             MPI_INT,
             std_comm);
 
-    // 2. Node-Aware Communication
+
+    // 2. MPI Advance - Standard Communication
     MPIX_Dist_graph_create_adjacent(MPI_COMM_WORLD,
             recv_data.num_msgs, 
             recv_data.procs.data(), 
@@ -108,6 +109,7 @@ TEST(RandomCommTest, TestsInTests)
 
     MPIX_Start(neighbor_request);
     MPIX_Wait(neighbor_request, &status);
+    MPIX_Request_free(neighbor_request);
 
     // 3. Compare std_recv_vals and nap_recv_vals
     for (int i = 0; i < recv_data.size_msgs; i++)
@@ -115,7 +117,6 @@ TEST(RandomCommTest, TestsInTests)
         ASSERT_EQ(std_recv_vals[i], new_recv_vals[i]);
     }
 
-    MPIX_Request_free(neighbor_request);
     MPIX_Comm_free(neighbor_comm);
     MPI_Comm_free(&std_comm);
 

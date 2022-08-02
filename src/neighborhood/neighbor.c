@@ -16,6 +16,8 @@ void init_request(MPIX_Request** request_ptr)
     request->local_R_requests = NULL;
     request->global_requests = NULL;
 
+    request->recv_size = 0;
+
     *request_ptr = request;
 }
 
@@ -46,12 +48,12 @@ void allocate_requests(int n_requests, MPI_Request** request_ptr)
     else *request_ptr = NULL;
 }
 
-int init_communication(const void* sendbuf,
+int init_communication(const void* sendbuffer,
         int n_sends,
         const int* send_procs,
         const int* send_ptr, 
         MPI_Datatype sendtype,
-        void* recvbuf, 
+        void* recvbuffer, 
         int n_recvs,
         const int* recv_procs,
         const int* recv_ptr,
@@ -64,8 +66,8 @@ int init_communication(const void* sendbuf,
     int ierr, start, size;
     int send_size, recv_size;
 
-    char* send_buffer = (char*) sendbuf;
-    char* recv_buffer = (char*) recvbuf;
+    char* send_bufferfer = (char*) sendbuffer;
+    char* recv_bufferfer = (char*) recvbuffer;
     MPI_Type_size(sendtype, &send_size);
     MPI_Type_size(recvtype, &recv_size);
 
@@ -78,7 +80,7 @@ int init_communication(const void* sendbuf,
         start = recv_ptr[i];
         size = recv_ptr[i+1] - start;
 
-        ierr += MPI_Recv_init(&(recv_buffer[start*recv_size]), 
+        ierr += MPI_Recv_init(&(recv_bufferfer[start*recv_size]), 
                 size, 
                 recvtype, 
                 recv_procs[i],
@@ -92,7 +94,7 @@ int init_communication(const void* sendbuf,
         start = send_ptr[i];
         size = send_ptr[i+1] - start;
 
-        ierr += MPI_Send_init(&(send_buffer[start*send_size]),
+        ierr += MPI_Send_init(&(send_bufferfer[start*send_size]),
                 size,
                 sendtype,
                 send_procs[i],
@@ -107,13 +109,13 @@ int init_communication(const void* sendbuf,
 }
 
 
-int init_communicationw(const void* sendbuf,
+int init_communicationw(const void* sendbuffer,
         int n_sends,
         const int* send_procs,
         const int* sendcounts, 
         const MPI_Aint* send_ptr, 
         MPI_Datatype* sendtypes,
-        void* recvbuf, 
+        void* recvbuffer, 
         int n_recvs,
         const int* recv_procs,
         const int* recvcounts, 
@@ -126,8 +128,8 @@ int init_communicationw(const void* sendbuf,
 {
     int ierr;
 
-    char* send_buffer = (char*) sendbuf;
-    char* recv_buffer = (char*) recvbuf;
+    char* send_bufferfer = (char*) sendbuffer;
+    char* recv_bufferfer = (char*) recvbuffer;
 
     MPI_Request* requests;
     *n_request_ptr = n_recvs+n_sends;
@@ -137,7 +139,7 @@ int init_communicationw(const void* sendbuf,
     for (int i = 0; i < n_recvs; i++)
     {
         MPI_Type_get_extent(recvtypes[i], &lb, &extent);
-        ierr += MPI_Recv_init(recvbuf + recv_ptr[i] * extent, 
+        ierr += MPI_Recv_init(recvbuffer + recv_ptr[i] * extent, 
                 recvcounts[i], 
                 recvtypes[i], 
                 recv_procs[i],
@@ -149,7 +151,7 @@ int init_communicationw(const void* sendbuf,
     for (int i = 0; i < n_sends; i++)
     {
         MPI_Type_get_extent(sendtypes[i], &lb, &extent);
-        ierr += MPI_Send_init(sendbuf + send_ptr[i] * extent,
+        ierr += MPI_Send_init(sendbuffer + send_ptr[i] * extent,
                 sendcounts[i],
                 sendtypes[i],
                 send_procs[i],
@@ -168,11 +170,11 @@ int init_communicationw(const void* sendbuf,
 // Extension takes array of requests instead of single request
 // 'requests' must be of size indegree+outdegree!
 int MPIX_Neighbor_alltoallv_init(
-        const void* sendbuf,
+        const void* sendbuffer,
         const int sendcounts[],
         const int sdispls[],
         MPI_Datatype sendtype,
-        void* recvbuf,
+        void* recvbuffer,
         const int recvcounts[],
         const int rdispls[],
         MPI_Datatype recvtype,
@@ -207,12 +209,12 @@ int MPIX_Neighbor_alltoallv_init(
     init_request(&request);
 
     init_communication(
-            sendbuf, 
+            sendbuffer, 
             outdegree, 
             destinations,
             sdispls,
             sendtype,
-            recvbuf,
+            recvbuffer,
             indegree,
             sources,
             rdispls,
@@ -232,11 +234,11 @@ int MPIX_Neighbor_alltoallv_init(
 // Extension takes array of requests instead of single request
 // 'requests' must be of size indegree+outdegree!
 int MPIX_Neighbor_alltoallw_init(
-        const void* sendbuf,
+        const void* sendbuffer,
         const int sendcounts[],
         const MPI_Aint sdispls[],
         MPI_Datatype* sendtypes,
-        void* recvbuf,
+        void* recvbuffer,
         const int recvcounts[],
         const MPI_Aint rdispls[],
         MPI_Datatype* recvtypes,
@@ -273,14 +275,14 @@ int MPIX_Neighbor_alltoallw_init(
     request->global_n_msgs = indegree+outdegree;
     allocate_requests(request->global_n_msgs, &(request->global_requests));
 
-    const char* send_buffer = (const char*)(sendbuf);
-    char* recv_buffer = (char*)(recvbuf);
-    const int* send_buffer_int = (const int*)(sendbuf);
-    int* recv_buffer_int = (int*)(recvbuf);
+    const char* send_bufferfer = (const char*)(sendbuffer);
+    char* recv_bufferfer = (char*)(recvbuffer);
+    const int* send_bufferfer_int = (const int*)(sendbuffer);
+    int* recv_bufferfer_int = (int*)(recvbuffer);
 
     for (int i = 0; i < outdegree; i++)
     {
-        ierr += MPI_Send_init(&(send_buffer[sdispls[i]]),
+        ierr += MPI_Send_init(&(send_bufferfer[sdispls[i]]),
                 sendcounts[i],
                 sendtypes[i],
                 destinations[i],
@@ -291,7 +293,7 @@ int MPIX_Neighbor_alltoallw_init(
     }
     for (int i = 0; i < indegree; i++)
     {
-        ierr += MPI_Recv_init(&(recv_buffer[rdispls[i]]),
+        ierr += MPI_Recv_init(&(recv_bufferfer[rdispls[i]]),
                 recvcounts[i], 
                 recvtypes[i], 
                 sources[i],
@@ -310,12 +312,12 @@ int MPIX_Neighbor_alltoallw_init(
 // Locality-Aware Extension to Persistent Neighbor Alltoallv
 // Needs global indices for each send and receive
 int MPIX_Neighbor_locality_alltoallv_init(
-        const void* sendbuf,
+        const void* sendbuffer,
         const int sendcounts[],
         const int sdispls[],
         const int global_sindices[],
         MPI_Datatype sendtype,
-        void* recvbuf,
+        void* recvbuffer,
         const int recvcounts[],
         const int rdispls[],
         const int global_rindices[],
@@ -366,89 +368,90 @@ int MPIX_Neighbor_locality_alltoallv_init(
             comm, // communicator used in dist_graph_create_adjacent 
             request);
 
-/*
+
+    request->recvbuf = recvbuffer;
+    MPI_Type_size(recvtype, &(request->recv_size));
+
     // Local L Communication
-    init_communication(sendbuf,
-            request->nap_comm->local_L_comm->send_data->num_msgs,
-            request->nap_comm->local_L_comm->send_data->procs,
-            request->nap_comm->local_L_comm->send_data->indptr,
+    init_communication(sendbuffer,
+            request->locality->local_L_comm->send_data->num_msgs,
+            request->locality->local_L_comm->send_data->procs,
+            request->locality->local_L_comm->send_data->indptr,
             sendtype,
-            request->nap_comm->local_L_comm->recv_data->buf,
-            request->nap_comm->local_L_comm->recv_data->num_msgs,
-            request->nap_comm->local_L_comm->recv_data->procs,
-            request->nap_comm->local_L_comm->recv_data->indptr,
+            request->locality->local_L_comm->recv_data->buffer,
+            request->locality->local_L_comm->recv_data->num_msgs,
+            request->locality->local_L_comm->recv_data->procs,
+            request->locality->local_L_comm->recv_data->indptr,
             recvtype,
-            request->nap_comm->local_L_comm->tag,
+            request->locality->local_L_comm->tag,
             comm->local_comm,
             &(request->local_L_n_msgs),
             &(request->local_L_requests));
 
     // Local S Communication
-    init_communication(sendbuf,
-            request->nap_comm->local_S_comm->send_data->num_msgs,
-            request->nap_comm->local_S_comm->send_data->procs,
-            request->nap_comm->local_S_comm->send_data->indptr,
+    init_communication(sendbuffer,
+            request->locality->local_S_comm->send_data->num_msgs,
+            request->locality->local_S_comm->send_data->procs,
+            request->locality->local_S_comm->send_data->indptr,
             sendtype,
-            request->nap_comm->local_S_comm->recv_data->buf,
-            request->nap_comm->local_S_comm->recv_data->num_msgs,
-            request->nap_comm->local_S_comm->recv_data->procs,
-            request->nap_comm->local_S_comm->recv_data->indptr,
+            request->locality->local_S_comm->recv_data->buffer,
+            request->locality->local_S_comm->recv_data->num_msgs,
+            request->locality->local_S_comm->recv_data->procs,
+            request->locality->local_S_comm->recv_data->indptr,
             recvtype,
-            request->nap_comm->local_S_comm->tag,
+            request->locality->local_S_comm->tag,
             comm->local_comm,
             &(request->local_S_n_msgs),
             &(request->local_S_requests));
 
     // Global Communication
-    init_communication(request->nap_comm->global_comm->send_data->buf,
-            request->nap_comm->global_comm->send_data->num_msgs,
-            request->nap_comm->global_comm->send_data->procs,
-            request->nap_comm->global_comm->send_data->indptr,
+    init_communication(request->locality->global_comm->send_data->buffer,
+            request->locality->global_comm->send_data->num_msgs,
+            request->locality->global_comm->send_data->procs,
+            request->locality->global_comm->send_data->indptr,
             sendtype,
-            request->nap_comm->global_comm->recv_data->buf,
-            request->nap_comm->global_comm->recv_data->num_msgs,
-            request->nap_comm->global_comm->recv_data->procs,
-            request->nap_comm->global_comm->recv_data->indptr,
+            request->locality->global_comm->recv_data->buffer,
+            request->locality->global_comm->recv_data->num_msgs,
+            request->locality->global_comm->recv_data->procs,
+            request->locality->global_comm->recv_data->indptr,
             recvtype,
-            request->nap_comm->global_comm->tag,
+            request->locality->global_comm->tag,
             comm->global_comm,
             &(request->global_n_msgs),
             &(request->global_requests));
 
 
     // Local R Communication
-    init_communication(request->nap_comm->local_R_comm->send_data->buf,
-            request->nap_comm->local_R_comm->send_data->num_msgs,
-            request->nap_comm->local_R_comm->send_data->procs,
-            request->nap_comm->local_R_comm->send_data->indptr,
+    init_communication(request->locality->local_R_comm->send_data->buffer,
+            request->locality->local_R_comm->send_data->num_msgs,
+            request->locality->local_R_comm->send_data->procs,
+            request->locality->local_R_comm->send_data->indptr,
             sendtype,
-            request->nap_comm->local_R_comm->recv_data->buf,
-            request->nap_comm->local_R_comm->recv_data->num_msgs,
-            request->nap_comm->local_R_comm->recv_data->procs,
-            request->nap_comm->local_R_comm->recv_data->indptr,
+            request->locality->local_R_comm->recv_data->buffer,
+            request->locality->local_R_comm->recv_data->num_msgs,
+            request->locality->local_R_comm->recv_data->procs,
+            request->locality->local_R_comm->recv_data->indptr,
             recvtype,
-            request->nap_comm->local_R_comm->tag,
+            request->locality->local_R_comm->tag,
             comm->local_comm,
             &(request->local_R_n_msgs),
             &(request->local_R_requests));
 
     // Global Communication
-    init_communication(request->nap_comm->global_comm->send_data->buf,
-            request->nap_comm->global_comm->send_data->num_msgs,
-            request->nap_comm->global_comm->send_data->procs,
-            request->nap_comm->global_comm->send_data->indptr,
+    init_communication(request->locality->global_comm->send_data->buffer,
+            request->locality->global_comm->send_data->num_msgs,
+            request->locality->global_comm->send_data->procs,
+            request->locality->global_comm->send_data->indptr,
             sendtype,
-            request->nap_comm->global_comm->recv_data->buf,
-            request->nap_comm->global_comm->recv_data->num_msgs,
-            request->nap_comm->global_comm->recv_data->procs,
-            request->nap_comm->global_comm->recv_data->indptr,
+            request->locality->global_comm->recv_data->buffer,
+            request->locality->global_comm->recv_data->num_msgs,
+            request->locality->global_comm->recv_data->procs,
+            request->locality->global_comm->recv_data->indptr,
             recvtype,
-            request->nap_comm->global_comm->tag,
+            request->locality->global_comm->tag,
             comm->global_comm,
             &(request->global_n_msgs),
             &(request->global_requests));
-
-*/
 
     *request_ptr = request;
 

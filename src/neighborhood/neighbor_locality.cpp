@@ -475,11 +475,15 @@ void form_local_comm(const int orig_num_sends, const int* orig_send_procs,
     local_idx.resize(local_num_procs);
     send_sizes.resize(local_num_procs, 0);
 
+    // Allocate sizes
     init_num_msgs(send_data, local_num_procs);
     init_num_msgs(recv_data, local_num_procs);
     init_num_msgs(local_data, local_num_procs);
 
     // Form local_S_comm
+    send_data->num_msgs = 0;
+    local_data->num_msgs = 0;
+    recv_data->num_msgs = 0;
     for (int i = 0; i < orig_num_sends; i++)
     {
         global_proc = orig_send_procs[i];
