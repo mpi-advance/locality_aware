@@ -60,7 +60,7 @@ TEST(RandomCommTest, TestsInTests)
                 MPI_COMM_WORLD);
 
         // Locality-Aware P2P Alltoall 
-        MPIX_Alltoall(local_data.data(), 
+        PMPI_Alltoall(local_data.data(), 
                 s, 
                 MPI_INT,
                 loc_p2p_alltoall.data(), 

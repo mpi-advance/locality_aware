@@ -19,7 +19,7 @@
  *      - Load balacing is too expensive for 
  *          non-persistent Alltoallv
  *************************************************/
-int MPIX_Alltoallv(const void* sendbuf,
+int PMPI_Alltoallv(const void* sendbuf,
         const int sendcounts[],
         const int sdispls[],
         MPI_Datatype sendtype,
