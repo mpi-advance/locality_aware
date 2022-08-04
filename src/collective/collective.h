@@ -13,7 +13,7 @@ extern "C"
 {
 #endif
 
-int PMPI_Alltoall(const void* sendbuf,
+int MPI_Alltoall(const void* sendbuf,
         const int sendcount,
         MPI_Datatype sendtype,
         void* recvbuf,
@@ -21,7 +21,7 @@ int PMPI_Alltoall(const void* sendbuf,
         MPI_Datatype recvtype,
         MPI_Comm comm);
 
-int PMPI_Alltoallv(const void* sendbuf,
+int MPI_Alltoallv(const void* sendbuf,
         const int sendcounts[],
         const int sdispls[],
         MPI_Datatype sendtype,
@@ -31,7 +31,7 @@ int PMPI_Alltoallv(const void* sendbuf,
         MPI_Datatype recvtype,
         MPI_Comm comm);
 
-int PMPI_Allgather(const void* sendbuf,
+int MPI_Allgather(const void* sendbuf,
         int sendcount,
         MPI_Datatype sendtype,
         void* recvbuf,

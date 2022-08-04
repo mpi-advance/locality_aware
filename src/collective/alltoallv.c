@@ -19,7 +19,7 @@
  *      - Load balacing is too expensive for 
  *          non-persistent Alltoallv
  *************************************************/
-int PMPI_Alltoallv(const void* sendbuf,
+int MPI_Alltoallv(const void* sendbuf,
         const int sendcounts[],
         const int sdispls[],
         MPI_Datatype sendtype,
@@ -133,7 +133,7 @@ int PMPI_Alltoallv(const void* sendbuf,
     }
 
     int* send_node_sizes = (int*)malloc((local_num_msgs*PPN)*sizeof(int));
-    MPI_Alltoallv(orig_node_sizes,
+    PMPI_Alltoallv(orig_node_sizes,
         proc_node_sizes,
         proc_node_displs,
         MPI_INT,
@@ -164,7 +164,7 @@ int PMPI_Alltoallv(const void* sendbuf,
     }
 
     int* recv_proc_sizes = (int*)malloc((local_num_msgs*PPN*PPN)*sizeof(int));
-    MPI_Alltoallv(recvcounts,
+    PMPI_Alltoallv(recvcounts,
         proc_node_sizes,
         proc_node_displs,
         MPI_INT,

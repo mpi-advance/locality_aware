@@ -60,7 +60,7 @@ TEST(RandomCommTest, TestsInTests)
 
 
         // Standard Alltoall
-        MPI_Alltoallv(local_data.data(), 
+        PMPI_Alltoallv(local_data.data(), 
                 sizes.data(),
                 displs.data(),
                 MPI_INT, 
@@ -71,7 +71,7 @@ TEST(RandomCommTest, TestsInTests)
                 MPI_COMM_WORLD);
 
         // Locality-Aware P2P Alltoall 
-        PMPI_Alltoallv(local_data.data(), 
+        MPI_Alltoallv(local_data.data(), 
                 sizes.data(),
                 displs.data(),
                 MPI_INT, 

@@ -58,7 +58,7 @@ TEST(RandomCommTest, TestsInTests)
             local_data[j] = rank*100 + j;
 
         // Standard Allgather
-        MPI_Allgather(local_data.data(), 
+        PMPI_Allgather(local_data.data(), 
                 s,
                 MPI_INT, 
                 std_allgather.data(), 

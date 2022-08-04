@@ -211,7 +211,7 @@ int allgather_loc_p2p(const void *sendbuf, int sendcount, MPI_Datatype sendtype,
     // Local Gather
     // Put at beginning of recvbuf so other data is contiguous
     pos = local_node * PPN * recvcount;
-    MPI_Allgather(sendbuf, sendcount, sendtype,
+    PMPI_Allgather(sendbuf, sendcount, sendtype,
             &(recv_buffer[pos*recv_size]), recvcount, recvtype, comm->local_comm);
 
     // Exchange Inter-Node Messages
@@ -273,7 +273,7 @@ int allgather_loc_bruck(const void *sendbuf, int sendcount, MPI_Datatype sendtyp
     int tag = 102943;
 
     // Perform Local Allgather
-    MPI_Allgather(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm->local_comm);
+    PMPI_Allgather(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm->local_comm);
 
     // Perform allgather with PPN nodes at once
     // First send to node - (1 to PPN) nodes and recv from node + (1 to PPN) nodes
@@ -304,7 +304,7 @@ int allgather_loc_bruck(const void *sendbuf, int sendcount, MPI_Datatype sendtyp
             MPI_Waitall(2, requests, MPI_STATUSES_IGNORE);
         }
 
-        MPI_Allgather(MPI_IN_PLACE, size, recvtype, recvbuf, size, recvtype, comm->local_comm);
+        PMPI_Allgather(MPI_IN_PLACE, size, recvtype, recvbuf, size, recvtype, comm->local_comm);
 
     }
 

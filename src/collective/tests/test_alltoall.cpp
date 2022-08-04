@@ -51,7 +51,7 @@ TEST(RandomCommTest, TestsInTests)
                 local_data[i*s + j] = rank*10000 + i*100 + j;
 
         // Standard Alltoall
-        MPI_Alltoall(local_data.data(), 
+        PMPI_Alltoall(local_data.data(), 
                 s,
                 MPI_INT, 
                 std_alltoall.data(), 
@@ -60,7 +60,7 @@ TEST(RandomCommTest, TestsInTests)
                 MPI_COMM_WORLD);
 
         // Locality-Aware P2P Alltoall 
-        PMPI_Alltoall(local_data.data(), 
+        MPI_Alltoall(local_data.data(), 
                 s, 
                 MPI_INT,
                 loc_p2p_alltoall.data(), 

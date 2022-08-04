@@ -17,7 +17,7 @@
  *      on-node so that each process holds
  *      the correct final data
  *************************************************/
-int PMPI_Alltoall(const void* sendbuf,
+int MPI_Alltoall(const void* sendbuf,
         const int sendcount,
         MPI_Datatype sendtype,
         void* recvbuf,
