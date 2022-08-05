@@ -28,6 +28,12 @@ void init_locality_comm(LocalityComm** locality_ptr, const MPIX_Comm* comm,
 void finalize_locality_comm(LocalityComm* locality);
 void destroy_locality_comm(LocalityComm* locality);
 
+void get_local_comm_data(LocalityComm* locality,
+       int* max_local_num, 
+       int* max_local_size,
+       int* max_non_local_num,
+       int* max_non_local_size);
+
 
 
 // Declarations of C++ methods
