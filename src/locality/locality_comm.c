@@ -41,14 +41,30 @@ void get_local_comm_data(LocalityComm* locality,
 {
     int sizes[4];
     int max_sizes[4];
-    sizes[0] = locality->local_L_comm->send_data->num_msgs
-        + locality->local_S_comm->send_data->num_msgs
-        + locality->local_R_comm->send_data->num_msgs;
-    sizes[1] = locality->local_L_comm->send_data->size_msgs
-        + locality->local_S_comm->send_data->size_msgs
-        + locality->local_R_comm->send_data->size_msgs;
-    sizes[2] = locality->global_comm->send_data->num_msgs;
-    sizes[3] = locality->global_comm->send_data->size_msgs;
+    sizes[0] = 0;
+    sizes[1] = 0;
+    if (locality->local_L_comm)
+    {
+        sizes[0] += locality->local_L_comm->send_data->num_msgs;
+        sizes[1] += locality->local_L_comm->send_data->size_msgs;
+    }
+    if (locality->local_S_comm)
+    {
+        sizes[0] += locality->local_S_comm->send_data->num_msgs;
+        sizes[1] += locality->local_S_comm->send_data->size_msgs;
+    }
+    if (locality->local_R_comm)
+    {
+        sizes[0] += locality->local_R_comm->send_data->num_msgs;
+        sizes[1] += locality->local_R_comm->send_data->size_msgs;
+    }
+    sizes[2] = 0;
+    sizes[3] = 0;
+    if (locality->global_comm)
+    {
+        sizes[2] = locality->global_comm->send_data->num_msgs;
+        sizes[3] = locality->global_comm->send_data->size_msgs;
+    }
 
     MPI_Allreduce(MPI_IN_PLACE, max_sizes, 4, MPI_INT, MPI_MAX, MPI_COMM_WORLD);
 
