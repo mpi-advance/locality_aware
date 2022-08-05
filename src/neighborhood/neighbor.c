@@ -458,3 +458,147 @@ int MPIX_Neighbor_locality_alltoallv_init(
     return 0;
 
 }
+
+int MPIX_Neighbor_part_locality_alltoallv_init(
+        const void* sendbuffer,
+        const int sendcounts[],
+        const int sdispls[],
+        MPI_Datatype sendtype,
+        void* recvbuffer,
+        const int recvcounts[],
+        const int rdispls[],
+        MPI_Datatype recvtype,
+        MPIX_Comm* comm,
+        MPI_Info info,
+        MPIX_Request** request_ptr)
+{
+
+    int tag = 304591;
+    int indegree, outdegree, weighted;
+    MPI_Dist_graph_neighbors_count(
+            comm->neighbor_comm, 
+            &indegree, 
+            &outdegree, 
+            &weighted);
+
+    int sources[indegree];
+    int sourceweights[indegree];
+    int destinations[outdegree];
+    int destweights[outdegree];
+    MPI_Dist_graph_neighbors(
+            comm->neighbor_comm, 
+            indegree, 
+            sources, 
+            sourceweights,
+            outdegree, 
+            destinations, 
+            destweights);
+
+    MPIX_Request* request;
+    init_request(&request);
+
+    // Initialize Locality-Aware Communication Strategy (3-Step)
+    // E.G. Determine which processes talk to eachother at every step
+    // TODO : instead of mpi_comm, use comm
+    //        - will need to create local_comm in dist_graph_create_adjacent...
+    init_part_locality(outdegree, 
+            destinations, 
+            sdispls, 
+            indegree, 
+            sources, 
+            rdispls,
+            sendtype,
+            recvtype,
+            comm, // communicator used in dist_graph_create_adjacent 
+            request);
+
+
+    request->recvbuf = recvbuffer;
+    MPI_Type_size(recvtype, &(request->recv_size));
+
+    // Local L Communication
+    init_communication(sendbuffer,
+            request->locality->local_L_comm->send_data->num_msgs,
+            request->locality->local_L_comm->send_data->procs,
+            request->locality->local_L_comm->send_data->indptr,
+            sendtype,
+            request->locality->local_L_comm->recv_data->buffer,
+            request->locality->local_L_comm->recv_data->num_msgs,
+            request->locality->local_L_comm->recv_data->procs,
+            request->locality->local_L_comm->recv_data->indptr,
+            recvtype,
+            request->locality->local_L_comm->tag,
+            comm->local_comm,
+            &(request->local_L_n_msgs),
+            &(request->local_L_requests));
+
+    // Local S Communication
+    init_communication(sendbuffer,
+            request->locality->local_S_comm->send_data->num_msgs,
+            request->locality->local_S_comm->send_data->procs,
+            request->locality->local_S_comm->send_data->indptr,
+            sendtype,
+            request->locality->local_S_comm->recv_data->buffer,
+            request->locality->local_S_comm->recv_data->num_msgs,
+            request->locality->local_S_comm->recv_data->procs,
+            request->locality->local_S_comm->recv_data->indptr,
+            recvtype,
+            request->locality->local_S_comm->tag,
+            comm->local_comm,
+            &(request->local_S_n_msgs),
+            &(request->local_S_requests));
+
+    // Global Communication
+    init_communication(request->locality->global_comm->send_data->buffer,
+            request->locality->global_comm->send_data->num_msgs,
+            request->locality->global_comm->send_data->procs,
+            request->locality->global_comm->send_data->indptr,
+            sendtype,
+            request->locality->global_comm->recv_data->buffer,
+            request->locality->global_comm->recv_data->num_msgs,
+            request->locality->global_comm->recv_data->procs,
+            request->locality->global_comm->recv_data->indptr,
+            recvtype,
+            request->locality->global_comm->tag,
+            comm->global_comm,
+            &(request->global_n_msgs),
+            &(request->global_requests));
+
+
+    // Local R Communication
+    init_communication(request->locality->local_R_comm->send_data->buffer,
+            request->locality->local_R_comm->send_data->num_msgs,
+            request->locality->local_R_comm->send_data->procs,
+            request->locality->local_R_comm->send_data->indptr,
+            sendtype,
+            request->locality->local_R_comm->recv_data->buffer,
+            request->locality->local_R_comm->recv_data->num_msgs,
+            request->locality->local_R_comm->recv_data->procs,
+            request->locality->local_R_comm->recv_data->indptr,
+            recvtype,
+            request->locality->local_R_comm->tag,
+            comm->local_comm,
+            &(request->local_R_n_msgs),
+            &(request->local_R_requests));
+
+    // Global Communication
+    init_communication(request->locality->global_comm->send_data->buffer,
+            request->locality->global_comm->send_data->num_msgs,
+            request->locality->global_comm->send_data->procs,
+            request->locality->global_comm->send_data->indptr,
+            sendtype,
+            request->locality->global_comm->recv_data->buffer,
+            request->locality->global_comm->recv_data->num_msgs,
+            request->locality->global_comm->recv_data->procs,
+            request->locality->global_comm->recv_data->indptr,
+            recvtype,
+            request->locality->global_comm->tag,
+            comm->global_comm,
+            &(request->global_n_msgs),
+            &(request->global_requests));
+
+    *request_ptr = request;
+
+    return 0;
+
+}

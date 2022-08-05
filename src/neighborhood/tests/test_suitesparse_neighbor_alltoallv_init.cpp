@@ -36,6 +36,7 @@ void test_matrix(const char* filename)
     std::vector<int> neigh_recv_vals(A.recv_comm.size_msgs);
     std::vector<int> new_recv_vals(A.recv_comm.size_msgs);
     std::vector<int> locality_recv_vals(A.recv_comm.size_msgs);
+    std::vector<int> part_locality_recv_vals(A.recv_comm.size_msgs);
 
     communicate(A, send_vals, std_recv_vals, MPI_INT);
 
@@ -105,6 +106,28 @@ void test_matrix(const char* filename)
 
 
     // 3. MPI Advance - Optimized Communication
+    MPIX_Neighbor_part_locality_alltoallv_init(alltoallv_send_vals.data(), 
+            A.send_comm.counts.data(),
+            A.send_comm.ptr.data(), 
+            MPI_INT,
+            part_locality_recv_vals.data(), 
+            A.recv_comm.counts.data(),
+            A.recv_comm.ptr.data(), 
+            MPI_INT,
+            neighbor_comm, 
+            MPI_INFO_NULL,
+            &neighbor_request);
+
+    MPIX_Start(neighbor_request);
+    MPIX_Wait(neighbor_request, &status);
+    MPIX_Request_free(neighbor_request);
+
+    for (int i = 0; i < A.recv_comm.size_msgs; i++)
+    {
+        ASSERT_EQ(std_recv_vals[i], part_locality_recv_vals[i]);
+    }
+
+
     std::vector<int> send_indices(A.send_comm.size_msgs);
     for (int i = 0; i < A.send_comm.size_msgs; i++)
         send_indices[i] = A.send_comm.idx[i] + A.first_row;
