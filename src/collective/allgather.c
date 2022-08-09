@@ -449,3 +449,56 @@ int allgather_loc_ring(const void *sendbuf, int sendcount, MPI_Datatype sendtype
     return 0;
 
 }
+
+
+int allgather_hier_bruck(const void *sendbuf, int sendcount, MPI_Datatype sendtype,
+        void *recvbuf, int recvcount, MPI_Datatype recvtype, MPIX_Comm* comm)
+{
+    int num_procs;
+    MPI_Comm_size(comm->global_comm, &num_procs);
+    
+    int recv_size;
+    MPI_Type_size(recvtype, &recv_size);
+
+    int local_rank, PPN;
+    MPI_Comm_rank(comm->local_comm, &local_rank);
+    MPI_Comm_size(comm->local_comm, &PPN);
+
+    char* tmpbuf = (char*)malloc(recvcount*num_procs*recv_size*sizeof(char));
+
+    MPI_Gather(sendbuf, sendcount, sendtype, tmpbuf, recvcount, recvtype, 0, comm->local_comm);
+    if (local_rank == 0)
+    {
+        allgather_bruck(tmpbuf, recvcount*PPN, recvtype, recvbuf, recvcount*PPN, recvtype, comm->group_comm);
+    }
+    MPI_Bcast(recvbuf, recvcount*num_procs, recvtype, 0, comm->local_comm);
+
+    free(tmpbuf);
+}
+
+
+
+
+int allgather_mult_hier_bruck(const void *sendbuf, int sendcount, MPI_Datatype sendtype,
+        void *recvbuf, int recvcount, MPI_Datatype recvtype, MPIX_Comm* comm)
+{
+    int num_procs;
+    MPI_Comm_size(comm->global_comm, &num_procs);
+    
+    int recv_size;
+    MPI_Type_size(recvtype, &recv_size);
+
+    int group_size;
+    MPI_Comm_size(comm->group_comm, &group_size);
+
+    char* tmpbuf = (char*)malloc(recvcount*num_procs*recv_size*sizeof(char));
+
+    allgather_bruck(sendbuf, sendcount, sendtype, tmpbuf, recvcount, recvtype, comm->group_comm);
+    allgather_bruck(tmpbuf, recvcount*group_size, recvtype, recvbuf, recvcount*group_size, recvtype, comm->local_comm);
+
+    free(tmpbuf);
+}
+
+
+
+

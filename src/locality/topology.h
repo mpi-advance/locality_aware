@@ -18,6 +18,7 @@ typedef struct _MPIX_Comm
     MPI_Comm global_comm;
     MPI_Comm local_comm;
     MPI_Comm neighbor_comm;
+    MPI_Comm group_comm;
 
     int num_nodes;
     int rank_node;

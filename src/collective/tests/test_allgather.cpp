@@ -48,6 +48,9 @@ TEST(RandomCommTest, TestsInTests)
     std::vector<int> loc_p2p_allgather(max_s*num_procs);
     std::vector<int> loc_bruck_allgather(max_s*num_procs);
     std::vector<int> loc_ring_allgather(max_s*num_procs);
+    std::vector<int> hier_bruck_allgather(max_s*num_procs);
+    std::vector<int> mult_hier_bruck_allgather(max_s*num_procs);
+
 
     for (int i = 0; i < max_i; i++)
     {
@@ -134,6 +137,28 @@ TEST(RandomCommTest, TestsInTests)
                 locality_comm);
         for (int j = 0; j < s*num_procs; j++)
             ASSERT_EQ(std_allgather[j], loc_ring_allgather[j]);
+
+        // Hierarchical Bruck Allgather 
+        allgather_hier_bruck(local_data.data(), 
+                s, 
+                MPI_INT,
+                hier_bruck_allgather.data(), 
+                s, 
+                MPI_INT,
+                locality_comm);
+        for (int j = 0; j < s*num_procs; j++)
+            ASSERT_EQ(std_allgather[j], hier_bruck_allgather[j]);
+
+        // Hierarchical (MULT) Bruck Allgather 
+        allgather_mult_hier_bruck(local_data.data(), 
+                s, 
+                MPI_INT,
+                mult_hier_bruck_allgather.data(), 
+                s, 
+                MPI_INT,
+                locality_comm);
+        for (int j = 0; j < s*num_procs; j++)
+            ASSERT_EQ(std_allgather[j], mult_hier_bruck_allgather[j]);
     }
 
     MPIX_Comm_free(locality_comm);

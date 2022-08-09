@@ -26,6 +26,13 @@ int MPIX_Comm_init(MPIX_Comm** comm_dist_graph_ptr, MPI_Comm global_comm)
     comm_dist_graph->num_nodes = ((num_procs-1) / comm_dist_graph->ppn) + 1;
     comm_dist_graph->rank_node = get_node(comm_dist_graph, rank);
 
+    int local_rank;
+    MPI_Comm_rank(comm_dist_graph->local_comm, &local_rank);
+    MPI_Comm_split(comm_dist_graph->global_comm,
+            local_rank,
+            rank,
+            &(comm_dist_graph->group_comm));
+
     comm_dist_graph->neighbor_comm = MPI_COMM_NULL;
     
     *comm_dist_graph_ptr = comm_dist_graph;
@@ -38,6 +45,7 @@ int MPIX_Comm_free(MPIX_Comm* comm_dist_graph)
     if (comm_dist_graph->neighbor_comm != MPI_COMM_NULL)
         MPI_Comm_free(&(comm_dist_graph->neighbor_comm));
     MPI_Comm_free(&(comm_dist_graph->local_comm));
+    MPI_Comm_free(&(comm_dist_graph->group_comm));
 
     free(comm_dist_graph);
 
