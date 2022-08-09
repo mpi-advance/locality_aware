@@ -6,8 +6,6 @@ enable_language(C)
 enable_language(CXX)
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_CXX_STANDARD 11)
-#set(CMAKE_C_FLAGS "-lmpitrace")
-#set(CMAKE_CXX_FLAGES "-lmpitrace")
 set(CMAKE_BUILD_TYPE Release)
 
 option(ENABLE_UNIT_TESTS "Enable unit testing" ON)
@@ -40,5 +38,8 @@ FetchContent_MakeAvailable(googletest)
 
 
 include_directories(".")
+include_directories("src")
 add_subdirectory("src")
 
+
+add_subdirectory(benchmarks)

@@ -15,9 +15,10 @@
 #include <vector>
 #include <set>
 
+#include "test_locality.h"
+
 int main(int argc, char** argv)
 {
-#define LOCAL_COMM_PPN4
     MPI_Init(&argc, &argv);
     ::testing::InitGoogleTest(&argc, argv);
     int temp=RUN_ALL_TESTS();
@@ -33,7 +34,7 @@ TEST(RandomCommTest, TestsInTests)
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
 
     MPIX_Comm* locality_comm;
-    MPIX_Comm_init(&locality_comm, MPI_COMM_WORLD);
+    allocate_locality(&locality_comm, MPI_COMM_WORLD, 4);
 
     // Test Integer Alltoall
     int max_i = 10;

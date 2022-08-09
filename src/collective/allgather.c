@@ -305,6 +305,7 @@ int allgather_loc_bruck(const void *sendbuf, int sendcount, MPI_Datatype sendtyp
         }
 
         allgather_bruck(recvbuf, size, recvtype, recvbuf, size, recvtype, comm->local_comm);
+        //PMPI_Allgather(MPI_IN_PLACE, size, recvtype, recvbuf, size, recvtype, comm->local_comm);
 
     }
 
@@ -484,7 +485,7 @@ int allgather_mult_hier_bruck(const void *sendbuf, int sendcount, MPI_Datatype s
 {
     int num_procs;
     MPI_Comm_size(comm->global_comm, &num_procs);
-    
+
     int recv_size;
     MPI_Type_size(recvtype, &recv_size);
 
