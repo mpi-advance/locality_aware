@@ -484,17 +484,37 @@ int allgather_mult_hier_bruck(const void *sendbuf, int sendcount, MPI_Datatype s
 {
     int num_procs;
     MPI_Comm_size(comm->global_comm, &num_procs);
-    
+
     int recv_size;
     MPI_Type_size(recvtype, &recv_size);
 
     int group_size;
     MPI_Comm_size(comm->group_comm, &group_size);
 
-    char* tmpbuf = (char*)malloc(recvcount*num_procs*recv_size*sizeof(char));
+    int ppn;
+    MPI_Comm_size(comm->local_comm, &ppn);
+
+    char* tmpbuf = (char*)malloc(recvcount*num_procs*recv_size);
+    char* recv_buffer = (char*)recvbuf;
 
     allgather_bruck(sendbuf, sendcount, sendtype, tmpbuf, recvcount, recvtype, comm->group_comm);
-    allgather_bruck(tmpbuf, recvcount*group_size, recvtype, recvbuf, recvcount*group_size, recvtype, comm->local_comm);
+    allgather_bruck(tmpbuf, recvcount*group_size, recvtype,
+                tmpbuf, recvcount*group_size, recvtype, comm->local_comm);
+
+    for (int i = 0; i < ppn; i++)
+    {
+        for (int j = 0; j < group_size; j++)
+        {
+            for (int k = 0; k < recvcount; k++)
+            {
+                for (int l = 0; l < recv_size; l++)
+                {
+                    recv_buffer[j*ppn*recvcount*recv_size + i*recvcount*recv_size + k*recv_size + l]
+                        = tmpbuf[i*group_size*recvcount*recv_size + j*recvcount*recv_size + k*recv_size + l];
+                }
+            }
+        }
+    }
 
     free(tmpbuf);
 }

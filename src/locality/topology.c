@@ -9,18 +9,11 @@ int MPIX_Comm_init(MPIX_Comm** comm_dist_graph_ptr, MPI_Comm global_comm)
     MPIX_Comm* comm_dist_graph = (MPIX_Comm*)malloc(sizeof(MPIX_Comm));
     comm_dist_graph->global_comm = global_comm;
 
-#ifdef LOCAL_COMM_PPN4
-    MPI_Comm_split(comm_dist_graph->global_comm,
-            rank/4,
-            rank,
-            &(comm_dist_graph->local_comm);
-#else
     MPI_Comm_split_type(comm_dist_graph->global_comm,
         MPI_COMM_TYPE_SHARED,
         rank,
         MPI_INFO_NULL,
         &(comm_dist_graph->local_comm));
-#endif
 
     MPI_Comm_size(comm_dist_graph->local_comm, &(comm_dist_graph->ppn));
     comm_dist_graph->num_nodes = ((num_procs-1) / comm_dist_graph->ppn) + 1;
@@ -28,6 +21,7 @@ int MPIX_Comm_init(MPIX_Comm** comm_dist_graph_ptr, MPI_Comm global_comm)
 
     int local_rank;
     MPI_Comm_rank(comm_dist_graph->local_comm, &local_rank);
+
     MPI_Comm_split(comm_dist_graph->global_comm,
             local_rank,
             rank,
