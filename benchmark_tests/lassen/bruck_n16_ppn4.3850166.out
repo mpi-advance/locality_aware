@@ -1,0 +1,167 @@
+Testing Size 1
+PMPI_Allgather Time 1.419631e-05
+allgather_bruck Time 1.614772e-05
+allgather_loc_bruck Time 1.142898e-05
+allgather_hier_bruck Time 1.388181e-05
+allgather_mult_hier_bruck Time 1.091554e-05
+Testing Size 2
+PMPI_Allgather Time 1.351331e-05
+allgather_bruck Time 1.443491e-05
+allgather_loc_bruck Time 1.048200e-05
+allgather_hier_bruck Time 1.503446e-05
+allgather_mult_hier_bruck Time 1.224388e-05
+Testing Size 4
+PMPI_Allgather Time 1.185340e-05
+allgather_bruck Time 1.601713e-05
+allgather_loc_bruck Time 1.103031e-05
+allgather_hier_bruck Time 1.607396e-05
+allgather_mult_hier_bruck Time 1.639517e-05
+Testing Size 8
+PMPI_Allgather Time 1.149245e-05
+allgather_bruck Time 1.840335e-05
+allgather_loc_bruck Time 1.652291e-05
+allgather_hier_bruck Time 2.274527e-05
+allgather_mult_hier_bruck Time 1.703384e-05
+Testing Size 16
+PMPI_Allgather Time 1.222389e-05
+allgather_bruck Time 2.388525e-05
+allgather_loc_bruck Time 1.593518e-05
+allgather_hier_bruck Time 2.175137e-05
+allgather_mult_hier_bruck Time 2.351718e-05
+app 0: ./bruck_allgather 
+rank: 0: { host: 1; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 1: { host: 1; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 2: { host: 1; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 3: { host: 1; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 4: { host: 2; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 5: { host: 2; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 6: { host: 2; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 7: { host: 2; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 8: { host: 3; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 9: { host: 3; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 10: { host: 3; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 11: { host: 3; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 12: { host: 4; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 13: { host: 4; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 14: { host: 4; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 15: { host: 4; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 16: { host: 5; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 17: { host: 5; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 18: { host: 5; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 19: { host: 5; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 20: { host: 6; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 21: { host: 6; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 22: { host: 6; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 23: { host: 6; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 24: { host: 7; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 25: { host: 7; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 26: { host: 7; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 27: { host: 7; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 28: { host: 8; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 29: { host: 8; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 30: { host: 8; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 31: { host: 8; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 32: { host: 9; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 33: { host: 9; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 34: { host: 9; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 35: { host: 9; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 36: { host: 10; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 37: { host: 10; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 38: { host: 10; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 39: { host: 10; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 40: { host: 11; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 41: { host: 11; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 42: { host: 11; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 43: { host: 11; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 44: { host: 12; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 45: { host: 12; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 46: { host: 12; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 47: { host: 12; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 48: { host: 13; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 49: { host: 13; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 50: { host: 13; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 51: { host: 13; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 52: { host: 14; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 53: { host: 14; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 54: { host: 14; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 55: { host: 14; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 56: { host: 15; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 57: { host: 15; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 58: { host: 15; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 59: { host: 15; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 60: { host: 16; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 61: { host: 16; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 62: { host: 16; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 63: { host: 16; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+
+------------------------------------------------------------
+Sender: LSF System <lsfadmin@lassen710>
+Subject: Job 3850166: <bruck_n16_ppn4> in cluster <lassen> Done
+
+Job <bruck_n16_ppn4> was submitted from host <lassen709> by user <bienz1> in cluster <lassen> at Wed Aug 10 15:19:33 2022
+Job was executed on host(s) <1*lassen710>, in queue <pbatch>, as user <bienz1> in cluster <lassen> at Wed Aug 10 15:43:23 2022
+                            <40*lassen107>
+                            <40*lassen768>
+                            <40*lassen140>
+                            <40*lassen667>
+                            <40*lassen338>
+                            <40*lassen182>
+                            <40*lassen668>
+                            <40*lassen669>
+                            <40*lassen821>
+                            <40*lassen825>
+                            <40*lassen524>
+                            <40*lassen529>
+                            <40*lassen576>
+                            <40*lassen383>
+                            <40*lassen573>
+                            <40*lassen544>
+</g/g14/bienz1> was used as the home directory.
+</g/g14/bienz1/test_scripts/mpi_advance/lassen> was used as the working directory.
+Started at Wed Aug 10 15:43:23 2022
+Terminated at Wed Aug 10 15:43:33 2022
+Results reported at Wed Aug 10 15:43:33 2022
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+#!/bin/bash
+#BSUB -J bruck_n16_ppn4
+#BSUB -e bruck_n16_ppn4.%J.err
+#BSUB -o bruck_n16_ppn4.%J.out
+#BSUB -nnodes 16
+#BSUB -q pbatch
+#BSUB -W 00:15
+
+cd /g/g14/bienz1/locality_aware/build_lassen/benchmarks
+
+jsrun -a4 -c4 -r1 -n16 --latency_priority=cpu-cpu --launch_distribution=packed --print_placement=1 ./bruck_allgather
+
+
+
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   0.19 sec.
+    Max Memory :                                 -
+    Average Memory :                             -
+    Total Requested Memory :                     -
+    Delta Memory :                               -
+    Max Swap :                                   -
+    Max Processes :                              -
+    Max Threads :                                -
+    Run time :                                   10 sec.
+    Turnaround time :                            1440 sec.
+
+The output (if any) is above this job summary.
+
+
+
+PS:
+
+Read file <bruck_n16_ppn4.3850166.err> for stderr output of this job.
+

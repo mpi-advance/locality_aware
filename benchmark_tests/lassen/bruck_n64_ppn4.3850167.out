@@ -1,0 +1,407 @@
+Testing Size 1
+PMPI_Allgather Time 2.634701e-05
+allgather_bruck Time 2.284433e-05
+allgather_loc_bruck Time 1.999439e-05
+allgather_hier_bruck Time 2.358274e-05
+allgather_mult_hier_bruck Time 1.942514e-05
+Testing Size 2
+PMPI_Allgather Time 2.271362e-05
+allgather_bruck Time 2.691103e-05
+allgather_loc_bruck Time 1.897984e-05
+allgather_hier_bruck Time 2.652152e-05
+allgather_mult_hier_bruck Time 2.361070e-05
+Testing Size 4
+PMPI_Allgather Time 2.883978e-05
+allgather_bruck Time 3.363753e-05
+allgather_loc_bruck Time 2.113655e-05
+allgather_hier_bruck Time 2.990115e-05
+allgather_mult_hier_bruck Time 2.950169e-05
+Testing Size 8
+PMPI_Allgather Time 3.556168e-05
+allgather_bruck Time 4.002429e-05
+allgather_loc_bruck Time 2.702085e-05
+allgather_hier_bruck Time 3.680562e-05
+allgather_mult_hier_bruck Time 3.926074e-05
+Testing Size 16
+PMPI_Allgather Time 5.117181e-05
+allgather_bruck Time 5.467228e-05
+allgather_loc_bruck Time 3.953899e-05
+allgather_hier_bruck Time 4.522020e-05
+allgather_mult_hier_bruck Time 6.745060e-05
+app 0: ./bruck_allgather 
+rank: 0: { host: 1; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 1: { host: 1; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 2: { host: 1; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 3: { host: 1; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 4: { host: 2; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 5: { host: 2; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 6: { host: 2; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 7: { host: 2; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 8: { host: 3; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 9: { host: 3; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 10: { host: 3; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 11: { host: 3; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 12: { host: 4; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 13: { host: 4; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 14: { host: 4; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 15: { host: 4; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 16: { host: 5; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 17: { host: 5; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 18: { host: 5; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 19: { host: 5; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 20: { host: 6; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 21: { host: 6; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 22: { host: 6; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 23: { host: 6; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 24: { host: 7; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 25: { host: 7; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 26: { host: 7; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 27: { host: 7; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 28: { host: 8; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 29: { host: 8; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 30: { host: 8; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 31: { host: 8; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 32: { host: 9; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 33: { host: 9; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 34: { host: 9; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 35: { host: 9; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 36: { host: 10; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 37: { host: 10; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 38: { host: 10; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 39: { host: 10; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 40: { host: 11; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 41: { host: 11; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 42: { host: 11; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 43: { host: 11; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 44: { host: 12; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 45: { host: 12; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 46: { host: 12; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 47: { host: 12; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 48: { host: 13; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 49: { host: 13; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 50: { host: 13; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 51: { host: 13; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 52: { host: 14; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 53: { host: 14; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 54: { host: 14; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 55: { host: 14; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 56: { host: 15; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 57: { host: 15; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 58: { host: 15; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 59: { host: 15; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 60: { host: 16; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 61: { host: 16; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 62: { host: 16; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 63: { host: 16; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 64: { host: 17; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 65: { host: 17; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 66: { host: 17; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 67: { host: 17; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 68: { host: 18; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 69: { host: 18; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 70: { host: 18; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 71: { host: 18; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 72: { host: 19; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 73: { host: 19; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 74: { host: 19; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 75: { host: 19; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 76: { host: 20; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 77: { host: 20; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 78: { host: 20; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 79: { host: 20; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 80: { host: 21; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 81: { host: 21; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 82: { host: 21; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 83: { host: 21; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 84: { host: 22; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 85: { host: 22; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 86: { host: 22; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 87: { host: 22; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 88: { host: 23; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 89: { host: 23; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 90: { host: 23; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 91: { host: 23; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 92: { host: 24; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 93: { host: 24; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 94: { host: 24; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 95: { host: 24; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 96: { host: 25; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 97: { host: 25; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 98: { host: 25; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 99: { host: 25; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 100: { host: 26; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 101: { host: 26; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 102: { host: 26; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 103: { host: 26; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 104: { host: 27; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 105: { host: 27; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 106: { host: 27; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 107: { host: 27; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 108: { host: 28; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 109: { host: 28; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 110: { host: 28; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 111: { host: 28; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 112: { host: 29; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 113: { host: 29; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 114: { host: 29; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 115: { host: 29; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 116: { host: 30; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 117: { host: 30; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 118: { host: 30; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 119: { host: 30; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 120: { host: 31; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 121: { host: 31; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 122: { host: 31; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 123: { host: 31; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 124: { host: 32; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 125: { host: 32; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 126: { host: 32; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 127: { host: 32; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 128: { host: 33; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 129: { host: 33; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 130: { host: 33; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 131: { host: 33; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 132: { host: 34; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 133: { host: 34; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 134: { host: 34; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 135: { host: 34; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 136: { host: 35; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 137: { host: 35; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 138: { host: 35; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 139: { host: 35; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 140: { host: 36; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 141: { host: 36; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 142: { host: 36; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 143: { host: 36; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 144: { host: 37; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 145: { host: 37; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 146: { host: 37; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 147: { host: 37; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 148: { host: 38; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 149: { host: 38; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 150: { host: 38; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 151: { host: 38; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 152: { host: 39; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 153: { host: 39; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 154: { host: 39; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 155: { host: 39; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 156: { host: 40; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 157: { host: 40; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 158: { host: 40; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 159: { host: 40; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 160: { host: 41; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 161: { host: 41; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 162: { host: 41; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 163: { host: 41; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 164: { host: 42; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 165: { host: 42; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 166: { host: 42; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 167: { host: 42; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 168: { host: 43; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 169: { host: 43; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 170: { host: 43; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 171: { host: 43; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 172: { host: 44; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 173: { host: 44; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 174: { host: 44; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 175: { host: 44; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 176: { host: 45; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 177: { host: 45; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 178: { host: 45; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 179: { host: 45; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 180: { host: 46; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 181: { host: 46; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 182: { host: 46; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 183: { host: 46; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 184: { host: 47; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 185: { host: 47; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 186: { host: 47; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 187: { host: 47; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 188: { host: 48; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 189: { host: 48; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 190: { host: 48; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 191: { host: 48; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 192: { host: 49; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 193: { host: 49; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 194: { host: 49; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 195: { host: 49; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 196: { host: 50; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 197: { host: 50; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 198: { host: 50; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 199: { host: 50; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 200: { host: 51; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 201: { host: 51; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 202: { host: 51; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 203: { host: 51; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 204: { host: 52; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 205: { host: 52; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 206: { host: 52; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 207: { host: 52; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 208: { host: 53; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 209: { host: 53; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 210: { host: 53; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 211: { host: 53; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 212: { host: 54; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 213: { host: 54; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 214: { host: 54; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 215: { host: 54; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 216: { host: 55; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 217: { host: 55; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 218: { host: 55; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 219: { host: 55; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 220: { host: 56; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 221: { host: 56; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 222: { host: 56; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 223: { host: 56; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 224: { host: 57; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 225: { host: 57; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 226: { host: 57; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 227: { host: 57; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 228: { host: 58; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 229: { host: 58; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 230: { host: 58; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 231: { host: 58; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 232: { host: 59; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 233: { host: 59; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 234: { host: 59; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 235: { host: 59; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 236: { host: 60; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 237: { host: 60; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 238: { host: 60; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 239: { host: 60; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 240: { host: 61; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 241: { host: 61; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 242: { host: 61; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 243: { host: 61; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 244: { host: 62; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 245: { host: 62; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 246: { host: 62; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 247: { host: 62; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 248: { host: 63; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 249: { host: 63; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 250: { host: 63; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 251: { host: 63; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 252: { host: 64; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 253: { host: 64; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 254: { host: 64; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 255: { host: 64; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+
+------------------------------------------------------------
+Sender: LSF System <lsfadmin@lassen710>
+Subject: Job 3850167: <bruck_n64_ppn4> in cluster <lassen> Done
+
+Job <bruck_n64_ppn4> was submitted from host <lassen709> by user <bienz1> in cluster <lassen> at Wed Aug 10 15:19:43 2022
+Job was executed on host(s) <1*lassen710>, in queue <pbatch>, as user <bienz1> in cluster <lassen> at Wed Aug 10 16:31:57 2022
+                            <40*lassen412>
+                            <40*lassen418>
+                            <40*lassen263>
+                            <40*lassen93>
+                            <40*lassen428>
+                            <40*lassen429>
+                            <40*lassen759>
+                            <40*lassen100>
+                            <40*lassen104>
+                            <40*lassen762>
+                            <40*lassen763>
+                            <40*lassen107>
+                            <40*lassen768>
+                            <40*lassen769>
+                            <40*lassen441>
+                            <40*lassen770>
+                            <40*lassen113>
+                            <40*lassen442>
+                            <40*lassen771>
+                            <40*lassen443>
+                            <40*lassen772>
+                            <40*lassen446>
+                            <40*lassen775>
+                            <40*lassen777>
+                            <40*lassen293>
+                            <40*lassen790>
+                            <40*lassen134>
+                            <40*lassen135>
+                            <40*lassen140>
+                            <40*lassen470>
+                            <40*lassen142>
+                            <40*lassen471>
+                            <40*lassen633>
+                            <40*lassen667>
+                            <40*lassen338>
+                            <40*lassen182>
+                            <40*lassen668>
+                            <40*lassen669>
+                            <40*lassen821>
+                            <40*lassen825>
+                            <40*lassen199>
+                            <40*lassen512>
+                            <40*lassen514>
+                            <40*lassen363>
+                            <40*lassen524>
+                            <40*lassen529>
+                            <40*lassen374>
+                            <40*lassen576>
+                            <40*lassen200>
+                            <40*lassen201>
+                            <40*lassen202>
+                            <40*lassen203>
+                            <40*lassen204>
+                            <40*lassen205>
+                            <40*lassen206>
+                            <40*lassen207>
+                            <40*lassen208>
+                            <40*lassen209>
+                            <40*lassen383>
+                            <40*lassen388>
+                            <40*lassen389>
+                            <40*lassen210>
+                            <40*lassen393>
+                            <40*lassen395>
+</g/g14/bienz1> was used as the home directory.
+</g/g14/bienz1/test_scripts/mpi_advance/lassen> was used as the working directory.
+Started at Wed Aug 10 16:31:57 2022
+Terminated at Wed Aug 10 16:32:12 2022
+Results reported at Wed Aug 10 16:32:12 2022
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+#!/bin/bash
+#BSUB -J bruck_n64_ppn4
+#BSUB -e bruck_n64_ppn4.%J.err
+#BSUB -o bruck_n64_ppn4.%J.out
+#BSUB -nnodes 64
+#BSUB -q pbatch
+#BSUB -W 00:15
+
+cd /g/g14/bienz1/locality_aware/build_lassen/benchmarks
+
+jsrun -a4 -c4 -r1 -n64 --latency_priority=cpu-cpu --launch_distribution=packed --print_placement=1 ./bruck_allgather
+
+
+
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   0.21 sec.
+    Max Memory :                                 253 MB
+    Average Memory :                             253.00 MB
+    Total Requested Memory :                     -
+    Delta Memory :                               -
+    Max Swap :                                   682 MB
+    Max Processes :                              1
+    Max Threads :                                2
+    Run time :                                   14 sec.
+    Turnaround time :                            4349 sec.
+
+The output (if any) is above this job summary.
+
+
+
+PS:
+
+Read file <bruck_n64_ppn4.3850167.err> for stderr output of this job.
+

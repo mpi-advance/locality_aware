@@ -1,4 +1,6 @@
 #include "allgather.h"
+#include "gather.h"
+#include "bcast.h"
 #include <string.h>
 #include <math.h>
 #include "utils.h"
@@ -56,15 +58,18 @@ int allgather_bruck(const void* sendbuf,
     MPI_Type_size(recvtype, &recv_size);
 
     // Copy my data to beginning of recvbuf
-    memcpy(recvbuf, sendbuf, recvcount*recv_size);
+    if (sendbuf != recvbuf)
+        memcpy(recvbuf, sendbuf, recvcount*recv_size);
 
     // Perform allgather
     int stride;
     int send_proc, recv_proc, size;
     int num_steps = log2(num_procs);
+    int msg_size = recvcount*recv_size;
+
+    stride = 1;
     for (int i = 0; i < num_steps; i++)
     {
-        stride = pow(2, i);
         send_proc = rank - stride;
         if (send_proc < 0) send_proc += num_procs;
         recv_proc = rank + stride;
@@ -74,11 +79,13 @@ int allgather_bruck(const void* sendbuf,
         MPI_Isend(recv_buffer, size, recvtype, send_proc, tag, comm, &(requests[0]));
         MPI_Irecv(recv_buffer + size*recv_size, size, recvtype, recv_proc, tag, comm, &(requests[1]));
         MPI_Waitall(2, requests, MPI_STATUSES_IGNORE);
+
+        stride *= 2;
     }
 
     // Rotate Final Data
     if (rank)
-        rotate(recv_buffer, (num_procs-rank)*recvcount*recv_size, num_procs*recvcount*recv_size);
+        rotate(recv_buffer, (num_procs-rank)*msg_size, num_procs*msg_size);
 
     return 0;
 }
@@ -285,11 +292,12 @@ int allgather_loc_bruck(const void *sendbuf, int sendcount, MPI_Datatype sendtyp
 
     MPI_Request requests[2];
 
+    stride = PPN;
     for (int i = 0; i < num_steps; i++)
     {
         // bruck : send to 1 away, then 2 away, then 4 away, etc
-        size = sendcount * pow(PPN, i+1);
-        dist = local_rank * pow(PPN, i+1);
+        size = sendcount * stride;
+        dist = local_rank * stride;
 
         send_proc = rank - dist;
         if (send_proc < 0) send_proc += num_procs;
@@ -305,8 +313,8 @@ int allgather_loc_bruck(const void *sendbuf, int sendcount, MPI_Datatype sendtyp
         }
 
         allgather_bruck(recvbuf, size, recvtype, recvbuf, size, recvtype, comm->local_comm);
-        //PMPI_Allgather(MPI_IN_PLACE, size, recvtype, recvbuf, size, recvtype, comm->local_comm);
 
+        stride *= PPN;
     }
 
     if (local_node)
@@ -467,12 +475,12 @@ int allgather_hier_bruck(const void *sendbuf, int sendcount, MPI_Datatype sendty
 
     char* tmpbuf = (char*)malloc(recvcount*num_procs*recv_size*sizeof(char));
 
-    MPI_Gather(sendbuf, sendcount, sendtype, tmpbuf, recvcount, recvtype, 0, comm->local_comm);
+    gather(sendbuf, sendcount, sendtype, tmpbuf, recvcount, recvtype, 0, comm->local_comm);
     if (local_rank == 0)
     {
         allgather_bruck(tmpbuf, recvcount*PPN, recvtype, recvbuf, recvcount*PPN, recvtype, comm->group_comm);
     }
-    MPI_Bcast(recvbuf, recvcount*num_procs, recvtype, 0, comm->local_comm);
+    bcast(recvbuf, recvcount*num_procs, recvtype, 0, comm->local_comm);
 
     free(tmpbuf);
 }
