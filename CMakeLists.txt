@@ -25,11 +25,18 @@ endif()
 ## GOOGLETEST      ##
 #####################
 include(FetchContent)
+
+if (CMAKE_C_COMPILER_VERSION VERSION_LESS 8)
+  set(gtest_tag 703bd9caab50b139428cea1aaff9974ebee5742e)
+else()
+  set(gtest_tag 5376968f6948923e2411081fd9372e71a59d8e77)
+endif()
+
 FetchContent_Declare(
   googletest
   GIT_REPOSITORY https://github.com/google/googletest.git
   # Specify the commit you depend on and update it regularly.
-  GIT_TAG 5376968f6948923e2411081fd9372e71a59d8e77
+  GIT_TAG ${gtest_tag}
 )
 # For Windows: Prevent overriding the parent project's compiler/linker settings
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
