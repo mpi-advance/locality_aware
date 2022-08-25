@@ -39,7 +39,7 @@ struct ParMat
     int first_row;
     int first_col;
     int off_proc_num_cols;
-    std::vector<int> off_proc_columns;
+    std::vector<long> off_proc_columns;
     Comm<U> send_comm;
     Comm<U> recv_comm;
     MPI_Comm dist_graph_comm;
@@ -95,12 +95,12 @@ void form_comm(ParMat<U>& A)
         U start = A.recv_comm.ptr[i];
         U end = A.recv_comm.ptr[i+1];
         A.recv_comm.counts[i] = (int)(end - start);
-        MPI_Isend(&(A.off_proc_columns[start]), A.recv_comm.counts[i], MPI_INT, proc, msg_tag, 
+        MPI_Isend(&(A.off_proc_columns[start]), A.recv_comm.counts[i], MPI_LONG, proc, msg_tag, 
                 MPI_COMM_WORLD, &(A.recv_comm.req[i]));
     }
 
     MPI_Status recv_status;
-    std::vector<int> recv_buf;
+    std::vector<long> recv_buf;
     int count_sum = 0;
     int count;
     A.send_comm.ptr.push_back(0);
@@ -109,12 +109,12 @@ void form_comm(ParMat<U>& A)
         MPI_Probe(MPI_ANY_SOURCE, msg_tag, MPI_COMM_WORLD, &recv_status);
         proc = recv_status.MPI_SOURCE;
         A.send_comm.procs.push_back(proc);
-        MPI_Get_count(&recv_status, MPI_INT, &count);
+        MPI_Get_count(&recv_status, MPI_LONG, &count);
         A.send_comm.counts.push_back(count);
         count_sum += count;
         A.send_comm.ptr.push_back((U)(count_sum));
         if (recv_buf.size() < count) recv_buf.resize(count);
-        MPI_Recv(recv_buf.data(), count, MPI_INT, proc, msg_tag, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+        MPI_Recv(recv_buf.data(), count, MPI_LONG, proc, msg_tag, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
         for (int i = 0; i < count; i++)
             A.send_comm.idx.push_back(recv_buf[i] - A.first_row);
     }

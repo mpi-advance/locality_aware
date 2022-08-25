@@ -15,7 +15,7 @@ void map_procs_to_nodes(LocalityComm* locality, const int orig_num_msgs,
         std::vector<int>& msg_nodes, std::vector<int>& msg_node_to_local,
         bool incr);
 void form_local_comm(const int orig_num_sends, const int* orig_send_procs,
-        const int* orig_send_ptr, const int* orig_send_indices,
+        const int* orig_send_ptr, const long* orig_send_indices,
         const std::vector<int>& nodes_to_local, CommData* send_data,
         CommData* recv_data, CommData* local_data,
         std::vector<int>& recv_idx_nodes,
@@ -29,15 +29,15 @@ void form_local_comm(const int orig_num_sends, const int* orig_send_procs,
 void form_global_comm(CommData* local_data, CommData* global_data,
         std::vector<int>& local_data_nodes, const MPIX_Comm* mpix_comm, int tag);
 void update_global_comm(LocalityComm* locality);
-void form_global_map(const CommData* map_data, std::map<int, int>& global_map);
-void map_indices(CommData* idx_data, std::map<int, int>& global_map);
+void form_global_map(const CommData* map_data, std::map<long, int>& global_map);
+void map_indices(CommData* idx_data, std::map<long, int>& global_map);
 void map_indices(CommData* idx_data, const CommData* map_data);
 void remove_duplicates(CommData* comm_pkg);
 void remove_duplicates(CommPkg* data);
 void remove_duplicates(LocalityComm* locality);
 void update_indices(LocalityComm* locality, 
-        std::map<int, int>& send_global_to_local,
-        std::map<int, int>& recv_global_to_local);
+        std::map<long, int>& send_global_to_local,
+        std::map<long, int>& recv_global_to_local);
 void update_indices(LocalityComm* locality);
 
 
@@ -55,8 +55,8 @@ void init_locality(const int n_sends,
         const int n_recvs,
         const int* recv_procs,
         const int* recv_indptr,
-        const int* global_send_indices,
-        const int* global_recv_indices,
+        const long* global_send_indices,
+        const long* global_recv_indices,
         const MPI_Datatype sendtype, 
         const MPI_Datatype recvtype,
         const MPIX_Comm* mpix_comm,
@@ -141,8 +141,8 @@ void init_locality(const int n_sends,
     // Update send and receive indices
     int send_idx_size = send_indptr[n_sends];
     int recv_idx_size = recv_indptr[n_recvs];
-    std::map<int, int> send_global_to_local;
-    std::map<int, int> recv_global_to_local;
+    std::map<long, int> send_global_to_local;
+    std::map<long, int> recv_global_to_local;
     for (int i = 0; i < send_idx_size; i++)
         send_global_to_local[global_send_indices[i]] = i;
     for (int i = 0; i < recv_idx_size; i++)
@@ -350,7 +350,7 @@ void map_procs_to_nodes(LocalityComm* locality, const int orig_num_msgs,
 // or final local_L communicator) along with the corresponding portion
 // of the fully local (local_L) communicator.
 void form_local_comm(const int orig_num_sends, const int* orig_send_procs,
-        const int* orig_send_ptr, const int* orig_send_indices,
+        const int* orig_send_ptr, const long* orig_send_indices,
         const std::vector<int>& nodes_to_local, CommData* send_data,
         CommData* recv_data, CommData* local_data,
         std::vector<int>& recv_idx_nodes,
@@ -835,7 +835,7 @@ void update_global_comm(LocalityComm* locality)
 // 2.) map internal communication steps to point to correct
 //     position in previously received data
 // 3.) map final receives to points in original recv data
-void form_global_map(const CommData* map_data, std::map<int, int>& global_map)
+void form_global_map(const CommData* map_data, std::map<long, int>& global_map)
 {
     int idx;
 
@@ -845,7 +845,7 @@ void form_global_map(const CommData* map_data, std::map<int, int>& global_map)
         global_map[idx] = i;
     }
 }
-void map_indices(CommData* idx_data, std::map<int, int>& global_map)
+void map_indices(CommData* idx_data, std::map<long, int>& global_map)
 {
     int idx;
 
@@ -858,7 +858,7 @@ void map_indices(CommData* idx_data, std::map<int, int>& global_map)
 
 void map_indices(CommData* idx_data, const CommData* map_data)
 {
-    std::map<int, int> global_map;
+    std::map<long, int> global_map;
     form_global_map(map_data, global_map);
     map_indices(idx_data, global_map);
 }
@@ -909,8 +909,8 @@ void remove_duplicates(LocalityComm* locality)
 
 
 void update_indices(LocalityComm* locality, 
-        std::map<int, int>& send_global_to_local,
-        std::map<int, int>& recv_global_to_local)
+        std::map<long, int>& send_global_to_local,
+        std::map<long, int>& recv_global_to_local)
 {
     // Remove duplicates
     remove_duplicates(locality);

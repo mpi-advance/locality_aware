@@ -68,6 +68,7 @@ void readParMatrix(const char* filename, ParMat<U>& A)
         is_little_endian = true;
     }
 
+
     n_items_read = fread(&global_num_rows, sizeof_int32, 1, ifile);
     if (n_items_read == EOF) printf("EOF reading code\n");
     if (ferror(ifile)) printf("Error reading N\n");
@@ -190,14 +191,16 @@ void readParMatrix(const char* filename, ParMat<U>& A)
     A.on_proc.nnz = A.on_proc.col_idx.size();
     A.off_proc.nnz = A.off_proc.col_idx.size();
 
-    std::map<int, int> orig_to_new;
+    std::map<long, int> orig_to_new;
+    //for (int i = 0; i < A.off_proc.col_idx.size(); i++)
+    //    A.off_proc_columns.push_back(A.off_proc.col_idx[i]);
     std::copy(A.off_proc.col_idx.begin(), A.off_proc.col_idx.end(),
             std::back_inserter(A.off_proc_columns));
     std::sort(A.off_proc_columns.begin(), A.off_proc_columns.end());
 
     int prev_col = -1;
     A.off_proc_num_cols = 0;
-    for (std::vector<int>::iterator it = A.off_proc_columns.begin(); 
+    for (std::vector<long>::iterator it = A.off_proc_columns.begin(); 
             it != A.off_proc_columns.end(); ++it)
     {
         //if (rank == 0) printf("*it, prev_col %d, %d\n", *it, prev_col);
