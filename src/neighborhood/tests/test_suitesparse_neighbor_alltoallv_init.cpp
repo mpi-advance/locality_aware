@@ -26,8 +26,7 @@ void test_matrix(const char* filename)
     readParMatrix(filename, A);
     form_comm(A);
     
-
-    /*std::vector<int> send_vals(A.on_proc.n_rows);
+    std::vector<int> send_vals(A.on_proc.n_rows);
     std::iota(send_vals.begin(), send_vals.end(), 0);
     std::vector<int> alltoallv_send_vals(A.send_comm.size_msgs);
     for (int i = 0; i < A.send_comm.size_msgs; i++)
@@ -161,8 +160,6 @@ void test_matrix(const char* filename)
 
     MPIX_Comm_free(neighbor_comm);
     MPI_Comm_free(&std_comm);
-
-*/
 }
 
 int main(int argc, char** argv)
