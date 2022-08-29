@@ -26,11 +26,7 @@ endif()
 #####################
 include(FetchContent)
 
-if (CMAKE_C_COMPILER_VERSION VERSION_LESS 8)
-  set(gtest_tag 703bd9caab50b139428cea1aaff9974ebee5742e)
-else()
-  set(gtest_tag 5376968f6948923e2411081fd9372e71a59d8e77)
-endif()
+set(gtest_tag 703bd9caab50b139428cea1aaff9974ebee5742e)
 
 FetchContent_Declare(
   googletest
