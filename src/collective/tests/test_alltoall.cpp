@@ -40,6 +40,7 @@ TEST(RandomCommTest, TestsInTests)
 
     std::vector<int> std_alltoall(max_s*num_procs);
     std::vector<int> loc_p2p_alltoall(max_s*num_procs);
+    std::vector<int> bruck_alltoall(max_s*num_procs);
 
     for (int i = 0; i < max_i; i++)
     {
@@ -69,6 +70,17 @@ TEST(RandomCommTest, TestsInTests)
                 MPI_COMM_WORLD);
         for (int j = 0; j < s*num_procs; j++)
             ASSERT_EQ(std_alltoall[j], loc_p2p_alltoall[j]);
+
+        alltoall_bruck(local_data.data(), 
+                s, 
+                MPI_INT,
+                bruck_alltoall.data(), 
+                s, 
+                MPI_INT,
+                MPI_COMM_WORLD);
+        for (int j = 0; j < s*num_procs; j++)
+            ASSERT_EQ(std_alltoall[j], bruck_alltoall[j]);
+
 
     }
 }

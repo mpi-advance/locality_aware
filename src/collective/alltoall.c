@@ -1,4 +1,7 @@
-#include "collective.h"
+#include "alltoall.h"
+#include <string.h>
+#include <math.h>
+#include "utils.h"
 
 // TODO : Add Locality-Aware Bruck Alltoall Algorithm!
 // TODO : Change to PMPI_Alltoall and test with profiling library!
@@ -246,6 +249,114 @@ int MPI_Alltoall(const void* sendbuf,
     free(nonlocal_requests);
 
     MPIX_Comm_free(mpi_comm);
+
+    return 0;
+}
+
+
+int alltoall_bruck(const void* sendbuf,
+        const int sendcount,
+        MPI_Datatype sendtype,
+        void* recvbuf,
+        const int recvcount,
+        MPI_Datatype recvtype,
+        MPI_Comm comm)
+{
+    int rank, num_procs;
+    MPI_Comm_rank(comm, &rank);
+    MPI_Comm_size(comm, &num_procs);
+
+    int tag = 102944;
+    MPI_Request requests[2];
+
+    char* recv_buffer = (char*)recvbuf;
+
+    int recv_size;
+    MPI_Type_size(recvtype, &recv_size);
+
+    if (sendbuf != recvbuf)
+        memcpy(recvbuf, sendbuf, recvcount*recv_size*num_procs);
+
+    // Perform all-to-all
+    int stride, ctr, group_size;
+    int send_proc, recv_proc, size;
+    int num_steps = log2(num_procs);
+    int msg_size = recvcount*recv_size;
+    int total_count = recvcount*num_procs;
+
+    // TODO : could have only half this size
+    char* contig_buf = (char*)malloc(total_count*recv_size);
+    char* tmpbuf = (char*)malloc(total_count*recv_size);
+
+    // 1. rotate local data
+    if (rank)
+        rotate(recv_buffer, rank*msg_size, num_procs*msg_size);
+
+    if (rank == 0) for (int i = 0; i < total_count; i++)
+        printf("%d\n", ((int*)(recvbuf))[i]);
+
+    // 2. send to left, recv from right
+    stride = 1;
+    for (int i = 0; i < num_steps; i++)
+    {
+        if (rank == 0) printf("Step %d\n", i);
+        recv_proc = rank - stride;
+        if (recv_proc < 0) recv_proc += num_procs;
+        send_proc = rank + stride;
+        if (send_proc >= num_procs) send_proc -= num_procs;
+
+        group_size = stride * recvcount;
+        
+        ctr = 0;
+        for (int i = group_size; i < total_count; i += (group_size*2))
+        {
+            for (int j = 0; j < group_size; j++)
+            {
+                for (int k = 0; k < recv_size; k++)
+                {
+                    if (rank == 0) printf("i = %d, j = %d, k = %d\n", i, j, k);
+                    contig_buf[ctr*recv_size+k] = recv_buffer[(i+j)*recv_size+k];
+                }
+                if (rank == 0) printf("Contigbuf[%d] = %d\n", ctr, ((int*)(contig_buf))[ctr]);
+                ctr++;
+            }
+        }
+
+        size = ((int)(total_count / group_size) * group_size) / 2;
+
+        if (rank == 0) printf("Rank %d sending %d vals (%d) to %d\n", rank, size, ((int*)(contig_buf))[0], send_proc);
+        MPI_Isend(contig_buf, size, recvtype, send_proc, tag, comm, &(requests[0]));
+        MPI_Irecv(tmpbuf, size, recvtype, recv_proc, tag, comm, &(requests[1]));
+        MPI_Waitall(2, requests, MPI_STATUSES_IGNORE);
+
+        ctr = 0;
+        for (int i = group_size; i < total_count; i += (group_size*2))
+        {
+            for (int j = 0; j < group_size; j++)
+            {
+                for (int k = 0; k < recv_size; k++)
+                {
+                    recv_buffer[(i+j)*recv_size+k] = tmpbuf[ctr*recv_size+k];
+                }
+                ctr++;
+            }
+        }
+
+            if (rank == 0) for (int i = 0; i < total_count; i++)
+        printf("%d\n", ((int*)(recvbuf))[i]);
+
+        stride *= 2;
+
+    } 
+
+    // 3. rotate local data
+    if (rank < num_procs)
+        rotate(recv_buffer, (rank+1)*msg_size, num_procs*msg_size);
+
+    if (rank == 0) for (int i = 0; i < total_count; i++)
+        printf("%d\n", ((int*)(recvbuf))[i]);
+
+    // TODO :: REVERSE!
 
     return 0;
 }

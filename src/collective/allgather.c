@@ -74,7 +74,7 @@ int allgather_bruck(const void* sendbuf,
         if (send_proc < 0) send_proc += num_procs;
         recv_proc = rank + stride;
         if (recv_proc >= num_procs) recv_proc -= num_procs;
-        size = stride*sendcount;
+        size = stride*recvcount;
 
         MPI_Isend(recv_buffer, size, recvtype, send_proc, tag, comm, &(requests[0]));
         MPI_Irecv(recv_buffer + size*recv_size, size, recvtype, recv_proc, tag, comm, &(requests[1]));
