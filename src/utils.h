@@ -8,6 +8,7 @@ extern "C"
 
 void sort(int n_objects, int* object_indices, int* object_values);
 void rotate(void* ref, int new_start_byte, int end_byte);
+void reverse(void* recvbuf, int n_bytes, int var_bytes);
 
 #ifdef __cplusplus
 }
