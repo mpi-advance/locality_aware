@@ -1,0 +1,15 @@
+#!/bin/bash
+
+#SBATCH --output=loc_alltoall_n64_ppn16.%j.out
+#SBATCH --error=loc_alltoall_n64_ppn16.%j.err
+#SBATCH --nodes=64
+#SBATCH --ntasks-per-node=16
+#SBATCH --ntasks-per-socket=8
+#SBATCH --cpus-per-task=1
+#SBATCH --time=00:10:00
+#SBATCH --partition=pbatch
+##SBATCH --partition=pdebug
+
+cd /g/g14/bienz1/locality_aware/build_quartz/benchmarks
+
+srun -n 1024 ./p2p_alltoall
