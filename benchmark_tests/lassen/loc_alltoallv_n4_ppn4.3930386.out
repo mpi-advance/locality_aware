@@ -1,0 +1,123 @@
+Testing Size 1
+PMPI_Alltoallv Time 1.708206e-05
+MPIX_Alltoallv Time 1.345477e-05
+Testing Size 2
+PMPI_Alltoallv Time 1.187026e-05
+MPIX_Alltoallv Time 1.506677e-05
+Testing Size 4
+PMPI_Alltoallv Time 1.209269e-05
+MPIX_Alltoallv Time 1.515937e-05
+Testing Size 8
+PMPI_Alltoallv Time 1.195546e-05
+MPIX_Alltoallv Time 1.753534e-05
+Testing Size 16
+PMPI_Alltoallv Time 1.252954e-05
+MPIX_Alltoallv Time 1.952966e-05
+Testing Size 32
+PMPI_Alltoallv Time 1.308248e-05
+MPIX_Alltoallv Time 2.390346e-05
+Testing Size 64
+PMPI_Alltoallv Time 1.431191e-05
+MPIX_Alltoallv Time 3.147769e-05
+Testing Size 128
+PMPI_Alltoallv Time 1.665726e-05
+MPIX_Alltoallv Time 5.037270e-05
+Testing Size 256
+PMPI_Alltoallv Time 1.880835e-05
+MPIX_Alltoallv Time 8.184131e-05
+Testing Size 512
+PMPI_Alltoallv Time 2.806967e-05
+MPIX_Alltoallv Time 1.498649e-04
+Testing Size 1024
+PMPI_Alltoallv Time 4.902119e-05
+MPIX_Alltoallv Time 2.552568e-04
+Testing Size 2048
+PMPI_Alltoallv Time 8.721921e-05
+MPIX_Alltoallv Time 7.180145e-04
+Testing Size 4096
+PMPI_Alltoallv Time 1.602938e-04
+MPIX_Alltoallv Time 1.267297e-03
+Testing Size 8192
+PMPI_Alltoallv Time 2.968970e-04
+MPIX_Alltoallv Time 2.368909e-03
+Testing Size 16384
+PMPI_Alltoallv Time 6.148113e-04
+MPIX_Alltoallv Time 4.497337e-03
+app 0: ./p2p_alltoallv 
+rank: 0: { host: 1; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 1: { host: 1; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 2: { host: 1; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 3: { host: 1; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 4: { host: 2; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 5: { host: 2; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 6: { host: 2; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 7: { host: 2; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 8: { host: 3; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 9: { host: 3; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 10: { host: 3; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 11: { host: 3; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+rank: 12: { host: 4; cpu: {0-3}, {4-15} ; mem: {0-32603} } : app 0
+rank: 13: { host: 4; cpu: {4-7}, {0-3,8-15} ; mem: {0-32603} } : app 0
+rank: 14: { host: 4; cpu: {8-11}, {0-7,12-15} ; mem: {0-32603} } : app 0
+rank: 15: { host: 4; cpu: {12-15}, {0-11} ; mem: {0-32603} } : app 0
+
+------------------------------------------------------------
+Sender: LSF System <lsfadmin@lassen710>
+Subject: Job 3930386: <loc_alltoall_n4_ppn4> in cluster <lassen> Done
+
+Job <loc_alltoall_n4_ppn4> was submitted from host <lassen709> by user <bienz1> in cluster <lassen> at Tue Sep 20 13:39:07 2022
+Job was executed on host(s) <1*lassen710>, in queue <pdebug>, as user <bienz1> in cluster <lassen> at Tue Sep 20 13:39:10 2022
+                            <40*lassen27>
+                            <40*lassen26>
+                            <40*lassen25>
+                            <40*lassen8>
+</g/g14/bienz1> was used as the home directory.
+</g/g14/bienz1/locality_aware/benchmark_tests/lassen> was used as the working directory.
+Started at Tue Sep 20 13:39:10 2022
+Terminated at Tue Sep 20 13:39:25 2022
+Results reported at Tue Sep 20 13:39:25 2022
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+#!/bin/bash
+#BSUB -J loc_alltoall_n4_ppn4
+#BSUB -e loc_alltoall_n4_ppn4.%J.err
+#BSUB -o loc_alltoall_n4_ppn4.%J.out
+#BSUB -nnodes 4
+##BSUB -q pbatch
+#BSUB -q pdebug
+#BSUB -W 00:15
+
+cd /g/g14/bienz1/locality_aware/build_lassen/benchmarks
+
+jsrun -a4 -c4 -r1 -n4 --latency_priority=cpu-cpu --launch_distribution=packed --print_placement=1 ./p2p_alltoallv
+
+
+
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   0.18 sec.
+    Max Memory :                                 -
+    Average Memory :                             -
+    Total Requested Memory :                     -
+    Delta Memory :                               -
+    Max Swap :                                   -
+    Max Processes :                              -
+    Max Threads :                                -
+    Run time :                                   14 sec.
+    Turnaround time :                            18 sec.
+
+The output (if any) is above this job summary.
+
+
+
+PS:
+
+Read file <loc_alltoall_n4_ppn4.3930386.err> for stderr output of this job.
+

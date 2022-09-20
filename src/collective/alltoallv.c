@@ -19,7 +19,7 @@
  *      - Load balacing is too expensive for 
  *          non-persistent Alltoallv
  *************************************************/
-int MPI_Alltoallv(const void* sendbuf,
+int MPIX_Alltoallv(const void* sendbuf,
         const int sendcounts[],
         const int sdispls[],
         MPI_Datatype sendtype,
@@ -27,11 +27,8 @@ int MPI_Alltoallv(const void* sendbuf,
         const int recvcounts[],
         const int rdispls[],
         MPI_Datatype recvtype,
-        MPI_Comm comm)
+        MPIX_Comm* mpi_comm)
 {    
-    MPIX_Comm* mpi_comm;
-    MPIX_Comm_init(&mpi_comm, comm);
-
     int rank, num_procs;
     MPI_Comm_rank(mpi_comm->global_comm, &rank);
     MPI_Comm_size(mpi_comm->global_comm, &num_procs);
@@ -421,8 +418,6 @@ int MPI_Alltoallv(const void* sendbuf,
     free(send_node_sizes);
     free(recv_proc_sizes);
     free(recv_proc_displs);
-
-    MPIX_Comm_free(mpi_comm);
 
     return 0;
 }

@@ -20,17 +20,14 @@
  *      on-node so that each process holds
  *      the correct final data
  *************************************************/
-int MPI_Alltoall(const void* sendbuf,
+int MPIX_Alltoall(const void* sendbuf,
         const int sendcount,
         MPI_Datatype sendtype,
         void* recvbuf,
         const int recvcount,
         MPI_Datatype recvtype,
-        MPI_Comm comm)
+        MPIX_Comm* mpi_comm)
 {    
-    MPIX_Comm* mpi_comm;
-    MPIX_Comm_init(&mpi_comm, comm);
-
     int rank, num_procs;
     MPI_Comm_rank(mpi_comm->global_comm, &rank);
     MPI_Comm_size(mpi_comm->global_comm, &num_procs);
@@ -247,8 +244,6 @@ int MPI_Alltoall(const void* sendbuf,
     free(contig_buf);
     free(local_requests);
     free(nonlocal_requests);
-
-    MPIX_Comm_free(mpi_comm);
 
     return 0;
 }
