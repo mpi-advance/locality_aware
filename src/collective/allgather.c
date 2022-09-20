@@ -312,10 +312,12 @@ int allgather_loc_bruck(const void *sendbuf, int sendcount, MPI_Datatype sendtyp
             MPI_Waitall(2, requests, MPI_STATUSES_IGNORE);
         }
 
-        allgather_bruck(recvbuf, size, recvtype, recvbuf, size, recvtype, comm->local_comm);
+
+        allgather_bruck(&(recv_buffer[recv_pos*recv_size]), size, recvtype, recvbuf, size, recvtype, comm->local_comm);
 
         stride *= PPN;
     }
+
 
     if (local_node)
         rotate(recv_buffer, 
