@@ -15,9 +15,6 @@ int main(int argc, char* argv[])
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
 
-    MPIX_Comm* locality_comm;
-    MPIX_Comm_init(&locality_comm, MPI_COMM_WORLD);
-
     int max_i = 15;
     int max_s = pow(2, max_i);
     int n_iter = 100;
@@ -68,7 +65,7 @@ int main(int argc, char* argv[])
                 recv_sizes.data(),
                 recv_displs.data(),
                 MPI_DOUBLE,
-                locality_comm);
+                MPI_COMM_WORLD);
 
         for (int j = 0; j < s; j++)
 	{
@@ -122,7 +119,7 @@ int main(int argc, char* argv[])
                 recv_sizes.data(),
                 recv_displs.data(),
                 MPI_DOUBLE,
-                locality_comm);
+                MPI_COMM_WORLD);
         MPI_Barrier(MPI_COMM_WORLD);
         t0 = MPI_Wtime();
         for (int k = 0; k < n_iter; k++)
@@ -135,15 +132,13 @@ int main(int argc, char* argv[])
                     recv_sizes.data(),
                     recv_displs.data(),
                     MPI_DOUBLE,
-                    locality_comm);
+                    MPI_COMM_WORLD);
         }
         tfinal = (MPI_Wtime() - t0) / n_iter;
         MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
         if (rank == 0) printf("MPIX_Alltoallv Time %e\n", t0);
 
     }
-
-    MPIX_Comm_free(locality_comm);
 
     MPI_Finalize();
     return 0;
