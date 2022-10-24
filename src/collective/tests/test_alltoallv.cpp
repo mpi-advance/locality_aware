@@ -73,7 +73,19 @@ TEST(RandomCommTest, TestsInTests)
                 MPI_INT,
                 MPI_COMM_WORLD);
 
-        // Locality-Aware P2P Alltoall 
+        // Locality-Aware P2P Alltoallv
+        MPI_Alltoallv(local_data.data(), 
+                sizes.data(),
+                displs.data(),
+                MPI_INT, 
+                loc_p2p_alltoallv.data(), 
+                sizes.data(),
+                displs.data(),
+                MPI_INT,
+                MPI_COMM_WORLD);
+        for (int j = 0; j < s*num_procs; j++)
+            ASSERT_EQ(std_alltoallv[j], loc_p2p_alltoallv[j]);
+
         MPIX_Alltoallv(local_data.data(), 
                 sizes.data(),
                 displs.data(),
@@ -85,8 +97,6 @@ TEST(RandomCommTest, TestsInTests)
                 locality_comm);
         for (int j = 0; j < s*num_procs; j++)
             ASSERT_EQ(std_alltoallv[j], loc_p2p_alltoallv[j]);
-
-break;
     }
 
     MPIX_Comm_free(locality_comm);
