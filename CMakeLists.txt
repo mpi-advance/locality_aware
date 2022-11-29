@@ -26,7 +26,7 @@ endif()
 #####################
 include(FetchContent)
 
-set(gtest_tag 703bd9caab50b139428cea1aaff9974ebee5742e)
+set(gtest_tag release-1.12.1)
 
 FetchContent_Declare(
   googletest
