@@ -20,6 +20,14 @@
  *      on-node so that each process holds
  *      the correct final data
  *************************************************/
+int MPIX_Alltoall(const void* sendbuf,
+        const int sendcount,
+        MPI_Datatype sendtype,
+        void* recvbuf,
+        const int recvcount,
+        MPI_Datatype recvtype,
+        MPIX_Comm* mpi_comm);
+
 int MPI_Alltoall(const void* sendbuf,
         const int sendcount,
         MPI_Datatype sendtype,
@@ -305,14 +313,14 @@ int alltoall_bruck(const void* sendbuf,
     if (rank)
         rotate(recv_buffer, rank*msg_size, num_procs*msg_size);
 
-    if (rank == 0) for (int i = 0; i < total_count; i++)
-        printf("%d\n", ((int*)(recvbuf))[i]);
+    // if (rank == 0) for (int i = 0; i < total_count; i++)
+    //     printf("%d\n", ((int*)(recvbuf))[i]);
 
     // 2. send to left, recv from right
     stride = 1;
     for (int i = 0; i < num_steps; i++)
     {
-        if (rank == 0) printf("Step %d\n", i);
+        // if (rank == 0) printf("Step %d\n", i);
         recv_proc = rank - stride;
         if (recv_proc < 0) recv_proc += num_procs;
         send_proc = rank + stride;
@@ -327,17 +335,17 @@ int alltoall_bruck(const void* sendbuf,
             {
                 for (int k = 0; k < recv_size; k++)
                 {
-                    if (rank == 0) printf("i = %d, j = %d, k = %d\n", i, j, k);
+                    // if (rank == 0) printf("i = %d, j = %d, k = %d\n", i, j, k);
                     contig_buf[ctr*recv_size+k] = recv_buffer[(i+j)*recv_size+k];
                 }
-                if (rank == 0) printf("Contigbuf[%d] = %d\n", ctr, ((int*)(contig_buf))[ctr]);
+                // if (rank == 0) printf("Contigbuf[%d] = %d\n", ctr, ((int*)(contig_buf))[ctr]);
                 ctr++;
             }
         }
 
         size = ((int)(total_count / group_size) * group_size) / 2;
 
-        if (rank == 0) printf("Rank %d sending %d vals (%d) to %d\n", rank, size, ((int*)(contig_buf))[0], send_proc);
+        // if (rank == 0) printf("Rank %d sending %d vals (%d) to %d\n", rank, size, ((int*)(contig_buf))[0], send_proc);
         MPI_Isend(contig_buf, size, recvtype, send_proc, tag, comm, &(requests[0]));
         MPI_Irecv(tmpbuf, size, recvtype, recv_proc, tag, comm, &(requests[1]));
         MPI_Waitall(2, requests, MPI_STATUSES_IGNORE);
@@ -355,8 +363,8 @@ int alltoall_bruck(const void* sendbuf,
             }
         }
 
-            if (rank == 0) for (int i = 0; i < total_count; i++)
-        printf("%d\n", ((int*)(recvbuf))[i]);
+        //     if (rank == 0) for (int i = 0; i < total_count; i++)
+        // printf("%d\n", ((int*)(recvbuf))[i]);
 
         stride *= 2;
 
@@ -366,10 +374,19 @@ int alltoall_bruck(const void* sendbuf,
     if (rank < num_procs)
         rotate(recv_buffer, (rank+1)*msg_size, num_procs*msg_size);
 
-    if (rank == 0) for (int i = 0; i < total_count; i++)
-        printf("%d\n", ((int*)(recvbuf))[i]);
+    // if (rank == 0) for (int i = 0; i < total_count; i++)
+    //     printf("%d\n", ((int*)(recvbuf))[i]);
 
-    // TODO :: REVERSE!
+    // 4. reverse local data
+    memcpy(tmpbuf, recv_buffer, total_count*recv_size);
+    int i_rev = num_procs - 1;
+    for (int i = 0; i < num_procs; ++i)
+    {
+        memcpy(((char*)recvbuf) + i*msg_size, ((char*)tmpbuf) + i_rev*msg_size, msg_size);
+        i_rev -= 1;
+    }
 
+    free(contig_buf);
+    free(tmpbuf);
     return 0;
 }
