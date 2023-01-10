@@ -4,7 +4,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <mpi.h>
-#include "utils.h"
+//#include "utils.h"
+#include "/home/evelynn/Lacality_aware/locality_aware/src/utils.h"
 #include "locality/topology.h"
 
 #ifdef __cplusplus
