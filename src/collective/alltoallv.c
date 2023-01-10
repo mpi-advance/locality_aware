@@ -231,20 +231,19 @@ int MPIX_Alltoallv(const void* sendbuf,
     if (local_R_send_displs[PPN] > buf_size)
         buf_size = local_R_send_displs[PPN];
     buf_size *= recv_size;
-    
+
     char* tmpbuf = NULL;
     char* contig_buf = NULL;
-    
+
     if (buf_size)
     {
-        tmpbuf = (char*)malloc(buf_size*sizeof(char));        
+        tmpbuf = (char*)malloc(buf_size*sizeof(char));
         contig_buf = (char*)malloc(buf_size*sizeof(char));
     }
 
     MPI_Request* local_requests = (MPI_Request*)malloc(2*PPN*sizeof(MPI_Request));
-    
     MPI_Request* nonlocal_requests = (MPI_Request*)malloc(2*local_num_msgs*sizeof(MPI_Request));
-    
+
      /************************************************
      * Step 1 : local Alltoall
      *      Redistribute data so that local rank x holds
