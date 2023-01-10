@@ -1,7 +1,7 @@
 #ifndef MPI_ADVANCE_PERSISTENT_H
 #define MPI_ADVANCE_PERSISTENT_H
 
-#include "/home/evelynn/Lacality_aware/locality_aware/src/locality/locality_comm.h"
+#include "locality/locality_comm.h"
 
 #ifdef __cplusplus
 extern "C"
