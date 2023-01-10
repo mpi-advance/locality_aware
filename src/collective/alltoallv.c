@@ -19,7 +19,7 @@
  *      - Load balacing is too expensive for 
  *          non-persistent Alltoallv
  *************************************************/
- int MPI_Alltoallv(const void* sendbuf,
+int MPI_Alltoallv(const void* sendbuf,
         const int sendcounts[],
         const int sdispls[],
         MPI_Datatype sendtype,
@@ -36,9 +36,8 @@
             recvbuf, recvcounts, rdispls, recvtype,
             locality_comm);
 
-    MPIX_Comm_free(locality_comm); 
+    MPIX_Comm_free(locality_comm);
 }
- 
 
 int MPIX_Alltoallv(const void* sendbuf,
         const int sendcounts[],
@@ -49,7 +48,7 @@ int MPIX_Alltoallv(const void* sendbuf,
         const int rdispls[],
         MPI_Datatype recvtype,
         MPIX_Comm* mpi_comm)
-{  
+{
     int rank, num_procs;
     MPI_Comm_rank(mpi_comm->global_comm, &rank);
     MPI_Comm_size(mpi_comm->global_comm, &num_procs);
@@ -208,7 +207,6 @@ int MPIX_Alltoallv(const void* sendbuf,
 
     int idx;
     int* recv_proc_displs = (int*)malloc((local_num_msgs*PPN*PPN+1)*sizeof(int));
-      
     recv_proc_displs[0] = 0;
     for (int i = 0; i < local_num_msgs; i++)
     {
@@ -230,7 +228,6 @@ int MPIX_Alltoallv(const void* sendbuf,
     int n_msgs;
 
     long buf_size = local_S_recv_displs[PPN];
-        
     if (local_R_send_displs[PPN] > buf_size)
         buf_size = local_R_send_displs[PPN];
     buf_size *= recv_size;
@@ -238,8 +235,6 @@ int MPIX_Alltoallv(const void* sendbuf,
     char* tmpbuf = NULL;
     char* contig_buf = NULL;
     
-    
-
     if (buf_size)
     {
         tmpbuf = (char*)malloc(buf_size*sizeof(char));        
