@@ -19,7 +19,7 @@
  *      - Load balacing is too expensive for 
  *          non-persistent Alltoallv
  *************************************************/
- /*int MPI_Alltoallv(const void* sendbuf,
+ int MPI_Alltoallv(const void* sendbuf,
         const int sendcounts[],
         const int sdispls[],
         MPI_Datatype sendtype,
@@ -29,17 +29,6 @@
         MPI_Datatype recvtype,
         MPI_Comm comm)
 {
-    int rank;
-    MPI_Comm_rank(comm, &rank);
-    
-
-if(rank == 0 || rank == 1 || rank == 2)
-{
-    printf("***********Using MPI Advance\n********************************************************");
-    
-}
-
-
     MPIX_Comm* locality_comm;
     MPIX_Comm_init(&locality_comm, comm);
 
@@ -48,7 +37,7 @@ if(rank == 0 || rank == 1 || rank == 2)
             locality_comm);
 
     MPIX_Comm_free(locality_comm); 
-}*/
+}
  
 
 int MPIX_Alltoallv(const void* sendbuf,
@@ -61,7 +50,6 @@ int MPIX_Alltoallv(const void* sendbuf,
         MPI_Datatype recvtype,
         MPIX_Comm* mpi_comm)
 {  
-    
     int rank, num_procs;
     MPI_Comm_rank(mpi_comm->global_comm, &rank);
     MPI_Comm_size(mpi_comm->global_comm, &num_procs);
@@ -74,12 +62,6 @@ int MPIX_Alltoallv(const void* sendbuf,
     // Calculate shared-memory (local) variables
     int num_nodes = num_procs / PPN;
     int local_node = rank / PPN;
-/*
-if(rank == 0 || rank == 1 || rank == 2)
-{
-    printf("***********Using MPI Advance1\n********************************************************");
-    
-}*/
 
     // Local rank x sends to nodes [x:x/PPN] etc
     // Which local rank from these nodes sends to my node?
@@ -112,15 +94,15 @@ if(rank == 0 || rank == 1 || rank == 2)
     int local_num_msgs = num_msgs;
     if (local_rank < extra) local_num_msgs++;
 
-    int* proc_node_sizes = (int*)malloc(PPN*sizeof(int));     // printf("*--line 115-malloced, int* proc_node_sizes = %p\n, buf_size= (PPN*sizeof(int) = %d\n",proc_node_sizes, (PPN*sizeof(int)));
-    int* proc_node_displs = (int*)malloc((PPN+1)*sizeof(int));// printf("*--line 116-malloced, int* proc_node_displs = %p\n, buf_size= ((PPN+1)*sizeof(int)) = %d\n",proc_node_displs, ((PPN+1)*sizeof(int)));
-    int* local_node_sizes = (int*)malloc(PPN*sizeof(int));     //printf("*--line 117-malloced, int* local_node_sizes = %p\n, buf_size= (PPN*sizeof(int) = %d\n",local_node_sizes, (PPN*sizeof(int)));
-    int* local_node_displs = (int*)malloc((PPN+1)*sizeof(int)); //printf("*--line 118-malloced, int* local_node_displs = %p\n, buf_size= ((PPN+1)*sizeof(int)) = %d\n",local_node_displs, ((PPN+1)*sizeof(int)));
+    int* proc_node_sizes = (int*)malloc(PPN*sizeof(int));
+    int* proc_node_displs = (int*)malloc((PPN+1)*sizeof(int));
+    int* local_node_sizes = (int*)malloc(PPN*sizeof(int));
+    int* local_node_displs = (int*)malloc((PPN+1)*sizeof(int));
 
-    int* local_S_send_displs = (int*)malloc((PPN+1)*sizeof(int)); //printf("*--line 120-malloced, int* local_S_send_displs = %p\n, buf_size= ((PPN+1)*sizeof(int)) = %d\n",local_S_send_displs, ((PPN+1)*sizeof(int)));
-    int* local_R_recv_displs = (int*)malloc((PPN+1)*sizeof(int)); //printf("*--line 121-malloced, int* local_R_recv_displs = %p\n, buf_size= ((PPN+1)*sizeof(int)) = %d\n",local_R_recv_displs, ((PPN+1)*sizeof(int)));
-    long* local_S_recv_displs = (long*)malloc((PPN+1)*sizeof(long)); //printf("*--line 122-malloced, int*  local_S_recv_displs = %p\n, buf_size= ((PPN+1)*sizeof(int)) = %d\n", local_S_recv_displs, ((PPN+1)*sizeof(int)));printf("edited 121 and122 from int to loyj");
-    long* local_R_send_displs = (long*)malloc((PPN+1)*sizeof(long)); //printf("*--line 123-malloced, int*  local_R_send_displs = %p\n, buf_size= ((PPN+1)*sizeof(int)) = %d\n", local_R_send_displs, ((PPN+1)*sizeof(int)));
+    int* local_S_send_displs = (int*)malloc((PPN+1)*sizeof(int));
+    int* local_R_recv_displs = (int*)malloc((PPN+1)*sizeof(int));
+    long* local_S_recv_displs = (long*)malloc((PPN+1)*sizeof(long));
+    long* local_R_send_displs = (long*)malloc((PPN+1)*sizeof(long));
 
     proc_node_displs[0] = 0;
     local_node_displs[0] = 0;
@@ -137,7 +119,7 @@ if(rank == 0 || rank == 1 || rank == 2)
     }
     int first_msg = proc_node_displs[local_rank];
 
-    int* orig_node_sizes = (int*)malloc(num_nodes*sizeof(int)); //printf("*--line 140-malloced, int* orig_node_sizes = %p\n, buf_size= num_nodes*sizeof = %d\n",orig_node_sizes, num_nodes);
+    int* orig_node_sizes = (int*)malloc(num_nodes*sizeof(int));
     local_S_send_displs[0] = 0;
     local_R_recv_displs[0] = 0;
     // final_proc_sizes = recvcounts!
@@ -168,7 +150,7 @@ if(rank == 0 || rank == 1 || rank == 2)
         local_R_recv_displs[i+1] = recv_ctr;
     }
 
-    int* send_node_sizes = (int*)malloc((local_num_msgs*PPN)*sizeof(int));//  printf("*--line 171-send_node_sizes = %p\n, buf_size= local_num_msgs*PPN*PPN= %d\n, the PPN = %d\n",send_node_sizes, (local_num_msgs*PPN*PPN), PPN);
+    int* send_node_sizes = (int*)malloc((local_num_msgs*PPN)*sizeof(int));
     PMPI_Alltoallv(orig_node_sizes,
         proc_node_sizes,
         proc_node_displs,
@@ -199,7 +181,7 @@ if(rank == 0 || rank == 1 || rank == 2)
         local_node_displs[i] *= PPN;
     }
 
-    int* recv_proc_sizes = (int*)malloc((local_num_msgs*PPN*PPN)*sizeof(int)); //printf("*--line 202-recv_proc_sizes = %p\n, buf_size= local_num_msgs*PPN*PPN= %d\n, the PPN = %d\n",recv_proc_sizes, (local_num_msgs*PPN*PPN), PPN);
+    int* recv_proc_sizes = (int*)malloc((local_num_msgs*PPN*PPN)*sizeof(int));
     PMPI_Alltoallv(recvcounts,
         proc_node_sizes,
         proc_node_displs,
@@ -226,8 +208,6 @@ if(rank == 0 || rank == 1 || rank == 2)
 
     int idx;
     int* recv_proc_displs = (int*)malloc((local_num_msgs*PPN*PPN+1)*sizeof(int));
-    
-     // printf("**on--line 230, malloced recv_proc_displs = %p\n, where the bufsize = local_num_msgs*PPN*PPN+1)*sizeof = %d\n, where variables, local_num_msgs = %d\n,*PPN = %d\n",recv_proc_displs, (local_num_msgs*PPN*PPN+1),local_num_msgs,PPN);
       
     recv_proc_displs[0] = 0;
     for (int i = 0; i < local_num_msgs; i++)
@@ -250,13 +230,10 @@ if(rank == 0 || rank == 1 || rank == 2)
     int n_msgs;
 
     long buf_size = local_S_recv_displs[PPN];
-   // printf("**252--buf_size = %ld\n", local_S_recv_displs[PPN]);
         
-    if (local_R_send_displs[PPN] > buf_size)//{
+    if (local_R_send_displs[PPN] > buf_size)
         buf_size = local_R_send_displs[PPN];
-     // printf("**256--local_R_send_displs[PPN] = %ld\n", local_R_send_displs[PPN]); }
-    buf_size *= recv_size; 
-    // printf("**258--recv_size = %d\n", recv_size); 
+    buf_size *= recv_size;
     
     char* tmpbuf = NULL;
     char* contig_buf = NULL;
@@ -265,23 +242,13 @@ if(rank == 0 || rank == 1 || rank == 2)
 
     if (buf_size)
     {
-        tmpbuf = (char*)malloc(buf_size*sizeof(char));
-        
-      //  printf("**tempbuf--line 264,malloc, the buf_size = %ld\n,tempbuf = %p\n", buf_size, tmpbuf);
-        
+        tmpbuf = (char*)malloc(buf_size*sizeof(char));        
         contig_buf = (char*)malloc(buf_size*sizeof(char));
-        
-        
     }
 
     MPI_Request* local_requests = (MPI_Request*)malloc(2*PPN*sizeof(MPI_Request));
     
-     // printf("*--line 273-malloced MPI_Request* local_requests = %p, buf_size= 2*PPN*sizeof= %d\n, the PPN = %d\n",local_requests, (2*PPN), PPN);
-     
     MPI_Request* nonlocal_requests = (MPI_Request*)malloc(2*local_num_msgs*sizeof(MPI_Request));
-    
-    // printf("*--line 277-malloced MPI_Request* nonlocal_requests = %p\n, buf_size= 2*local_num_msgs*sizeof = %d\n, the local_num_msgs = %d\n",nonlocal_requests,(2*local_num_msgs), local_num_msgs);
-     
     
      /************************************************
      * Step 1 : local Alltoall
@@ -316,13 +283,6 @@ if(rank == 0 || rank == 1 || rank == 2)
         end = local_S_recv_displs[i+1];
         if (end - start)
         {
-           //  printf("****MPIX_Alltoallv***MPI_Irecv--299\n*****1");
-             
-            // std::cout<<tmpbuf[ctr*send_size]<<std::endl;
-           //  printf("**tempbuff = %p\n", tmpbuf);
-            // printf("**send_size**\n");
-            // printf("line 315** tmpbuf[ctr*send_size], tmpbuf = %p\n, ctr = %d\n, send_size =%d\n", tmpbuf,ctr,send_size);
-             
             MPI_Irecv(&(tmpbuf[ctr*send_size]), 
                     end - start, 
                     sendtype,
@@ -330,8 +290,6 @@ if(rank == 0 || rank == 1 || rank == 2)
                     tag, 
                     mpi_comm->local_comm, 
                     &(local_requests[n_msgs++]));
-            
-         //    printf("****MPIX_Alltoallv***After--MPI_Irecv--299\n*****1");
         }
         ctr += (end - start);
     }
@@ -391,8 +349,6 @@ if(rank == 0 || rank == 1 || rank == 2)
         end = recv_proc_displs[(i+1)*PPN*PPN];
         if (end - start)
         {
-           //  printf("****MPIX_Alltoallv***MPI_Irecv--370\n*****2");
-             
             MPI_Irecv(&(tmpbuf[ctr*recv_size]), 
                     end - start, 
                     recvtype,
@@ -400,8 +356,6 @@ if(rank == 0 || rank == 1 || rank == 2)
                     tag,
                     mpi_comm->global_comm, 
                     &(nonlocal_requests[n_msgs++]));
-            
-           //  printf("****After--MPIX_Alltoallv***MPI_Irecv--370\n*****2");
         }
         ctr += (end - start);
     }
@@ -436,7 +390,7 @@ if(rank == 0 || rank == 1 || rank == 2)
                 }
             }
         }
-///home/evelynn/Lacality_aware/locality_aware/src/collective/alltoallv.c
+
         if (next_ctr - ctr)
         {
             MPI_Isend(&(contig_buf[ctr*recv_size]), 
@@ -457,8 +411,6 @@ if(rank == 0 || rank == 1 || rank == 2)
         end = local_R_recv_displs[i+1];
         if (end - start)
         {
-            // printf("****MPIX_Alltoallv***B4-MPI_Irecv--434\n*****3");//]
-             
             MPI_Irecv(&(recv_buffer[ctr*recv_size]), 
                     (end - start)*recv_size,
                     recvtype, 
@@ -466,8 +418,6 @@ if(rank == 0 || rank == 1 || rank == 2)
                     local_tag, 
                     mpi_comm->local_comm, 
                     &(local_requests[n_msgs++]));
-               
-           // printf("****MPIX_Alltoallv***After-MPI_Irecv--434\n*****3");
         }
         ctr += (end - start);
     }
