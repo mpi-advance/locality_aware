@@ -134,9 +134,9 @@ void test_matrix(const char* filename)
 
     for (int i = 0; i < A.recv_comm.size_msgs; i++)
     {
-        if (std_recv_vals[i] != part_locality_recv_vals[i])
-            printf("Rank %d, i %d, std %d, part %d\n", rank, i, std_recv_vals[i], part_locality_recv_vals[i]);
-        //ASSERT_EQ(std_recv_vals[i], part_locality_recv_vals[i]);
+        //if (std_recv_vals[i] != part_locality_recv_vals[i])
+        //if (rank == 7)    printf("Rank %d, i %d, std %d, part %d\n", rank, i, std_recv_vals[i], part_locality_recv_vals[i]);
+        ASSERT_EQ(std_recv_vals[i], part_locality_recv_vals[i]);
     }
 
     //for (int i = 0; i < neighbor_request->locality->local_S_comm->send_data->size_msgs; i++)

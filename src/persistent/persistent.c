@@ -40,9 +40,6 @@ int MPIX_Start(MPIX_Request* request)
 
             for (int j = 0; j < recv_size; j++)
                 request->locality->local_S_comm->send_data->buffer[i*recv_size+j] = send_buffer[idx*recv_size+j];
-            //int rank; MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-            //if (rank == 0) printf("Rank %d sending idx[%d]=%d val %d\n", rank, i, idx,
-            //        ((int*)(request->locality->local_S_comm->send_data->buffer))[i]);
         }
 
         ierr = MPI_Startall(request->local_S_n_msgs, request->local_S_requests);
