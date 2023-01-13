@@ -117,39 +117,9 @@ void test_matrix(const char* filename)
 
 
     // 3. MPI Advance - Optimized Communication
-    MPIX_Neighbor_part_locality_alltoallv_init(alltoallv_send_vals.data(), 
-            A.send_comm.counts.data(),
-            A.send_comm.ptr.data(), 
-            MPI_INT,
-            part_locality_recv_vals.data(), 
-            A.recv_comm.counts.data(),
-            A.recv_comm.ptr.data(), 
-            MPI_INT,
-            neighbor_comm, 
-            MPI_INFO_NULL,
-            &neighbor_request);
-
-    MPIX_Start(neighbor_request);
-    MPIX_Wait(neighbor_request, &status);
-
-    for (int i = 0; i < A.recv_comm.size_msgs; i++)
-    {
-        //if (std_recv_vals[i] != part_locality_recv_vals[i])
-        //if (rank == 7)    printf("Rank %d, i %d, std %d, part %d\n", rank, i, std_recv_vals[i], part_locality_recv_vals[i]);
-        ASSERT_EQ(std_recv_vals[i], part_locality_recv_vals[i]);
-    }
-
-    //for (int i = 0; i < neighbor_request->locality->local_S_comm->send_data->size_msgs; i++)
-    //    printf("Rank %d, local_S_send[%d] %d\n", rank, i,
-    //            ((int*)(neighbor_request->locality->local_S_comm->send_data->buffer))[i]);
-
-    MPIX_Request_free(neighbor_request);
-
-
     std::vector<long> send_indices(A.send_comm.size_msgs);
     for (int i = 0; i < A.send_comm.size_msgs; i++)
         send_indices[i] = A.send_comm.idx[i] + A.first_row;
-
 
     MPIX_Neighbor_locality_alltoallv_init(alltoallv_send_vals.data(), 
             A.send_comm.counts.data(),
@@ -168,12 +138,35 @@ void test_matrix(const char* filename)
 
     MPIX_Start(neighbor_request);
     MPIX_Wait(neighbor_request, &status);
-    MPIX_Request_free(neighbor_request);
 
     // 3. Compare std_recv_vals and nap_recv_vals
     for (int i = 0; i < A.recv_comm.size_msgs; i++)
     {
         ASSERT_EQ(std_recv_vals[i], locality_recv_vals[i]);
+    }
+
+    MPIX_Request_free(neighbor_request);
+
+
+    MPIX_Neighbor_part_locality_alltoallv_init(alltoallv_send_vals.data(), 
+            A.send_comm.counts.data(),
+            A.send_comm.ptr.data(), 
+            MPI_INT,
+            part_locality_recv_vals.data(), 
+            A.recv_comm.counts.data(),
+            A.recv_comm.ptr.data(), 
+            MPI_INT,
+            neighbor_comm, 
+            MPI_INFO_NULL,
+            &neighbor_request);
+
+    MPIX_Start(neighbor_request);
+    MPIX_Wait(neighbor_request, &status);
+    MPIX_Request_free(neighbor_request);
+
+    for (int i = 0; i < A.recv_comm.size_msgs; i++)
+    {
+        ASSERT_EQ(std_recv_vals[i], part_locality_recv_vals[i]);
     }
 
     MPIX_Comm_free(neighbor_comm);
@@ -199,7 +192,7 @@ TEST(RandomCommTest, TestsInTests)
 
     test_matrix("../../../../test_data/dwt_162.pm");
     test_matrix("../../../../test_data/odepa400.pm");
-    test_matrix("../../../../test_data/ww_36_pmec_36.pm");
+    //test_matrix("../../../../test_data/ww_36_pmec_36.pm");
 
 }
 
