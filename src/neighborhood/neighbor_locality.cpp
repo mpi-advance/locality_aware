@@ -38,7 +38,6 @@ void remove_duplicates(LocalityComm* locality);
 void update_indices(LocalityComm* locality, 
         std::map<long, int>& send_global_to_local,
         std::map<long, int>& recv_global_to_local);
-void update_indices(LocalityComm* locality);
 
 
 /******************************************
@@ -632,6 +631,9 @@ void map_indices(CommData* idx_data, const CommData* map_data)
     map_indices(idx_data, global_map);
 }
 
+int cmpfunc (const void * a, const void * b) {
+   return ( *(int*)a - *(int*)b );
+}
 
 void remove_duplicates(CommData* comm_pkg)
 {
@@ -664,13 +666,12 @@ void remove_duplicates(CommData* comm_pkg)
 
 void remove_duplicates(CommPkg* data)
 {
-    remove_duplicates(data->send_data);
-    remove_duplicates(data->recv_data);
+        remove_duplicates(data->send_data);
+        remove_duplicates(data->recv_data);
 }
 
 void remove_duplicates(LocalityComm* locality)
 {
-    //remove_duplicates(locality->local_L_comm);
     remove_duplicates(locality->local_S_comm);
     remove_duplicates(locality->local_R_comm);
     remove_duplicates(locality->global_comm);
@@ -695,30 +696,13 @@ void update_indices(LocalityComm* locality,
     // Don't need local_S or global recv indices (just contiguous)
     if (locality->local_S_comm->recv_data->indices)
     {
-        delete[] locality->local_S_comm->recv_data->indices;
+        free(locality->local_S_comm->recv_data->indices);
         locality->local_S_comm->recv_data->indices = NULL;
     }
     if (locality->global_comm->recv_data->indices)
     {
-        delete[] locality->global_comm->recv_data->indices;
+        free(locality->global_comm->recv_data->indices);
         locality->global_comm->recv_data->indices = NULL;
     }
 }
-
-void update_indices(LocalityComm* locality) 
-{
-    // Don't need local_S or global recv indices (just contiguous)
-    if (locality->local_S_comm->recv_data->indices)
-    {
-        delete[] locality->local_S_comm->recv_data->indices;
-        locality->local_S_comm->recv_data->indices = NULL;
-    }
-    if (locality->global_comm->recv_data->indices)
-    {
-        delete[] locality->global_comm->recv_data->indices;
-        locality->global_comm->recv_data->indices = NULL;
-    }
-}
-
-
 

@@ -463,6 +463,8 @@ int MPIX_Neighbor_part_locality_alltoallv_init(
         MPI_Info info,
         MPIX_Request** request_ptr)
 {
+    int rank; 
+    MPI_Comm_rank(comm->global_comm, &rank);
 
     int tag = 304591;
     int indegree, outdegree, weighted;
@@ -488,8 +490,8 @@ int MPIX_Neighbor_part_locality_alltoallv_init(
     long send_size = sdispls[outdegree];
     long first_send;
     MPI_Exscan(&send_size, &first_send, 1, MPI_LONG, MPI_SUM, MPI_COMM_WORLD);
+    if (rank == 0) first_send = 0;
 
-    int rank; MPI_Comm_rank(comm->global_comm, &rank);
     long* global_send_indices = (long*)malloc(sdispls[outdegree]*sizeof(long));
     long* global_recv_indices = (long*)malloc(rdispls[indegree]*sizeof(long));
     for (int i = 0; i < send_size; i++)
@@ -503,8 +505,9 @@ int MPIX_Neighbor_part_locality_alltoallv_init(
     free(destinations);
     free(destweights);
 
-    int err = MPIX_Neighbor_locality_alltoallv_init(sendbuffer, sendcounts, sdispls, global_send_indices, sendtype,
-            recvbuffer, recvcounts, rdispls, global_recv_indices, recvtype, comm, info, request_ptr);
+    int err = MPIX_Neighbor_locality_alltoallv_init(sendbuffer, sendcounts, sdispls, 
+            global_send_indices, sendtype, recvbuffer, recvcounts, rdispls, 
+            global_recv_indices, recvtype, comm, info, request_ptr);
 
     free(global_send_indices);
     free(global_recv_indices);
