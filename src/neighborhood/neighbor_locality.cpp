@@ -181,6 +181,7 @@ void map_procs_to_nodes(LocalityComm* locality, const int orig_num_msgs,
 {
     int rank, num_procs;
     int local_rank, local_num_procs;
+
     MPI_Comm_rank(locality->communicators->global_comm, &rank);
     MPI_Comm_size(locality->communicators->global_comm, &num_procs);
     MPI_Comm_rank(locality->communicators->local_comm, &local_rank);
@@ -384,6 +385,12 @@ void form_local_comm(const int orig_num_sends, const int* orig_send_procs,
         start_ctr = ctr;
     }
 
+
+    std::vector<int> proc_pos(local_num_procs, -1);
+    std::vector<int> recv_idx(recv_data->size_msgs);
+    std::vector<int> tmpnodes(recv_data->size_msgs);
+    std::vector<int> recvptr(local_num_procs+1);
+    recvptr[0] = 0;
     ctr = 0;
     while (ctr < recv_data->size_msgs)
     {
@@ -393,21 +400,45 @@ void form_local_comm(const int orig_num_sends, const int* orig_send_procs,
         if (size > recv_buffer.size())
             recv_buffer.resize(size);
         MPI_Recv(recv_buffer.data(), size, MPI_INT, proc, tag, locality->communicators->local_comm, &recv_status);
+        proc_pos[proc] = recv_data->num_msgs;
         for (int i = 0; i < size; i += 2)
         {
-            recv_data->indices[ctr] = recv_buffer[i];
-            recv_idx_nodes[ctr++] = recv_buffer[i+1];
+            recv_idx[ctr] = recv_buffer[i];
+            tmpnodes[ctr++] = recv_buffer[i+1];
+            //recv_data->indices[ctr] = recv_buffer[i];
+            //recv_idx_nodes[ctr++] = recv_buffer[i+1];
         }
-        recv_data->procs[recv_data->num_msgs] = proc;
-        recv_data->indptr[recv_data->num_msgs + 1] = recv_data->indptr[recv_data->num_msgs] + (size / 2);
+        recvptr[recv_data->num_msgs+1] = recvptr[recv_data->num_msgs] + (size/2);
+        //recv_data->procs[recv_data->num_msgs] = proc;
+        //recv_data->indptr[recv_data->num_msgs + 1] = recv_data->indptr[recv_data->num_msgs] + (size / 2);
         recv_data->num_msgs++;
     }
+
+    // Reorder Recvs
+    ctr = 0;
+    int pos, old_start, new_start;
+    for (int i = 0; i < local_num_procs; i++)
+    {
+        if (proc_pos[i] == -1) continue;
+
+        recv_data->procs[ctr] = i;
+        pos = proc_pos[i];
+        old_start = recvptr[pos];
+        new_start = recv_data->indptr[ctr];
+        size = recvptr[pos+1] - old_start;
+        recv_data->indptr[++ctr] = new_start + size;
+        for (int j = 0; j < size; j++)
+        {
+            recv_data->indices[new_start+j] = recv_idx[old_start+j];
+            recv_idx_nodes[new_start+j] = tmpnodes[old_start+j];
+        }
+    }
+
 
     if (send_data->num_msgs)
     {
         MPI_Waitall(send_data->num_msgs, send_requests.data(), MPI_STATUSES_IGNORE);
     }
-
 }
 
 

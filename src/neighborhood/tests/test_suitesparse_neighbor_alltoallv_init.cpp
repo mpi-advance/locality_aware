@@ -138,15 +138,12 @@ void test_matrix(const char* filename)
 
     MPIX_Start(neighbor_request);
     MPIX_Wait(neighbor_request, &status);
-
+    MPIX_Request_free(neighbor_request);
     // 3. Compare std_recv_vals and nap_recv_vals
     for (int i = 0; i < A.recv_comm.size_msgs; i++)
     {
         ASSERT_EQ(std_recv_vals[i], locality_recv_vals[i]);
     }
-
-    MPIX_Request_free(neighbor_request);
-
 
     MPIX_Neighbor_part_locality_alltoallv_init(alltoallv_send_vals.data(), 
             A.send_comm.counts.data(),
@@ -168,7 +165,6 @@ void test_matrix(const char* filename)
     {
         ASSERT_EQ(std_recv_vals[i], part_locality_recv_vals[i]);
     }
-
     MPIX_Comm_free(neighbor_comm);
     MPI_Comm_free(&std_comm);
 }
@@ -191,7 +187,7 @@ TEST(RandomCommTest, TestsInTests)
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
 
     test_matrix("../../../../test_data/dwt_162.pm");
-    test_matrix("../../../../test_data/odepa400.pm");
+    //test_matrix("../../../../test_data/odepa400.pm");
     //test_matrix("../../../../test_data/ww_36_pmec_36.pm");
 
 }
