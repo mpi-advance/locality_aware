@@ -118,16 +118,14 @@ void form_initial_communicator(int local_size, MPIX_Data<U>* send_data, MPIX_Dat
 
 
 template <typename U>
-void form_global_indices(int local_size, MPIX_Data<U> send_data, MPIX_Data<U> recv_data)
+void form_global_indices(int local_size, MPIX_Data<U> send_data, MPIX_Data<U> recv_data,
+        std::vector<long>& global_send_idx, std::vector<long>& global_recv_idx)
 {
     int rank, num_procs;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
 
     int first = local_size * rank;
-    std::vector<int> global_send_idx(send_data.size_msgs);
-    std::vector<int> global_recv_idx(recv_data.size_msgs);
-    std::vector<int> alltoallv_indices(send_data.size_msgs);
     int tag = 29354;
     for (int i = 0; i < send_data.num_msgs; i++)
     {
@@ -138,9 +136,8 @@ void form_global_indices(int local_size, MPIX_Data<U> send_data, MPIX_Data<U> re
         {
             int idx = send_data.indices[j];
             global_send_idx[j] = first + idx;
-            alltoallv_indices[j] = j; // Alltoallv already sorts by index
         }
-        MPI_Isend(&(global_send_idx[start]), (int)(end - start), MPI_INT, proc,
+        MPI_Isend(&(global_send_idx[start]), (int)(end - start), MPI_LONG, proc,
                 tag, MPI_COMM_WORLD, &(send_data.requests[i]));
     }
     for (int i = 0; i < recv_data.num_msgs; i++)
@@ -148,7 +145,7 @@ void form_global_indices(int local_size, MPIX_Data<U> send_data, MPIX_Data<U> re
         int proc = recv_data.procs[i];
         U start = recv_data.indptr[i];
         U end = recv_data.indptr[i+1];
-        MPI_Irecv(&(global_recv_idx[start]), (int)(end - start), MPI_INT, proc,
+        MPI_Irecv(&(global_recv_idx[start]), (int)(end - start), MPI_LONG, proc,
                 tag, MPI_COMM_WORLD, &(recv_data.requests[i]));
     }
     if (send_data.num_msgs) MPI_Waitall(send_data.num_msgs, 

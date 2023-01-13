@@ -22,6 +22,7 @@ typedef struct _MPIX_Request
 
     LocalityComm* locality;
 
+    const void* sendbuf; // pointer to sendbuf (where original data begins)
     void* recvbuf; // pointer to recvbuf (where final data goes)
     int recv_size;
 } MPIX_Request;
