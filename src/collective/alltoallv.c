@@ -48,7 +48,7 @@ int MPIX_Alltoallv(const void* sendbuf,
         const int rdispls[],
         MPI_Datatype recvtype,
         MPIX_Comm* mpi_comm)
-{    
+{
     int rank, num_procs;
     MPI_Comm_rank(mpi_comm->global_comm, &rank);
     MPI_Comm_size(mpi_comm->global_comm, &num_procs);
@@ -82,8 +82,8 @@ int MPIX_Alltoallv(const void* sendbuf,
     int proc, node;
     int tag = 923812;
     int local_tag = 728401;
-    int start, end;
-    int ctr, next_ctr;
+    long start, end;
+    long ctr, next_ctr;
 
     int send_ctr, recv_ctr;
     int node_size, size;
@@ -100,8 +100,8 @@ int MPIX_Alltoallv(const void* sendbuf,
 
     int* local_S_send_displs = (int*)malloc((PPN+1)*sizeof(int));
     int* local_R_recv_displs = (int*)malloc((PPN+1)*sizeof(int));
-    int* local_S_recv_displs = (int*)malloc((PPN+1)*sizeof(int));
-    int* local_R_send_displs = (int*)malloc((PPN+1)*sizeof(int));
+    long* local_S_recv_displs = (long*)malloc((PPN+1)*sizeof(long));
+    long* local_R_send_displs = (long*)malloc((PPN+1)*sizeof(long));
 
     proc_node_displs[0] = 0;
     local_node_displs[0] = 0;
@@ -227,11 +227,11 @@ int MPIX_Alltoallv(const void* sendbuf,
 
     int n_msgs;
 
-    int buf_size = local_S_recv_displs[PPN];
+    long buf_size = local_S_recv_displs[PPN];
     if (local_R_send_displs[PPN] > buf_size)
         buf_size = local_R_send_displs[PPN];
     buf_size *= recv_size;
-    
+
     char* tmpbuf = NULL;
     char* contig_buf = NULL;
 
@@ -345,7 +345,7 @@ int MPIX_Alltoallv(const void* sendbuf,
         {
             MPI_Irecv(&(tmpbuf[ctr*recv_size]), 
                     end - start, 
-                    recvtype, 
+                    recvtype,
                     proc, 
                     tag,
                     mpi_comm->global_comm, 
