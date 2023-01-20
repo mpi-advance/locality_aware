@@ -30,6 +30,16 @@ int alltoall_bruck(const void* sendbuf,
         MPI_Datatype recvtype,
         MPI_Comm comm);
 
+// Locality-Aware Helper Functions
+int alltoall_pairwise_loc(const void* sendbuf,
+        const int sendcount,
+        MPI_Datatype sendtype,
+        void* recvbuf,
+        const int recvcount,
+        MPI_Datatype recvtype,
+        MPIX_Comm* comm);
+
+
 #ifdef __cplusplus
 }
 #endif

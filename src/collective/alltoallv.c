@@ -1,4 +1,7 @@
-#include "collective.h"
+#include "alltoallv.h"
+#include <string.h>
+#include <math.h>
+#include "utils.h"
 
 /**************************************************
  * Locality-Aware Point-to-Point Alltoallv
@@ -29,14 +32,15 @@ int MPI_Alltoallv(const void* sendbuf,
         MPI_Datatype recvtype,
         MPI_Comm comm)
 {
-    MPIX_Comm* locality_comm;
-    MPIX_Comm_init(&locality_comm, comm);
-
-    MPIX_Alltoallv(sendbuf, sendcounts, sdispls, sendtype,
-            recvbuf, recvcounts, rdispls, recvtype,
-            locality_comm);
-
-    MPIX_Comm_free(locality_comm);
+    return alltoallv_pairwise(sendbuf,
+        sendcounts,
+        sdispls,
+        sendtype,
+        recvbuf,
+        recvcounts,
+        rdispls,
+        recvtype,
+        comm);
 }
 
 int MPIX_Alltoallv(const void* sendbuf,
@@ -49,7 +53,7 @@ int MPIX_Alltoallv(const void* sendbuf,
         MPI_Datatype recvtype,
         MPIX_Comm* mpi_comm)
 {
-    return alltoallv_pairwise(sendbuf,
+    return alltoallv_pairwise_loc(sendbuf,
         sendcounts,
         sdispls,
         sendtype,
@@ -57,412 +61,8 @@ int MPIX_Alltoallv(const void* sendbuf,
         recvcounts,
         rdispls,
         recvtype,
-        mpi_comm->global_comm);
+        mpi_comm);
 }
-
-int alltoallv_pairwise_loc(const void* sendbuf,
-        const int sendcounts[],
-        const int sdispls[],
-        MPI_Datatype sendtype,
-        void* recvbuf,
-        const int recvcounts[],
-        const int rdispls[],
-        MPI_Datatype recvtype,
-        MPIX_Comm* mpi_comm)
-{
-    int rank, num_procs;
-    MPI_Comm_rank(mpi_comm->global_comm, &rank);
-    MPI_Comm_size(mpi_comm->global_comm, &num_procs);
-
-    // Create shared-memory (local) communicator
-    int local_rank, PPN;
-    MPI_Comm_rank(mpi_comm->local_comm, &local_rank);
-    MPI_Comm_size(mpi_comm->local_comm, &PPN);
-
-    // Calculate shared-memory (local) variables
-    int num_nodes = num_procs / PPN;
-    int local_node = rank / PPN;
-
-    // Local rank x sends to nodes [x:x/PPN] etc
-    // Which local rank from these nodes sends to my node?
-    // E.g. if local_rank 0 sends to nodes 0,1,2 and 
-    // my rank is on node 2, I want to receive from local_rank 0
-    // regardless of the node I talk to
-    int local_idx = -1;
-
-    const char* send_buffer = (char*) sendbuf;
-    char* recv_buffer = (char*) recvbuf;
-    int send_size, recv_size;
-    MPI_Type_size(sendtype, &send_size);
-    MPI_Type_size(recvtype, &recv_size);
-
-    /************************************************
-     * Setup : determine message sizes and displs for
-     *      intermediate (aggregated) steps
-     ************************************************/
-    int proc, node;
-    int tag = 923812;
-    int local_tag = 728401;
-    int start, end;
-    int ctr, next_ctr;
-
-    int send_ctr, recv_ctr;
-    int node_size, size;
-
-    int num_msgs = num_nodes / PPN; // TODO : this includes talking to self
-    int extra = num_nodes % PPN;
-    int local_num_msgs = num_msgs;
-    if (local_rank < extra) local_num_msgs++;
-
-    int* proc_node_sizes = (int*)malloc(PPN*sizeof(int));
-    int* proc_node_displs = (int*)malloc((PPN+1)*sizeof(int));
-    int* local_node_sizes = (int*)malloc(PPN*sizeof(int));
-    int* local_node_displs = (int*)malloc((PPN+1)*sizeof(int));
-
-    int* local_S_send_displs = (int*)malloc((PPN+1)*sizeof(int));
-    int* local_R_recv_displs = (int*)malloc((PPN+1)*sizeof(int));
-    int* local_S_recv_displs = (int*)malloc((PPN+1)*sizeof(int));
-    int* local_R_send_displs = (int*)malloc((PPN+1)*sizeof(int));
-
-    proc_node_displs[0] = 0;
-    local_node_displs[0] = 0;
-    for (int i = 0; i < PPN; i++)
-    {
-        proc_node_sizes[i] = num_msgs;
-        if (i < extra) proc_node_sizes[i]++;
-        proc_node_displs[i+1] = proc_node_displs[i] + proc_node_sizes[i];
-        if (proc_node_displs[i] <= local_node && proc_node_displs[i+1] > local_node)
-            local_idx = i;
-
-        local_node_sizes[i] = local_num_msgs;
-        local_node_displs[i+1] = local_node_displs[i] + local_node_sizes[i];
-    }
-    int first_msg = proc_node_displs[local_rank];
-
-    int* orig_node_sizes = (int*)malloc(num_nodes*sizeof(int));
-    local_S_send_displs[0] = 0;
-    local_R_recv_displs[0] = 0;
-    // final_proc_sizes = recvcounts!
-    int s_size, r_size;
-    send_ctr = 0;
-    recv_ctr = 0;
-    for (int i = 0; i < PPN; i++)
-    {
-        start = proc_node_displs[i];
-        end = proc_node_displs[i+1];
-        s_size = 0;
-        r_size = 0;
-        for (int node = start; node < end; node++)
-        {
-            node_size = 0;
-            for (int j = 0; j < PPN; j++)
-            {
-                proc = get_global_proc(mpi_comm, node, j);
-                s_size += sendcounts[proc];
-                r_size += recvcounts[proc];
-                node_size += sendcounts[proc];
-            }
-            orig_node_sizes[node] = node_size;
-        }
-        send_ctr += s_size;
-        local_S_send_displs[i+1] = send_ctr;
-        recv_ctr += r_size;
-        local_R_recv_displs[i+1] = recv_ctr;
-    }
-
-    int* send_node_sizes = (int*)malloc((local_num_msgs*PPN)*sizeof(int));
-    PMPI_Alltoallv(orig_node_sizes,
-        proc_node_sizes,
-        proc_node_displs,
-        MPI_INT,
-        send_node_sizes,
-        local_node_sizes,
-        local_node_displs,
-        MPI_INT,
-        mpi_comm->local_comm);
-    free(orig_node_sizes);
-
-    local_S_recv_displs[0] = 0;
-    for (int i = 0; i < PPN; i++)
-    {
-        size = 0;
-        for (int j = 0; j < local_num_msgs; j++)
-        {
-            size += send_node_sizes[i*local_num_msgs+j];
-        }
-        local_S_recv_displs[i+1] = local_S_recv_displs[i] + size;
-    }
-
-    for (int i = 0; i < PPN; i++)
-    {
-        proc_node_sizes[i] *= PPN;
-        proc_node_displs[i] *= PPN;
-        local_node_sizes[i] *= PPN;
-        local_node_displs[i] *= PPN;
-    }
-
-    int* recv_proc_sizes = (int*)malloc((local_num_msgs*PPN*PPN)*sizeof(int));
-    PMPI_Alltoallv(recvcounts,
-        proc_node_sizes,
-        proc_node_displs,
-        MPI_INT,
-        recv_proc_sizes,
-        local_node_sizes,
-        local_node_displs,
-        MPI_INT,
-        mpi_comm->local_comm);
-
-    local_R_send_displs[0] = 0;
-    for (int i = 0; i < PPN; i++)
-    {
-        size = 0;
-        for (int j = 0; j < local_num_msgs; j++)
-        {
-            for (int k = 0; k < PPN; k++)
-            {
-                size += recv_proc_sizes[i*local_num_msgs*PPN + j*PPN + k];
-            }
-        }
-        local_R_send_displs[i+1] = local_R_send_displs[i] + size;
-    }
-
-    int idx;
-    int* recv_proc_displs = (int*)malloc((local_num_msgs*PPN*PPN+1)*sizeof(int));
-    recv_proc_displs[0] = 0;
-    for (int i = 0; i < local_num_msgs; i++)
-    {
-        for (int j = 0; j < PPN; j++)
-        {
-            for (int k = 0; k < PPN; k++)
-            {
-                idx = j*local_num_msgs*PPN + i*PPN + k;
-                recv_proc_displs[idx+1] = recv_proc_displs[idx] + recv_proc_sizes[idx];
-            }
-        }
-    }
-
-    free(local_node_sizes);
-    free(local_node_displs);
-    free(proc_node_sizes);
-    free(proc_node_displs);
-
-    int n_msgs;
-
-    int buf_size = local_S_recv_displs[PPN];
-    if (local_R_send_displs[PPN] > buf_size)
-        buf_size = local_R_send_displs[PPN];
-    buf_size *= recv_size;
-
-    char* tmpbuf = NULL;
-    char* contig_buf = NULL;
-
-    if (buf_size)
-    {
-        tmpbuf = (char*)malloc(buf_size*sizeof(char));
-        contig_buf = (char*)malloc(buf_size*sizeof(char));
-    }
-
-    MPI_Request* local_requests = (MPI_Request*)malloc(2*PPN*sizeof(MPI_Request));
-    MPI_Request* nonlocal_requests = (MPI_Request*)malloc(2*local_num_msgs*sizeof(MPI_Request));
-
-     /************************************************
-     * Step 1 : local Alltoall
-     *      Redistribute data so that local rank x holds
-     *      all data that needs to be send to any
-     *      node with which local rank x communicates
-     ************************************************/
-    // Alltoall to distribute message sizes 
-    n_msgs = 0;
-    ctr = 0;
-    for (int i = 0; i < PPN; i++)
-    {
-        start = local_S_send_displs[i];
-        end = local_S_send_displs[i+1];
-        if (end - start)
-        {
-            MPI_Isend(&(send_buffer[ctr*send_size]), 
-                    end - start, 
-                    sendtype, 
-                    i, 
-                    tag, 
-                    mpi_comm->local_comm, 
-                    &(local_requests[n_msgs++]));
-        }
-        ctr += (end - start);
-    }
-
-    ctr = 0;
-    for (int i = 0; i < PPN; i++)
-    {
-        start = local_S_recv_displs[i];
-        end = local_S_recv_displs[i+1];
-        if (end - start)
-        {
-            MPI_Irecv(&(tmpbuf[ctr*send_size]), 
-                    end - start, 
-                    sendtype,
-                    i, 
-                    tag, 
-                    mpi_comm->local_comm, 
-                    &(local_requests[n_msgs++]));
-        }
-        ctr += (end - start);
-    }
-    if (n_msgs)
-        MPI_Waitall(n_msgs, local_requests, MPI_STATUSES_IGNORE);
-
-     /************************************************
-     * Step 2 : non-local Alltoall
-     *      Local rank x exchanges data with 
-     *      local rank x on nodes x, PPN+x, 2PPN+x, etc
-     ************************************************/
-
-    n_msgs = 0;
-    ctr = 0;
-    next_ctr = ctr;
-    for (int i = 0; i < local_num_msgs; i++)
-    {
-        node = first_msg + i;
-        proc = node*PPN + local_idx;
-        for (int j = 0; j < PPN; j++)
-        {
-            start = local_S_recv_displs[j];
-            size = send_node_sizes[j*local_num_msgs + i];
-
-            for (int k = 0; k < size; k++)
-            {
-                for (int l = 0; l < send_size; l++)
-                {
-                    contig_buf[next_ctr*send_size+l] = tmpbuf[(start+k)*send_size + l];
-                }
-                next_ctr++;
-            }
-            local_S_recv_displs[j] = start + size;
-        }
-        if (next_ctr - ctr)
-        {
-
-            MPI_Isend(&(contig_buf[ctr*send_size]), 
-                    next_ctr - ctr,
-                    sendtype, 
-                    proc, 
-                    tag, 
-                    mpi_comm->global_comm, 
-                    &(nonlocal_requests[n_msgs++]));
-
-        }
-        ctr = next_ctr;
-    }
-
-
-    ctr = 0;
-    for (int i = 0; i < local_num_msgs; i++)
-    {
-        node = first_msg + i;
-        proc = node*PPN + local_idx;
-        start = recv_proc_displs[i*PPN*PPN];
-        end = recv_proc_displs[(i+1)*PPN*PPN];
-        if (end - start)
-        {
-            MPI_Irecv(&(tmpbuf[ctr*recv_size]), 
-                    end - start, 
-                    recvtype,
-                    proc, 
-                    tag,
-                    mpi_comm->global_comm, 
-                    &(nonlocal_requests[n_msgs++]));
-        }
-        ctr += (end - start);
-    }
-    if (n_msgs) 
-        MPI_Waitall(n_msgs,
-                nonlocal_requests,
-                MPI_STATUSES_IGNORE);
-
-     /************************************************
-     * Step 3 : local Alltoall
-     *      Locally redistribute all received data
-     ************************************************/
-
-    ctr = 0;
-    next_ctr = ctr;
-    n_msgs = 0;
-    for (int i = 0; i < PPN; i++)
-    {
-        for (int j = 0; j < local_num_msgs; j++)
-        {
-            for (int k = 0; k < PPN; k++)
-            {
-                start = recv_proc_displs[j*PPN*PPN + k*PPN + i];
-                size = recv_proc_sizes[j*PPN*PPN + k*PPN + i];
-                for (int l = 0; l < size; l++)
-                {
-                    for (int m = 0; m < recv_size; m++)
-                    {
-                        contig_buf[next_ctr*recv_size+m] = tmpbuf[(start+l)*recv_size+m];
-                    }
-                    next_ctr++;
-                }
-            }
-        }
-
-        if (next_ctr - ctr)
-        {
-            MPI_Isend(&(contig_buf[ctr*recv_size]), 
-                    next_ctr - ctr,
-                    recvtype,
-                    i,
-                    local_tag,
-                    mpi_comm->local_comm,
-                    &(local_requests[n_msgs++]));
-        }
-        ctr = next_ctr;
-    }
-
-    ctr = 0;
-    for (int i = 0; i < PPN; i++)
-    {
-        start = local_R_recv_displs[i];
-        end = local_R_recv_displs[i+1];
-        if (end - start)
-        {
-            MPI_Irecv(&(recv_buffer[ctr*recv_size]), 
-                    (end - start)*recv_size,
-                    recvtype, 
-                    i, 
-                    local_tag, 
-                    mpi_comm->local_comm, 
-                    &(local_requests[n_msgs++]));
-        }
-        ctr += (end - start);
-    }
-
-    MPI_Waitall(n_msgs,
-            local_requests, 
-            MPI_STATUSES_IGNORE);
-            
-
-    if (buf_size)
-    {
-        free(tmpbuf);
-        free(contig_buf);
-    }
-
-    free(local_requests);
-    free(nonlocal_requests);
-
-    free(local_S_send_displs);
-    free(local_S_recv_displs);
-    free(local_R_send_displs);
-    free(local_R_recv_displs);
-
-    free(send_node_sizes);
-    free(recv_proc_sizes);
-    free(recv_proc_displs);
-
-    return 0;
-}
-
 
 int alltoallv_pairwise(const void* sendbuf,
         const int sendcounts[],
@@ -474,11 +74,11 @@ int alltoallv_pairwise(const void* sendbuf,
         MPI_Datatype recvtype,
         MPI_Comm comm)
 {
-        int rank, num_procs;
+    int rank, num_procs;
     MPI_Comm_rank(comm, &rank);
     MPI_Comm_size(comm, &num_procs);
 
-    int tag = 102944;
+    int tag = 103044;
     int send_proc, recv_proc;
     int send_pos, recv_pos;
     MPI_Status status;
@@ -501,8 +101,177 @@ int alltoallv_pairwise(const void* sendbuf,
         send_pos = sdispls[send_proc] * send_size;
         recv_pos = rdispls[recv_proc] * recv_size;
 
-        MPI_Sendrecv(sendbuf + send_pos, sendcounts[send_proc], sendtype, send_proc, tag,
-                recvbuf + recv_pos, recvcounts[recv_proc], recvtype, recv_proc, tag,
+        MPI_Sendrecv(sendbuf + send_pos, sendcounts[i], sendtype, send_proc, tag,
+                recvbuf + recv_pos, recvcounts[i], recvtype, recv_proc, tag,
                 comm, &status);
     }
 }
+
+// 2-Step Aggregation (large messages)
+// Gather all data to be communicated between nodes
+// Send to node+i, recv from node-i
+int alltoallv_pairwise_loc(const void* sendbuf,
+        const int sendcounts[],
+        const int sdispls[],
+        MPI_Datatype sendtype,
+        void* recvbuf,
+        const int recvcounts[],
+        const int rdispls[],
+        MPI_Datatype recvtype,
+        MPIX_Comm* mpi_comm)
+{
+    int rank, num_procs;
+    int local_rank, PPN; 
+    int num_nodes, rank_node;
+    MPI_Comm_rank(mpi_comm->global_comm, &rank);
+    MPI_Comm_size(mpi_comm->global_comm, &num_procs);
+    MPI_Comm_rank(mpi_comm->local_comm, &local_rank);
+    MPI_Comm_size(mpi_comm->local_comm, &PPN);
+    num_nodes = mpi_comm->num_nodes;
+    rank_node = mpi_comm->rank_node;
+
+    const char* send_buffer = (char*) sendbuf;
+    char* recv_buffer = (char*) recvbuf;
+    int sbytes, rbytes;
+    MPI_Type_size(sendtype, &sbytes);
+    MPI_Type_size(recvtype, &rbytes);
+
+    int tag = 102913;
+    int send_proc, recv_proc;
+    int send_pos, recv_pos;
+    int send_node, recv_node;
+    MPI_Status status;
+
+    int final_recvcount = 0;
+    for (int i = 0; i < num_procs; i++)
+        final_recvcount += recvcounts[i];
+
+    /************************************************
+     * Step 1 : Send aggregated data to node
+     ***********************************************/
+    int sendcount, recvcount;
+    int* global_recvcounts = (int*)malloc(num_procs*sizeof(int));
+    int global_recvcount = 0;
+    for (int i = 0; i < num_nodes; i++)
+    {
+        send_node = rank_node + i;
+        if (send_node >= num_nodes)
+            send_node -= num_nodes;
+        recv_node = rank_node - i;
+        if (recv_node < 0)
+            recv_node += num_nodes;
+    
+        MPI_Sendrecv(&(sendcounts[send_node*PPN]), PPN, MPI_INT,
+                send_node*PPN+local_rank, tag,
+                &(global_recvcounts[recv_node*PPN]), PPN, MPI_INT,
+                recv_node*PPN+local_rank, tag,
+                mpi_comm->global_comm, &status); 
+    }
+
+    int maxrecvcount = final_recvcount;
+    if (global_recvcount > maxrecvcount)
+        maxrecvcount = global_recvcount;
+    char* tmpbuf = (char*)malloc(maxrecvcount*rbytes);
+    char* contigbuf = (char*)malloc(maxrecvcount*rbytes);
+
+    for (int i = 0; i < num_nodes; i++)
+    {
+        send_node = rank_node + i;
+        if (send_node >= num_nodes)
+            send_node -= num_nodes;
+        recv_node = rank_node - i;
+        if (recv_node < 0)
+            recv_node += num_nodes;
+        send_pos = sdispls[send_node * PPN];
+        recv_pos = rdispls[recv_node * PPN];
+
+        sendcount = 0;
+        recvcount = 0;
+        for (int j = 0; j < PPN; j++)
+        {
+            sendcount += sendcounts[send_node*PPN+j];
+            recvcount += global_recvcounts[recv_node*PPN+j];
+        }
+
+        MPI_Sendrecv(sendbuf + send_pos, sendcount, 
+                sendtype, send_node*PPN + local_rank, tag,
+                tmpbuf + recv_pos, recvcount, 
+                recvtype, recv_node*PPN + local_rank, tag, 
+                mpi_comm->global_comm, &status);
+    }
+
+    /************************************************
+     * Step 2 : Redistribute received data within node
+     ************************************************/
+    int* ppn_ctr = (int*)malloc(PPN*sizeof(int));
+    int* ppn_displs = (int*)malloc((PPN+1)*sizeof(int));
+    for (int i = 0; i < PPN; i++)
+        ppn_ctr[i] = 0;
+    for (int i = 0; i < num_nodes; i++)
+        for (int j = 0; j < PPN; j++)
+            ppn_ctr[j] += global_recvcounts[i*PPN+j];
+    ppn_displs[0] = 0;
+    for (int i = 0; i < PPN; i++)
+    {
+        ppn_displs[i+1] = ppn_displs[i] + ppn_ctr[i];
+        ppn_ctr[i] = 0;
+    }
+    int ctr = 0;
+    recvcount = 0;
+    for (int i = 0; i < num_nodes; i++)
+        for (int j = 0; j < PPN; j++)
+        {
+            recvcount = global_recvcounts[i*PPN+j];
+            memcpy(recvbuf + (ppn_displs[j] + ppn_ctr[j])*rbytes,
+                    tmpbuf + ctr*rbytes,
+                    recvcount*rbytes);
+            ctr += recvcount;
+            ppn_ctr[j] += recvcount;
+        }
+
+    ctr = 0;
+    for (int i = 0; i < PPN; i++)
+    {
+        send_proc = local_rank + i;
+        if (send_proc >= PPN)
+            send_proc -= PPN;
+        recv_proc = local_rank - i;
+        if (recv_proc < 0)
+            recv_proc += PPN;
+
+        send_pos = ppn_displs[send_proc] * rbytes;
+        recvcount = 0;
+        for (int j = 0; j < num_nodes; j++)
+            recvcount += recvcounts[j*PPN+i];
+
+        MPI_Sendrecv(recvbuf + send_pos, ppn_ctr[send_proc], recvtype,
+                send_proc, tag,
+                tmpbuf + ctr*rbytes, recvcount, recvtype,
+                recv_proc, tag,
+                mpi_comm->local_comm, &status);
+
+        ppn_ctr[recv_proc] = ctr;
+
+        ctr += recvcount;
+    }
+
+    for (int i = 0; i < PPN; i++)
+    {
+        for (int j = 0; j < num_nodes; j++)
+        {
+            memcpy(recvbuf + rdispls[j*PPN+i]*rbytes,
+                    tmpbuf + ppn_ctr[i]*rbytes,
+                    recvcounts[j*PPN+i]*rbytes);
+            ppn_ctr[i] += recvcounts[j*PPN+i];
+        }
+    }
+
+    free(ppn_ctr);
+    free(ppn_displs);
+    free(global_recvcounts);
+    free(contigbuf);
+    free(tmpbuf);
+
+    return 0;
+}
+
