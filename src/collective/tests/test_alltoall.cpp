@@ -44,6 +44,7 @@ TEST(RandomCommTest, TestsInTests)
 
     MPIX_Comm* locality_comm;
     MPIX_Comm_init(&locality_comm, MPI_COMM_WORLD);
+    update_locality(locality_comm, 4);
 
     for (int i = 0; i < max_i; i++)
     {

@@ -14,6 +14,14 @@ extern "C"
 #endif
 
 // Helper Functions
+int alltoall_pairwise(const void* sendbuf,
+        const int sendcount,
+        MPI_Datatype sendtype,
+        void* recvbuf,
+        const int recvcount,
+        MPI_Datatype recvtype,
+        MPI_Comm comm);
+
 int alltoall_bruck(const void* sendbuf,
         const int sendcount,
         MPI_Datatype sendtype,

@@ -16,8 +16,6 @@
 #include <set>
 
 #include "neighbor_data.h"
-#include "test_locality.hpp"
-
 
 
 int main(int argc, char** argv)

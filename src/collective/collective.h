@@ -8,6 +8,7 @@
 #include "utils.h"
 #include "allgather.h"
 #include "alltoall.h"
+#include "alltoallv.h"
 
 #ifdef __cplusplus
 extern "C"

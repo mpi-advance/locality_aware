@@ -18,7 +18,6 @@
 
 #include "sparse_mat.hpp"
 #include "par_binary_IO.hpp"
-#include "test_locality.hpp"
 
 void test_matrix(const char* filename)
 {
@@ -187,8 +186,8 @@ TEST(RandomCommTest, TestsInTests)
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
 
     test_matrix("../../../../test_data/dwt_162.pm");
-    //test_matrix("../../../../test_data/odepa400.pm");
-    //test_matrix("../../../../test_data/ww_36_pmec_36.pm");
+    test_matrix("../../../../test_data/odepa400.pm");
+    test_matrix("../../../../test_data/ww_36_pmec_36.pm");
 
 }
 

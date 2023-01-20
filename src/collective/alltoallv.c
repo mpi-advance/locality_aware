@@ -49,6 +49,27 @@ int MPIX_Alltoallv(const void* sendbuf,
         MPI_Datatype recvtype,
         MPIX_Comm* mpi_comm)
 {
+    return alltoallv_pairwise(sendbuf,
+        sendcounts,
+        sdispls,
+        sendtype,
+        recvbuf,
+        recvcounts,
+        rdispls,
+        recvtype,
+        mpi_comm->global_comm);
+}
+
+int alltoallv_pairwise_loc(const void* sendbuf,
+        const int sendcounts[],
+        const int sdispls[],
+        MPI_Datatype sendtype,
+        void* recvbuf,
+        const int recvcounts[],
+        const int rdispls[],
+        MPI_Datatype recvtype,
+        MPIX_Comm* mpi_comm)
+{
     int rank, num_procs;
     MPI_Comm_rank(mpi_comm->global_comm, &rank);
     MPI_Comm_size(mpi_comm->global_comm, &num_procs);
@@ -82,8 +103,8 @@ int MPIX_Alltoallv(const void* sendbuf,
     int proc, node;
     int tag = 923812;
     int local_tag = 728401;
-    long start, end;
-    long ctr, next_ctr;
+    int start, end;
+    int ctr, next_ctr;
 
     int send_ctr, recv_ctr;
     int node_size, size;
@@ -100,8 +121,8 @@ int MPIX_Alltoallv(const void* sendbuf,
 
     int* local_S_send_displs = (int*)malloc((PPN+1)*sizeof(int));
     int* local_R_recv_displs = (int*)malloc((PPN+1)*sizeof(int));
-    long* local_S_recv_displs = (long*)malloc((PPN+1)*sizeof(long));
-    long* local_R_send_displs = (long*)malloc((PPN+1)*sizeof(long));
+    int* local_S_recv_displs = (int*)malloc((PPN+1)*sizeof(int));
+    int* local_R_send_displs = (int*)malloc((PPN+1)*sizeof(int));
 
     proc_node_displs[0] = 0;
     local_node_displs[0] = 0;
@@ -227,7 +248,7 @@ int MPIX_Alltoallv(const void* sendbuf,
 
     int n_msgs;
 
-    long buf_size = local_S_recv_displs[PPN];
+    int buf_size = local_S_recv_displs[PPN];
     if (local_R_send_displs[PPN] > buf_size)
         buf_size = local_R_send_displs[PPN];
     buf_size *= recv_size;
@@ -440,4 +461,48 @@ int MPIX_Alltoallv(const void* sendbuf,
     free(recv_proc_displs);
 
     return 0;
+}
+
+
+int alltoallv_pairwise(const void* sendbuf,
+        const int sendcounts[],
+        const int sdispls[],
+        MPI_Datatype sendtype,
+        void* recvbuf,
+        const int recvcounts[],
+        const int rdispls[],
+        MPI_Datatype recvtype,
+        MPI_Comm comm)
+{
+        int rank, num_procs;
+    MPI_Comm_rank(comm, &rank);
+    MPI_Comm_size(comm, &num_procs);
+
+    int tag = 102944;
+    int send_proc, recv_proc;
+    int send_pos, recv_pos;
+    MPI_Status status;
+
+    int send_size, recv_size;
+    MPI_Type_size(sendtype, &send_size);
+    MPI_Type_size(recvtype, &recv_size);
+
+    // Send to rank + i
+    // Recv from rank - i
+    for (int i = 0; i < num_procs; i++)
+    {
+        send_proc = rank + i;
+        if (send_proc >= num_procs)
+            send_proc -= num_procs;
+        recv_proc = rank - i;
+        if (recv_proc < 0)
+            recv_proc += num_procs;
+
+        send_pos = sdispls[send_proc] * send_size;
+        recv_pos = rdispls[recv_proc] * recv_size;
+
+        MPI_Sendrecv(sendbuf + send_pos, sendcounts[send_proc], sendtype, send_proc, tag,
+                recvbuf + recv_pos, recvcounts[recv_proc], recvtype, recv_proc, tag,
+                comm, &status);
+    }
 }
