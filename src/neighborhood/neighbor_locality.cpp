@@ -501,7 +501,7 @@ void form_global_comm(CommData* local_data, CommData* global_data,
         end = local_data->indptr[i+1];
         for (int j = start; j < end; j++)
         {
-            node = local_data_nodes[i];
+            node = local_data_nodes[j];
             node_idx = node_sizes[node];
             idx = global_data->indptr[node_idx] + node_ctr[node_idx]++;
             global_data->indices[idx] = local_data->indices[j];
