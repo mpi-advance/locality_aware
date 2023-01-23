@@ -110,6 +110,14 @@ int alltoallv_pairwise(const void* sendbuf,
 // 2-Step Aggregation (large messages)
 // Gather all data to be communicated between nodes
 // Send to node+i, recv from node-i
+// TODO (For Evelyn to look at sometime?) : 
+//     What is the best way to aggregate very large messages?
+//     Should we load balance to make sure all processes per node
+//         send equal amount of data? (ideally, yes)
+//     Should we use S. Lockhart's  'ideal' aggregation, setting
+//         a tolerance.  Any message with size < tolerance, aggregate
+//         this data with other processes locally.
+//     How should we aggregate data when using GPU memory??
 int alltoallv_pairwise_loc(const void* sendbuf,
         const int sendcounts[],
         const int sdispls[],
@@ -152,6 +160,8 @@ int alltoallv_pairwise_loc(const void* sendbuf,
     int sendcount, recvcount;
     int* global_recvcounts = (int*)malloc(num_procs*sizeof(int));
     int global_recvcount = 0;
+    // Send to node + i
+    // Recv from node - i
     for (int i = 0; i < num_nodes; i++)
     {
         send_node = rank_node + i;
@@ -174,6 +184,8 @@ int alltoallv_pairwise_loc(const void* sendbuf,
     char* tmpbuf = (char*)malloc(maxrecvcount*rbytes);
     char* contigbuf = (char*)malloc(maxrecvcount*rbytes);
 
+    // Send to node + i
+    // Recv from node - i
     for (int i = 0; i < num_nodes; i++)
     {
         send_node = rank_node + i;
@@ -216,6 +228,18 @@ int alltoallv_pairwise_loc(const void* sendbuf,
         ppn_displs[i+1] = ppn_displs[i] + ppn_ctr[i];
         ppn_ctr[i] = 0;
     }
+
+    // TODO (for Evelyn to look into?) : 
+    //     Currently, re-pack data here
+    //     We recv'd data from each node
+    //     Now we re-pack it so that it is
+    //     ordered by destination process rather
+    //     than source node.
+    //     Packing can be expensive! Should we
+    //     use MPI Datatypes?  Or send num_nodes 
+    //     different messages to each of the PPN
+    //     local processes?
+
     int ctr = 0;
     recvcount = 0;
     for (int i = 0; i < num_nodes; i++)
@@ -229,6 +253,8 @@ int alltoallv_pairwise_loc(const void* sendbuf,
             ppn_ctr[j] += recvcount;
         }
 
+    // Send to local_rank + i
+    // Recv from local_rank + i
     ctr = 0;
     for (int i = 0; i < PPN; i++)
     {
