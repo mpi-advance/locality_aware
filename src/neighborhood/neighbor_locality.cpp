@@ -497,12 +497,12 @@ void form_global_comm(CommData* local_data, CommData* global_data,
     init_size_msgs(global_data, global_data->size_msgs);
     for (int i = 0; i < local_data->num_msgs; i++)
     {
-        node = local_data_nodes[i];
-        node_idx = node_sizes[node];
         start = local_data->indptr[i];
         end = local_data->indptr[i+1];
         for (int j = start; j < end; j++)
         {
+            node = local_data_nodes[i];
+            node_idx = node_sizes[node];
             idx = global_data->indptr[node_idx] + node_ctr[node_idx]++;
             global_data->indices[idx] = local_data->indices[j];
         }
