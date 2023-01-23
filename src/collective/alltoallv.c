@@ -160,7 +160,7 @@ int alltoallv_pairwise_loc(const void* sendbuf,
         recv_node = rank_node - i;
         if (recv_node < 0)
             recv_node += num_nodes;
-    
+
         MPI_Sendrecv(&(sendcounts[send_node*PPN]), PPN, MPI_INT,
                 send_node*PPN+local_rank, tag,
                 &(global_recvcounts[recv_node*PPN]), PPN, MPI_INT,
@@ -193,9 +193,9 @@ int alltoallv_pairwise_loc(const void* sendbuf,
             recvcount += global_recvcounts[recv_node*PPN+j];
         }
 
-        MPI_Sendrecv(sendbuf + send_pos, sendcount, 
+        MPI_Sendrecv(sendbuf + send_pos*sbytes, sendcount, 
                 sendtype, send_node*PPN + local_rank, tag,
-                tmpbuf + recv_pos, recvcount, 
+                tmpbuf + recv_pos*rbytes, recvcount, 
                 recvtype, recv_node*PPN + local_rank, tag, 
                 mpi_comm->global_comm, &status);
     }
