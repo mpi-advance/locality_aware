@@ -164,6 +164,7 @@ void test_matrix(const char* filename)
     {
         ASSERT_EQ(std_recv_vals[i], part_locality_recv_vals[i]);
     }
+
     MPIX_Comm_free(neighbor_comm);
     MPI_Comm_free(&std_comm);
 }

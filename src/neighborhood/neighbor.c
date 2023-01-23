@@ -421,6 +421,8 @@ int MPIX_Neighbor_locality_alltoallv_init(
             comm->global_comm,
             &(request->global_n_msgs),
             &(request->global_requests));
+if (request->global_n_msgs != request->locality->global_comm->send_data->num_msgs + request->locality->global_comm->recv_data->num_msgs)
+printf("Request Global N Msgs Incorrect!!\n");
 
 
     // Local R Communication
