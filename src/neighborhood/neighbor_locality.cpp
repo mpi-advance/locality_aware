@@ -528,6 +528,7 @@ void update_global_comm(LocalityComm* locality)
     int send_tag = 32148532;
     int recv_tag = 52395234;
     int node, global_proc, tag;
+    int num_to_recv;
     MPI_Status recv_status;
     std::vector<int> send_nodes(num_nodes, 0);
     std::vector<int> recv_nodes(num_nodes, 0);
@@ -544,37 +545,40 @@ void update_global_comm(LocalityComm* locality)
         global_proc = get_global_proc(locality->communicators, node, local_rank);
         comm_procs[global_proc]++;
         send_buffer[i] = locality->communicators->rank_node;
-        MPI_Issend(&send_buffer[i], 1, MPI_INT, global_proc, send_tag,
-                locality->communicators->global_comm, &requests[i]);
+        MPI_Isend(&(send_buffer[i]), 1, MPI_INT, global_proc, send_tag,
+                locality->communicators->global_comm, &(requests[i]));
     }
+    MPI_Allreduce(MPI_IN_PLACE, comm_procs.data(), num_procs, MPI_INT,
+            MPI_SUM, locality->communicators->global_comm);
+    num_to_recv = comm_procs[rank];
+    for (int i = 0; i < num_procs; i++)
+        comm_procs[i] = 0;
+    for (int i = 0; i < num_to_recv; i++)
+    {
+        MPI_Probe(MPI_ANY_SOURCE, send_tag, locality->communicators->global_comm, &recv_status);
+        global_proc = recv_status.MPI_SOURCE;
+        MPI_Recv(&node, 1, MPI_INT, global_proc, send_tag, locality->communicators->global_comm, &recv_status);
+        recv_nodes[node] = global_proc;
+    }
+    
     for (int i = 0; i < n_recvs; i++)
     {
         node = locality->global_comm->recv_data->procs[i];
         global_proc = get_global_proc(locality->communicators, node, local_rank);
         comm_procs[global_proc]++;
         send_buffer[n_sends + i] = locality->communicators->rank_node;
-        MPI_Issend(&send_buffer[n_sends + i], 1, MPI_INT, global_proc, recv_tag,
-                locality->communicators->global_comm, &requests[n_sends + i]);
+        MPI_Issend(&(send_buffer[n_sends + i]), 1, MPI_INT, global_proc, recv_tag,
+                locality->communicators->global_comm, &(requests[n_sends + i]));
     }
-
     MPI_Allreduce(MPI_IN_PLACE, comm_procs.data(), num_procs, MPI_INT,
             MPI_SUM, locality->communicators->global_comm);
-    int num_to_recv = comm_procs[rank];
+    num_to_recv = comm_procs[rank];
     for (int i = 0; i < num_to_recv; i++)
     {
-        MPI_Probe(MPI_ANY_SOURCE, MPI_ANY_TAG, locality->communicators->global_comm, &recv_status);
+        MPI_Probe(MPI_ANY_SOURCE, recv_tag, locality->communicators->global_comm, &recv_status);
         global_proc = recv_status.MPI_SOURCE;
-        tag = recv_status.MPI_TAG;
-
-        MPI_Recv(&node, 1, MPI_INT, global_proc, tag, locality->communicators->global_comm, &recv_status);
-        if (tag == send_tag)
-        {
-            recv_nodes[node] = global_proc;
-        }
-        else if (tag == recv_tag)
-        {
-            send_nodes[node] = global_proc;
-        }
+        MPI_Recv(&node, 1, MPI_INT, global_proc, recv_tag, locality->communicators->global_comm, &recv_status);
+        send_nodes[node] = global_proc;
     }
 
     if (n_sends + n_recvs)
