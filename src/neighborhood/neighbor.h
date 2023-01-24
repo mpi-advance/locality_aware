@@ -93,17 +93,6 @@ void init_locality(const int n_sends,
         MPIX_Request* request);
 
 
-void init_part_locality(const int n_sends, 
-        const int* send_procs, 
-        const int* send_indptr,
-        const int n_recvs,
-        const int* recv_procs,
-        const int* recv_indptr,
-        const MPI_Datatype sendtype, 
-        const MPI_Datatype recvtype,
-        const MPIX_Comm* mpix_comm,
-        MPIX_Request* request);
-
 #ifdef __cplusplus
 }
 #endif

@@ -67,7 +67,7 @@ void form_comm(ParMat<U>& A)
     for (int i = 0; i < A.off_proc_num_cols; i++)
     {
         int global_col = A.off_proc_columns[i];
-        while (first_rows[proc+1] < global_col)
+        while (first_rows[proc+1] <= global_col)
             proc++;
         col_to_proc[i] = proc;
         if (proc != prev_proc)
@@ -116,7 +116,9 @@ void form_comm(ParMat<U>& A)
         if (recv_buf.size() < count) recv_buf.resize(count);
         MPI_Recv(recv_buf.data(), count, MPI_LONG, proc, msg_tag, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
         for (int i = 0; i < count; i++)
+        {
             A.send_comm.idx.push_back(recv_buf[i] - A.first_row);
+        }
     }
     A.send_comm.req.resize(A.send_comm.n_msgs);
     A.send_comm.size_msgs = count_sum;

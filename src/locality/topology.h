@@ -32,6 +32,9 @@ int get_node(const MPIX_Comm* data, const int proc);
 int get_local_proc(const MPIX_Comm* data, const int proc);
 int get_global_proc(const MPIX_Comm* data, const int node, const int local_proc);
 
+// For testing purposes (manually set PPN)
+void update_locality(MPIX_Comm* comm_dist_graph, int ppn);
+
 #ifdef __cplusplus
 }
 #endif

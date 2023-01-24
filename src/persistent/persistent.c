@@ -9,9 +9,24 @@ int MPIX_Start(MPIX_Request* request)
 {
     int ierr, idx;
 
+
+    char* send_buffer = NULL;
+    int recv_size = 0;
+    if (request->recv_size)
+    {
+        send_buffer = (char*)(request->sendbuf);
+        recv_size = request->recv_size;
+    }
+
     // Local L sends sendbuf
     if (request->local_L_n_msgs)
     {
+        for (int i = 0; i < request->locality->local_L_comm->send_data->size_msgs; i++)
+        {
+            idx = request->locality->local_L_comm->send_data->indices[i];
+            for (int j = 0; j < recv_size; j++)
+                request->locality->local_L_comm->send_data->buffer[i*recv_size+j] = send_buffer[idx*recv_size+j];
+        }
         ierr = MPI_Startall(request->local_L_n_msgs, request->local_L_requests);
     }
 
@@ -19,6 +34,14 @@ int MPIX_Start(MPIX_Request* request)
     // Local S sends sendbuf
     if (request->local_S_n_msgs)
     {
+        for (int i = 0; i < request->locality->local_S_comm->send_data->size_msgs; i++)
+        {
+            idx = request->locality->local_S_comm->send_data->indices[i];
+
+            for (int j = 0; j < recv_size; j++)
+                request->locality->local_S_comm->send_data->buffer[i*recv_size+j] = send_buffer[idx*recv_size+j];
+        }
+
         ierr = MPI_Startall(request->local_S_n_msgs, request->local_S_requests);
         ierr = MPI_Waitall(request->local_S_n_msgs, request->local_S_requests, MPI_STATUSES_IGNORE);
 
@@ -26,7 +49,8 @@ int MPIX_Start(MPIX_Request* request)
         for (int i = 0; i < request->locality->global_comm->send_data->size_msgs; i++)
         {
             idx = request->locality->global_comm->send_data->indices[i];
-            request->locality->global_comm->send_data->buffer[i] = request->locality->local_S_comm->recv_data->buffer[idx];
+            for (int j = 0; j < recv_size; j++)
+                request->locality->global_comm->send_data->buffer[i*recv_size+j] = request->locality->local_S_comm->recv_data->buffer[idx*recv_size+j];
         }
     }
 
@@ -65,7 +89,8 @@ int MPIX_Wait(MPIX_Request* request, MPI_Status* status)
             for (int i = 0; i < request->locality->local_R_comm->send_data->size_msgs; i++)
             {
                 idx = request->locality->local_R_comm->send_data->indices[i];
-                request->locality->local_R_comm->send_data->buffer[i] = request->locality->global_comm->recv_data->buffer[idx];
+                for (int j = 0; j < recv_size; j++)
+                    request->locality->local_R_comm->send_data->buffer[i*recv_size+j] = request->locality->global_comm->recv_data->buffer[idx*recv_size+j];
             }
         }
     }
@@ -79,7 +104,7 @@ int MPIX_Wait(MPIX_Request* request, MPI_Status* status)
         for (int i = 0; i < request->locality->local_R_comm->recv_data->size_msgs; i++)
         {
             idx = request->locality->local_R_comm->recv_data->indices[i];
-            for (int j = 0; j < request->recv_size; j++)
+            for (int j = 0; j < recv_size; j++)
                 recv_buffer[idx*recv_size+j] = request->locality->local_R_comm->recv_data->buffer[i*recv_size+j];
         }
     }
@@ -92,7 +117,7 @@ int MPIX_Wait(MPIX_Request* request, MPI_Status* status)
         for (int i = 0; i < request->locality->local_L_comm->recv_data->size_msgs; i++)
         {
             idx = request->locality->local_L_comm->recv_data->indices[i];
-            for (int j = 0; j < request->recv_size; j++)
+            for (int j = 0; j < recv_size; j++)
                 recv_buffer[idx*recv_size+j] = request->locality->local_L_comm->recv_data->buffer[i*recv_size+j];
         }
     }
