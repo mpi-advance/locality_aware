@@ -1,0 +1,70 @@
+app 0: ./p2p_alltoallv 
+rank: 0: { host: 1; cpu: {0-3}, {4-7} ; mem: {0-16301} } : app 0
+rank: 1: { host: 1; cpu: {4-7}, {0-3} ; mem: {0-16301} } : app 0
+rank: 2: { host: 2; cpu: {0-3}, {4-7} ; mem: {0-16301} } : app 0
+rank: 3: { host: 2; cpu: {4-7}, {0-3} ; mem: {0-16301} } : app 0
+rank: 4: { host: 3; cpu: {0-3}, {4-7} ; mem: {0-16301} } : app 0
+rank: 5: { host: 3; cpu: {4-7}, {0-3} ; mem: {0-16301} } : app 0
+rank: 6: { host: 4; cpu: {0-3}, {4-7} ; mem: {0-16301} } : app 0
+rank: 7: { host: 4; cpu: {4-7}, {0-3} ; mem: {0-16301} } : app 0
+
+------------------------------------------------------------
+Sender: LSF System <lsfadmin@lassen710>
+Subject: Job 3936356: <loc_alltoallv_n4_ppn2> in cluster <lassen> Exited
+
+Job <loc_alltoallv_n4_ppn2> was submitted from host <lassen708> by user <bienz1> in cluster <lassen> at Thu Sep 22 12:25:00 2022
+Job was executed on host(s) <1*lassen710>, in queue <pdebug>, as user <bienz1> in cluster <lassen> at Thu Sep 22 12:25:03 2022
+                            <40*lassen33>
+                            <40*lassen32>
+                            <40*lassen31>
+                            <40*lassen30>
+</g/g14/bienz1> was used as the home directory.
+</g/g14/bienz1/locality_aware/benchmark_tests/lassen> was used as the working directory.
+Started at Thu Sep 22 12:25:03 2022
+Terminated at Thu Sep 22 12:26:19 2022
+Results reported at Thu Sep 22 12:26:19 2022
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+#!/bin/bash
+#BSUB -J loc_alltoallv_n4_ppn2
+#BSUB -e loc_alltoallv_n4_ppn2.%J.err
+#BSUB -o loc_alltoallv_n4_ppn2.%J.out
+#BSUB -nnodes 4
+##BSUB -q pbatch
+#BSUB -q pdebug
+#BSUB -W 00:15
+
+cd /g/g14/bienz1/locality_aware/build_lassen/benchmarks
+
+jsrun -a2 -c2 -r1 -n4 --latency_priority=cpu-cpu --launch_distribution=packed --print_placement=1 ./p2p_alltoallv
+
+
+
+------------------------------------------------------------
+
+Exited with exit code 139.
+
+Resource usage summary:
+
+    CPU time :                                   0.23 sec.
+    Max Memory :                                 59 MB
+    Average Memory :                             55.25 MB
+    Total Requested Memory :                     -
+    Delta Memory :                               -
+    Max Swap :                                   1425 MB
+    Max Processes :                              4
+    Max Threads :                                27
+    Run time :                                   78 sec.
+    Turnaround time :                            79 sec.
+
+The output (if any) is above this job summary.
+
+
+
+PS:
+
+Read file <loc_alltoallv_n4_ppn2.3936356.err> for stderr output of this job.
+
