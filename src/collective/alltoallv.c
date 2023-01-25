@@ -101,8 +101,8 @@ int alltoallv_pairwise(const void* sendbuf,
         send_pos = sdispls[send_proc] * send_size;
         recv_pos = rdispls[recv_proc] * recv_size;
 
-        MPI_Sendrecv(sendbuf + send_pos, sendcounts[i], sendtype, send_proc, tag,
-                recvbuf + recv_pos, recvcounts[i], recvtype, recv_proc, tag,
+        MPI_Sendrecv(sendbuf + send_pos, sendcounts[send_proc], sendtype, send_proc, tag,
+                recvbuf + recv_pos, recvcounts[recv_proc], recvtype, recv_proc, tag,
                 comm, &status);
     }
 }

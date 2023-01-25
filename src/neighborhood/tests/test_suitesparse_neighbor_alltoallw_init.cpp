@@ -16,8 +16,8 @@
 #include <numeric>
 #include <set>
 
-#include "sparse_mat.hpp"
-#include "par_binary_IO.hpp"
+#include "tests/sparse_mat.hpp"
+#include "tests/par_binary_IO.hpp"
 
 void test_matrix(const char* filename)
 {
