@@ -118,7 +118,7 @@ void form_comm(ParMat<U>& A)
         MPI_Recv(recv_buf.data(), count, MPI_LONG, proc, msg_tag, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
         for (int i = 0; i < count; i++)
         {
-            A.send_comm.idx.push_back(recv_buf[i] - A.first_row);
+            A.send_comm.idx.push_back(recv_buf[i] - A.first_col);
         }
     }
     A.send_comm.req.resize(A.send_comm.n_msgs);
@@ -146,8 +146,8 @@ void communicate(ParMat<T>& A, std::vector<U>& data, std::vector<U>& recvbuf, MP
         {
             sendbuf[j] = data[A.send_comm.idx[j]];
         }
-    //    MPI_Isend(&(sendbuf[start]), (int)(end - start), type, proc, tag, 
-    //            MPI_COMM_WORLD, &(A.send_comm.req[i]));
+        MPI_Isend(&(sendbuf[start]), (int)(end - start), type, proc, tag, 
+                MPI_COMM_WORLD, &(A.send_comm.req[i]));
     }
 
     for (int i = 0; i < A.recv_comm.n_msgs; i++)
@@ -155,12 +155,12 @@ void communicate(ParMat<T>& A, std::vector<U>& data, std::vector<U>& recvbuf, MP
         proc = A.recv_comm.procs[i];
         start = A.recv_comm.ptr[i];
         end = A.recv_comm.ptr[i+1];
-    //    MPI_Irecv(&(recvbuf[start]), (int)(end - start), type, proc, tag,
-    //            MPI_COMM_WORLD, &(A.recv_comm.req[i]));
+        MPI_Irecv(&(recvbuf[start]), (int)(end - start), type, proc, tag,
+                MPI_COMM_WORLD, &(A.recv_comm.req[i]));
     }
 
-    //MPI_Waitall(A.send_comm.n_msgs, A.send_comm.req.data(), MPI_STATUSES_IGNORE);
-    //MPI_Waitall(A.recv_comm.n_msgs, A.recv_comm.req.data(), MPI_STATUSES_IGNORE);
+    MPI_Waitall(A.send_comm.n_msgs, A.send_comm.req.data(), MPI_STATUSES_IGNORE);
+    MPI_Waitall(A.recv_comm.n_msgs, A.recv_comm.req.data(), MPI_STATUSES_IGNORE);
 }
 
 
