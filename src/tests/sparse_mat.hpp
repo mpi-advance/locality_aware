@@ -45,9 +45,8 @@ struct ParMat
     MPI_Comm dist_graph_comm;
 };
 
-
 template <typename U>
-void form_comm(ParMat<U>& A)
+void form_recv_comm(ParMat<U>& A)
 {
     int rank, num_procs;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -58,73 +57,192 @@ void form_comm(ParMat<U>& A)
     MPI_Allgather(&A.first_col, 1, MPI_INT, first_cols.data(), 1, MPI_INT, MPI_COMM_WORLD);
     first_cols[num_procs] = A.global_cols;
 
-    // Step through off_proc_columns and find which process the corresponding row is stored on
-    std::vector<int> col_to_proc(A.off_proc_num_cols);
+    // Map Columns to Processes
     int proc = 0;
     int prev_proc = -1;
-    std::vector<int> sizes(num_procs);
-
     for (int i = 0; i < A.off_proc_num_cols; i++)
     {
         int global_col = A.off_proc_columns[i];
         while (first_cols[proc+1] <= global_col)
             proc++;
-        col_to_proc[i] = proc;
         if (proc != prev_proc)
         {
             A.recv_comm.procs.push_back(proc);
             A.recv_comm.ptr.push_back((U)(i));
             prev_proc = proc;
-            sizes[proc] = 1;
         }
     }
 
+    // Set Recv Sizes
     A.recv_comm.ptr.push_back((U)(A.off_proc_num_cols));
     A.recv_comm.n_msgs = A.recv_comm.procs.size();
     A.recv_comm.req.resize(A.recv_comm.n_msgs);
     A.recv_comm.size_msgs = A.off_proc_num_cols;
-
-    // Reduce NSends to Each Proc
-    MPI_Allreduce(MPI_IN_PLACE, sizes.data(), num_procs, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
-    A.send_comm.n_msgs = sizes[rank];
-
-    int msg_tag = 1234;
     A.recv_comm.counts.resize(A.recv_comm.n_msgs);
+    for (int i = 0; i < A.recv_comm.n_msgs; i++)
+        A.recv_comm.counts[i] = A.recv_comm.ptr[i+1] - A.recv_comm.ptr[i];
+}
+
+// Must Form Recv Comm before Send!
+template <typename U>
+void form_send_comm_standard(ParMat<U>& A)
+{
+    int rank, num_procs;
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
+
+    std::vector<long> recv_buf;
+    std::vector<int> sizes(num_procs, 0);
+    int start, end, proc, count, ctr;
+    MPI_Status recv_status;
+
+    // Allreduce to find size of data I will receive
+    for (int i = 0; i < A.recv_comm.n_msgs; i++)
+        sizes[A.recv_comm.procs[i]] = A.recv_comm.ptr[i+1] - A.recv_comm.ptr[i];
+    MPI_Allreduce(MPI_IN_PLACE, sizes.data(), num_procs, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
+    A.send_comm.size_msgs = sizes[rank];
+    A.send_comm.idx.resize(A.send_comm.size_msgs);
+    recv_buf.resize(A.send_comm.size_msgs);
+
+    // Send a message to every process that I will need data from
+    // Tell them which global indices I need from them
+    int msg_tag = 1234;
     for (int i = 0; i < A.recv_comm.n_msgs; i++)
     {
         proc = A.recv_comm.procs[i];
-        U start = A.recv_comm.ptr[i];
-        U end = A.recv_comm.ptr[i+1];
-        A.recv_comm.counts[i] = (int)(end - start);
-        MPI_Isend(&(A.off_proc_columns[start]), A.recv_comm.counts[i], MPI_LONG, proc, msg_tag, 
+        MPI_Isend(&(A.off_proc_columns[A.recv_comm.ptr[i]]), A.recv_comm.counts[i], MPI_LONG, proc, msg_tag, 
                 MPI_COMM_WORLD, &(A.recv_comm.req[i]));
     }
 
-    MPI_Status recv_status;
-    std::vector<long> recv_buf;
-    int count_sum = 0;
-    int count;
+    // Wait to receive values
+    // until I have received fewer than the number of global indices I am waiting on
+    ctr = 0;
     A.send_comm.ptr.push_back(0);
-    for (int i = 0; i < A.send_comm.n_msgs; i++)
+    while (ctr < A.send_comm.size_msgs)
     {
+        // Wait for a message
         MPI_Probe(MPI_ANY_SOURCE, msg_tag, MPI_COMM_WORLD, &recv_status);
+
+        // Get the source process and message size
         proc = recv_status.MPI_SOURCE;
         A.send_comm.procs.push_back(proc);
         MPI_Get_count(&recv_status, MPI_LONG, &count);
         A.send_comm.counts.push_back(count);
-        count_sum += count;
-        A.send_comm.ptr.push_back((U)(count_sum));
-        if (recv_buf.size() < count) recv_buf.resize(count);
-        MPI_Recv(recv_buf.data(), count, MPI_LONG, proc, msg_tag, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+
+        // Receive the message, and add local indices to send_comm
+        MPI_Recv(&(recv_buf[ctr]), count, MPI_LONG, proc, msg_tag, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
         for (int i = 0; i < count; i++)
         {
-            A.send_comm.idx.push_back(recv_buf[i] - A.first_col);
+            A.send_comm.idx[ctr+i] = (recv_buf[ctr+i] - A.first_col);
         }
+        ctr += count;
+        A.send_comm.ptr.push_back((U)(ctr));
     }
+    
+    // Set send sizes
+    A.send_comm.n_msgs = A.send_comm.procs.size();
     A.send_comm.req.resize(A.send_comm.n_msgs);
-    A.send_comm.size_msgs = count_sum;
+    A.send_comm.size_msgs = ctr;
 
     MPI_Waitall(A.recv_comm.n_msgs, A.recv_comm.req.data(), MPI_STATUSES_IGNORE);
+}
+
+// Must Form Recv Comm before Send!
+template <typename U>
+void form_send_comm_torsten(ParMat<U>& A)
+{
+    int rank, num_procs;
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
+
+    std::vector<long> recv_buf;
+    std::vector<int> sizes(num_procs, 0);
+    int start, end, proc, count, ctr, flag;
+    int ibar = 0;
+    MPI_Status recv_status;
+    MPI_Request bar_req;
+
+    // Allreduce to find size of data I will receive
+    for (int i = 0; i < A.recv_comm.n_msgs; i++)
+        sizes[A.recv_comm.procs[i]] = A.recv_comm.ptr[i+1] - A.recv_comm.ptr[i];
+    MPI_Allreduce(MPI_IN_PLACE, sizes.data(), num_procs, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
+    A.send_comm.size_msgs = sizes[rank];
+    A.send_comm.idx.resize(A.send_comm.size_msgs);
+    recv_buf.resize(A.send_comm.size_msgs);
+
+    // Send a message to every process that I will need data from
+    // Tell them which global indices I need from them
+    int msg_tag = 1234;
+    for (int i = 0; i < A.recv_comm.n_msgs; i++)
+    {
+        proc = A.recv_comm.procs[i];
+        MPI_Issend(&(A.off_proc_columns[A.recv_comm.ptr[i]]), A.recv_comm.counts[i], MPI_LONG, proc, msg_tag, 
+                MPI_COMM_WORLD, &(A.recv_comm.req[i]));
+    }
+
+    // Wait to receive values
+    // until I have received fewer than the number of global indices I am waiting on
+    ctr = 0;
+    A.send_comm.ptr.push_back(0);
+    while (1)
+    //while (ctr < A.send_comm.size_msgs)
+    {
+        // Wait for a message
+        MPI_Iprobe(MPI_ANY_SOURCE, msg_tag, MPI_COMM_WORLD, &flag, &recv_status);
+        if (flag)
+        {
+            // Get the source process and message size
+            proc = recv_status.MPI_SOURCE;
+            A.send_comm.procs.push_back(proc);
+            MPI_Get_count(&recv_status, MPI_LONG, &count);
+            A.send_comm.counts.push_back(count);
+
+            // Receive the message, and add local indices to send_comm
+            MPI_Recv(&(recv_buf[ctr]), count, MPI_LONG, proc, msg_tag, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+            for (int i = 0; i < count; i++)
+            {
+                A.send_comm.idx[ctr+i] = (recv_buf[ctr+i] - A.first_col);
+            }
+            ctr += count;
+            A.send_comm.ptr.push_back((U)(ctr));
+        }
+        
+        // If I have already called my Ibarrier, check if all processes have reached
+        // If all processes have reached the Ibarrier, all messages have been sent
+        if (ibar)
+        {
+            MPI_Test(&bar_req, &flag, MPI_STATUS_IGNORE);
+            if (flag) break;
+        }
+        else
+        {
+            // Test if all of my synchronous sends have completed.
+            // They only complete once actually received.
+            MPI_Testall(A.recv_comm.n_msgs, A.recv_comm.req.data(), &flag, MPI_STATUSES_IGNORE);
+            if (flag)
+            {
+                ibar = 1;
+                MPI_Ibarrier(MPI_COMM_WORLD, &bar_req);
+            }    
+        }
+    }
+    
+    // Set send sizes
+    A.send_comm.n_msgs = A.send_comm.procs.size();
+    A.send_comm.req.resize(A.send_comm.n_msgs);
+    A.send_comm.size_msgs = ctr;
+}
+
+
+template <typename U>
+void form_comm(ParMat<U>& A)
+{
+    // Form Recv Side 
+    form_recv_comm(A);
+
+    // Form Send Side (Algorithm Options Here!)
+    //form_send_comm_standard(A);
+    form_send_comm_torsten(A);
 }
 
 
