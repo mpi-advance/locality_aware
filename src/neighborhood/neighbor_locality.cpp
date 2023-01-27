@@ -567,7 +567,7 @@ void update_global_comm(LocalityComm* locality)
         global_proc = get_global_proc(locality->communicators, node, local_rank);
         comm_procs[global_proc]++;
         send_buffer[n_sends + i] = locality->communicators->rank_node;
-        MPI_Issend(&(send_buffer[n_sends + i]), 1, MPI_INT, global_proc, recv_tag,
+        MPI_Isend(&(send_buffer[n_sends + i]), 1, MPI_INT, global_proc, recv_tag,
                 locality->communicators->global_comm, &(requests[n_sends + i]));
     }
     MPI_Allreduce(MPI_IN_PLACE, comm_procs.data(), num_procs, MPI_INT,

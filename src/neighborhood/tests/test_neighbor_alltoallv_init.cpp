@@ -15,7 +15,7 @@
 #include <vector>
 #include <set>
 
-#include "neighbor_data.h"
+#include "neighbor_data.hpp"
 
 int main(int argc, char** argv)
 {
