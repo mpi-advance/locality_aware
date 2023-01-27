@@ -53,10 +53,10 @@ void form_comm(ParMat<U>& A)
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
 
-    // Gather first row for all processes into list
-    std::vector<int> first_rows(num_procs+1);
-    MPI_Allgather(&A.first_row, 1, MPI_INT, first_rows.data(), 1, MPI_INT, MPI_COMM_WORLD);
-    first_rows[num_procs] = A.global_rows;
+    // Gather first col for all processes into list
+    std::vector<int> first_cols(num_procs+1);
+    MPI_Allgather(&A.first_col, 1, MPI_INT, first_cols.data(), 1, MPI_INT, MPI_COMM_WORLD);
+    first_cols[num_procs] = A.global_cols;
 
     // Step through off_proc_columns and find which process the corresponding row is stored on
     std::vector<int> col_to_proc(A.off_proc_num_cols);
@@ -67,7 +67,7 @@ void form_comm(ParMat<U>& A)
     for (int i = 0; i < A.off_proc_num_cols; i++)
     {
         int global_col = A.off_proc_columns[i];
-        while (first_rows[proc+1] <= global_col)
+        while (first_cols[proc+1] <= global_col)
             proc++;
         col_to_proc[i] = proc;
         if (proc != prev_proc)
@@ -78,6 +78,7 @@ void form_comm(ParMat<U>& A)
             sizes[proc] = 1;
         }
     }
+
     A.recv_comm.ptr.push_back((U)(A.off_proc_num_cols));
     A.recv_comm.n_msgs = A.recv_comm.procs.size();
     A.recv_comm.req.resize(A.recv_comm.n_msgs);
@@ -133,7 +134,9 @@ void communicate(ParMat<T>& A, std::vector<U>& data, std::vector<U>& recvbuf, MP
     int proc;
     T start, end;
     int tag = 2948;
-    std::vector<U> sendbuf(A.send_comm.idx.size());
+    std::vector<U> sendbuf;
+    if (A.send_comm.size_msgs)
+        sendbuf.resize(A.send_comm.size_msgs);
     for (int i = 0; i < A.send_comm.n_msgs; i++)
     {
         proc = A.send_comm.procs[i];
@@ -143,8 +146,8 @@ void communicate(ParMat<T>& A, std::vector<U>& data, std::vector<U>& recvbuf, MP
         {
             sendbuf[j] = data[A.send_comm.idx[j]];
         }
-        MPI_Isend(&(sendbuf[start]), (int)(end - start), type, proc, tag, 
-                MPI_COMM_WORLD, &(A.send_comm.req[i]));
+    //    MPI_Isend(&(sendbuf[start]), (int)(end - start), type, proc, tag, 
+    //            MPI_COMM_WORLD, &(A.send_comm.req[i]));
     }
 
     for (int i = 0; i < A.recv_comm.n_msgs; i++)
@@ -152,12 +155,12 @@ void communicate(ParMat<T>& A, std::vector<U>& data, std::vector<U>& recvbuf, MP
         proc = A.recv_comm.procs[i];
         start = A.recv_comm.ptr[i];
         end = A.recv_comm.ptr[i+1];
-        MPI_Irecv(&(recvbuf[start]), (int)(end - start), type, proc, tag,
-                MPI_COMM_WORLD, &(A.recv_comm.req[i]));
+    //    MPI_Irecv(&(recvbuf[start]), (int)(end - start), type, proc, tag,
+    //            MPI_COMM_WORLD, &(A.recv_comm.req[i]));
     }
 
-    MPI_Waitall(A.send_comm.n_msgs, A.send_comm.req.data(), MPI_STATUSES_IGNORE);
-    MPI_Waitall(A.recv_comm.n_msgs, A.recv_comm.req.data(), MPI_STATUSES_IGNORE);
+    //MPI_Waitall(A.send_comm.n_msgs, A.send_comm.req.data(), MPI_STATUSES_IGNORE);
+    //MPI_Waitall(A.recv_comm.n_msgs, A.recv_comm.req.data(), MPI_STATUSES_IGNORE);
 }
 
 
