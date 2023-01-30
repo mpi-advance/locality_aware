@@ -637,8 +637,8 @@ int MPIX_Neighbor_part_locality_alltoallv_init(
     for (int i = 0; i < send_size; i++)
         global_send_indices[i] = first_send + i;
 
-    MPI_Neighbor_alltoallv(global_send_indices, sendcounts, sdispls, MPI_LONG, 
-            global_recv_indices, recvcounts, rdispls, MPI_LONG, comm->neighbor_comm);
+    MPIX_Neighbor_alltoallv(global_send_indices, sendcounts, sdispls, MPI_LONG, 
+            global_recv_indices, recvcounts, rdispls, MPI_LONG, comm);
 
     free(sources);
     free(sourceweights);

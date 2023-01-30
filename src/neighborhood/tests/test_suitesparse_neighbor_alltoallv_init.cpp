@@ -31,7 +31,11 @@ void test_matrix(const char* filename)
     readParMatrix(filename, A);
     form_comm(A);
 
-    std::vector<int> send_vals;
+    std::vector<int> std_recv_vals, neigh_recv_vals, new_recv_vals,
+            locality_recv_vals, part_locality_recv_vals;
+    std::vector<int> send_vals, alltoallv_send_vals;
+    std::vector<long> send_indices;
+
     if (A.on_proc.n_cols)
     {
         send_vals.resize(A.on_proc.n_cols);
@@ -39,19 +43,7 @@ void test_matrix(const char* filename)
         for (int i = 0; i < A.on_proc.n_cols; i++)
             send_vals[i] += (rank*1000);
     }
-    std::vector<int> alltoallv_send_vals;
-    if (A.send_comm.size_msgs)
-    {
-        alltoallv_send_vals.resize(A.send_comm.size_msgs);
-        for (int i = 0; i < A.send_comm.size_msgs; i++)
-        {
-            idx = A.send_comm.idx[i];
-            alltoallv_send_vals[i] = send_vals[idx];
-        }
-    }
 
-    std::vector<int> std_recv_vals, neigh_recv_vals, new_recv_vals,
-            locality_recv_vals, part_locality_recv_vals;
     if (A.recv_comm.size_msgs)
     {
         std_recv_vals.resize(A.recv_comm.size_msgs);
@@ -60,13 +52,22 @@ void test_matrix(const char* filename)
         locality_recv_vals.resize(A.recv_comm.size_msgs);
         part_locality_recv_vals.resize(A.recv_comm.size_msgs);
     }
-    std::vector<long> send_indices(A.send_comm.size_msgs);
-    for (int i = 0; i < A.send_comm.size_msgs; i++)
-        send_indices[i] = A.send_comm.idx[i] + A.first_col;
+
+    if (A.send_comm.size_msgs)
+    {
+        alltoallv_send_vals.resize(A.send_comm.size_msgs);
+        send_indices.resize(A.send_comm.size_msgs);
+        for (int i = 0; i < A.send_comm.size_msgs; i++)
+        {
+            idx = A.send_comm.idx[i];
+            alltoallv_send_vals[i] = send_vals[idx];
+            send_indices[i] = A.send_comm.idx[i] + A.first_col;
+        }
+    }
 
     communicate(A, send_vals, std_recv_vals, MPI_INT);
 
-    MPI_Comm std_comm;
+    MPI_Comm std_comm = NULL;
     MPI_Status status;
     MPIX_Comm* neighbor_comm;
     MPIX_Request* neighbor_request;
@@ -81,23 +82,6 @@ void test_matrix(const char* filename)
             MPI_INFO_NULL, 
             0, 
             &std_comm);
-    MPI_Neighbor_alltoallv(alltoallv_send_vals.data(), 
-            A.send_comm.counts.data(),
-            A.send_comm.ptr.data(), 
-            MPI_INT,
-            neigh_recv_vals.data(), 
-            A.recv_comm.counts.data(),
-            A.recv_comm.ptr.data(), 
-            MPI_INT,
-            std_comm);
-
-    // 3. Compare std_recv_vals and nap_recv_vals
-    for (int i = 0; i < A.recv_comm.size_msgs; i++)
-    {
-        ASSERT_EQ(std_recv_vals[i], neigh_recv_vals[i]);
-    }
-
-    // 2. Node-Aware Communication
     MPIX_Dist_graph_create_adjacent(MPI_COMM_WORLD,
             A.recv_comm.n_msgs,
             A.recv_comm.procs.data(), 
@@ -111,6 +95,22 @@ void test_matrix(const char* filename)
     update_locality(neighbor_comm, 4);
     
 
+    MPIX_Neighbor_alltoallv(alltoallv_send_vals.data(), 
+            A.send_comm.counts.data(),
+            A.send_comm.ptr.data(), 
+            MPI_INT,
+            neigh_recv_vals.data(), 
+            A.recv_comm.counts.data(),
+            A.recv_comm.ptr.data(), 
+            MPI_INT,
+            neighbor_comm);
+
+    for (int i = 0; i < A.recv_comm.size_msgs; i++)
+    {
+        ASSERT_EQ(std_recv_vals[i], neigh_recv_vals[i]);
+    }
+
+    // 2. Node-Aware Communication
     MPIX_Neighbor_alltoallv_init(alltoallv_send_vals.data(), 
             A.send_comm.counts.data(),
             A.send_comm.ptr.data(), 
@@ -212,5 +212,6 @@ TEST(RandomCommTest, TestsInTests)
     test_matrix("../../../../test_data/D_10.pm");
     test_matrix("../../../../test_data/oscil_dcop_11.pm");
     test_matrix("../../../../test_data/tumorAntiAngiogenesis_4.pm");
+    test_matrix("../../../../test_data/ch5-5-b1.pm");
 }
 

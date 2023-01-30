@@ -88,26 +88,89 @@ void readParMatrix(const char* filename, ParMat<U>& A)
 
     A.global_rows = global_num_rows;
     A.global_cols = global_num_cols;
-
-    A.local_rows = A.global_rows / num_procs;
-    extra = A.global_rows % num_procs;
-    A.first_row = A.local_rows * rank;
-    if (extra > rank)
+    if (A.global_rows < num_procs || A.global_cols < num_procs)
     {
-        A.local_rows++;
-        A.first_row += rank;
-    }
-    else A.first_row += extra;
+        if (A.global_rows < A.global_cols)
+        {
+            A.local_rows = 0;
+            extra = A.global_rows;
+            if (extra > rank)
+            {
+                A.local_rows = 1;
+                A.first_row = rank;
+            } 
+            else A.first_row = extra;
 
-    A.local_cols = A.global_cols / num_procs;
-    extra = A.global_cols % num_procs;
-    A.first_col = A.local_cols * rank;
-    if (extra > rank)
-    {
-        A.local_cols++;
-        A.first_col += rank;
+            if (A.local_rows)
+            {
+                A.local_cols = A.global_cols / extra;
+                extra = A.global_cols % extra;
+                A.first_col = A.local_cols * rank;
+                if (extra > rank)
+                {
+                    A.local_cols++;
+                    A.first_col += rank;
+                }
+                else A.first_col += extra;
+            }
+            else
+            {
+                A.local_cols = 0;
+                A.first_col = A.global_cols;
+            }
+        }
+        else
+        {
+            A.local_cols = 0;
+            extra = A.global_cols;
+            if (extra > rank)
+            {
+                A.local_cols = 1;
+                A.first_col = rank;
+            }
+            else A.first_col = extra;
+
+            if (A.local_cols)
+            {
+                A.local_rows = A.global_rows / extra;
+                extra = A.global_rows % extra;
+                A.first_row = A.local_rows * rank;
+                if (extra > rank)
+                {
+                    A.local_rows++;
+                    A.first_row += rank;
+                }
+                else A.first_row += extra;
+            }
+            else
+            {
+                A.local_rows = 0;
+                A.first_row = A.global_rows;
+            }
+        }
     }
-    else A.first_col += extra;
+    else
+    {
+        A.local_rows = A.global_rows / num_procs;
+        extra = A.global_rows % num_procs;
+        A.first_row = A.local_rows * rank;
+        if (extra > rank)
+        {
+            A.local_rows++;
+            A.first_row += rank;
+        }
+        else A.first_row += extra;
+
+        A.local_cols = A.global_cols / num_procs;
+        extra = A.global_cols % num_procs;
+        A.first_col = A.local_cols * rank;
+        if (extra > rank)
+        {
+            A.local_cols++;
+            A.first_col += rank;
+        }
+        else A.first_col += extra;
+    }
 
     A.on_proc.n_rows = A.local_rows;
     A.on_proc.n_cols = A.local_cols;

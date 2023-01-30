@@ -76,8 +76,11 @@ void form_recv_comm(ParMat<U>& A)
     // Set Recv Sizes
     A.recv_comm.ptr.push_back((U)(A.off_proc_num_cols));
     A.recv_comm.n_msgs = A.recv_comm.procs.size();
-    A.recv_comm.req.resize(A.recv_comm.n_msgs);
     A.recv_comm.size_msgs = A.off_proc_num_cols;
+    if (A.recv_comm.n_msgs == 0)
+        return;
+
+    A.recv_comm.req.resize(A.recv_comm.n_msgs);
     A.recv_comm.counts.resize(A.recv_comm.n_msgs);
     for (int i = 0; i < A.recv_comm.n_msgs; i++)
         A.recv_comm.counts[i] = A.recv_comm.ptr[i+1] - A.recv_comm.ptr[i];
@@ -101,8 +104,6 @@ void form_send_comm_standard(ParMat<U>& A)
         sizes[A.recv_comm.procs[i]] = A.recv_comm.ptr[i+1] - A.recv_comm.ptr[i];
     MPI_Allreduce(MPI_IN_PLACE, sizes.data(), num_procs, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
     A.send_comm.size_msgs = sizes[rank];
-    A.send_comm.idx.resize(A.send_comm.size_msgs);
-    recv_buf.resize(A.send_comm.size_msgs);
 
     // Send a message to every process that I will need data from
     // Tell them which global indices I need from them
@@ -116,6 +117,11 @@ void form_send_comm_standard(ParMat<U>& A)
 
     // Wait to receive values
     // until I have received fewer than the number of global indices I am waiting on
+    if (A.send_comm.size_msgs)
+    {
+        A.send_comm.idx.resize(A.send_comm.size_msgs);
+        recv_buf.resize(A.send_comm.size_msgs);
+    }
     ctr = 0;
     A.send_comm.ptr.push_back(0);
     while (ctr < A.send_comm.size_msgs)
@@ -141,10 +147,12 @@ void form_send_comm_standard(ParMat<U>& A)
     
     // Set send sizes
     A.send_comm.n_msgs = A.send_comm.procs.size();
-    A.send_comm.req.resize(A.send_comm.n_msgs);
-    A.send_comm.size_msgs = ctr;
 
-    MPI_Waitall(A.recv_comm.n_msgs, A.recv_comm.req.data(), MPI_STATUSES_IGNORE);
+    if (A.send_comm.n_msgs)
+        A.send_comm.req.resize(A.send_comm.n_msgs);
+
+    if (A.recv_comm.n_msgs)
+        MPI_Waitall(A.recv_comm.n_msgs, A.recv_comm.req.data(), MPI_STATUSES_IGNORE);
 }
 
 // Must Form Recv Comm before Send!
@@ -176,7 +184,7 @@ void form_send_comm_torsten(ParMat<U>& A)
     for (int i = 0; i < A.recv_comm.n_msgs; i++)
     {
         proc = A.recv_comm.procs[i];
-        MPI_Issend(&(A.off_proc_columns[A.recv_comm.ptr[i]]), A.recv_comm.counts[i], MPI_LONG, proc, msg_tag, 
+        MPI_Isend(&(A.off_proc_columns[A.recv_comm.ptr[i]]), A.recv_comm.counts[i], MPI_LONG, proc, msg_tag, 
                 MPI_COMM_WORLD, &(A.recv_comm.req[i]));
     }
 
@@ -241,8 +249,8 @@ void form_comm(ParMat<U>& A)
     form_recv_comm(A);
 
     // Form Send Side (Algorithm Options Here!)
-    //form_send_comm_standard(A);
-    form_send_comm_torsten(A);
+    form_send_comm_standard(A);
+    //form_send_comm_torsten(A);
 }
 
 
@@ -277,7 +285,9 @@ void communicate(ParMat<T>& A, std::vector<U>& data, std::vector<U>& recvbuf, MP
                 MPI_COMM_WORLD, &(A.recv_comm.req[i]));
     }
 
-    MPI_Waitall(A.send_comm.n_msgs, A.send_comm.req.data(), MPI_STATUSES_IGNORE);
+    if (A.send_comm.n_msgs)
+        MPI_Waitall(A.send_comm.n_msgs, A.send_comm.req.data(), MPI_STATUSES_IGNORE);
+    if (A.recv_comm.n_msgs)
     MPI_Waitall(A.recv_comm.n_msgs, A.recv_comm.req.data(), MPI_STATUSES_IGNORE);
 }
 
