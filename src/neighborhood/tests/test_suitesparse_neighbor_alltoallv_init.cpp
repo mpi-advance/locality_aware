@@ -32,11 +32,11 @@ void test_matrix(const char* filename)
     form_comm(A);
 
     std::vector<int> send_vals;
-    if (A.on_proc.n_rows)
+    if (A.on_proc.n_cols)
     {
-        send_vals.resize(A.on_proc.n_rows);
+        send_vals.resize(A.on_proc.n_cols);
         std::iota(send_vals.begin(), send_vals.end(), 0);
-        for (int i = 0; i < A.on_proc.n_rows; i++)
+        for (int i = 0; i < A.on_proc.n_cols; i++)
             send_vals[i] += (rank*1000);
     }
     std::vector<int> alltoallv_send_vals;
@@ -46,12 +46,10 @@ void test_matrix(const char* filename)
         for (int i = 0; i < A.send_comm.size_msgs; i++)
         {
             idx = A.send_comm.idx[i];
-if (idx >= A.on_proc.n_rows) printf("Idx[%d] %d, NRows %d\n", i, idx, A.on_proc.n_rows);
             alltoallv_send_vals[i] = send_vals[idx];
         }
     }
 
-/*
     std::vector<int> std_recv_vals, neigh_recv_vals, new_recv_vals,
             locality_recv_vals, part_locality_recv_vals;
     if (A.recv_comm.size_msgs)
@@ -62,6 +60,9 @@ if (idx >= A.on_proc.n_rows) printf("Idx[%d] %d, NRows %d\n", i, idx, A.on_proc.
         locality_recv_vals.resize(A.recv_comm.size_msgs);
         part_locality_recv_vals.resize(A.recv_comm.size_msgs);
     }
+    std::vector<long> send_indices(A.send_comm.size_msgs);
+    for (int i = 0; i < A.send_comm.size_msgs; i++)
+        send_indices[i] = A.send_comm.idx[i] + A.first_col;
 
     communicate(A, send_vals, std_recv_vals, MPI_INT);
 
@@ -109,6 +110,7 @@ if (idx >= A.on_proc.n_rows) printf("Idx[%d] %d, NRows %d\n", i, idx, A.on_proc.
             &neighbor_comm);
     update_locality(neighbor_comm, 4);
     
+
     MPIX_Neighbor_alltoallv_init(alltoallv_send_vals.data(), 
             A.send_comm.counts.data(),
             A.send_comm.ptr.data(), 
@@ -133,34 +135,6 @@ if (idx >= A.on_proc.n_rows) printf("Idx[%d] %d, NRows %d\n", i, idx, A.on_proc.
 
 
     // 3. MPI Advance - Optimized Communication
-    std::vector<long> send_indices(A.send_comm.size_msgs);
-    for (int i = 0; i < A.send_comm.size_msgs; i++)
-        send_indices[i] = A.send_comm.idx[i] + A.first_row;
-
-    MPIX_Neighbor_locality_alltoallv_init(alltoallv_send_vals.data(), 
-            A.send_comm.counts.data(),
-            A.send_comm.ptr.data(), 
-            send_indices.data(),
-            MPI_INT,
-            locality_recv_vals.data(), 
-            A.recv_comm.counts.data(),
-            A.recv_comm.ptr.data(), 
-            A.off_proc_columns.data(),
-            MPI_INT,
-            neighbor_comm, 
-            MPI_INFO_NULL,
-            &neighbor_request);
-
-
-    MPIX_Start(neighbor_request);
-    MPIX_Wait(neighbor_request, &status);
-    MPIX_Request_free(neighbor_request);
-    // 3. Compare std_recv_vals and nap_recv_vals
-    for (int i = 0; i < A.recv_comm.size_msgs; i++)
-    {
-        ASSERT_EQ(std_recv_vals[i], locality_recv_vals[i]);
-    }
-
     MPIX_Neighbor_part_locality_alltoallv_init(alltoallv_send_vals.data(), 
             A.send_comm.counts.data(),
             A.send_comm.ptr.data(), 
@@ -182,9 +156,33 @@ if (idx >= A.on_proc.n_rows) printf("Idx[%d] %d, NRows %d\n", i, idx, A.on_proc.
         ASSERT_EQ(std_recv_vals[i], part_locality_recv_vals[i]);
     }
 
+    MPIX_Neighbor_locality_alltoallv_init(alltoallv_send_vals.data(), 
+            A.send_comm.counts.data(),
+            A.send_comm.ptr.data(), 
+            send_indices.data(),
+            MPI_INT,
+            locality_recv_vals.data(), 
+            A.recv_comm.counts.data(),
+            A.recv_comm.ptr.data(), 
+            A.off_proc_columns.data(),
+            MPI_INT,
+            neighbor_comm, 
+            MPI_INFO_NULL,
+            &neighbor_request);
+
+
+    MPIX_Start(neighbor_request);
+    MPIX_Wait(neighbor_request, &status);
+    MPIX_Request_free(neighbor_request);
+
+    // 3. Compare std_recv_vals and nap_recv_vals
+    for (int i = 0; i < A.recv_comm.size_msgs; i++)
+    {
+        ASSERT_EQ(std_recv_vals[i], locality_recv_vals[i]);
+    }
+
     MPIX_Comm_free(neighbor_comm);
     MPI_Comm_free(&std_comm);
-*/
 }
 
 int main(int argc, char** argv)
@@ -204,13 +202,15 @@ TEST(RandomCommTest, TestsInTests)
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
 
-//    test_matrix("../../../../test_data/dwt_162.pm");
-//    test_matrix("../../../../test_data/odepa400.pm");
-//    test_matrix("../../../../test_data/ww_36_pmec_36.pm");
-//    test_matrix("../../../../test_data/bcsstk01.pm");
-//    test_matrix("../../../../test_data/west0132.pm");
+    test_matrix("../../../../test_data/dwt_162.pm");
+    test_matrix("../../../../test_data/odepa400.pm");
+    test_matrix("../../../../test_data/ww_36_pmec_36.pm");
+    test_matrix("../../../../test_data/bcsstk01.pm");
+    test_matrix("../../../../test_data/west0132.pm");
     test_matrix("../../../../test_data/gams10a.pm");
-//    test_matrix("../../../../test_data/gams10am.pm");
-//    test_matrix("../../../../test_data/ch5-5-b1.pm");
+    test_matrix("../../../../test_data/gams10am.pm");
+    test_matrix("../../../../test_data/D_10.pm");
+    test_matrix("../../../../test_data/oscil_dcop_11.pm");
+    test_matrix("../../../../test_data/tumorAntiAngiogenesis_4.pm");
 }
 
