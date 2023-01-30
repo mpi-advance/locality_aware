@@ -7,8 +7,10 @@
 // 3. Start global
 int MPIX_Start(MPIX_Request* request)
 {
-    int ierr, idx;
+    if (request == NULL)
+        return 0;
 
+    int ierr, idx;
 
     char* send_buffer = NULL;
     int recv_size = 0;
@@ -69,6 +71,9 @@ int MPIX_Start(MPIX_Request* request)
 // TODO : Currently ignores the status!
 int MPIX_Wait(MPIX_Request* request, MPI_Status* status)
 {
+    if (request == NULL)
+        return 0;
+
     int ierr, idx;
 
     char* recv_buffer = NULL;
