@@ -123,6 +123,7 @@ void test_matrix(const char* filename, COMM_ALGORITHM algorithm)
 
 }
 
+/*
 int main(int argc, char** argv)
 {
     MPI_Init(&argc, &argv);
@@ -131,6 +132,7 @@ int main(int argc, char** argv)
     MPI_Finalize();
     return temp;
 } // end of main() //
+*/
 
 
 TEST(RandomCommTest, TestsInTests)
