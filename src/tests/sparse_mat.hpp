@@ -241,16 +241,25 @@ void form_send_comm_torsten(ParMat<U>& A)
     A.send_comm.size_msgs = ctr;
 }
 
+enum COMM_ALGORITHM { STANDARD, TORSTEN };
+
+double test_matrix(const char* filename, COMM_ALGORITHM algorithm);
 
 template <typename U>
-void form_comm(ParMat<U>& A)
+void form_comm(ParMat<U>& A, COMM_ALGORITHM algorithm)
 {
     // Form Recv Side 
     form_recv_comm(A);
 
     // Form Send Side (Algorithm Options Here!)
-    form_send_comm_standard(A);
-    //form_send_comm_torsten(A);
+    if(algorithm == STANDARD) 
+    {
+        form_send_comm_standard(A);
+    }
+    else if(algorithm == TORSTEN) 
+    {
+       form_send_comm_torsten(A);
+    }
 }
 
 
