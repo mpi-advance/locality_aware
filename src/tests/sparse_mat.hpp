@@ -164,19 +164,12 @@ void form_send_comm_torsten(ParMat<U>& A)
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
 
     std::vector<long> recv_buf;
-    std::vector<int> sizes(num_procs, 0);
     int start, end, proc, count, ctr, flag;
     int ibar = 0;
     MPI_Status recv_status;
     MPI_Request bar_req;
 
     // Allreduce to find size of data I will receive
-    for (int i = 0; i < A.recv_comm.n_msgs; i++)
-        sizes[A.recv_comm.procs[i]] = A.recv_comm.ptr[i+1] - A.recv_comm.ptr[i];
-    MPI_Allreduce(MPI_IN_PLACE, sizes.data(), num_procs, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
-    A.send_comm.size_msgs = sizes[rank];
-    A.send_comm.idx.resize(A.send_comm.size_msgs);
-    recv_buf.resize(A.send_comm.size_msgs);
 
     // Send a message to every process that I will need data from
     // Tell them which global indices I need from them
@@ -184,7 +177,7 @@ void form_send_comm_torsten(ParMat<U>& A)
     for (int i = 0; i < A.recv_comm.n_msgs; i++)
     {
         proc = A.recv_comm.procs[i];
-        MPI_Isend(&(A.off_proc_columns[A.recv_comm.ptr[i]]), A.recv_comm.counts[i], MPI_LONG, proc, msg_tag, 
+        MPI_Issend(&(A.off_proc_columns[A.recv_comm.ptr[i]]), A.recv_comm.counts[i], MPI_LONG, proc, msg_tag, 
                 MPI_COMM_WORLD, &(A.recv_comm.req[i]));
     }
 
@@ -193,7 +186,6 @@ void form_send_comm_torsten(ParMat<U>& A)
     ctr = 0;
     A.send_comm.ptr.push_back(0);
     while (1)
-    //while (ctr < A.send_comm.size_msgs)
     {
         // Wait for a message
         MPI_Iprobe(MPI_ANY_SOURCE, msg_tag, MPI_COMM_WORLD, &flag, &recv_status);
@@ -204,12 +196,13 @@ void form_send_comm_torsten(ParMat<U>& A)
             A.send_comm.procs.push_back(proc);
             MPI_Get_count(&recv_status, MPI_LONG, &count);
             A.send_comm.counts.push_back(count);
+            if (count > recv_buf.size()) recv_buf.resize(count);
 
             // Receive the message, and add local indices to send_comm
-            MPI_Recv(&(recv_buf[ctr]), count, MPI_LONG, proc, msg_tag, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+            MPI_Recv(recv_buf.data(), count, MPI_LONG, proc, msg_tag, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
             for (int i = 0; i < count; i++)
             {
-                A.send_comm.idx[ctr+i] = (recv_buf[ctr+i] - A.first_col);
+                A.send_comm.idx.push_back(recv_buf[i] - A.first_col);
             }
             ctr += count;
             A.send_comm.ptr.push_back((U)(ctr));
@@ -237,8 +230,11 @@ void form_send_comm_torsten(ParMat<U>& A)
     
     // Set send sizes
     A.send_comm.n_msgs = A.send_comm.procs.size();
-    A.send_comm.req.resize(A.send_comm.n_msgs);
     A.send_comm.size_msgs = ctr;
+    if (A.send_comm.n_msgs)
+        A.send_comm.req.resize(A.send_comm.n_msgs);
+    if (A.send_comm.size_msgs)
+        A.send_comm.idx.resize(A.send_comm.size_msgs);
 }
 
 enum COMM_ALGORITHM { STANDARD, TORSTEN };
