@@ -1,0 +1,813 @@
+[hopper007:3345676:0:3345676] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+[hopper007:3345677:0:3345677] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+==== backtrace (tid:3345677) ====
+ 0  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(ucs_handle_error+0x2a4) [0x14e86cb4e2e4]
+ 1  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b4e4) [0x14e86cb4e4e4]
+ 2  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b788) [0x14e86cb4e788]
+ 3  /usr/lib64/libpthread.so.0(+0x12cf0) [0x14e86e44acf0]
+ 4  /usr/lib64/libc.so.6(fseek+0x5) [0x14e86db607d5]
+ 5  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x419c36]
+ 6  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x4178e7]
+ 7  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x41441b]
+ 8  /usr/lib64/libc.so.6(__libc_start_main+0xe5) [0x14e86db0bd85]
+==== backtrace (tid:3345676) ====
+ 0  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(ucs_handle_error+0x2a4) [0x152c4174a2e4]
+ 1  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b4e4) [0x152c4174a4e4]
+ 2  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b788) [0x152c4174a788]
+ 3  /usr/lib64/libpthread.so.0(+0x12cf0) [0x152c43046cf0]
+ 4  /usr/lib64/libc.so.6(fseek+0x5) [0x152c4275c7d5]
+ 5  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x419c36]
+ 6  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x4178e7]
+ 7  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x41441b]
+ 8  /usr/lib64/libc.so.6(__libc_start_main+0xe5) [0x152c42707d85]
+ 9  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x414c9e]
+=================================
+ 9  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x414c9e]
+=================================
+srun: error: hopper007: tasks 0-1: Segmentation fault (core dumped)
+[hopper007:3345747:0:3345747] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+[hopper007:3345749:0:3345749] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+[hopper007:3345750:0:3345750] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+[hopper007:3345748:0:3345748] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+==== backtrace (tid:3345747) ====
+ 0  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(ucs_handle_error+0x2a4) [0x14f2ace642e4]
+ 1  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b4e4) [0x14f2ace644e4]
+ 2  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b788) [0x14f2ace64788]
+ 3  /usr/lib64/libpthread.so.0(+0x12cf0) [0x14f2ae760cf0]
+ 4  /usr/lib64/libc.so.6(fseek+0x5) [0x14f2ade767d5]
+ 5  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x419c36]
+ 6  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x4178e7]
+ 7  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x41441b]
+ 8  /usr/lib64/libc.so.6(__libc_start_main+0xe5) [0x14f2ade21d85]
+ 9  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x414c9e]
+=================================
+==== backtrace (tid:3345750) ====
+ 0  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(ucs_handle_error+0x2a4) [0x149a40c452e4]
+ 1  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b4e4) [0x149a40c454e4]
+ 2  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b788) [0x149a40c45788]
+ 3  /usr/lib64/libpthread.so.0(+0x12cf0) [0x149a42541cf0]
+ 4  /usr/lib64/libc.so.6(fseek+0x5) [0x149a41c577d5]
+ 5  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x419c36]
+ 6  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x4178e7]
+ 7  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x41441b]
+ 8  /usr/lib64/libc.so.6(__libc_start_main+0xe5) [0x149a41c02d85]
+ 9  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x414c9e]
+=================================
+==== backtrace (tid:3345749) ====
+ 0  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(ucs_handle_error+0x2a4) [0x147de3ba22e4]
+ 1  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b4e4) [0x147de3ba24e4]
+ 2  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b788) [0x147de3ba2788]
+ 3  /usr/lib64/libpthread.so.0(+0x12cf0) [0x147de549ecf0]
+ 4  /usr/lib64/libc.so.6(fseek+0x5) [0x147de4bb47d5]
+ 5  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x419c36]
+ 6  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x4178e7]
+ 7  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x41441b]
+ 8  /usr/lib64/libc.so.6(__libc_start_main+0xe5) [0x147de4b5fd85]
+ 9  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x414c9e]
+=================================
+==== backtrace (tid:3345748) ====
+ 0  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(ucs_handle_error+0x2a4) [0x14c6d12d52e4]
+ 1  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b4e4) [0x14c6d12d54e4]
+ 2  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b788) [0x14c6d12d5788]
+ 3  /usr/lib64/libpthread.so.0(+0x12cf0) [0x14c6d2bd1cf0]
+ 4  /usr/lib64/libc.so.6(fseek+0x5) [0x14c6d22e77d5]
+ 5  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x419c36]
+ 6  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x4178e7]
+ 7  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x41441b]
+ 8  /usr/lib64/libc.so.6(__libc_start_main+0xe5) [0x14c6d2292d85]
+ 9  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x414c9e]
+=================================
+srun: error: hopper007: tasks 0-3: Segmentation fault (core dumped)
+[hopper007:3345862:0:3345862] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+[hopper007:3345863:0:3345863] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+[hopper007:3345864:0:3345864] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+[hopper007:3345865:0:3345865] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+[hopper007:3345866:0:3345866] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+[hopper007:3345867:0:3345867] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+[hopper007:3345868:0:3345868] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+[hopper007:3345869:0:3345869] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+==== backtrace (tid:3345862) ====
+ 0  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(ucs_handle_error+0x2a4) [0x14ed96cbb2e4]
+ 1  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b4e4) [0x14ed96cbb4e4]
+ 2  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b788) [0x14ed96cbb788]
+ 3  /usr/lib64/libpthread.so.0(+0x12cf0) [0x14ed985b7cf0]
+ 4  /usr/lib64/libc.so.6(fseek+0x5) [0x14ed97ccd7d5]
+ 5  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x419c36]
+ 6  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x4178e7]
+ 7  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x41441b]
+ 8  /usr/lib64/libc.so.6(__libc_start_main+0xe5) [0x14ed97c78d85]
+ 9  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x414c9e]
+=================================
+==== backtrace (tid:3345863) ====
+==== backtrace (tid:3345864) ====
+ 0  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(ucs_handle_error+0x2a4) [0x14683b11d2e4]
+ 1  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b4e4) [0x14683b11d4e4]
+ 2  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b788) [0x14683b11d788]
+ 3  /usr/lib64/libpthread.so.0(+0x12cf0) [0x14683ca19cf0]
+ 4  /usr/lib64/libc.so.6(fseek+0x5) [0x14683c12f7d5]
+ 5  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x419c36]
+ 6  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x4178e7]
+ 7  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x41441b]
+ 8  /usr/lib64/libc.so.6(__libc_start_main+0xe5) [0x14683c0dad85]
+ 9  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x414c9e]
+=================================
+ 0  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(ucs_handle_error+0x2a4) [0x1457e11ac2e4]
+ 1  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b4e4) [0x1457e11ac4e4]
+ 2  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b788) [0x1457e11ac788]
+ 3  /usr/lib64/libpthread.so.0(+0x12cf0) [0x1457e2aa8cf0]
+ 4  /usr/lib64/libc.so.6(fseek+0x5) [0x1457e21be7d5]
+ 5  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x419c36]
+ 6  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x4178e7]
+ 7  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x41441b]
+ 8  /usr/lib64/libc.so.6(__libc_start_main+0xe5) [0x1457e2169d85]
+ 9  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x414c9e]
+=================================
+==== backtrace (tid:3345865) ====
+ 0  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(ucs_handle_error+0x2a4) [0x1457a75142e4]
+ 1  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b4e4) [0x1457a75144e4]
+ 2  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b788) [0x1457a7514788]
+ 3  /usr/lib64/libpthread.so.0(+0x12cf0) [0x1457a8e10cf0]
+ 4  /usr/lib64/libc.so.6(fseek+0x5) [0x1457a85267d5]
+ 5  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x419c36]
+ 6  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x4178e7]
+ 7  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x41441b]
+ 8  /usr/lib64/libc.so.6(__libc_start_main+0xe5) [0x1457a84d1d85]
+ 9  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x414c9e]
+=================================
+==== backtrace (tid:3345866) ====
+ 0  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(ucs_handle_error+0x2a4) [0x1515ab5842e4]
+ 1  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b4e4) [0x1515ab5844e4]
+ 2  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b788) [0x1515ab584788]
+ 3  /usr/lib64/libpthread.so.0(+0x12cf0) [0x1515ace80cf0]
+ 4  /usr/lib64/libc.so.6(fseek+0x5) [0x1515ac5967d5]
+ 5  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x419c36]
+ 6  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x4178e7]
+ 7  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x41441b]
+ 8  /usr/lib64/libc.so.6(__libc_start_main+0xe5) [0x1515ac541d85]
+ 9  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x414c9e]
+=================================
+==== backtrace (tid:3345867) ====
+ 0  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(ucs_handle_error+0x2a4) [0x14bb20b682e4]
+ 1  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b4e4) [0x14bb20b684e4]
+ 2  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b788) [0x14bb20b68788]
+ 3  /usr/lib64/libpthread.so.0(+0x12cf0) [0x14bb22464cf0]
+ 4  /usr/lib64/libc.so.6(fseek+0x5) [0x14bb21b7a7d5]
+ 5  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x419c36]
+ 6  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x4178e7]
+ 7  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x41441b]
+ 8  /usr/lib64/libc.so.6(__libc_start_main+0xe5) [0x14bb21b25d85]
+ 9  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x414c9e]
+=================================
+==== backtrace (tid:3345868) ====
+ 0  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(ucs_handle_error+0x2a4) [0x14a5e67ee2e4]
+ 1  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b4e4) [0x14a5e67ee4e4]
+ 2  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b788) [0x14a5e67ee788]
+ 3  /usr/lib64/libpthread.so.0(+0x12cf0) [0x14a5e80eacf0]
+ 4  /usr/lib64/libc.so.6(fseek+0x5) [0x14a5e78007d5]
+ 5  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x419c36]
+ 6  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x4178e7]
+ 7  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x41441b]
+ 8  /usr/lib64/libc.so.6(__libc_start_main+0xe5) [0x14a5e77abd85]
+ 9  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x414c9e]
+=================================
+==== backtrace (tid:3345869) ====
+ 0  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(ucs_handle_error+0x2a4) [0x14c2489812e4]
+ 1  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b4e4) [0x14c2489814e4]
+ 2  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b788) [0x14c248981788]
+ 3  /usr/lib64/libpthread.so.0(+0x12cf0) [0x14c24a27dcf0]
+ 4  /usr/lib64/libc.so.6(fseek+0x5) [0x14c2499937d5]
+ 5  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x419c36]
+ 6  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x4178e7]
+ 7  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x41441b]
+ 8  /usr/lib64/libc.so.6(__libc_start_main+0xe5) [0x14c24993ed85]
+ 9  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x414c9e]
+=================================
+srun: error: hopper007: tasks 0-7: Segmentation fault (core dumped)
+[hopper007:3346066:0:3346066] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+==== backtrace (tid:3346066) ====
+ 0  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(ucs_handle_error+0x2a4) [0x152ac3f332e4]
+ 1  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b4e4) [0x152ac3f334e4]
+ 2  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b788) [0x152ac3f33788]
+ 3  /usr/lib64/libpthread.so.0(+0x12cf0) [0x152ac582fcf0]
+ 4  /usr/lib64/libc.so.6(fseek+0x5) [0x152ac4f457d5]
+ 5  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x419c36]
+ 6  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x4178e7]
+ 7  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x41441b]
+ 8  /usr/lib64/libc.so.6(__libc_start_main+0xe5) [0x152ac4ef0d85]
+ 9  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x414c9e]
+=================================
+[hopper007:3346067:0:3346067] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+==== backtrace (tid:3346067) ====
+ 0  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(ucs_handle_error+0x2a4) [0x153a710e62e4]
+ 1  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b4e4) [0x153a710e64e4]
+ 2  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b788) [0x153a710e6788]
+ 3  /usr/lib64/libpthread.so.0(+0x12cf0) [0x153a729e2cf0]
+ 4  /usr/lib64/libc.so.6(fseek+0x5) [0x153a720f87d5]
+ 5  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x419c36]
+ 6  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x4178e7]
+ 7  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x41441b]
+ 8  /usr/lib64/libc.so.6(__libc_start_main+0xe5) [0x153a720a3d85]
+ 9  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x414c9e]
+=================================
+[hopper007:3346068:0:3346068] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+==== backtrace (tid:3346068) ====
+ 0  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(ucs_handle_error+0x2a4) [0x145d51da22e4]
+ 1  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b4e4) [0x145d51da24e4]
+ 2  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b788) [0x145d51da2788]
+ 3  /usr/lib64/libpthread.so.0(+0x12cf0) [0x145d5369ecf0]
+ 4  /usr/lib64/libc.so.6(fseek+0x5) [0x145d52db47d5]
+ 5  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x419c36]
+ 6  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x4178e7]
+ 7  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x41441b]
+ 8  /usr/lib64/libc.so.6(__libc_start_main+0xe5) [0x145d52d5fd85]
+ 9  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x414c9e]
+=================================
+[hopper007:3346069:0:3346069] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+==== backtrace (tid:3346069) ====
+ 0  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(ucs_handle_error+0x2a4) [0x148cc0f012e4]
+ 1  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b4e4) [0x148cc0f014e4]
+ 2  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b788) [0x148cc0f01788]
+ 3  /usr/lib64/libpthread.so.0(+0x12cf0) [0x148cc27fdcf0]
+ 4  /usr/lib64/libc.so.6(fseek+0x5) [0x148cc1f137d5]
+ 5  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x419c36]
+ 6  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x4178e7]
+ 7  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x41441b]
+ 8  /usr/lib64/libc.so.6(__libc_start_main+0xe5) [0x148cc1ebed85]
+ 9  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x414c9e]
+=================================
+[hopper007:3346070:0:3346070] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+==== backtrace (tid:3346070) ====
+ 0  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(ucs_handle_error+0x2a4) [0x14a4c90a42e4]
+ 1  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b4e4) [0x14a4c90a44e4]
+ 2  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b788) [0x14a4c90a4788]
+ 3  /usr/lib64/libpthread.so.0(+0x12cf0) [0x14a4ca9a0cf0]
+ 4  /usr/lib64/libc.so.6(fseek+0x5) [0x14a4ca0b67d5]
+ 5  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x419c36]
+ 6  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x4178e7]
+ 7  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x41441b]
+ 8  /usr/lib64/libc.so.6(__libc_start_main+0xe5) [0x14a4ca061d85]
+ 9  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x414c9e]
+=================================
+[hopper007:3346072:0:3346072] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+==== backtrace (tid:3346072) ====
+ 0  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(ucs_handle_error+0x2a4) [0x14744c81d2e4]
+ 1  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b4e4) [0x14744c81d4e4]
+ 2  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b788) [0x14744c81d788]
+ 3  /usr/lib64/libpthread.so.0(+0x12cf0) [0x14744e119cf0]
+ 4  /usr/lib64/libc.so.6(fseek+0x5) [0x14744d82f7d5]
+ 5  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x419c36]
+ 6  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x4178e7]
+ 7  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x41441b]
+ 8  /usr/lib64/libc.so.6(__libc_start_main+0xe5) [0x14744d7dad85]
+ 9  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x414c9e]
+=================================
+[hopper007:3346074:0:3346074] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+==== backtrace (tid:3346074) ====
+ 0  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(ucs_handle_error+0x2a4) [0x14d7c33ab2e4]
+ 1  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b4e4) [0x14d7c33ab4e4]
+ 2  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b788) [0x14d7c33ab788]
+ 3  /usr/lib64/libpthread.so.0(+0x12cf0) [0x14d7c4ca7cf0]
+ 4  /usr/lib64/libc.so.6(fseek+0x5) [0x14d7c43bd7d5]
+ 5  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x419c36]
+ 6  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x4178e7]
+ 7  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x41441b]
+ 8  /usr/lib64/libc.so.6(__libc_start_main+0xe5) [0x14d7c4368d85]
+ 9  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x414c9e]
+=================================
+[hopper007:3346075:0:3346075] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+==== backtrace (tid:3346075) ====
+ 0  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(ucs_handle_error+0x2a4) [0x14a3aa6122e4]
+ 1  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b4e4) [0x14a3aa6124e4]
+ 2  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b788) [0x14a3aa612788]
+ 3  /usr/lib64/libpthread.so.0(+0x12cf0) [0x14a3abf0ecf0]
+ 4  /usr/lib64/libc.so.6(fseek+0x5) [0x14a3ab6247d5]
+ 5  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x419c36]
+ 6  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x4178e7]
+ 7  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x41441b]
+ 8  /usr/lib64/libc.so.6(__libc_start_main+0xe5) [0x14a3ab5cfd85]
+ 9  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x414c9e]
+=================================
+[hopper007:3346076:0:3346076] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+==== backtrace (tid:3346076) ====
+ 0  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(ucs_handle_error+0x2a4) [0x14aecb4a22e4]
+ 1  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b4e4) [0x14aecb4a24e4]
+ 2  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b788) [0x14aecb4a2788]
+ 3  /usr/lib64/libpthread.so.0(+0x12cf0) [0x14aeccd9ecf0]
+ 4  /usr/lib64/libc.so.6(fseek+0x5) [0x14aecc4b47d5]
+ 5  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x419c36]
+ 6  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x4178e7]
+ 7  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x41441b]
+ 8  /usr/lib64/libc.so.6(__libc_start_main+0xe5) [0x14aecc45fd85]
+ 9  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x414c9e]
+=================================
+[hopper007:3346077:0:3346077] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+==== backtrace (tid:3346077) ====
+ 0  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(ucs_handle_error+0x2a4) [0x153a9310b2e4]
+ 1  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b4e4) [0x153a9310b4e4]
+ 2  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b788) [0x153a9310b788]
+ 3  /usr/lib64/libpthread.so.0(+0x12cf0) [0x153a94a07cf0]
+ 4  /usr/lib64/libc.so.6(fseek+0x5) [0x153a9411d7d5]
+ 5  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x419c36]
+ 6  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x4178e7]
+ 7  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x41441b]
+ 8  /usr/lib64/libc.so.6(__libc_start_main+0xe5) [0x153a940c8d85]
+ 9  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x414c9e]
+=================================
+[hopper007:3346078:0:3346078] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+==== backtrace (tid:3346078) ====
+ 0  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(ucs_handle_error+0x2a4) [0x14fb2cb3a2e4]
+ 1  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b4e4) [0x14fb2cb3a4e4]
+ 2  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b788) [0x14fb2cb3a788]
+ 3  /usr/lib64/libpthread.so.0(+0x12cf0) [0x14fb2e436cf0]
+ 4  /usr/lib64/libc.so.6(fseek+0x5) [0x14fb2db4c7d5]
+ 5  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x419c36]
+ 6  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x4178e7]
+ 7  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x41441b]
+ 8  /usr/lib64/libc.so.6(__libc_start_main+0xe5) [0x14fb2daf7d85]
+ 9  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x414c9e]
+=================================
+[hopper007:3346079:0:3346079] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+==== backtrace (tid:3346079) ====
+ 0  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(ucs_handle_error+0x2a4) [0x15439ebc22e4]
+ 1  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b4e4) [0x15439ebc24e4]
+ 2  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b788) [0x15439ebc2788]
+ 3  /usr/lib64/libpthread.so.0(+0x12cf0) [0x1543a04becf0]
+ 4  /usr/lib64/libc.so.6(fseek+0x5) [0x15439fbd47d5]
+ 5  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x419c36]
+ 6  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x4178e7]
+ 7  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x41441b]
+ 8  /usr/lib64/libc.so.6(__libc_start_main+0xe5) [0x15439fb7fd85]
+ 9  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x414c9e]
+=================================
+[hopper007:3346080:0:3346080] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+==== backtrace (tid:3346080) ====
+ 0  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(ucs_handle_error+0x2a4) [0x14d0b1b892e4]
+ 1  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b4e4) [0x14d0b1b894e4]
+ 2  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b788) [0x14d0b1b89788]
+ 3  /usr/lib64/libpthread.so.0(+0x12cf0) [0x14d0b3485cf0]
+ 4  /usr/lib64/libc.so.6(fseek+0x5) [0x14d0b2b9b7d5]
+ 5  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x419c36]
+ 6  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x4178e7]
+ 7  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x41441b]
+ 8  /usr/lib64/libc.so.6(__libc_start_main+0xe5) [0x14d0b2b46d85]
+ 9  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x414c9e]
+=================================
+[hopper007:3346081:0:3346081] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+==== backtrace (tid:3346081) ====
+ 0  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(ucs_handle_error+0x2a4) [0x147d4af1c2e4]
+ 1  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b4e4) [0x147d4af1c4e4]
+ 2  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b788) [0x147d4af1c788]
+ 3  /usr/lib64/libpthread.so.0(+0x12cf0) [0x147d4c818cf0]
+ 4  /usr/lib64/libc.so.6(fseek+0x5) [0x147d4bf2e7d5]
+ 5  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x419c36]
+ 6  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x4178e7]
+ 7  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x41441b]
+ 8  /usr/lib64/libc.so.6(__libc_start_main+0xe5) [0x147d4bed9d85]
+ 9  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x414c9e]
+=================================
+[hopper007:3346071:0:3346071] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+==== backtrace (tid:3346071) ====
+ 0  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(ucs_handle_error+0x2a4) [0x14d273d0f2e4]
+ 1  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b4e4) [0x14d273d0f4e4]
+ 2  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b788) [0x14d273d0f788]
+ 3  /usr/lib64/libpthread.so.0(+0x12cf0) [0x14d27560bcf0]
+ 4  /usr/lib64/libc.so.6(fseek+0x5) [0x14d274d217d5]
+ 5  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x419c36]
+ 6  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x4178e7]
+ 7  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x41441b]
+ 8  /usr/lib64/libc.so.6(__libc_start_main+0xe5) [0x14d274cccd85]
+ 9  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x414c9e]
+=================================
+[hopper007:3346073:0:3346073] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+==== backtrace (tid:3346073) ====
+ 0  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(ucs_handle_error+0x2a4) [0x14f9fddfd2e4]
+ 1  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b4e4) [0x14f9fddfd4e4]
+ 2  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b788) [0x14f9fddfd788]
+ 3  /usr/lib64/libpthread.so.0(+0x12cf0) [0x14f9ff6f9cf0]
+ 4  /usr/lib64/libc.so.6(fseek+0x5) [0x14f9fee0f7d5]
+ 5  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x419c36]
+ 6  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x4178e7]
+ 7  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x41441b]
+ 8  /usr/lib64/libc.so.6(__libc_start_main+0xe5) [0x14f9fedbad85]
+ 9  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x414c9e]
+=================================
+srun: error: hopper007: tasks 0-15: Segmentation fault (core dumped)
+[hopper007:3346449:0:3346449] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+==== backtrace (tid:3346449) ====
+ 0  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(ucs_handle_error+0x2a4) [0x1517803362e4]
+ 1  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b4e4) [0x1517803364e4]
+ 2  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b788) [0x151780336788]
+ 3  /usr/lib64/libpthread.so.0(+0x12cf0) [0x151781c32cf0]
+ 4  /usr/lib64/libc.so.6(fseek+0x5) [0x1517813487d5]
+ 5  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x419c36]
+ 6  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x4178e7]
+ 7  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x41441b]
+ 8  /usr/lib64/libc.so.6(__libc_start_main+0xe5) [0x1517812f3d85]
+ 9  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x414c9e]
+=================================
+[hopper007:3346450:0:3346450] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+[hopper007:3346451:0:3346451] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+==== backtrace (tid:3346451) ====
+ 0  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(ucs_handle_error+0x2a4) [0x1532ec3d22e4]
+ 1  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b4e4) [0x1532ec3d24e4]
+ 2  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b788) [0x1532ec3d2788]
+ 3  /usr/lib64/libpthread.so.0(+0x12cf0) [0x1532edccecf0]
+ 4  /usr/lib64/libc.so.6(fseek+0x5) [0x1532ed3e47d5]
+ 5  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x419c36]
+ 6  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x4178e7]
+ 7  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x41441b]
+ 8  /usr/lib64/libc.so.6(__libc_start_main+0xe5) [0x1532ed38fd85]
+ 9  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x414c9e]
+=================================
+[hopper007:3346452:0:3346452] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+==== backtrace (tid:3346452) ====
+ 0  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(ucs_handle_error+0x2a4) [0x1536937702e4]
+ 1  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b4e4) [0x1536937704e4]
+ 2  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b788) [0x153693770788]
+ 3  /usr/lib64/libpthread.so.0(+0x12cf0) [0x15369506ccf0]
+ 4  /usr/lib64/libc.so.6(fseek+0x5) [0x1536947827d5]
+ 5  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x419c36]
+ 6  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x4178e7]
+ 7  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x41441b]
+ 8  /usr/lib64/libc.so.6(__libc_start_main+0xe5) [0x15369472dd85]
+ 9  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x414c9e]
+=================================
+[hopper007:3346453:0:3346453] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+==== backtrace (tid:3346453) ====
+ 0  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(ucs_handle_error+0x2a4) [0x1475e85742e4]
+ 1  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b4e4) [0x1475e85744e4]
+ 2  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b788) [0x1475e8574788]
+ 3  /usr/lib64/libpthread.so.0(+0x12cf0) [0x1475e9e70cf0]
+ 4  /usr/lib64/libc.so.6(fseek+0x5) [0x1475e95867d5]
+ 5  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x419c36]
+ 6  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x4178e7]
+ 7  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x41441b]
+ 8  /usr/lib64/libc.so.6(__libc_start_main+0xe5) [0x1475e9531d85]
+ 9  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x414c9e]
+=================================
+[hopper007:3346454:0:3346454] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+==== backtrace (tid:3346454) ====
+ 0  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(ucs_handle_error+0x2a4) [0x148610dfd2e4]
+ 1  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b4e4) [0x148610dfd4e4]
+ 2  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b788) [0x148610dfd788]
+ 3  /usr/lib64/libpthread.so.0(+0x12cf0) [0x1486126f9cf0]
+ 4  /usr/lib64/libc.so.6(fseek+0x5) [0x148611e0f7d5]
+ 5  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x419c36]
+ 6  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x4178e7]
+ 7  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x41441b]
+ 8  /usr/lib64/libc.so.6(__libc_start_main+0xe5) [0x148611dbad85]
+ 9  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x414c9e]
+=================================
+[hopper007:3346455:0:3346455] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+==== backtrace (tid:3346455) ====
+ 0  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(ucs_handle_error+0x2a4) [0x14fa6ba5b2e4]
+ 1  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b4e4) [0x14fa6ba5b4e4]
+ 2  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b788) [0x14fa6ba5b788]
+ 3  /usr/lib64/libpthread.so.0(+0x12cf0) [0x14fa6d357cf0]
+ 4  /usr/lib64/libc.so.6(fseek+0x5) [0x14fa6ca6d7d5]
+ 5  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x419c36]
+ 6  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x4178e7]
+ 7  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x41441b]
+ 8  /usr/lib64/libc.so.6(__libc_start_main+0xe5) [0x14fa6ca18d85]
+ 9  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x414c9e]
+=================================
+[hopper007:3346456:0:3346456] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+==== backtrace (tid:3346456) ====
+ 0  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(ucs_handle_error+0x2a4) [0x149300d562e4]
+ 1  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b4e4) [0x149300d564e4]
+ 2  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b788) [0x149300d56788]
+ 3  /usr/lib64/libpthread.so.0(+0x12cf0) [0x149302652cf0]
+ 4  /usr/lib64/libc.so.6(fseek+0x5) [0x149301d687d5]
+ 5  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x419c36]
+ 6  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x4178e7]
+ 7  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x41441b]
+ 8  /usr/lib64/libc.so.6(__libc_start_main+0xe5) [0x149301d13d85]
+ 9  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x414c9e]
+=================================
+[hopper007:3346457:0:3346457] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+==== backtrace (tid:3346457) ====
+ 0  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(ucs_handle_error+0x2a4) [0x1524f09f52e4]
+ 1  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b4e4) [0x1524f09f54e4]
+ 2  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b788) [0x1524f09f5788]
+ 3  /usr/lib64/libpthread.so.0(+0x12cf0) [0x1524f22f1cf0]
+ 4  /usr/lib64/libc.so.6(fseek+0x5) [0x1524f1a077d5]
+ 5  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x419c36]
+ 6  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x4178e7]
+ 7  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x41441b]
+ 8  /usr/lib64/libc.so.6(__libc_start_main+0xe5) [0x1524f19b2d85]
+ 9  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x414c9e]
+=================================
+[hopper007:3346458:0:3346458] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+==== backtrace (tid:3346458) ====
+ 0  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(ucs_handle_error+0x2a4) [0x14ed761e72e4]
+ 1  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b4e4) [0x14ed761e74e4]
+ 2  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b788) [0x14ed761e7788]
+ 3  /usr/lib64/libpthread.so.0(+0x12cf0) [0x14ed77ae3cf0]
+ 4  /usr/lib64/libc.so.6(fseek+0x5) [0x14ed771f97d5]
+ 5  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x419c36]
+ 6  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x4178e7]
+ 7  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x41441b]
+ 8  /usr/lib64/libc.so.6(__libc_start_main+0xe5) [0x14ed771a4d85]
+ 9  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x414c9e]
+=================================
+[hopper007:3346459:0:3346459] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+==== backtrace (tid:3346459) ====
+ 0  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(ucs_handle_error+0x2a4) [0x154e12e7b2e4]
+ 1  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b4e4) [0x154e12e7b4e4]
+ 2  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b788) [0x154e12e7b788]
+ 3  /usr/lib64/libpthread.so.0(+0x12cf0) [0x154e14777cf0]
+ 4  /usr/lib64/libc.so.6(fseek+0x5) [0x154e13e8d7d5]
+ 5  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x419c36]
+ 6  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x4178e7]
+ 7  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x41441b]
+ 8  /usr/lib64/libc.so.6(__libc_start_main+0xe5) [0x154e13e38d85]
+ 9  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x414c9e]
+=================================
+[hopper007:3346460:0:3346460] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+==== backtrace (tid:3346460) ====
+ 0  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(ucs_handle_error+0x2a4) [0x14a68648d2e4]
+ 1  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b4e4) [0x14a68648d4e4]
+ 2  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b788) [0x14a68648d788]
+ 3  /usr/lib64/libpthread.so.0(+0x12cf0) [0x14a687d89cf0]
+ 4  /usr/lib64/libc.so.6(fseek+0x5) [0x14a68749f7d5]
+ 5  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x419c36]
+ 6  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x4178e7]
+ 7  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x41441b]
+ 8  /usr/lib64/libc.so.6(__libc_start_main+0xe5) [0x14a68744ad85]
+ 9  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x414c9e]
+=================================
+[hopper007:3346461:0:3346461] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+==== backtrace (tid:3346461) ====
+ 0  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(ucs_handle_error+0x2a4) [0x14661425f2e4]
+ 1  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b4e4) [0x14661425f4e4]
+ 2  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b788) [0x14661425f788]
+ 3  /usr/lib64/libpthread.so.0(+0x12cf0) [0x146615b5bcf0]
+ 4  /usr/lib64/libc.so.6(fseek+0x5) [0x1466152717d5]
+ 5  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x419c36]
+ 6  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x4178e7]
+ 7  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x41441b]
+ 8  /usr/lib64/libc.so.6(__libc_start_main+0xe5) [0x14661521cd85]
+ 9  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x414c9e]
+=================================
+[hopper007:3346462:0:3346462] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+==== backtrace (tid:3346462) ====
+ 0  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(ucs_handle_error+0x2a4) [0x151854e762e4]
+ 1  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b4e4) [0x151854e764e4]
+ 2  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b788) [0x151854e76788]
+ 3  /usr/lib64/libpthread.so.0(+0x12cf0) [0x151856772cf0]
+ 4  /usr/lib64/libc.so.6(fseek+0x5) [0x151855e887d5]
+ 5  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x419c36]
+ 6  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x4178e7]
+ 7  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x41441b]
+ 8  /usr/lib64/libc.so.6(__libc_start_main+0xe5) [0x151855e33d85]
+ 9  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x414c9e]
+=================================
+[hopper007:3346464:0:3346464] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+==== backtrace (tid:3346464) ====
+ 0  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(ucs_handle_error+0x2a4) [0x14e5a642c2e4]
+ 1  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b4e4) [0x14e5a642c4e4]
+ 2  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b788) [0x14e5a642c788]
+ 3  /usr/lib64/libpthread.so.0(+0x12cf0) [0x14e5a7d28cf0]
+ 4  /usr/lib64/libc.so.6(fseek+0x5) [0x14e5a743e7d5]
+ 5  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x419c36]
+ 6  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x4178e7]
+ 7  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x41441b]
+ 8  /usr/lib64/libc.so.6(__libc_start_main+0xe5) [0x14e5a73e9d85]
+ 9  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x414c9e]
+=================================
+[hopper007:3346465:0:3346465] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+==== backtrace (tid:3346465) ====
+ 0  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(ucs_handle_error+0x2a4) [0x14ac37a7f2e4]
+ 1  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b4e4) [0x14ac37a7f4e4]
+ 2  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b788) [0x14ac37a7f788]
+ 3  /usr/lib64/libpthread.so.0(+0x12cf0) [0x14ac3937bcf0]
+ 4  /usr/lib64/libc.so.6(fseek+0x5) [0x14ac38a917d5]
+ 5  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x419c36]
+ 6  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x4178e7]
+ 7  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x41441b]
+ 8  /usr/lib64/libc.so.6(__libc_start_main+0xe5) [0x14ac38a3cd85]
+ 9  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x414c9e]
+=================================
+[hopper007:3346466:0:3346466] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+==== backtrace (tid:3346466) ====
+ 0  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(ucs_handle_error+0x2a4) [0x150f6da8b2e4]
+ 1  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b4e4) [0x150f6da8b4e4]
+ 2  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b788) [0x150f6da8b788]
+ 3  /usr/lib64/libpthread.so.0(+0x12cf0) [0x150f6f387cf0]
+ 4  /usr/lib64/libc.so.6(fseek+0x5) [0x150f6ea9d7d5]
+ 5  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x419c36]
+ 6  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x4178e7]
+ 7  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x41441b]
+ 8  /usr/lib64/libc.so.6(__libc_start_main+0xe5) [0x150f6ea48d85]
+ 9  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x414c9e]
+=================================
+[hopper007:3346467:0:3346467] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+==== backtrace (tid:3346467) ====
+ 0  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(ucs_handle_error+0x2a4) [0x14dacb4d12e4]
+ 1  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b4e4) [0x14dacb4d14e4]
+ 2  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b788) [0x14dacb4d1788]
+ 3  /usr/lib64/libpthread.so.0(+0x12cf0) [0x14daccdcdcf0]
+ 4  /usr/lib64/libc.so.6(fseek+0x5) [0x14dacc4e37d5]
+ 5  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x419c36]
+ 6  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x4178e7]
+ 7  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x41441b]
+ 8  /usr/lib64/libc.so.6(__libc_start_main+0xe5) [0x14dacc48ed85]
+ 9  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x414c9e]
+=================================
+[hopper007:3346468:0:3346468] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+==== backtrace (tid:3346468) ====
+ 0  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(ucs_handle_error+0x2a4) [0x153bb43c72e4]
+ 1  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b4e4) [0x153bb43c74e4]
+ 2  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b788) [0x153bb43c7788]
+ 3  /usr/lib64/libpthread.so.0(+0x12cf0) [0x153bb5cc3cf0]
+ 4  /usr/lib64/libc.so.6(fseek+0x5) [0x153bb53d97d5]
+ 5  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x419c36]
+ 6  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x4178e7]
+ 7  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x41441b]
+ 8  /usr/lib64/libc.so.6(__libc_start_main+0xe5) [0x153bb5384d85]
+ 9  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x414c9e]
+=================================
+[hopper007:3346469:0:3346469] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+==== backtrace (tid:3346469) ====
+ 0  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(ucs_handle_error+0x2a4) [0x14dfd69c62e4]
+ 1  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b4e4) [0x14dfd69c64e4]
+ 2  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b788) [0x14dfd69c6788]
+ 3  /usr/lib64/libpthread.so.0(+0x12cf0) [0x14dfd82c2cf0]
+ 4  /usr/lib64/libc.so.6(fseek+0x5) [0x14dfd79d87d5]
+ 5  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x419c36]
+ 6  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x4178e7]
+ 7  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x41441b]
+ 8  /usr/lib64/libc.so.6(__libc_start_main+0xe5) [0x14dfd7983d85]
+ 9  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x414c9e]
+=================================
+[hopper007:3346470:0:3346470] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+==== backtrace (tid:3346470) ====
+ 0  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(ucs_handle_error+0x2a4) [0x14b42553c2e4]
+ 1  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b4e4) [0x14b42553c4e4]
+ 2  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b788) [0x14b42553c788]
+ 3  /usr/lib64/libpthread.so.0(+0x12cf0) [0x14b426e38cf0]
+ 4  /usr/lib64/libc.so.6(fseek+0x5) [0x14b42654e7d5]
+ 5  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x419c36]
+ 6  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x4178e7]
+ 7  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x41441b]
+ 8  /usr/lib64/libc.so.6(__libc_start_main+0xe5) [0x14b4264f9d85]
+ 9  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x414c9e]
+=================================
+[hopper007:3346471:0:3346471] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+==== backtrace (tid:3346471) ====
+ 0  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(ucs_handle_error+0x2a4) [0x15031e68b2e4]
+ 1  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b4e4) [0x15031e68b4e4]
+ 2  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b788) [0x15031e68b788]
+ 3  /usr/lib64/libpthread.so.0(+0x12cf0) [0x15031ff87cf0]
+ 4  /usr/lib64/libc.so.6(fseek+0x5) [0x15031f69d7d5]
+ 5  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x419c36]
+ 6  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x4178e7]
+ 7  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x41441b]
+ 8  /usr/lib64/libc.so.6(__libc_start_main+0xe5) [0x15031f648d85]
+ 9  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x414c9e]
+=================================
+[hopper007:3346472:0:3346472] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+==== backtrace (tid:3346472) ====
+ 0  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(ucs_handle_error+0x2a4) [0x14ced931d2e4]
+ 1  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b4e4) [0x14ced931d4e4]
+ 2  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b788) [0x14ced931d788]
+ 3  /usr/lib64/libpthread.so.0(+0x12cf0) [0x14cedac19cf0]
+ 4  /usr/lib64/libc.so.6(fseek+0x5) [0x14ceda32f7d5]
+ 5  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x419c36]
+ 6  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x4178e7]
+ 7  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x41441b]
+ 8  /usr/lib64/libc.so.6(__libc_start_main+0xe5) [0x14ceda2dad85]
+ 9  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x414c9e]
+=================================
+[hopper007:3346473:0:3346473] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+==== backtrace (tid:3346473) ====
+ 0  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(ucs_handle_error+0x2a4) [0x154e57bf62e4]
+ 1  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b4e4) [0x154e57bf64e4]
+ 2  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b788) [0x154e57bf6788]
+ 3  /usr/lib64/libpthread.so.0(+0x12cf0) [0x154e594f2cf0]
+ 4  /usr/lib64/libc.so.6(fseek+0x5) [0x154e58c087d5]
+ 5  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x419c36]
+ 6  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x4178e7]
+ 7  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x41441b]
+ 8  /usr/lib64/libc.so.6(__libc_start_main+0xe5) [0x154e58bb3d85]
+ 9  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x414c9e]
+=================================
+[hopper007:3346474:0:3346474] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+==== backtrace (tid:3346474) ====
+ 0  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(ucs_handle_error+0x2a4) [0x1522d4d782e4]
+ 1  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b4e4) [0x1522d4d784e4]
+ 2  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b788) [0x1522d4d78788]
+ 3  /usr/lib64/libpthread.so.0(+0x12cf0) [0x1522d6674cf0]
+ 4  /usr/lib64/libc.so.6(fseek+0x5) [0x1522d5d8a7d5]
+ 5  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x419c36]
+ 6  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x4178e7]
+ 7  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x41441b]
+ 8  /usr/lib64/libc.so.6(__libc_start_main+0xe5) [0x1522d5d35d85]
+ 9  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x414c9e]
+=================================
+[hopper007:3346475:0:3346475] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+==== backtrace (tid:3346475) ====
+ 0  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(ucs_handle_error+0x2a4) [0x1540bc0182e4]
+ 1  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b4e4) [0x1540bc0184e4]
+ 2  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b788) [0x1540bc018788]
+ 3  /usr/lib64/libpthread.so.0(+0x12cf0) [0x1540bd914cf0]
+ 4  /usr/lib64/libc.so.6(fseek+0x5) [0x1540bd02a7d5]
+ 5  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x419c36]
+ 6  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x4178e7]
+ 7  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x41441b]
+ 8  /usr/lib64/libc.so.6(__libc_start_main+0xe5) [0x1540bcfd5d85]
+ 9  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x414c9e]
+=================================
+[hopper007:3346476:0:3346476] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+==== backtrace (tid:3346476) ====
+ 0  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(ucs_handle_error+0x2a4) [0x14c34dc102e4]
+ 1  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b4e4) [0x14c34dc104e4]
+ 2  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b788) [0x14c34dc10788]
+ 3  /usr/lib64/libpthread.so.0(+0x12cf0) [0x14c34f50ccf0]
+ 4  /usr/lib64/libc.so.6(fseek+0x5) [0x14c34ec227d5]
+ 5  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x419c36]
+ 6  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x4178e7]
+ 7  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x41441b]
+ 8  /usr/lib64/libc.so.6(__libc_start_main+0xe5) [0x14c34ebcdd85]
+ 9  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x414c9e]
+=================================
+[hopper007:3346477:0:3346477] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+==== backtrace (tid:3346477) ====
+ 0  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(ucs_handle_error+0x2a4) [0x14e3131a22e4]
+ 1  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b4e4) [0x14e3131a24e4]
+ 2  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b788) [0x14e3131a2788]
+ 3  /usr/lib64/libpthread.so.0(+0x12cf0) [0x14e314a9ecf0]
+ 4  /usr/lib64/libc.so.6(fseek+0x5) [0x14e3141b47d5]
+ 5  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x419c36]
+ 6  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x4178e7]
+ 7  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x41441b]
+ 8  /usr/lib64/libc.so.6(__libc_start_main+0xe5) [0x14e31415fd85]
+ 9  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x414c9e]
+=================================
+[hopper007:3346478:0:3346478] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+==== backtrace (tid:3346478) ====
+ 0  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(ucs_handle_error+0x2a4) [0x14f56c2962e4]
+ 1  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b4e4) [0x14f56c2964e4]
+ 2  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b788) [0x14f56c296788]
+ 3  /usr/lib64/libpthread.so.0(+0x12cf0) [0x14f56db92cf0]
+ 4  /usr/lib64/libc.so.6(fseek+0x5) [0x14f56d2a87d5]
+ 5  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x419c36]
+ 6  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x4178e7]
+ 7  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x41441b]
+ 8  /usr/lib64/libc.so.6(__libc_start_main+0xe5) [0x14f56d253d85]
+ 9  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x414c9e]
+=================================
+[hopper007:3346480:0:3346480] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+==== backtrace (tid:3346480) ====
+ 0  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(ucs_handle_error+0x2a4) [0x149697d322e4]
+ 1  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b4e4) [0x149697d324e4]
+ 2  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b788) [0x149697d32788]
+ 3  /usr/lib64/libpthread.so.0(+0x12cf0) [0x14969962ecf0]
+ 4  /usr/lib64/libc.so.6(fseek+0x5) [0x149698d447d5]
+ 5  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x419c36]
+ 6  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x4178e7]
+ 7  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x41441b]
+ 8  /usr/lib64/libc.so.6(__libc_start_main+0xe5) [0x149698cefd85]
+ 9  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x414c9e]
+=================================
+==== backtrace (tid:3346450) ====
+ 0  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(ucs_handle_error+0x2a4) [0x152644a202e4]
+ 1  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b4e4) [0x152644a204e4]
+ 2  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b788) [0x152644a20788]
+ 3  /usr/lib64/libpthread.so.0(+0x12cf0) [0x15264631ccf0]
+ 4  /usr/lib64/libc.so.6(fseek+0x5) [0x152645a327d5]
+ 5  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x419c36]
+ 6  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x4178e7]
+ 7  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x41441b]
+ 8  /usr/lib64/libc.so.6(__libc_start_main+0xe5) [0x1526459ddd85]
+ 9  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x414c9e]
+=================================
+[hopper007:3346463:0:3346463] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+==== backtrace (tid:3346463) ====
+ 0  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(ucs_handle_error+0x2a4) [0x14ba845f32e4]
+ 1  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b4e4) [0x14ba845f34e4]
+ 2  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b788) [0x14ba845f3788]
+ 3  /usr/lib64/libpthread.so.0(+0x12cf0) [0x14ba85eefcf0]
+ 4  /usr/lib64/libc.so.6(fseek+0x5) [0x14ba856057d5]
+ 5  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x419c36]
+ 6  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x4178e7]
+ 7  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x41441b]
+ 8  /usr/lib64/libc.so.6(__libc_start_main+0xe5) [0x14ba855b0d85]
+ 9  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x414c9e]
+=================================
+[hopper007:3346479:0:3346479] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+==== backtrace (tid:3346479) ====
+ 0  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(ucs_handle_error+0x2a4) [0x1514f99fe2e4]
+ 1  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b4e4) [0x1514f99fe4e4]
+ 2  /opt/spack/opt/spack/linux-rocky8-skylake_avx512/gcc-8.5.0/ucx-1.12.1-drlkbrsfkh3fuujqjdzdwchpf2kfawok/lib/libucs.so.0(+0x2b788) [0x1514f99fe788]
+ 3  /usr/lib64/libpthread.so.0(+0x12cf0) [0x1514fb2facf0]
+ 4  /usr/lib64/libc.so.6(fseek+0x5) [0x1514faa107d5]
+ 5  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x419c36]
+ 6  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x4178e7]
+ 7  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x41441b]
+ 8  /usr/lib64/libc.so.6(__libc_start_main+0xe5) [0x1514fa9bbd85]
+ 9  /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/../../build/benchmarks/torsten_standard_comm() [0x414c9e]
+=================================
+srun: error: hopper007: tasks 0-1,9,11,13-17,19-22,25-26,30: Segmentation fault
+srun: error: hopper007: tasks 2-3,5-8,10,12,18,23-24,27-29,31: Segmentation fault (core dumped)
+srun: error: hopper007: task 4: Segmentation fault (core dumped)
