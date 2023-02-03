@@ -196,6 +196,7 @@ int MPIX_Neighbor_alltoallw(
 
     MPIX_Start(request);
     MPIX_Wait(request, &status);
+    MPIX_Request_free(request);
 
     return ierr;
 }
@@ -229,6 +230,7 @@ int MPIX_Neighbor_alltoallv(
 
     MPIX_Start(request);
     MPIX_Wait(request, &status);
+    MPIX_Request_free(request);
 
     return ierr;
 }
@@ -262,6 +264,7 @@ int MPIX_Neighbor_part_locality_alltoallv(
 
     MPIX_Start(request);
     MPIX_Wait(request, &status);
+    MPIX_Request_free(request);
 
     return ierr;
 }
@@ -299,6 +302,7 @@ int MPIX_Neighbor_locality_alltoallv(
 
     MPIX_Start(request);
     MPIX_Wait(request, &status);
+    MPIX_Request_free(request);
 
     return ierr;
 }
@@ -559,9 +563,6 @@ int MPIX_Neighbor_locality_alltoallv_init(
             comm->global_comm,
             &(request->global_n_msgs),
             &(request->global_requests));
-if (request->global_n_msgs != request->locality->global_comm->send_data->num_msgs + request->locality->global_comm->recv_data->num_msgs)
-printf("Request Global N Msgs Incorrect!!\n");
-
 
     // Local R Communication
     init_communication(request->locality->local_R_comm->send_data->buffer,
