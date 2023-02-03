@@ -18,14 +18,19 @@ int MPIX_Dist_graph_create_adjacent(MPI_Comm comm_old,
     MPIX_Comm* comm_dist_graph;
     MPIX_Comm_init(&comm_dist_graph, comm_old);
 
+    const int* s = sources;
+    if (indegree == 0) s = MPI_WEIGHTS_EMPTY;
+    const int* d = destinations;
+    if (outdegree == 0) d = MPI_WEIGHTS_EMPTY;
+
     MPI_Dist_graph_create_adjacent(comm_dist_graph->global_comm,
             indegree,
-            sources,
-            sourceweights,
+            s,
+            MPI_UNWEIGHTED,
             outdegree,
-            destinations,
-            destweights,
-            info, 
+            d,
+            MPI_UNWEIGHTED,
+            MPI_INFO_NULL, 
             reorder,
             &(comm_dist_graph->neighbor_comm));
 

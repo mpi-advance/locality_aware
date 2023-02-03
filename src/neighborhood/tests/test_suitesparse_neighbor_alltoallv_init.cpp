@@ -72,26 +72,35 @@ void test_matrix(const char* filename)
     MPIX_Comm* neighbor_comm;
     MPIX_Request* neighbor_request;
 
+    int* s = A.recv_comm.procs.data();
+    if (A.recv_comm.n_msgs == 0)
+        s = MPI_WEIGHTS_EMPTY;
+    int* d = A.send_comm.procs.data();
+    if (A.send_comm.n_msgs  == 0)
+        d = MPI_WEIGHTS_EMPTY;
+
     MPI_Dist_graph_create_adjacent(MPI_COMM_WORLD,
             A.recv_comm.n_msgs,
-            A.recv_comm.procs.data(), 
-            A.recv_comm.counts.data(),
+            s,
+            MPI_UNWEIGHTED,
             A.send_comm.n_msgs, 
-            A.send_comm.procs.data(),
-            A.send_comm.counts.data(),
+            d,
+            MPI_UNWEIGHTED,
             MPI_INFO_NULL, 
             0, 
             &std_comm);
+
     MPIX_Dist_graph_create_adjacent(MPI_COMM_WORLD,
             A.recv_comm.n_msgs,
             A.recv_comm.procs.data(), 
-            A.recv_comm.counts.data(),
+            MPI_UNWEIGHTED,
             A.send_comm.n_msgs, 
             A.send_comm.procs.data(),
-            A.send_comm.counts.data(),
+            MPI_UNWEIGHTED,
             MPI_INFO_NULL, 
             0, 
             &neighbor_comm);
+
     update_locality(neighbor_comm, 4);
     
 
@@ -132,7 +141,6 @@ void test_matrix(const char* filename)
     {
         ASSERT_EQ(std_recv_vals[i], new_recv_vals[i]);
     }
-
 
     // 3. MPI Advance - Optimized Communication
     MPIX_Neighbor_part_locality_alltoallv_init(alltoallv_send_vals.data(), 
@@ -202,6 +210,7 @@ TEST(RandomCommTest, TestsInTests)
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
 
+/*
     test_matrix("../../../../test_data/dwt_162.pm");
     test_matrix("../../../../test_data/odepa400.pm");
     test_matrix("../../../../test_data/ww_36_pmec_36.pm");
@@ -213,5 +222,16 @@ TEST(RandomCommTest, TestsInTests)
     test_matrix("../../../../test_data/oscil_dcop_11.pm");
     test_matrix("../../../../test_data/tumorAntiAngiogenesis_4.pm");
     test_matrix("../../../../test_data/ch5-5-b1.pm");
+    test_matrix("../../../../test_data/msc01050.pm");
+    test_matrix("../../../../test_data/SmaGri.pm");
+    test_matrix("../../../../test_data/radfr1.pm");
+*/
+    test_matrix("../../../../test_data/bibd_49_3.pm");
+    test_matrix("../../../../test_data/can_1054.pm");
+    test_matrix("../../../../test_data/can_1072.pm");
+/*
+    test_matrix("../../../../test_data/lp_sctap2.pm");
+    test_matrix("../../../../test_data/lp_woodw.pm");
+*/
 }
 
