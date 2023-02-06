@@ -245,8 +245,8 @@ void form_comm(ParMat<U>& A)
     form_recv_comm(A);
 
     // Form Send Side (Algorithm Options Here!)
-    //form_send_comm_standard(A);
-    form_send_comm_torsten(A);
+    form_send_comm_standard(A);
+    //form_send_comm_torsten(A);
 }
 
 
