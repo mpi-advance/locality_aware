@@ -133,7 +133,6 @@ int alltoallv_nonblocking(const void* sendbuf,
     int tag = 103044;
     int send_proc, recv_proc;
     int send_pos, recv_pos;
-    MPI_Status status;
 
     int send_size, recv_size;
     MPI_Type_size(sendtype, &send_size);
@@ -194,7 +193,6 @@ int alltoallv_pairwise_nonblocking(const void* sendbuf,
     int ctr;
     int send_proc, recv_proc;
     int send_pos, recv_pos;
-    MPI_Status status;
 
     int send_size, recv_size;
     MPI_Type_size(sendtype, &send_size);
@@ -273,8 +271,8 @@ int alltoallv_pairwise_loc(const void* sendbuf,
     num_nodes = mpi_comm->num_nodes;
     rank_node = mpi_comm->rank_node;
 
-    const char* send_buffer = (char*) sendbuf;
-    char* recv_buffer = (char*) recvbuf;
+    // const char* send_buffer = (char*) sendbuf;
+    // char* recv_buffer = (char*) recvbuf;
     int sbytes, rbytes;
     MPI_Type_size(sendtype, &sbytes);
     MPI_Type_size(recvtype, &rbytes);

@@ -271,8 +271,8 @@ int allgather_loc_bruck(const void *sendbuf, int sendcount, MPI_Datatype sendtyp
     MPI_Type_size(recvtype, &recv_size);
 
     int local_rank, PPN;
-    MPI_Comm_rank(comm->local_comm, &local_rank);
-    MPI_Comm_size(comm->local_comm, &PPN);
+    MPI_Comm_rank(local_comm, &local_rank);
+    MPI_Comm_size(local_comm, &PPN);
 
     int local_node = rank / PPN;
     int num_nodes = num_procs / PPN;
@@ -280,7 +280,7 @@ int allgather_loc_bruck(const void *sendbuf, int sendcount, MPI_Datatype sendtyp
     int tag = 102943;
 
     // Perform Local Allgather
-    allgather_bruck(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm->local_comm);
+    allgather_bruck(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, local_comm);
 
     // Perform allgather with PPN nodes at once
     // First send to node - (1 to PPN) nodes and recv from node + (1 to PPN) nodes
@@ -313,7 +313,7 @@ int allgather_loc_bruck(const void *sendbuf, int sendcount, MPI_Datatype sendtyp
         }
 
 
-        allgather_bruck(&(recv_buffer[recv_pos*recv_size]), size, recvtype, recvbuf, size, recvtype, comm->local_comm);
+        allgather_bruck(&(recv_buffer[recv_pos*recv_size]), size, recvtype, recvbuf, size, recvtype, local_comm);
 
         stride *= PPN;
     }
@@ -485,9 +485,9 @@ int allgather_hier_bruck(const void *sendbuf, int sendcount, MPI_Datatype sendty
     bcast(recvbuf, recvcount*num_procs, recvtype, 0, comm->local_comm);
 
     free(tmpbuf);
+
+    return 0;
 }
-
-
 
 
 int allgather_mult_hier_bruck(const void *sendbuf, int sendcount, MPI_Datatype sendtype,
@@ -528,8 +528,6 @@ int allgather_mult_hier_bruck(const void *sendbuf, int sendcount, MPI_Datatype s
     }
 
     free(tmpbuf);
+
+    return 0;
 }
-
-
-
-

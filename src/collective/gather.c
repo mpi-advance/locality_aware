@@ -44,5 +44,7 @@ int gather(const void* sendbuf,
 
         stride *= 2;
     }
+
+    return 0;
 }
 

@@ -75,7 +75,7 @@ int main(int argc, char* argv[])
             if (fabs(std_alltoallv[j] - loc_alltoallv[j]) > 1e-10)
             {
                 fprintf(stderr, 
-                        "Rank %d, idx %d, std %d, loc %d\n", 
+                        "Rank %d, idx %d, std %f, loc %f\n", 
                          rank, j, std_alltoallv[j], loc_alltoallv[j]);
                 MPI_Abort(MPI_COMM_WORLD, 1);
                 return 1;

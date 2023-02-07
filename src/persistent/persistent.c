@@ -10,7 +10,8 @@ int MPIX_Start(MPIX_Request* request)
     if (request == NULL)
         return 0;
 
-    int ierr, idx;
+    int ierr = MPI_SUCCESS;
+    int idx;
 
     char* send_buffer = NULL;
     int recv_size = 0;
@@ -75,7 +76,8 @@ int MPIX_Wait(MPIX_Request* request, MPI_Status* status)
     if (request == NULL)
         return 0;
 
-    int ierr, idx;
+    int ierr = MPI_SUCCESS;
+    int idx;
 
     char* recv_buffer = NULL;
     int recv_size = 0;

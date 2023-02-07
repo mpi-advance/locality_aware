@@ -57,7 +57,7 @@ int main(int argc, char* argv[])
             if (fabs(std_allgather[j] - bruck_allgather[j]) > 1e-10)
             {
                 fprintf(stderr, 
-                        "Rank %d, idx %d, std %d, bruck %d\n", 
+                        "Rank %d, idx %d, std %f, bruck %f\n", 
                          rank, j, std_allgather[j], bruck_allgather[j]);
                 MPI_Abort(MPI_COMM_WORLD, 1);
                 return 1;
@@ -78,7 +78,7 @@ int main(int argc, char* argv[])
             if (fabs(std_allgather[j] - bruck_allgather[j]) > 1e-10)
             {
                 fprintf(stderr,
-                        "Rank %d, idx %d, std %d, bruck %d\n",
+                        "Rank %d, idx %d, std %f, bruck %f\n",
                          rank, j, std_allgather[j], bruck_allgather[j]);
                 MPI_Abort(MPI_COMM_WORLD, 1);
                 return 1;
@@ -99,7 +99,7 @@ int main(int argc, char* argv[])
             if (fabs(std_allgather[j] - bruck_allgather[j]) > 1e-10)
             {
                 fprintf(stderr,
-                        "Rank %d, idx %d, std %d, bruck %d\n",
+                        "Rank %d, idx %d, std %f, bruck %f\n",
                          rank, j, std_allgather[j], bruck_allgather[j]);
                 MPI_Abort(MPI_COMM_WORLD, 1);
                 return 1;
@@ -119,7 +119,7 @@ int main(int argc, char* argv[])
             if (fabs(std_allgather[j] - bruck_allgather[j]) > 1e-10)
             {
                 fprintf(stderr,
-                        "Rank %d, idx %d, std %d, bruck %d\n",
+                        "Rank %d, idx %d, std %f, bruck %f\n",
                          rank, j, std_allgather[j], bruck_allgather[j]);
                 MPI_Abort(MPI_COMM_WORLD, 1);
                 return 1;

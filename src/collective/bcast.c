@@ -32,4 +32,5 @@ int bcast(void* buffer,
 
         stride /= 2;
     }
+    return 0;
 }

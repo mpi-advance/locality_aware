@@ -93,6 +93,7 @@ int alltoall_pairwise(const void* sendbuf,
                 recvbuf + recv_pos, recvcount, recvtype, recv_proc, tag,
                 comm, &status);
     }
+    return 0;
 }
 
 int alltoall_bruck(const void* sendbuf,
@@ -212,8 +213,8 @@ int alltoall_pairwise_loc(const void* sendbuf,
     num_nodes = mpi_comm->num_nodes;
     rank_node = mpi_comm->rank_node;
 
-    const char* send_buffer = (char*) sendbuf;
-    char* recv_buffer = (char*) recvbuf;
+    // const char* send_buffer = (char*) sendbuf;
+    // char* recv_buffer = (char*) recvbuf;
     int sbytes, rbytes;
     MPI_Type_size(sendtype, &sbytes);
     MPI_Type_size(recvtype, &rbytes);
