@@ -5,7 +5,7 @@ matrix_names = ["D_10","bcsstk01","ch-5-b1","dwt-162","gams10a","gams10am","impc
 
 for (i, file_name) in enumerate(matrix_file_names):
   m_name = matrix_names[i]
-  if(!os.path.exists(f"../../../benchmark_tests/standard_torsten/{m_name}/")):
+  if(not os.path.exists(f"../../../benchmark_tests/standard_torsten/{m_name}/")):
     os.mkdir(f"../../../benchmark_tests/standard_torsten/{m_name}/")
 
   # CREATE ONE NODE STANDARD TEST CASES
