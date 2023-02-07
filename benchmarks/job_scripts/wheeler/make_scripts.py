@@ -21,11 +21,11 @@ for (i, file_name) in enumerate(matrix_file_names):
   fp.write("#SBATCH --mail-type=BEGIN,FAIL,END\n")
   fp.write("#SBATCH --mail-user=ageyko@unm.edu\n\n")
   fp.write("module load openmpi\n\n")
-  fp.write(f"srun --partition=normal --nodes=1 --ntasks=2 --time=24:00:00 ../../../build/benchmarks/torsten_standard_comm ../../../test_data/{file_name} 1 {m_name} STANDARD\n")
-  fp.write(f"srun --partition=normal --nodes=1 --ntasks=4 --time=24:00:00 ../../../build/benchmarks/torsten_standard_comm ../../../test_data/{file_name} 1 {m_name} STANDARD\n")
-  fp.write(f"srun --partition=normal --nodes=1 --ntasks=8 --time=24:00:00 ../../../build/benchmarks/torsten_standard_comm ../../../test_data/{file_name} 1 {m_name} STANDARD\n")
-  fp.write(f"srun --partition=normal --nodes=2 --ntasks=16 --time=24:00:00 ../../../build/benchmarks/torsten_standard_comm ../../../test_data/{file_name} 1 {m_name} STANDARD\n")
-  fp.write(f"srun --partition=normal --nodes=4 --ntasks=32 --time=24:00:00 ../../../build/benchmarks/torsten_standard_comm ../../../test_data/{file_name} 1 {m_name} STANDARD\n")
+  for i in range(2,9):
+    fp.write(f"srun --partition=normal --nodes=1 --ntasks={i} --time=24:00:00 ../../../build/benchmarks/torsten_standard_comm ../../../test_data/{file_name} 1 {m_name} STANDARD\n")
+  for j in range(2,5):
+    for i in range((j-1)*8+1,j*8+1):
+      fp.write(f"srun --partition=normal --nodes={j} --ntasks={i} --time=24:00:00 ../../../build/benchmarks/torsten_standard_comm ../../../test_data/{file_name} 1 {m_name} STANDARD\n")
   fp.close()
 
   # CREATE ONE NODE TORSTEN TEST CASES
@@ -40,11 +40,11 @@ for (i, file_name) in enumerate(matrix_file_names):
   fp.write("#SBATCH --mail-type=BEGIN,FAIL,END\n")
   fp.write("#SBATCH --mail-user=ageyko@unm.edu\n\n")
   fp.write("module load openmpi\n\n")
-  fp.write(f"srun --partition=normal --nodes=1 --ntasks=2 --time=24:00:00 ../../../build/benchmarks/torsten_standard_comm ../../../test_data/{file_name} 1 {m_name} TORSTEN\n")
-  fp.write(f"srun --partition=normal --nodes=1 --ntasks=4 --time=24:00:00 ../../../build/benchmarks/torsten_standard_comm ../../../test_data/{file_name} 1 {m_name} TORSTEN\n")
-  fp.write(f"srun --partition=normal --nodes=1 --ntasks=8 --time=24:00:00 ../../../build/benchmarks/torsten_standard_comm ../../../test_data/{file_name} 1 {m_name} TORSTEN\n")
-  fp.write(f"srun --partition=normal --nodes=2 --ntasks=16 --time=24:00:00 ../../../build/benchmarks/torsten_standard_comm ../../../test_data/{file_name} 1 {m_name} TORSTEN\n")
-  fp.write(f"srun --partition=normal --nodes=4 --ntasks=32 --time=24:00:00 ../../../build/benchmarks/torsten_standard_comm ../../../test_data/{file_name} 1 {m_name} TORSTEN\n")
+  for i in range(2,9):
+    fp.write(f"srun --partition=normal --nodes=1 --ntasks={i} --time=24:00:00 ../../../build/benchmarks/torsten_standard_comm ../../../test_data/{file_name} 1 {m_name} TORSTEN\n")
+  for j in range(2,5):
+    for i in range((j-1)*8+1,j*8+1):
+      fp.write(f"srun --partition=normal --nodes={j} --ntasks={i} --time=24:00:00 ../../../build/benchmarks/torsten_standard_comm ../../../test_data/{file_name} 1 {m_name} TORSTEN\n")
   fp.close()
 
   # CREATE MANY NODE STANDARD TEST CASES
@@ -59,9 +59,9 @@ for (i, file_name) in enumerate(matrix_file_names):
   fp.write("#SBATCH --mail-type=BEGIN,FAIL,END\n")
   fp.write("#SBATCH --mail-user=ageyko@unm.edu\n\n")
   fp.write("module load openmpi\n\n")
-  fp.write(f"srun --partition=normal --nodes=8 --ntasks=64 --time=24:00:00 ../../../build/benchmarks/torsten_standard_comm ../../../test_data/{file_name} 1 {m_name} STANDARD\n")
-  fp.write(f"srun --partition=normal --nodes=12 --ntasks=96 --time=24:00:00 ../../../build/benchmarks/torsten_standard_comm ../../../test_data/{file_name} 1 {m_name} STANDARD\n")
-  fp.write(f"srun --partition=normal --nodes=16 --ntasks=128 --time=24:00:00 ../../../build/benchmarks/torsten_standard_comm ../../../test_data/{file_name} 1 {m_name} STANDARD\n")
+  for j in range(8,17):
+    for i in range((j-1)*8+1,j*8+1):
+      fp.write(f"srun --partition=normal --nodes={j} --ntasks={i} --time=24:00:00 ../../../build/benchmarks/torsten_standard_comm ../../../test_data/{file_name} 1 {m_name} STANDARD\n")
   fp.close()
 
   # CREATE MANY NODE TORSTEN TEST CASES
@@ -76,7 +76,7 @@ for (i, file_name) in enumerate(matrix_file_names):
   fp.write("#SBATCH --mail-type=BEGIN,FAIL,END\n")
   fp.write("#SBATCH --mail-user=ageyko@unm.edu\n\n")
   fp.write("module load openmpi\n\n")
-  fp.write(f"srun --partition=normal --nodes=8 --ntasks=64 --time=24:00:00 ../../../build/benchmarks/torsten_standard_comm ../../../test_data/{file_name} 1 {m_name} TORSTEN\n")
-  fp.write(f"srun --partition=normal --nodes=12 --ntasks=96 --time=24:00:00 ../../../build/benchmarks/torsten_standard_comm ../../../test_data/{file_name} 1 {m_name} TORSTEN\n")
-  fp.write(f"srun --partition=normal --nodes=16 --ntasks=128 --time=24:00:00 ../../../build/benchmarks/torsten_standard_comm ../../../test_data/{file_name} 1 {m_name} TORSTEN\n")
+  for j in range(8,17):
+    for i in range((j-1)*8+1,j*8+1):
+      fp.write(f"srun --partition=normal --nodes={j} --ntasks={i} --time=24:00:00 ../../../build/benchmarks/torsten_standard_comm ../../../test_data/{file_name} 1 {m_name} TORSTEN\n")
   fp.close()
