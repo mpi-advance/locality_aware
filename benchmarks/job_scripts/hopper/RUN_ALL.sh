@@ -1,4 +1,4 @@
-for i in *MANY_NODE*
+for i in *NODE*
 do
   echo $i
   sbatch $i
