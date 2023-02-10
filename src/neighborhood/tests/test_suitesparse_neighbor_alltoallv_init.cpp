@@ -33,6 +33,7 @@ double test_matrix(const char* filename, COMM_ALGORITHM algorithm)
     int idx;
     readParMatrix(filename, A);
 
+    MPI_Barrier(MPI_COMM_WORLD);
     start = MPI_Wtime();
     form_comm(A, algorithm);
     end = MPI_Wtime();
