@@ -19,7 +19,8 @@
 #include "tests/sparse_mat.hpp"
 #include "tests/par_binary_IO.hpp"
 
-double test_matrix(const char* filename, COMM_ALGORITHM algorithm) 
+// Tuple : <time, msg_count, msg_size>
+std::tuple<double, int, int> test_matrix(const char* filename, COMM_ALGORITHM algorithm) 
 {
     int rank, num_procs;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -35,7 +36,8 @@ double test_matrix(const char* filename, COMM_ALGORITHM algorithm)
     form_comm(A, algorithm);
     end = MPI_Wtime();
 
-    return ((double)(end-start)) / 1000;
+    return {(double)(end-start) / 1000, A.recv_comm.n_msgs, A.recv_comm.size_msgs};
+}
     /*
     std::vector<int> std_recv_vals, neigh_recv_vals, new_recv_vals,
             locality_recv_vals, part_locality_recv_vals;
@@ -233,6 +235,7 @@ TEST(RandomCommTest, TestsInTests)
 <<<<<<< HEAD
 <<<<<<< HEAD
     */
+/*
 =======
 =======
 >>>>>>> b57a261bb19197ce503eeec536de769674cbf4f9
@@ -249,4 +252,5 @@ TEST(RandomCommTest, TestsInTests)
 =======
 >>>>>>> b57a261bb19197ce503eeec536de769674cbf4f9
 }
+*/
 

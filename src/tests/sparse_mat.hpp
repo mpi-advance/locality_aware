@@ -318,8 +318,6 @@ void form_comm(ParMat<U>& A, COMM_ALGORITHM algorithm)
     form_recv_comm(A);
 
     // Form Send Side (Algorithm Options Here!)
-<<<<<<< HEAD
-<<<<<<< HEAD
     if(algorithm == STANDARD) 
     {
         form_send_comm_standard(A);
@@ -328,16 +326,6 @@ void form_comm(ParMat<U>& A, COMM_ALGORITHM algorithm)
     {
        form_send_comm_torsten(A);
     }
-=======
-    form_send_comm_standard(A);
-    //form_send_comm_torsten(A);
-    //form_send_comm_rma(A);
->>>>>>> b57a261bb19197ce503eeec536de769674cbf4f9
-=======
-    form_send_comm_standard(A);
-    //form_send_comm_torsten(A);
-    //form_send_comm_rma(A);
->>>>>>> b57a261bb19197ce503eeec536de769674cbf4f9
 }
 
 
