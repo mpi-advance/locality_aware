@@ -311,6 +311,8 @@ void form_send_comm_rma(ParMat<U>& A)
 
 
 
+enum COMM_ALGORITHM {STANDARD, TORSTEN};
+
 template <typename U>
 void form_comm(ParMat<U>& A, COMM_ALGORITHM algorithm)
 {

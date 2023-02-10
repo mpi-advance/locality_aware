@@ -15,6 +15,7 @@
 #include <vector>
 #include <numeric>
 #include <set>
+#include <tuple>
 
 #include "tests/sparse_mat.hpp"
 #include "tests/par_binary_IO.hpp"

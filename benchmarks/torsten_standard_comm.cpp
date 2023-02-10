@@ -3,6 +3,7 @@
 #include <mpi.h>
 #include <stdio.h>
 #include <string.h>
+#include <tuple>
 
 /*
  * Argument format: 
