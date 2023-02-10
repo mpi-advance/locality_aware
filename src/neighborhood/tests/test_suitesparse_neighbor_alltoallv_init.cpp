@@ -22,9 +22,6 @@
 double test_matrix(const char* filename, COMM_ALGORITHM algorithm) 
 {
     int rank, num_procs;
-    double start, end;
-    start = 0; 
-    end = 0;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
 
@@ -81,10 +78,17 @@ double test_matrix(const char* filename, COMM_ALGORITHM algorithm)
     MPIX_Comm* neighbor_comm;
     MPIX_Request* neighbor_request;
 
+    int* s = A.recv_comm.procs.data();
+    if (A.recv_comm.n_msgs == 0)
+        s = MPI_WEIGHTS_EMPTY;
+    int* d = A.send_comm.procs.data();
+    if (A.send_comm.n_msgs  == 0)
+        d = MPI_WEIGHTS_EMPTY;
+
     MPI_Dist_graph_create_adjacent(MPI_COMM_WORLD,
             A.recv_comm.n_msgs,
-            A.recv_comm.procs.data(), 
-            A.recv_comm.counts.data(),
+            s,
+            MPI_UNWEIGHTED,
             A.send_comm.n_msgs, 
             A.send_comm.procs.data(),
             A.send_comm.counts.data(),
@@ -191,10 +195,8 @@ double test_matrix(const char* filename, COMM_ALGORITHM algorithm)
 
     MPIX_Comm_free(neighbor_comm);
     MPI_Comm_free(&std_comm);
-    */
 }
 
-/*
 int main(int argc, char** argv)
 {
     MPI_Init(&argc, &argv);
@@ -229,8 +231,11 @@ TEST(RandomCommTest, TestsInTests)
     test_matrix("../../../../test_data/tumorAntiAngiogenesis_4.pm");
     test_matrix("../../../../test_data/ch5-5-b1.pm");
 <<<<<<< HEAD
+<<<<<<< HEAD
     */
 =======
+=======
+>>>>>>> b57a261bb19197ce503eeec536de769674cbf4f9
     test_matrix("../../../../test_data/msc01050.pm");
     test_matrix("../../../../test_data/SmaGri.pm");
     test_matrix("../../../../test_data/radfr1.pm");
@@ -239,6 +244,9 @@ TEST(RandomCommTest, TestsInTests)
     test_matrix("../../../../test_data/can_1072.pm");
     test_matrix("../../../../test_data/lp_sctap2.pm");
     test_matrix("../../../../test_data/lp_woodw.pm");
+<<<<<<< HEAD
+>>>>>>> b57a261bb19197ce503eeec536de769674cbf4f9
+=======
 >>>>>>> b57a261bb19197ce503eeec536de769674cbf4f9
 }
 

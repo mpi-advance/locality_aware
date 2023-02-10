@@ -237,6 +237,79 @@ void form_send_comm_torsten(ParMat<U>& A)
         A.send_comm.idx.resize(A.send_comm.size_msgs);
 }
 
+// Must Form Recv Comm before Send!
+template <typename U>
+void form_send_comm_rma(ParMat<U>& A)
+{
+    int rank, num_procs;
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
+
+    std::vector<long> recv_buf;
+    std::vector<int> sizes(num_procs, 0);
+    int start, end, proc, count, ctr;
+    MPI_Status recv_status;
+
+    // RMA puts to find sizes recvd from each process
+    MPI_Win win;
+    MPI_Win_create(sizes.data(), num_procs*sizeof(int), sizeof(int),
+            MPI_INFO_NULL, MPI_COMM_WORLD, &win);
+    MPI_Win_fence(MPI_MODE_NOPRECEDE, win);
+    int size;
+    for (int i = 0; i < A.recv_comm.n_msgs; i++)
+    {
+        size = A.recv_comm.ptr[i+1] - A.recv_comm.ptr[i];
+        MPI_Put(&size, 1, MPI_INT, A.recv_comm.procs[i], 
+                rank, 1, MPI_INT, win);
+    }
+    MPI_Win_fence(MPI_MODE_NOSUCCEED, win);
+    MPI_Win_free(&win);
+
+    A.send_comm.ptr.push_back(0);
+    ctr = 0;
+    for (int i = 0; i < num_procs; i++)
+    {
+        if (sizes[i])
+        {
+            A.send_comm.procs.push_back(i);
+            A.send_comm.counts.push_back(sizes[i]);
+            A.send_comm.ptr.push_back(A.send_comm.ptr[ctr] + sizes[i]);
+            ctr++;
+        }
+    }
+    A.send_comm.n_msgs = ctr;
+    if (A.send_comm.n_msgs)
+        A.send_comm.req.resize(A.send_comm.n_msgs);
+    A.send_comm.size_msgs = A.send_comm.ptr[A.send_comm.n_msgs];
+    if (A.send_comm.size_msgs)
+    {
+        A.send_comm.idx.resize(A.send_comm.size_msgs);
+        recv_buf.resize(A.send_comm.size_msgs);
+    }
+
+    int msg_tag = 1234;
+    for (int i = 0; i < A.send_comm.n_msgs; i++)
+    {
+        MPI_Irecv(&(recv_buf[A.send_comm.ptr[i]]), A.send_comm.counts[i], MPI_LONG, 
+                A.send_comm.procs[i], msg_tag, MPI_COMM_WORLD, &(A.send_comm.req[i]));
+    }
+    for (int i = 0; i < A.recv_comm.n_msgs; i++)
+    {
+        MPI_Isend(&(A.off_proc_columns[A.recv_comm.ptr[i]]), A.recv_comm.counts[i], MPI_LONG, 
+                A.recv_comm.procs[i], msg_tag, MPI_COMM_WORLD, &(A.recv_comm.req[i]));
+    }
+
+    if (A.send_comm.n_msgs)
+        MPI_Waitall(A.send_comm.n_msgs, A.send_comm.req.data(), MPI_STATUSES_IGNORE);
+
+    for (int i = 0; i < A.send_comm.size_msgs; i++)
+        A.send_comm.idx[i] = recv_buf[i] - A.first_col;
+
+    if (A.recv_comm.n_msgs)
+        MPI_Waitall(A.recv_comm.n_msgs, A.recv_comm.req.data(), MPI_STATUSES_IGNORE);
+}
+
+
 
 template <typename U>
 void form_comm(ParMat<U>& A, COMM_ALGORITHM algorithm)
@@ -246,6 +319,7 @@ void form_comm(ParMat<U>& A, COMM_ALGORITHM algorithm)
 
     // Form Send Side (Algorithm Options Here!)
 <<<<<<< HEAD
+<<<<<<< HEAD
     if(algorithm == STANDARD) 
     {
         form_send_comm_standard(A);
@@ -254,6 +328,11 @@ void form_comm(ParMat<U>& A, COMM_ALGORITHM algorithm)
     {
        form_send_comm_torsten(A);
     }
+=======
+    form_send_comm_standard(A);
+    //form_send_comm_torsten(A);
+    //form_send_comm_rma(A);
+>>>>>>> b57a261bb19197ce503eeec536de769674cbf4f9
 =======
     form_send_comm_standard(A);
     //form_send_comm_torsten(A);
