@@ -5,6 +5,7 @@
 #include <string.h>
 #include <tuple>
 
+std::tuple<double, int, int> test_matrix(const char* filename, COMM_ALGORITHM algorithm);
 /*
  * Argument format: 
  * argv[0] - default program name
@@ -59,9 +60,9 @@ int main(int argc, char* argv[])
         double max_time = 0;
         int max_msg_count = 0;
         int max_msg_size = 0;
-        MPI_Allreduce(&(get<0>(info)), &max_time, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
-        MPI_Allreduce(&(get<1>(info)), &max_msg_count, 1, MPI_INT, MPI_MAX, MPI_COMM_WORLD);
-        MPI_Allreduce(&(get<2>(info)), &max_msg_size, 1, MPI_INT, MPI_MAX, MPI_COMM_WORLD);
+        MPI_Allreduce(&(std::get<0>(info)), &max_time, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
+        MPI_Allreduce(&(std::get<1>(info)), &max_msg_count, 1, MPI_INT, MPI_MAX, MPI_COMM_WORLD);
+        MPI_Allreduce(&(std::get<2>(info)), &max_msg_size, 1, MPI_INT, MPI_MAX, MPI_COMM_WORLD);
         if(rank == 0 && i == 0) 
         {
             printf("MAX_MSG_COUNT %d, MAX_MSG_SIZE %d\n");
