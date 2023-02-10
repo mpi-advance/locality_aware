@@ -24,6 +24,7 @@
 std::tuple<double, int, int> test_matrix(const char* filename, COMM_ALGORITHM algorithm) 
 {
     int rank, num_procs;
+    double start, end;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
 
@@ -214,6 +215,7 @@ int main(int argc, char** argv)
 } // end of main() //
 */
 
+/*
 TEST(RandomCommTest, TestsInTests)
 {
     // Get MPI Information
@@ -233,25 +235,5 @@ TEST(RandomCommTest, TestsInTests)
     test_matrix("../../../../test_data/oscil_dcop_11.pm");
     test_matrix("../../../../test_data/tumorAntiAngiogenesis_4.pm");
     test_matrix("../../../../test_data/ch5-5-b1.pm");
-<<<<<<< HEAD
-<<<<<<< HEAD
-    */
-/*
-=======
-=======
->>>>>>> b57a261bb19197ce503eeec536de769674cbf4f9
-    test_matrix("../../../../test_data/msc01050.pm");
-    test_matrix("../../../../test_data/SmaGri.pm");
-    test_matrix("../../../../test_data/radfr1.pm");
-    test_matrix("../../../../test_data/bibd_49_3.pm");
-    test_matrix("../../../../test_data/can_1054.pm");
-    test_matrix("../../../../test_data/can_1072.pm");
-    test_matrix("../../../../test_data/lp_sctap2.pm");
-    test_matrix("../../../../test_data/lp_woodw.pm");
-<<<<<<< HEAD
->>>>>>> b57a261bb19197ce503eeec536de769674cbf4f9
-=======
->>>>>>> b57a261bb19197ce503eeec536de769674cbf4f9
 }
 */
-
