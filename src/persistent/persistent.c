@@ -47,6 +47,7 @@ int MPIX_Start(MPIX_Request* request)
         ierr = MPI_Startall(request->local_S_n_msgs, request->local_S_requests);
         ierr = MPI_Waitall(request->local_S_n_msgs, request->local_S_requests, MPI_STATUSES_IGNORE);
 
+
         // Copy into global->send_data->buffer
         for (int i = 0; i < request->locality->global_comm->send_data->size_msgs; i++)
         {
@@ -134,13 +135,29 @@ int MPIX_Wait(MPIX_Request* request, MPI_Status* status)
 int MPIX_Request_free(MPIX_Request* request)
 {
     if (request->local_L_n_msgs)
+    {
+        for (int i = 0; i < request->local_L_n_msgs; i++)
+            MPI_Request_free(&(request->local_L_requests[i]));
         free(request->local_L_requests);
+    }
     if (request->local_S_n_msgs)
+    {
+        for (int i = 0; i < request->local_S_n_msgs; i++)
+            MPI_Request_free(&(request->local_S_requests[i]));
         free(request->local_S_requests);
+    }
     if (request->local_R_n_msgs)
+    {
+        for (int i = 0; i < request->local_R_n_msgs; i++)
+            MPI_Request_free(&(request->local_R_requests[i]));
         free(request->local_R_requests);
+    }
     if (request->global_n_msgs)
+    {
+        for (int i = 0; i < request->global_n_msgs; i++)
+            MPI_Request_free(&(request->global_requests[i]));
         free(request->global_requests);
+    }
 
     // If Locality-Aware
     if (request->locality)

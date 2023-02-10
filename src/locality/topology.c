@@ -69,9 +69,9 @@ void update_locality(MPIX_Comm* comm_dist_graph, int ppn)
     MPI_Comm_rank(comm_dist_graph->global_comm, &rank);
     MPI_Comm_size(comm_dist_graph->global_comm, &num_procs);
 
-    if (comm_dist_graph->local_comm)
+    if (comm_dist_graph->local_comm != MPI_COMM_NULL)
         MPI_Comm_free(&(comm_dist_graph->local_comm));
-    if (comm_dist_graph->group_comm)
+    if (comm_dist_graph->group_comm != MPI_COMM_NULL)
         MPI_Comm_free(&(comm_dist_graph->group_comm));
 
     MPI_Comm_split(comm_dist_graph->global_comm,
