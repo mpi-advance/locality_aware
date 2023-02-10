@@ -1,11 +1,8 @@
 import os
 
-matrix_file_names = ["D_10.pm","bcsstk01.pm","ch5-5-b1.pm","dwt-162.pm","gams10a.pm","gams10am.pm","impcol_c.pm","odepa400.pm","oscil_dcop_11.pm","tumorAntiAngiogenesis_4.pm","west0132.pm","ww_36_pmec_36.pm"]
-matrix_names = ["D_10","bcsstk01","ch-5-b1","dwt-162","gams10a","gams10am","impcol_c","odepa400","oscil_dcop_11","tumorAntiAngiogenesis_4","west0132","ww_36_pmec_36"]
+matrix_names = ["bcsstk01","ch5-5-b1","D_10","dwt_162","gams10a","gams10am","impcol_c","odepa400","oscil_dcop_11","tumorAntiAngiogenesis_4","west0132","ww_36_pmec_36","3elt","abb313","M40PI_n1","M80PI_n1"]
 
-
-for (i, file_name) in enumerate(matrix_file_names):
-  m_name = matrix_names[i]
+for (i, m_name) in enumerate(matrix_names):
   if not (os.path.exists(f"../../../benchmark_tests/standard_torsten/{m_name}/")):
     os.mkdir(f"../../../benchmark_tests/standard_torsten/{m_name}/")
 
@@ -22,10 +19,10 @@ for (i, file_name) in enumerate(matrix_file_names):
   fp.write("#SBATCH --mail-user=ageyko@unm.edu\n\n")
   fp.write("module load openmpi\n\n")
   for i in range(2,9):
-    fp.write(f"srun --partition=normal --nodes=1 --ntasks={i} --time=24:00:00 ../../../build/benchmarks/torsten_standard_comm ../../../test_data/{file_name} 1 {m_name} STANDARD\n")
+    fp.write(f"srun --partition=normal --nodes=1 --ntasks={i} --time=24:00:00 ../../../build/benchmarks/torsten_standard_comm ../../../test_data/{m_name}.pm 1 {m_name} STANDARD\n")
   for j in range(2,5):
     for i in range((j-1)*8+1,j*8+1):
-      fp.write(f"srun --partition=normal --nodes={j} --ntasks={i} --time=24:00:00 ../../../build/benchmarks/torsten_standard_comm ../../../test_data/{file_name} 1 {m_name} STANDARD\n")
+      fp.write(f"srun --partition=normal --nodes={j} --ntasks={i} --time=24:00:00 ../../../build/benchmarks/torsten_standard_comm ../../../test_data/{m_name}.pm 1 {m_name} STANDARD\n")
   fp.close()
 
   # CREATE ONE NODE TORSTEN TEST CASES
@@ -41,10 +38,10 @@ for (i, file_name) in enumerate(matrix_file_names):
   fp.write("#SBATCH --mail-user=ageyko@unm.edu\n\n")
   fp.write("module load openmpi\n\n")
   for i in range(2,9):
-    fp.write(f"srun --partition=normal --nodes=1 --ntasks={i} --time=24:00:00 ../../../build/benchmarks/torsten_standard_comm ../../../test_data/{file_name} 1 {m_name} TORSTEN\n")
+    fp.write(f"srun --partition=normal --nodes=1 --ntasks={i} --time=24:00:00 ../../../build/benchmarks/torsten_standard_comm ../../../test_data/{m_name}.pm 1 {m_name} TORSTEN\n")
   for j in range(2,5):
     for i in range((j-1)*8+1,j*8+1):
-      fp.write(f"srun --partition=normal --nodes={j} --ntasks={i} --time=24:00:00 ../../../build/benchmarks/torsten_standard_comm ../../../test_data/{file_name} 1 {m_name} TORSTEN\n")
+      fp.write(f"srun --partition=normal --nodes={j} --ntasks={i} --time=24:00:00 ../../../build/benchmarks/torsten_standard_comm ../../../test_data/{m_name}.pm 1 {m_name} TORSTEN\n")
   fp.close()
 
   # CREATE MANY NODE STANDARD TEST CASES
@@ -61,7 +58,7 @@ for (i, file_name) in enumerate(matrix_file_names):
   fp.write("module load openmpi\n\n")
   for j in range(8,17):
     for i in range((j-1)*8+1,j*8+1):
-      fp.write(f"srun --partition=normal --nodes={j} --ntasks={i} --time=24:00:00 ../../../build/benchmarks/torsten_standard_comm ../../../test_data/{file_name} 1 {m_name} STANDARD\n")
+      fp.write(f"srun --partition=normal --nodes={j} --ntasks={i} --time=24:00:00 ../../../build/benchmarks/torsten_standard_comm ../../../test_data/{m_name}.pm 1 {m_name} STANDARD\n")
   fp.close()
 
   # CREATE MANY NODE TORSTEN TEST CASES
@@ -78,5 +75,5 @@ for (i, file_name) in enumerate(matrix_file_names):
   fp.write("module load openmpi\n\n")
   for j in range(8,17):
     for i in range((j-1)*8+1,j*8+1):
-      fp.write(f"srun --partition=normal --nodes={j} --ntasks={i} --time=24:00:00 ../../../build/benchmarks/torsten_standard_comm ../../../test_data/{file_name} 1 {m_name} TORSTEN\n")
+      fp.write(f"srun --partition=normal --nodes={j} --ntasks={i} --time=24:00:00 ../../../build/benchmarks/torsten_standard_comm ../../../test_data/{m_name}.pm 1 {m_name} TORSTEN\n")
   fp.close()
