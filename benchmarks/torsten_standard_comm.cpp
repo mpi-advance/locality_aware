@@ -65,7 +65,7 @@ int main(int argc, char* argv[])
         MPI_Allreduce(&(std::get<2>(info)), &max_msg_size, 1, MPI_INT, MPI_MAX, MPI_COMM_WORLD);
         if(rank == 0 && i == 0) 
         {
-            printf("MAX_MSG_COUNT %d, MAX_MSG_SIZE %d\n");
+            printf("MAX_MSG_COUNT %d, MAX_MSG_SIZE %d\n",max_msg_count, max_msg_size);
         }
         if(rank == 0) 
         {
