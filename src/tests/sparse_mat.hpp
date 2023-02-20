@@ -244,7 +244,6 @@ void form_send_comm_rma(ParMat<U>& A)
     int rank, num_procs;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
-    printf("rank %d in form_send_comm\n", rank);
 
     std::vector<long> recv_buf;
     std::vector<int> sizes(num_procs, 0);
@@ -252,12 +251,10 @@ void form_send_comm_rma(ParMat<U>& A)
     MPI_Status recv_status;
 
     // RMA puts to find sizes recvd from each process
-    printf("rank %d before first fence!\n", rank);
     MPI_Win win;
     MPI_Win_create(sizes.data(), num_procs*sizeof(int), sizeof(int),
             MPI_INFO_NULL, MPI_COMM_WORLD, &win);
     MPI_Win_fence(MPI_MODE_NOPRECEDE, win);
-    printf("rank %d past first fence!\n", rank);
     int size;
     for (int i = 0; i < A.recv_comm.n_msgs; i++)
     {
@@ -320,12 +317,9 @@ template <typename U>
 void form_comm(ParMat<U>& A, COMM_ALGORITHM algorithm)
 {
     // Form Recv Side 
-    printf("rank before form_recv_comm\n");
     form_recv_comm(A);
 
     // Form Send Side (Algorithm Options Here!)
-    printf("rank after form_recv_comm\n");
-    printf("algorithm %d\n", algorithm);
     if(algorithm == STANDARD) { form_send_comm_standard(A); }
     else if(algorithm == TORSTEN) { form_send_comm_torsten(A); }
     else if (algorithm == RMA) { form_send_comm_rma(A); }

@@ -35,7 +35,6 @@ std::tuple<double, int, int> test_matrix(const char* filename, COMM_ALGORITHM al
 
     MPI_Barrier(MPI_COMM_WORLD);
     start = MPI_Wtime();
-    printf("rank %d before form_comm call\n", rank);
     form_comm(A, algorithm);
     end = MPI_Wtime();
 

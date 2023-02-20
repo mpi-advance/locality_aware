@@ -49,7 +49,6 @@ int main(int argc, char* argv[])
     for(int i = 0; i < num_tests; i++) 
     {
         MPI_Barrier(MPI_COMM_WORLD);
-        printf("rank %d with algo %d\n", rank, algo);
         std::tuple<double, int, int> info = test_matrix(argv[1], algo);
         double max_time = 0;
         int max_msg_count = 0;
