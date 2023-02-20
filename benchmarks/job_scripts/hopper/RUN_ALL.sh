@@ -1,4 +1,4 @@
-for i in *NODE*
+for i in *RMA*
 do
   echo $i
   sbatch $i

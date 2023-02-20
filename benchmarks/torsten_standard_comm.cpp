@@ -26,7 +26,7 @@ int main(int argc, char* argv[])
 
     if(strcmp("TORSTEN", argv[4]) == 0) { algo = TORSTEN; }
     else if(strcmp("STANDARD", argv[4]) == 0) { algo = STANDARD; }
-    else if(strcmp("RMA", argv[4]) == 0) {algo == RMA; }
+    else if(strcmp("RMA", argv[4]) == 0) {algo = RMA; }
     else {
         if(rank == 0)
         {
@@ -36,18 +36,20 @@ int main(int argc, char* argv[])
         return 1;
     }
 
+
     /* Print information about tests */
     if(rank == 0) 
     {
         if(algo == STANDARD) { printf("STANDARD, %d PROCS, %d TESTS, %s\n", num_procs, num_tests, argv[3]); }
         else if(algo == TORSTEN) { printf("TORSTEN, %d PROCS, %d TESTS, %s\n", num_procs, num_tests, argv[3]); }
-        else if(algo == RMA) { printf("RMA, %d PROCS, %d TESTS, %s\n", num_procs, num_tests, argv[3])}
+        else if(algo == RMA) { printf("RMA, %d PROCS, %d TESTS, %s\n", num_procs, num_tests, argv[3]);}
     }
 
     /* Run num_tests number of tests and print info about message sizes / time taken*/
     for(int i = 0; i < num_tests; i++) 
     {
         MPI_Barrier(MPI_COMM_WORLD);
+        printf("rank %d with algo %d\n", rank, algo);
         std::tuple<double, int, int> info = test_matrix(argv[1], algo);
         double max_time = 0;
         int max_msg_count = 0;

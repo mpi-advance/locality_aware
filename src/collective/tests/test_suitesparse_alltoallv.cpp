@@ -19,7 +19,7 @@
 #include "tests/sparse_mat.hpp"
 #include "tests/par_binary_IO.hpp"
 
-void test_matrix(const char* filename)
+void test_matrix(const char* filename, COMM_ALGORITHM algorithm)
 {
     int rank, num_procs;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);

@@ -10,5 +10,4 @@ add_executable(p2p_alltoallv p2p_alltoallv.cpp)
 target_link_libraries(p2p_alltoallv mpi_advance ${MPI_LIBRARIES})
 
 add_executable(torsten_standard_comm torsten_standard_comm.cpp "../src/neighborhood/tests/test_suitesparse_neighbor_alltoallv_init.cpp")
-
 target_link_libraries(torsten_standard_comm mpi_advance gtest ${MPI_LIBRARIES})
