@@ -246,23 +246,27 @@ void form_send_comm_rma(ParMat<U>& A)
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
 
     std::vector<long> recv_buf;
-    std::vector<int> sizes(num_procs, 0);
     int start, end, proc, count, ctr;
     MPI_Status recv_status;
+    int bytes;
 
     // RMA puts to find sizes recvd from each process
     MPI_Win win;
-    MPI_Win_create(sizes.data(), num_procs*sizeof(int), sizeof(int),
+    int* sizes;
+    MPI_Alloc_mem(num_procs*sizeof(int), MPI_INFO_NULL, &sizes);
+    for (int i = 0; i < num_procs; i++)
+        sizes[i] = 0;
+    MPI_Win_create(sizes, num_procs*sizeof(int), sizeof(int),
             MPI_INFO_NULL, MPI_COMM_WORLD, &win);
-    MPI_Win_fence(MPI_MODE_NOPRECEDE, win);
-    int size;
+    MPI_Barrier(MPI_COMM_WORLD);
+    MPI_Win_fence(MPI_MODE_NOSTORE|MPI_MODE_NOPRECEDE, win);
     for (int i = 0; i < A.recv_comm.n_msgs; i++)
     {
-        size = A.recv_comm.ptr[i+1] - A.recv_comm.ptr[i];
-        MPI_Put(&size, 1, MPI_INT, A.recv_comm.procs[i], 
+        MPI_Put(&(A.recv_comm.counts[i]), 1, MPI_INT, A.recv_comm.procs[i], 
                 rank, 1, MPI_INT, win);
     }
-    MPI_Win_fence(MPI_MODE_NOSUCCEED, win);
+    MPI_Barrier(MPI_COMM_WORLD);
+    MPI_Win_fence(MPI_MODE_NOPUT|MPI_MODE_NOSUCCEED, win);
     MPI_Win_free(&win);
 
     A.send_comm.ptr.push_back(0);
@@ -277,6 +281,7 @@ void form_send_comm_rma(ParMat<U>& A)
             ctr++;
         }
     }
+
     A.send_comm.n_msgs = ctr;
     if (A.send_comm.n_msgs)
         A.send_comm.req.resize(A.send_comm.n_msgs);
@@ -286,6 +291,8 @@ void form_send_comm_rma(ParMat<U>& A)
         A.send_comm.idx.resize(A.send_comm.size_msgs);
         recv_buf.resize(A.send_comm.size_msgs);
     }
+
+    MPI_Free_mem(sizes);
 
     int msg_tag = 1234;
     for (int i = 0; i < A.send_comm.n_msgs; i++)
@@ -311,18 +318,16 @@ void form_send_comm_rma(ParMat<U>& A)
 
 
 
-enum COMM_ALGORITHM {STANDARD, TORSTEN, RMA};
-
 template <typename U>
-void form_comm(ParMat<U>& A, COMM_ALGORITHM algorithm)
+void form_comm(ParMat<U>& A)
 {
     // Form Recv Side 
     form_recv_comm(A);
 
     // Form Send Side (Algorithm Options Here!)
-    if(algorithm == STANDARD) { form_send_comm_standard(A); }
-    else if(algorithm == TORSTEN) { form_send_comm_torsten(A); }
-    else if (algorithm == RMA) { form_send_comm_rma(A); }
+    //form_send_comm_standard(A);
+    //form_send_comm_torsten(A);
+    form_send_comm_rma(A);
 }
 
 
