@@ -16,7 +16,7 @@ def Create_One_Node_Test(m_name : str, algo : str, out_name : str):
   fp.write("#SBATCH --mail-user=ageyko@unm.edu\n\n")
   fp.write("module load openmpi\n\n")
   for k in range(2,33):
-    fp.write(f"srun --partition=general --nodes=1 --ntasks={k} --time=24:00:00 ../../../build/benchmarks/torsten_standard_comm ../../../test_data/{m_name}.pm 1 {m_name} {algo}\n")
+    fp.write(f"srun --partition=general --nodes=1 --ntasks={k} --time=00:30:00 ../../../build/benchmarks/torsten_standard_comm ../../../test_data/{m_name}.pm 1 {m_name} {algo}\n")
   fp.close()
 
 # Creates batch files which run the tests using two nodes
@@ -33,7 +33,7 @@ def Create_Many_Node_Test(m_name : str, algo : str, out_name : str):
   fp.write("#SBATCH --mail-user=ageyko@unm.edu\n\n")
   fp.write("module load openmpi\n\n")
   for k in range(48,65):
-    fp.write(f"srun --partition=general --nodes=2 --ntasks={k} --time=24:00:00 ../../../build/benchmarks/torsten_standard_comm ../../../test_data/{m_name}.pm 1 {m_name} {algo}\n")
+    fp.write(f"srun --partition=general --nodes=2 --ntasks={k} --time=00:30:00 ../../../build/benchmarks/torsten_standard_comm ../../../test_data/{m_name}.pm 1 {m_name} {algo}\n")
   fp.close()
 
 

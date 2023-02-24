@@ -188,6 +188,7 @@ void test_matrix(const char* filename, COMM_ALGORITHM algorithm)
     MPIX_Comm_free(locality_comm);
 }
 
+
 int main(int argc, char** argv)
 {
     MPI_Init(&argc, &argv);
@@ -198,16 +199,18 @@ int main(int argc, char** argv)
 } // end of main() //
 
 
+
+/*
 TEST(RandomCommTest, TestsInTests)
 {
     // Get MPI Information
     int rank, num_procs;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
-    /*
+    
     test_matrix("../../../../test_data/dwt_162.pm");
     test_matrix("../../../../test_data/odepa400.pm");
     test_matrix("../../../../test_data/ww_36_pmec_36.pm");
-    */
+    
 }
-
+*/

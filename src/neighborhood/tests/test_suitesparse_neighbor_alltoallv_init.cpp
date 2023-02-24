@@ -200,7 +200,10 @@ std::tuple<double, int, int> test_matrix(const char* filename, COMM_ALGORITHM al
     MPIX_Comm_free(neighbor_comm);
     MPI_Comm_free(&std_comm);
 }
+*/
 
+
+/*
 int main(int argc, char** argv)
 {
     MPI_Init(&argc, &argv);
@@ -215,7 +218,9 @@ int main(int argc, char** argv)
 } // end of main() //
 */
 
-/*
+
+
+
 TEST(RandomCommTest, TestsInTests)
 {
     // Get MPI Information
@@ -223,6 +228,7 @@ TEST(RandomCommTest, TestsInTests)
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
 
+    
     /*
     test_matrix("../../../../test_data/dwt_162.pm");
     test_matrix("../../../../test_data/odepa400.pm");
@@ -235,5 +241,6 @@ TEST(RandomCommTest, TestsInTests)
     test_matrix("../../../../test_data/oscil_dcop_11.pm");
     test_matrix("../../../../test_data/tumorAntiAngiogenesis_4.pm");
     test_matrix("../../../../test_data/ch5-5-b1.pm");
+    */
 }
-*/
+

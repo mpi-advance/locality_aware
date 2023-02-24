@@ -1,5 +1,5 @@
 for i in *
-do
+do 
   echo $i
   sbatch $i
 done
