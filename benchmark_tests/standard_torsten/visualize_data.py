@@ -2,6 +2,10 @@ import os
 import typing
 import matplotlib.pyplot as plt
 
+RUN_STANDARD = False
+RUN_TORSTEN = False
+RUN_RMA = True
+
 machine_name = "Hopper"
 matrix_directories = next(os.walk('.'))[1]
 
@@ -24,7 +28,7 @@ rma_dict_num_msg = dict()
 rma_dict_msg_size = dict()
 
 # Takes dictionaries w/ data, prints output to a file and returns sorted data lists (average_list, max_list, min_list, num_msg_list, msg_size_list)
-def print_data(fp : __file__, average_dict : dict, max_dict : dict, min_dict : dict, num_msg_dict : dict, msg_size_dict : dict) -> tuple[list, list, list, list, list]:
+def print_data(fp : __file__, average_dict : dict, max_dict : dict, min_dict : dict, num_msg_dict : dict, msg_size_dict : dict): 
   (average_keys, max_keys, min_keys, num_msg_keys, msg_size_keys) = get_and_sort_keys(average_dict, max_dict, min_dict, num_msg_dict, msg_size_dict)
 
   average_data = []
@@ -60,7 +64,7 @@ def print_data(fp : __file__, average_dict : dict, max_dict : dict, min_dict : d
   return (average_data, max_data, min_data, num_msg_data, msg_size_data)
 
 # Gets and sorts keys for all the various dictionaries, returns 5-tuple in order of arguments
-def get_and_sort_keys(average_dict : dict, max_dict : dict, min_dict : dict, num_msg_dict : dict, msg_size_dict : dict) -> tuple(list, list, list, list ,list):
+def get_and_sort_keys(average_dict : dict, max_dict : dict, min_dict : dict, num_msg_dict : dict, msg_size_dict : dict):
   average_dict_keys = list(average_dict.keys())
   average_dict_keys.sort()
   max_dict_keys = list(max_dict.keys())
@@ -85,6 +89,7 @@ def parse_output_strings(average_dict : dict, max_dict : dict, min_dict : dict, 
     i = i + 1
     line_parts = out_strings[i].split(',')
 
+    print(line_parts)
     num_messages = int(line_parts[0].strip().split(' ')[1])
     msg_size = int(line_parts[1].strip().split(' ')[1])
     num_message_dict.update({num_procs : num_messages})
