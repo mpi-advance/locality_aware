@@ -185,6 +185,22 @@ void test_matrix(const char* filename)
         ASSERT_EQ(std_recv_vals[i], mpi_recv_vals[i]);
     }
 
+    alltoallv_waitany(alltoallv_send_vals.data(), 
+            sendcounts.data(),
+            sdispls.data(),
+            MPI_INT,
+            mpi_recv_vals.data(),
+            recvcounts.data(),
+            rdispls.data(),
+            MPI_INT,
+            locality_comm->global_comm);
+    // 3. Compare std_recv_vals and nap_recv_vals
+    for (int i = 0; i < A.recv_comm.size_msgs; i++)
+    {
+        ASSERT_EQ(std_recv_vals[i], mpi_recv_vals[i]);
+    }
+
+
     MPIX_Comm_free(locality_comm);
 }
 
