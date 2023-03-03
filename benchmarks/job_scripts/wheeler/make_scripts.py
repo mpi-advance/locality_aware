@@ -37,7 +37,7 @@ def Create_Many_Node_Test(m_name : str, algo : str, out_name : str):
   fp.write("module load openmpi\n\n")
   for j in range(8,17):
     for i in range((j-1)*8+1,j*8+1):
-      fp.write(f"srun --partition=normal --nodes={j} --ntasks={i} --time=01:00:00 ../../../build/benchmarks/torsten_standard_comm ../../../test_data/{m_name}.pm 1 {m_name} algo\n")
+      fp.write(f"srun --partition=normal --nodes={j} --ntasks={i} --time=01:00:00 ../../../build/benchmarks/torsten_standard_comm ../../../test_data/{m_name}.pm 1 {m_name} {algo}\n")
   fp.close()
 
 
