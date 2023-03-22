@@ -202,8 +202,6 @@ std::tuple<double, int, int> test_matrix(const char* filename, COMM_ALGORITHM al
 }
 */
 
-
-/*
 int main(int argc, char** argv)
 {
     MPI_Init(&argc, &argv);
@@ -216,10 +214,6 @@ int main(int argc, char** argv)
     MPI_Finalize();
     return temp;
 } // end of main() //
-*/
-
-
-
 
 TEST(RandomCommTest, TestsInTests)
 {
