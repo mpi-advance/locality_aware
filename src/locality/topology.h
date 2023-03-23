@@ -23,6 +23,18 @@ typedef struct _MPIX_Comm
     int num_nodes;
     int rank_node;
     int ppn;
+
+#ifdef GPU
+   int gpus_per_node;
+   int ranks_per_gpu;
+   int rank_gpu; // GPU my rank corresponds to
+   int gpu_rank; // Rank out of all processes associated with rank_gpu
+   gpuStream_t proc_stream;
+
+   MPI_Comm gpu_comm; // All processes on node with same rank_gpu
+   MPI_Comm gpu_group_comm; // All processes with same gpu_rank
+#endif
+   
 } MPIX_Comm;
 
 int MPIX_Comm_init(MPIX_Comm** comm_dist_graph_ptr, MPI_Comm global_comm);

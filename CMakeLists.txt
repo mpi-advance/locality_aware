@@ -9,8 +9,17 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_BUILD_TYPE Release)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
+include(FeatureSummary)
 
+# Options for Heterogeneous Architectures
+option(GPU_AWARE "Use GPU-Aware MPI")
+option(USE_HIP "Compile with HIP Support")
+option(USE_CUDA "Compile with CUDA Support")
 option(ENABLE_UNIT_TESTS "Enable unit testing" ON)
+
+add_feature_info(gpu_aware GPU_AWARE "Use GPU-Aware MPI")
+add_feature_info(use_hip USE_HIP "Compile with HIP Support")
+add_feature_info(use_cuda USE_CUDA "Compile with CUDA Support")
 
 find_package(MPI REQUIRED)
 include_directories(${MPI_INCLUDE_PATH})
@@ -19,9 +28,29 @@ execute_process(COMMAND ${GIT_EXECUTABLE} submodule update --init --recursive
                         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
                         RESULT_VARIABLE GIT_SUBMOD_RESULT)
 
-if (MPI_VERSION EQUAL 3)
-    add_definitions(-DUSING_MPI3)
-endif()
+cmake_policy(SET CMP0104 OLD)
+
+if (USING_AMD)
+    set(USE_HIP ON)
+    set(ATDM_MPI_LIB "mpi_amd")
+    set(MPICH_GPU_SUPPORT_ENABLED 1)
+    include_directories($ENV{ROCM_PATH}/include)
+    set(CMAKE_EXE_LINKER_FLAGS "-L$ENV{ROCM_PATH}/lib -Wl,-rpath,$ENV{ROCM_PATH}/lib -lamdhip64 -L$ENV{CRAY_MPICH_DIR}/lib -Wl,-rpath,$ENV{CRAY_MPICH_DIR}/lib -l$ENV{ATDM_MPI_LIB} -L$ENV{CRAY_MPICH_ROOTDIR}/gtl/lib -Wl,-rpath,$ENV{CRAY_MPICH_ROOTDIR}/gtl/lib -lmpi_gtl_hsa -L$ENV{ROCM_PATH}/llvm/lib/clang/15.0.0/lib/linux/ -lclang_rt.builtins-x86_64 -x none")
+    set(CMAKE_SHARED_LINKER_FLAGS "-x none")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --rocm-path=$ROCM_PATH -D__HIP_PLATFORM_AMD__")
+endif(USING_AMD)
+
+if (GPU_AWARE)
+    add_definitions(-DGPU_AWARE)
+endif(GPU_AWARE)
+
+if (USE_CUDA)
+    set(CMAKE_CUDA_FLAGS "-ccbin=${MPICXX} -arch=sm_70")
+endif(USE_CUDA)
+
+if (USE_HIP)
+    add_definitions(-DHIP)
+endif(USE_HIP)
 
 ##################### 
 ## GOOGLETEST      ##
@@ -43,6 +72,17 @@ FetchContent_MakeAvailable(googletest)
 include_directories(".")
 include_directories("src")
 add_subdirectory("src")
-
-
 add_subdirectory(benchmarks)
+
+if (USE_CUDA)
+    target_compile_options(mpi_advance PRIVATE
+    $<$<COMPILE_LANGUAGE:CUDA>: # Flags for CUDA Objects
+    -lineinfo
+    -Xcompiler -Wall
+    >
+    $<$<COMPILE_LANGUAGE:CXX>: # Flags for C++ Objects
+    -fno-omit-frame-pointer
+    >
+    )
+    set_property(TARGET mpi_advance PROPERTY CUDA_SEPARABLE_COMPILATION ON)
+endif(USE_CUDA)
