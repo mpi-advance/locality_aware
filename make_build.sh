@@ -7,5 +7,5 @@ mkdir build
 cd build/
 cmake .. ./
 make 
-cd benchmarks/
-make
+#cd benchmarks/
+#make

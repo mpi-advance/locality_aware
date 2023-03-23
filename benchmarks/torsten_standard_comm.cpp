@@ -1,5 +1,6 @@
 #include "mpi_advance.h"
 #include "tests/sparse_mat.hpp"
+#include "tests/par_binary_IO.hpp"
 #include <mpi.h>
 #include <stdio.h>
 #include <string.h>
@@ -19,6 +20,7 @@ int main(int argc, char* argv[])
     MPI_Init(&argc, &argv);
     
     int rank, num_procs;
+    double t0, tfinal;
     int num_tests = std::stoi(argv[2],nullptr);
     COMM_ALGORITHM algo; 
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -49,13 +51,24 @@ int main(int argc, char* argv[])
     for(int i = 0; i < num_tests; i++) 
     {
         MPI_Barrier(MPI_COMM_WORLD);
-        std::tuple<double, int, int> info = test_matrix(argv[1], algo);
+
+        // Read suitesparse matrix
+        ParMat<int> A;
+        int idx;
+        readParMatrix(argv[1], A);
+
+        // Time CommPkg Formation 
+        MPI_Barrier(MPI_COMM_WORLD);
+        t0 = MPI_Wtime();
+        form_comm(A, algo);
+        tfinal = MPI_Wtime() - t0;
+
         double max_time = 0;
         int max_msg_count = 0;
         int max_msg_size = 0;
-        MPI_Allreduce(&(std::get<0>(info)), &max_time, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
-        MPI_Allreduce(&(std::get<1>(info)), &max_msg_count, 1, MPI_INT, MPI_MAX, MPI_COMM_WORLD);
-        MPI_Allreduce(&(std::get<2>(info)), &max_msg_size, 1, MPI_INT, MPI_MAX, MPI_COMM_WORLD);
+        MPI_Allreduce(&tfinal, &max_time, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
+        MPI_Allreduce(&(A.recv_comm.n_msgs), &max_msg_count, 1, MPI_INT, MPI_MAX, MPI_COMM_WORLD);
+        MPI_Allreduce(&(A.recv_comm.size_msgs), &max_msg_size, 1, MPI_INT, MPI_MAX, MPI_COMM_WORLD);
         if(rank == 0 && i == 0) 
         {
             printf("MAX_MSG_COUNT %d, MAX_MSG_SIZE %d\n",max_msg_count, max_msg_size);
