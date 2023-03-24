@@ -89,7 +89,6 @@ def parse_output_strings(average_dict : dict, max_dict : dict, min_dict : dict, 
     i = i + 1
     line_parts = out_strings[i].split(',')
 
-    print(line_parts)
     num_messages = int(line_parts[0].strip().split(' ')[1])
     msg_size = int(line_parts[1].strip().split(' ')[1])
     num_message_dict.update({num_procs : num_messages})
@@ -179,7 +178,7 @@ def visualize_data(fp_1 : __file__, fp_2 : __file__, fp_3 : __file__, matrix : s
   make_msg_size_plot(msg_size_keys_rma, msg_size_data_rma, matrix, machine_name, "RMA")
 
 
-  plt.plot(average_keys_standard, average_data_standard, '-.', average_keys_torsten, average_data_torsten, '-.', average_keys_rma, average_data_rma, '-.')
+  plt.plot(average_keys_standard, average_data_standard, average_keys_torsten, average_data_torsten, average_keys_rma, average_data_rma)
   plt.xlabel("Number of Processes")
   plt.ylabel("Time Taken (ms)")
   plt.title(f"{matrix} average run time on {machine_name} (standard vs torsten vs RMA)")
@@ -187,7 +186,7 @@ def visualize_data(fp_1 : __file__, fp_2 : __file__, fp_3 : __file__, matrix : s
   plt.savefig(f"./{matrix}/{matrix}_{machine_name}_compare_average_plot.png")
   plt.clf()
 
-  plt.plot(max_keys_standard, max_data_standard, '-.', max_keys_torsten, max_data_torsten, '-.', max_keys_rma, max_data_rma, '-.')
+  plt.plot(max_keys_standard, max_data_standard, max_keys_torsten, max_data_torsten, max_keys_rma, max_data_rma)
   plt.xlabel("Number of Processes")
   plt.ylabel("Time Taken (ms)")
   plt.title(f"{matrix} max run time on {machine_name} (standard vs torsten vs RMA)")
@@ -195,7 +194,7 @@ def visualize_data(fp_1 : __file__, fp_2 : __file__, fp_3 : __file__, matrix : s
   plt.savefig(f"./{matrix}/{matrix}_{machine_name}_compare_max_plot.png")
   plt.clf()
 
-  plt.plot(min_keys_standard, min_data_standard, '-.', min_keys_torsten, min_data_torsten, '-.', min_keys_rma, min_data_rma, '-.')
+  plt.plot(min_keys_standard, min_data_standard, min_keys_torsten, min_data_torsten, min_keys_rma, min_data_rma)
   plt.xlabel("Number of Processes")
   plt.ylabel("Time Taken (ms)")
   plt.title(f"{matrix} min run time on {machine_name} (standard vs torsten vs RMA)")
@@ -203,22 +202,18 @@ def visualize_data(fp_1 : __file__, fp_2 : __file__, fp_3 : __file__, matrix : s
   plt.savefig(f"./{matrix}/{matrix}_{machine_name}_compare_min_plot.png")
   plt.clf()
 
-  plt.plot(num_msg_keys_standard, num_msg_data_standard, '-.', num_msg_keys_torsten, num_msg_data_torsten, '-.', num_msg_keys_rma, num_msg_data_rma, '-.')
+  plt.plot(num_msg_keys_standard, num_msg_data_standard)
   plt.xlabel("Number of Processes")
   plt.ylabel("Max # of Messages Sent")
-  plt.title(f"{matrix} num messages on {machine_name} (standard vs torsten vs RMA)")
-  plt.legend(["standard", "torsten", "RMA"])
-  plt.savefig(f"./{matrix}/{matrix}_{machine_name}_compare_num_msg_plot.png")
+  plt.title(f"{matrix} num messages")
+  plt.savefig(f"./{matrix}/{matrix}_{machine_name}_num_msg_plot.png")
   plt.clf()
 
-  plt.plot(msg_size_keys_standard, msg_size_data_standard, '-.', msg_size_keys_torsten, msg_size_data_torsten, '-.', msg_size_keys_rma, msg_size_data_rma, '-.')
+  plt.plot(msg_size_keys_standard, msg_size_data_standard)
   plt.xlabel("Number of Processes")
   plt.ylabel("Max Msg Size (Bytes)")
-  plt.title(f"{matrix} message size on {machine_name} (standard vs torsten)")
-  plt.legend(["standard", "torsten"])
   plt.savefig(f"./{matrix}/{matrix}_{machine_name}_compare_msg_size_plot.png")
   plt.clf()
-
 
 for matrix in matrix_directories:
   out_strings_standard = []

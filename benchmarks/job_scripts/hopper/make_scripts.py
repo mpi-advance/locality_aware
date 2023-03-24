@@ -32,7 +32,7 @@ def Create_Many_Node_Test(m_name : str, algo : str, out_name : str):
   fp.write("#SBATCH --mail-type=BEGIN,FAIL,END\n")
   fp.write("#SBATCH --mail-user=ageyko@unm.edu\n\n")
   fp.write("module load openmpi\n\n")
-  for k in range(48,65):
+  for k in range(33,65):
     fp.write(f"srun --partition=general --nodes=2 --ntasks={k} --time=00:30:00 ../../../build/benchmarks/torsten_standard_comm ../../../test_data/{m_name}.pm 1 {m_name} {algo}\n")
   fp.close()
 
