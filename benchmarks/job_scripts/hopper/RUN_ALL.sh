@@ -1,4 +1,4 @@
-for i in *RMA*
+for i in *
 do
   echo $i
   sbatch $i
