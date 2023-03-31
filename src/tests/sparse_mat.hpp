@@ -258,14 +258,14 @@ void form_send_comm_rma(ParMat<U>& A)
         sizes[i] = 0;
     MPI_Win_create(sizes, num_procs*sizeof(int), sizeof(int),
             MPI_INFO_NULL, MPI_COMM_WORLD, &win);
-    MPI_Barrier(MPI_COMM_WORLD);
+    // MPI_Barrier(MPI_COMM_WORLD);
     MPI_Win_fence(MPI_MODE_NOSTORE|MPI_MODE_NOPRECEDE, win);
     for (int i = 0; i < A.recv_comm.n_msgs; i++)
     {
         MPI_Put(&(A.recv_comm.counts[i]), 1, MPI_INT, A.recv_comm.procs[i], 
                 rank, 1, MPI_INT, win);
     }
-    MPI_Barrier(MPI_COMM_WORLD);
+    // MPI_Barrier(MPI_COMM_WORLD);
     MPI_Win_fence(MPI_MODE_NOPUT|MPI_MODE_NOSUCCEED, win);
     MPI_Win_free(&win);
 
