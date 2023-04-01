@@ -238,9 +238,11 @@ void form_send_comm_torsten(ParMat<U>& A)
 }
 
 // Must Form Recv Comm before Send!
+#define TIME_RMA true
 template <typename U>
 void form_send_comm_rma(ParMat<U>& A)
 {
+    double t0,t1,t2,t3,t4,t5;
     int rank, num_procs;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
@@ -253,22 +255,59 @@ void form_send_comm_rma(ParMat<U>& A)
     // RMA puts to find sizes recvd from each process
     MPI_Win win;
     int* sizes;
+
+    // TIME MEMORY ALLOCATION
+    if(TIME_RMA) t0 = MPI_Wtime();
     MPI_Alloc_mem(num_procs*sizeof(int), MPI_INFO_NULL, &sizes);
+    if(TIME_RMA) t0 = MPI_Wtime() - t0;
+
     for (int i = 0; i < num_procs; i++)
         sizes[i] = 0;
+
+    // TIME WINDOW CREATION
+    if(TIME_RMA) t1 = MPI_Wtime();
     MPI_Win_create(sizes, num_procs*sizeof(int), sizeof(int),
             MPI_INFO_NULL, MPI_COMM_WORLD, &win);
+    if(TIME_RMA) t1 = MPI_Wtime() - t1;
+
+    // TIME FENCE
+    if(TIME_RMA) t2 = MPI_Wtime();
     // MPI_Barrier(MPI_COMM_WORLD);
     MPI_Win_fence(MPI_MODE_NOSTORE|MPI_MODE_NOPRECEDE, win);
+    if(TIME_RMA) t2 = MPI_Wtime() - t2;
+
+    // TIME PUTS
+    if(TIME_RMA) t3 = MPI_Wtime()
     for (int i = 0; i < A.recv_comm.n_msgs; i++)
     {
         MPI_Put(&(A.recv_comm.counts[i]), 1, MPI_INT, A.recv_comm.procs[i], 
                 rank, 1, MPI_INT, win);
     }
+    if(TIME_RMA) t3 = MPI_Wtime() - t3;
+
+
+    // TIME FENCE
+    if(TIME_RMA) t4 = MPI_Wtime();
     // MPI_Barrier(MPI_COMM_WORLD);
     MPI_Win_fence(MPI_MODE_NOPUT|MPI_MODE_NOSUCCEED, win);
-    MPI_Win_free(&win);
+    if(TIME_RMA) t4 = MPI_Wtime() - t4;
 
+    // TIME FREE
+    if(TIME_RMA) t5 = MPI_Wtime();
+    MPI_Win_free(&win);
+    if(TIME_RMA) t5 = MPI_Wtime() - t5;
+    
+
+    // PRINT OUT TIME TAKEN
+    if(TIME_RMA) 
+    {
+        printf("Time taken for Alloc_mem: %lf\n", t0);
+        printf("Time taken for Win_create: %lf\n", t1);
+        printf("Time taken for first Win_fence: %lf\n", t2);
+        printf("Time taken for Puts: %lf\n", t3);
+        printf("Time taken for second Win_fence: %lf\n", t4);
+        printf("Time taken for Win_free: %lf\n", t5);
+    }
     A.send_comm.ptr.push_back(0);
     ctr = 0;
     for (int i = 0; i < num_procs; i++)
