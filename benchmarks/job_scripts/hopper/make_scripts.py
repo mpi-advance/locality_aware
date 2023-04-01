@@ -6,7 +6,7 @@ matrix_names = ["D_10","bcsstk01","ch-5-b1","dwt-162","gams10a","gams10am","impc
 def Create_One_Node_Test(m_name : str, algo : str, out_name : str):
   fp = open(f"{m_name}_{algo}_HOPPER_ONE_NODE.sh", "w")
   fp.write("#!/usr/bin/bash\n")
-  fp.write(f"#SBATCH --output ../../../benchmark_tests/standard_torsten/{m_name}/{m_name}_Hopper_{out_name}_one_node\n")
+  fp.write(f"#SBATCH --output ../../../benchmark_tests/standard_torsten/{m_name}/{m_name}_Hopper_{out_name}_one_node_RMA\n")
   fp.write(f"#SBATCH --error ../../../benchmark_tests/standard_torsten/{m_name}/{m_name}_Hopper_{out_name}_one_node_err\n")
   fp.write(f"#SBATCH --open-mode=append")
   fp.write("#SBATCH --partition general\n")
@@ -23,7 +23,7 @@ def Create_One_Node_Test(m_name : str, algo : str, out_name : str):
 def Create_Many_Node_Test(m_name : str, algo : str, out_name : str):
   fp = open(f"{m_name}_{algo}_HOPPER_MANY_NODE.sh","w")
   fp.write("#!/usr/bin/bash\n")
-  fp.write(f"#SBATCH --output ../../../benchmark_tests/standard_torsten/{m_name}/{m_name}_Hopper_{out_name}_many_node\n")
+  fp.write(f"#SBATCH --output ../../../benchmark_tests/standard_torsten/{m_name}/{m_name}_Hopper_{out_name}_many_node_RMA\n")
   fp.write(f"#SBATCH --error ../../../benchmark_tests/standard_torsten/{m_name}/{m_name}_Hopper_{out_name}_many_node_err\n")
   fp.write(f"#SBATCH --open-mode=append")
   fp.write("#SBATCH --partition general\n")

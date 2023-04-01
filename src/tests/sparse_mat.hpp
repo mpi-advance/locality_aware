@@ -277,7 +277,7 @@ void form_send_comm_rma(ParMat<U>& A)
     if(TIME_RMA) t2 = MPI_Wtime() - t2;
 
     // TIME PUTS
-    if(TIME_RMA) t3 = MPI_Wtime()
+    if(TIME_RMA) t3 = MPI_Wtime();
     for (int i = 0; i < A.recv_comm.n_msgs; i++)
     {
         MPI_Put(&(A.recv_comm.counts[i]), 1, MPI_INT, A.recv_comm.procs[i], 
@@ -301,12 +301,22 @@ void form_send_comm_rma(ParMat<U>& A)
     // PRINT OUT TIME TAKEN
     if(TIME_RMA) 
     {
-        printf("Time taken for Alloc_mem: %lf\n", t0);
-        printf("Time taken for Win_create: %lf\n", t1);
-        printf("Time taken for first Win_fence: %lf\n", t2);
-        printf("Time taken for Puts: %lf\n", t3);
-        printf("Time taken for second Win_fence: %lf\n", t4);
-        printf("Time taken for Win_free: %lf\n", t5);
+        MPI_Allreduce(&t0, &t0, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
+        MPI_Allreduce(&t1, &t1, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
+        MPI_Allreduce(&t2, &t2, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
+        MPI_Allreduce(&t3, &t3, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
+        MPI_Allreduce(&t4, &t4, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
+        MPI_Allreduce(&t5, &t5, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
+        
+        if(rank == 0) 
+        {
+            printf("Time taken for Alloc_mem: %lf\n", t0);
+            printf("Time taken for Win_create: %lf\n", t1);
+            printf("Time taken for first Win_fence: %lf\n", t2);
+            printf("Time taken for Puts: %lf\n", t3);
+            printf("Time taken for second Win_fence: %lf\n", t4);
+            printf("Time taken for Win_free: %lf\n", t5);
+        }
     }
     A.send_comm.ptr.push_back(0);
     ctr = 0;
