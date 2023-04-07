@@ -45,7 +45,8 @@ int main(int argc, char* argv[])
     {
         if(algo == STANDARD) { printf("STANDARD, %d PROCS, %d TESTS, %s\n", num_procs, num_tests, argv[3]); }
         else if(algo == TORSTEN) { printf("TORSTEN, %d PROCS, %d TESTS, %s\n", num_procs, num_tests, argv[3]); }
-        else if(algo == RMA) { printf("RMA, %d PROCS, %d TESTS, %s\n", num_procs, num_tests, argv[3]);}
+        else if(algo == RMA) { printf("RMA, %d PROCS, %d TESTS, %s\n", num_procs, num_tests, argv[3]); }
+        else if(algo == RMA_DYNAMIC) { printf("RMA_DYNAMIC, %d PROCS, %d TESTS, %s\n", num_procs, num_tests, argv[3]); }
     }
 
     /* Run num_tests number of tests and print info about message sizes / time taken*/
