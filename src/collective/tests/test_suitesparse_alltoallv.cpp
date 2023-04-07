@@ -32,7 +32,9 @@ void test_matrix(const char* filename, COMM_ALGORITHM algorithm)
     // Read suitesparse matrix
     ParMat<int> A;
     readParMatrix(filename, A);
-    form_comm(A, algorithm);
+    MPI_Win win;
+    int* sizes;
+    form_comm(A, algorithm, 0, 1, win, sizes);
 
     std::vector<int> send_vals(A.on_proc.n_rows);
     std::iota(send_vals.begin(), send_vals.end(), 0);
