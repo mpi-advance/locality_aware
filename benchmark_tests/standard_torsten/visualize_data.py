@@ -6,7 +6,7 @@ RUN_STANDARD = False
 RUN_TORSTEN = False
 RUN_RMA = True
 
-machine_name = "Hopper"
+machine_name = "Wheeler"
 matrix_directories = next(os.walk('.'))[1]
 
 standard_dict_average = dict()
