@@ -1,0 +1,55 @@
+[[28464,17],11][btl_openib_component.c:3689:handle_wc] from wheeler114 to: wheeler115 error polling LP CQ with status REMOTE ACCESS ERROR status number 10 for wr_id 1b4a108 opcode 2  vendor error 136 qp_idx 3
+slurmstepd: error: *** STEP 421680.17 ON wheeler113 CANCELLED AT 2023-04-06T19:13:27 ***
+srun: Job step aborted: Waiting up to 32 seconds for job step to finish.
+In: PMI_Abort(-1, N/A)
+srun: error: wheeler115: tasks 13-18: Killed
+srun: error: wheeler114: tasks 7-10,12: Killed
+srun: error: wheeler113: tasks 0-6: Killed
+srun: error: wheeler114: task 11: Exited with exit code 255
+[[28464,20],11][btl_openib_component.c:3689:handle_wc] from wheeler114 to: wheeler115 error polling LP CQ with status REMOTE ACCESS ERROR status number 10 for wr_id 25cc3a8 opcode 0  vendor error 136 qp_idx 3
+slurmstepd: error: *** STEP 421680.20 ON wheeler113 CANCELLED AT 2023-04-06T19:13:31 ***
+srun: Job step aborted: Waiting up to 32 seconds for job step to finish.
+In: PMI_Abort(-1, N/A)
+srun: error: wheeler113: tasks 0-7: Killed
+srun: error: wheeler115: tasks 15-21: Killed
+srun: error: wheeler114: tasks 8-10,12-14: Killed
+srun: error: wheeler114: task 11: Exited with exit code 255
+[[28464,23],19][btl_openib_component.c:3689:handle_wc] from wheeler116 to: wheeler115 error polling LP CQ with status REMOTE ACCESS ERROR status number 10 for wr_id 2384118 opcode 0  vendor error 136 qp_idx 3
+slurmstepd: error: *** STEP 421680.23 ON wheeler113 CANCELLED AT 2023-04-06T19:13:35 ***
+srun: Job step aborted: Waiting up to 32 seconds for job step to finish.
+In: PMI_Abort(-1, N/A)
+srun: error: wheeler115: tasks 13-18: Killed
+srun: error: wheeler114: tasks 7-12: Killed
+srun: error: wheeler116: task 19: Exited with exit code 255
+srun: error: wheeler113: tasks 0-6: Killed
+srun: error: wheeler116: tasks 20-24: Killed
+[[28464,24],17][btl_openib_component.c:3689:handle_wc] from wheeler115 to: wheeler116 error polling LP CQ with status REMOTE ACCESS ERROR status number 10 for wr_id 98a108 opcode 2  vendor error 136 qp_idx 3
+slurmstepd: error: *** STEP 421680.24 ON wheeler113 CANCELLED AT 2023-04-06T19:13:36 ***
+srun: Job step aborted: Waiting up to 32 seconds for job step to finish.
+In: PMI_Abort(-1, N/A)
+srun: error: wheeler113: tasks 0-6: Killed
+srun: error: wheeler114: tasks 7-13: Killed
+srun: error: wheeler115: tasks 14-16,18-19: Killed
+srun: error: wheeler115: task 17: Exited with exit code 255
+srun: error: wheeler116: tasks 20-25: Killed
+[[28464,27],22][btl_openib_component.c:3689:handle_wc] from wheeler116 to: wheeler115 error polling LP CQ with status REMOTE ACCESS ERROR status number 10 for wr_id aa3398 opcode 0  vendor error 136 qp_idx 3
+[[28464,27],21][btl_openib_component.c:3689:handle_wc] from wheeler115 to: wheeler116 error polling LP CQ with status REMOTE ACCESS ERROR status number 10 for wr_id 2126248 opcode 0  vendor error 136 qp_idx 3
+slurmstepd: error: *** STEP 421680.27 ON wheeler113 CANCELLED AT 2023-04-06T19:13:40 ***
+srun: Job step aborted: Waiting up to 32 seconds for job step to finish.
+In: PMI_Abort(-1, N/A)
+In: PMI_Abort(-1, N/A)
+srun: error: wheeler114: tasks 8-14: Killed
+srun: error: wheeler115: tasks 15-20: Killed
+srun: error: wheeler113: tasks 0-7: Killed
+srun: error: wheeler115: task 21: Exited with exit code 255
+srun: error: wheeler116: task 22: Exited with exit code 255
+srun: error: wheeler116: tasks 23-28: Killed
+[[28464,28],23][btl_openib_component.c:3689:handle_wc] from wheeler116 to: wheeler114 error polling LP CQ with status REMOTE ACCESS ERROR status number 10 for wr_id 2599398 opcode 0  vendor error 136 qp_idx 3
+srun: Job step aborted: Waiting up to 32 seconds for job step to finish.
+slurmstepd: error: *** STEP 421680.28 ON wheeler113 CANCELLED AT 2023-04-06T19:13:41 ***
+In: PMI_Abort(-1, N/A)
+srun: error: wheeler115: tasks 16-22: Killed
+srun: error: wheeler116: task 23: Exited with exit code 255
+srun: error: wheeler116: tasks 24-29: Killed
+srun: error: wheeler113: tasks 0-7: Killed
+srun: error: wheeler114: tasks 8-15: Killed
