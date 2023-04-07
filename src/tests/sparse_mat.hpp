@@ -385,7 +385,7 @@ void free_rma_dynamic(MPI_Win* win, int* sizes)
 }
 
 template <typename U>
-void form_send_comm_rma_dynamic(ParMat<U>& A, MPI_Win& win, int* sizes)
+void form_send_comm_rma_dynamic(ParMat<U>& A, MPI_Win win, int* sizes)
 {
     int rank, num_procs;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
