@@ -28,11 +28,12 @@ int main(int argc, char* argv[])
 
     if(strcmp("TORSTEN", argv[4]) == 0) { algo = TORSTEN; }
     else if(strcmp("STANDARD", argv[4]) == 0) { algo = STANDARD; }
-    else if(strcmp("RMA", argv[4]) == 0) {algo = RMA; }
+    else if(strcmp("RMA", argv[4]) == 0) { algo = RMA; }
+    else if(strcmp("RMA_DYNAMIC", argv[4]) == 0) { algo = RMA_DYNAMIC; }
     else {
         if(rank == 0)
         {
-            fprintf(stderr, "choose between STANDARD or THORSTEN or RMA, exiting");
+            fprintf(stderr, "choose between STANDARD or THORSTEN or RMA or RMA_DYNAMIC, exiting");
         }
         MPI_Finalize();
         return 1;
@@ -48,6 +49,8 @@ int main(int argc, char* argv[])
     }
 
     /* Run num_tests number of tests and print info about message sizes / time taken*/
+    MPI_WIN win;
+    int* sizes;
     for(int i = 0; i < num_tests; i++) 
     {
         MPI_Barrier(MPI_COMM_WORLD);
@@ -60,15 +63,19 @@ int main(int argc, char* argv[])
         // Time CommPkg Formation 
         MPI_Barrier(MPI_COMM_WORLD);
         t0 = MPI_Wtime();
-        form_comm(A, algo);
+        form_comm(A, algo, i, num_tests, win, &sizes);
         tfinal = MPI_Wtime() - t0;
 
         double max_time = 0;
         int max_msg_count = 0;
         int max_msg_size = 0;
         MPI_Allreduce(&tfinal, &max_time, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
-        MPI_Allreduce(&(A.recv_comm.n_msgs), &max_msg_count, 1, MPI_INT, MPI_MAX, MPI_COMM_WORLD);
-        MPI_Allreduce(&(A.recv_comm.size_msgs), &max_msg_size, 1, MPI_INT, MPI_MAX, MPI_COMM_WORLD);
+        if(i == 0) 
+        {
+            MPI_Allreduce(&(A.recv_comm.n_msgs), &max_msg_count, 1, MPI_INT, MPI_MAX, MPI_COMM_WORLD);
+            MPI_Allreduce(&(A.recv_comm.size_msgs), &max_msg_size, 1, MPI_INT, MPI_MAX, MPI_COMM_WORLD);
+        }
+
         if(rank == 0 && i == 0) 
         {
             printf("MAX_MSG_COUNT %d, MAX_MSG_SIZE %d\n",max_msg_count, max_msg_size);

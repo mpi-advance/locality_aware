@@ -457,7 +457,7 @@ void form_send_comm_rma_dynamic(ParMat<U>& A, MPI_Win& win, int* sizes)
 enum COMM_ALGORITHM {STANDARD, TORSTEN, RMA, RMA_DYNAMIC};
 
 template <typename U>
-void form_comm(ParMat<U>& A, COMM_ALGORITHM algorithm)
+void form_comm(ParMat<U>& A, COMM_ALGORITHM algorithm, int test_num, int max_tests, MPI_WIN* win, int** sizes)
 {
     // Form Recv Side 
     form_recv_comm(A);
@@ -466,6 +466,12 @@ void form_comm(ParMat<U>& A, COMM_ALGORITHM algorithm)
     if (algorithm == STANDARD) { form_send_comm_standard(A); }
     else if (algorithm == TORSTEN) { form_send_comm_torsten(A); }
     else if (algorithm == RMA) { form_send_comm_rma(A); }
+    else if (algorithm == RMA_DYNAMIC) 
+    {
+        if(test_num == 0) { allocate_rma_dynamic(win, sizes); }
+        form_send_comm_rma_dynamic(A, win, *sizes);
+        if(test_num == max_tests-1) { free_rma_dynamic(win, *sizes); }
+    }
 }
 
 
