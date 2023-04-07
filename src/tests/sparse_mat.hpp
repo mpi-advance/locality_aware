@@ -238,7 +238,7 @@ void form_send_comm_torsten(ParMat<U>& A)
 }
 
 // Must Form Recv Comm before Send!
-#define TIME_RMA true
+#define TIME_RMA false
 template <typename U>
 void form_send_comm_rma(ParMat<U>& A)
 {
@@ -366,7 +366,95 @@ void form_send_comm_rma(ParMat<U>& A)
 }
 
 
-enum COMM_ALGORITHM {STANDARD, TORSTEN, RMA};
+// Must Form Recv Comm before Send!
+void allocate_rma_dynamic(MPI_Win* win, int** sizes)
+{
+    int rank, num_procs;
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
+
+    MPI_Alloc_mem(num_procs*sizeof(int), MPI_INFO_NULL, sizes);
+    MPI_Win_create(*sizes, num_procs*sizeof(int), sizeof(int),
+            MPI_INFO_NULL, MPI_COMM_WORLD, win);
+}
+
+void free_rma_dynamic(MPI_Win* win, int* sizes)
+{
+    MPI_Win_free(win);
+    MPI_Free_mem(sizes);
+}
+
+template <typename U>
+void form_send_comm_rma_dynamic(ParMat<U>& A, MPI_Win& win, int* sizes)
+{
+    int rank, num_procs;
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
+
+    std::vector<long> recv_buf;
+    int start, end, proc, count, ctr;
+    MPI_Status recv_status;
+    int bytes;
+
+    for (int i = 0; i < num_procs; i++)
+        sizes[i] = 0;
+
+    // RMA puts to find sizes recvd from each process
+    MPI_Win_fence(MPI_MODE_NOSTORE|MPI_MODE_NOPRECEDE, win);
+    for (int i = 0; i < A.recv_comm.n_msgs; i++)
+    {
+        MPI_Put(&(A.recv_comm.counts[i]), 1, MPI_INT, A.recv_comm.procs[i], 
+                rank, 1, MPI_INT, win);
+    }
+    MPI_Win_fence(MPI_MODE_NOPUT|MPI_MODE_NOSUCCEED, win);
+
+    A.send_comm.ptr.push_back(0);
+    ctr = 0;
+    for (int i = 0; i < num_procs; i++)
+    {
+        if (sizes[i])
+        {
+            A.send_comm.procs.push_back(i);
+            A.send_comm.counts.push_back(sizes[i]);
+            A.send_comm.ptr.push_back(A.send_comm.ptr[ctr] + sizes[i]);
+            ctr++;
+        }
+    }
+
+    A.send_comm.n_msgs = ctr;
+    if (A.send_comm.n_msgs)
+        A.send_comm.req.resize(A.send_comm.n_msgs);
+    A.send_comm.size_msgs = A.send_comm.ptr[A.send_comm.n_msgs];
+    if (A.send_comm.size_msgs)
+    {
+        A.send_comm.idx.resize(A.send_comm.size_msgs);
+        recv_buf.resize(A.send_comm.size_msgs);
+    }
+
+    int msg_tag = 1234;
+    for (int i = 0; i < A.send_comm.n_msgs; i++)
+    {
+        MPI_Irecv(&(recv_buf[A.send_comm.ptr[i]]), A.send_comm.counts[i], MPI_LONG, 
+                A.send_comm.procs[i], msg_tag, MPI_COMM_WORLD, &(A.send_comm.req[i]));
+    }
+    for (int i = 0; i < A.recv_comm.n_msgs; i++)
+    {
+        MPI_Isend(&(A.off_proc_columns[A.recv_comm.ptr[i]]), A.recv_comm.counts[i], MPI_LONG, 
+                A.recv_comm.procs[i], msg_tag, MPI_COMM_WORLD, &(A.recv_comm.req[i]));
+    }
+
+    if (A.send_comm.n_msgs)
+        MPI_Waitall(A.send_comm.n_msgs, A.send_comm.req.data(), MPI_STATUSES_IGNORE);
+
+    for (int i = 0; i < A.send_comm.size_msgs; i++)
+        A.send_comm.idx[i] = recv_buf[i] - A.first_col;
+
+    if (A.recv_comm.n_msgs)
+        MPI_Waitall(A.recv_comm.n_msgs, A.recv_comm.req.data(), MPI_STATUSES_IGNORE);    
+
+}
+
+enum COMM_ALGORITHM {STANDARD, TORSTEN, RMA, RMA_DYNAMIC};
 
 template <typename U>
 void form_comm(ParMat<U>& A, COMM_ALGORITHM algorithm)
