@@ -14,7 +14,7 @@ def Create_One_Node_Test(m_name : str, algo : str, out_name : str):
   fp.write("#SBATCH --nodes=4\n")
   fp.write("#SBATCH --mail-type=BEGIN,FAIL,END\n")
   fp.write("#SBATCH --mail-user=ageyko@unm.edu\n\n")
-  fp.write("module load openmpi/3.1.6-t4zs\n\n")
+  fp.write("module load openmpi\n\n")
   for i in range(2,9): 
     fp.write(f"srun --partition=normal --nodes=1 --ntasks={i} --time=24:00:00 ../../../build_wheeler/benchmarks/torsten_standard_comm ../../../test_data/{m_name}.pm 1 {m_name} {algo}\n")
   for j in range(2,5):
@@ -34,11 +34,27 @@ def Create_Many_Node_Test(m_name : str, algo : str, out_name : str):
   fp.write("#SBATCH --nodes=16\n\n")
   fp.write("#SBATCH --mail-type=BEGIN,FAIL,END\n")
   fp.write("#SBATCH --mail-user=ageyko@unm.edu\n\n")
-  fp.write("module load openmpi/3.1.6-t4zs\n\n")
+  fp.write("module load openmpi\n\n")
   for j in range(8,17):
     for i in range((j-1)*8+1,j*8+1):
       fp.write(f"srun --partition=normal --nodes={j} --ntasks={i} --time=01:00:00 ../../../build_wheeler/benchmarks/torsten_standard_comm ../../../test_data/{m_name}.pm 1 {m_name} {algo}\n")
   fp.close()
+
+def Create_Power_Two_Test(m_name : str, algo : str, out_name : str):
+  fp = open(f"{m_name}/{algo}_WHEELER_POWER_TWO.sh","w")
+  fp.write("#!/usr/bin/bash\n")
+  fp.write(f"#SBATCH --output ../../../benchmark_tests/standard_torsten/{m_name}/{m_name}_Wheeler_{out_name}_power_two\n")
+  fp.write(f"#SBATCH --error ../../../benchmark_tests/standard_torsten/{m_name}/{m_name}_Wheeler_{out_name}_power_two_err\n")
+  fp.write(f"#SBATCH --open-mode=append\n")
+  fp.write("#SBATCH --partition normal\n")
+  fp.write("#SBATCH --ntasks=128\n")
+  fp.write("#SBATCH --nodes=16\n\n")
+  fp.write("#SBATCH --mail-type=BEGIN,FAIL,END\n")
+  fp.write("#SBATCH --mail-user=ageyko@unm.edu\n\n")
+  fp.write("module load openmpi\n\n")
+  for j in range(5):
+    fp.write(f"srun --partition=normal --nodes={2**j} --ntasks={8*(2**j)} --time=01:00:00 ../../../build_wheeler/benchmarks/torsten_standard_comm ../../../test_data/{m_name}.pm 1 {m_name} {algo}\n")
+
 
 
 for (i, m_name) in enumerate(matrix_names):
@@ -54,3 +70,6 @@ for (i, m_name) in enumerate(matrix_names):
   Create_Many_Node_Test(m_name, "STANDARD", "Standard")
   Create_Many_Node_Test(m_name, "TORSTEN", "Torsten")
   Create_Many_Node_Test(m_name, "RMA", "RMA")
+
+  # CREATE POWER OF TWO TEST CASES
+  Create_Power_Two_Test(m_name, "RMA", "RMA")
