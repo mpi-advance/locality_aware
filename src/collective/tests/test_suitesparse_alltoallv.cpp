@@ -34,7 +34,7 @@ void test_matrix(const char* filename, COMM_ALGORITHM algorithm)
     readParMatrix(filename, A);
     MPI_Win* win;
     int* sizes;
-    form_comm(A, algorithm, 0, 1, win, &sizes);
+    //form_comm(A, algorithm, 0, 1, win, &sizes);
 
     std::vector<int> send_vals(A.on_proc.n_rows);
     std::iota(send_vals.begin(), send_vals.end(), 0);
