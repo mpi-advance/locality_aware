@@ -41,10 +41,10 @@ def Create_Many_Node_Test(m_name : str, algo : str, out_name : str):
   fp.close()
 
 def Create_Power_Two_Test(m_name : str, algo : str, out_name : str):
-  fp = open(f"{m_name}/{algo}_WHEELER_POWER_TWO.sh","w")
+  fp = open(f"{m_name}_{algo}_WHEELER_POWER_TWO.sh","w")
   fp.write("#!/usr/bin/bash\n")
-  fp.write(f"#SBATCH --output ../../../benchmark_tests/standard_torsten/{m_name}/{m_name}_Wheeler_{out_name}_power_two\n")
-  fp.write(f"#SBATCH --error ../../../benchmark_tests/standard_torsten/{m_name}/{m_name}_Wheeler_{out_name}_power_two_err\n")
+  fp.write(f"#SBATCH --output ../../../benchmark_tests/standard_torsten/{m_name}/{m_name}_Wheeler_{out_name}_many_node\n")
+  fp.write(f"#SBATCH --error ../../../benchmark_tests/standard_torsten/{m_name}/{m_name}_Wheeler_{out_name}_many_node_err\n")
   fp.write(f"#SBATCH --open-mode=append\n")
   fp.write("#SBATCH --partition normal\n")
   fp.write("#SBATCH --ntasks=128\n")
@@ -64,12 +64,10 @@ for (i, m_name) in enumerate(matrix_names):
   # CREATE ONE NODE TEST CASES
   Create_One_Node_Test(m_name, "STANDARD", "Standard")
   Create_One_Node_Test(m_name, "TORSTEN", "Torsten")
-  Create_One_Node_Test(m_name, "RMA", "RMA")
 
   # CREATE MANY NODE TEST CASES
   Create_Many_Node_Test(m_name, "STANDARD", "Standard")
   Create_Many_Node_Test(m_name, "TORSTEN", "Torsten")
-  Create_Many_Node_Test(m_name, "RMA", "RMA")
 
   # CREATE POWER OF TWO TEST CASES
   Create_Power_Two_Test(m_name, "RMA", "RMA")
