@@ -35,7 +35,9 @@ std::tuple<double, int, int> test_matrix(const char* filename, COMM_ALGORITHM al
 
     MPI_Barrier(MPI_COMM_WORLD);
     start = MPI_Wtime();
-    form_comm(A, algorithm);
+    MPI_Win win;
+    int* sizes;
+    //form_comm(A, algorithm, 0, 1, win, &sizes);
     end = MPI_Wtime();
 
     return {(double)(end-start) / 1000, A.recv_comm.n_msgs, A.recv_comm.size_msgs};
