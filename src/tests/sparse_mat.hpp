@@ -469,7 +469,7 @@ void form_comm(ParMat<U>& A, COMM_ALGORITHM algorithm, int test_num, int max_tes
     else if (algorithm == RMA_DYNAMIC) 
     {
         if(test_num == 0) { allocate_rma_dynamic(&win, sizes); }
-        form_send_comm_rma_dynamic(A, &win, *sizes);
+        form_send_comm_rma_dynamic(A, win, *sizes);
         if(test_num == max_tests-1) { free_rma_dynamic(&win, *sizes); }
     }
 }
