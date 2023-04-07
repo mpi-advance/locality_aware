@@ -50,7 +50,7 @@ int main(int argc, char* argv[])
     }
 
     /* Run num_tests number of tests and print info about message sizes / time taken*/
-    MPI_WIN win;
+    MPI_Win* win;
     int* sizes;
     for(int i = 0; i < num_tests; i++) 
     {
