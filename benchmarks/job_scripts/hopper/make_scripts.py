@@ -51,4 +51,3 @@ for (i, m_name) in enumerate(matrix_names):
   Create_Many_Node_Test(m_name, "STANDARD", "Standard")
   Create_Many_Node_Test(m_name, "TORSTEN", "Torsten")
   Create_Many_Node_Test(m_name, "RMA", "RMA")
-  Create_Many_Node_Test(m_name, "RMA_DYNAMIC", "RMA_DYNAMIC")

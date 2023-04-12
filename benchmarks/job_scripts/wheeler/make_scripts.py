@@ -63,12 +63,14 @@ for (i, m_name) in enumerate(matrix_names):
     os.mkdir(f"../../../benchmark_tests/standard_torsten/{m_name}/")
 
   # CREATE ONE NODE TEST CASES
-  Create_One_Node_Test(m_name, "STANDARD", "Standard")
-  Create_One_Node_Test(m_name, "TORSTEN", "Torsten")
+  # Create_One_Node_Test(m_name, "STANDARD", "Standard")
+  # Create_One_Node_Test(m_name, "TORSTEN", "Torsten")
 
   # CREATE MANY NODE TEST CASES
-  Create_Many_Node_Test(m_name, "STANDARD", "Standard")
-  Create_Many_Node_Test(m_name, "TORSTEN", "Torsten")
+  # Create_Many_Node_Test(m_name, "STANDARD", "Standard")
+  # Create_Many_Node_Test(m_name, "TORSTEN", "Torsten")
 
   # CREATE POWER OF TWO TEST CASES
+  Create_Power_Two_Test(m_name, "STANDARD", "Standard")
+  Create_Power_Two_Test(m_name, "TORSTEN", "Torsten")
   Create_Power_Two_Test(m_name, "RMA", "RMA")
