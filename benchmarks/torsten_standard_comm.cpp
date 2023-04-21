@@ -51,8 +51,11 @@ int main(int argc, char* argv[])
 
     /* Run num_tests number of tests and print info about message sizes / time taken*/
     MPI_Win win;
+    int win_time;
     int* sizes;
+    t0 = MPI_Wtime();
     allocate_rma_dynamic(&win, &sizes);
+    win_time = MPI_Wtime() - t0;
     for(int i = 0; i < num_tests; i++) 
     {
         MPI_Barrier(MPI_COMM_WORLD);
@@ -65,8 +68,9 @@ int main(int argc, char* argv[])
         // Time CommPkg Formation 
         MPI_Barrier(MPI_COMM_WORLD);
         t0 = MPI_Wtime();
-        form_comm(A, algo, i, num_tests, &win, &sizes);
+        form_comm(A, algo, &win, &sizes);
         tfinal = MPI_Wtime() - t0;
+        if(i == 0 && algo == RMA_DYNAMIC) { tfinal += win_time; }
 
         double max_time = 0;
         int max_msg_count = 0;
