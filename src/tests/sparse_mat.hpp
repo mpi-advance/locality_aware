@@ -404,10 +404,10 @@ void form_send_comm_rma_dynamic(ParMat<U>& A, MPI_Win win, int* sizes)
     for (int i = 0; i < A.recv_comm.n_msgs; i++)
     {
         MPI_Put(&(A.recv_comm.counts[i]), 1, MPI_INT, A.recv_comm.procs[i], 
-                rank, 1, MPI_INT, win);
+               rank, 1, MPI_INT, win);
     }
     MPI_Win_fence(MPI_MODE_NOPUT|MPI_MODE_NOSUCCEED, win);
-
+    
     A.send_comm.ptr.push_back(0);
     ctr = 0;
     for (int i = 0; i < num_procs; i++)
@@ -451,7 +451,7 @@ void form_send_comm_rma_dynamic(ParMat<U>& A, MPI_Win win, int* sizes)
 
     if (A.recv_comm.n_msgs)
         MPI_Waitall(A.recv_comm.n_msgs, A.recv_comm.req.data(), MPI_STATUSES_IGNORE);    
-
+  
 }
 
 enum COMM_ALGORITHM {STANDARD, TORSTEN, RMA, RMA_DYNAMIC};
@@ -468,9 +468,7 @@ void form_comm(ParMat<U>& A, COMM_ALGORITHM algorithm, int test_num, int max_tes
     else if (algorithm == RMA) { form_send_comm_rma(A); }
     else if (algorithm == RMA_DYNAMIC) 
     {
-        if(test_num == 0) { allocate_rma_dynamic(win, sizes); }
         form_send_comm_rma_dynamic(A, *win, *sizes);
-        if(test_num == max_tests-1) { free_rma_dynamic(win, *sizes); }
     }
 }
 
