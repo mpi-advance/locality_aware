@@ -1,7 +1,7 @@
 #ifndef MPI_ADVANCE_PERSISTENT_H
 #define MPI_ADVANCE_PERSISTENT_H
 
-#include "/home/evelynn/Lacality_aware/locality_aware/src/locality/locality_comm.h"
+#include "locality/locality_comm.h"
 
 #ifdef __cplusplus
 extern "C"
@@ -22,6 +22,7 @@ typedef struct _MPIX_Request
 
     LocalityComm* locality;
 
+    const void* sendbuf; // pointer to sendbuf (where original data begins)
     void* recvbuf; // pointer to recvbuf (where final data goes)
     int recv_size;
 } MPIX_Request;
