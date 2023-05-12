@@ -7,7 +7,7 @@ RUN_TORSTEN = False
 RUN_RMA = True
 RUN_RMA_DYANMIC = True
 
-machine_name = "Hopper"
+machine_name = "Wheeler"
 matrix_directories = next(os.walk('.'))[1]
 
 standard_dict_average = dict()
@@ -164,7 +164,7 @@ def visualize_data(fp_1 : __file__, fp_2 : __file__, fp_3 : __file__, fp_4 : __f
   (average_keys_rma, max_keys_rma, min_keys_rma, num_msg_keys_rma, msg_size_keys_rma) = get_and_sort_keys(rma_dict_average, rma_dict_max, rma_dict_min, rma_dict_num_msg, rma_dict_msg_size)
   (average_data_rma, max_data_rma, min_data_rma, num_msg_data_rma, msg_size_data_rma) = print_data(fp_3, rma_dict_average, rma_dict_max, rma_dict_min, rma_dict_num_msg, rma_dict_msg_size)
 
-  (average_keys_rma_dynamic_dynamic, max_keys_rma_dynamic, min_keys_rma_dynamic, num_msg_keys_rma_dynamic, msg_size_keys_rma_dynamic) = get_and_sort_keys(rma_dynamic_dict_average, rma_dynamic_dict_max, rma_dynamic_dict_min, rma_dynamic_dict_num_msg, rma_dynamic_dict_msg_size)
+  (average_keys_rma_dynamic, max_keys_rma_dynamic, min_keys_rma_dynamic, num_msg_keys_rma_dynamic, msg_size_keys_rma_dynamic) = get_and_sort_keys(rma_dynamic_dict_average, rma_dynamic_dict_max, rma_dynamic_dict_min, rma_dynamic_dict_num_msg, rma_dynamic_dict_msg_size)
   (average_data_rma_dynamic, max_data_rma_dynamic, min_data_rma_dynamic, num_msg_data_rma_dynamic, msg_size_data_rma_dynamic) = print_data(fp_4, rma_dynamic_dict_average, rma_dynamic_dict_max, rma_dynamic_dict_min, rma_dynamic_dict_num_msg, rma_dynamic_dict_msg_size)
 
 
@@ -223,14 +223,46 @@ for matrix in matrix_directories:
   out_strings_torsten = []
   out_strings_rma = []
   out_strings_rma_dynamic = []
-  single_node_standard = open(f"./{matrix}/{matrix}_{machine_name}_Standard_one_node", 'r')
-  many_node_standard = open(f"./{matrix}/{matrix}_{machine_name}_Standard_many_node",'r')
-  single_node_torsten = open(f"./{matrix}/{matrix}_{machine_name}_Torsten_one_node",'r')
-  many_node_torsten = open(f"./{matrix}/{matrix}_{machine_name}_Torsten_many_node",'r')
-  single_node_rma = open(f"./{matrix}/{matrix}_{machine_name}_RMA_one_node", 'r')
-  many_node_rma = open(f"./{matrix}/{matrix}_{machine_name}_RMA_many_node", 'r')
-  single_node_rma_dynamic = open(f"./{matrix}/{matrix}_{machine_name}_RMA_DYNAMIC_one_node",'r')
-  many_node_rma_dynamic = open(f"./{matrix}/{matrix}_{machine_name}_RMA_DYNAMIC_many_node",'r')
+  single_node_standard = None
+  many_node_standard = None
+  single_node_torsten = None
+  many_node_torsten = None
+  single_node_rma = None
+  many_node_rma = None
+  single_node_rma_dynamic = None
+  many_node_rma_dynamic = None
+  try:
+    single_node_standard = open(f"./{matrix}/{matrix}_{machine_name}_Standard_one_node", 'r')
+  except:
+   single_node_standard = None
+  try:
+    many_node_standard = open(f"./{matrix}/{matrix}_{machine_name}_Standard_many_node",'r')
+  except:
+   many_node_standard = None
+  try:
+    single_node_torsten = open(f"./{matrix}/{matrix}_{machine_name}_Torsten_one_node",'r')
+  except:
+    single_node_torsten = None
+  try:
+    many_node_torsten = open(f"./{matrix}/{matrix}_{machine_name}_Torsten_many_node",'r')
+  except:
+    many_node_torsten = None
+  try:
+    single_node_rma = open(f"./{matrix}/{matrix}_{machine_name}_RMA_one_node", 'r')
+  except:
+    single_node_rma = None
+  try:
+    many_node_rma = open(f"./{matrix}/{matrix}_{machine_name}_RMA_many_node", 'r')
+  except:
+    many_node_rma = None
+  try: 
+    single_node_rma_dynamic = open(f"./{matrix}/{matrix}_{machine_name}_RMA_DYNAMIC_one_node",'r')
+  except:
+    single_node_rma_dynamic = None
+  try:
+    many_node_rma_dynamic = open(f"./{matrix}/{matrix}_{machine_name}_RMA_DYNAMIC_many_node",'r')
+  except:
+    many_node_rma_dynamic = None
   
   file_strings_map = [(out_strings_standard,single_node_standard,"STANDARD"),(out_strings_standard,many_node_standard,"STANDARD"),
                       (out_strings_torsten,single_node_torsten,"TORSTEN"),(out_strings_torsten,many_node_torsten,"TORSTEN"),
@@ -239,8 +271,11 @@ for matrix in matrix_directories:
 
 
   for (out_list,out_file,out_name) in file_strings_map:
+    if out_file == None:
+      continue
+    print(out_file.name)
     for line in out_file.read().splitlines():
-      if (line.strip().split(',')[0] != out_name) and (not line.replace('.','',1).isdigit()) and (line.strip.split(',')[0].split(' ')[0] != 'MAX_MSG_COUNT'):
+      if (line.strip().split(',')[0] != out_name) and (not line.replace('.','',1).isdigit()) and (line.strip().split(',')[0].split(' ')[0] != 'MAX_MSG_COUNT'):
         continue
       out_list.append(line)
 

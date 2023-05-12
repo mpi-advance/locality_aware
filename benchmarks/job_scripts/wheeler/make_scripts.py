@@ -2,6 +2,21 @@ import os
 
 matrix_names = ["D_10","bcsstk01","ch-5-b1","dwt-162","gams10a","gams10am","impcol_c","odepa400","oscil_dcop_11","tumorAntiAngiogenesis_4","west0132","ww_36_pmec_36","3elt","abb313","M40PI_n1","M80PI_n1"]
 
+def Create_Varied_Power_Two_Tests(m_name : str, algo : str, out_name : str, test_range : int):
+  fp = open(f"{m_name}_{algo}_WHEELER_VARIED_POWER_TWO.sh","w")
+  fp.write("#!/usr/bin/bash\n")
+  fp.write(f"#SBATCH --output ../../../benchmark_tests/standard_torsten/{m_name}/{m_name}_Wheeler_{out_name}_varied_runs\n")
+  fp.write(f"#SBATCH --error ../../../benchmark_tests/standard_torsten/{m_name}/{m_name}_Wheeler_{out_name}_varied_runs_err\n")
+  fp.write(f"#SBATCH --open-mode=append\n")
+  fp.write("#SBATCH --partition normal\n")
+  fp.write("#SBATCH --ntasks=128\n")
+  fp.write("#SBATCH --nodes=16\n\n")
+  fp.write("#SBATCH --mail-type=BEGIN,FAIL,END\n")
+  fp.write("#SBATCH --mail-user=ageyko@unm.edu\n\n")
+  fp.write("module load openmpi\n\n")
+  for j in range(5):
+      for i in range(2, test_range):
+        fp.write(f"srun --partition=normal --nodes={2**j} --ntasks={8*(2**j)} --time=01:00:00 ../../../build_wheeler/benchmarks/torsten_standard_comm ../../../test_data/{m_name}.pm 1 {m_name} {algo}\n")
 
 # Create batch files for one node
 def Create_One_Node_Test(m_name : str, algo : str, out_name : str):
