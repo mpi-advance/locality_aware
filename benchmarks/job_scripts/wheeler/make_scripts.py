@@ -16,7 +16,7 @@ def Create_Varied_Power_Two_Tests(m_name : str, algo : str, out_name : str, test
   fp.write("module load openmpi\n\n")
   for j in range(5):
       for i in range(2, test_range):
-        fp.write(f"srun --partition=normal --nodes={2**j} --ntasks={8*(2**j)} --time=01:00:00 ../../../build_wheeler/benchmarks/torsten_standard_comm ../../../test_data/{m_name}.pm 1 {m_name} {algo}\n")
+        fp.write(f"srun --partition=normal --nodes={2**j} --ntasks={8*(2**j)} --time=01:00:00 ../../../build_wheeler/benchmarks/torsten_standard_comm ../../../test_data/{m_name}.pm {i} {m_name} {algo}\n")
 
 # Create batch files for one node
 def Create_One_Node_Test(m_name : str, algo : str, out_name : str):
