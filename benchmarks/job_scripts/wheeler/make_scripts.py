@@ -89,3 +89,7 @@ for (i, m_name) in enumerate(matrix_names):
   Create_Power_Two_Test(m_name, "STANDARD", "Standard")
   Create_Power_Two_Test(m_name, "TORSTEN", "Torsten")
   Create_Power_Two_Test(m_name, "RMA", "RMA")
+
+  Create_Varied_Power_Two_Tests(m_name, "STANDARD", "Standard", 50)
+  Create_Varied_Power_Two_Tests(m_name, "TORSTEN", "Torsten", 50)
+  Create_Varied_Power_Two_Tests(m_name, "RMA", "RMA", 50)

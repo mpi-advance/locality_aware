@@ -1,0 +1,32 @@
+[wheeler014][[21219,49],1][btl_openib_proc.c:319:mca_btl_openib_proc_get_locked] 1: error exit from mca_btl_openib_proc_create
+[wheeler060:08467] *** Process received signal ***
+[wheeler060:08467] Signal: Segmentation fault (11)
+[wheeler060:08467] Signal code: Address not mapped (1)
+[wheeler060:08467] Failing at address: 0x61
+[wheeler060:08467] [ 0] /lib64/libpthread.so.0(+0xf630)[0x2b412441e630]
+[wheeler060:08467] [ 1] /lib64/libc.so.6(+0x13efda)[0x2b4124c83fda]
+[wheeler060:08467] [ 2] /opt/spack/opt/spack/linux-centos7-nehalem/gcc-4.8.5/openmpi-4.1.2-q2zi7jdoc6hyzkgzj7vqz6h7jgtjdznj/lib/libopen-pal.so.40(opal_pmix_base_store+0xb9)[0x2b4125319f69]
+[wheeler060:08467] [ 3] /opt/spack/opt/spack/linux-centos7-nehalem/gcc-4.8.5/openmpi-4.1.2-q2zi7jdoc6hyzkgzj7vqz6h7jgtjdznj/lib/libopen-pal.so.40(opal_pmix_base_cache_keys_locally+0x30a)[0x2b41253197ca]
+[wheeler060:08467] [ 4] /opt/spack/opt/spack/linux-centos7-nehalem/gcc-4.8.5/openmpi-4.1.2-q2zi7jdoc6hyzkgzj7vqz6h7jgtjdznj/lib/libopen-pal.so.40(+0xe8c30)[0x2b412531cc30]
+[wheeler060:08467] [ 5] /opt/spack/opt/spack/linux-centos7-nehalem/gcc-4.8.5/openmpi-4.1.2-q2zi7jdoc6hyzkgzj7vqz6h7jgtjdznj/lib/libmpi.so.40(ompi_proc_complete_init_single+0x15c)[0x2b4123bb39ec]
+[wheeler060:08467] [ 6] /opt/spack/opt/spack/linux-centos7-nehalem/gcc-4.8.5/openmpi-4.1.2-q2zi7jdoc6hyzkgzj7vqz6h7jgtjdznj/lib/libmpi.so.40(ompi_proc_for_name+0x176)[0x2b4123bb3d56]
+[wheeler060:08467] [ 7] /opt/spack/opt/spack/linux-centos7-nehalem/gcc-4.8.5/openmpi-4.1.2-q2zi7jdoc6hyzkgzj7vqz6h7jgtjdznj/lib/libmpi.so.40(+0x1f9221)[0x2b4123d2f221]
+[wheeler060:08467] [ 8] /opt/spack/opt/spack/linux-centos7-nehalem/gcc-4.8.5/openmpi-4.1.2-q2zi7jdoc6hyzkgzj7vqz6h7jgtjdznj/lib/libmpi.so.40(mca_pml_ob1_isend+0xc70)[0x2b4123d30560]
+[wheeler060:08467] [ 9] /opt/spack/opt/spack/linux-centos7-nehalem/gcc-4.8.5/openmpi-4.1.2-q2zi7jdoc6hyzkgzj7vqz6h7jgtjdznj/lib/libmpi.so.40(MPI_Issend+0xfc)[0x2b4123be06ec]
+[wheeler060:08467] [10] /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/wheeler/../../../build_wheeler/benchmarks/torsten_standard_comm[0x40ed0c]
+[wheeler060:08467] [11] /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/wheeler/../../../build_wheeler/benchmarks/torsten_standard_comm[0x4098e8]
+[wheeler060:08467] [12] /lib64/libc.so.6(__libc_start_main+0xf5)[0x2b4124b67555]
+[wheeler060:08467] [13] /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/wheeler/../../../build_wheeler/benchmarks/torsten_standard_comm[0x409a70]
+[wheeler060:08467] *** End of error message ***
+srun: error: wheeler060: task 11: Segmentation fault
+[wheeler014.alliance.unm.edu:04234] too many retries sending message to 0x0153:0x00012ad0, giving up
+srun: Job step aborted: Waiting up to 32 seconds for job step to finish.
+In: PMI_Abort(-1, N/A)
+slurmstepd: error: *** STEP 479971.51 ON wheeler014 CANCELLED AT 2023-05-12T18:56:07 ***
+srun: error: wheeler014: tasks 0-3,5-7: Killed
+srun: error: wheeler014: task 4: Exited with exit code 255
+srun: error: wheeler060: tasks 8-10,12-15: Killed
+[wheeler060][[21219,84],13][btl_openib_proc.c:319:mca_btl_openib_proc_get_locked] 13: error exit from mca_btl_openib_proc_create
+[wheeler014][[21219,102],6][btl_openib_proc.c:319:mca_btl_openib_proc_get_locked] 6: error exit from mca_btl_openib_proc_create
+[wheeler014][[21219,106],4][btl_openib_proc.c:319:mca_btl_openib_proc_get_locked] 4: error exit from mca_btl_openib_proc_create
+[wheeler060][[21219,135],10][btl_openib_proc.c:319:mca_btl_openib_proc_get_locked] 10: error exit from mca_btl_openib_proc_create

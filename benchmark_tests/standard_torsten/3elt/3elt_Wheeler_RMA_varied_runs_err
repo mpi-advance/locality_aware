@@ -1,0 +1,16 @@
+[wheeler003:22133] *** Process received signal ***
+[wheeler003:22133] Signal: Segmentation fault (11)
+[wheeler003:22133] Signal code: Address not mapped (1)
+[wheeler003:22133] Failing at address: 0xa0000003a
+[wheeler003:22133] [ 0] /lib64/libpthread.so.0(+0xf630)[0x2ae0826db630]
+[wheeler003:22133] [ 1] /opt/spack/opt/spack/linux-centos7-nehalem/gcc-4.8.5/openmpi-4.1.2-q2zi7jdoc6hyzkgzj7vqz6h7jgtjdznj/lib/libopen-pal.so.40(+0xe5bdf)[0x2ae0835d6bdf]
+[wheeler003:22133] [ 2] /opt/spack/opt/spack/linux-centos7-nehalem/gcc-4.8.5/openmpi-4.1.2-q2zi7jdoc6hyzkgzj7vqz6h7jgtjdznj/lib/libopen-pal.so.40(opal_pmix_base_hash_finalize+0x133)[0x2ae0835d6e13]
+[wheeler003:22133] [ 3] /opt/spack/opt/spack/linux-centos7-nehalem/gcc-4.8.5/openmpi-4.1.2-q2zi7jdoc6hyzkgzj7vqz6h7jgtjdznj/lib/libopen-pal.so.40(+0xe8e0e)[0x2ae0835d9e0e]
+[wheeler003:22133] [ 4] /opt/spack/opt/spack/linux-centos7-nehalem/gcc-4.8.5/openmpi-4.1.2-q2zi7jdoc6hyzkgzj7vqz6h7jgtjdznj/lib/libopen-rte.so.40(+0x70c55)[0x2ae083240c55]
+[wheeler003:22133] [ 5] /opt/spack/opt/spack/linux-centos7-nehalem/gcc-4.8.5/openmpi-4.1.2-q2zi7jdoc6hyzkgzj7vqz6h7jgtjdznj/lib/libopen-rte.so.40(orte_finalize+0x78)[0x2ae0831f5a38]
+[wheeler003:22133] [ 6] /opt/spack/opt/spack/linux-centos7-nehalem/gcc-4.8.5/openmpi-4.1.2-q2zi7jdoc6hyzkgzj7vqz6h7jgtjdznj/lib/libmpi.so.40(ompi_mpi_finalize+0x90a)[0x2ae081e750aa]
+[wheeler003:22133] [ 7] /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/wheeler/../../../build_wheeler/benchmarks/torsten_standard_comm[0x409819]
+[wheeler003:22133] [ 8] /lib64/libc.so.6(__libc_start_main+0xf5)[0x2ae082e24555]
+[wheeler003:22133] [ 9] /users/ageyko/Documents/PSAAP/locality_aware/benchmarks/job_scripts/wheeler/../../../build_wheeler/benchmarks/torsten_standard_comm[0x409a70]
+[wheeler003:22133] *** End of error message ***
+srun: error: wheeler003: task 3: Segmentation fault
