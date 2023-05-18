@@ -1,12 +1,13 @@
 import os
 
 matrix_names = ["D_10","bcsstk01","ch-5-b1","dwt-162","gams10a","gams10am","impcol_c","odepa400","oscil_dcop_11","tumorAntiAngiogenesis_4","west0132","ww_36_pmec_36","3elt","abb313","M40PI_n1","M80PI_n1"]
+f_path = "../../../benchmark_tests/standard_torsten"
 
 def Create_Varied_Runs_Test(m_name : str, algo : str, out_name : str, test_range : int):
   fp = open(f"{m_name}_{algo}_HOPPER_VARIED_ONE_NODE.sh", "w")
   fp.write("#!/usr/bin/bash\n")
-  fp.write(f"#SBATCH --output ../../../benchmark_tests/standard_torsten/{m_name}/{m_name}_Hopper_{out_name}_varied_runs\n")
-  fp.write(f"#SBATCH --error ../../../benchmark_tests/standard_torsten/{m_name}/{m_name}_Hopper_{out_name}_varied_runs_one_node_err\n")
+  fp.write(f"#SBATCH --output {f_path}/{m_name}/data/output/{m_name}_Hopper_{out_name}_varied_runs\n")
+  fp.write(f"#SBATCH --error {f_path}/{m_name}/data/error/{m_name}_Hopper_{out_name}_varied_runs_one_node_err\n")
   fp.write(f"#SBATCH --open-mode=append")
   fp.write("#SBATCH --partition general\n")
   fp.write("#SBATCH --ntasks=32\n")
@@ -20,8 +21,8 @@ def Create_Varied_Runs_Test(m_name : str, algo : str, out_name : str, test_range
   fp.close()
   fp = open(f"{m_name}_{algo}_HOPPER_VARIED_MANY_NODE.sh","w")
   fp.write("#!/usr/bin/bash\n")
-  fp.write(f"#SBATCH --output ../../../benchmark_tests/standard_torsten/{m_name}/{m_name}_Hopper_{out_name}_varied_runs\n")
-  fp.write(f"#SBATCH --error ../../../benchmark_tests/standard_torsten/{m_name}/{m_name}_Hopper_{out_name}_varied_runs_many_node_err\n")
+  fp.write(f"#SBATCH --output {f_path}/{m_name}/data/output/{m_name}_Hopper_{out_name}_varied_runs\n")
+  fp.write(f"#SBATCH --error {f_path}/{m_name}/data/error/{m_name}_Hopper_{out_name}_varied_runs_many_node_err\n")
   fp.write(f"#SBATCH --open-mode=append")
   fp.write("#SBATCH --partition general\n")
   fp.write("#SBATCH --ntasks=64\n")
@@ -40,8 +41,8 @@ def Create_Varied_Runs_Test(m_name : str, algo : str, out_name : str, test_range
 def Create_One_Node_Test(m_name : str, algo : str, out_name : str):
   fp = open(f"{m_name}_{algo}_HOPPER_ONE_NODE.sh", "w")
   fp.write("#!/usr/bin/bash\n")
-  fp.write(f"#SBATCH --output ../../../benchmark_tests/standard_torsten/{m_name}/{m_name}_Hopper_{out_name}_one_node\n")
-  fp.write(f"#SBATCH --error ../../../benchmark_tests/standard_torsten/{m_name}/{m_name}_Hopper_{out_name}_one_node_err\n")
+  fp.write(f"#SBATCH --output {f_path}/{m_name}/data/output/{m_name}_Hopper_{out_name}_one_node\n")
+  fp.write(f"#SBATCH --error {f_path}/{m_name}/data/error/{m_name}_Hopper_{out_name}_one_node_err\n")
   fp.write(f"#SBATCH --open-mode=append")
   fp.write("#SBATCH --partition general\n")
   fp.write("#SBATCH --ntasks=32\n")
@@ -57,8 +58,8 @@ def Create_One_Node_Test(m_name : str, algo : str, out_name : str):
 def Create_Many_Node_Test(m_name : str, algo : str, out_name : str):
   fp = open(f"{m_name}_{algo}_HOPPER_MANY_NODE.sh","w")
   fp.write("#!/usr/bin/bash\n")
-  fp.write(f"#SBATCH --output ../../../benchmark_tests/standard_torsten/{m_name}/{m_name}_Hopper_{out_name}_many_node\n")
-  fp.write(f"#SBATCH --error ../../../benchmark_tests/standard_torsten/{m_name}/{m_name}_Hopper_{out_name}_many_node_err\n")
+  fp.write(f"#SBATCH --output {f_path}/{m_name}/data/output/{m_name}_Hopper_{out_name}_many_node\n")
+  fp.write(f"#SBATCH --error {f_path}/{m_name}/data/error/{m_name}_Hopper_{out_name}_many_node_err\n")
   fp.write(f"#SBATCH --open-mode=append")
   fp.write("#SBATCH --partition general\n")
   fp.write("#SBATCH --ntasks=64\n")
@@ -72,8 +73,20 @@ def Create_Many_Node_Test(m_name : str, algo : str, out_name : str):
 
 
 for (i, m_name) in enumerate(matrix_names):
-  if(not os.path.exists(f"../../../benchmark_tests/standard_torsten/{m_name}/")):
-    os.mkdir(f"../../../benchmark_tests/standard_torsten/{m_name}/")
+  if(not os.path.exists(f"{f_path}/{m_name}/")):
+    os.mkdir(f"{f_path}/{m_name}/")
+    os.mkdir(f"{f_path}/{m_name}/parsed_data")
+    os.mkdir(f"{f_path}/{m_name}/parsed_data/tables")
+    os.mkdir(f"{f_path}/{m_name}/parsed_data/plots")
+    os.mkdir(f"{f_path}/{m_name}/parsed_data/one_test_output")
+    os.mkdir(f"{f_path}/{m_name}/plots/average")
+    os.mkdir(f"{f_path}/{m_name}/plots/min")
+    os.mkdir(f"{f_path}/{m_name}/plots/max")
+    os.mkdir(f"{f_path}/{m_name}/data")
+    os.mkdir(f"{f_path}/{m_name}/data/output")
+    os.mkdir(f"{f_path}/{m_name}/data/error")
+
+
 
   # CREATE ONE NODE TEST CASES
   Create_One_Node_Test(m_name, "STANDARD", "Standard")
