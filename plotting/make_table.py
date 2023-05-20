@@ -1,26 +1,25 @@
 import os
 
-fpath = "../benchmark_tests/comm_creation"
-matrix_directories = next(os.walk(f"{fpath}"))[1]
+matrix_directories = next(os.walk('.'))[1]
 machine_name = "Hopper"
 #algos = ['Standard','Torsten','RMA']
 algos = ['Standard']
 
 def create_dirs(matrix : str):
   os.mkdir()
-  if not os.path.exists(f"{fpath}/{matrix}/parsed_data"):
-    os.mkdir(f"{fpath}/{matrix}/parsed_data")
-    os.mkdir(f"{fpath}/{matrix}/parsed_data/tables")
-    os.mkdir(f"{fpath}/{matrix}/parsed_data/plots")
-    os.mkdir(f"{fpath}/{matrix}/parsed_data/one_test_output")
-    os.mkdir(f"{fpath}/{matrix}/plots/average")
-    os.mkdir(f"{fpath}/{matrix}/plots/min")
-    os.mkdir(f"{fpath}/{matrix}/plots/max")
+  if not os.path.exists(f"./{matrix}/parsed_data"):
+    os.mkdir(f"./{matrix}/parsed_data")
+    os.mkdir(f"./{matrix}/parsed_data/tables")
+    os.mkdir(f"./{matrix}/parsed_data/plots")
+    os.mkdir(f"./{matrix}/parsed_data/one_test_output")
+    os.mkdir(f"./{matrix}/plots/average")
+    os.mkdir(f"./{matrix}/plots/min")
+    os.mkdir(f"./{matrix}/plots/max")
 
 
 for matrix in matrix_directories:
   for algo in algos:
-    standard_file = open(f"{fpath}/{matrix}/{matrix}_{machine_name}_{algo}_varied_runs","r")
+    standard_file = open(f"./{matrix}/{matrix}_{machine_name}_{algo}_varied_runs","r")
     output_lines = []
   
     ## Open File, clear out useless lines 
@@ -31,7 +30,7 @@ for matrix in matrix_directories:
       output_lines.append(line)
   
     create_dirs(matrix)
-    standard_out = open(f"{fpath}/{matrix}/parsed_data/tables/{matrix}_{machine_name}_{algo}_table.txt","w")
+    standard_out = open(f"./{matrix}/parsed_data/tables/{matrix}_{machine_name}_{algo}_table.txt","w")
     data_out = []
   
     # Data format: 
