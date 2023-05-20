@@ -1,7 +1,7 @@
 import os
 
 matrix_names = ["D_10","bcsstk01","ch-5-b1","dwt-162","gams10a","gams10am","impcol_c","odepa400","oscil_dcop_11","tumorAntiAngiogenesis_4","west0132","ww_36_pmec_36","3elt","abb313","M40PI_n1","M80PI_n1"]
-f_path = "../../../benchmark_tests/standard_torsten"
+f_path = "../../../benchmark_tests/comm_creation"
 
 def Create_Varied_Runs_Test(m_name : str, algo : str, out_name : str, test_range : int):
   fp = open(f"{m_name}_{algo}_HOPPER_VARIED_ONE_NODE.sh", "w")
