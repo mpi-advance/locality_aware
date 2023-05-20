@@ -17,7 +17,7 @@ def Create_Varied_Runs_Test(m_name : str, algo : str, out_name : str, test_range
   fp.write("module load openmpi\n\n")
   for k in range(2,33):
     for i in range(2, test_range):
-      fp.write(f"srun --partition=general --nodes=1 --ntasks={k} --time=00:30:00 ../../../build_hopper/benchmarks/torsten_standard_comm ../../../test_data/{m_name}.pm {i} {m_name} {algo}\n")
+      fp.write(f"srun --partition=general --nodes=1 --ntasks={k} --time=00:30:00 ../../../build_hopper/benchmarks/comm_creators ../../../test_data/{m_name}.pm {i} {m_name} {algo}\n")
   fp.close()
   fp = open(f"{m_name}_{algo}_HOPPER_VARIED_MANY_NODE.sh","w")
   fp.write("#!/usr/bin/bash\n")
@@ -32,7 +32,7 @@ def Create_Varied_Runs_Test(m_name : str, algo : str, out_name : str, test_range
   fp.write("module load openmpi\n\n")
   for k in range(33,65):
     for i in range(2, test_range):
-      fp.write(f"srun --partition=general --nodes=2 --ntasks={k} --time=00:30:00 ../../../build_hopper/benchmarks/torsten_standard_comm ../../../test_data/{m_name}.pm {i} {m_name} {algo}\n")
+      fp.write(f"srun --partition=general --nodes=2 --ntasks={k} --time=00:30:00 ../../../build_hopper/benchmarks/comm_creators ../../../test_data/{m_name}.pm {i} {m_name} {algo}\n")
   fp.close()
 
 
@@ -51,7 +51,7 @@ def Create_One_Node_Test(m_name : str, algo : str, out_name : str, num_tests : i
   fp.write("#SBATCH --mail-user=ageyko@unm.edu\n\n")
   fp.write("module load openmpi\n\n")
   for k in range(2,33):
-    fp.write(f"srun --partition=general --nodes=1 --ntasks={k} --time=00:30:00 ../../../build_hopper/benchmarks/torsten_standard_comm ../../../test_data/{m_name}.pm 1 {m_name} {algo}\n")
+    fp.write(f"srun --partition=general --nodes=1 --ntasks={k} --time=00:30:00 ../../../build_hopper/benchmarks/comm_creators ../../../test_data/{m_name}.pm 1 {m_name} {algo}\n")
   fp.close()
 
 # Creates batch files which run the tests using two nodes
@@ -68,7 +68,7 @@ def Create_Many_Node_Test(m_name : str, algo : str, out_name : str, num_tests : 
   fp.write("#SBATCH --mail-user=ageyko@unm.edu\n\n")
   fp.write("module load openmpi\n\n")
   for k in range(33,65):
-    fp.write(f"srun --partition=general --nodes=2 --ntasks={k} --time=00:30:00 ../../../build_hopper/benchmarks/torsten_standard_comm ../../../test_data/{m_name}.pm 1 {m_name} {algo}\n")
+    fp.write(f"srun --partition=general --nodes=2 --ntasks={k} --time=00:30:00 ../../../build_hopper/benchmarks/comm_creators ../../../test_data/{m_name}.pm 1 {m_name} {algo}\n")
   fp.close()
 
 

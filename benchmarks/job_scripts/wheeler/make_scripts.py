@@ -17,7 +17,7 @@ def Create_Varied_Power_Two_Tests(m_name : str, algo : str, out_name : str, test
   fp.write("module load openmpi\n\n")
   for j in range(5):
       for i in range(2, test_range):
-        fp.write(f"srun --partition=normal --nodes={2**j} --ntasks={8*(2**j)} --time=01:00:00 ../../../build_wheeler/benchmarks/torsten_standard_comm ../../../test_data/{m_name}.pm {i} {m_name} {algo}\n")
+        fp.write(f"srun --partition=normal --nodes={2**j} --ntasks={8*(2**j)} --time=01:00:00 ../../../build_wheeler/benchmarks/comm_creators ../../../test_data/{m_name}.pm {i} {m_name} {algo}\n")
 
 # Create batch files for one node
 def Create_One_Node_Test(m_name : str, algo : str, out_name : str, num_tests : int):
@@ -33,10 +33,10 @@ def Create_One_Node_Test(m_name : str, algo : str, out_name : str, num_tests : i
   fp.write("#SBATCH --mail-user=ageyko@unm.edu\n\n")
   fp.write("module load openmpi\n\n")
   for i in range(2,9): 
-    fp.write(f"srun --partition=normal --nodes=1 --ntasks={i} --time=24:00:00 ../../../build_wheeler/benchmarks/torsten_standard_comm ../../../test_data/{m_name}.pm {num_tests} {m_name} {algo}\n")
+    fp.write(f"srun --partition=normal --nodes=1 --ntasks={i} --time=24:00:00 ../../../build_wheeler/benchmarks/comm_creators ../../../test_data/{m_name}.pm {num_tests} {m_name} {algo}\n")
   for j in range(2,5):
     for i in range((j-1)*8+1, j*8+1):
-      fp.write(f"srun --partition=normal --nodes={j} --ntasks={i} --time=24:00:00 ../../../build_wheeler/benchmarks/torsten_standard_comm ../../../test_data/{m_name}.pm {num_tests} {m_name} {algo}\n")
+      fp.write(f"srun --partition=normal --nodes={j} --ntasks={i} --time=24:00:00 ../../../build_wheeler/benchmarks/comm_creators ../../../test_data/{m_name}.pm {num_tests} {m_name} {algo}\n")
   fp.close()
 
 # Create batch files for many nodes
@@ -54,7 +54,7 @@ def Create_Many_Node_Test(m_name : str, algo : str, out_name : str, num_tests : 
   fp.write("module load openmpi\n\n")
   for j in range(8,17):
     for i in range((j-1)*8+1,j*8+1):
-      fp.write(f"srun --partition=normal --nodes={j} --ntasks={i} --time=01:00:00 ../../../build_wheeler/benchmarks/torsten_standard_comm ../../../test_data/{m_name}.pm {num_tests} {m_name} {algo}\n")
+      fp.write(f"srun --partition=normal --nodes={j} --ntasks={i} --time=01:00:00 ../../../build_wheeler/benchmarks/comm_creators ../../../test_data/{m_name}.pm {num_tests} {m_name} {algo}\n")
   fp.close()
 
 def Create_Power_Two_Test(m_name : str, algo : str, out_name : str, num_tests : int):
@@ -70,7 +70,7 @@ def Create_Power_Two_Test(m_name : str, algo : str, out_name : str, num_tests : 
   fp.write("#SBATCH --mail-user=ageyko@unm.edu\n\n")
   fp.write("module load openmpi\n\n")
   for j in range(5):
-    fp.write(f"srun --partition=normal --nodes={2**j} --ntasks={8*(2**j)} --time=01:00:00 ../../../build_wheeler/benchmarks/torsten_standard_comm ../../../test_data/{m_name}.pm {num_tests} {m_name} {algo}\n")
+    fp.write(f"srun --partition=normal --nodes={2**j} --ntasks={8*(2**j)} --time=01:00:00 ../../../build_wheeler/benchmarks/comm_creators ../../../test_data/{m_name}.pm {num_tests} {m_name} {algo}\n")
 
 
 
