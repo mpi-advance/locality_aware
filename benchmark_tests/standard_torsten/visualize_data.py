@@ -5,8 +5,9 @@ import matplotlib.pyplot as plt
 RUN_STANDARD = False
 RUN_TORSTEN = False
 RUN_RMA = True
+RUN_RMA_DYANMIC = True
 
-machine_name = "Hopper"
+machine_name = "Wheeler"
 matrix_directories = next(os.walk('.'))[1]
 
 standard_dict_average = dict()
@@ -26,6 +27,23 @@ rma_dict_max = dict()
 rma_dict_min = dict()
 rma_dict_num_msg = dict()
 rma_dict_msg_size = dict()
+
+rma_dynamic_dict_average = dict()
+rma_dynamic_dict_max = dict()
+rma_dynamic_dict_min = dict()
+rma_dynamic_dict_num_msg = dict()
+rma_dynamic_dict_msg_size = dict()
+
+def create_dirs(matrix : str):
+  if not os.path.exists(f"./{matrix}/parsed_data"):
+    os.mkdir(f"./{matrix}/parsed_data")
+    os.mkdir(f"./{matrix}/parsed_data/tables")
+    os.mkdir(f"./{matrix}/parsed_data/plots")
+    os.mkdir(f"./{matrix}/parsed_data/one_test_output")
+    os.mkdir(f"./{matrix}/plots/average")
+    os.mkdir(f"./{matrix}/plots/min")
+    os.mkdir(f"./{matrix}/plots/max")
+
 
 # Takes dictionaries w/ data, prints output to a file and returns sorted data lists (average_list, max_list, min_list, num_msg_list, msg_size_list)
 def print_data(fp : __file__, average_dict : dict, max_dict : dict, min_dict : dict, num_msg_dict : dict, msg_size_dict : dict): 
@@ -147,7 +165,7 @@ def make_msg_size_plot(msg_size_keys : list, msg_size_data : list, matrix: str, 
   plt.savefig(f"./{matrix}/{matrix}_{machine_name}_{method}_msg_size_plot.png")
   plt.clf()
 
-def visualize_data(fp_1 : __file__, fp_2 : __file__, fp_3 : __file__, matrix : str, machine_name : str):
+def visualize_data(fp_1 : __file__, fp_2 : __file__, fp_3 : __file__, fp_4 : __file__, matrix : str, machine_name : str):
   (average_keys_standard, max_keys_standard, min_keys_standard, num_msg_keys_standard, msg_size_keys_standard) = get_and_sort_keys(standard_dict_average, standard_dict_max, standard_dict_min, standard_dict_num_msg, standard_dict_msg_size)
   (average_data_standard, max_data_standard, min_data_standard, num_msg_data_standard, msg_size_data_standard) = print_data(fp_1, standard_dict_average, standard_dict_max, standard_dict_min, standard_dict_num_msg, standard_dict_msg_size)
 
@@ -157,110 +175,126 @@ def visualize_data(fp_1 : __file__, fp_2 : __file__, fp_3 : __file__, matrix : s
   (average_keys_rma, max_keys_rma, min_keys_rma, num_msg_keys_rma, msg_size_keys_rma) = get_and_sort_keys(rma_dict_average, rma_dict_max, rma_dict_min, rma_dict_num_msg, rma_dict_msg_size)
   (average_data_rma, max_data_rma, min_data_rma, num_msg_data_rma, msg_size_data_rma) = print_data(fp_3, rma_dict_average, rma_dict_max, rma_dict_min, rma_dict_num_msg, rma_dict_msg_size)
 
+  (average_keys_rma_dynamic, max_keys_rma_dynamic, min_keys_rma_dynamic, num_msg_keys_rma_dynamic, msg_size_keys_rma_dynamic) = get_and_sort_keys(rma_dynamic_dict_average, rma_dynamic_dict_max, rma_dynamic_dict_min, rma_dynamic_dict_num_msg, rma_dynamic_dict_msg_size)
+  (average_data_rma_dynamic, max_data_rma_dynamic, min_data_rma_dynamic, num_msg_data_rma_dynamic, msg_size_data_rma_dynamic) = print_data(fp_4, rma_dynamic_dict_average, rma_dynamic_dict_max, rma_dynamic_dict_min, rma_dynamic_dict_num_msg, rma_dynamic_dict_msg_size)
 
 
-  make_time_plot(average_keys_standard, average_data_standard, f"{matrix} average run time on {machine_name} (standard method)", f"./{matrix}/{matrix}_{machine_name}_standard_average_plot.png")
-  make_time_plot(max_keys_standard, max_data_standard, f"{matrix} max run time on {machine_name} (standard method)", f"./{matrix}/{matrix}_{machine_name}_standard_max_plot.png")
-  make_time_plot(min_keys_standard, min_data_standard, f"{matrix} min run time on {machine_name} (standard method)", f"./{matrix}/{matrix}_{machine_name}_standard_min_plot.png")
+  
+  make_time_plot(average_keys_standard, average_data_standard, f"{matrix} average run time on {machine_name} (standard method)", f"./{matrix}/plots/{matrix}_{machine_name}_standard_average_plot.png")
+  make_time_plot(max_keys_standard, max_data_standard, f"{matrix} max run time on {machine_name} (standard method)", f"./{matrix}/plots/{matrix}_{machine_name}_standard_max_plot.png")
+  make_time_plot(min_keys_standard, min_data_standard, f"{matrix} min run time on {machine_name} (standard method)", f"./{matrix}/plots/{matrix}_{machine_name}_standard_min_plot.png")
   make_msg_num_plot(num_msg_keys_standard, num_msg_data_standard, matrix, machine_name, "standard")
   make_msg_size_plot(msg_size_keys_standard, msg_size_data_standard, matrix, machine_name, "standard")
 
-  make_time_plot(average_keys_torsten, average_data_torsten, f"{matrix} average run time on {machine_name} (torsten's method)", f"./{matrix}/{matrix}_{machine_name}_torsten_average_plot.png")
-  make_time_plot(max_keys_torsten, max_data_torsten, f"{matrix} max run time on {machine_name} (torsten's method)", f"./{matrix}/{matrix}_{machine_name}_torsten_max_plot.png")
-  make_time_plot(min_keys_torsten, min_data_torsten, f"{matrix} min run time on {machine_name} (torsten's method)", f"./{matrix}/{matrix}_{machine_name}_torsten_min_plot.png")
+  make_time_plot(average_keys_torsten, average_data_torsten, f"{matrix} average run time on {machine_name} (torsten's method)", f"./{matrix}/plots/average/{matrix}_{machine_name}_torsten_average_plot.png")
+  make_time_plot(max_keys_torsten, max_data_torsten, f"{matrix} max run time on {machine_name} (torsten's method)", f"./{matrix}/plots/max/{matrix}_{machine_name}_torsten_max_plot.png")
+  make_time_plot(min_keys_torsten, min_data_torsten, f"{matrix} min run time on {machine_name} (torsten's method)", f"./{matrix}/plots/min/{matrix}_{machine_name}_torsten_min_plot.png")
   make_msg_num_plot(num_msg_keys_torsten, num_msg_data_torsten, matrix, machine_name, "torsten")
   make_msg_size_plot(msg_size_keys_torsten, msg_size_data_torsten, matrix, machine_name, "torsten")
 
-  make_time_plot(average_keys_rma, average_data_rma, f"{matrix} average run time on {machine_name} (RMA)", f"./{matrix}/{matrix}_{machine_name}_RMA_average_plot.png")
-  make_time_plot(max_keys_rma, max_data_rma, f"{matrix} max run time on {machine_name} (RMA)", f"./{matrix}/{matrix}_{machine_name}_RMA_max_plot.png")
-  make_time_plot(min_keys_rma, min_data_rma, f"{matrix} min run time on {machine_name} (RMA)", f"./{matrix}/{matrix}_{machine_name}_RMA_min_plot.png")
+  make_time_plot(average_keys_rma, average_data_rma, f"{matrix} average run time on {machine_name} (RMA)", f"./{matrix}/plots/average/{matrix}_{machine_name}_RMA_average_plot.png")
+  make_time_plot(max_keys_rma, max_data_rma, f"{matrix} max run time on {machine_name} (RMA)", f"./{matrix}/plots/max/{matrix}_{machine_name}_RMA_max_plot.png")
+  make_time_plot(min_keys_rma, min_data_rma, f"{matrix} min run time on {machine_name} (RMA)", f"./{matrix}/plots/min/{matrix}_{machine_name}_RMA_min_plot.png")
   make_msg_num_plot(num_msg_keys_rma, num_msg_data_rma, matrix, machine_name, "RMA")
   make_msg_size_plot(msg_size_keys_rma, msg_size_data_rma, matrix, machine_name, "RMA")
 
+  make_time_plot(average_keys_rma_dynamic, average_data_rma_dynamic, f"{matrix} average run time on {machine_name} (RMA_DYNAMIC)", f"./{matrix}/plots/average/{matrix}_{machine_name}_RMA_DYNAMIC_average_plot.png")
+  make_time_plot(max_keys_rma_dynamic, max_data_rma_dynamic, f"{matrix} max run time on {machine_name} (RMA_DYNAMIC)", f"./{matrix}/plots/max/{matrix}_{machine_name}_RMA_DYNAMIC_max_plot.png")
+  make_time_plot(min_keys_rma_dynamic, min_data_rma_dynamic, f"{matrix} min run time on {machine_name} (RMA_DYNAMIC)", f"./{matrix}/plots/min/{matrix}_{machine_name}_RMA_DYNAMIC_min_plot.png")
+  make_msg_num_plot(num_msg_keys_rma_dynamic, num_msg_data_rma_dynamic, matrix, machine_name, "RMA_DYNAMIC")
+  make_msg_size_plot(msg_size_keys_rma_dynamic, msg_size_data_rma_dynamic, matrix, machine_name, "RMA_DYNAMIC")
 
-  plt.plot(average_keys_standard, average_data_standard, average_keys_torsten, average_data_torsten, average_keys_rma, average_data_rma)
+  plt.plot(average_keys_standard, average_data_standard, average_keys_torsten, average_data_torsten, average_keys_rma, average_data_rma, average_keys_rma_dynamic, average_data_rma_dynamic)
   plt.xlabel("Number of Processes")
   plt.ylabel("Time Taken (ms)")
-  plt.title(f"{matrix} average run time on {machine_name} (standard vs torsten vs RMA)")
-  plt.legend(["standard", "torsten", "RMA"])
-  plt.savefig(f"./{matrix}/{matrix}_{machine_name}_compare_average_plot.png")
+  plt.title(f"{matrix} average run time on {machine_name} (standard vs torsten vs RMA vs dynamic RMA)")
+  plt.legend(["standard", "torsten", "RMA","dynamic RMA"])
+  plt.savefig(f"./{matrix}/plots/average/{matrix}_{machine_name}_compare_average_plot.png")
   plt.clf()
 
-  plt.plot(max_keys_standard, max_data_standard, max_keys_torsten, max_data_torsten, max_keys_rma, max_data_rma)
+  plt.plot(max_keys_standard, max_data_standard, max_keys_torsten, max_data_torsten, max_keys_rma, max_data_rma, max_keys_rma_dynamic, max_data_rma_dynamic)
   plt.xlabel("Number of Processes")
   plt.ylabel("Time Taken (ms)")
-  plt.title(f"{matrix} max run time on {machine_name} (standard vs torsten vs RMA)")
-  plt.legend(["standard", "torsten", "RMA"])
-  plt.savefig(f"./{matrix}/{matrix}_{machine_name}_compare_max_plot.png")
+  plt.title(f"{matrix} max run time on {machine_name} (standard vs torsten vs RMA vs dynamic RMA)")
+  plt.legend(["standard", "torsten", "RMA", "dynamic RMA"])
+  plt.savefig(f"./{matrix}/plots/max/{matrix}_{machine_name}_compare_max_plot.png")
   plt.clf()
 
-  plt.plot(min_keys_standard, min_data_standard, min_keys_torsten, min_data_torsten, min_keys_rma, min_data_rma)
+  plt.plot(min_keys_standard, min_data_standard, min_keys_torsten, min_data_torsten, min_keys_rma, min_data_rma, min_keys_rma_dynamic, min_data_rma_dynamic)
   plt.xlabel("Number of Processes")
   plt.ylabel("Time Taken (ms)")
-  plt.title(f"{matrix} min run time on {machine_name} (standard vs torsten vs RMA)")
-  plt.legend(["standard", "torsten", "RMA"])
-  plt.savefig(f"./{matrix}/{matrix}_{machine_name}_compare_min_plot.png")
+  plt.title(f"{matrix} min run time on {machine_name} (standard vs torsten vs RMA vs dynamic RMA)")
+  plt.legend(["standard", "torsten", "RMA", "dynamic RMA"])
+  plt.savefig(f"./{matrix}/plots/min/{matrix}_{machine_name}_compare_min_plot.png")
   plt.clf()
 
-  plt.plot(num_msg_keys_standard, num_msg_data_standard)
-  plt.xlabel("Number of Processes")
-  plt.ylabel("Max # of Messages Sent")
-  plt.title(f"{matrix} num messages")
-  plt.savefig(f"./{matrix}/{matrix}_{machine_name}_num_msg_plot.png")
-  plt.clf()
-
-  plt.plot(msg_size_keys_standard, msg_size_data_standard)
-  plt.xlabel("Number of Processes")
-  plt.ylabel("Max Msg Size (Bytes)")
-  plt.savefig(f"./{matrix}/{matrix}_{machine_name}_compare_msg_size_plot.png")
-  plt.clf()
 
 for matrix in matrix_directories:
+  create_dirs(matrix) 
   out_strings_standard = []
   out_strings_torsten = []
   out_strings_rma = []
-  single_node_standard = open(f"./{matrix}/{matrix}_{machine_name}_Standard_one_node", 'r')
-  many_node_standard = open(f"./{matrix}/{matrix}_{machine_name}_Standard_many_node",'r')
-  single_node_torsten = open(f"./{matrix}/{matrix}_{machine_name}_Torsten_one_node",'r')
-  many_node_torsten = open(f"./{matrix}/{matrix}_{machine_name}_Torsten_many_node",'r')
-  single_node_rma = open(f"./{matrix}/{matrix}_{machine_name}_RMA_one_node", 'r')
-  many_node_rma = open(f"./{matrix}/{matrix}_{machine_name}_RMA_many_node", 'r')
-
-  # Clear lines in file which are not test data (i.e. filler output)
-  for line in single_node_standard.read().splitlines():
-    if (line.strip().split(',')[0] != "STANDARD") and (not line.replace('.','',1).isdigit()) and (line.strip().split(',')[0].split(' ')[0] != 'MAX_MSG_COUNT'):
-      continue
-    out_strings_standard.append(line)
+  out_strings_rma_dynamic = []
+  single_node_standard = None
+  many_node_standard = None
+  single_node_torsten = None
+  many_node_torsten = None
+  single_node_rma = None
+  many_node_rma = None
+  single_node_rma_dynamic = None
+  many_node_rma_dynamic = None
+  try:
+    single_node_standard = open(f"./{matrix}/{matrix}_{machine_name}_Standard_one_node", 'r')
+  except:
+   single_node_standard = None
+  try:
+    many_node_standard = open(f"./{matrix}/{matrix}_{machine_name}_Standard_many_node",'r')
+  except:
+   many_node_standard = None
+  try:
+    single_node_torsten = open(f"./{matrix}/{matrix}_{machine_name}_Torsten_one_node",'r')
+  except:
+    single_node_torsten = None
+  try:
+    many_node_torsten = open(f"./{matrix}/{matrix}_{machine_name}_Torsten_many_node",'r')
+  except:
+    many_node_torsten = None
+  try:
+    single_node_rma = open(f"./{matrix}/{matrix}_{machine_name}_RMA_one_node", 'r')
+  except:
+    single_node_rma = None
+  try:
+    many_node_rma = open(f"./{matrix}/{matrix}_{machine_name}_RMA_many_node", 'r')
+  except:
+    many_node_rma = None
+  try: 
+    single_node_rma_dynamic = open(f"./{matrix}/{matrix}_{machine_name}_RMA_DYNAMIC_one_node",'r')
+  except:
+    single_node_rma_dynamic = None
+  try:
+    many_node_rma_dynamic = open(f"./{matrix}/{matrix}_{machine_name}_RMA_DYNAMIC_many_node",'r')
+  except:
+    many_node_rma_dynamic = None
   
-  for line in many_node_standard.read().splitlines():
-    if (line.strip().split(',')[0] != "STANDARD") and (not line.replace('.','',1).isdigit()) and (line.strip().split(',')[0].split(' ')[0] != "MAX_MSG_COUNT"):
+  file_strings_map = [(out_strings_standard,single_node_standard,"STANDARD"),(out_strings_standard,many_node_standard,"STANDARD"),
+                      (out_strings_torsten,single_node_torsten,"TORSTEN"),(out_strings_torsten,many_node_torsten,"TORSTEN"),
+                      (out_strings_rma,single_node_rma,"RMA"),(out_strings_rma,many_node_rma,"RMA"),
+                      (out_strings_rma_dynamic,single_node_rma_dynamic,"RMA_DYNAMIC"),(out_strings_rma_dynamic,many_node_rma_dynamic,"RMA_DYNAMIC")]
+
+
+  for (out_list,out_file,out_name) in file_strings_map:
+    if out_file == None:
       continue
-    out_strings_standard.append(line)
+    print(out_file.name)
+    for line in out_file.read().splitlines():
+      if (line.strip().split(',')[0] != out_name) and (not line.replace('.','',1).isdigit()) and (line.strip().split(',')[0].split(' ')[0] != 'MAX_MSG_COUNT'):
+        continue
+      out_list.append(line)
 
-  for line in single_node_torsten.read().splitlines():
-    if(line.strip().split(',')[0] != "TORSTEN") and (not line.replace('.','',1).isdigit()) and (line.strip().split(',')[0].split(' ')[0] != "MAX_MSG_COUNT"):
-      continue
-    out_strings_torsten.append(line)
-
-  for line in many_node_torsten.read().splitlines():
-    if(line.strip().split(',')[0] != "TORSTEN") and (not line.replace('.','',1).isdigit()) and (line.strip().split(',')[0].split(' ')[0] != "MAX_MSG_COUNT"):
-      continue
-    out_strings_torsten.append(line)
-  
-  for line in single_node_rma.read().splitlines():
-    if (line.strip().split(',')[0] != "RMA") and (not line.replace('.','',1).isdigit()) and (line.strip().split(',')[0].split(' ')[0] != 'MAX_MSG_COUNT'):
-       continue
-    out_strings_rma.append(line)
-
-  for line in many_node_rma.read().splitlines():
-    if(line.strip().split(',')[0] != "RMA") and (not line.replace('.','',1).isdigit()) and (line.strip().split(',')[0].split(' ')[0] != "MAX_MSG_COUNT"):
-      continue
-    out_strings_rma.append(line)
-
-
-  fp_1 = open(f"./{matrix}/{matrix}_{machine_name}_standard_data.txt","w")
-  fp_2 = open(f"./{matrix}/{matrix}_{machine_name}_torsten_data.txt","w")
-  fp_3 = open(f"./{matrix}/{matrix}_{machine_name}_RMA_data.txt","w")
+  fp_1 = open(f"./{matrix}/one_test_output/{matrix}_{machine_name}_standard_data.txt","w")
+  fp_2 = open(f"./{matrix}/one_test_output/{matrix}_{machine_name}_torsten_data.txt","w")
+  fp_3 = open(f"./{matrix}/one_test_output/{matrix}_{machine_name}_RMA_data.txt","w")
+  fp_4 = open(f"./{matrix}/one_test_output/{matrix}_{machine_name}_RMA_DYNAMIC_data.txt","w")
 
   # Add data to standard dictionaries
   parse_output_strings(standard_dict_average, standard_dict_max, standard_dict_min, standard_dict_num_msg, standard_dict_msg_size, out_strings_standard)
@@ -268,8 +302,11 @@ for matrix in matrix_directories:
   parse_output_strings(torsten_dict_average, torsten_dict_max, torsten_dict_min, torsten_dict_num_msg, torsten_dict_msg_size, out_strings_torsten)
   # Add data to RMA dictionaries
   parse_output_strings(rma_dict_average, rma_dict_max, rma_dict_min, rma_dict_num_msg, rma_dict_msg_size, out_strings_rma);
+  # Add data to RMA_DYNAMIC dictionaries
+  parse_output_strings(rma_dynamic_dict_average, rma_dynamic_dict_max, rma_dynamic_dict_min, rma_dynamic_dict_num_msg, rma_dynamic_dict_msg_size, out_strings_rma_dynamic)
  
-  visualize_data(fp_1, fp_2, fp_3, matrix, machine_name)
+  visualize_data(fp_1, fp_2, fp_3, fp_4, matrix, machine_name)
   fp_1.close() 
   fp_2.close()
   fp_3.close()
+  fp_4.close()
