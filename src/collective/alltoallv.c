@@ -67,15 +67,15 @@ int MPIX_Alltoallv(const void* sendbuf,
 }
 
 
-/*
 
 
 
-int alltoallv_pairwise_nonblocking_waitany(const void* sendbuf,
 
 
 
-*/
+
+
+
 int alltoallv_pairwise(const void* sendbuf,
         const int sendcounts[],
         const int sdispls[],
@@ -631,7 +631,6 @@ int alltoallv_pairwise_loc(const void* sendbuf,
     // Recv from node - i
     for (int i = 0; i < num_nodes; i++)
     {
-<<<<<<< HEAD
         send_node = rank_node + i;
         if (send_node >= num_nodes)
             send_node -= num_nodes;
@@ -644,21 +643,6 @@ int alltoallv_pairwise_loc(const void* sendbuf,
                 &(global_recvcounts[recv_node*PPN]), PPN, MPI_INT,
                 recv_node*PPN+local_rank, tag,
                 mpi_comm->global_comm, &status); 
-=======
-        start = local_S_recv_displs[i];
-        end = local_S_recv_displs[i+1];
-        if (end - start)
-        {
-            MPI_Irecv(&(tmpbuf[ctr*send_size]), 
-                    end - start, 
-                    sendtype,
-                    i, 
-                    tag, 
-                    mpi_comm->local_comm, 
-                    &(local_requests[n_msgs++]));
-        }
-        ctr += (end - start);
->>>>>>> de402af3caf34e189359c0a67d4f3de1153d9453
     }
 
     int maxrecvcount = final_recvcount;
@@ -728,22 +712,12 @@ int alltoallv_pairwise_loc(const void* sendbuf,
     for (int i = 0; i < num_nodes; i++)
         for (int j = 0; j < PPN; j++)
         {
-<<<<<<< HEAD
             recvcount = global_recvcounts[i*PPN+j];
             memcpy(recvbuf + (ppn_displs[j] + ppn_ctr[j])*rbytes,
                     tmpbuf + ctr*rbytes,
                     recvcount*rbytes);
             ctr += recvcount;
             ppn_ctr[j] += recvcount;
-=======
-            MPI_Irecv(&(tmpbuf[ctr*recv_size]), 
-                    end - start, 
-                    recvtype,
-                    proc, 
-                    tag,
-                    mpi_comm->global_comm, 
-                    &(nonlocal_requests[n_msgs++]));
->>>>>>> de402af3caf34e189359c0a67d4f3de1153d9453
         }
 
     // Send to local_rank + i
@@ -751,7 +725,6 @@ int alltoallv_pairwise_loc(const void* sendbuf,
     ctr = 0;
     for (int i = 0; i < PPN; i++)
     {
-<<<<<<< HEAD
         send_proc = local_rank + i;
         if (send_proc >= PPN)
             send_proc -= PPN;
@@ -773,56 +746,16 @@ int alltoallv_pairwise_loc(const void* sendbuf,
         ppn_ctr[recv_proc] = ctr;
 
         ctr += recvcount;
-=======
-        for (int j = 0; j < local_num_msgs; j++)
-        {
-            for (int k = 0; k < PPN; k++)
-            {
-                start = recv_proc_displs[j*PPN*PPN + k*PPN + i];
-                size = recv_proc_sizes[j*PPN*PPN + k*PPN + i];
-                for (int l = 0; l < size; l++)
-                {
-                    for (int m = 0; m < recv_size; m++)
-                    {
-                        contig_buf[next_ctr*recv_size+m] = tmpbuf[(start+l)*recv_size+m];
-                    }
-                    next_ctr++;
-                }
-            }
-        }
-
-        if (next_ctr - ctr)
-        {
-            MPI_Isend(&(contig_buf[ctr*recv_size]), 
-                    next_ctr - ctr,
-                    recvtype,
-                    i,
-                    local_tag,
-                    mpi_comm->local_comm,
-                    &(local_requests[n_msgs++]));
-        }
-        ctr = next_ctr;
->>>>>>> de402af3caf34e189359c0a67d4f3de1153d9453
     }
 
     for (int i = 0; i < PPN; i++)
     {
         for (int j = 0; j < num_nodes; j++)
         {
-<<<<<<< HEAD
             memcpy(recvbuf + rdispls[j*PPN+i]*rbytes,
                     tmpbuf + ppn_ctr[i]*rbytes,
                     recvcounts[j*PPN+i]*rbytes);
             ppn_ctr[i] += recvcounts[j*PPN+i];
-=======
-            MPI_Irecv(&(recv_buffer[ctr*recv_size]), 
-                    (end - start)*recv_size,
-                    recvtype, 
-                    i, 
-                    local_tag, 
-                    mpi_comm->local_comm, 
-                    &(local_requests[n_msgs++]));
->>>>>>> de402af3caf34e189359c0a67d4f3de1153d9453
         }
     }
 
