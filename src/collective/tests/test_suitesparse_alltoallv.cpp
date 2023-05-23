@@ -19,7 +19,9 @@
 #include "tests/sparse_mat.hpp"
 #include "tests/par_binary_IO.hpp"
 
+
 #include "/home/evelynn/Lacality_aware/locality_aware/src/collective/alltoallv.h"
+
 
 void test_matrix(const char* filename)
 {
@@ -186,6 +188,7 @@ void test_matrix(const char* filename)
     {
         ASSERT_EQ(std_recv_vals[i], mpi_recv_vals[i]);
     }
+
   
 //printf("before waitany \n");
    alltoallv_pairwise_nonblocking_waitany(alltoallv_send_vals.data(), 
@@ -200,6 +203,7 @@ void test_matrix(const char* filename)
 
     
    alltoallv_pairwise_nonblocking_testany(alltoallv_send_vals.data(), 
+
             sendcounts.data(),
             sdispls.data(),
             MPI_INT,
@@ -207,12 +211,13 @@ void test_matrix(const char* filename)
             recvcounts.data(),
             rdispls.data(),
             MPI_INT,
+
             locality_comm->global_comm); 
 
 
 
 
-//printf("After waitany \n");
+
     // 3. Compare std_recv_vals and nap_recv_vals
     for (int i = 0; i < A.recv_comm.size_msgs; i++)
     {
@@ -235,10 +240,12 @@ void test_matrix(const char* filename)
 //printf("before MPIX_Comm_free \n");
     MPIX_Comm_free(locality_comm);
 //printf("After MPIX_Comm_free \n");
+
 }
 
 int main(int argc, char** argv)
 {
+
 //printf("before MPI_Init \n");
     MPI_Init(&argc, &argv);
 
@@ -249,13 +256,16 @@ int main(int argc, char** argv)
     int temp=RUN_ALL_TESTS();
 
 //printf("4 \n");
+
     MPI_Finalize();
     return temp;
 } // end of main() //
 
 
 
+
  
+
 
 TEST(RandomCommTest, TestsInTests)
 {

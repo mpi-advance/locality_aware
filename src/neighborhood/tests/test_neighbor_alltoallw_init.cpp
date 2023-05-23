@@ -15,8 +15,7 @@
 #include <vector>
 #include <set>
 
-#include "neighbor_data.h"
-
+#include "neighbor_data.hpp"
 
 
 int main(int argc, char** argv)
@@ -35,8 +34,6 @@ TEST(RandomCommTest, TestsInTests)
     int rank, num_procs;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
-
-    setenv("PPN", "4", 1);
 
     // Initial communication info (standard)
     int local_size = 10000; // Number of variables each rank stores
@@ -103,6 +100,7 @@ TEST(RandomCommTest, TestsInTests)
             MPI_INFO_NULL, 
             0, 
             &neighbor_comm);
+    update_locality(neighbor_comm, 4);
     MPIX_Neighbor_alltoallw_init(alltoallv_send_vals.data(), 
             send_data.counts.data(),
             send_data.indptr.data(), 
@@ -128,6 +126,5 @@ TEST(RandomCommTest, TestsInTests)
     MPIX_Comm_free(neighbor_comm);
     MPI_Comm_free(&std_comm);
 
-    setenv("PPN", "16", 1);
 }
 

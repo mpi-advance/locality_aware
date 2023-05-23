@@ -16,8 +16,8 @@
 #include <numeric>
 #include <set>
 
-#include "sparse_mat.hpp"
-#include "par_binary_IO.hpp"
+#include "tests/sparse_mat.hpp"
+#include "tests/par_binary_IO.hpp"
 
 void test_matrix(const char* filename)
 {
@@ -97,6 +97,7 @@ void test_matrix(const char* filename)
             MPI_INFO_NULL, 
             0, 
             &neighbor_comm);
+    update_locality(neighbor_comm, 4);
     MPIX_Neighbor_alltoallw_init(alltoallv_send_vals.data(), 
             A.send_comm.counts.data(),
             A.send_comm.ptr.data(), 

@@ -39,11 +39,12 @@ TEST(RandomCommTest, TestsInTests)
     std::vector<int> local_data(max_s*num_procs);
 
     std::vector<int> std_alltoall(max_s*num_procs);
-    std::vector<int> loc_p2p_alltoall(max_s*num_procs);
-    std::vector<int> bruck_alltoall(max_s*num_procs);
+    std::vector<int> pairwise_alltoall(max_s*num_procs);
+    std::vector<int> loc_pairwise_alltoall(max_s*num_procs);
 
     MPIX_Comm* locality_comm;
     MPIX_Comm_init(&locality_comm, MPI_COMM_WORLD);
+    update_locality(locality_comm, 4);
 
     for (int i = 0; i < max_i; i++)
     {
@@ -64,26 +65,27 @@ TEST(RandomCommTest, TestsInTests)
                 MPI_COMM_WORLD);
 
 
-        // Locality-Aware P2P Alltoall 
+        // Pairwise Alltoall
         MPI_Alltoall(local_data.data(), 
                 s,
                 MPI_INT, 
-                loc_p2p_alltoall.data(), 
+                pairwise_alltoall.data(), 
                 s, 
                 MPI_INT,
                 MPI_COMM_WORLD);
         for (int j = 0; j < s*num_procs; j++)
-            ASSERT_EQ(std_alltoall[j], loc_p2p_alltoall[j]);
+            ASSERT_EQ(std_alltoall[j], pairwise_alltoall[j]);
 
+        // Locality-Aware Pairwise Alltoall
         MPIX_Alltoall(local_data.data(), 
                 s, 
                 MPI_INT,
-                loc_p2p_alltoall.data(), 
+                loc_pairwise_alltoall.data(), 
                 s, 
                 MPI_INT,
                 locality_comm);
         for (int j = 0; j < s*num_procs; j++)
-            ASSERT_EQ(std_alltoall[j], loc_p2p_alltoall[j]);
+            ASSERT_EQ(std_alltoall[j], loc_pairwise_alltoall[j]);
 
         /*
         alltoall_bruck(local_data.data(), 

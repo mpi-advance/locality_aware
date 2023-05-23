@@ -1,8 +1,10 @@
+
 #include "/home/evelynn/Lacality_aware/locality_aware/src/collective/alltoallv.h"
 #include <string.h>
 #include <math.h>
 #include "utils.h"
 #include "/home/evelynn/Lacality_aware/locality_aware/src/collective/collective.h"
+
 
 /**************************************************
  * Locality-Aware Point-to-Point Alltoallv
@@ -68,12 +70,24 @@ int MPIX_Alltoallv(const void* sendbuf,
 
 
 
+int alltoallv_pairwise(const void* sendbuf,
+        const int sendcounts[],
+        const int sdispls[],
+        MPI_Datatype sendtype,
+        void* recvbuf,
+        const int recvcounts[],
+        const int rdispls[],
+        MPI_Datatype recvtype,
+        MPI_Comm comm)
+{
+    int rank, num_procs;
+    MPI_Comm_rank(comm, &rank);
+    MPI_Comm_size(comm, &num_procs);
 
-
-
-
-
-
+    int tag = 103044;
+    int send_proc, recv_proc;
+    int send_pos, recv_pos;
+    MPI_Status status;
 
 
 int alltoallv_pairwise(const void* sendbuf,
@@ -103,6 +117,7 @@ int alltoallv_pairwise(const void* sendbuf,
         recvbuf + (rdispls[rank] * recv_size),
         sendbuf + (sdispls[rank] * send_size), 
         sendcounts[rank] * send_size);        
+
 
     // Send to rank + i
     // Recv from rank - i
@@ -227,6 +242,11 @@ int alltoallv_pairwise_nonblocking_waitany(const void* sendbuf,
     // exchange among procs stride (i+1) apart
     ctr = 0;
     for (int i = 1; i <= nb_stride && i < num_procs; i++)
+
+
+    // Send to rank + i
+    // Recv from rank - i
+  
     {
         send_proc = rank + i;
         if (send_proc >= num_procs)
@@ -237,6 +257,7 @@ int alltoallv_pairwise_nonblocking_waitany(const void* sendbuf,
 
         send_pos = sdispls[send_proc] * send_size;
         recv_pos = rdispls[recv_proc] * recv_size;
+
 
         MPI_Isend(sendbuf + send_pos, sendcounts[send_proc], sendtype, send_proc, tag,
                 comm, &(requests[ctr++]));
@@ -289,8 +310,10 @@ int alltoallv_pairwise_nonblocking_waitany(const void* sendbuf,
                     comm, &(requests[idx]));
             recv_idx++;
         }
+
     }
  
+
 
     free(requests);
 return 0;
@@ -335,6 +358,7 @@ int alltoallv_pairwise_nonblocking_testany(const void* sendbuf,
     // exchange among procs stride (i+1) apart
     ctr = 0;
     for (int i = 1; i <= nb_stride && i < num_procs; i++)
+
     {
         send_proc = rank + i;
         if (send_proc >= num_procs)
@@ -351,7 +375,10 @@ int alltoallv_pairwise_nonblocking_testany(const void* sendbuf,
         MPI_Irecv(recvbuf + recv_pos, recvcounts[recv_proc], recvtype, recv_proc, tag,
                 comm, &(requests[ctr++]));
 
+
     }
+  
+
 
   
     int request_finished = 0;

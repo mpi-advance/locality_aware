@@ -38,7 +38,6 @@ void remove_duplicates(LocalityComm* locality);
 void update_indices(LocalityComm* locality, 
         std::map<long, int>& send_global_to_local,
         std::map<long, int>& recv_global_to_local);
-void update_indices(LocalityComm* locality);
 
 
 /******************************************
@@ -144,121 +143,21 @@ void init_locality(const int n_sends,
     std::map<long, int> send_global_to_local;
     std::map<long, int> recv_global_to_local;
     for (int i = 0; i < send_idx_size; i++)
+    {
         send_global_to_local[global_send_indices[i]] = i;
+    }
     for (int i = 0; i < recv_idx_size; i++)
         recv_global_to_local[global_recv_indices[i]] = i;
     update_indices(locality_comm, 
             send_global_to_local, 
             recv_global_to_local);
 
-
     // Initialize final variable (MPI_Request arrays, etc.)
     finalize_locality_comm(locality_comm);
 
     // Copy to pointer for return
     request->locality = locality_comm;
 }
-
-// Initialize NAPComm* structure, to be used for any number of
-// instances of communication
-void init_part_locality(const int n_sends, 
-        const int* send_procs, 
-        const int* send_indptr,
-        const int n_recvs,
-        const int* recv_procs,
-        const int* recv_indptr,
-        const MPI_Datatype sendtype, 
-        const MPI_Datatype recvtype,
-        const MPIX_Comm* mpix_comm,
-        MPIX_Request* request)
-{
-    // Get MPI Information
-    int rank, num_procs;
-    MPI_Comm_rank(mpix_comm->global_comm, &rank);
-    MPI_Comm_size(mpix_comm->global_comm, &num_procs);
-
-    // Initialize structure
-    LocalityComm* locality_comm;
-    init_locality_comm(&locality_comm, mpix_comm, sendtype, recvtype);
-
-    // Find global send nodes
-    std::vector<int> send_nodes;
-    std::vector<int> send_node_to_local;
-    map_procs_to_nodes(locality_comm, 
-            n_sends, 
-            send_procs, 
-            send_indptr,
-            send_nodes, 
-            send_node_to_local, 
-            true);
-
-    // Form initial send local comm
-    std::vector<int> recv_idx_nodes;
-    form_local_comm(n_sends, 
-            send_procs, 
-            send_indptr, 
-            send_node_to_local,
-            locality_comm->local_S_comm->send_data, 
-            locality_comm->local_S_comm->recv_data,
-            locality_comm->local_L_comm->send_data, 
-            recv_idx_nodes,
-            locality_comm, 
-            19483);
-
-    // Form global send data
-    form_global_comm(locality_comm->local_S_comm->recv_data, 
-            locality_comm->global_comm->send_data,
-            recv_idx_nodes, 
-            mpix_comm, 
-            93284);
-
-    // Find global recv nodes
-    std::vector<int> recv_nodes;
-    std::vector<int> recv_node_to_local;
-    map_procs_to_nodes(locality_comm, 
-            n_recvs, 
-            recv_procs, 
-            recv_indptr,
-            recv_nodes, 
-            recv_node_to_local, 
-            false);
-
-    // Form final recv local comm
-    std::vector<int> send_idx_nodes;
-    form_local_comm(n_recvs,
-            recv_procs,
-            recv_indptr, 
-            recv_node_to_local,
-            locality_comm->local_R_comm->recv_data, 
-            locality_comm->local_R_comm->send_data,
-            locality_comm->local_L_comm->recv_data, 
-            send_idx_nodes, 
-            locality_comm,
-            32048);
-
-    // Form global recv data
-    form_global_comm(locality_comm->local_R_comm->send_data,
-            locality_comm->global_comm->recv_data,
-            send_idx_nodes,
-            locality_comm->communicators,
-            93284);
-
-    // Update procs for global_comm send and recvs
-    update_global_comm(locality_comm);
-
-    // Update send and receive indices
-    update_indices(locality_comm); 
-
-
-    // Initialize final variable (MPI_Request arrays, etc.)
-    finalize_locality_comm(locality_comm);
-
-    // Copy to pointer for return
-    request->locality = locality_comm;
-}
-
-
-
 
 // Destroy NAPComm* structure
 void destroy_locality(MPIX_Request* request)
@@ -282,6 +181,7 @@ void map_procs_to_nodes(LocalityComm* locality, const int orig_num_msgs,
 {
     int rank, num_procs;
     int local_rank, local_num_procs;
+
     MPI_Comm_rank(locality->communicators->global_comm, &rank);
     MPI_Comm_size(locality->communicators->global_comm, &num_procs);
     MPI_Comm_rank(locality->communicators->local_comm, &local_rank);
@@ -485,6 +385,12 @@ void form_local_comm(const int orig_num_sends, const int* orig_send_procs,
         start_ctr = ctr;
     }
 
+
+    std::vector<int> proc_pos(local_num_procs, -1);
+    std::vector<int> recv_idx(recv_data->size_msgs);
+    std::vector<int> tmpnodes(recv_data->size_msgs);
+    std::vector<int> recvptr(local_num_procs+1);
+    recvptr[0] = 0;
     ctr = 0;
     while (ctr < recv_data->size_msgs)
     {
@@ -494,177 +400,40 @@ void form_local_comm(const int orig_num_sends, const int* orig_send_procs,
         if (size > recv_buffer.size())
             recv_buffer.resize(size);
         MPI_Recv(recv_buffer.data(), size, MPI_INT, proc, tag, locality->communicators->local_comm, &recv_status);
+        proc_pos[proc] = recv_data->num_msgs;
         for (int i = 0; i < size; i += 2)
         {
-            recv_data->indices[ctr] = recv_buffer[i];
-            recv_idx_nodes[ctr++] = recv_buffer[i+1];
+            recv_idx[ctr] = recv_buffer[i];
+            tmpnodes[ctr++] = recv_buffer[i+1];
+            //recv_data->indices[ctr] = recv_buffer[i];
+            //recv_idx_nodes[ctr++] = recv_buffer[i+1];
         }
-        recv_data->procs[recv_data->num_msgs] = proc;
-        recv_data->indptr[recv_data->num_msgs + 1] = recv_data->indptr[recv_data->num_msgs] + (size / 2);
+        recvptr[recv_data->num_msgs+1] = recvptr[recv_data->num_msgs] + (size/2);
+        //recv_data->procs[recv_data->num_msgs] = proc;
+        //recv_data->indptr[recv_data->num_msgs + 1] = recv_data->indptr[recv_data->num_msgs] + (size / 2);
         recv_data->num_msgs++;
     }
 
-    if (send_data->num_msgs)
-    {
-        MPI_Waitall(send_data->num_msgs, send_requests.data(), MPI_STATUSES_IGNORE);
-    }
-}
-
-
-void form_local_comm(const int orig_num_sends, const int* orig_send_procs,
-        const int* orig_send_ptr,
-        const std::vector<int>& nodes_to_local, CommData* send_data,
-        CommData* recv_data, CommData* local_data,
-        std::vector<int>& recv_idx_nodes,
-        LocalityComm* locality, const int tag)
-{
-    // MPI_Information
-    int rank, num_procs;
-    int local_rank, local_num_procs;
-    MPI_Comm_rank(locality->communicators->global_comm, &rank);
-    MPI_Comm_size(locality->communicators->global_comm, &num_procs);
-    MPI_Comm_rank(locality->communicators->local_comm, &local_rank);
-    MPI_Comm_size(locality->communicators->local_comm, &local_num_procs);
-
-    // Declare variables
-    int global_proc, local_proc;
-    int size, ctr, start_ctr;
-    int start, end, node;
-    int idx, proc_idx;
-    int proc;
-    MPI_Status recv_status;
-
-    std::vector<int> send_buffer;
-    std::vector<MPI_Request> send_requests;
-    std::vector<int> send_sizes;
-    std::vector<int> recv_buffer;
-
-    std::vector<int> orig_to_node;
-    std::vector<int> local_idx;
-
-    // Initialize variables
-    orig_to_node.resize(orig_num_sends);
-    local_idx.resize(local_num_procs);
-    send_sizes.resize(local_num_procs, 0);
-
-    // Allocate sizes
-    init_num_msgs(send_data, local_num_procs);
-    init_num_msgs(recv_data, local_num_procs);
-    init_num_msgs(local_data, local_num_procs);
-
-    // Form local_S_comm
-    send_data->num_msgs = 0;
-    local_data->num_msgs = 0;
-    recv_data->num_msgs = 0;
-    for (int i = 0; i < orig_num_sends; i++)
-    {
-        global_proc = orig_send_procs[i];
-        size = orig_send_ptr[i+1] - orig_send_ptr[i];
-        node = get_node(locality->communicators, global_proc);
-        if (locality->communicators->rank_node != node)
-        {
-            local_proc = nodes_to_local[node];
-            if (send_sizes[local_proc] == 0)
-            {
-                local_idx[local_proc] = send_data->num_msgs;
-                send_data->procs[send_data->num_msgs++] = local_proc;
-            }
-            orig_to_node[i] = node;
-            send_sizes[local_proc] += size;
-        }
-        else
-        {
-            orig_to_node[i] = -1;
-            local_data->procs[local_data->num_msgs] = get_local_proc(locality->communicators, global_proc);
-            local_data->size_msgs += size;
-            local_data->num_msgs++;
-            local_data->indptr[local_data->num_msgs] = local_data->size_msgs;
-        }
-    }
-    init_size_msgs(local_data, local_data->size_msgs);
-
-    for (int i = 0; i < send_data->num_msgs; i++)
-    {
-        local_proc = send_data->procs[i];
-        send_data->indptr[i+1] = send_data->indptr[i] + send_sizes[local_proc];
-        send_sizes[local_proc] = 0;
-    }
-    send_data->size_msgs = send_data->indptr[send_data->num_msgs];
-
-    // Allocate send_indices and fill vector
-    init_size_msgs(send_data, send_data->size_msgs);
-
-    std::vector<int> send_idx_node(send_data->size_msgs);
-    local_data->size_msgs = 0;
-    for (int i = 0; i < orig_num_sends; i++)
-    {
-        node = orig_to_node[i];
-        start = orig_send_ptr[i];
-        end = orig_send_ptr[i+1];
-        if (node == -1)
-        {
-            for (int j = start; j < end; j++)
-            {
-                local_data->indices[local_data->size_msgs++] = j;
-            }
-        }
-        else
-        {
-            local_proc = nodes_to_local[node];
-            proc_idx = local_idx[local_proc];
-            for (int j = start; j < end; j++)
-            {
-                idx = send_data->indptr[proc_idx] + send_sizes[local_proc]++;
-                send_data->indices[idx] = j;
-                send_idx_node[idx] = node;
-            }
-        }
-    }
-
-    // Send 'local_S_comm send' info (to form local_S recv)
-    MPI_Allreduce(MPI_IN_PLACE, send_sizes.data(), local_num_procs,
-            MPI_INT, MPI_SUM, locality->communicators->local_comm);
-    recv_data->size_msgs = send_sizes[local_rank];
-    init_size_msgs(recv_data, recv_data->size_msgs);
-    recv_idx_nodes.resize(recv_data->size_msgs);
-
-    send_buffer.resize(2*send_data->size_msgs);
-    send_requests.resize(send_data->num_msgs);
+    // Reorder Recvs
     ctr = 0;
-    start_ctr = 0;
-    for (int i = 0; i < send_data->num_msgs; i++)
+    int pos, old_start, new_start;
+    for (int i = 0; i < local_num_procs; i++)
     {
-        proc = send_data->procs[i];
-        start = send_data->indptr[i];
-        end = send_data->indptr[i+1];
-        for (int j = start; j < end; j++)
+        if (proc_pos[i] == -1) continue;
+
+        recv_data->procs[ctr] = i;
+        pos = proc_pos[i];
+        old_start = recvptr[pos];
+        new_start = recv_data->indptr[ctr];
+        size = recvptr[pos+1] - old_start;
+        recv_data->indptr[++ctr] = new_start + size;
+        for (int j = 0; j < size; j++)
         {
-            send_buffer[ctr++] = send_data->indices[j];
-            send_buffer[ctr++] = send_idx_node[j];
+            recv_data->indices[new_start+j] = recv_idx[old_start+j];
+            recv_idx_nodes[new_start+j] = tmpnodes[old_start+j];
         }
-        MPI_Isend(&send_buffer[start_ctr], ctr - start_ctr ,
-                MPI_INT, proc, tag, locality->communicators->local_comm, &send_requests[i]);
-        start_ctr = ctr;
     }
 
-    ctr = 0;
-    while (ctr < recv_data->size_msgs)
-    {
-        MPI_Probe(MPI_ANY_SOURCE, tag, locality->communicators->local_comm, &recv_status);
-        proc = recv_status.MPI_SOURCE;
-        MPI_Get_count(&recv_status, MPI_INT, &size);
-        if (size > recv_buffer.size())
-            recv_buffer.resize(size);
-        MPI_Recv(recv_buffer.data(), size, MPI_INT, proc, tag, locality->communicators->local_comm, &recv_status);
-        for (int i = 0; i < size; i += 2)
-        {
-            recv_data->indices[ctr] = recv_buffer[i];
-            recv_idx_nodes[ctr++] = recv_buffer[i+1];
-        }
-        recv_data->procs[recv_data->num_msgs] = proc;
-        recv_data->indptr[recv_data->num_msgs + 1] = recv_data->indptr[recv_data->num_msgs] + (size / 2);
-        recv_data->num_msgs++;
-    }
 
     if (send_data->num_msgs)
     {
@@ -699,15 +468,14 @@ void form_global_comm(CommData* local_data, CommData* global_data,
 
     node_sizes.resize(num_nodes, 0);
 
-    for (int i = 0; i < local_data->num_msgs; i++)
+    for (int i = 0; i < local_data->size_msgs; i++)
     {
         node = local_data_nodes[i];
-        size = local_data->indptr[i+1] - local_data->indptr[i];
         if (node_sizes[node] == 0)
         {
             global_data->num_msgs++;
         }
-        node_sizes[node] += size;
+        node_sizes[node]++;
     }
     init_num_msgs(global_data, global_data->num_msgs);
 
@@ -729,12 +497,12 @@ void form_global_comm(CommData* local_data, CommData* global_data,
     init_size_msgs(global_data, global_data->size_msgs);
     for (int i = 0; i < local_data->num_msgs; i++)
     {
-        node = local_data_nodes[i];
-        node_idx = node_sizes[node];
         start = local_data->indptr[i];
         end = local_data->indptr[i+1];
         for (int j = start; j < end; j++)
         {
+            node = local_data_nodes[j];
+            node_idx = node_sizes[node];
             idx = global_data->indptr[node_idx] + node_ctr[node_idx]++;
             global_data->indices[idx] = local_data->indices[j];
         }
@@ -760,6 +528,7 @@ void update_global_comm(LocalityComm* locality)
     int send_tag = 32148532;
     int recv_tag = 52395234;
     int node, global_proc, tag;
+    int num_to_recv;
     MPI_Status recv_status;
     std::vector<int> send_nodes(num_nodes, 0);
     std::vector<int> recv_nodes(num_nodes, 0);
@@ -776,37 +545,40 @@ void update_global_comm(LocalityComm* locality)
         global_proc = get_global_proc(locality->communicators, node, local_rank);
         comm_procs[global_proc]++;
         send_buffer[i] = locality->communicators->rank_node;
-        MPI_Isend(&send_buffer[i], 1, MPI_INT, global_proc, send_tag,
-                locality->communicators->global_comm, &requests[i]);
+        MPI_Isend(&(send_buffer[i]), 1, MPI_INT, global_proc, send_tag,
+                locality->communicators->global_comm, &(requests[i]));
     }
+    MPI_Allreduce(MPI_IN_PLACE, comm_procs.data(), num_procs, MPI_INT,
+            MPI_SUM, locality->communicators->global_comm);
+    num_to_recv = comm_procs[rank];
+    for (int i = 0; i < num_procs; i++)
+        comm_procs[i] = 0;
+    for (int i = 0; i < num_to_recv; i++)
+    {
+        MPI_Probe(MPI_ANY_SOURCE, send_tag, locality->communicators->global_comm, &recv_status);
+        global_proc = recv_status.MPI_SOURCE;
+        MPI_Recv(&node, 1, MPI_INT, global_proc, send_tag, locality->communicators->global_comm, &recv_status);
+        recv_nodes[node] = global_proc;
+    }
+    
     for (int i = 0; i < n_recvs; i++)
     {
         node = locality->global_comm->recv_data->procs[i];
         global_proc = get_global_proc(locality->communicators, node, local_rank);
         comm_procs[global_proc]++;
         send_buffer[n_sends + i] = locality->communicators->rank_node;
-        MPI_Isend(&send_buffer[n_sends + i], 1, MPI_INT, global_proc, recv_tag,
-                locality->communicators->global_comm, &requests[n_sends + i]);
+        MPI_Isend(&(send_buffer[n_sends + i]), 1, MPI_INT, global_proc, recv_tag,
+                locality->communicators->global_comm, &(requests[n_sends + i]));
     }
-
     MPI_Allreduce(MPI_IN_PLACE, comm_procs.data(), num_procs, MPI_INT,
             MPI_SUM, locality->communicators->global_comm);
-    int num_to_recv = comm_procs[rank];
-
+    num_to_recv = comm_procs[rank];
     for (int i = 0; i < num_to_recv; i++)
     {
-        MPI_Probe(MPI_ANY_SOURCE, MPI_ANY_TAG, locality->communicators->global_comm, &recv_status);
+        MPI_Probe(MPI_ANY_SOURCE, recv_tag, locality->communicators->global_comm, &recv_status);
         global_proc = recv_status.MPI_SOURCE;
-        tag = recv_status.MPI_TAG;
-        MPI_Recv(&node, 1, MPI_INT, global_proc, tag, locality->communicators->global_comm, &recv_status);
-        if (tag == send_tag)
-        {
-            recv_nodes[node] = global_proc;
-        }
-        else
-        {
-            send_nodes[node] = global_proc;
-        }
+        MPI_Recv(&node, 1, MPI_INT, global_proc, recv_tag, locality->communicators->global_comm, &recv_status);
+        send_nodes[node] = global_proc;
     }
 
     if (n_sends + n_recvs)
@@ -863,6 +635,9 @@ void map_indices(CommData* idx_data, const CommData* map_data)
     map_indices(idx_data, global_map);
 }
 
+int cmpfunc (const void * a, const void * b) {
+   return ( *(int*)a - *(int*)b );
+}
 
 void remove_duplicates(CommData* comm_pkg)
 {
@@ -895,13 +670,12 @@ void remove_duplicates(CommData* comm_pkg)
 
 void remove_duplicates(CommPkg* data)
 {
-    remove_duplicates(data->send_data);
-    remove_duplicates(data->recv_data);
+        remove_duplicates(data->send_data);
+        remove_duplicates(data->recv_data);
 }
 
 void remove_duplicates(LocalityComm* locality)
 {
-    //remove_duplicates(locality->local_L_comm);
     remove_duplicates(locality->local_S_comm);
     remove_duplicates(locality->local_R_comm);
     remove_duplicates(locality->global_comm);
@@ -926,30 +700,13 @@ void update_indices(LocalityComm* locality,
     // Don't need local_S or global recv indices (just contiguous)
     if (locality->local_S_comm->recv_data->indices)
     {
-        delete[] locality->local_S_comm->recv_data->indices;
+        free(locality->local_S_comm->recv_data->indices);
         locality->local_S_comm->recv_data->indices = NULL;
     }
     if (locality->global_comm->recv_data->indices)
     {
-        delete[] locality->global_comm->recv_data->indices;
+        free(locality->global_comm->recv_data->indices);
         locality->global_comm->recv_data->indices = NULL;
     }
 }
-
-void update_indices(LocalityComm* locality) 
-{
-    // Don't need local_S or global recv indices (just contiguous)
-    if (locality->local_S_comm->recv_data->indices)
-    {
-        delete[] locality->local_S_comm->recv_data->indices;
-        locality->local_S_comm->recv_data->indices = NULL;
-    }
-    if (locality->global_comm->recv_data->indices)
-    {
-        delete[] locality->global_comm->recv_data->indices;
-        locality->global_comm->recv_data->indices = NULL;
-    }
-}
-
-
 

@@ -15,7 +15,6 @@ void init_comm_data(CommData** comm_data_ptr, MPI_Datatype datatype)
     *comm_data_ptr = data;
 }
 
-// TODO : delete[]??
 void destroy_comm_data(CommData* data)
 {
     if (data->procs) free(data->procs);

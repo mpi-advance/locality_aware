@@ -14,6 +14,64 @@ extern "C"
 #endif
 
 
+// Standard Neighbor Alltoallv
+// Extension takes array of requests instead of single request
+// 'requests' must be of size indegree+outdegree!
+int MPIX_Neighbor_alltoallv(
+        const void* sendbuf,
+        const int sendcounts[],
+        const int sdispls[],
+        MPI_Datatype sendtype,
+        void* recvbuf,
+        const int recvcounts[],
+        const int rdispls[],
+        MPI_Datatype recvtype,
+        MPIX_Comm* comm);
+
+
+// Standard Neighbor Alltoallv
+// Extension takes array of requests instead of single request
+// 'requests' must be of size indegree+outdegree!
+int MPIX_Neighbor_alltoallw(
+        const void* sendbuf,
+        const int sendcounts[],
+        const MPI_Aint sdispls[],
+        MPI_Datatype* sendtypes,
+        void* recvbuf,
+        const int recvcounts[],
+        const MPI_Aint rdispls[],
+        MPI_Datatype* recvtypes,
+        MPIX_Comm* comm);
+
+
+
+// Locality-Aware Extension to Persistent Neighbor Alltoallv
+// Needs global indices for each send and receive
+int MPIX_Neighbor_locality_alltoallv(
+        const void* sendbuf,
+        const int sendcounts[],
+        const int sdispls[],
+        const long global_sindices[],
+        MPI_Datatype sendtype,
+        void* recvbuf,
+        const int recvcounts[],
+        const int rdispls[],
+        const long global_rindices[],
+        MPI_Datatype recvtype,
+        MPIX_Comm* comm);
+int MPIX_Neighbor_part_locality_alltoallv(
+        const void* sendbuf,
+        const int sendcounts[],
+        const int sdispls[],
+        MPI_Datatype sendtype,
+        void* recvbuf,
+        const int recvcounts[],
+        const int rdispls[],
+        MPI_Datatype recvtype,
+        MPIX_Comm* comm);
+
+
+
 // Standard Persistent Neighbor Alltoallv
 // Extension takes array of requests instead of single request
 // 'requests' must be of size indegree+outdegree!
@@ -92,17 +150,6 @@ void init_locality(const int n_sends,
         const MPIX_Comm* mpix_comm,
         MPIX_Request* request);
 
-
-void init_part_locality(const int n_sends, 
-        const int* send_procs, 
-        const int* send_indptr,
-        const int n_recvs,
-        const int* recv_procs,
-        const int* recv_indptr,
-        const MPI_Datatype sendtype, 
-        const MPI_Datatype recvtype,
-        const MPIX_Comm* mpix_comm,
-        MPIX_Request* request);
 
 #ifdef __cplusplus
 }

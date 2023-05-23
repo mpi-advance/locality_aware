@@ -15,8 +15,6 @@
 #include <vector>
 #include <set>
 
-#include "test_locality.h"
-
 int main(int argc, char** argv)
 {
     MPI_Init(&argc, &argv);
@@ -34,7 +32,8 @@ TEST(RandomCommTest, TestsInTests)
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
 
     MPIX_Comm* locality_comm;
-    allocate_locality(&locality_comm, MPI_COMM_WORLD, 4);
+    MPIX_Comm_init(&locality_comm, MPI_COMM_WORLD);
+    update_locality(locality_comm, 4);
 
     // Test Integer Alltoall
     int max_i = 10;
