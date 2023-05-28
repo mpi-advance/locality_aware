@@ -2,13 +2,8 @@
 #define MPI_ADVANCE_COMM_CREATION_H
 
 #include "mpi.h"
+#include "tests/sparse_mat.hpp"
 #include <vector>
-
-// Declarations of C++ methods
-#ifdef __cplusplus
-extern "C"
-{
-#endif
 
 // Must Form Recv Comm before Send!
 template <typename U>
@@ -28,15 +23,4 @@ void free_rma_dynamic(MPI_Win* win, int* sizes);
 template <typename U>
 void form_send_comm_rma_dynamic(ParMat<U>& A, MPI_Win win, int* sizes);
 
-#ifdef __cplusplus
-}
 #endif
-
-#endif
-
-
-
-
-
-
-

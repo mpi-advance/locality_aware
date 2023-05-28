@@ -2,6 +2,7 @@
 #define MPI_SPARSE_MAT_HPP
 
 #include "mpi.h"
+#include "neighborhood/comm_creation.h"
 #include <vector>
 
 struct Mat 
@@ -138,7 +139,4 @@ void communicate(ParMat<T>& A, std::vector<U>& data, std::vector<U>& recvbuf, MP
     if (A.recv_comm.n_msgs)
     MPI_Waitall(A.recv_comm.n_msgs, A.recv_comm.req.data(), MPI_STATUSES_IGNORE);
 }
-
-
-
 #endif

@@ -1,6 +1,7 @@
 #include "mpi_advance.h"
 #include "tests/sparse_mat.hpp"
 #include "tests/par_binary_IO.hpp"
+#include "neighborhood/comm_creation.h"
 #include <mpi.h>
 #include <stdio.h>
 #include <string.h>
