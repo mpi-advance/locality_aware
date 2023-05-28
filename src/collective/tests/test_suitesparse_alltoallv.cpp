@@ -16,7 +16,7 @@
 #include <numeric>
 #include <set>
 
-#include "tests/sparse_mat.hpp"
+#include "neighborhood/comm_creation.h"
 #include "tests/par_binary_IO.hpp"
 
 void test_matrix(const char* filename, COMM_ALGORITHM algorithm)

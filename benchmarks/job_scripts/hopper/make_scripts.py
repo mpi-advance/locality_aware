@@ -79,6 +79,7 @@ for (i, m_name) in enumerate(matrix_names):
     os.mkdir(f"{f_path}/{m_name}/parsed_data/tables")
     os.mkdir(f"{f_path}/{m_name}/parsed_data/plots")
     os.mkdir(f"{f_path}/{m_name}/parsed_data/one_test_output")
+    os.mkdir(f"{f_path}/{m_name}/plots")
     os.mkdir(f"{f_path}/{m_name}/plots/average")
     os.mkdir(f"{f_path}/{m_name}/plots/min")
     os.mkdir(f"{f_path}/{m_name}/plots/max")
@@ -89,17 +90,17 @@ for (i, m_name) in enumerate(matrix_names):
 
 
   # CREATE ONE NODE TEST CASES
-  num_tests = 10
+  num_tests = 1
   Create_One_Node_Test(m_name, "STANDARD", "Standard", num_tests)
   Create_One_Node_Test(m_name, "TORSTEN", "Torsten", num_tests)
   Create_One_Node_Test(m_name, "RMA", "RMA", num_tests)
-  Create_One_Node_Test(m_name, "RMA_DYNAMIC", "RMA_DYNAMIC", num_tests)
 
   # CREATE MANY NODE TEST CASES
-  Create_Many_Node_Test(m_name, "STANDARD", "Standard")
-  Create_Many_Node_Test(m_name, "TORSTEN", "Torsten")
-  Create_Many_Node_Test(m_name, "RMA", "RMA")
+  Create_Many_Node_Test(m_name, "STANDARD", "Standard", num_tests)
+  Create_Many_Node_Test(m_name, "TORSTEN", "Torsten", num_tests)
+  Create_Many_Node_Test(m_name, "RMA", "RMA", num_tests)
 
   Create_Varied_Runs_Test(m_name, "STANDARD", "Standard", 50)
   Create_Varied_Runs_Test(m_name, "TORSTEN", "Torsten", 50)
   Create_Varied_Runs_Test(m_name, "RMA", "RMA", 50)
+  Create_Varied_Runs_Test(m_name, "RMA_DYNAMIC", "RMA_DYNAMIC", 50)
