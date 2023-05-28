@@ -326,3 +326,16 @@ void form_send_comm_rma_dynamic(ParMat<U>& A, MPI_Win win, int* sizes)
         MPI_Waitall(A.recv_comm.n_msgs, A.recv_comm.req.data(), MPI_STATUSES_IGNORE);    
   
 }
+
+template <typename U>
+void form_comm(ParMat<U>& A, COMM_ALGORITHM algorithm, MPI_Win* win, int** sizes)
+{
+    // Form Recv Side 
+    form_recv_comm(A);
+
+    // Form Send Side (Algorithm Options Here!)
+    if (algorithm == STANDARD) { form_send_comm_standard(A); }
+    else if (algorithm == TORSTEN) { form_send_comm_torsten(A); }
+    else if (algorithm == RMA) { form_send_comm_rma(A); }
+    else if (algorithm == RMA_DYNAMIC) { form_send_comm_rma_dynamic(A, *win, *sizes); }
+}

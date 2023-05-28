@@ -17,7 +17,7 @@
 #include <set>
 #include <tuple>
 
-#include "tests/sparse_mat.hpp"
+#include "neighborhood/comm_creation.h"
 #include "tests/par_binary_IO.hpp"
 
 // Tuple : <time, msg_count, msg_size>
