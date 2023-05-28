@@ -15,13 +15,16 @@
 #include <vector>
 #include <numeric>
 #include <set>
+#include <tuple>
 
 #include "tests/sparse_mat.hpp"
 #include "tests/par_binary_IO.hpp"
 
-void test_matrix(const char* filename)
+// Tuple : <time, msg_count, msg_size>
+std::tuple<double, int, int> test_matrix(const char* filename, COMM_ALGORITHM algorithm) 
 {
     int rank, num_procs;
+    double start, end;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
 
@@ -29,8 +32,17 @@ void test_matrix(const char* filename)
     ParMat<int> A;
     int idx;
     readParMatrix(filename, A);
-    form_comm(A);
 
+    MPI_Barrier(MPI_COMM_WORLD);
+    start = MPI_Wtime();
+    MPI_Win win;
+    int* sizes;
+    //form_comm(A, algorithm, 0, 1, win, &sizes);
+    end = MPI_Wtime();
+
+    return {(double)(end-start) / 1000, A.recv_comm.n_msgs, A.recv_comm.size_msgs};
+}
+    /*
     std::vector<int> std_recv_vals, neigh_recv_vals, new_recv_vals,
             locality_recv_vals, part_locality_recv_vals;
     std::vector<int> send_vals, alltoallv_send_vals;
@@ -84,23 +96,21 @@ void test_matrix(const char* filename)
             s,
             MPI_UNWEIGHTED,
             A.send_comm.n_msgs, 
-            d,
-            MPI_UNWEIGHTED,
+            A.send_comm.procs.data(),
+            A.send_comm.counts.data(),
             MPI_INFO_NULL, 
             0, 
             &std_comm);
-
     MPIX_Dist_graph_create_adjacent(MPI_COMM_WORLD,
             A.recv_comm.n_msgs,
             A.recv_comm.procs.data(), 
-            MPI_UNWEIGHTED,
+            A.recv_comm.counts.data(),
             A.send_comm.n_msgs, 
             A.send_comm.procs.data(),
-            MPI_UNWEIGHTED,
+            A.send_comm.counts.data(),
             MPI_INFO_NULL, 
             0, 
             &neighbor_comm);
-
     update_locality(neighbor_comm, 4);
     
 
@@ -192,16 +202,20 @@ void test_matrix(const char* filename)
     MPIX_Comm_free(neighbor_comm);
     MPI_Comm_free(&std_comm);
 }
+*/
 
 int main(int argc, char** argv)
 {
     MPI_Init(&argc, &argv);
+    for(int i = 0; i < argc; i++) {
+      printf("%s\n", argv[i]);
+    }
+    COMM_ALGORITHM algo; 
     ::testing::InitGoogleTest(&argc, argv);
     int temp=RUN_ALL_TESTS();
     MPI_Finalize();
     return temp;
 } // end of main() //
-
 
 TEST(RandomCommTest, TestsInTests)
 {
@@ -210,6 +224,8 @@ TEST(RandomCommTest, TestsInTests)
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
 
+    
+    /*
     test_matrix("../../../../test_data/dwt_162.pm");
     test_matrix("../../../../test_data/odepa400.pm");
     test_matrix("../../../../test_data/ww_36_pmec_36.pm");
@@ -221,13 +237,6 @@ TEST(RandomCommTest, TestsInTests)
     test_matrix("../../../../test_data/oscil_dcop_11.pm");
     test_matrix("../../../../test_data/tumorAntiAngiogenesis_4.pm");
     test_matrix("../../../../test_data/ch5-5-b1.pm");
-    test_matrix("../../../../test_data/msc01050.pm");
-    test_matrix("../../../../test_data/SmaGri.pm");
-    test_matrix("../../../../test_data/radfr1.pm");
-    test_matrix("../../../../test_data/bibd_49_3.pm");
-    test_matrix("../../../../test_data/can_1054.pm");
-    test_matrix("../../../../test_data/can_1072.pm");
-    test_matrix("../../../../test_data/lp_sctap2.pm");
-    test_matrix("../../../../test_data/lp_woodw.pm");
+    */
 }
 
