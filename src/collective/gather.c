@@ -19,7 +19,7 @@ int gather(const void* sendbuf,
     int recv_size;
     MPI_Type_size(recvtype, &recv_size);
 
-    int num_steps = log2(num_procs);   
+    int num_steps = log2((float)(num_procs));   
     int tag = 204857;
     MPI_Status status;
 

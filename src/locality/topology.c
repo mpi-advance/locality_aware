@@ -34,21 +34,8 @@ int MPIX_Comm_init(MPIX_Comm** comm_dist_graph_ptr, MPI_Comm global_comm)
 
 #ifdef GPU
     gpuGetDeviceCount(&(comm_dist_graph->gpus_per_node));
-    comm_dist_graph->ranks_per_gpu = ppn / comm_dist_graph->gpus_per_node;
-    comm_dist_graph->rank_gpu = rank / comm_dist_graph->ranks_per_gpu;
-    comm_dist_graph->gpu_rank = rank % comm_dist_graph->ranks_per_gpu;
+    comm_dist_graph->rank_gpu = local_rank;
     gpuStreamCreate(&(comm_dist_graph->proc_stream));    
-
-    MPI_Comm_split(comm_dist_graph->local_comm,
-            comm_dist_graph->rank_gpu,
-            local_rank,
-            &(comm_dist_graph->gpu_comm));
-
-    MPI_Comm_split(comm_dist_graph->global_comm,
-            comm_dist_graph->gpu_rank,
-            rank,
-            &(comm_dist_graph->gpu_group_comm));
-
 #endif
 
 
@@ -64,8 +51,6 @@ int MPIX_Comm_free(MPIX_Comm* comm_dist_graph)
 
 #ifdef GPU
     gpuStreamDestroy(comm_dist_graph->proc_stream);
-    MPI_Comm_free(&(comm_dist_graph->gpu_comm));
-    MPI_Comm_free(&(comm_dist_graph->gpu_group_comm));
 #endif
 
     free(comm_dist_graph);

@@ -10,8 +10,14 @@
 
 #include "collective/collective.h"
 #include "collective/allgather.h"
+#include "collective/alltoall.h"
+#include "collective/alltoallv.h"
 
 #include "neighborhood/dist_graph.h"
 #include "neighborhood/neighbor.h"
+
+#ifdef GPU
+    #include "heterogeneous/gpu_alltoall.h"
+#endif
 
 #endif

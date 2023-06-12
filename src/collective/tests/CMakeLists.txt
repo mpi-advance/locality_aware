@@ -1,3 +1,12 @@
+if(USE_CUDA)
+    set_source_files_properties(
+        test_alltoall.cpp
+        test_alltoallv.cpp
+        test_suitesparse_alltoallv.cpp
+        test_allgather.cpp
+        PROPERTIES LANGUAGE CUDA)
+endif()
+
 add_executable(test_alltoall test_alltoall.cpp)
 target_link_libraries(test_alltoall mpi_advance gtest pthread )
 add_test(LocalityAlltoallTest mpirun -n 16 ./test_alltoall)

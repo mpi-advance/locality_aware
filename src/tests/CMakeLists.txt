@@ -1,3 +1,10 @@
+if(USE_CUDA)
+    set_source_files_properties(
+        test_nap_comm.cpp
+        test_alltoallv.cpp
+        PROPERTIES LANGUAGE CUDA)
+endif()
+
 add_executable(test_nap_comm test_nap_comm.cpp)
 target_link_libraries(test_nap_comm mpi_advance gtest pthread )
 add_test(RandomCommTest mpirun -n 16 ./test_nap_comm)

@@ -5,7 +5,7 @@ set(utils_HEADERS
     utils/utils_cuda.h
     utils/utils_hip.h
     PARENT_SCOPE
-    }
+    )
 
 set(utils_SOURCES
     utils/utils.cpp

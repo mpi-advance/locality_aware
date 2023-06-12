@@ -1,7 +1,6 @@
 #include "alltoallv.h"
 #include <string.h>
 #include <math.h>
-#include "utils.h"
 
 /**************************************************
  * Locality-Aware Point-to-Point Alltoallv

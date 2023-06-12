@@ -3,7 +3,6 @@
 #include "bcast.h"
 #include <string.h>
 #include <math.h>
-#include "utils.h"
 
 
 int MPIX_Allgather(const void* sendbuf,
@@ -64,7 +63,7 @@ int allgather_bruck(const void* sendbuf,
     // Perform allgather
     int stride;
     int send_proc, recv_proc, size;
-    int num_steps = log2(num_procs);
+    int num_steps = log2((double)(num_procs));
     int msg_size = recvcount*recv_size;
 
     stride = 1;
@@ -288,7 +287,7 @@ int allgather_loc_bruck(const void *sendbuf, int sendcount, MPI_Datatype sendtyp
     // Local rank 0 recvs from node+1, local rank 1 recvs from node+2, etc
     int stride, size, dist;
     int send_proc, recv_proc, recv_pos;
-    int num_steps = (log2(num_nodes)-1)/log2(PPN) + 1;
+    int num_steps = (log2((double)(num_nodes))-1)/log2((double)(PPN)) + 1;
 
     MPI_Request requests[2];
 

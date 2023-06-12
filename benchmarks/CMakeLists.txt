@@ -1,5 +1,13 @@
 include_directories(${mpi_advance_INCDIR})
 
+if(USE_CUDA)
+    set_source_files_properties(
+        bruck_allgather.cpp
+        p2p_alltoall.cpp
+        p2p_alltoallv.cpp
+        PROPERTIES LANGUAGE CUDA)
+endif()
+
 add_executable(bruck_allgather bruck_allgather.cpp)
 target_link_libraries(bruck_allgather mpi_advance ${MPI_LIBRARIES})
 

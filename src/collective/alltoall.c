@@ -1,7 +1,6 @@
 #include "alltoall.h"
 #include <string.h>
 #include <math.h>
-#include "utils.h"
 
 // TODO : Add Locality-Aware Bruck Alltoall Algorithm!
 // TODO : Change to PMPI_Alltoall and test with profiling library!
@@ -46,13 +45,13 @@ int MPIX_Alltoall(const void* sendbuf,
         MPI_Datatype recvtype,
         MPIX_Comm* mpi_comm)
 {    
-    return alltoall_pairwise_loc(sendbuf,
+    return alltoall_pairwise(sendbuf,
         sendcount,
         sendtype,
         recvbuf,
         recvcount,
         recvtype,
-        mpi_comm);
+        mpi_comm->global_comm);
 }
 
 int alltoall_pairwise(const void* sendbuf,
@@ -72,13 +71,55 @@ int alltoall_pairwise(const void* sendbuf,
     int send_pos, recv_pos;
     MPI_Status status;
 
+    char* recv_buffer = (char*)recvbuf;
+    char* send_buffer = (char*)sendbuf;
+
     int send_size, recv_size;
     MPI_Type_size(sendtype, &send_size);
     MPI_Type_size(recvtype, &recv_size);
 
+#ifdef GPU
+    cudaMemoryType send_type, recv_type;
+    cudaPointerAttributes mem;
+    cudaPointerGetAttributes(&mem, sendbuf);
+    int ierr = cudaGetLastError();
+    if (ierr == cudaErrorInvalidValue)
+        send_type = cudaMemoryTypeHost;
+    else
+        send_type = mem.type;
+    cudaPointerGetAttributes(&mem, recvbuf);
+    ierr = cudaGetLastError();
+    if (ierr == cudaErrorInvalidValue)
+        recv_type = cudaMemoryTypeHost;
+    else
+        recv_type = mem.type;
+
+    if (send_type == cudaMemoryTypeDevice &&
+            recv_type == cudaMemoryTypeDevice)
+        cudaMemcpy(recv_buffer + (rank * recvcount * recv_size),
+                send_buffer + (rank * sendcount * send_size),
+                sendcount * send_size,
+                cudaMemcpyDeviceToDevice);
+    else if (send_type == cudaMemoryTypeDevice)
+        cudaMemcpy(recv_buffer + (rank * recvcount * recv_size),
+                send_buffer + (rank * sendcount * send_size),
+                sendcount * send_size,
+                cudaMemcpyDeviceToHost);
+    else if (recv_type == cudaMemoryTypeDevice)
+        cudaMemcpy(recv_buffer + (rank * recvcount * recv_size),
+                send_buffer + (rank * sendcount * send_size), 
+                sendcount * send_size,
+                cudaMemcpyHostToDevice);
+    else
+#endif
+    memcpy(recv_buffer + (rank * recvcount * recv_size),
+        send_buffer + (rank * sendcount * send_size),
+        sendcount * send_size);
+
+
     // Send to rank + i
     // Recv from rank - i
-    for (int i = 0; i < num_procs; i++)
+    for (int i = 1; i < num_procs; i++)
     {
         send_proc = rank + i;
         if (send_proc >= num_procs)
@@ -89,10 +130,119 @@ int alltoall_pairwise(const void* sendbuf,
         send_pos = send_proc * sendcount * send_size;
         recv_pos = recv_proc * recvcount * recv_size;
 
-        MPI_Sendrecv(sendbuf + send_pos, sendcount, sendtype, send_proc, tag,
-                recvbuf + recv_pos, recvcount, recvtype, recv_proc, tag,
-                comm, &status);
+        MPI_Sendrecv(send_buffer + send_pos, 
+                sendcount, 
+                sendtype, 
+                send_proc, 
+                tag,
+                recv_buffer + recv_pos, 
+                recvcount, 
+                recvtype, 
+                recv_proc, 
+                tag,
+                comm, 
+                &status);
     }
+    return MPI_SUCCESS;
+}
+
+int alltoall_nonblocking(const void* sendbuf,
+        const int sendcount,
+        MPI_Datatype sendtype,
+        void* recvbuf,
+        const int recvcount,
+        MPI_Datatype recvtype,
+        MPI_Comm comm)
+{
+    int rank, num_procs;
+    MPI_Comm_rank(comm, &rank);
+    MPI_Comm_size(comm, &num_procs);
+
+    int tag = 102944;
+    int send_proc, recv_proc;
+    int send_pos, recv_pos;
+    MPI_Status status;
+
+    char* recv_buffer = (char*)recvbuf;
+    char* send_buffer = (char*)sendbuf;
+
+    int send_size, recv_size;
+    MPI_Type_size(sendtype, &send_size);
+    MPI_Type_size(recvtype, &recv_size);
+
+    MPI_Request* requests = (MPI_Request*)malloc(2*(num_procs-1)*sizeof(MPI_Request));
+
+#ifdef GPU
+    cudaMemoryType send_type, recv_type;
+    cudaPointerAttributes mem;
+    cudaPointerGetAttributes(&mem, sendbuf);
+    int ierr = cudaGetLastError();
+    if (ierr == cudaErrorInvalidValue)
+        send_type = cudaMemoryTypeHost;
+    else
+        send_type = mem.type;
+    cudaPointerGetAttributes(&mem, recvbuf);
+    ierr = cudaGetLastError();
+    if (ierr == cudaErrorInvalidValue)
+        recv_type = cudaMemoryTypeHost;
+    else
+        recv_type = mem.type;
+
+    if (send_type == cudaMemoryTypeDevice &&
+            recv_type == cudaMemoryTypeDevice)
+        cudaMemcpy(recv_buffer + (rank * recvcount * recv_size),
+                send_buffer + (rank * sendcount * send_size),
+                sendcount * send_size,
+                cudaMemcpyDeviceToDevice);
+    else if (send_type == cudaMemoryTypeDevice)
+        cudaMemcpy(recv_buffer + (rank * recvcount * recv_size),
+                send_buffer + (rank * sendcount * send_size),
+                sendcount * send_size,
+                cudaMemcpyDeviceToHost);
+    else if (recv_type == cudaMemoryTypeDevice)
+        cudaMemcpy(recv_buffer + (rank * recvcount * recv_size),
+                send_buffer + (rank * sendcount * send_size),
+                sendcount * send_size,
+                cudaMemcpyHostToDevice);
+    else
+#endif
+    memcpy(recv_buffer + (rank * recvcount * recv_size),
+        send_buffer + (rank * sendcount * send_size),
+        sendcount * send_size);
+
+    // Send to rank + i
+    // Recv from rank - i
+    for (int i = 1; i < num_procs; i++)
+    {
+        send_proc = rank + i;
+        if (send_proc >= num_procs)
+            send_proc -= num_procs;
+        recv_proc = rank - i;
+        if (recv_proc < 0)
+            recv_proc += num_procs;
+        send_pos = send_proc * sendcount * send_size;
+        recv_pos = recv_proc * recvcount * recv_size;
+
+        MPI_Isend(send_buffer + send_pos,
+                sendcount, 
+                sendtype, 
+                send_proc,
+                tag, 
+                comm,
+                &(requests[i-1]));
+        MPI_Irecv(recv_buffer + recv_pos,
+                recvcount,
+                recvtype,
+                recv_proc,
+                tag,
+                comm,
+                &(requests[num_procs + i - 2]));
+    }
+
+    MPI_Waitall(2*(num_procs-1), requests, MPI_STATUSES_IGNORE);
+
+    free(requests);
+    return 0;
 }
 
 int alltoall_bruck(const void* sendbuf,
@@ -121,7 +271,7 @@ int alltoall_bruck(const void* sendbuf,
     // Perform all-to-all
     int stride, ctr, group_size;
     int send_proc, recv_proc, size;
-    int num_steps = log2(num_procs);
+    int num_steps = log2((float)(num_procs));
     int msg_size = recvcount*recv_size;
     int total_count = recvcount*num_procs;
 
@@ -214,6 +364,7 @@ int alltoall_pairwise_loc(const void* sendbuf,
 
     const char* send_buffer = (char*) sendbuf;
     char* recv_buffer = (char*) recvbuf;
+
     int sbytes, rbytes;
     MPI_Type_size(sendtype, &sbytes);
     MPI_Type_size(recvtype, &rbytes);
@@ -245,7 +396,7 @@ int alltoall_pairwise_loc(const void* sendbuf,
         send_pos = send_node * send_bytes_node;
         recv_pos = recv_node * recv_bytes_node;
 
-        MPI_Sendrecv(sendbuf + send_pos, sendcount_node, sendtype, 
+        MPI_Sendrecv(send_buffer + send_pos, sendcount_node, sendtype, 
                 send_node*PPN + local_rank, tag,
                 tmpbuf + recv_pos, recvcount_node, recvtype,
                 recv_node*PPN + local_rank, tag, 
@@ -257,7 +408,7 @@ int alltoall_pairwise_loc(const void* sendbuf,
      ************************************************/
     for (int i = 0; i < num_nodes; i++)
         for (int j = 0; j < PPN; j++)
-            memcpy(recvbuf + ((j*num_nodes+i)*recv_bytes),
+            memcpy(recv_buffer + ((j*num_nodes+i)*recv_bytes),
                     tmpbuf + ((i*PPN+j)*recv_bytes),
                     recv_bytes);
 
@@ -273,7 +424,7 @@ int alltoall_pairwise_loc(const void* sendbuf,
         send_pos = send_proc * recv_bytes * num_nodes;
         recv_pos = recv_proc * recv_bytes * num_nodes;
 
-        MPI_Sendrecv(recvbuf + send_pos, recvcount * num_nodes, recvtype,
+        MPI_Sendrecv(recv_buffer + send_pos, recvcount * num_nodes, recvtype,
                 send_proc, tag,
                 tmpbuf + recv_pos, recvcount * num_nodes, recvtype,
                 recv_proc, tag,
@@ -283,7 +434,7 @@ int alltoall_pairwise_loc(const void* sendbuf,
 
     for (int i = 0; i < num_nodes; i++)
         for (int j = 0; j < PPN; j++)
-            memcpy(recvbuf + ((i*PPN+j)*recv_bytes),
+            memcpy(recv_buffer + ((i*PPN+j)*recv_bytes),
                     tmpbuf + ((j*num_nodes+i)*recv_bytes),
                     recv_bytes);
 

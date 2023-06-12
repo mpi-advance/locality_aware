@@ -17,6 +17,7 @@
 #define gpuGetLastError cudaGetLastError
 
 // Memcpy
+#define gpuMemcpy cudaMemcpy
 #define gpuMemcpyAsync cudaMemcpyAsync
 #define gpuMemcpyDeviceToHost cudaMemcpyDeviceToHost
 #define gpuMemcpyHostToDevice cudaMemcpyHostToDevice
