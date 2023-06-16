@@ -18,6 +18,7 @@
 
 #ifdef GPU
     #include "heterogeneous/gpu_alltoall.h"
+    #include "heterogeneous/gpu_alltoallv.h"
 #endif
 
 #endif
