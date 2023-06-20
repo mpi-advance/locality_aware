@@ -62,7 +62,7 @@ int MPIX_Alltoallv(const void* sendbuf,
         recvcounts,
         rdispls,
         recvtype,
-        mpi_comm);
+        mpi_comm->global_comm);
 }
 
 
