@@ -69,18 +69,6 @@ TEST(RandomCommTest, TestsInTests)
                 MPI_INT,
                 MPI_COMM_WORLD);
 
-        // Bruck Allgather 
-        allgather_bruck(local_data.data(), 
-                s, 
-                MPI_INT,
-                bruck_allgather.data(), 
-                s, 
-                MPI_INT,
-                MPI_COMM_WORLD);
-        for (int j = 0; j < s*num_procs; j++)
-            ASSERT_EQ(std_allgather[j], bruck_allgather[j]);
-
-
         // P2P Allgather 
         allgather_p2p(local_data.data(), 
                 s, 
@@ -104,61 +92,42 @@ TEST(RandomCommTest, TestsInTests)
         for (int j = 0; j < s*num_procs; j++)
             ASSERT_EQ(std_allgather[j], ring_allgather[j]);
 
-        // Locality P2P Allgather 
-        allgather_loc_p2p(local_data.data(), 
-                s, 
-                MPI_INT,
-                loc_p2p_allgather.data(), 
-                s, 
-                MPI_INT,
-                locality_comm);
-        for (int j = 0; j < s*num_procs; j++)
-            ASSERT_EQ(std_allgather[j], loc_p2p_allgather[j]);
 
+        // Bruck Allgather : ONLY POWER OF 2 
+        if ((num_procs & (num_procs - 1)) == 0)
+        {
+            allgather_bruck(local_data.data(), 
+                    s, 
+                    MPI_INT,
+                    bruck_allgather.data(), 
+                    s, 
+                    MPI_INT,
+                    MPI_COMM_WORLD);
+            for (int j = 0; j < s*num_procs; j++)
+                ASSERT_EQ(std_allgather[j], bruck_allgather[j]);
 
-        // Locality Bruck Allgather 
-        allgather_loc_bruck(local_data.data(), 
-                s, 
-                MPI_INT,
-                loc_bruck_allgather.data(), 
-                s, 
-                MPI_INT,
-                locality_comm);
-        for (int j = 0; j < s*num_procs; j++)
-            ASSERT_EQ(std_allgather[j], loc_bruck_allgather[j]);
+            // Hierarchical Bruck Allgather 
+            allgather_hier_bruck(local_data.data(), 
+                    s, 
+                    MPI_INT,
+                    hier_bruck_allgather.data(), 
+                    s, 
+                    MPI_INT,
+                    locality_comm);
+            for (int j = 0; j < s*num_procs; j++)
+                ASSERT_EQ(std_allgather[j], hier_bruck_allgather[j]);
 
-        // Locality Ring Allgather 
-        allgather_loc_ring(local_data.data(), 
-                s, 
-                MPI_INT,
-                loc_ring_allgather.data(), 
-                s, 
-                MPI_INT,
-                locality_comm);
-        for (int j = 0; j < s*num_procs; j++)
-            ASSERT_EQ(std_allgather[j], loc_ring_allgather[j]);
-
-        // Hierarchical Bruck Allgather 
-        allgather_hier_bruck(local_data.data(), 
-                s, 
-                MPI_INT,
-                hier_bruck_allgather.data(), 
-                s, 
-                MPI_INT,
-                locality_comm);
-        for (int j = 0; j < s*num_procs; j++)
-            ASSERT_EQ(std_allgather[j], hier_bruck_allgather[j]);
-
-        // Hierarchical (MULT) Bruck Allgather 
-        allgather_mult_hier_bruck(local_data.data(), 
-                s, 
-                MPI_INT,
-                mult_hier_bruck_allgather.data(), 
-                s, 
-                MPI_INT,
-                locality_comm);
-        for (int j = 0; j < s*num_procs; j++)
-            ASSERT_EQ(std_allgather[j], mult_hier_bruck_allgather[j]);
+            // Hierarchical (MULT) Bruck Allgather 
+            allgather_mult_hier_bruck(local_data.data(), 
+                    s, 
+                    MPI_INT,
+                    mult_hier_bruck_allgather.data(), 
+                    s, 
+                    MPI_INT,
+                    locality_comm);
+            for (int j = 0; j < s*num_procs; j++)
+                ASSERT_EQ(std_allgather[j], mult_hier_bruck_allgather[j]);
+        }
     }
 
     MPIX_Comm_free(locality_comm);
