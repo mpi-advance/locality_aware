@@ -12,24 +12,24 @@ int MPIX_Allgather(const void* sendbuf,
         void* recvbuf,
         int recvcount,
         MPI_Datatype recvtype,
-        MPI_Comm comm)
+        MPIX_Comm* comm)
 {
 #ifdef bruck
-    return allgather_bruck(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm);
+    return allgather_bruck(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm->global_comm);
 #elif p2p
-    return allgather_p2p(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm);
+    return allgather_p2p(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm->global_comm);
 #elif ring
-    return allgather_ring(sendbuf, sendcount, sendtype, recvbuf, recvcound, recvtype, comm);
+    return allgather_ring(sendbuf, sendcount, sendtype, recvbuf, recvcound, recvtype, comm->global_comm);
 #elif locality_bruck
-    return allgather_local_bruck(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm);
+    return allgather_local_bruck(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm->global_comm);
 #elif locality_p2p
-    return allgather_local_p2p(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm);
+    return allgather_local_p2p(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm->global_comm);
 #elif locality_ring
-    return allgather_local_ring(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm);
+    return allgather_local_ring(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm->global_comm);
 #endif 
     
     // Default will call standard p2p
-    return allgather_p2p(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm);
+    return allgather_p2p(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm->global_comm);
     
 }
 
@@ -485,6 +485,8 @@ int allgather_hier_bruck(const void *sendbuf, int sendcount, MPI_Datatype sendty
     bcast(recvbuf, recvcount*num_procs, recvtype, 0, comm->local_comm);
 
     free(tmpbuf);
+
+    return MPI_SUCCESS;
 }
 
 
@@ -528,6 +530,8 @@ int allgather_mult_hier_bruck(const void *sendbuf, int sendcount, MPI_Datatype s
     }
 
     free(tmpbuf);
+
+    return MPI_SUCCESS;
 }
 
 

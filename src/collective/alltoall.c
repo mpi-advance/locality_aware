@@ -20,24 +20,6 @@
  *      on-node so that each process holds
  *      the correct final data
  *************************************************/
-int MPI_Alltoall(const void* sendbuf,
-        const int sendcount,
-        MPI_Datatype sendtype,
-        void* recvbuf,
-        const int recvcount,
-        MPI_Datatype recvtype,
-        MPI_Comm comm)
-{
-    return alltoall_pairwise(sendbuf,
-        sendcount,
-        sendtype,
-        recvbuf,
-        recvcount,
-        recvtype,
-        comm);
-}
-
-
 int MPIX_Alltoall(const void* sendbuf,
         const int sendcount,
         MPI_Datatype sendtype,
@@ -93,6 +75,8 @@ int alltoall_pairwise(const void* sendbuf,
                 recvbuf + recv_pos, recvcount, recvtype, recv_proc, tag,
                 comm, &status);
     }
+    
+    return MPI_SUCCESS;
 }
 
 int alltoall_bruck(const void* sendbuf,

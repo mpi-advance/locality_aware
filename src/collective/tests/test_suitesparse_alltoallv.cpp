@@ -80,7 +80,6 @@ void test_matrix(const char* filename)
 
     std::vector<int> std_recv_vals(A.recv_comm.size_msgs);
     std::vector<int> pmpi_recv_vals(A.recv_comm.size_msgs);
-    std::vector<int> mpi_recv_vals(A.recv_comm.size_msgs);
     std::vector<int> mpix_recv_vals(A.recv_comm.size_msgs);
 
     communicate(A, send_vals, std_recv_vals, MPI_INT);
@@ -102,25 +101,6 @@ void test_matrix(const char* filename)
         ASSERT_EQ(std_recv_vals[i], pmpi_recv_vals[i]);
     }
 
-    MPI_Alltoallv(alltoallv_send_vals.data(), 
-            sendcounts.data(),
-            sdispls.data(),
-            MPI_INT,
-            mpi_recv_vals.data(),
-            recvcounts.data(),
-            rdispls.data(),
-            MPI_INT,
-            locality_comm->global_comm);
-
-
-    // 3. Compare std_recv_vals and nap_recv_vals
-    for (int i = 0; i < A.recv_comm.size_msgs; i++)
-    {
-        ASSERT_EQ(std_recv_vals[i], mpi_recv_vals[i]);
-    }
-
-
-    /*
     MPIX_Alltoallv(alltoallv_send_vals.data(), 
             sendcounts.data(),
             sdispls.data(),
@@ -131,20 +111,18 @@ void test_matrix(const char* filename)
             MPI_INT,
             locality_comm);
 
-
     // 3. Compare std_recv_vals and nap_recv_vals
     for (int i = 0; i < A.recv_comm.size_msgs; i++)
     {
         ASSERT_EQ(std_recv_vals[i], mpix_recv_vals[i]);
     }
-	*/
 
     // Test Each of the Standard (Pairwise) Implementations
     alltoallv_pairwise(alltoallv_send_vals.data(), 
             sendcounts.data(),
             sdispls.data(),
             MPI_INT,
-            mpi_recv_vals.data(),
+            mpix_recv_vals.data(),
             recvcounts.data(),
             rdispls.data(),
             MPI_INT,
@@ -152,14 +130,14 @@ void test_matrix(const char* filename)
     // 3. Compare std_recv_vals and nap_recv_vals
     for (int i = 0; i < A.recv_comm.size_msgs; i++)
     {
-        ASSERT_EQ(std_recv_vals[i], mpi_recv_vals[i]);
+        ASSERT_EQ(std_recv_vals[i], mpix_recv_vals[i]);
     }
     
     alltoallv_nonblocking(alltoallv_send_vals.data(), 
             sendcounts.data(),
             sdispls.data(),
             MPI_INT,
-            mpi_recv_vals.data(),
+            mpix_recv_vals.data(),
             recvcounts.data(),
             rdispls.data(),
             MPI_INT,
@@ -167,14 +145,14 @@ void test_matrix(const char* filename)
     // 3. Compare std_recv_vals and nap_recv_vals
     for (int i = 0; i < A.recv_comm.size_msgs; i++)
     {
-        ASSERT_EQ(std_recv_vals[i], mpi_recv_vals[i]);
+        ASSERT_EQ(std_recv_vals[i], mpix_recv_vals[i]);
     }
 
-    alltoallv_pairwise_nonblocking(alltoallv_send_vals.data(), 
+    alltoallv_waitall(alltoallv_send_vals.data(), 
             sendcounts.data(),
             sdispls.data(),
             MPI_INT,
-            mpi_recv_vals.data(),
+            mpix_recv_vals.data(),
             recvcounts.data(),
             rdispls.data(),
             MPI_INT,
@@ -182,14 +160,14 @@ void test_matrix(const char* filename)
     // 3. Compare std_recv_vals and nap_recv_vals
     for (int i = 0; i < A.recv_comm.size_msgs; i++)
     {
-        ASSERT_EQ(std_recv_vals[i], mpi_recv_vals[i]);
+        ASSERT_EQ(std_recv_vals[i], mpix_recv_vals[i]);
     }
 
     alltoallv_waitany(alltoallv_send_vals.data(), 
             sendcounts.data(),
             sdispls.data(),
             MPI_INT,
-            mpi_recv_vals.data(),
+            mpix_recv_vals.data(),
             recvcounts.data(),
             rdispls.data(),
             MPI_INT,
@@ -197,7 +175,7 @@ void test_matrix(const char* filename)
     // 3. Compare std_recv_vals and nap_recv_vals
     for (int i = 0; i < A.recv_comm.size_msgs; i++)
     {
-        ASSERT_EQ(std_recv_vals[i], mpi_recv_vals[i]);
+        ASSERT_EQ(std_recv_vals[i], mpix_recv_vals[i]);
     }
 
 

@@ -75,8 +75,20 @@ TEST(RandomCommTest, TestsInTests)
                 MPI_INT,
                 MPI_COMM_WORLD);
 
-        // Locality-Aware P2P Alltoallv
-        MPI_Alltoallv(local_data.data(), 
+        MPIX_Alltoallv(local_data.data(), 
+                sizes.data(),
+                displs.data(),
+                MPI_INT, 
+                pairwise_alltoallv.data(), 
+                sizes.data(),
+                displs.data(),
+                MPI_INT,
+                locality_comm);
+        for (int j = 0; j < s*num_procs; j++)
+            ASSERT_EQ(std_alltoallv[j], pairwise_alltoallv[j]);
+
+        // Pairwise Exchange Alltoallv
+        alltoallv_pairwise(local_data.data(), 
                 sizes.data(),
                 displs.data(),
                 MPI_INT, 
@@ -88,17 +100,44 @@ TEST(RandomCommTest, TestsInTests)
         for (int j = 0; j < s*num_procs; j++)
             ASSERT_EQ(std_alltoallv[j], pairwise_alltoallv[j]);
 
-        MPIX_Alltoallv(local_data.data(), 
+        // Nonblocking (P2P) Alltoallv
+        alltoallv_nonblocking(local_data.data(), 
                 sizes.data(),
                 displs.data(),
                 MPI_INT, 
-                loc_pairwise_alltoallv.data(), 
+                pairwise_alltoallv.data(), 
                 sizes.data(),
                 displs.data(),
                 MPI_INT,
-                locality_comm);
+                MPI_COMM_WORLD);
         for (int j = 0; j < s*num_procs; j++)
-            ASSERT_EQ(std_alltoallv[j], loc_pairwise_alltoallv[j]);
+            ASSERT_EQ(std_alltoallv[j], pairwise_alltoallv[j]);
+
+        // Strided Waitall Alltoallv
+        alltoallv_waitall(local_data.data(), 
+                sizes.data(),
+                displs.data(),
+                MPI_INT, 
+                pairwise_alltoallv.data(), 
+                sizes.data(),
+                displs.data(),
+                MPI_INT,
+                MPI_COMM_WORLD);
+        for (int j = 0; j < s*num_procs; j++)
+            ASSERT_EQ(std_alltoallv[j], pairwise_alltoallv[j]);
+
+        // Strided Waitany Alltoallv
+        alltoallv_waitany(local_data.data(), 
+                sizes.data(),
+                displs.data(),
+                MPI_INT, 
+                pairwise_alltoallv.data(), 
+                sizes.data(),
+                displs.data(),
+                MPI_INT,
+                MPI_COMM_WORLD);
+        for (int j = 0; j < s*num_procs; j++)
+            ASSERT_EQ(std_alltoallv[j], pairwise_alltoallv[j]);
     }
 
     MPIX_Comm_free(locality_comm);
