@@ -54,7 +54,7 @@ int MPIX_Alltoallv(const void* sendbuf,
         MPI_Datatype recvtype,
         MPIX_Comm* mpi_comm)
 {
-    return alltoallv_pairwise_loc(sendbuf,
+    return alltoallv_waitany(sendbuf,
         sendcounts,
         sdispls,
         sendtype,
