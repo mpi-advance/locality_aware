@@ -1,3 +1,5 @@
+THIS IS THE DEVELOP BRANCH : Add changes here first, will periodically push to main.
+
 # Locality-Aware MPI
 This repository performs locality-aware optimizations for standard MPI collectives as well as neighborhood collectives.
 
