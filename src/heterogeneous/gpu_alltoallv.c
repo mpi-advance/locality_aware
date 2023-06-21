@@ -322,7 +322,6 @@ int threaded_alltoallv_nonblocking(const void* sendbuf,
 */
 #pragma omp parallel shared(cpu_sendbuf, cpu_recvbuf)
 {
-    MPI_Status status;
     int tag = 102944;
     int send_proc, recv_proc;
     int send_pos, recv_pos;

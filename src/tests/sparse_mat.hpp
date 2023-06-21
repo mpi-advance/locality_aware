@@ -246,9 +246,7 @@ void form_send_comm_rma(ParMat<U>& A)
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
 
     std::vector<long> recv_buf;
-    int start, end, proc, count, ctr;
-    MPI_Status recv_status;
-    int bytes;
+    int ctr;
 
     // RMA puts to find sizes recvd from each process
     MPI_Win win;

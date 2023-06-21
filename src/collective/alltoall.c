@@ -2,6 +2,10 @@
 #include <string.h>
 #include <math.h>
 
+#ifdef GPU
+#include "heterogeneous/gpu_alltoall.h"
+#endif
+
 // TODO : Add Locality-Aware Bruck Alltoall Algorithm!
 // TODO : Change to PMPI_Alltoall and test with profiling library!
 
@@ -19,24 +23,6 @@
  *      on-node so that each process holds
  *      the correct final data
  *************************************************/
-int MPI_Alltoall(const void* sendbuf,
-        const int sendcount,
-        MPI_Datatype sendtype,
-        void* recvbuf,
-        const int recvcount,
-        MPI_Datatype recvtype,
-        MPI_Comm comm)
-{
-    return alltoall_pairwise(sendbuf,
-        sendcount,
-        sendtype,
-        recvbuf,
-        recvcount,
-        recvtype,
-        comm);
-}
-
-
 int MPIX_Alltoall(const void* sendbuf,
         const int sendcount,
         MPI_Datatype sendtype,
@@ -45,6 +31,33 @@ int MPIX_Alltoall(const void* sendbuf,
         MPI_Datatype recvtype,
         MPIX_Comm* mpi_comm)
 {    
+#ifdef GPU
+    cudaMemoryType send_type, recv_type;
+    get_mem_types(sendbuf, recvbuf, send_type, recv_type);
+
+    if (send_type == cudaMemoryTypeDevice && 
+            recv_type == cudaMemoryTypeDevice)
+    {
+        return copy_to_cpu_alltoall_pairwise(sendbuf,
+                sendcount,
+                sendtype,
+                recvbuf,
+                recvcount,
+                recvtype,
+                mpi_comm);
+    }
+    else if (send_type == cudaMemoryTypeDevice ||
+            recv_type == cudaMemoryTypeDevice)
+    {
+        return gpu_aware_alltoall_pairwise(sendbuf,
+                sendcount,
+                sendtype,
+                recvbuf,
+                recvcount,
+                recvtype,
+                mpi_comm);
+    }
+#endif
     return alltoall_pairwise(sendbuf,
         sendcount,
         sendtype,
@@ -161,7 +174,6 @@ int alltoall_nonblocking(const void* sendbuf,
     int tag = 102944;
     int send_proc, recv_proc;
     int send_pos, recv_pos;
-    MPI_Status status;
 
     char* recv_buffer = (char*)recvbuf;
     char* send_buffer = (char*)sendbuf;

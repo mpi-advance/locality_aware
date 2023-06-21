@@ -52,7 +52,6 @@ cmake_policy(SET CMP0104 OLD)
 #                        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 #                        RESULT_VARIABLE GIT_SUBMOD_RESULT)
 
-
 if (USING_AMD)
     set(USE_HIP ON)
     set(USE_CUDA OFF)
@@ -100,12 +99,9 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 #####################
 
-
 include_directories(.)
 include_directories(src)
 add_subdirectory(src)
-#add_subdirectory(benchmarks)
-
 if (USE_CUDA)
     target_compile_options(mpi_advance PRIVATE
     $<$<COMPILE_LANGUAGE:CUDA>: # Flags for CUDA Objects
@@ -119,3 +115,6 @@ if (USE_CUDA)
     )
     set_property(TARGET mpi_advance PROPERTY CUDA_SEPARABLE_COMPILATION ON)
 endif(USE_CUDA)
+
+add_subdirectory(benchmarks)
+
