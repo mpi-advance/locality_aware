@@ -19,7 +19,7 @@
 #include "tests/sparse_mat.hpp"
 #include "tests/par_binary_IO.hpp"
 
-void test_matrix(const char* filename, COMM_ALGORITHM algorithm)
+void test_matrix(const char* filename)
 {
     int rank, num_procs;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -28,7 +28,7 @@ void test_matrix(const char* filename, COMM_ALGORITHM algorithm)
     // Read suitesparse matrix
     ParMat<MPI_Aint> A;
     readParMatrix(filename, A);
-    //form_comm(A,algorithm);
+    form_comm(A);
 
     std::vector<int> send_vals(A.on_proc.n_rows);
     std::iota(send_vals.begin(), send_vals.end(), 0);
@@ -123,7 +123,6 @@ void test_matrix(const char* filename, COMM_ALGORITHM algorithm)
 
 }
 
-
 int main(int argc, char** argv)
 {
     MPI_Init(&argc, &argv);
@@ -132,7 +131,6 @@ int main(int argc, char** argv)
     MPI_Finalize();
     return temp;
 } // end of main() //
-
 
 
 TEST(RandomCommTest, TestsInTests)
@@ -144,11 +142,9 @@ TEST(RandomCommTest, TestsInTests)
 
     setenv("PPN", "4", 1);
 
-    /*
     test_matrix("../../../../test_data/dwt_162.pm");
     test_matrix("../../../../test_data/odepa400.pm");
     test_matrix("../../../../test_data/ww_36_pmec_36.pm");
-    */
 
     setenv("PPN", "16", 1);
 }
