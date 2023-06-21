@@ -238,9 +238,11 @@ void form_send_comm_torsten(ParMat<U>& A)
 }
 
 // Must Form Recv Comm before Send!
+#define TIME_RMA false
 template <typename U>
 void form_send_comm_rma(ParMat<U>& A)
 {
+    double t0,t1,t2,t3,t4,t5;
     int rank, num_procs;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
@@ -253,22 +255,69 @@ void form_send_comm_rma(ParMat<U>& A)
     // RMA puts to find sizes recvd from each process
     MPI_Win win;
     int* sizes;
+
+    // TIME MEMORY ALLOCATION
+    if(TIME_RMA) t0 = MPI_Wtime();
     MPI_Alloc_mem(num_procs*sizeof(int), MPI_INFO_NULL, &sizes);
+    if(TIME_RMA) t0 = MPI_Wtime() - t0;
+
     for (int i = 0; i < num_procs; i++)
         sizes[i] = 0;
+
+    // TIME WINDOW CREATION
+    if(TIME_RMA) t1 = MPI_Wtime();
     MPI_Win_create(sizes, num_procs*sizeof(int), sizeof(int),
             MPI_INFO_NULL, MPI_COMM_WORLD, &win);
-    MPI_Barrier(MPI_COMM_WORLD);
+    if(TIME_RMA) t1 = MPI_Wtime() - t1;
+
+    // TIME FENCE
+    if(TIME_RMA) t2 = MPI_Wtime();
+    // MPI_Barrier(MPI_COMM_WORLD);
     MPI_Win_fence(MPI_MODE_NOSTORE|MPI_MODE_NOPRECEDE, win);
+    if(TIME_RMA) t2 = MPI_Wtime() - t2;
+
+    // TIME PUTS
+    if(TIME_RMA) t3 = MPI_Wtime();
     for (int i = 0; i < A.recv_comm.n_msgs; i++)
     {
         MPI_Put(&(A.recv_comm.counts[i]), 1, MPI_INT, A.recv_comm.procs[i], 
                 rank, 1, MPI_INT, win);
     }
-    MPI_Barrier(MPI_COMM_WORLD);
-    MPI_Win_fence(MPI_MODE_NOPUT|MPI_MODE_NOSUCCEED, win);
-    MPI_Win_free(&win);
+    if(TIME_RMA) t3 = MPI_Wtime() - t3;
 
+
+    // TIME FENCE
+    if(TIME_RMA) t4 = MPI_Wtime();
+    // MPI_Barrier(MPI_COMM_WORLD);
+    MPI_Win_fence(MPI_MODE_NOPUT|MPI_MODE_NOSUCCEED, win);
+    if(TIME_RMA) t4 = MPI_Wtime() - t4;
+
+    // TIME FREE
+    if(TIME_RMA) t5 = MPI_Wtime();
+    MPI_Win_free(&win);
+    if(TIME_RMA) t5 = MPI_Wtime() - t5;
+    
+
+    // PRINT OUT TIME TAKEN
+    if(TIME_RMA) 
+    {
+        MPI_Allreduce(&t0, &t0, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
+        MPI_Allreduce(&t1, &t1, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
+        MPI_Allreduce(&t2, &t2, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
+        MPI_Allreduce(&t3, &t3, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
+        MPI_Allreduce(&t4, &t4, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
+        MPI_Allreduce(&t5, &t5, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
+        
+        if(rank == 0) 
+        {
+            printf("Time taken for Alloc_mem: %lf\n", t0);
+            printf("Time taken for Win_create: %lf\n", t1);
+            printf("Time taken for first Win_fence: %lf\n", t2);
+            printf("Time taken for Puts: %lf\n", t3);
+            printf("Time taken for second Win_fence: %lf\n", t4);
+            printf("Time taken for Win_free: %lf\n", t5);
+        }
+    }
     A.send_comm.ptr.push_back(0);
     ctr = 0;
     for (int i = 0; i < num_procs; i++)
@@ -317,17 +366,107 @@ void form_send_comm_rma(ParMat<U>& A)
 }
 
 
+// Must Form Recv Comm before Send!
+void allocate_rma_dynamic(MPI_Win* win, int** sizes)
+{
+    int rank, num_procs;
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
+
+    MPI_Alloc_mem(num_procs*sizeof(int), MPI_INFO_NULL, sizes);
+    MPI_Win_create(*sizes, num_procs*sizeof(int), sizeof(int),
+            MPI_INFO_NULL, MPI_COMM_WORLD, win);
+}
+
+void free_rma_dynamic(MPI_Win* win, int* sizes)
+{
+    MPI_Win_free(win);
+    MPI_Free_mem(sizes);
+}
 
 template <typename U>
-void form_comm(ParMat<U>& A)
+void form_send_comm_rma_dynamic(ParMat<U>& A, MPI_Win win, int* sizes)
+{
+    int rank, num_procs;
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
+
+    std::vector<long> recv_buf;
+    int start, end, proc, count, ctr;
+    MPI_Status recv_status;
+    int bytes;
+
+    for (int i = 0; i < num_procs; i++)
+        sizes[i] = 0;
+
+    // RMA puts to find sizes recvd from each process
+    MPI_Win_fence(MPI_MODE_NOSTORE|MPI_MODE_NOPRECEDE, win);
+    for (int i = 0; i < A.recv_comm.n_msgs; i++)
+    {
+        MPI_Put(&(A.recv_comm.counts[i]), 1, MPI_INT, A.recv_comm.procs[i], 
+               rank, 1, MPI_INT, win);
+    }
+    MPI_Win_fence(MPI_MODE_NOPUT|MPI_MODE_NOSUCCEED, win);
+    
+    A.send_comm.ptr.push_back(0);
+    ctr = 0;
+    for (int i = 0; i < num_procs; i++)
+    {
+        if (sizes[i])
+        {
+            A.send_comm.procs.push_back(i);
+            A.send_comm.counts.push_back(sizes[i]);
+            A.send_comm.ptr.push_back(A.send_comm.ptr[ctr] + sizes[i]);
+            ctr++;
+        }
+    }
+
+    A.send_comm.n_msgs = ctr;
+    if (A.send_comm.n_msgs)
+        A.send_comm.req.resize(A.send_comm.n_msgs);
+    A.send_comm.size_msgs = A.send_comm.ptr[A.send_comm.n_msgs];
+    if (A.send_comm.size_msgs)
+    {
+        A.send_comm.idx.resize(A.send_comm.size_msgs);
+        recv_buf.resize(A.send_comm.size_msgs);
+    }
+
+    int msg_tag = 1234;
+    for (int i = 0; i < A.send_comm.n_msgs; i++)
+    {
+        MPI_Irecv(&(recv_buf[A.send_comm.ptr[i]]), A.send_comm.counts[i], MPI_LONG, 
+                A.send_comm.procs[i], msg_tag, MPI_COMM_WORLD, &(A.send_comm.req[i]));
+    }
+    for (int i = 0; i < A.recv_comm.n_msgs; i++)
+    {
+        MPI_Isend(&(A.off_proc_columns[A.recv_comm.ptr[i]]), A.recv_comm.counts[i], MPI_LONG, 
+                A.recv_comm.procs[i], msg_tag, MPI_COMM_WORLD, &(A.recv_comm.req[i]));
+    }
+
+    if (A.send_comm.n_msgs)
+        MPI_Waitall(A.send_comm.n_msgs, A.send_comm.req.data(), MPI_STATUSES_IGNORE);
+
+    for (int i = 0; i < A.send_comm.size_msgs; i++)
+        A.send_comm.idx[i] = recv_buf[i] - A.first_col;
+
+    if (A.recv_comm.n_msgs)
+        MPI_Waitall(A.recv_comm.n_msgs, A.recv_comm.req.data(), MPI_STATUSES_IGNORE);    
+  
+}
+
+enum COMM_ALGORITHM { STANDARD, TORSTEN, RMA, RMA_DYNAMIC };
+
+template <typename U>
+void form_comm(ParMat<U>& A, COMM_ALGORITHM algorithm, MPI_Win* win, int** sizes)
 {
     // Form Recv Side 
     form_recv_comm(A);
 
     // Form Send Side (Algorithm Options Here!)
-    //form_send_comm_standard(A);
-    //form_send_comm_torsten(A);
-    form_send_comm_rma(A);
+    if (algorithm == STANDARD) { form_send_comm_standard(A); }
+    else if (algorithm == TORSTEN) { form_send_comm_torsten(A); }
+    else if (algorithm == RMA) { form_send_comm_rma(A); }
+    else if (algorithm == RMA_DYNAMIC) { form_send_comm_rma_dynamic(A, *win, *sizes); }
 }
 
 

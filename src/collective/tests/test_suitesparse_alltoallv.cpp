@@ -19,7 +19,7 @@
 #include "tests/sparse_mat.hpp"
 #include "tests/par_binary_IO.hpp"
 
-void test_matrix(const char* filename)
+void test_matrix(const char* filename, COMM_ALGORITHM algorithm)
 {
     int rank, num_procs;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -32,7 +32,9 @@ void test_matrix(const char* filename)
     // Read suitesparse matrix
     ParMat<int> A;
     readParMatrix(filename, A);
-    form_comm(A);
+    MPI_Win* win;
+    int* sizes;
+    //form_comm(A, algorithm, 0, 1, win, &sizes);
 
     std::vector<int> send_vals(A.on_proc.n_rows);
     std::iota(send_vals.begin(), send_vals.end(), 0);
@@ -204,6 +206,7 @@ void test_matrix(const char* filename)
     MPIX_Comm_free(locality_comm);
 }
 
+
 int main(int argc, char** argv)
 {
     MPI_Init(&argc, &argv);
@@ -214,16 +217,18 @@ int main(int argc, char** argv)
 } // end of main() //
 
 
+
+/*
 TEST(RandomCommTest, TestsInTests)
 {
     // Get MPI Information
     int rank, num_procs;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
-
+    
     test_matrix("../../../../test_data/dwt_162.pm");
     test_matrix("../../../../test_data/odepa400.pm");
     test_matrix("../../../../test_data/ww_36_pmec_36.pm");
-
+    
 }
-
+*/

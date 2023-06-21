@@ -1,0 +1,73 @@
+#!/bin/bash
+## Sample RunScript for Wheeler
+
+## QSUB Options:
+
+## The amount of time you want to hold the requested partition
+## Needs to be long enough for your program to complete
+## The longer the request, the longer you will wait in the queue
+#PBS -l walltime=00:05:00
+
+## The number of nodes, and number of processes per node
+## The larger the node count, the longer you will wait in the queue
+#PBS -l nodes=2:ppn=8
+
+## If included, job info can be emailed to you
+##PBS -M bienz@unm.edu
+
+## List what you would like to be emailed about:
+## b : send email at beginning of the job
+## e : send email at the end of the job
+## a : send email when the job is scheduled or aborted
+## s : send email when the job is suspended
+## n : do not send email (default)
+##PBS -m n
+
+## Give your job a name so you can identify it among
+## other jobs you may submit
+#PBS -N can_1072
+
+## Filename to output any errors
+#PBS -e can_1072.%PBS_JOBID
+
+## Filename to save output
+#PBS -o can_1072.%PBS_JOBID
+
+## Queue to submit to (default, debug)
+## Debug (uncomment PBS line below):
+##  - faster than default to get through queue
+##  - limited to 4 nodes, 32 processors
+## Default (comment PBS line below): 
+##  - can take longer than debug to get through queue
+##  - soft limit of 20 nodes, 160 processes
+#PBS -q normal
+
+## Other options (unsure what all of these are as `man qsub` does not work):
+## -a <start time> : earliest time to start job
+## -A <account> : account to use
+## -I : interactive job
+## -l resource_list
+## -b y|n
+## -p priority
+## -pe shm task_cnt
+## -P wckey
+## -r y|n
+## -v variable_list
+## -V
+## -wd workdir
+## -W additional_attributes
+## -h
+
+## Load necessary modules
+module load gcc
+module load openmpi
+# load anaconda scripts for python if needed
+
+#cd /path/to/executable
+#mpirun -n <num_procs> ./executable
+
+cd /users/bienz/andrew/locality_aware/build_wheeler/benchmarks
+srun -N 2 -n 16 ./torsten_standard_comm ../../test_data/can_1072.pm 1 can_1072 RMA
+
+## if mpi4py:
+# mpirun -n <num_procs> python3 ./executable 
