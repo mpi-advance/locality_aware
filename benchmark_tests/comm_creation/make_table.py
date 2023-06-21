@@ -84,13 +84,13 @@ for matrix in matrix_directories:
 
     plt.title(f"{matrix} ({num_procs} procs) (Wheeler)")
     plt.xlabel("Number of runs")
-    plt.ylabel("Average running time")
-    plt.plot([x[0] for x in standard_data], [x[1] for x in standard_data])
-    plt.plot([x[0] for x in torsten_data], [x[1] for x in torsten_data])
-    plt.plot([x[0] for x in RMA_dynamic_data], [x[1] for x in RMA_dynamic_data])
+    plt.ylabel("Average running time (ms)")
+    plt.plot([x[0] for x in standard_data[50:]], [x[1] for x in standard_data[50:]])
+    plt.plot([x[0] for x in torsten_data[50:]], [x[1] for x in torsten_data[50:]])
+    plt.plot([x[0] for x in RMA_dynamic_data[50:]], [x[1] for x in RMA_dynamic_data[50:]])
     #plt.plot(RMA_data)
     plt.legend(["Standard", "Torsten", "RMA_DYNAMIC"])
-    plt.savefig(f"./test_fig_{num_procs}")
+    plt.savefig(f"./{matrix}/tables/{matrix}_varied_runtime_{num_procs}")
     plt.clf()
 
 
