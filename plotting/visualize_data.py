@@ -139,7 +139,6 @@ def parse_output_strings(average_dict : dict, max_dict : dict, min_dict : dict, 
           max_dict.update({num_procs : time_taken})
     i = i + 1
 
-# Create plot with an x-axis of number of processes and y-label of time taken
 def make_time_plot(key_list : list, data_list : list, title : str, out_file : str):
   plt.plot(key_list, data_list)
   plt.xlabel("Number of Processes")
@@ -148,7 +147,6 @@ def make_time_plot(key_list : list, data_list : list, title : str, out_file : st
   plt.savefig(out_file)
   plt.clf()
 
-# Create plot of number of message sent
 def make_msg_num_plot(num_msg_keys : list, num_msg_data : list, matrix : str, machine_name : str, method : str):
   plt.plot(num_msg_keys, num_msg_data)
   plt.xlabel("Number of Processes")
@@ -157,7 +155,6 @@ def make_msg_num_plot(num_msg_keys : list, num_msg_data : list, matrix : str, ma
   plt.savefig(f"{fpath}/{matrix}/plots/num_msg/{matrix}_{machine_name}_{method}_num_msg_plot.png")
   plt.clf()
 
-# Create plot of message size to send
 def make_msg_size_plot(msg_size_keys : list, msg_size_data : list, matrix: str, machine_name : str, method : str):
   plt.plot(msg_size_keys, msg_size_data)
   plt.xlabel("Number of Proceses")
@@ -166,7 +163,6 @@ def make_msg_size_plot(msg_size_keys : list, msg_size_data : list, matrix: str, 
   plt.savefig(f"{fpath}/{matrix}/plots/msg_size/{matrix}_{machine_name}_{method}_msg_size_plot.png")
   plt.clf()
 
-# Make all plots and write data to files
 def visualize_data(fp_1 : __file__, fp_2 : __file__, fp_3 : __file__, fp_4 : __file__, matrix : str, machine_name : str):
   (average_keys_standard, max_keys_standard, min_keys_standard, num_msg_keys_standard, msg_size_keys_standard) = get_and_sort_keys(standard_dict_average, standard_dict_max, standard_dict_min, standard_dict_num_msg, standard_dict_msg_size)
   (average_data_standard, max_data_standard, min_data_standard, num_msg_data_standard, msg_size_data_standard) = print_data(fp_1, standard_dict_average, standard_dict_max, standard_dict_min, standard_dict_num_msg, standard_dict_msg_size)

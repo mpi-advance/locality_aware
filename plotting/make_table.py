@@ -5,7 +5,6 @@ machine_name = "Hopper"
 #algos = ['Standard','Torsten','RMA']
 algos = ['Standard']
 
-# Create directories if they don't exist
 def create_dirs(matrix : str):
   os.mkdir()
   if not os.path.exists(f"./{matrix}/parsed_data"):
@@ -23,7 +22,7 @@ for matrix in matrix_directories:
     standard_file = open(f"./{matrix}/{matrix}_{machine_name}_{algo}_varied_runs","r")
     output_lines = []
   
-    # Open File, clear out useless lines 
+    ## Open File, clear out useless lines 
     for line in standard_file.read().splitlines():
       line.strip().split(',')[0] != algo.upper()
       if (line.strip().split(',')[0] != algo.upper()) and (not line.replace('.','',1).isdigit()) and (line.strip().split(',')[0].split(' ')[0] != 'MAX_MSG_COUNT'):
@@ -34,7 +33,8 @@ for matrix in matrix_directories:
     standard_out = open(f"./{matrix}/parsed_data/tables/{matrix}_{machine_name}_{algo}_table.txt","w")
     data_out = []
   
-    # Parse information about average runtime, write to array
+    # Data format: 
+    # Array has elements [(num_tests, average_run_time)], where index represents 
     i = 0 
     prev_num_procs = 0
     while i < len(output_lines):
