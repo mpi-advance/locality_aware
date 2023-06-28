@@ -3,14 +3,15 @@
 #BSUB -e gpu_alltoall4.%J.err
 #BSUB -o gpu_alltoall4.%J.out
 #BSUB -nnodes 4
-#BSUB -q pdebug
-##BSUB -q pbatch
+#BSUB -q pbatch
 #BSUB -W 00:15
 
-cd /g/g14/bienz1/locality_aware/build_gpu_lassen/benchmarks
+cd /g/g14/bienz1/locality_aware_gpu/build_gpu_lassen/benchmarks
 
-jsrun -a4 -c4 -g4 -r1 -n4 --latency_priority=cpu-cpu --launch_distribution=packed --print_placement=1 ./gpu_alltoall
+jsrun -n4 -r1 -a4 -c4 -g4 -M "-gpu" --latency_priority=gpu-cpu --launch_distribution=packed --print_placement=1 ./gpu_alltoall
 
+export MV2_USE_ALIGNED_ALLOC=1
 export OMP_NUM_THREADS=10
-jsrun -a4 -c40 -g4 -r1 -n4 --latency_priority=cpu-cpu --launch_distribution=packed --print_placement=1 ./gpu_threaded_alltoall
+jsrun -n4 -r1 -a4 -c40 -g4 -bpacked:10 -dpacked -EOMP_NUM_THREADS=10 -M "-gpu" --latency_priority=gpu-cpu --launch_distribution=packed --print_placement=1 ./gpu_threaded_alltoall
+
 

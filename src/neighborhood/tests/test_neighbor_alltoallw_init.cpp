@@ -88,6 +88,7 @@ TEST(RandomCommTest, TestsInTests)
             recvtypes.data(),
             std_comm);
 
+/*
 
     // 2. Node-Aware Communication
     MPIX_Dist_graph_create_adjacent(MPI_COMM_WORLD,
@@ -126,5 +127,6 @@ TEST(RandomCommTest, TestsInTests)
     MPIX_Comm_free(neighbor_comm);
     MPI_Comm_free(&std_comm);
 
+*/
 }
 

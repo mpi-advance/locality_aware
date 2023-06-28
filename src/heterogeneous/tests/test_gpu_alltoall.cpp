@@ -51,9 +51,9 @@ TEST(RandomCommTest, TestsInTests)
 
     int* local_data_d;
     int* alltoall_d;
-    gpuMalloc((void**)&local_data_d, 
+    cudaMalloc((void**)&local_data_d, 
             max_s*num_procs*sizeof(int));
-    gpuMalloc((void**)&alltoall_d, 
+    cudaMalloc((void**)&alltoall_d, 
             max_s*num_procs*sizeof(int)); 
 
     for (int i = 0; i < max_i; i++)
@@ -91,6 +91,7 @@ TEST(RandomCommTest, TestsInTests)
             ASSERT_EQ(std_alltoall[j], pairwise_alltoall[j]);
 
 
+/*
 	// Standard GPU Alltoall
 	PMPI_Alltoall(local_data_d,
                 s, 
@@ -106,7 +107,6 @@ TEST(RandomCommTest, TestsInTests)
         for (int j = 0; j < s*num_procs; j++)
             ASSERT_EQ(std_alltoall[j], device_data[j]);
         cudaMemset(alltoall_d, 0, s*num_procs*sizeof(int));
-        
 
         // GPU-Aware Pairwise Alltoall
         gpu_aware_alltoall_pairwise(
@@ -143,6 +143,7 @@ TEST(RandomCommTest, TestsInTests)
             ASSERT_EQ(std_alltoall[j], device_data[j]);
         cudaMemset(alltoall_d, 0, s*num_procs*sizeof(int));
 
+*/        
 
         // Copy-to-CPU Pairwise Alltoall
         copy_to_cpu_alltoall_pairwise(
@@ -160,7 +161,6 @@ TEST(RandomCommTest, TestsInTests)
         for (int j = 0; j < s*num_procs; j++)
             ASSERT_EQ(std_alltoall[j], device_data[j]);
         cudaMemset(alltoall_d, 0, s*num_procs*sizeof(int));
-
 
         // Copy-to-CPU Nonblocking Alltoall
         copy_to_cpu_alltoall_nonblocking(

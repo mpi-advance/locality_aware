@@ -15,7 +15,7 @@ int main(int argc, char* argv[])
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
 
-    int max_i = 15;
+    int max_i = 20;
     int max_s = pow(2, max_i);
     int n_iter = 100;
     double t0, tfinal;
@@ -154,6 +154,7 @@ int main(int argc, char* argv[])
                 s,
                 MPI_DOUBLE,
                 MPI_COMM_WORLD);
+        cudaDeviceSynchronize();
         MPI_Barrier(MPI_COMM_WORLD);
         t0 = MPI_Wtime();
         for (int k = 0; k < n_iter; k++)
@@ -178,6 +179,7 @@ int main(int argc, char* argv[])
                 s,
                 MPI_DOUBLE,
                 locality_comm);
+        cudaDeviceSynchronize();
         MPI_Barrier(MPI_COMM_WORLD);
         t0 = MPI_Wtime();
         for (int k = 0; k < n_iter; k++)
@@ -202,6 +204,7 @@ int main(int argc, char* argv[])
                 s,
                 MPI_DOUBLE,
                 locality_comm);
+        cudaDeviceSynchronize();
         MPI_Barrier(MPI_COMM_WORLD);
         t0 = MPI_Wtime();
         for (int k = 0; k < n_iter; k++)
@@ -226,6 +229,7 @@ int main(int argc, char* argv[])
                 s,
                 MPI_DOUBLE,
                 locality_comm);
+        cudaDeviceSynchronize();
         MPI_Barrier(MPI_COMM_WORLD);
         t0 = MPI_Wtime();
         for (int k = 0; k < n_iter; k++)
@@ -250,6 +254,7 @@ int main(int argc, char* argv[])
                 s,
                 MPI_DOUBLE,
                 locality_comm);
+        cudaDeviceSynchronize();
         MPI_Barrier(MPI_COMM_WORLD);
         t0 = MPI_Wtime();
         for (int k = 0; k < n_iter; k++)

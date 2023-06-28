@@ -1,83 +1,87 @@
-#include "collective/alltoall.h"
-#include "collective/collective.h"
-#include "gpu_alltoall.h"
+#include "gpu_neighbor_alltoallv.h"
+#include "neighbor/neighbor.h"
 
 // ASSUMES 1 CPU CORE PER GPU (Standard for applications)
-
-int gpu_aware_alltoall(alltoall_ftn f,
-        const void* sendbuf, 
-        const int sendcount,
+int gpu_aware_neighbor_alltoallv(neighbor_alltoallv_ftn f,
+        const void* sendbuffer,
+        const int sendcounts[],
+        const int sdispls[],
         MPI_Datatype sendtype,
-        void* recvbuf, 
-        const int recvcount, 
+        void* recvbuffer,
+        const int recvcounts[],
+        const int rdispls[],
+        MPI_Datatype recvtype,
+        MPIX_Comm* comm,
+        MPI_Info info,
+        MPIX_Request** request_ptr)
+
+int gpu_aware_alltoallv(alltoallv_ftn f,
+        const void* sendbuf, 
+        const int sendcounts[],
+        const int sdispls[],
+        MPI_Datatype sendtype,
+        void* recvbuf,
+        const int recvcounts[],
+        const int rdispls[],
         MPI_Datatype recvtype,
         MPIX_Comm* comm)
 {
-    int num_procs;
-    MPI_Comm_size(comm->global_comm, &num_procs);
-
-    int send_bytes, recv_bytes;
-    MPI_Type_size(sendtype, &send_bytes);
-    MPI_Type_size(recvtype, &recv_bytes);
-
-    int total_bytes_s = sendcount * send_bytes * num_procs;
-    int total_bytes_r = recvcount * recv_bytes * num_procs;
-
-    char* cpu_sendbuf;
-    char* cpu_recvbuf;
-    cudaMallocHost((void**)&cpu_sendbuf, total_bytes_s);
-    cudaMallocHost((void**)&cpu_recvbuf, total_bytes_r);
-
-    int ierr = f(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm->global_comm);
-
-    cudaFreeHost(cpu_sendbuf);
-    cudaFreeHost(cpu_recvbuf);
-
-    return ierr;
+    return f(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype,
+            comm->global_comm);
 }
 
-int gpu_aware_alltoall_pairwise(const void* sendbuf, 
-        const int sendcount,
+int gpu_aware_alltoallv_pairwise(const void* sendbuf, 
+        const int sendcounts[],
+        const int sdispls[],
         MPI_Datatype sendtype,
-        void* recvbuf, 
-        const int recvcount, 
+        void* recvbuf,
+        const int recvcounts[],
+        const int rdispls[],
         MPI_Datatype recvtype,
         MPIX_Comm* comm)
 {
-    return gpu_aware_alltoall(alltoall_pairwise,
-        sendbuf, 
-        sendcount,
+    return gpu_aware_alltoallv(alltoallv_pairwise,
+        sendbuf,
+        sendcounts,
+        sdispls,
         sendtype,
-        recvbuf, 
-        recvcount,
+        recvbuf,
+        recvcounts,
+        rdispls,
         recvtype,
         comm);
 }
 
-int gpu_aware_alltoall_nonblocking(const void* sendbuf, 
-        const int sendcount,
+int gpu_aware_alltoallv_nonblocking(const void* sendbuf, 
+        const int sendcounts[],
+        const int sdispls[],
         MPI_Datatype sendtype,
-        void* recvbuf, 
-        const int recvcount, 
+        void* recvbuf,
+        const int recvcounts[],
+        const int rdispls[],
         MPI_Datatype recvtype,
         MPIX_Comm* comm)
 {
-    return gpu_aware_alltoall(alltoall_nonblocking,
-        sendbuf, 
-        sendcount,
+    return gpu_aware_alltoallv(alltoallv_nonblocking,
+        sendbuf,
+        sendcounts,
+        sdispls,
         sendtype,
         recvbuf, 
-        recvcount,
+        recvcounts,
+        rdispls,
         recvtype,
         comm);
 }
 
-int copy_to_cpu_alltoall(alltoall_ftn f,
+int copy_to_cpu_alltoallv(alltoallv_ftn f,
         const void* sendbuf, 
-        const int sendcount,
+        const int sendcounts[],
+        const int sdispls[],
         MPI_Datatype sendtype,
-        void* recvbuf, 
-        const int recvcount, 
+        void* recvbuf,
+        const int recvcounts[],
+        const int rdispls[],
         MPI_Datatype recvtype,
         MPIX_Comm* comm)
 {
@@ -90,8 +94,16 @@ int copy_to_cpu_alltoall(alltoall_ftn f,
     MPI_Type_size(sendtype, &send_bytes);
     MPI_Type_size(recvtype, &recv_bytes);
 
-    int total_bytes_s = sendcount * send_bytes * num_procs;
-    int total_bytes_r = recvcount * recv_bytes * num_procs;
+    int sendcount = 0;
+    int recvcount = 0;
+    for (int i = 0; i < num_procs; i++)
+    {
+        sendcount += sendcounts[i];
+        recvcount += recvcounts[i];
+    }
+
+    int total_bytes_s = sendcount * send_bytes;
+    int total_bytes_r = recvcount * recv_bytes;
 
     char* cpu_sendbuf;
     char* cpu_recvbuf;
@@ -102,7 +114,8 @@ int copy_to_cpu_alltoall(alltoall_ftn f,
     ierr += gpuMemcpy(cpu_sendbuf, sendbuf, total_bytes_s, gpuMemcpyDeviceToHost);
 
     // Collective Among CPUs
-    ierr += f(cpu_sendbuf, sendcount, sendtype, cpu_recvbuf, recvcount, recvtype, comm->global_comm);
+    ierr += f(cpu_sendbuf, sendcounts, sdispls, sendtype, 
+            cpu_recvbuf, recvcounts, rdispls, recvtype, comm->global_comm);
 
     // Copy from CPU to GPU
     ierr += gpuMemcpy(recvbuf, cpu_recvbuf, total_bytes_r, gpuMemcpyHostToDevice);
@@ -113,76 +126,100 @@ int copy_to_cpu_alltoall(alltoall_ftn f,
     return ierr;
 }
 
-int copy_to_cpu_alltoall_pairwise(const void* sendbuf, 
-        const int sendcount,
+int copy_to_cpu_alltoallv_pairwise(const void* sendbuf, 
+        const int sendcounts[],
+        const int sdispls[],
         MPI_Datatype sendtype,
-        void* recvbuf, 
-        const int recvcount, 
+        void* recvbuf,
+        const int recvcounts[],
+        const int rdispls[],
         MPI_Datatype recvtype,
         MPIX_Comm* comm)
 {
-    return copy_to_cpu_alltoall(alltoall_pairwise,
+    return copy_to_cpu_alltoallv(alltoallv_pairwise,
         sendbuf, 
-        sendcount,
+        sendcounts,
+        sdispls,
         sendtype,
         recvbuf, 
-        recvcount,
+        recvcounts,
+        rdispls,
         recvtype,
         comm);
 
 }
 
-int copy_to_cpu_alltoall_nonblocking(const void* sendbuf, 
-        const int sendcount,
+int copy_to_cpu_alltoallv_nonblocking(const void* sendbuf, 
+        const int sendcounts[],
+        const int sdispls[],
         MPI_Datatype sendtype,
-        void* recvbuf, 
-        const int recvcount, 
+        void* recvbuf,
+        const int recvcounts[],
+        const int rdispls[],
         MPI_Datatype recvtype,
         MPIX_Comm* comm)
 {
-    return copy_to_cpu_alltoall(alltoall_nonblocking,
+    return copy_to_cpu_alltoallv(alltoallv_nonblocking,
         sendbuf, 
-        sendcount,
+        sendcounts,
+        sdispls,
         sendtype,
         recvbuf, 
-        recvcount,
+        recvcounts,
+        rdispls,
         recvtype,
         comm);
 }
 
-int threaded_alltoall_pairwise(const void* sendbuf,
-        const int sendcount,
+int threaded_alltoallv_pairwise(const void* sendbuf,
+        const int sendcounts[],
+        const int sdispls[],
         MPI_Datatype sendtype,
-        void* recvbuf, 
-        const int recvcount, 
+        void* recvbuf,
+        const int recvcounts[],
+        const int rdispls[],
         MPI_Datatype recvtype,
         MPIX_Comm* comm)
 {
     int ierr = 0;
-    
+
     int rank, num_procs;
     MPI_Comm_rank(comm->global_comm, &rank);
     MPI_Comm_size(comm->global_comm, &num_procs);
-    
+
     int send_bytes, recv_bytes;
     MPI_Type_size(sendtype, &send_bytes);
     MPI_Type_size(recvtype, &recv_bytes);
-    
-    int total_bytes_s = sendcount * send_bytes * num_procs;
-    int total_bytes_r = recvcount * recv_bytes * num_procs;
-    
+
+    int sendcount = 0;
+    int recvcount = 0;
+    for (int i = 0; i < num_procs; i++)
+    {
+        sendcount += sendcounts[i];
+        recvcount += recvcounts[i];
+    }
+
+    int total_bytes_s = sendcount * send_bytes;
+    int total_bytes_r = recvcount * recv_bytes;
+
     char* cpu_sendbuf;
     char* cpu_recvbuf;
     cudaMallocHost((void**)&cpu_sendbuf, total_bytes_s);
     cudaMallocHost((void**)&cpu_recvbuf, total_bytes_r);
-    
+
     // Copy from GPU to CPU
     ierr += gpuMemcpy(cpu_sendbuf, sendbuf, total_bytes_s, gpuMemcpyDeviceToHost);
 
-    memcpy(cpu_recvbuf + (rank * recvcount * recv_bytes),
-        cpu_sendbuf + (rank * sendcount * send_bytes),
-        sendcount * send_bytes);
-
+    memcpy(cpu_recvbuf + (rdispls[rank] * recv_bytes),
+        cpu_sendbuf + (sdispls[rank] * send_bytes),
+        sendcounts[rank] * send_bytes);
+ 
+/*
+    int* ordered_sends = (int*)malloc(num_procs*sizeof(int));
+    int* ordered_recvs = (int*)malloc(num_procs*sizeof(int));
+    sort(num_procs, ordered_sends, sendcounts);
+    sort(num_procs, ordered_recvs, recvcounts);
+*/
 #pragma omp parallel shared(cpu_sendbuf, cpu_recvbuf)
 {
     MPI_Status status;
@@ -211,16 +248,16 @@ int threaded_alltoall_pairwise(const void* sendbuf,
             recv_proc = rank - idx;
             if (recv_proc < 0)
                 recv_proc += num_procs;
-            send_pos = send_proc * sendcount * send_bytes;
-            recv_pos = recv_proc * recvcount * recv_bytes;
+            send_pos = sdispls[send_proc] * send_bytes;
+            recv_pos = rdispls[recv_proc] * recv_bytes;
 
             MPI_Sendrecv(cpu_sendbuf + send_pos,
-                    sendcount,
+                    sendcounts[send_proc],
                     sendtype, 
                     send_proc,
                     tag,
                     cpu_recvbuf + recv_pos,
-                    recvcount,
+                    recvcounts[recv_proc],
                     recvtype,
                     recv_proc,
                     tag,
@@ -234,43 +271,66 @@ int threaded_alltoall_pairwise(const void* sendbuf,
 
     ierr += gpuMemcpy(recvbuf, cpu_recvbuf, total_bytes_r, gpuMemcpyHostToDevice);
 
+/*
+    free(ordered_sends);
+    free(ordered_recvs);
+*/
+
     cudaFreeHost(cpu_sendbuf);
     cudaFreeHost(cpu_recvbuf);
 
     return ierr;
 }
 
-int threaded_alltoall_nonblocking(const void* sendbuf,
-        const int sendcount,
+int threaded_alltoallv_nonblocking(const void* sendbuf,
+        const int sendcounts[],
+        const int sdispls[],
         MPI_Datatype sendtype,
-        void* recvbuf, 
-        const int recvcount, 
+        void* recvbuf,
+        const int recvcounts[],
+        const int rdispls[],
         MPI_Datatype recvtype,
         MPIX_Comm* comm)
 {
-    int num_procs, rank;
+    int ierr = 0;
+
+    int rank, num_procs;
     MPI_Comm_rank(comm->global_comm, &rank);
     MPI_Comm_size(comm->global_comm, &num_procs);
 
     int send_bytes, recv_bytes;
     MPI_Type_size(sendtype, &send_bytes);
     MPI_Type_size(recvtype, &recv_bytes);
-   
-    int total_bytes_s = sendcount * send_bytes * num_procs;
-    int total_bytes_r = recvcount * recv_bytes * num_procs;
+
+    int sendcount = 0;
+    int recvcount = 0;
+    for (int i = 0; i < num_procs; i++)
+    {
+        sendcount += sendcounts[i];
+        recvcount += recvcounts[i];
+    }
+
+    int total_bytes_s = sendcount * send_bytes;
+    int total_bytes_r = recvcount * recv_bytes;
 
     char* cpu_sendbuf;
     char* cpu_recvbuf;
     cudaMallocHost((void**)&cpu_sendbuf, total_bytes_s);
     cudaMallocHost((void**)&cpu_recvbuf, total_bytes_r);
 
-    int ierr = 0;
+    // Copy from GPU to CPU
     ierr += gpuMemcpy(cpu_sendbuf, sendbuf, total_bytes_s, gpuMemcpyDeviceToHost);
 
-    memcpy(cpu_recvbuf + (rank * recvcount * recv_bytes),
-        cpu_sendbuf + (rank * sendcount * send_bytes),
-        sendcount * send_bytes);
-
+    memcpy(cpu_recvbuf + (rdispls[rank] * recv_bytes),
+        cpu_sendbuf + (sdispls[rank] * send_bytes),
+        sendcounts[rank] * send_bytes);
+ 
+/*
+    int* ordered_sends = (int*)malloc(num_procs*sizeof(int));
+    int* ordered_recvs = (int*)malloc(num_procs*sizeof(int));
+    sort(num_procs, ordered_sends, sendcounts);
+    sort(num_procs, ordered_recvs, recvcounts);
+*/
 #pragma omp parallel shared(cpu_sendbuf, cpu_recvbuf)
 {
     int tag = 102944;
@@ -300,18 +360,18 @@ int threaded_alltoall_nonblocking(const void* sendbuf,
             recv_proc = rank - idx;
             if (recv_proc < 0)
                 recv_proc += num_procs;
-            send_pos = send_proc * sendcount * send_bytes;
-            recv_pos = recv_proc * recvcount * recv_bytes;
+            send_pos = sdispls[send_proc] * send_bytes;
+            recv_pos = rdispls[recv_proc] * recv_bytes;
 
             MPI_Isend(cpu_sendbuf + send_pos,
-                    sendcount,
+                    sendcounts[send_proc],
                     sendtype,
                     send_proc,
                     tag,
                     comm->global_comm,
                     &(requests[i]));
             MPI_Irecv(cpu_recvbuf + recv_pos,
-                    recvcount,
+                    recvcounts[recv_proc],
                     recvtype,
                     recv_proc,
                     tag,
@@ -326,9 +386,16 @@ int threaded_alltoall_nonblocking(const void* sendbuf,
     }
 } 
 
+/*
+    free(ordered_sends);
+    free(ordered_recvs);
+*/
     ierr += gpuMemcpy(recvbuf, cpu_recvbuf, total_bytes_r, gpuMemcpyHostToDevice);
+
     cudaFreeHost(cpu_sendbuf);
     cudaFreeHost(cpu_recvbuf);
 
     return ierr;
 }
+
+

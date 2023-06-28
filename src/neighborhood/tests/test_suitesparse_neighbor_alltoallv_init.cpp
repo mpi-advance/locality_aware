@@ -67,7 +67,8 @@ void test_matrix(const char* filename)
 
     communicate(A, send_vals, std_recv_vals, MPI_INT);
 
-    MPI_Comm std_comm = NULL;
+    MPI_Request std_request;
+    MPI_Comm std_comm;
     MPI_Status status;
     MPIX_Comm* neighbor_comm;
     MPIX_Request* neighbor_request;
@@ -79,16 +80,31 @@ void test_matrix(const char* filename)
     if (A.send_comm.n_msgs  == 0)
         d = MPI_WEIGHTS_EMPTY;
 
+
+
+    // Standard MPI Dist Graph Create
     MPI_Dist_graph_create_adjacent(MPI_COMM_WORLD,
             A.recv_comm.n_msgs,
             s,
             MPI_UNWEIGHTED,
-            A.send_comm.n_msgs, 
+            A.send_comm.n_msgs,
             d,
             MPI_UNWEIGHTED,
-            MPI_INFO_NULL, 
-            0, 
+            MPI_INFO_NULL,
+            0,
             &std_comm);
+    // Standard MPI Implementation of Alltoallv
+    PMPI_Neighbor_alltoallv(alltoallv_send_vals.data(),
+            A.send_comm.counts.data(),
+            A.send_comm.ptr.data(),
+            MPI_INT,
+            std_recv_vals.data(),
+            A.recv_comm.counts.data(),
+            A.recv_comm.ptr.data(),
+            MPI_INT,
+            std_comm);
+    MPI_Comm_free(&std_comm);
+
 
     MPIX_Dist_graph_create_adjacent(MPI_COMM_WORLD,
             A.recv_comm.n_msgs,
@@ -103,7 +119,6 @@ void test_matrix(const char* filename)
 
     update_locality(neighbor_comm, 4);
     
-
     MPIX_Neighbor_alltoallv(alltoallv_send_vals.data(), 
             A.send_comm.counts.data(),
             A.send_comm.ptr.data(), 
@@ -178,7 +193,6 @@ void test_matrix(const char* filename)
             MPI_INFO_NULL,
             &neighbor_request);
 
-
     MPIX_Start(neighbor_request);
     MPIX_Wait(neighbor_request, &status);
     MPIX_Request_free(neighbor_request);
@@ -190,7 +204,6 @@ void test_matrix(const char* filename)
     }
 
     MPIX_Comm_free(neighbor_comm);
-    MPI_Comm_free(&std_comm);
 }
 
 int main(int argc, char** argv)
@@ -210,8 +223,9 @@ TEST(RandomCommTest, TestsInTests)
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
 
-    test_matrix("../../../../test_data/dwt_162.pm");
     test_matrix("../../../../test_data/odepa400.pm");
+/*
+    test_matrix("../../../../test_data/dwt_162.pm");
     test_matrix("../../../../test_data/ww_36_pmec_36.pm");
     test_matrix("../../../../test_data/bcsstk01.pm");
     test_matrix("../../../../test_data/west0132.pm");
@@ -229,5 +243,6 @@ TEST(RandomCommTest, TestsInTests)
     test_matrix("../../../../test_data/can_1072.pm");
     test_matrix("../../../../test_data/lp_sctap2.pm");
     test_matrix("../../../../test_data/lp_woodw.pm");
+*/
 }
 

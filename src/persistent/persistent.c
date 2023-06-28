@@ -1,5 +1,53 @@
 #include "persistent.h"
 
+void init_request(MPIX_Request** request_ptr)
+{   
+    MPIX_Request* request = (MPIX_Request*)malloc(sizeof(MPIX_Request));
+    
+    request->locality = NULL;
+    
+    request->local_L_n_msgs = 0;
+    request->local_S_n_msgs = 0;
+    request->local_R_n_msgs = 0;
+    request->global_n_msgs = 0;
+    
+    request->local_L_requests = NULL;
+    request->local_S_requests = NULL;
+    request->local_R_requests = NULL;
+    request->global_requests = NULL;
+    
+    request->recv_size = 0;
+    request->block_size = 1;
+    
+    *request_ptr = request;
+}
+
+void allocate_requests(int n_requests, MPI_Request** request_ptr)
+{
+    if (n_requests)
+    {
+        MPI_Request* request = (MPI_Request*)malloc(sizeof(MPI_Request)*n_requests);
+        *request_ptr = request;
+    }
+    else *request_ptr = NULL;
+}
+
+void destroy_request(MPIX_Request* request)
+{
+    if (request->local_L_n_msgs)
+        free(request->local_L_requests);
+    if (request->local_S_n_msgs)
+        free(request->local_S_requests);
+    if (request->local_R_n_msgs)
+        free(request->local_R_requests);
+    if (request->global_n_msgs)
+        free(request->global_requests);
+
+    if (request->locality)
+        destroy_locality_comm(request->locality);
+
+    free(request);
+}
 
 // Starting locality-aware requests
 // 1. Start Local_L
@@ -10,58 +58,8 @@ int MPIX_Start(MPIX_Request* request)
     if (request == NULL)
         return 0;
 
-    int ierr, idx;
-
-    char* send_buffer = NULL;
-    int recv_size = 0;
-    if (request->recv_size)
-    {
-        send_buffer = (char*)(request->sendbuf);
-        recv_size = request->recv_size;
-    }
-
-    // Local L sends sendbuf
-    if (request->local_L_n_msgs)
-    {
-        for (int i = 0; i < request->locality->local_L_comm->send_data->size_msgs; i++)
-        {
-            idx = request->locality->local_L_comm->send_data->indices[i];
-            for (int j = 0; j < recv_size; j++)
-                request->locality->local_L_comm->send_data->buffer[i*recv_size+j] = send_buffer[idx*recv_size+j];
-        }
-        ierr = MPI_Startall(request->local_L_n_msgs, request->local_L_requests);
-    }
-
-
-    // Local S sends sendbuf
-    if (request->local_S_n_msgs)
-    {
-        for (int i = 0; i < request->locality->local_S_comm->send_data->size_msgs; i++)
-        {
-            idx = request->locality->local_S_comm->send_data->indices[i];
-
-            for (int j = 0; j < recv_size; j++)
-                request->locality->local_S_comm->send_data->buffer[i*recv_size+j] = send_buffer[idx*recv_size+j];
-        }
-
-        ierr = MPI_Startall(request->local_S_n_msgs, request->local_S_requests);
-        ierr = MPI_Waitall(request->local_S_n_msgs, request->local_S_requests, MPI_STATUSES_IGNORE);
-
-
-        // Copy into global->send_data->buffer
-        for (int i = 0; i < request->locality->global_comm->send_data->size_msgs; i++)
-        {
-            idx = request->locality->global_comm->send_data->indices[i];
-            for (int j = 0; j < recv_size; j++)
-                request->locality->global_comm->send_data->buffer[i*recv_size+j] = request->locality->local_S_comm->recv_data->buffer[idx*recv_size+j];
-        }
-    }
-
-    // Global sends buffer in locality, sendbuf in standard
-    if (request->global_n_msgs)
-        ierr = MPI_Startall(request->global_n_msgs, request->global_requests);
-
-    return ierr;
+    mpix_start_ftn start_function = (mpix_start_ftn)(request->start_function);
+    return start_function(request);
 }
 
 
@@ -75,60 +73,8 @@ int MPIX_Wait(MPIX_Request* request, MPI_Status* status)
     if (request == NULL)
         return 0;
 
-    int ierr, idx;
-
-    char* recv_buffer = NULL;
-    int recv_size = 0;
-    if (request->recv_size)
-    {
-        recv_buffer = (char*)(request->recvbuf); 
-        recv_size = request->recv_size;
-    }
-
-    // Global waits for recvs
-    if (request->global_n_msgs)
-    {
-        ierr = MPI_Waitall(request->global_n_msgs, request->global_requests, MPI_STATUSES_IGNORE);
-
-        if (request->local_R_n_msgs)
-        {
-            for (int i = 0; i < request->locality->local_R_comm->send_data->size_msgs; i++)
-            {
-                idx = request->locality->local_R_comm->send_data->indices[i];
-                for (int j = 0; j < recv_size; j++)
-                    request->locality->local_R_comm->send_data->buffer[i*recv_size+j] = request->locality->global_comm->recv_data->buffer[idx*recv_size+j];
-            }
-        }
-    }
-
-    // Wait for local_R recvs
-    if (request->local_R_n_msgs)
-    {
-        ierr = MPI_Startall(request->local_R_n_msgs, request->local_R_requests);
-        ierr = MPI_Waitall(request->local_R_n_msgs, request->local_R_requests, MPI_STATUSES_IGNORE);
-
-        for (int i = 0; i < request->locality->local_R_comm->recv_data->size_msgs; i++)
-        {
-            idx = request->locality->local_R_comm->recv_data->indices[i];
-            for (int j = 0; j < recv_size; j++)
-                recv_buffer[idx*recv_size+j] = request->locality->local_R_comm->recv_data->buffer[i*recv_size+j];
-        }
-    }
-
-    // Wait for local_L recvs
-    if (request->local_L_n_msgs)
-    {
-        ierr = MPI_Waitall(request->local_L_n_msgs, request->local_L_requests, MPI_STATUSES_IGNORE);
-
-        for (int i = 0; i < request->locality->local_L_comm->recv_data->size_msgs; i++)
-        {
-            idx = request->locality->local_L_comm->recv_data->indices[i];
-            for (int j = 0; j < recv_size; j++)
-                recv_buffer[idx*recv_size+j] = request->locality->local_L_comm->recv_data->buffer[i*recv_size+j];
-        }
-    }
-
-    return ierr;
+    mpix_wait_ftn wait_function = (mpix_wait_ftn)(request->wait_function);
+    return wait_function(request, status);
 }
 
 
@@ -162,6 +108,14 @@ int MPIX_Request_free(MPIX_Request* request)
     // If Locality-Aware
     if (request->locality)
         destroy_locality_comm(request->locality);
+
+// TODO : for safety, may want to check if allocated with malloc?
+#ifdef GPU // Assuming cpu buffers allocated in pinned memory
+    if (request->cpu_sendbuf)
+        cudaFreeHost(request->cpu_sendbuf);
+    if (request->cpu_recvbuf)
+        cudaFreeHost(request->cpu_recvbuf);
+#endif
 
     free(request);
 

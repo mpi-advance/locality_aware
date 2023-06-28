@@ -17,9 +17,11 @@ int main(int argc, char* argv[])
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
 
-    int max_i = 15;
+    omp_set_num_threads(10);
+
+    int max_i = 20;
     int max_s = pow(2, max_i);
-    int n_iter = 100;
+    int max_n_iter = 100;
     double t0, tfinal;
     srand(time(NULL));
     std::vector<double> send_data(max_s*num_procs);
@@ -41,6 +43,9 @@ int main(int argc, char* argv[])
     {
         int s = pow(2, i);
         if (rank == 0) printf("Testing Size %d\n", s);
+
+        int n_iter = max_n_iter;
+        if (s > 4096) n_iter /= 10;
 
         // Standard MPI Implementation
         PMPI_Alltoall(send_data_d,
@@ -99,7 +104,6 @@ int main(int argc, char* argv[])
                 return 1;
             }
         }
-
 
 
         // Time PMPI Alltoall
@@ -174,7 +178,6 @@ int main(int argc, char* argv[])
         MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
         if (rank == 0) printf("Threaded Nonblocking Time %e\n", t0);
     }
-
     cudaFree(send_data_d);
     cudaFree(recv_data_d);
 

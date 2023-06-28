@@ -10,6 +10,12 @@ if(USE_CUDA)
     target_link_libraries(gpu_alltoall mpi_advance ${MPI_LIBRARIES} OpenMP::OpenMP_CXX)
 
     add_executable(gpu_threaded_alltoall gpu_threaded_alltoall.cpp)
+    target_compile_options(gpu_threaded_alltoall PRIVATE
+    $<$<COMPILE_LANGUAGE:CUDA>: # Flags for CUDA Objects
+    -lineinfo
+    -Xcompiler -fopenmp
+    >
+    )
     target_link_libraries(gpu_threaded_alltoall mpi_advance ${MPI_LIBRARIES} OpenMP::OpenMP_CXX)
 
 else()

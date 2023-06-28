@@ -1,4 +1,5 @@
 #include "neighbor.h"
+#include "neighbor_persistent.h"
 #include "persistent/persistent.h"
 #include <vector>
 #include <algorithm>
@@ -460,11 +461,10 @@ void form_global_comm(CommData* local_data, CommData* global_data,
     MPI_Comm_rank(mpix_comm->local_comm, &local_rank);
     MPI_Comm_size(mpix_comm->local_comm, &local_num_procs);
     int num_nodes = mpix_comm->num_nodes;
-    int rank_node = mpix_comm->rank_node;
 
     int node_idx;
     int start, end, idx;
-    int ctr, node, size;
+    int node;
 
     node_sizes.resize(num_nodes, 0);
 
@@ -527,7 +527,7 @@ void update_global_comm(LocalityComm* locality)
     int* send_buffer = NULL;
     int send_tag = 32148532;
     int recv_tag = 52395234;
-    int node, global_proc, tag;
+    int node, global_proc;
     int num_to_recv;
     MPI_Status recv_status;
     std::vector<int> send_nodes(num_nodes, 0);

@@ -7,7 +7,6 @@
 typedef int (*alltoallv_ftn)(const void*, const int*, const int*, MPI_Datatype, 
 void*, const int*, const int*, MPI_Datatype, MPI_Comm);
 
-
 int gpu_aware_alltoallv(alltoallv_ftn f,
         const void* sendbuf,
         const int sendcounts[],

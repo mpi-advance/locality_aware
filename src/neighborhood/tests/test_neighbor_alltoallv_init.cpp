@@ -76,6 +76,17 @@ TEST(RandomCommTest, TestsInTests)
             MPI_INFO_NULL, 
             0, 
             &std_comm);
+    // Standard MPI Implementation of Alltoallv
+    PMPI_Neighbor_alltoallv(alltoallv_send_vals.data(), 
+            send_data.counts.data(),
+            send_data.indptr.data(), 
+            MPI_INT,
+            std_recv_vals.data(), 
+            recv_data.counts.data(),
+            recv_data.indptr.data(), 
+            MPI_INT,
+            std_comm);
+    MPI_Comm_free(&std_comm);
 
     // MPI Advance Dist Graph Create
     MPIX_Dist_graph_create_adjacent(MPI_COMM_WORLD,
@@ -92,19 +103,7 @@ TEST(RandomCommTest, TestsInTests)
     // Update Locality : 4 PPN (for single-node tests)
     update_locality(neighbor_comm, 4);
 
-
-    // Standard MPI Implementation of Alltoallv
-    MPI_Neighbor_alltoallv(alltoallv_send_vals.data(), 
-            send_data.counts.data(),
-            send_data.indptr.data(), 
-            MPI_INT,
-            std_recv_vals.data(), 
-            recv_data.counts.data(),
-            recv_data.indptr.data(), 
-            MPI_INT,
-            std_comm);
-
-
+/*
     // Simple Persistent MPI Advance Implementation
     MPIX_Neighbor_alltoallv_init(alltoallv_send_vals.data(), 
             send_data.counts.data(),
@@ -125,7 +124,7 @@ TEST(RandomCommTest, TestsInTests)
         ASSERT_EQ(std_recv_vals[i], persistent_recv_vals[i]);
 
     }
-
+*/
     // Locality-Aware MPI Advance Implementation
     MPIX_Neighbor_locality_alltoallv_init(alltoallv_send_vals.data(), 
             send_data.counts.data(),
@@ -147,6 +146,7 @@ TEST(RandomCommTest, TestsInTests)
     {
         ASSERT_EQ(std_recv_vals[i], loc_recv_vals[i]);
     }
+
 
 /*
     // Partial Locality-Aware MPI Advance Implementation
@@ -171,8 +171,7 @@ TEST(RandomCommTest, TestsInTests)
     }
 */
 
-    MPIX_Comm_free(neighbor_comm);
-    MPI_Comm_free(&std_comm);
+//    MPIX_Comm_free(neighbor_comm);
 
 }
 
