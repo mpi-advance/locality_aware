@@ -38,13 +38,15 @@ void init_num_msgs(CommData* data, int num_msgs)
 void init_size_msgs(CommData* data, int size_msgs)
 {
     data->size_msgs = size_msgs;
-    data->indices = (int*)malloc(data->size_msgs*sizeof(int));
+    if (data->size_msgs)
+        data->indices = (int*)malloc(data->size_msgs*sizeof(int));
 }
     
 
 void finalize_comm_data(CommData* data)
 {
-    data->buffer = (char*)malloc(data->size_msgs*data->datatype_size*sizeof(char));
+    if (data->size_msgs)
+        data->buffer = (char*)malloc(data->size_msgs*data->datatype_size*sizeof(char));
 }
 
 
