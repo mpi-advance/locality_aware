@@ -205,8 +205,8 @@ int MPIX_Neighbor_part_locality_alltoallv(
             MPI_INFO_NULL, 
             &request);
 
-    MPIX_Start(request);
-    MPIX_Wait(request, &status);
+//    MPIX_Start(request);
+//    MPIX_Wait(request, &status);
     MPIX_Request_free(request);
 
     return ierr;
@@ -583,13 +583,18 @@ int MPIX_Neighbor_part_locality_alltoallv_init(
             destinations, 
             destweights);
 
-    long send_size = sdispls[outdegree];
+    long send_size = 0;
+    for (int i = 0; i < outdegree; i++)
+        send_size += sendcounts[i];
+    long recv_size = 0;
+    for (int i = 0; i < indegree; i++)
+        recv_size += recvcounts[i];
     long first_send;
     MPI_Exscan(&send_size, &first_send, 1, MPI_LONG, MPI_SUM, MPI_COMM_WORLD);
     if (rank == 0) first_send = 0;
 
-    long* global_send_indices = (long*)malloc(sdispls[outdegree]*sizeof(long));
-    long* global_recv_indices = (long*)malloc(rdispls[indegree]*sizeof(long));
+    long* global_send_indices = (long*)malloc(send_size*sizeof(long));
+    long* global_recv_indices = (long*)malloc(recv_size*sizeof(long));
     for (int i = 0; i < send_size; i++)
         global_send_indices[i] = first_send + i;
 
