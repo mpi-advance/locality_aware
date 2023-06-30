@@ -205,8 +205,8 @@ int MPIX_Neighbor_part_locality_alltoallv(
             MPI_INFO_NULL, 
             &request);
 
-//    MPIX_Start(request);
-//    MPIX_Wait(request, &status);
+    MPIX_Start(request);
+    MPIX_Wait(request, &status);
     MPIX_Request_free(request);
 
     return ierr;
