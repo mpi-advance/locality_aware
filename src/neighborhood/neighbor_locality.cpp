@@ -271,7 +271,7 @@ void form_local_comm(const int orig_num_sends, const int* orig_send_procs,
     int size, ctr, start_ctr;
     int start, end, node;
     int idx, proc_idx;
-    int proc;
+    int proc, global_idx;
     MPI_Status recv_status;
 
     std::vector<int> send_buffer;
@@ -336,6 +336,7 @@ void form_local_comm(const int orig_num_sends, const int* orig_send_procs,
 
     std::vector<int> send_idx_node(send_data->size_msgs);
     local_data->size_msgs = 0;
+    ctr = 0;
     for (int i = 0; i < orig_num_sends; i++)
     {
         node = orig_to_node[i];
@@ -345,7 +346,8 @@ void form_local_comm(const int orig_num_sends, const int* orig_send_procs,
         {
             for (int j = start; j < end; j++)
             {
-                local_data->indices[local_data->size_msgs++] = orig_send_indices[j];
+                global_idx = orig_send_indices[ctr++];
+                local_data->indices[local_data->size_msgs++] = global_idx;
             }
         }
         else
@@ -354,8 +356,9 @@ void form_local_comm(const int orig_num_sends, const int* orig_send_procs,
             proc_idx = local_idx[local_proc];
             for (int j = start; j < end; j++)
             {
+                global_idx = orig_send_indices[ctr++];
                 idx = send_data->indptr[proc_idx] + send_sizes[local_proc]++;
-                send_data->indices[idx] = orig_send_indices[j];
+                send_data->indices[idx] = global_idx;
                 send_idx_node[idx] = node;
             }
         }
