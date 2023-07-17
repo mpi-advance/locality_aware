@@ -136,20 +136,26 @@ void init_locality(const int n_sends,
     update_global_comm(locality_comm);
 
     // Update send and receive indices
-    int send_idx_size = 0;
-    for (int i = 0; i < n_sends; i++)
-        send_idx_size += sendcounts[i];
-    int recv_idx_size = 0;
-    for (int i = 0; i < n_recvs; i++)
-        recv_idx_size += recvcounts[i];
     std::map<long, int> send_global_to_local;
     std::map<long, int> recv_global_to_local;
-    for (int i = 0; i < send_idx_size; i++)
+    ctr = 0;
+    for (int i = 0; i < n_sends; i++)
     {
-        send_global_to_local[global_send_indices[i]] = i;
+        start = send_indptr[i];
+        end = start + sendcounts[i];
+        for (int j = start; j < end; j++)
+            send_global_to_local[global_send_indices[ctr++]] = j;
     }
-    for (int i = 0; i < recv_idx_size; i++)
-        recv_global_to_local[global_recv_indices[i]] = i;
+
+    ctr = 0;
+    for (int i = 0; i < n_recvs; i++)
+    {
+        start = recv_indptr[i];
+        end = start + recvcounts[i];
+        for (int j = start; j < end; j++)
+            recv_global_to_local[global_recv_indices[ctr++]] = j;
+    }
+
     update_indices(locality_comm, 
             send_global_to_local, 
             recv_global_to_local);
