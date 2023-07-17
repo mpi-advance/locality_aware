@@ -627,12 +627,23 @@ int MPIX_Neighbor_part_locality_alltoallv_init(
             destinations, 
             destweights);
 
+    // Make separate temporary displs incase sendbuffer/recvbuffer are not contiguous
+    int* send_displs = (int*)malloc(outdegree*sizeof(int));
+    int* recv_displs = (int*)malloc(indegree*sizeof(int));
+
     long send_size = 0;
     for (int i = 0; i < outdegree; i++)
+    {
+        send_displs[i] = send_size;
         send_size += sendcounts[i];
+    }
     long recv_size = 0;
     for (int i = 0; i < indegree; i++)
+    {
+        recv_displs[i] = recv_size;
         recv_size += recvcounts[i];
+    }
+
     long first_send;
     MPI_Exscan(&send_size, &first_send, 1, MPI_LONG, MPI_SUM, MPI_COMM_WORLD);
     if (rank == 0) first_send = 0;
@@ -647,8 +658,12 @@ int MPIX_Neighbor_part_locality_alltoallv_init(
     for (int i = 0; i < send_size; i++)
         global_send_indices[i] = first_send + i;
 
+
     MPIX_Neighbor_alltoallv(global_send_indices, sendcounts, sdispls, MPI_LONG, 
             global_recv_indices, recvcounts, rdispls, MPI_LONG, comm);
+
+    free(send_displs);
+    free(recv_displs);
 
     free(sources);
     free(sourceweights);

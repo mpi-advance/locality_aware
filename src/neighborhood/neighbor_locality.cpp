@@ -138,7 +138,8 @@ void init_locality(const int n_sends,
     // Update send and receive indices
     std::map<long, int> send_global_to_local;
     std::map<long, int> recv_global_to_local;
-    ctr = 0;
+    int ctr = 0;
+    int start, end;
     for (int i = 0; i < n_sends; i++)
     {
         start = send_indptr[i];
