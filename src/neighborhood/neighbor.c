@@ -645,7 +645,7 @@ int MPIX_Neighbor_part_locality_alltoallv_init(
     }
 
     long first_send;
-    MPI_Exscan(&send_size, &first_send, 1, MPI_LONG, MPI_SUM, MPI_COMM_WORLD);
+    MPI_Exscan(&send_size, &first_send, 1, MPI_LONG, MPI_SUM, comm->global_comm);
     if (rank == 0) first_send = 0;
 
     long* global_send_indices = NULL;
