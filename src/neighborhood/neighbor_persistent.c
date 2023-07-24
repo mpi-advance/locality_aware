@@ -408,15 +408,20 @@ int MPIX_Neighbor_locality_alltoallv_init(
     init_locality(outdegree, 
             destinations, 
             sdispls, 
+            sendcounts,
             indegree, 
             sources, 
             rdispls,
+            recvcounts,
             global_sindices,
             global_rindices,
             sendtype,
             recvtype,
             comm, // communicator used in dist_graph_create_adjacent 
             request);
+
+
+
 
     request->sendbuf = sendbuffer;
     request->recvbuf = recvbuffer;

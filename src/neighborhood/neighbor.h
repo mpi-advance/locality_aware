@@ -71,7 +71,6 @@ int MPIX_Neighbor_part_locality_alltoallv(
         MPIX_Comm* comm);
 
 
-
 #ifdef __cplusplus
 }
 #endif

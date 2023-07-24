@@ -93,19 +93,21 @@ int MPIX_Neighbor_part_locality_alltoallv_init(
         MPIX_Request** request_ptr);
 
 
-void init_locality(const int n_sends, 
-        const int* send_procs, 
+
+void init_locality(const int n_sends,
+        const int* send_procs,
         const int* send_indptr,
+        const int* sendcounts,
         const int n_recvs,
         const int* recv_procs,
         const int* recv_indptr,
+        const int* recvcounts,
         const long* global_send_indices,
         const long* global_recv_indices,
-        const MPI_Datatype sendtype, 
+        const MPI_Datatype sendtype,
         const MPI_Datatype recvtype,
         const MPIX_Comm* mpix_comm,
         MPIX_Request* request);
-
 
 #ifdef __cplusplus
 }
