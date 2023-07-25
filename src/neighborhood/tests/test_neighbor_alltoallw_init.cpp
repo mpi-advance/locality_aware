@@ -61,9 +61,6 @@ TEST(RandomCommTest, TestsInTests)
         alltoallv_send_vals[i] = send_vals[send_data.indices[i]];
 
     MPI_Comm std_comm;
-    MPI_Status status;
-    MPIX_Comm* neighbor_comm;
-    MPIX_Request* neighbor_request;
     std::vector<MPI_Datatype> sendtypes(num_procs, MPI_INT);
     std::vector<MPI_Datatype> recvtypes(num_procs, MPI_INT);
 

@@ -67,7 +67,6 @@ void test_matrix(const char* filename)
 
     communicate(A, send_vals, std_recv_vals, MPI_INT);
 
-    MPI_Request std_request;
     MPI_Comm std_comm;
     MPI_Status status;
     MPIX_Comm* neighbor_comm;

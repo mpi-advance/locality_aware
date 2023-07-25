@@ -32,4 +32,6 @@ int bcast(void* buffer,
 
         stride /= 2;
     }
+
+    return MPI_SUCCESS;
 }

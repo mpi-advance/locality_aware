@@ -86,7 +86,7 @@ int allgather_bruck(const void* sendbuf,
     if (rank)
         rotate(recv_buffer, (num_procs-rank)*msg_size, num_procs*msg_size);
 
-    return 0;
+    return MPI_SUCCESS;
 }
 
 
@@ -114,7 +114,7 @@ int allgather_p2p(const void *sendbuf, int sendcount, MPI_Datatype sendtype,
     MPI_Waitall(2*num_procs, requests, MPI_STATUSES_IGNORE);
     free(requests);
 
-    return 0;
+    return MPI_SUCCESS;
 }
 
 int allgather_ring(const void *sendbuf, int sendcount, MPI_Datatype sendtype,
@@ -163,7 +163,7 @@ int allgather_ring(const void *sendbuf, int sendcount, MPI_Datatype sendtype,
         if (next_pos >= num_procs*recvcount) next_pos = 0;
     }
 
-    return 0;
+    return MPI_SUCCESS;
 }
 
 
@@ -253,7 +253,7 @@ int allgather_loc_p2p(const void *sendbuf, int sendcount, MPI_Datatype sendtype,
     if (num_msgs)
         free(nonlocal_requests);
 
-    return 0;
+    return MPI_SUCCESS;
 }
 
 
@@ -263,7 +263,6 @@ int allgather_loc_bruck(const void *sendbuf, int sendcount, MPI_Datatype sendtyp
     int rank, num_procs;
     MPI_Comm_rank(comm->global_comm, &rank);
     MPI_Comm_size(comm->global_comm, &num_procs);
-    MPI_Comm local_comm = comm->local_comm;
 
     char* recv_buffer = (char*)(recvbuf);
     int recv_size;
@@ -323,7 +322,7 @@ int allgather_loc_bruck(const void *sendbuf, int sendcount, MPI_Datatype sendtyp
                 (num_nodes-local_node)*PPN*recvcount*recv_size,
                 num_procs*recvcount*recv_size);
 
-    return 0;
+    return MPI_SUCCESS;
 }
 
 
@@ -456,7 +455,7 @@ int allgather_loc_ring(const void *sendbuf, int sendcount, MPI_Datatype sendtype
     free(tmpbuf0);
     free(tmpbuf1);
 
-    return 0;
+    return MPI_SUCCESS;
 
 }
 
@@ -484,6 +483,8 @@ int allgather_hier_bruck(const void *sendbuf, int sendcount, MPI_Datatype sendty
     bcast(recvbuf, recvcount*num_procs, recvtype, 0, comm->local_comm);
 
     free(tmpbuf);
+
+    return MPI_SUCCESS;
 }
 
 
@@ -527,6 +528,8 @@ int allgather_mult_hier_bruck(const void *sendbuf, int sendcount, MPI_Datatype s
     }
 
     free(tmpbuf);
+
+    return MPI_SUCCESS;
 }
 
 
