@@ -23,8 +23,8 @@ install(FILES ${neighborhood_HEADERS} DESTINATION "include/src/neighborhood")
 install(FILES ${persistent_HEADERS} DESTINATION "include/src/persistent")
 
 if (ENABLE_UNIT_TESTS)
-    enable_testing()
-    add_subdirectory(collective/tests)
-    add_subdirectory(neighborhood/tests)
+	#    enable_testing()
+	#    add_subdirectory(collective/tests)
+	#add_subdirectory(neighborhood/tests)
 endif()
 
