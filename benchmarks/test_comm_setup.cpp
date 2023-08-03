@@ -33,48 +33,53 @@ int main(int argc, char* argv[])
 
     MPI_Win win;
     int* sizes;
+    t0 = MPI_Wtime();
     allocate_rma_dynamic(&win, &sizes);
+    tfinal = MPI_Wtime() - t0;
+    MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
+    if (rank == 0) printf("Window creation : %e\n", t0);
 
     // Test Standard
+    MPI_Barrier(MPI_COMM_WORLD);
+    t0 = MPI_Wtime();
     for (int i = 0; i < n_iter; i++)
     {
         ParMat<int> A;
         readParMatrix(filename, A);
         form_recv_comm(A);
-    t0 = MPI_Wtime();
         form_send_comm_standard(A);
+    }
     tfinal = MPI_Wtime() - t0;
     MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
-    if (rank == 0) printf("Iter %d, Standard form comm : %e\n", i, t0);
-    }
+    if (rank == 0) printf("Standard form comm : %e\n", t0);
 
     // Test Torsten
+    MPI_Barrier(MPI_COMM_WORLD);
+    t0 = MPI_Wtime();
     for (int i = 0; i < n_iter; i++)
     {
         ParMat<int> A;
         readParMatrix(filename, A);
         form_recv_comm(A);
-    t0 = MPI_Wtime();
         form_send_comm_torsten(A);
+    }
     tfinal = MPI_Wtime() - t0;
     MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
-    if (rank == 0) printf("Iter %d, Torsten form comm : %e\n", i, t0);
-    }
+    if (rank == 0) printf("Torsten form comm : %e\n", t0);
 
     // Test RMA
+    MPI_Barrier(MPI_COMM_WORLD);
+    t0 = MPI_Wtime();
     for (int i = 0; i < n_iter; i++)
     {
         ParMat<int> A;
         readParMatrix(filename, A);
         form_recv_comm(A);
-    t0 = MPI_Wtime();
         form_send_comm_rma_dynamic(A, win, sizes);
+    }
     tfinal = MPI_Wtime() - t0;
     MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
-    if (rank == 0) printf("Iter %d, RMA form comm : %e\n", i, t0);
-    }
-
-
+    if (rank == 0) printf("RMA form comm : %e\n", t0);
 
     free_rma_dynamic(&win, sizes);
 
