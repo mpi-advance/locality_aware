@@ -42,6 +42,8 @@ int main(int argc, char* argv[])
     tfinal = MPI_Wtime() - t0;
     MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
     if (rank == 0) printf("Window creation : %e\n", t0);
+        form_send_comm_rma_dynamic(A, win, sizes);
+	A.reset_comm();
 
     // Test Standard
     for (int i = 0; i < n_iter; i++)
@@ -53,11 +55,11 @@ int main(int argc, char* argv[])
     tfinal = MPI_Wtime() - t0;
     MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
     if (rank == 0) printf("Standard form comm : %e\n", t0);
-    }
+    //}
 
     // Test Torsten
-    for (int i = 0; i < n_iter; i++)
-    {
+    //for (int i = 0; i < n_iter; i++)
+    //{
     MPI_Barrier(MPI_COMM_WORLD);
     t0 = MPI_Wtime();
         form_send_comm_torsten(A);
@@ -65,11 +67,11 @@ int main(int argc, char* argv[])
     tfinal = MPI_Wtime() - t0;
     MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
     if (rank == 0) printf("Torsten form comm : %e\n", t0);
-    }
+    //}
 
     // Test RMA
-    for (int i = 0; i < n_iter; i++)
-    {
+    //for (int i = 0; i < n_iter; i++)
+    //{
     MPI_Barrier(MPI_COMM_WORLD);
     t0 = MPI_Wtime();
         form_send_comm_rma_dynamic(A, win, sizes);
