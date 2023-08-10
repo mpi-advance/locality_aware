@@ -31,6 +31,13 @@ void endian_swap(T *objp)
   std::reverse(memp, memp + sizeof(T));
 }
 
+template <class T>
+void endian_swap(T* list, int n_obj)
+{
+    for (int i = 0; i < n_obj; i++)
+        endian_swap(&(list[i]));
+}
+
 template <typename U>
 void readParMatrix(const char* filename, ParMat<U>& A)
 {
@@ -38,11 +45,8 @@ void readParMatrix(const char* filename, ParMat<U>& A)
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
 
-
     int64_t pos;
-    int32_t code;
-    int32_t global_num_rows;
-    int32_t global_num_cols;
+    int32_t header[4];
     int32_t global_nnz;
     int32_t idx;
     int n_items_read;
@@ -54,40 +58,23 @@ void readParMatrix(const char* filename, ParMat<U>& A)
     int ctr, size;
 
     int sizeof_dbl = sizeof(val);
-    int sizeof_int32 = sizeof(code);
+    int sizeof_int32 = sizeof(idx);
 
     FILE* ifile = fopen(filename, "rb");
     if (fseek(ifile, 0, SEEK_SET)) printf("Error seeking beginning of file\n"); 
     
-    n_items_read = fread(&code, sizeof_int32, 1, ifile);
+    n_items_read = fread(header, sizeof_int32, 4, ifile);
     if (n_items_read == EOF) printf("EOF reading code\n");
     if (ferror(ifile)) printf("Error reading code\n");
-    if (code != PETSC_MAT_CODE)
+    if (header[0] != PETSC_MAT_CODE)
     {
-        endian_swap(&code);
         is_little_endian = true;
+	endian_swap(header, 4);
     }
+    A.global_rows = header[1];
+    A.global_cols = header[2];
+    global_nnz = header[3];
 
-
-    n_items_read = fread(&global_num_rows, sizeof_int32, 1, ifile);
-    if (n_items_read == EOF) printf("EOF reading code\n");
-    if (ferror(ifile)) printf("Error reading N\n");
-    n_items_read = fread(&global_num_cols, sizeof_int32, 1, ifile);
-    if (n_items_read == EOF) printf("EOF reading code\n");
-    if (ferror(ifile)) printf("Error reading M\n");
-    n_items_read = fread(&global_nnz, sizeof_int32, 1, ifile);
-    if (n_items_read == EOF) printf("EOF reading code\n");
-    if (ferror(ifile)) printf("Error reading nnz\n");
-
-    if (is_little_endian)
-    {
-        endian_swap(&global_num_rows);
-        endian_swap(&global_num_cols);
-        endian_swap(&global_nnz);
-    }
-
-    A.global_rows = global_num_rows;
-    A.global_cols = global_num_cols;
     if (A.global_rows < num_procs || A.global_cols < num_procs)
     {
         if (A.global_rows < A.global_cols)
@@ -176,6 +163,12 @@ void readParMatrix(const char* filename, ParMat<U>& A)
     A.on_proc.n_cols = A.local_cols;
     A.off_proc.n_rows = A.local_rows;
 
+    if (A.local_rows == 0)
+    {
+        A.off_proc_num_cols = 0;
+        fclose(ifile);
+	return;
+    }
 
     std::vector<int32_t> row_sizes(A.local_rows);
     std::vector<int32_t> col_indices;
@@ -185,43 +178,39 @@ void readParMatrix(const char* filename, ParMat<U>& A)
 
     pos = (4 + A.first_row) * sizeof_int32;
     if (fseek(ifile, pos, SEEK_SET)) printf("Error seeking pos\n"); 
+    n_items_read = fread(row_sizes.data(), sizeof_int32, A.local_rows, ifile);
+    if (n_items_read == EOF) printf("EOF reading row sizes\n");
+    if (ferror(ifile)) printf("Error reading row sizes\n");
+    if (is_little_endian)
+        endian_swap(row_sizes.data(), A.local_rows);
     for (int i = 0; i < A.local_rows; i++)
-    {
-        n_items_read = fread(&idx, sizeof_int32, 1, ifile);
-        if (n_items_read == EOF) printf("EOF reading code\n");
-        if (ferror(ifile)) printf("Error reading row_size\n");
-        if (is_little_endian) endian_swap(&idx);
-        row_sizes[i] = idx;
-        nnz += idx;
-    }
+        nnz += row_sizes[i];
 
     long first_nnz = 0;
     MPI_Exscan(&nnz, &first_nnz, 1, MPI_LONG, MPI_SUM, MPI_COMM_WORLD);
 
-    col_indices.resize(nnz);
-    vals.resize(nnz);
+    if (nnz)
+    {
+        col_indices.resize(nnz);
+        vals.resize(nnz);
+    }
 
     pos = (4 + A.global_rows + first_nnz) * sizeof_int32;
     if (fseek(ifile, pos, SEEK_SET)) printf("Error seeking pos\n"); 
-    for (int i = 0; i < nnz; i++)
-    {
-        n_items_read = fread(&idx, sizeof_int32, 1, ifile);
-        if (n_items_read == EOF) printf("EOF reading code\n");
-        if (ferror(ifile)) printf("Error reading col idx\n");
-        if (is_little_endian) endian_swap(&idx);
-        col_indices[i] = idx;
-    }
+    n_items_read = fread(col_indices.data(), sizeof_int32, nnz, ifile);
+    if (n_items_read == EOF) printf("EOF reading col idx\n");
+    if (ferror(ifile)) printf("Error reading col idx\n");
+    if (is_little_endian)
+        endian_swap(col_indices.data(), nnz);
 
     pos = (4 + A.global_rows + global_nnz) * sizeof_int32 + (first_nnz * sizeof_dbl);
     if (fseek(ifile, pos, SEEK_SET)) printf("Error seeking pos\n"); 
-    for (int i = 0; i < nnz; i++)
-    {
-        n_items_read = fread(&val, sizeof_dbl, 1, ifile);
-        if (n_items_read == EOF) printf("EOF reading code\n");
-        if (ferror(ifile)) printf("Error reading value\n");
-        if (is_little_endian) endian_swap(&val);
-        vals[i] = val;
-    }
+    n_items_read = fread(vals.data(), sizeof_dbl, nnz, ifile);
+    if (n_items_read == EOF) printf("EOF reading vals\n");
+    if (ferror(ifile)) printf("Error reading vals\n");
+    if (is_little_endian)
+        endian_swap(vals.data(), nnz);
+
     fclose(ifile);
 
     int last_col = A.first_col + A.local_cols - 1;
@@ -255,8 +244,6 @@ void readParMatrix(const char* filename, ParMat<U>& A)
     A.off_proc.nnz = A.off_proc.col_idx.size();
 
     std::map<long, int> orig_to_new;
-    //for (int i = 0; i < A.off_proc.col_idx.size(); i++)
-    //    A.off_proc_columns.push_back(A.off_proc.col_idx[i]);
     std::copy(A.off_proc.col_idx.begin(), A.off_proc.col_idx.end(),
             std::back_inserter(A.off_proc_columns));
     std::sort(A.off_proc_columns.begin(), A.off_proc_columns.end());
@@ -266,7 +253,6 @@ void readParMatrix(const char* filename, ParMat<U>& A)
     for (std::vector<long>::iterator it = A.off_proc_columns.begin(); 
             it != A.off_proc_columns.end(); ++it)
     {
-        //if (rank == 0) printf("*it, prev_col %d, %d\n", *it, prev_col);
         if (*it != prev_col)
         {
             orig_to_new[*it] = A.off_proc_num_cols;
@@ -274,7 +260,8 @@ void readParMatrix(const char* filename, ParMat<U>& A)
             prev_col = *it;
         }
     }
-    A.off_proc_columns.resize(A.off_proc_num_cols);
+    if (A.off_proc_num_cols)
+        A.off_proc_columns.resize(A.off_proc_num_cols);
 
     for (std::vector<int>::iterator it = A.off_proc.col_idx.begin();
             it != A.off_proc.col_idx.end(); ++it)
