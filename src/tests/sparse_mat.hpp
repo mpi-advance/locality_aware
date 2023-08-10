@@ -377,21 +377,117 @@ void form_send_comm_rma_dynamic(ParMat<U>& A, MPI_Win win, int* sizes)
     int start, end, proc, count, ctr, size;
     MPI_Status recv_status;
     int msg_tag = 1234;
+    double t0, tfinal;
 
     for (int i = 0; i < num_procs; i++)
         sizes[i] = 0;
 
-    MPI_Win_lock_all(0, win);
-    MPI_Barrier(MPI_COMM_WORLD);
+//    MPI_Barrier(MPI_COMM_WORLD);
+//    t0 = MPI_Wtime();
+    MPI_Win_fence(MPI_MODE_NOSTORE|MPI_MODE_NOPRECEDE, win);
+    for (int i = 0; i < A.recv_comm->n_msgs; i++)
+    {
+        proc = A.recv_comm->procs[i];
+        MPI_Put(&(A.recv_comm->counts[i]), 1, MPI_INT, proc,
+               rank, 1, MPI_INT, win);
+    }
+    MPI_Win_fence(MPI_MODE_NOSTORE|MPI_MODE_NOPUT|MPI_MODE_NOSUCCEED, win);
+//    tfinal = (MPI_Wtime() - t0);
+//    MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
+//    if (rank == 0) printf("RMA time %e\n", t0);
+
+//    MPI_Barrier(MPI_COMM_WORLD);
+//    t0=MPI_Wtime();
+    for (int i = 0; i < num_procs; i++)
+    {
+        if (sizes[i])
+        {
+            A.send_comm->counts.push_back(sizes[i]);
+	    sizes[i] = A.send_comm->procs.size();
+            A.send_comm->procs.push_back(i);
+        }
+    }
+    A.send_comm->n_msgs = A.send_comm->procs.size();
+    A.send_comm->ptr.resize(A.send_comm->n_msgs+1);
+    A.send_comm->req.resize(A.send_comm->n_msgs);
+
+    A.send_comm->ptr[0] = 0;
+    for (int i = 0; i < A.send_comm->n_msgs; i++)
+    {
+        proc = A.send_comm->procs[i];
+        size = A.send_comm->counts[i];
+        A.send_comm->ptr[i+1] = A.send_comm->ptr[i] + size;
+    }
+    A.send_comm->size_msgs = A.send_comm->ptr[A.send_comm->n_msgs];
+    if (A.send_comm->size_msgs)
+    {
+        A.send_comm->idx.resize(A.send_comm->size_msgs);
+        recv_buf.resize(A.send_comm->size_msgs);
+    }
+
+
+    for (int i = 0; i < A.recv_comm->n_msgs; i++)
+    {
+        MPI_Isend(&(A.off_proc_columns[A.recv_comm->ptr[i]]), A.recv_comm->counts[i], MPI_LONG,
+                A.recv_comm->procs[i], msg_tag, MPI_COMM_WORLD, &(A.recv_comm->req[i]));
+    }
+
+    ctr = 0;
+    while (ctr < A.send_comm->size_msgs)
+    {
+        // Wait for a message
+        MPI_Probe(MPI_ANY_SOURCE, msg_tag, MPI_COMM_WORLD, &recv_status);
+
+        // Get the source process and message size
+        proc = recv_status.MPI_SOURCE;
+	int pos = sizes[proc];
+	count = A.send_comm->counts[pos];
+	start = A.send_comm->ptr[pos];
+	MPI_Recv(&(recv_buf[start]), count, MPI_LONG, proc, msg_tag, 
+                MPI_COMM_WORLD, &recv_status);
+
+        // Receive the message, and add local indices to send_comm
+        for (int i = 0; i < count; i++)
+        {
+            A.send_comm->idx[start+i] = (recv_buf[start+i] - A.first_col);
+        }
+        ctr += count;
+    }
+    
+    if (A.recv_comm->n_msgs)
+        MPI_Waitall(A.recv_comm->n_msgs, A.recv_comm->req.data(), MPI_STATUSES_IGNORE);
+
+//    tfinal = (MPI_Wtime() - t0);
+//    
+//    MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
+//    if (rank == 0) printf("P2P Time %e\n", t0);
+}
+
+template <typename U>
+void form_send_comm_rma_dynamic_std(ParMat<U>& A, MPI_Win win, int* sizes)
+{
+    int rank, num_procs;
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
+
+    std::vector<long> recv_buf;
+    int start, end, proc, count, ctr, size;
+    MPI_Status recv_status;
+    int msg_tag = 1234;
+    double t0, tfinal;
+
+    for (int i = 0; i < num_procs; i++)
+        sizes[i] = 0;
+
+    MPI_Win_fence(MPI_MODE_NOSTORE|MPI_MODE_NOPRECEDE, win);
     for (int i = 0; i < A.recv_comm->n_msgs; i++)
     {
         MPI_Put(&(A.recv_comm->counts[i]), 1, MPI_INT, A.recv_comm->procs[i],
                rank, 1, MPI_INT, win);
     }
-    MPI_Win_flush_all(win);
-    MPI_Barrier(MPI_COMM_WORLD);
-    MPI_Win_unlock_all(win);
+    MPI_Win_fence(MPI_MODE_NOSTORE|MPI_MODE_NOPUT|MPI_MODE_NOSUCCEED, win);
     
+
     for (int i = 0; i < num_procs; i++)
     {
         if (sizes[i])
@@ -418,16 +514,18 @@ void form_send_comm_rma_dynamic(ParMat<U>& A, MPI_Win win, int* sizes)
         A.send_comm->idx.resize(A.send_comm->size_msgs);
         recv_buf.resize(A.send_comm->size_msgs);
     }
-
-    for (int i = 0; i < A.send_comm->n_msgs; i++)
-    {
-        MPI_Irecv(&(recv_buf[A.send_comm->ptr[i]]), A.send_comm->counts[i], MPI_LONG,
-                A.send_comm->procs[i], msg_tag, MPI_COMM_WORLD, &(A.send_comm->req[i]));
-    }
+    
     for (int i = 0; i < A.recv_comm->n_msgs; i++)
     {
         MPI_Isend(&(A.off_proc_columns[A.recv_comm->ptr[i]]), A.recv_comm->counts[i], MPI_LONG,
                 A.recv_comm->procs[i], msg_tag, MPI_COMM_WORLD, &(A.recv_comm->req[i]));
+    }
+
+    for (int i = 0; i < A.send_comm->n_msgs; i++)
+    {
+	
+        MPI_Irecv(&(recv_buf[A.send_comm->ptr[i]]), A.send_comm->counts[i], MPI_LONG,
+                A.send_comm->procs[i], msg_tag, MPI_COMM_WORLD, &(A.send_comm->req[i]));
     }
 
     if (A.send_comm->n_msgs)
@@ -438,6 +536,7 @@ void form_send_comm_rma_dynamic(ParMat<U>& A, MPI_Win win, int* sizes)
 
     if (A.recv_comm->n_msgs)
         MPI_Waitall(A.recv_comm->n_msgs, A.recv_comm->req.data(), MPI_STATUSES_IGNORE);
+
 }
 
 

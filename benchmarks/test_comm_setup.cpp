@@ -34,9 +34,13 @@ int main(int argc, char* argv[])
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
 
     double t0, tfinal;
-    int n_iter = 10000;
-
+    //int n_iter = 1;
     int n_msgs = num_procs * density;
+    int n_iter = 10000;
+    if (n_msgs > 100)
+        n_iter = 1000;
+    if (n_msgs > 1000)
+        n_iter = 10;
     ParMat<int> A;
     A.recv_comm->n_msgs = n_msgs;
     A.recv_comm->procs.resize(n_msgs);
@@ -107,6 +111,18 @@ int main(int argc, char* argv[])
     tfinal = (MPI_Wtime() - t0) / n_iter;
     MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
     if (rank == 0) printf("RMA form comm : %e\n", t0);
+
+    // Test RMA (Orig)
+    MPI_Barrier(MPI_COMM_WORLD);
+    t0 = MPI_Wtime();
+    for (int i = 0; i < n_iter; i++)
+    {
+        form_send_comm_rma_dynamic_std(A, win, sizes);
+        A.reset_comm();
+    }
+    tfinal = (MPI_Wtime() - t0) / n_iter;
+    MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
+    if (rank == 0) printf("Original RMA form comm : %e\n", t0);
 
     free_rma_dynamic(&win, sizes);
 
