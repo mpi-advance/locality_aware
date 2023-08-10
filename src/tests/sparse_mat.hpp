@@ -375,9 +375,12 @@ void form_send_comm_rma_dynamic(ParMat<U>& A, MPI_Win win, int* sizes)
     for (int i = 0; i < num_procs; i++)
         sizes[i] = 0;
 
-    // RMA puts to find sizes recvd from each process
-    MPI_Win_fence(MPI_MODE_NOSTORE|MPI_MODE_NOPRECEDE, win);
+    MPI_Win_lock_all(0, win);
 
+    // RMA puts to find sizes recvd from each process
+    //MPI_Win_fence(MPI_MODE_NOSTORE|MPI_MODE_NOPRECEDE, win);
+
+    MPI_Barrier(MPI_COMM_WORLD);
     // puts #1
     for (int i = 0; i < A.recv_comm->n_msgs; i++)
     {
@@ -385,7 +388,11 @@ void form_send_comm_rma_dynamic(ParMat<U>& A, MPI_Win win, int* sizes)
                rank, 1, MPI_INT, win);
     }
 
-    MPI_Win_fence(MPI_MODE_NOPUT|MPI_MODE_NOSUCCEED, win);
+    MPI_Win_flush_all(win);
+    MPI_Barrier(MPI_COMM_WORLD);
+
+    //MPI_Win_fence(MPI_MODE_NOPUT|MPI_MODE_NOSUCCEED, win);
+    MPI_Win_unlock_all(win);
 
     A.send_comm->ptr.push_back(0);
     ctr = 0;
