@@ -227,9 +227,11 @@ void form_send_comm_torsten_loc(ParMat<U>& A, MPIX_Comm* comm)
     // Send a message to every process that I will need data from
     // Tell them which global indices I need from them
     int msg_tag = 1234;
-    int node = 0;
+    int node = -1;
     if (A.recv_comm->n_msgs > 0)
+    {
         node = A.recv_comm->procs[0] / PPN;
+    }
     int n_sends = 0;
     int first = 0;
     int last = 0;
@@ -403,7 +405,7 @@ void form_send_comm_torsten(ParMat<U>& A)
 
     // Send a message to every process that I will need data from
     // Tell them which global indices I need from them
-    int msg_tag = 1234;
+    int msg_tag = 72043;
     for (int i = 0; i < A.recv_comm->n_msgs; i++)
     {
         proc = A.recv_comm->procs[i];
@@ -411,12 +413,17 @@ void form_send_comm_torsten(ParMat<U>& A)
                 MPI_COMM_WORLD, &(A.recv_comm->req[i]));
     }
 
+//    MPI_Barrier(MPI_COMM_WORLD);
+//    if (rank == 0) printf("Send recv_comm msgs\n");
+
     // Wait to receive values
     // until I have received fewer than the number of global indices I am waiting on
     ctr = 0;
     A.send_comm->ptr.push_back(0);
+//int tmp = 0;
     while (1)
     {
+//tmp++;
         // Wait for a message
         MPI_Iprobe(MPI_ANY_SOURCE, msg_tag, MPI_COMM_WORLD, &flag, &recv_status);
         if (flag)
@@ -455,6 +462,15 @@ void form_send_comm_torsten(ParMat<U>& A)
                 ibar = 1;
                 MPI_Ibarrier(MPI_COMM_WORLD, &bar_req);
             }    
+/*	    if (tmp > 1000000)
+	    {
+if (rank == 271) for (int i = 0; i < A.recv_comm->n_msgs; i++)
+{
+	MPI_Test(&(A.recv_comm->req[i]), &flag, MPI_STATUS_IGNORE);
+	printf("Rank 271 recv from proc %d, flag = %d\n", A.recv_comm->procs[i], flag);
+}
+	    }
+	    */
         }
     }
     
