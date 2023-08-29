@@ -26,5 +26,6 @@ if (ENABLE_UNIT_TESTS)
     enable_testing()
     add_subdirectory(collective/tests)
     add_subdirectory(neighborhood/tests)
+    add_subdirectory(tests)
 endif()
 
