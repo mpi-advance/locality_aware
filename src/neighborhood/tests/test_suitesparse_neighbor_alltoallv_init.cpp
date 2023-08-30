@@ -29,6 +29,7 @@ void test_matrix(const char* filename)
     ParMat<int> A;
     int idx;
     readParMatrix(filename, A);
+    allocate_comm(A);
     form_comm(A);
 
     std::vector<int> std_recv_vals, neigh_recv_vals, new_recv_vals,
@@ -44,24 +45,24 @@ void test_matrix(const char* filename)
             send_vals[i] += (rank*1000);
     }
 
-    if (A.recv_comm.size_msgs)
+    if (A.recv_comm->size_msgs)
     {
-        std_recv_vals.resize(A.recv_comm.size_msgs);
-        neigh_recv_vals.resize(A.recv_comm.size_msgs);
-        new_recv_vals.resize(A.recv_comm.size_msgs);
-        locality_recv_vals.resize(A.recv_comm.size_msgs);
-        part_locality_recv_vals.resize(A.recv_comm.size_msgs);
+        std_recv_vals.resize(A.recv_comm->size_msgs);
+        neigh_recv_vals.resize(A.recv_comm->size_msgs);
+        new_recv_vals.resize(A.recv_comm->size_msgs);
+        locality_recv_vals.resize(A.recv_comm->size_msgs);
+        part_locality_recv_vals.resize(A.recv_comm->size_msgs);
     }
 
-    if (A.send_comm.size_msgs)
+    if (A.send_comm->size_msgs)
     {
-        alltoallv_send_vals.resize(A.send_comm.size_msgs);
-        send_indices.resize(A.send_comm.size_msgs);
-        for (int i = 0; i < A.send_comm.size_msgs; i++)
+        alltoallv_send_vals.resize(A.send_comm->size_msgs);
+        send_indices.resize(A.send_comm->size_msgs);
+        for (int i = 0; i < A.send_comm->size_msgs; i++)
         {
-            idx = A.send_comm.idx[i];
+            idx = A.send_comm->idx[i];
             alltoallv_send_vals[i] = send_vals[idx];
-            send_indices[i] = A.send_comm.idx[i] + A.first_col;
+            send_indices[i] = A.send_comm->idx[i] + A.first_col;
         }
     }
 
@@ -72,21 +73,21 @@ void test_matrix(const char* filename)
     MPIX_Comm* neighbor_comm;
     MPIX_Request* neighbor_request;
 
-    int* s = A.recv_comm.procs.data();
-    if (A.recv_comm.n_msgs == 0)
+    int* s = A.recv_comm->procs.data();
+    if (A.recv_comm->n_msgs == 0)
         s = MPI_WEIGHTS_EMPTY;
-    int* d = A.send_comm.procs.data();
-    if (A.send_comm.n_msgs  == 0)
+    int* d = A.send_comm->procs.data();
+    if (A.send_comm->n_msgs  == 0)
         d = MPI_WEIGHTS_EMPTY;
 
 
 
     // Standard MPI Dist Graph Create
     MPI_Dist_graph_create_adjacent(MPI_COMM_WORLD,
-            A.recv_comm.n_msgs,
+            A.recv_comm->n_msgs,
             s,
             MPI_UNWEIGHTED,
-            A.send_comm.n_msgs,
+            A.send_comm->n_msgs, 
             d,
             MPI_UNWEIGHTED,
             MPI_INFO_NULL,
@@ -106,11 +107,11 @@ void test_matrix(const char* filename)
 
 
     MPIX_Dist_graph_create_adjacent(MPI_COMM_WORLD,
-            A.recv_comm.n_msgs,
-            A.recv_comm.procs.data(), 
+            A.recv_comm->n_msgs,
+            A.recv_comm->procs.data(), 
             MPI_UNWEIGHTED,
-            A.send_comm.n_msgs, 
-            A.send_comm.procs.data(),
+            A.send_comm->n_msgs, 
+            A.send_comm->procs.data(),
             MPI_UNWEIGHTED,
             MPI_INFO_NULL, 
             0, 
@@ -119,28 +120,28 @@ void test_matrix(const char* filename)
     update_locality(neighbor_comm, 4);
     
     MPIX_Neighbor_alltoallv(alltoallv_send_vals.data(), 
-            A.send_comm.counts.data(),
-            A.send_comm.ptr.data(), 
+            A.send_comm->counts.data(),
+            A.send_comm->ptr.data(), 
             MPI_INT,
             neigh_recv_vals.data(), 
-            A.recv_comm.counts.data(),
-            A.recv_comm.ptr.data(), 
+            A.recv_comm->counts.data(),
+            A.recv_comm->ptr.data(), 
             MPI_INT,
             neighbor_comm);
 
-    for (int i = 0; i < A.recv_comm.size_msgs; i++)
+    for (int i = 0; i < A.recv_comm->size_msgs; i++)
     {
         ASSERT_EQ(std_recv_vals[i], neigh_recv_vals[i]);
     }
 
     // 2. Node-Aware Communication
     MPIX_Neighbor_alltoallv_init(alltoallv_send_vals.data(), 
-            A.send_comm.counts.data(),
-            A.send_comm.ptr.data(), 
+            A.send_comm->counts.data(),
+            A.send_comm->ptr.data(), 
             MPI_INT,
             new_recv_vals.data(), 
-            A.recv_comm.counts.data(),
-            A.recv_comm.ptr.data(), 
+            A.recv_comm->counts.data(),
+            A.recv_comm->ptr.data(), 
             MPI_INT,
             neighbor_comm, 
             MPI_INFO_NULL,
@@ -151,19 +152,19 @@ void test_matrix(const char* filename)
     MPIX_Request_free(neighbor_request);
 
     // 3. Compare std_recv_vals and nap_recv_vals
-    for (int i = 0; i < A.recv_comm.size_msgs; i++)
+    for (int i = 0; i < A.recv_comm->size_msgs; i++)
     {
         ASSERT_EQ(std_recv_vals[i], new_recv_vals[i]);
     }
 
     // 3. MPI Advance - Optimized Communication
     MPIX_Neighbor_part_locality_alltoallv_init(alltoallv_send_vals.data(), 
-            A.send_comm.counts.data(),
-            A.send_comm.ptr.data(), 
+            A.send_comm->counts.data(),
+            A.send_comm->ptr.data(), 
             MPI_INT,
             part_locality_recv_vals.data(), 
-            A.recv_comm.counts.data(),
-            A.recv_comm.ptr.data(), 
+            A.recv_comm->counts.data(),
+            A.recv_comm->ptr.data(), 
             MPI_INT,
             neighbor_comm, 
             MPI_INFO_NULL,
@@ -173,19 +174,19 @@ void test_matrix(const char* filename)
     MPIX_Wait(neighbor_request, &status);
     MPIX_Request_free(neighbor_request);
 
-    for (int i = 0; i < A.recv_comm.size_msgs; i++)
+    for (int i = 0; i < A.recv_comm->size_msgs; i++)
     {
         ASSERT_EQ(std_recv_vals[i], part_locality_recv_vals[i]);
     }
 
     MPIX_Neighbor_locality_alltoallv_init(alltoallv_send_vals.data(), 
-            A.send_comm.counts.data(),
-            A.send_comm.ptr.data(), 
+            A.send_comm->counts.data(),
+            A.send_comm->ptr.data(), 
             send_indices.data(),
             MPI_INT,
             locality_recv_vals.data(), 
-            A.recv_comm.counts.data(),
-            A.recv_comm.ptr.data(), 
+            A.recv_comm->counts.data(),
+            A.recv_comm->ptr.data(), 
             A.off_proc_columns.data(),
             MPI_INT,
             neighbor_comm, 
@@ -197,10 +198,12 @@ void test_matrix(const char* filename)
     MPIX_Request_free(neighbor_request);
 
     // 3. Compare std_recv_vals and nap_recv_vals
-    for (int i = 0; i < A.recv_comm.size_msgs; i++)
+    for (int i = 0; i < A.recv_comm->size_msgs; i++)
     {
         ASSERT_EQ(std_recv_vals[i], locality_recv_vals[i]);
     }
+
+    free_comm(A);
 
     MPIX_Comm_free(neighbor_comm);
 }

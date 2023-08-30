@@ -57,5 +57,8 @@ if (ENABLE_UNIT_TESTS)
 if (USE_GPU)
     add_subdirectory(heterogeneous/tests)
 endif(USE_GPU)
+	#    enable_testing()
+	#    add_subdirectory(collective/tests)
+	#add_subdirectory(neighborhood/tests)
 endif()
 

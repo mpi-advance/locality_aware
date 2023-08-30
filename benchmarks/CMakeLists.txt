@@ -27,4 +27,7 @@ else()
 
     add_executable(p2p_alltoallv p2p_alltoallv.cpp)
     target_link_libraries(p2p_alltoallv mpi_advance ${MPI_LIBRARIES})
+
+    add_executable(test_comm_setup, test_comm_setup.cpp)
+    target_link_libraries(test_comm_setup mpi_advance ${MPI_LIBRARIES})
 endif()
