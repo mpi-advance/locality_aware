@@ -1,9 +1,9 @@
 
-#include "/home/evelynn/Lacality_aware/locality_aware/src/collective/alltoallv.h"
+#include "/g/g92/enamug/clean/locality_aware/src/collective/alltoallv.h"
 #include <string.h>
 #include <math.h>
 #include "utils.h"
-#include "/home/evelynn/Lacality_aware/locality_aware/src/collective/collective.h"
+#include "/g/g92/enamug/clean/locality_aware/src/collective/collective.h"
 
 
 /**************************************************
@@ -57,7 +57,7 @@ int MPIX_Alltoallv(const void* sendbuf,
         MPI_Datatype recvtype,
         MPIX_Comm* mpi_comm)
 {
-    return alltoallv_waitany(sendbuf,
+    return /* alltoallv_waitany*/alltoallv_pairwise(sendbuf,
         sendcounts,
         sdispls,
         sendtype,
@@ -66,10 +66,9 @@ int MPIX_Alltoallv(const void* sendbuf,
         rdispls,
         recvtype,
         mpi_comm->global_comm);
-}
+}//changed this temporarily 
 
-
-
+/*
 int alltoallv_pairwise(const void* sendbuf,
         const int sendcounts[],
         const int sdispls[],
@@ -89,7 +88,7 @@ int alltoallv_pairwise(const void* sendbuf,
     int send_pos, recv_pos;
     MPI_Status status;
 
-
+*/
 int alltoallv_pairwise(const void* sendbuf,
         const int sendcounts[],
         const int sdispls[],
@@ -99,7 +98,9 @@ int alltoallv_pairwise(const void* sendbuf,
         const int rdispls[],
         MPI_Datatype recvtype,
         MPI_Comm comm)
-{
+
+{   printf("Hello, mpi-advance!");
+
     int rank, num_procs;
     MPI_Comm_rank(comm, &rank);
     MPI_Comm_size(comm, &num_procs);
