@@ -1,8 +1,9 @@
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(collective_HEADERS
-    collective/alltoall.h
     collective/collective.h
+    collective/alltoall.h
+    collective/alltoallv.h
     collective/allgather.h
     collective/gather.h
     collective/bcast.h
