@@ -178,6 +178,64 @@ int MPIX_Neighbor_alltoallv(
     return ierr;
 }
 
+
+int MPIX_Neighbor_topo_alltoallv(
+        const void* sendbuf,
+        const int sendcounts[],
+        const int sdispls[],
+        MPI_Datatype sendtype,
+        void* recvbuf,
+        const int recvcounts[],
+        const int rdispls[],
+        MPI_Datatype recvtype,
+        MPIX_Topo* topo,
+        MPIX_Comm* comm,
+        MPI_Info info)
+{
+
+    MPIX_Request* request;
+    MPI_Status status;
+
+    int ierr = MPIX_Neighbor_topo_alltoallv_init(sendbuffer,
+            sendcounts,
+            sdispls,
+            sendtype,
+            recvbuffer,
+            recvcounts,
+            rdispls,
+            recvtype,
+            topo,
+            comm,
+            MPI_INFO_NULL, 
+            &request);
+
+    MPIX_Start(request);
+    MPIX_Wait(request, &status);
+    MPIX_Request_free(request);
+
+    return ierr;
+}
+
+int MPIX_Neighbor_topo_alltoallv_init(
+        const void* sendbuf,
+        const int sendcounts[],
+        const int sdispls[],
+        MPI_Datatype sendtype,
+        void* recvbuf,
+        const int recvcounts[],
+        const int rdispls[],
+        MPI_Datatype recvtype,
+        MPIX_Topo* topo,
+        MPIX_Comm* comm,
+        MPI_Info info,
+        MPIX_Request** request_ptr)
+{
+    // TODO IMPLEMENT HERE
+    // 1. Copy code in MPIX_Neighbor_alltoallv_init
+    // 2. Change methods to call topo version
+}
+
+
 int MPIX_Neighbor_part_locality_alltoallv(
         const void* sendbuffer,
         const int sendcounts[],

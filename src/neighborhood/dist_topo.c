@@ -23,3 +23,21 @@ int MPIX_Topo_free(MPIX_Topo* mpix_topo)
     
     free(mpix_topo);
 }
+
+int MPIX_Topo_dist_graph_neighbors_count(MPIX_Topo* topo,
+        int* indegree,
+        int* outdegree)
+{
+    *indegree = topo->indegree;
+    *outdegree = topo->outdegree;
+}
+
+int MPIX_Topo_dist_graph_neighbors(MPIX_Topo* topo,
+        int indegree,
+        int outdegree,
+        int* sources,
+        int* destinations)
+{
+    memcpy(sources, topo->sources, indegree);
+    memcpy(destinations, topo->destinations, outdegree);
+}

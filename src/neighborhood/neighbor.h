@@ -13,6 +13,34 @@ extern "C"
 {
 #endif
 
+int MPIX_Neighbor_topo_alltoallv(
+        const void* sendbuf,
+        const int sendcounts[],
+        const int sdispls[],
+        MPI_Datatype sendtype,
+        void* recvbuf,
+        const int recvcounts[],
+        const int rdispls[],
+        MPI_Datatype recvtype,
+        MPIX_Topo* topo,
+        MPIX_Comm* comm,
+        MPI_Info info);
+
+int MPIX_Neighbor_topo_alltoallv_init(
+        const void* sendbuf,
+        const int sendcounts[],
+        const int sdispls[],
+        MPI_Datatype sendtype,
+        void* recvbuf,
+        const int recvcounts[],
+        const int rdispls[],
+        MPI_Datatype recvtype,
+        MPIX_Topo* topo,
+        MPIX_Comm* comm,
+        MPI_Info info,
+        MPIX_Request** request_ptr);
+
+
 
 // Standard Neighbor Alltoallv
 // Extension takes array of requests instead of single request
