@@ -10,6 +10,9 @@ int main(int argc, char* argv[])
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
 
+    double t0, tf;
+    int iters = 100000;
+
     if (argc == 1)
     {
         if (rank == 0) printf("Pass Matrix Filename as Command Line Arg!\n");
@@ -23,7 +26,12 @@ int main(int argc, char* argv[])
     readParMatrix(filename, A);
 
     // Form Communication Package (A.send_comm, A.recv_comm)
+    MPI_Barrier(MPI_COMM_WORLD);
+    t0 = MPI_Wtime();
     form_comm(A);
+    tf = MPI_Wtime() - t0;
+    MPI_Reduce(&tf, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
+    if (rank == 0) { printf("Standard comm form: %f\n", t0); }
 
     // Each Process sends vals[i] = rank*1000 + i
     //    - For debugging, can tell where values originate
@@ -60,7 +68,12 @@ int main(int argc, char* argv[])
     }
 
     // Standard Communication (for comparisons)
+    MPI_Barrier(MPI_COMM_WORLD);
+    t0 = MPI_Wtime();
     communicate(A, send_vals, std_recv_buffer, MPI_INT);
+    tf = MPI_Wtime() - t0;
+    MPI_Reduce(&tf, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
+    if (rank == 0) { printf("Standard comm: %f\n", t0); }
 
 
     // Create Variables for send_procs/recv_procs 
@@ -76,6 +89,24 @@ int main(int argc, char* argv[])
     // Neighbor Collective 
     // 1. Create Topology Communicator
     MPI_Comm std_comm;
+    MPI_Barrier(MPI_COMM_WORLD);
+    t0 = MPI_Wtime();
+    for (int i = 0; i < iters; i++) {
+       MPI_Dist_graph_create_adjacent(MPI_COMM_WORLD,
+               A.recv_comm.n_msgs,
+               recv_procs,
+               MPI_UNWEIGHTED,
+               A.send_comm.n_msgs, 
+               send_procs,
+               MPI_UNWEIGHTED,
+               MPI_INFO_NULL, 
+               0, 
+               &std_comm);
+       MPI_Comm_free(&std_comm);
+    }
+    tf = (MPI_Wtime() - t0) / iters;
+    MPI_Reduce(&tf, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
+    if (rank == 0) { printf("Standard graph create: %f\n", t0); }
     MPI_Dist_graph_create_adjacent(MPI_COMM_WORLD,
             A.recv_comm.n_msgs,
             recv_procs,
@@ -88,15 +119,22 @@ int main(int argc, char* argv[])
             &std_comm);
 
     // 2. Call Neighbor Alltoallv
-    MPI_Neighbor_alltoallv(packed_send_vals.data(), 
-            A.send_comm.counts.data(),
-            A.send_comm.ptr.data(), 
-            MPI_INT,
-            neigh_recv_buffer.data(), 
-            A.recv_comm.counts.data(),
-            A.recv_comm.ptr.data(), 
-            MPI_INT,
-            std_comm);
+    MPI_Barrier(MPI_COMM_WORLD);
+    t0 = MPI_Wtime();
+    for (int i = 0; i < iters; i++) {
+       MPI_Neighbor_alltoallv(packed_send_vals.data(), 
+               A.send_comm.counts.data(),
+               A.send_comm.ptr.data(), 
+               MPI_INT,
+               neigh_recv_buffer.data(), 
+               A.recv_comm.counts.data(),
+               A.recv_comm.ptr.data(), 
+               MPI_INT,
+               std_comm);
+    }
+    tf = (MPI_Wtime() - t0) / iters;
+    MPI_Reduce(&tf, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
+    if (rank == 0) { printf("Standard neighbor: %f\n", t0); }
     // 3. Free Topology Communicator
     MPI_Comm_free(&std_comm);
 
@@ -115,27 +153,51 @@ int main(int argc, char* argv[])
     // MPI Advance : Neighbor Collective 
     // 1. Create Topology Communicator
     MPIX_Comm* xcomm;
-    MPIX_Dist_graph_create_adjacent(MPI_COMM_WORLD,
+    MPIX_Comm_init(&xcomm, MPI_COMM_WORLD);
+    MPIX_Topo* topo;
+    MPI_Barrier(MPI_COMM_WORLD);
+    t0 = MPI_Wtime();
+    for (int i = 0; i < iters; i++) {
+        MPIX_Topo_dist_graph_adjacent(xcomm,
+               A.recv_comm.n_msgs,
+               recv_procs, 
+               A.send_comm.n_msgs, 
+               send_procs,
+               MPI_INFO_NULL, 
+               &topo);
+        MPIX_Topo_free(topo);
+    }
+    tf = (MPI_Wtime() - t0) / iters;
+    MPI_Reduce(&tf, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
+    if (rank == 0) { printf("MPI advance graph create: %f\n", t0); }
+    MPIX_Topo_dist_graph_adjacent(xcomm,
             A.recv_comm.n_msgs,
             recv_procs, 
-            MPI_UNWEIGHTED,
             A.send_comm.n_msgs, 
             send_procs,
-            MPI_UNWEIGHTED,
             MPI_INFO_NULL, 
-            0, 
-            &xcomm);
+            &topo);
+
     // 2. Call Neighbor Alltoallv
-    MPIX_Neighbor_alltoallv(packed_send_vals.data(), 
-            A.send_comm.counts.data(),
-            A.send_comm.ptr.data(), 
-            MPI_INT,
-            mpix_recv_buffer.data(), 
-            A.recv_comm.counts.data(),
-            A.recv_comm.ptr.data(), 
-            MPI_INT,
-            xcomm);
+    MPI_Barrier(MPI_COMM_WORLD);
+    t0 = MPI_Wtime();
+    for (int i = 0; i < iters; i++) {
+       MPIX_Neighbor_topo_alltoallv(packed_send_vals.data(), 
+               A.send_comm.counts.data(),
+               A.send_comm.ptr.data(), 
+               MPI_INT,
+               mpix_recv_buffer.data(), 
+               A.recv_comm.counts.data(),
+               A.recv_comm.ptr.data(), 
+               MPI_INT,
+               topo,
+               xcomm);
+    }
+    tf = (MPI_Wtime() - t0) / iters;
+    MPI_Reduce(&tf, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
+    if (rank == 0) { printf("MPI advance neighbor: %f\n", t0); }
     // 3. Free Topology Communicator
+    MPIX_Topo_free(topo);
     MPIX_Comm_free(xcomm);
 
     // Error Checking

@@ -1,3 +1,17 @@
+#ifndef MPI_ADVANCE_DIST_TOPO_H
+#define MPI_ADVANCE_DIST_TOPO_H
+
+#include "mpi.h"
+#include "locality/locality_comm.h"
+#include "locality/topology.h"
+
+// Declarations of C++ methods
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+ 
+
 typedef struct _MPIX_Topo
 {
     int indegree;
@@ -7,7 +21,7 @@ typedef struct _MPIX_Topo
 
 } MPIX_Topo;
 
-int MPIX_Topo_dist_graph_adjacent(MPI_Comm comm, 
+int MPIX_Topo_dist_graph_adjacent(MPIX_Comm *comm, 
         int indegree,
         const int sources[],
         int outdegree,
@@ -24,7 +38,13 @@ int MPIX_Topo_dist_graph_neighbors_count(MPIX_Topo* topo,
 
 int MPIX_Topo_dist_graph_neighbors(MPIX_Topo* topo,
         int indegree,
-        int outdegreeint MPIX_Topo_dist_graph_neighbors_count(MPIX_Topo* topo,
-        int* indegree,
-        int* outdegree);
+        int outdegree,
+        int *sources,
+        int *desitnations);
 
+#ifdef __cplusplus
+}
+#endif
+
+
+#endif

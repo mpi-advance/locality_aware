@@ -4,6 +4,7 @@
 #include <mpi.h>
 #include <stdlib.h>
 #include "dist_graph.h"
+#include "dist_topo.h"
 #include "persistent/persistent.h"
 #include "locality/locality_comm.h"
 
@@ -23,8 +24,7 @@ int MPIX_Neighbor_topo_alltoallv(
         const int rdispls[],
         MPI_Datatype recvtype,
         MPIX_Topo* topo,
-        MPIX_Comm* comm,
-        MPI_Info info);
+        MPIX_Comm* comm);
 
 int MPIX_Neighbor_topo_alltoallv_init(
         const void* sendbuf,

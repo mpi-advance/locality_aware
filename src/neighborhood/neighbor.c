@@ -189,18 +189,17 @@ int MPIX_Neighbor_topo_alltoallv(
         const int rdispls[],
         MPI_Datatype recvtype,
         MPIX_Topo* topo,
-        MPIX_Comm* comm,
-        MPI_Info info)
+        MPIX_Comm* comm)
 {
 
     MPIX_Request* request;
     MPI_Status status;
 
-    int ierr = MPIX_Neighbor_topo_alltoallv_init(sendbuffer,
+    int ierr = MPIX_Neighbor_topo_alltoallv_init(sendbuf,
             sendcounts,
             sdispls,
             sendtype,
-            recvbuffer,
+            recvbuf,
             recvcounts,
             rdispls,
             recvtype,
@@ -230,9 +229,75 @@ int MPIX_Neighbor_topo_alltoallv_init(
         MPI_Info info,
         MPIX_Request** request_ptr)
 {
-    // TODO IMPLEMENT HERE
-    // 1. Copy code in MPIX_Neighbor_alltoallv_init
-    // 2. Change methods to call topo version
+    int tag = 349526;
+
+    int indegree, outdegree, weighted;
+    MPIX_Topo_dist_graph_neighbors_count(
+            topo, 
+            &indegree, 
+            &outdegree);
+
+    int* sources = NULL;
+    int* destinations = NULL;
+
+    if (indegree)
+    {
+        sources = (int*)malloc(indegree*sizeof(int));
+    }
+
+    if (outdegree)
+    {
+        destinations = (int*)malloc(outdegree*sizeof(int));
+    }
+
+    MPIX_Topo_dist_graph_neighbors(
+            topo, 
+            indegree, 
+            outdegree, 
+            sources, 
+            destinations); 
+
+    MPIX_Request* request;
+    init_request(&request);
+
+    request->global_n_msgs = indegree+outdegree;
+    allocate_requests(request->global_n_msgs, &(request->global_requests));
+
+    const char* send_buffer = (char*) sendbuf;
+    char* recv_buffer = (char*) recvbuf;
+
+    int send_size, recv_size;
+    MPI_Type_size(sendtype, &send_size);
+    MPI_Type_size(recvtype, &recv_size);
+
+    for (int i = 0; i < indegree; i++)
+    {
+        MPI_Recv_init(&(recv_buffer[rdispls[i]*recv_size]), 
+                recvcounts[i],
+                recvtype, 
+                sources[i],
+                tag,
+                comm->global_comm, 
+                &(request->global_requests[i]));
+    }
+
+    for (int i = 0; i < outdegree; i++)
+    {
+        MPI_Send_init(&(send_buffer[sdispls[i]*send_size]),
+                sendcounts[i],
+                sendtype,
+                destinations[i],
+                tag,
+                comm->global_comm,
+                &(request->global_requests[indegree+i]));
+    }
+
+    free(sources);
+    free(destinations);
+
+    *request_ptr = request;
+
+    return MPI_SUCCESS;
 }
 
 
