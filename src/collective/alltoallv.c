@@ -36,6 +36,9 @@ int MPIX_Alltoallv(const void* sendbuf,
         MPIX_Comm* mpi_comm)
 {
 #ifdef GPU
+
+ //  printf("___gpu difined__***1\n");fflush(stdout);
+
     cudaMemoryType send_type, recv_type;
     get_mem_types(sendbuf, recvbuf, send_type, recv_type);
 
@@ -51,6 +54,8 @@ int MPIX_Alltoallv(const void* sendbuf,
                 rdispls,
                 recvtype,
                 mpi_comm);
+//printf("___gpu difined__***2\n");fflush(stdout);
+
     }
     else if (send_type == cudaMemoryTypeDevice ||
             recv_type == cudaMemoryTypeDevice)
@@ -88,7 +93,7 @@ int alltoallv_pairwise(const void* sendbuf,
         const int rdispls[],
         MPI_Datatype recvtype,
         MPI_Comm comm)
-{
+{//printf("Hello, alltoallv_pairwise__***1\n");fflush(stdout);
     int rank, num_procs;
     MPI_Comm_rank(comm, &rank);
     MPI_Comm_size(comm, &num_procs);
@@ -104,12 +109,54 @@ int alltoallv_pairwise(const void* sendbuf,
  
     char* send_buffer = (char*)sendbuf;
     char* recv_buffer = (char*)recvbuf;
+//printf("Hello, alltoallv_pairwise__***2\n");fflush(stdout);
 
+#ifdef GPU
+    cudaMemoryType send_type, recv_type;
+    cudaPointerAttributes mem;
+    cudaPointerGetAttributes(&mem, sendbuf);
+    int ierr = cudaGetLastError();
+    if (ierr == cudaErrorInvalidValue)
+        send_type = cudaMemoryTypeHost;
+    else
+        send_type = mem.type;
+    cudaPointerGetAttributes(&mem, recvbuf);
+    ierr = cudaGetLastError();
+    if (ierr == cudaErrorInvalidValue)
+        recv_type = cudaMemoryTypeHost;
+    else
+        recv_type = mem.type;
+
+ 
+    if (send_type == cudaMemoryTypeDevice &&
+            recv_type == cudaMemoryTypeDevice)
+        cudaMemcpy(recv_buffer + (rank * recvcounts[rank] * recv_size),
+                send_buffer + (rank * sendcounts[rank] * send_size),
+                sendcounts[rank] * send_size,
+                cudaMemcpyDeviceToDevice);
+    else if (send_type == cudaMemoryTypeDevice)
+        cudaMemcpy(recv_buffer + (rank * recvcounts[rank] * recv_size),
+                send_buffer + (rank * sendcounts[rank] * send_size),
+                sendcounts[rank] * send_size,
+                cudaMemcpyDeviceToHost);
+
+    else if (recv_type == cudaMemoryTypeDevice)
+        cudaMemcpy(recv_buffer + (rank * recvcounts[rank] * recv_size),
+                send_buffer + (rank * sendcounts[rank] * send_size),
+                sendcounts[rank] * send_size,
+                cudaMemcpyHostToDevice);
+    else  
+         
+//cudaDeviceSynchronize();        
+
+#endif
+
+//printf("Hello, alltoallv_pairwise__***3\n");fflush(stdout);
     memcpy(
         recv_buffer + (rdispls[rank] * recv_size),
         send_buffer + (sdispls[rank] * send_size), 
         sendcounts[rank] * send_size);        
-
+//printf(//"Hello, alltoallv_pairwise__***4\n");fflush(stdout);
     // Send to rank + i
     // Recv from rank - i
     for (int i = 1; i < num_procs; i++)
@@ -120,16 +167,19 @@ int alltoallv_pairwise(const void* sendbuf,
         recv_proc = rank - i;
         if (recv_proc < 0)
             recv_proc += num_procs;
-
         send_pos = sdispls[send_proc] * send_size;
         recv_pos = rdispls[recv_proc] * recv_size;
 
         MPI_Sendrecv(send_buffer + send_pos, sendcounts[send_proc], sendtype, send_proc, tag,
                 recv_buffer + recv_pos, recvcounts[recv_proc], recvtype, recv_proc, tag,
                 comm, &status);
+//printf("Hello, alltoallv_pairwise__***6\n");fflush(stdout);
     }
 
     return 0;
+//free(send_buffer);
+//free(recv_buffer);
+//printf("Hello, alltoallv_pairwise__***7\n");fflush(stdout);
 }
 
 int alltoallv_nonblocking(const void* sendbuf,
@@ -159,6 +209,42 @@ int alltoallv_nonblocking(const void* sendbuf,
     char* send_buffer = (char*)sendbuf;
     char* recv_buffer = (char*)recvbuf;
 
+#ifdef GPU
+    cudaMemoryType send_type, recv_type;
+    cudaPointerAttributes mem;
+    cudaPointerGetAttributes(&mem, sendbuf);
+    int ierr = cudaGetLastError();
+    if (ierr == cudaErrorInvalidValue)
+        send_type = cudaMemoryTypeHost;
+    else
+        send_type = mem.type;
+    cudaPointerGetAttributes(&mem, recvbuf);
+    ierr = cudaGetLastError();
+    if (ierr == cudaErrorInvalidValue)
+        recv_type = cudaMemoryTypeHost;
+    else
+        recv_type = mem.type;
+
+
+    if (send_type == cudaMemoryTypeDevice &&
+            recv_type == cudaMemoryTypeDevice)
+        cudaMemcpy(recv_buffer + (rank * recvcounts[rank] * recv_size),
+                send_buffer + (rank * sendcounts[rank] * send_size),
+                sendcounts[rank] * send_size,
+                cudaMemcpyDeviceToDevice);
+    else if (send_type == cudaMemoryTypeDevice)
+        cudaMemcpy(recv_buffer + (rank * recvcounts[rank] * recv_size),
+                send_buffer + (rank * sendcounts[rank] * send_size),
+                sendcounts[rank] * send_size,
+                cudaMemcpyDeviceToHost);
+    else if (recv_type == cudaMemoryTypeDevice)
+        cudaMemcpy(recv_buffer + (rank * recvcounts[rank] * recv_size),
+                send_buffer + (rank * sendcounts[rank] * send_size),
+                sendcounts[rank] * send_size,
+                cudaMemcpyHostToDevice);
+    else
+
+#endif 
     memcpy(
         recv_buffer + (rdispls[rank] * recv_size),
         send_buffer + (sdispls[rank] * send_size), 
@@ -222,6 +308,42 @@ int alltoallv_pairwise_nonblocking(const void* sendbuf,
 
     char* send_buffer = (char*)sendbuf;
     char* recv_buffer = (char*)recvbuf;
+
+#ifdef GPU
+    cudaMemoryType send_type, recv_type;
+    cudaPointerAttributes mem;
+    cudaPointerGetAttributes(&mem, sendbuf);
+    int ierr = cudaGetLastError();
+    if (ierr == cudaErrorInvalidValue)
+        send_type = cudaMemoryTypeHost;
+    else
+        send_type = mem.type;
+    cudaPointerGetAttributes(&mem, recvbuf);
+    ierr = cudaGetLastError();
+    if (ierr == cudaErrorInvalidValue)
+        recv_type = cudaMemoryTypeHost;
+    else
+        recv_type = mem.type;
+
+    if (send_type == cudaMemoryTypeDevice &&
+            recv_type == cudaMemoryTypeDevice)
+        cudaMemcpy(recv_buffer + (rank * recvcounts[rank] * recv_size),
+                send_buffer + (rank * sendcounts[rank] * send_size),
+                sendcounts[rank] * send_size,
+                cudaMemcpyDeviceToDevice);
+    else if (send_type == cudaMemoryTypeDevice)
+        cudaMemcpy(recv_buffer + (rank * recvcounts[rank] * recv_size),
+                send_buffer + (rank * sendcounts[rank] * send_size),
+                sendcounts[rank] * send_size,
+                cudaMemcpyDeviceToHost);
+    else if (recv_type == cudaMemoryTypeDevice)
+        cudaMemcpy(recv_buffer + (rank * recvcounts[rank] * recv_size),
+                send_buffer + (rank * sendcounts[rank] * send_size),
+                sendcounts[rank] * send_size,
+                cudaMemcpyHostToDevice);
+    else
+
+#endif
 
     memcpy(
         recv_buffer + (rdispls[rank] * recv_size),
@@ -293,6 +415,42 @@ int alltoallv_waitany(const void* sendbuf,
 
     char* send_buffer = (char*)sendbuf;
     char* recv_buffer = (char*)recvbuf;
+
+#ifdef GPU
+    cudaMemoryType send_type, recv_type;
+    cudaPointerAttributes mem;
+    cudaPointerGetAttributes(&mem, sendbuf);
+    int ierr = cudaGetLastError();
+    if (ierr == cudaErrorInvalidValue)
+        send_type = cudaMemoryTypeHost;
+    else
+        send_type = mem.type;
+    cudaPointerGetAttributes(&mem, recvbuf);
+    ierr = cudaGetLastError();
+    if (ierr == cudaErrorInvalidValue)
+        recv_type = cudaMemoryTypeHost;
+    else
+        recv_type = mem.type;
+
+    if (send_type == cudaMemoryTypeDevice &&
+            recv_type == cudaMemoryTypeDevice)
+        cudaMemcpy(recv_buffer + (rank * recvcounts[rank] * recv_size),
+                send_buffer + (rank * sendcounts[rank] * send_size),
+                sendcounts[rank] * send_size,
+                cudaMemcpyDeviceToDevice);
+    else if (send_type == cudaMemoryTypeDevice)
+        cudaMemcpy(recv_buffer + (rank * recvcounts[rank] * recv_size),
+                send_buffer + (rank * sendcounts[rank] * send_size),
+                sendcounts[rank] * send_size,
+                cudaMemcpyDeviceToHost);
+    else if (recv_type == cudaMemoryTypeDevice)
+        cudaMemcpy(recv_buffer + (rank * recvcounts[rank] * recv_size),
+                send_buffer + (rank * sendcounts[rank] * send_size),
+                sendcounts[rank] * send_size,
+                cudaMemcpyHostToDevice);
+    else
+
+#endif
 
     memcpy(
         recv_buffer + (rdispls[rank] * recv_size),

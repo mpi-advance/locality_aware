@@ -14,12 +14,14 @@ int gpu_aware_alltoallv(alltoallv_ftn f,
         const int rdispls[],
         MPI_Datatype recvtype,
         MPIX_Comm* comm)
-{
+{//printf("Hello, gpu_aware_alltoallv__***1\n");fflush(stdout);
     return f(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype,
             comm->global_comm);
+//printf("Hello, gpu_aware_alltoallv__***2\n");fflush(stdout);
 }
 
-int gpu_aware_alltoallv_pairwise(const void* sendbuf, 
+
+int gpu_aware_alltoallv_waitany(const void* sendbuf,
         const int sendcounts[],
         const int sdispls[],
         MPI_Datatype sendtype,
@@ -29,7 +31,7 @@ int gpu_aware_alltoallv_pairwise(const void* sendbuf,
         MPI_Datatype recvtype,
         MPIX_Comm* comm)
 {
-    return gpu_aware_alltoallv(alltoallv_pairwise,
+    return gpu_aware_alltoallv(alltoallv_waitany,
         sendbuf,
         sendcounts,
         sdispls,
@@ -41,6 +43,31 @@ int gpu_aware_alltoallv_pairwise(const void* sendbuf,
         comm);
 }
 
+
+int gpu_aware_alltoallv_pairwise(const void* sendbuf, 
+        const int sendcounts[],
+        const int sdispls[],
+        MPI_Datatype sendtype,
+        void* recvbuf,
+        const int recvcounts[],
+        const int rdispls[],
+        MPI_Datatype recvtype,
+        MPIX_Comm* comm)
+{//printf(//"Hello, gpu_aware_alltoallv_pairwise__***3\n");fflush(stdout);
+    return gpu_aware_alltoallv(alltoallv_pairwise,
+        sendbuf,
+        sendcounts,
+        sdispls,
+        sendtype,
+        recvbuf,
+        recvcounts,
+        rdispls,
+        recvtype,
+        comm);
+//printf(//"Hello, gpu_aware_alltoallv_pairwise__***4\n");fflush(stdout);
+
+}
+
 int gpu_aware_alltoallv_nonblocking(const void* sendbuf, 
         const int sendcounts[],
         const int sdispls[],
@@ -50,7 +77,7 @@ int gpu_aware_alltoallv_nonblocking(const void* sendbuf,
         const int rdispls[],
         MPI_Datatype recvtype,
         MPIX_Comm* comm)
-{
+{//printf("Hello, gpu_aware_alltoallv_nonblocking__***5\n");fflush(stdout);
     return gpu_aware_alltoallv(alltoallv_nonblocking,
         sendbuf,
         sendcounts,
@@ -61,6 +88,8 @@ int gpu_aware_alltoallv_nonblocking(const void* sendbuf,
         rdispls,
         recvtype,
         comm);
+//printf("Hello, gpu_aware_alltoallv_nonblocking__***6\n");fflush(stdout);
+
 }
 
 int copy_to_cpu_alltoallv(alltoallv_ftn f,

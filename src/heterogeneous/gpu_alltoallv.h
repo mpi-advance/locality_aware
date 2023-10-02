@@ -37,6 +37,18 @@ int gpu_aware_alltoallv_pairwise(const void* sendbuf,
         const int rdispls[],
         MPI_Datatype recvtype,
         MPIX_Comm* comm);
+
+int gpu_aware_alltoallv_waitany(const void* sendbuf, 
+        const int sendcounts[],
+        const int sdispls[],
+        MPI_Datatype sendtype,
+        void* recvbuf,
+        const int recvcounts[],
+        const int rdispls[],
+        MPI_Datatype recvtype,
+        MPIX_Comm* comm);
+
+
 int gpu_aware_alltoallv_nonblocking(const void* sendbuf, 
         const int sendcounts[],
         const int sdispls[],

@@ -19,8 +19,8 @@
 #include "neighborhood/neighbor_persistent.h"
 
 #ifdef GPU
-    #include "heterogeneous/gpu_alltoall.h"
-    #include "heterogeneous/gpu_alltoallv.h"
+    #include "/g/g92/enamug/clean/GPU_locality_aware/locality_aware/src/heterogeneous/gpu_alltoall.h"
+    #include "/g/g92/enamug/clean/GPU_locality_aware/locality_aware/src/heterogeneous/gpu_alltoallv.h"
 #endif
 
 #endif
