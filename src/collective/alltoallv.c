@@ -93,7 +93,7 @@ int alltoallv_pairwise(const void* sendbuf,
         const int rdispls[],
         MPI_Datatype recvtype,
         MPI_Comm comm)
-{//printf("Hello, alltoallv_pairwise__***1\n");fflush(stdout);
+{printf("Hello, alltoallv_pairwise__***1\n");fflush(stdout);
     int rank, num_procs;
     MPI_Comm_rank(comm, &rank);
     MPI_Comm_size(comm, &num_procs);
@@ -109,7 +109,7 @@ int alltoallv_pairwise(const void* sendbuf,
  
     char* send_buffer = (char*)sendbuf;
     char* recv_buffer = (char*)recvbuf;
-//printf("Hello, alltoallv_pairwise__***2\n");fflush(stdout);
+printf("Hello, alltoallv_pairwise__***2\n");fflush(stdout);
 
 #ifdef GPU
     cudaMemoryType send_type, recv_type;
@@ -146,17 +146,17 @@ int alltoallv_pairwise(const void* sendbuf,
                 sendcounts[rank] * send_size,
                 cudaMemcpyHostToDevice);
     else  
-         
+printf("Hello, alltoallv_pairwise__*************\n");fflush(stdout);         
 //cudaDeviceSynchronize();        
 
 #endif
 
-//printf("Hello, alltoallv_pairwise__***3\n");fflush(stdout);
+printf("Hello, alltoallv_pairwise__***3\n");fflush(stdout);
     memcpy(
         recv_buffer + (rdispls[rank] * recv_size),
         send_buffer + (sdispls[rank] * send_size), 
         sendcounts[rank] * send_size);        
-//printf(//"Hello, alltoallv_pairwise__***4\n");fflush(stdout);
+printf("Hello, alltoallv_pairwise__***4\n");fflush(stdout);
     // Send to rank + i
     // Recv from rank - i
     for (int i = 1; i < num_procs; i++)
