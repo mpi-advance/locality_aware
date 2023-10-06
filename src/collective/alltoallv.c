@@ -93,7 +93,7 @@ int alltoallv_pairwise(const void* sendbuf,
         const int rdispls[],
         MPI_Datatype recvtype,
         MPI_Comm comm)
-{printf("Hello, alltoallv_pairwise__***1\n");fflush(stdout);
+{//printf("Hello, alltoallv_pairwise__***1\n");fflush(stdout);
     int rank, num_procs;
     MPI_Comm_rank(comm, &rank);
     MPI_Comm_size(comm, &num_procs);
@@ -109,7 +109,7 @@ int alltoallv_pairwise(const void* sendbuf,
  
     char* send_buffer = (char*)sendbuf;
     char* recv_buffer = (char*)recvbuf;
-printf("Hello, alltoallv_pairwise__***2\n");fflush(stdout);
+//printf("Hello, alltoallv_pairwise__***2\n");fflush(stdout);
 
 #ifdef GPU
     cudaMemoryType send_type, recv_type;
@@ -145,18 +145,24 @@ printf("Hello, alltoallv_pairwise__***2\n");fflush(stdout);
                 send_buffer + (rank * sendcounts[rank] * send_size),
                 sendcounts[rank] * send_size,
                 cudaMemcpyHostToDevice);
-    else  
-printf("Hello, alltoallv_pairwise__*************\n");fflush(stdout);         
-//cudaDeviceSynchronize();        
-
+    else
 #endif
 
-printf("Hello, alltoallv_pairwise__***3\n");fflush(stdout);
-    memcpy(
+
+         
+//cudaDeviceSynchronize();        
+
+
+
+//printf("Hello, alltoallv_pairwise__***3\n");fflush(stdout);
+#ifndef GPU
+memcpy(
         recv_buffer + (rdispls[rank] * recv_size),
         send_buffer + (sdispls[rank] * send_size), 
-        sendcounts[rank] * send_size);        
-printf("Hello, alltoallv_pairwise__***4\n");fflush(stdout);
+        sendcounts[rank] * send_size); 
+#endif
+       
+//printf("Hello, alltoallv_pairwise__***4\n");fflush(stdout);
     // Send to rank + i
     // Recv from rank - i
     for (int i = 1; i < num_procs; i++)
@@ -170,9 +176,14 @@ printf("Hello, alltoallv_pairwise__***4\n");fflush(stdout);
         send_pos = sdispls[send_proc] * send_size;
         recv_pos = rdispls[recv_proc] * recv_size;
 
+printf("Hello, alltoallv_pairwise__***5\n");fflush(stdout);
+    // Send to rank + i
         MPI_Sendrecv(send_buffer + send_pos, sendcounts[send_proc], sendtype, send_proc, tag,
                 recv_buffer + recv_pos, recvcounts[recv_proc], recvtype, recv_proc, tag,
                 comm, &status);
+
+printf("Hello, alltoallv_pairwise__***6\n");fflush(stdout);
+    // Send to rank + i
 //printf("Hello, alltoallv_pairwise__***6\n");fflush(stdout);
     }
 
