@@ -11,7 +11,7 @@ int main(int argc, char* argv[])
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
 
     double t0, tf;
-    int iters = 100000;
+    int iters = 1000;
 
     if (argc == 1)
     {
@@ -31,7 +31,7 @@ int main(int argc, char* argv[])
     form_comm(A);
     tf = MPI_Wtime() - t0;
     MPI_Reduce(&tf, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
-    if (rank == 0) { printf("Standard comm form: %f\n", t0); }
+    if (rank == 0) { printf("Standard comm form: %8e\n", t0); }
 
     // Each Process sends vals[i] = rank*1000 + i
     //    - For debugging, can tell where values originate
@@ -73,7 +73,7 @@ int main(int argc, char* argv[])
     communicate(A, send_vals, std_recv_buffer, MPI_INT);
     tf = MPI_Wtime() - t0;
     MPI_Reduce(&tf, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
-    if (rank == 0) { printf("Standard comm: %f\n", t0); }
+    if (rank == 0) { printf("Standard comm: %8e\n", t0); }
 
 
     // Create Variables for send_procs/recv_procs 
@@ -106,7 +106,7 @@ int main(int argc, char* argv[])
     }
     tf = (MPI_Wtime() - t0) / iters;
     MPI_Reduce(&tf, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
-    if (rank == 0) { printf("Standard graph create: %f\n", t0); }
+    if (rank == 0) { printf("Standard graph create: %8e\n", t0); }
     MPI_Dist_graph_create_adjacent(MPI_COMM_WORLD,
             A.recv_comm.n_msgs,
             recv_procs,
@@ -134,7 +134,7 @@ int main(int argc, char* argv[])
     }
     tf = (MPI_Wtime() - t0) / iters;
     MPI_Reduce(&tf, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
-    if (rank == 0) { printf("Standard neighbor: %f\n", t0); }
+    if (rank == 0) { printf("Standard neighbor: %8e\n", t0); }
     // 3. Free Topology Communicator
     MPI_Comm_free(&std_comm);
 
@@ -169,7 +169,7 @@ int main(int argc, char* argv[])
     }
     tf = (MPI_Wtime() - t0) / iters;
     MPI_Reduce(&tf, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
-    if (rank == 0) { printf("MPI advance graph create: %f\n", t0); }
+    if (rank == 0) { printf("MPI advance graph create: %8e\n", t0); }
     MPIX_Topo_dist_graph_adjacent(xcomm,
             A.recv_comm.n_msgs,
             recv_procs, 
@@ -195,7 +195,7 @@ int main(int argc, char* argv[])
     }
     tf = (MPI_Wtime() - t0) / iters;
     MPI_Reduce(&tf, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
-    if (rank == 0) { printf("MPI advance neighbor: %f\n", t0); }
+    if (rank == 0) { printf("MPI advance neighbor: %8e\n", t0); }
     // 3. Free Topology Communicator
     MPIX_Topo_free(topo);
     MPIX_Comm_free(xcomm);
