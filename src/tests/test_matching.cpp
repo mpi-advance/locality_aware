@@ -67,6 +67,27 @@ void test_matrix(const char* filename)
     MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
     if (rank == 0) printf("Communication Time : %e\n", t0);
 
+    order_comm(A, send_vals, recv_vals, MPI_INT); 
+  
+    std::vector<int> new_recv_vals;
+    if (A.recv_comm.size_msgs)
+    {
+        new_recv_vals.resize(A.recv_comm.size_msgs);
+    }
+
+    // added a timing to new communicate
+    double t0_2 = MPI_Wtime();
+    for (int i = 0; i < n_iter; i++){
+        communicate2(A, send_vals, new_recv_vals, MPI_INT);
+    }
+    double tfinal_2 = MPI_Wtime() - t0_2;
+    MPI_Reduce(&tfinal_2, &t0_2, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
+    if (rank == 0) printf("Communication 2 Time: %e\n", t0_2);
+
+    for (int i = 0; i < A.recv_comm.size_msgs; i++)
+    {
+        ASSERT_EQ(recv_vals[i], new_recv_vals[i]);
+    }
 
     // TODO : 
     //    1. Add a new method similar to communicate, but instead of posting MPI_Irecv for each message
@@ -74,7 +95,7 @@ void test_matrix(const char* filename)
     //        and recv based on that information (tracking which message arrived at each probe)
     //    2. Reorder the recv_comm by the order in which the messages arrived in step 1
     //    3. Time another communicate loop (will now be using this reordered recv_comm)
-    //
+    
     //    Hint : to see an example of probe/dynamic receiving, check out the 
     //        form_send_comm methods in src/test/sparse_mat.hpp
 }
