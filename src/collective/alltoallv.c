@@ -37,7 +37,6 @@ int MPIX_Alltoallv(const void* sendbuf,
 {
 #ifdef GPU
 
- //  printf("___gpu difined__***1\n");fflush(stdout);
 
     cudaMemoryType send_type, recv_type;
     get_mem_types(sendbuf, recvbuf, send_type, recv_type);
@@ -54,7 +53,6 @@ int MPIX_Alltoallv(const void* sendbuf,
                 rdispls,
                 recvtype,
                 mpi_comm);
-//printf("___gpu difined__***2\n");fflush(stdout);
 
     }
     else if (send_type == cudaMemoryTypeDevice ||
@@ -109,60 +107,62 @@ int alltoallv_pairwise(const void* sendbuf,
  
     char* send_buffer = (char*)sendbuf;
     char* recv_buffer = (char*)recvbuf;
-//printf("Hello, alltoallv_pairwise__***2\n");fflush(stdout);
 
 #ifdef GPU
-    cudaMemoryType send_type, recv_type;
-    cudaPointerAttributes mem;
-    cudaPointerGetAttributes(&mem, sendbuf);
-    int ierr = cudaGetLastError();
-    if (ierr == cudaErrorInvalidValue)
-        send_type = cudaMemoryTypeHost;
-    else
-        send_type = mem.type;
-    cudaPointerGetAttributes(&mem, recvbuf);
-    ierr = cudaGetLastError();
-    if (ierr == cudaErrorInvalidValue)
-        recv_type = cudaMemoryTypeHost;
-    else
-        recv_type = mem.type;
+cudaMemoryType send_type, recv_type;
+cudaPointerAttributes send_mem, recv_mem;
 
+cudaPointerGetAttributes(&send_mem, sendbuf);
+cudaPointerGetAttributes(&recv_mem, recvbuf);
+
+int send_ierr = cudaGetLastError();
+int recv_ierr = cudaGetLastError();
+
+if (send_ierr == cudaErrorInvalidValue)
+    send_type = cudaMemoryTypeHost;
+else
+    send_type = send_mem.type;
+
+if (recv_ierr == cudaErrorInvalidValue)
+    recv_type = cudaMemoryTypeHost;
+else
+    recv_type = recv_mem.type;
  
     if (send_type == cudaMemoryTypeDevice &&
-            recv_type == cudaMemoryTypeDevice)
-        cudaMemcpy(recv_buffer + (rank * recvcounts[rank] * recv_size),
-                send_buffer + (rank * sendcounts[rank] * send_size),
-                sendcounts[rank] * send_size,
-                cudaMemcpyDeviceToDevice);
-    else if (send_type == cudaMemoryTypeDevice)
-        cudaMemcpy(recv_buffer + (rank * recvcounts[rank] * recv_size),
-                send_buffer + (rank * sendcounts[rank] * send_size),
-                sendcounts[rank] * send_size,
-                cudaMemcpyDeviceToHost);
+            recv_type == cudaMemoryTypeDevice){
 
-    else if (recv_type == cudaMemoryTypeDevice)
-        cudaMemcpy(recv_buffer + (rank * recvcounts[rank] * recv_size),
-                send_buffer + (rank * sendcounts[rank] * send_size),
-                sendcounts[rank] * send_size,
-                cudaMemcpyHostToDevice);
-    else
+// GPU to GPU memory transfer
+    cudaMemcpy(recv_buffer + rdispls[rank] * recv_size,
+               send_buffer + sdispls[rank] * send_size,
+               sendcounts[rank] * send_size,
+               cudaMemcpyDeviceToDevice);
+
+
+} else if (send_type == cudaMemoryTypeDevice) {
+    // GPU to CPU memory transfer
+    cudaMemcpy(recv_buffer + rdispls[rank] * recv_size,
+               send_buffer + sdispls[rank] * send_size,
+               sendcounts[rank] * send_size,
+               cudaMemcpyDeviceToHost);
+} else if (recv_type == cudaMemoryTypeDevice) {
+    // CPU to GPU memory transfer
+    cudaMemcpy(recv_buffer + rdispls[rank] * recv_size,
+               send_buffer + sdispls[rank] * send_size,
+               sendcounts[rank] * send_size,
+               cudaMemcpyHostToDevice);    
+    }else{    
 #endif
 
-
-         
-//cudaDeviceSynchronize();        
-
-
-
 //printf("Hello, alltoallv_pairwise__***3\n");fflush(stdout);
-#ifndef GPU
+//#ifndef GPU
 memcpy(
         recv_buffer + (rdispls[rank] * recv_size),
         send_buffer + (sdispls[rank] * send_size), 
         sendcounts[rank] * send_size); 
+#ifdef GPU
+}
 #endif
-       
-//printf("Hello, alltoallv_pairwise__***4\n");fflush(stdout);
+ 
     // Send to rank + i
     // Recv from rank - i
     for (int i = 1; i < num_procs; i++)
@@ -176,22 +176,16 @@ memcpy(
         send_pos = sdispls[send_proc] * send_size;
         recv_pos = rdispls[recv_proc] * recv_size;
 
-printf("Hello, alltoallv_pairwise__***5\n");fflush(stdout);
     // Send to rank + i
         MPI_Sendrecv(send_buffer + send_pos, sendcounts[send_proc], sendtype, send_proc, tag,
                 recv_buffer + recv_pos, recvcounts[recv_proc], recvtype, recv_proc, tag,
                 comm, &status);
 
-printf("Hello, alltoallv_pairwise__***6\n");fflush(stdout);
-    // Send to rank + i
-//printf("Hello, alltoallv_pairwise__***6\n");fflush(stdout);
     }
 
     return 0;
-//free(send_buffer);
-//free(recv_buffer);
-//printf("Hello, alltoallv_pairwise__***7\n");fflush(stdout);
 }
+
 
 int alltoallv_nonblocking(const void* sendbuf,
         const int sendcounts[],
@@ -203,6 +197,8 @@ int alltoallv_nonblocking(const void* sendbuf,
         MPI_Datatype recvtype,
         MPI_Comm comm)
 {
+
+
     int rank, num_procs;
     MPI_Comm_rank(comm, &rank);
     MPI_Comm_size(comm, &num_procs);
@@ -215,54 +211,62 @@ int alltoallv_nonblocking(const void* sendbuf,
     MPI_Type_size(sendtype, &send_size);
     MPI_Type_size(recvtype, &recv_size);
 
+
     MPI_Request* requests = (MPI_Request*)malloc(2*(num_procs-1)*sizeof(MPI_Request));
+
 
     char* send_buffer = (char*)sendbuf;
     char* recv_buffer = (char*)recvbuf;
 
-#ifdef GPU
-    cudaMemoryType send_type, recv_type;
-    cudaPointerAttributes mem;
-    cudaPointerGetAttributes(&mem, sendbuf);
-    int ierr = cudaGetLastError();
-    if (ierr == cudaErrorInvalidValue)
-        send_type = cudaMemoryTypeHost;
-    else
-        send_type = mem.type;
-    cudaPointerGetAttributes(&mem, recvbuf);
-    ierr = cudaGetLastError();
-    if (ierr == cudaErrorInvalidValue)
-        recv_type = cudaMemoryTypeHost;
-    else
-        recv_type = mem.type;
-
-
-    if (send_type == cudaMemoryTypeDevice &&
-            recv_type == cudaMemoryTypeDevice)
-        cudaMemcpy(recv_buffer + (rank * recvcounts[rank] * recv_size),
-                send_buffer + (rank * sendcounts[rank] * send_size),
-                sendcounts[rank] * send_size,
-                cudaMemcpyDeviceToDevice);
-    else if (send_type == cudaMemoryTypeDevice)
-        cudaMemcpy(recv_buffer + (rank * recvcounts[rank] * recv_size),
-                send_buffer + (rank * sendcounts[rank] * send_size),
-                sendcounts[rank] * send_size,
-                cudaMemcpyDeviceToHost);
-    else if (recv_type == cudaMemoryTypeDevice)
-        cudaMemcpy(recv_buffer + (rank * recvcounts[rank] * recv_size),
-                send_buffer + (rank * sendcounts[rank] * send_size),
-                sendcounts[rank] * send_size,
-                cudaMemcpyHostToDevice);
-    else
-
-#endif 
-    memcpy(
-        recv_buffer + (rdispls[rank] * recv_size),
-        send_buffer + (sdispls[rank] * send_size), 
-        sendcounts[rank] * send_size);        
-
     // For each step i
     // exchange among procs stride (i+1) apart
+#ifdef GPU
+cudaMemoryType send_type, recv_type;
+cudaPointerAttributes send_mem, recv_mem;
+
+cudaPointerGetAttributes(&send_mem, sendbuf);
+cudaPointerGetAttributes(&recv_mem, recvbuf);
+
+int send_ierr = cudaGetLastError();
+int recv_ierr = cudaGetLastError();
+
+if (send_ierr == cudaErrorInvalidValue)
+    send_type = cudaMemoryTypeHost;
+else
+    send_type = send_mem.type;
+
+if (recv_ierr == cudaErrorInvalidValue)
+    recv_type = cudaMemoryTypeHost;
+else
+    recv_type = recv_mem.type;
+
+if (send_type == cudaMemoryTypeDevice && recv_type == cudaMemoryTypeDevice) {
+    // GPU to GPU memory transfer
+    cudaMemcpy(recv_buffer + rdispls[rank] * recv_size,
+               send_buffer + sdispls[rank] * send_size,
+               sendcounts[rank] * send_size,
+               cudaMemcpyDeviceToDevice);
+} else if (send_type == cudaMemoryTypeDevice) {
+    // GPU to CPU memory transfer
+    cudaMemcpy(recv_buffer + rdispls[rank] * recv_size,
+               send_buffer + sdispls[rank] * send_size,
+               sendcounts[rank] * send_size,
+               cudaMemcpyDeviceToHost);
+} else if (recv_type == cudaMemoryTypeDevice) {
+    // CPU to GPU memory transfer
+    cudaMemcpy(recv_buffer + rdispls[rank] * recv_size,
+               send_buffer + sdispls[rank] * send_size,
+               sendcounts[rank] * send_size,
+               cudaMemcpyHostToDevice);
+} else {
+#endif
+// CPU to CPU memory transfer
+memcpy(recv_buffer + rdispls[rank] * recv_size,
+       send_buffer + sdispls[rank] * send_size,
+       sendcounts[rank] * send_size);
+#ifdef GPU
+}
+#endif    
     for (int i = 1; i < num_procs; i++)
     {
         send_proc = rank + i;
@@ -274,7 +278,6 @@ int alltoallv_nonblocking(const void* sendbuf,
 
         send_pos = sdispls[send_proc] * send_size;
         recv_pos = rdispls[recv_proc] * recv_size;
-
         MPI_Isend(send_buffer + send_pos, sendcounts[send_proc], sendtype, send_proc, tag,
                 comm, &(requests[i-1]));
         MPI_Irecv(recv_buffer + recv_pos, recvcounts[recv_proc], recvtype, recv_proc, tag,
@@ -282,7 +285,6 @@ int alltoallv_nonblocking(const void* sendbuf,
     }
 
     MPI_Waitall(2*(num_procs-1), requests, MPI_STATUSES_IGNORE);
-
     free(requests);
 
     return 0;
@@ -321,46 +323,56 @@ int alltoallv_pairwise_nonblocking(const void* sendbuf,
     char* recv_buffer = (char*)recvbuf;
 
 #ifdef GPU
-    cudaMemoryType send_type, recv_type;
-    cudaPointerAttributes mem;
-    cudaPointerGetAttributes(&mem, sendbuf);
-    int ierr = cudaGetLastError();
-    if (ierr == cudaErrorInvalidValue)
-        send_type = cudaMemoryTypeHost;
-    else
-        send_type = mem.type;
-    cudaPointerGetAttributes(&mem, recvbuf);
-    ierr = cudaGetLastError();
-    if (ierr == cudaErrorInvalidValue)
-        recv_type = cudaMemoryTypeHost;
-    else
-        recv_type = mem.type;
+cudaMemoryType send_type, recv_type;
+cudaPointerAttributes send_mem, recv_mem;
 
-    if (send_type == cudaMemoryTypeDevice &&
-            recv_type == cudaMemoryTypeDevice)
-        cudaMemcpy(recv_buffer + (rank * recvcounts[rank] * recv_size),
-                send_buffer + (rank * sendcounts[rank] * send_size),
-                sendcounts[rank] * send_size,
-                cudaMemcpyDeviceToDevice);
-    else if (send_type == cudaMemoryTypeDevice)
-        cudaMemcpy(recv_buffer + (rank * recvcounts[rank] * recv_size),
-                send_buffer + (rank * sendcounts[rank] * send_size),
-                sendcounts[rank] * send_size,
-                cudaMemcpyDeviceToHost);
-    else if (recv_type == cudaMemoryTypeDevice)
-        cudaMemcpy(recv_buffer + (rank * recvcounts[rank] * recv_size),
-                send_buffer + (rank * sendcounts[rank] * send_size),
-                sendcounts[rank] * send_size,
-                cudaMemcpyHostToDevice);
-    else
+cudaPointerGetAttributes(&send_mem, sendbuf);
+cudaPointerGetAttributes(&recv_mem, recvbuf);
 
+int send_ierr = cudaGetLastError();
+int recv_ierr = cudaGetLastError();
+
+if (send_ierr == cudaErrorInvalidValue)
+    send_type = cudaMemoryTypeHost;
+else
+    send_type = send_mem.type;
+
+if (recv_ierr == cudaErrorInvalidValue)
+    recv_type = cudaMemoryTypeHost;
+else
+    recv_type = recv_mem.type;
+
+if (send_type == cudaMemoryTypeDevice && recv_type == cudaMemoryTypeDevice) {
+
+    // GPU to GPU memory transfer
+     
+    cudaMemcpy(recv_buffer + rdispls[rank] * recv_size,
+               send_buffer + sdispls[rank] * send_size,
+               sendcounts[rank] * send_size,
+               cudaMemcpyDeviceToDevice);
+} else if (send_type == cudaMemoryTypeDevice) {
+    // GPU to CPU memory transfer
+    cudaMemcpy(recv_buffer + rdispls[rank] * recv_size,
+               send_buffer + sdispls[rank] * send_size,
+               sendcounts[rank] * send_size,
+               cudaMemcpyDeviceToHost);
+} else if (recv_type == cudaMemoryTypeDevice) {
+    // CPU to GPU memory transfer
+    cudaMemcpy(recv_buffer + rdispls[rank] * recv_size,
+               send_buffer + sdispls[rank] * send_size,
+               sendcounts[rank] * send_size,
+               cudaMemcpyHostToDevice);
+} else {
+#endif
+// CPU to CPU memory transfer
+memcpy(recv_buffer + rdispls[rank] * recv_size,
+       send_buffer + sdispls[rank] * send_size,
+       sendcounts[rank] * send_size);
+#ifdef GPU
+}
 #endif
 
-    memcpy(
-        recv_buffer + (rdispls[rank] * recv_size),
-        send_buffer + (sdispls[rank] * send_size),
-        sendcounts[rank] * send_size);
-
+ 
     // For each step i
     // exchange among procs stride (i+1) apart
     ctr = 0;
@@ -427,46 +439,55 @@ int alltoallv_waitany(const void* sendbuf,
     char* send_buffer = (char*)sendbuf;
     char* recv_buffer = (char*)recvbuf;
 
+
 #ifdef GPU
-    cudaMemoryType send_type, recv_type;
-    cudaPointerAttributes mem;
-    cudaPointerGetAttributes(&mem, sendbuf);
-    int ierr = cudaGetLastError();
-    if (ierr == cudaErrorInvalidValue)
-        send_type = cudaMemoryTypeHost;
-    else
-        send_type = mem.type;
-    cudaPointerGetAttributes(&mem, recvbuf);
-    ierr = cudaGetLastError();
-    if (ierr == cudaErrorInvalidValue)
-        recv_type = cudaMemoryTypeHost;
-    else
-        recv_type = mem.type;
+cudaMemoryType send_type, recv_type;
+cudaPointerAttributes send_mem, recv_mem;
 
-    if (send_type == cudaMemoryTypeDevice &&
-            recv_type == cudaMemoryTypeDevice)
-        cudaMemcpy(recv_buffer + (rank * recvcounts[rank] * recv_size),
-                send_buffer + (rank * sendcounts[rank] * send_size),
-                sendcounts[rank] * send_size,
-                cudaMemcpyDeviceToDevice);
-    else if (send_type == cudaMemoryTypeDevice)
-        cudaMemcpy(recv_buffer + (rank * recvcounts[rank] * recv_size),
-                send_buffer + (rank * sendcounts[rank] * send_size),
-                sendcounts[rank] * send_size,
-                cudaMemcpyDeviceToHost);
-    else if (recv_type == cudaMemoryTypeDevice)
-        cudaMemcpy(recv_buffer + (rank * recvcounts[rank] * recv_size),
-                send_buffer + (rank * sendcounts[rank] * send_size),
-                sendcounts[rank] * send_size,
-                cudaMemcpyHostToDevice);
-    else
+cudaPointerGetAttributes(&send_mem, sendbuf);
+cudaPointerGetAttributes(&recv_mem, recvbuf);
 
+int send_ierr = cudaGetLastError();
+int recv_ierr = cudaGetLastError();
+
+if (send_ierr == cudaErrorInvalidValue)
+    send_type = cudaMemoryTypeHost;
+else
+    send_type = send_mem.type;
+
+if (recv_ierr == cudaErrorInvalidValue)
+    recv_type = cudaMemoryTypeHost;
+else
+    recv_type = recv_mem.type;
+
+if (send_type == cudaMemoryTypeDevice && recv_type == cudaMemoryTypeDevice) {
+    // GPU to GPU memory transfer
+    cudaMemcpy(recv_buffer + rdispls[rank] * recv_size,
+               send_buffer + sdispls[rank] * send_size,
+               sendcounts[rank] * send_size,
+               cudaMemcpyDeviceToDevice);
+} else if (send_type == cudaMemoryTypeDevice) {
+    // GPU to CPU memory transfer
+    cudaMemcpy(recv_buffer + rdispls[rank] * recv_size,
+               send_buffer + sdispls[rank] * send_size,
+               sendcounts[rank] * send_size,
+               cudaMemcpyDeviceToHost);
+} else if (recv_type == cudaMemoryTypeDevice) {
+    // CPU to GPU memory transfer
+    cudaMemcpy(recv_buffer + rdispls[rank] * recv_size,
+               send_buffer + sdispls[rank] * send_size,
+               sendcounts[rank] * send_size,
+               cudaMemcpyHostToDevice);
+} else {
+#endif
+// CPU to CPU memory transfer
+memcpy(recv_buffer + rdispls[rank] * recv_size,
+       send_buffer + sdispls[rank] * send_size,
+       sendcounts[rank] * send_size);
+#ifdef GPU
+}
 #endif
 
-    memcpy(
-        recv_buffer + (rdispls[rank] * recv_size),
-        send_buffer + (sdispls[rank] * send_size),
-        sendcounts[rank] * send_size);
 
     // For each step i
     // exchange among procs stride (i+1) apart
