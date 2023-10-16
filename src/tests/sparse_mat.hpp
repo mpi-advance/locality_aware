@@ -365,7 +365,7 @@ void communicate(ParMat<T>& A, std::vector<U>& data, std::vector<U>& recvbuf, MP
     if (A.send_comm.n_msgs)
         MPI_Waitall(A.send_comm.n_msgs, A.send_comm.req.data(), MPI_STATUSES_IGNORE);
     if (A.recv_comm.n_msgs)
-    MPI_Waitall(A.recv_comm.n_msgs, A.recv_comm.req.data(), MPI_STATUSES_IGNORE);
+    	MPI_Waitall(A.recv_comm.n_msgs, A.recv_comm.req.data(), MPI_STATUSES_IGNORE);
 }
 
 template <typename U, typename T>
@@ -377,6 +377,9 @@ void order_comm(ParMat<T>&A, std::vector<U>& data, std::vector<U>& recvbuf, MPI_
     std::vector<U> sendbuf;
     if (A.send_comm.size_msgs)
         sendbuf.resize(A.send_comm.size_msgs);
+    if (A.send_comm.size_msgs)
+        sendbuf.resize(A.send_comm.size_msgs);
+
     for (int i = 0; i < A.send_comm.n_msgs; i++)
     {
         proc = A.send_comm.procs[i];
@@ -391,12 +394,28 @@ void order_comm(ParMat<T>&A, std::vector<U>& data, std::vector<U>& recvbuf, MPI_
     }   
     
     std::vector<int> new_recv_proc;
+    if (A.send_comm.n_msgs)
+    	new_recv_proc.resize(A.recv_comm.n_msgs);
+    	A.recv_comm.idx.resize(A.recv_comm.n_msgs);
+
     for (int i = 0; i < A.recv_comm.n_msgs; i++)
     {
+	proc = A.recv_comm.procs[i];
+	start = A.recv_comm.ptr[i];
+	end = A.recv_comm.ptr[i+1];
         MPI_Status status;
         MPI_Probe(MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
         new_recv_proc.push_back(status.MPI_SOURCE);
+        MPI_Irecv(&(recvbuf[start]), (int)(end - start), type, proc, tag,
+                MPI_COMM_WORLD, &(A.recv_comm.req[i]));
+
     }
+
+    if (A.send_comm.n_msgs)
+        MPI_Waitall(A.send_comm.n_msgs, A.send_comm.req.data(), MPI_STATUSES_IGNORE);
+    if (A.recv_comm.n_msgs)
+    MPI_Waitall(A.recv_comm.n_msgs, A.recv_comm.req.data(), MPI_STATUSES_IGNORE);
+
     for (int i = 0; i < A.recv_comm.n_msgs; i++)
     {   
         //this is now an order of the processes as they have been probed
