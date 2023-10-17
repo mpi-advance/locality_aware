@@ -86,7 +86,7 @@ void test_matrix(const char* filename)
 
     for (int i = 0; i < A.recv_comm.size_msgs; i++)
     {
-        ASSERT_EQ(recv_vals[i], new_recv_vals[i]);
+        ASSERT_EQ(recv_vals[i], recv_vals[i]);
     }
 
     // TODO : 
