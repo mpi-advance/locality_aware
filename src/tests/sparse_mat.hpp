@@ -403,9 +403,20 @@ void order_comm(ParMat<T>&A, std::vector<U>& data, std::vector<U>& recvbuf, MPI_
 	proc = A.recv_comm.procs[i];
 	start = A.recv_comm.ptr[i];
 	end = A.recv_comm.ptr[i+1];
+
         MPI_Status status;
         MPI_Probe(MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
         new_recv_proc.push_back(status.MPI_SOURCE);
+	// want an array of len(num procs)
+	// new_recv_proc(num_procs)
+	// new_recv_proc[status.MPI_SOURCE] = i;
+	//
+	//
+	// try:
+	// new_recv_proc(num_procs)
+	// new_recv_proc[status.MPI_SOURCE] = i
+	// mpi_get_count(status..)
+	// mpi_recv(recvbuf, ... )
         MPI_Irecv(&(recvbuf[start]), (int)(end - start), type, proc, tag,
                 MPI_COMM_WORLD, &(A.recv_comm.req[i]));
 
@@ -420,6 +431,8 @@ void order_comm(ParMat<T>&A, std::vector<U>& data, std::vector<U>& recvbuf, MPI_
     {   
         //this is now an order of the processes as they have been probed
         A.recv_comm.idx[i] = new_recv_proc[i];
+	// proc = recv_comm.procs[i]
+	// idx[new_recv_proc[proc]] = i
     }
 }
 
@@ -449,9 +462,20 @@ void communicate2(ParMat<T>& A, std::vector<U>& data, std::vector<U>& recvbuf, M
     for (int i = 0; i < A.recv_comm.n_msgs; i++)
     {
         // get the process at i (this should be from the idx value, which is the new order)
-        proc = A.recv_comm.idx[i]; 
-        start = A.recv_comm.ptr[proc];
-        end = A.recv_comm.ptr[A.recv_comm.idx[i+1]];
+	int orig_i = idx[i];
+
+
+        proc = A.recv_comm.idx[i];
+        start = A.recv_comm.ptr[i];
+        end = A.recv_comm.ptr[i+1];
+	// orig_i = idx[i]
+	// proc = recv_comm.procs[orig_i]
+	// start = recv_comm.ptr[orig_i]
+	// end = recv_comm.ptr[orig_i + 1]
+        //proc = A.recv_comm.procs[i];
+        //start = A.recv_comm.ptr[i];
+        //end = A.recv_comm.ptr[i+1];
+
         // need to fix the logic in Irecv
         MPI_Irecv(&(recvbuf[start]), (int)(end - start), type, proc, tag,
                 MPI_COMM_WORLD, &(A.recv_comm.req[i]));
