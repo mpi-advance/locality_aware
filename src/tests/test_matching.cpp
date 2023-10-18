@@ -57,7 +57,16 @@ void test_matrix(const char* filename)
         recv_vals.resize(A.recv_comm.size_msgs);
     }
 
-    // Warm-Up (before starting timer)
+    // TODO : Time order_comm
+    order_comm(A, send_vals, recv_vals, MPI_INT); 
+  
+    std::vector<int> new_recv_vals;
+    if (A.recv_comm.size_msgs)
+    {
+        new_recv_vals.resize(A.recv_comm.size_msgs);
+    }
+
+    // Time original communciate (warm-up first)
     communicate(A, send_vals, recv_vals, MPI_INT);
 
     t0 = MPI_Wtime();
@@ -67,27 +76,22 @@ void test_matrix(const char* filename)
     MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
     if (rank == 0) printf("Communication Time : %e\n", t0);
 
-    order_comm(A, send_vals, recv_vals, MPI_INT); 
-  
-    std::vector<int> new_recv_vals;
-    if (A.recv_comm.size_msgs)
-    {
-        new_recv_vals.resize(A.recv_comm.size_msgs);
-    }
+    // Time new communicate (warm-up first)
+    communicate2(A, send_vals, new_recv_vals, MPI_INT);
 
-    // added a timing to new communicate
-    double t0_2 = MPI_Wtime();
-    for (int i = 0; i < n_iter; i++){
+    t0 = MPI_Wtime();
+    for (int i = 0; i < n_iter; i++)
         communicate2(A, send_vals, new_recv_vals, MPI_INT);
-    }
-    double tfinal_2 = MPI_Wtime() - t0_2;
-    MPI_Reduce(&tfinal_2, &t0_2, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
-    if (rank == 0) printf("Communication 2 Time: %e\n", t0_2);
+    tfinal = MPI_Wtime() - t0;
+    MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
+    if (rank == 0) printf("Communication 2 Time: %e\n", t0);
 
+
+    // Check for correctness
+    communicate(A, send_vals, recv_vals, MPI_INT);
+    communicate2(A, send_vals, new_recv_vals, MPI_INT);
     for (int i = 0; i < A.recv_comm.size_msgs; i++)
-    {
-        ASSERT_EQ(recv_vals[i], recv_vals[i]);
-    }
+        ASSERT_EQ(recv_vals[i], new_recv_vals[i]);
 
     // TODO : 
     //    1. Add a new method similar to communicate, but instead of posting MPI_Irecv for each message
