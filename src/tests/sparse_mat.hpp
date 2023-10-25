@@ -127,17 +127,18 @@ void form_send_comm_standard_copy_to_cpu(ParMat<U>& A, long* off_proc_cols_d, in
 
     int total_bytes_opc = off_proc_cols_count*sizeof(long);
     long* off_proc_cols;
-    cudaMallocHost((void**)&off_proc_cols, total_bytes_opc);
 
     // Copy from GPU to CPU
-    gpuMemcpy(off_proc_cols, off_proc_cols_d, total_bytes_opc, gpuMemcpyDeviceToHost);
+    cudaMallocHost((void**)&off_proc_cols, total_bytes_opc);
+    cudaMemcpy(off_proc_cols, off_proc_cols_d, total_bytes_opc, cudaMemcpyDeviceToHost);
 
     // Communicate on CPU
     A.off_proc_columns = off_proc_cols; 
     form_send_comm_standard(A);
 
     // Copy from CPU to GPU
-    gpuMemcpy(send_comm_idx_d, A.send_comm->idx, A.send_comm->idx.size()*sizeof(int), gpuMemcpyHostToDevice);
+    cudaMallocHost((void**)&send_comm_idx_d, A.send_comm->idx.size()*sizeof(int));
+    cudaMemcpy(send_comm_idx_d, A.send_comm->idx, A.send_comm->idx.size()*sizeof(int), cudaMemcpyHostToDevice);
 
     cudaFreeHost(off_proc_cols);
 }
@@ -157,6 +158,7 @@ void form_send_comm_standard_gpu_aware(ParMat<U>& A, long* off_proc_cols_d, int*
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
 
+    std::vector<long> recv_buf;
     std::vector<int> sizes(num_procs, 0);
     int start, end, proc, count, ctr;
     MPI_Status recv_status;
@@ -174,6 +176,13 @@ void form_send_comm_standard_gpu_aware(ParMat<U>& A, long* off_proc_cols_d, int*
                 MPI_COMM_WORLD, &(A.recv_comm->req[i]));
     }
 
+    // Wait to receive values
+    // until I have received fewer than the number of global indices
+    if (A.send_comm->size_msgs)
+    {
+        A.send_comm->idx.resize(A.send_comm->size_msgs);
+        recv_buf.resize(A.send_comm->size_msgs);
+    }
     ctr = 0;
     A.send_comm->ptr.push_back(0);
     while(ctr < A.send_comm->size_msgs)
@@ -188,7 +197,11 @@ void form_send_comm_standard_gpu_aware(ParMat<U>& A, long* off_proc_cols_d, int*
         A.send_comm->counts.push_back(count);
 
         // Receive the message in GPU buffer
-        MPI_Recv(send_comm_idx_d+ctr, count, MPI_LONG, proc, msg_tag, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+        MPI_Recv(&(recv_buf[ctr]), count, MPI_LONG, proc, msg_tag, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+        for (int i = 0; i < count; i++)
+        {
+            A.send_comm->idx[ctr+i] = (recv_buf[ctr+i] - A.first_col);
+        }
         ctr += count; 
         A.send_comm->ptr.push_back((U)(ctr));
     }
@@ -201,8 +214,10 @@ void form_send_comm_standard_gpu_aware(ParMat<U>& A, long* off_proc_cols_d, int*
 
     if (A.recv_comm->n_msgs)
         MPI_Waitall(A.recv_comm->n_msgs, A.recv_comm->req.data(), MPI_STATUSES_IGNORE);
-    
-    update<<<1, ctr>>>(ctr, send_comm_idx_d, A.first_col);
+
+    cudaMallocHost((void**)&send_comm_idx_d, A.send_comm->idx.size()*sizeof(int));
+    cudaMemcpy(send_comm_idx_d, A.send_comm->idx, A.send_comm->idx.size()*sizeof(int), cudaMemcpyHostToDevice);
+    //update<<<1, ctr>>>(ctr, send_comm_idx_d, A.first_col);
 }
 
 template <typename U>
@@ -214,17 +229,18 @@ void form_send_comm_torsten_copy_to_cpu(ParMat<U>& A, long* off_proc_columns_d, 
 
     int total_bytes_opc = off_proc_cols_count*sizeof(long);
     long* off_proc_cols;
-    cudaMallocHost((void**)&off_proc_cols, total_bytes_opc);
 
     // Copy from GPU to CPU
-    gpuMemcpy(off_proc_cols, off_proc_cols_d, total_bytes_opc, gpuMemcpyDeviceToHost);
+    cudaMallocHost((void**)&off_proc_cols, total_bytes_opc);
+    cudaMemcpy(off_proc_cols, off_proc_cols_d, total_bytes_opc, cudaMemcpyDeviceToHost);
 
     // Communicate on CPU
     A.off_proc_columns = off_proc_cols;
     form_send_comm_torsten(A);
 
     // Copy from CPU to GPU
-    gpuMemcpy(send_comm_idx_d, A.send_comm->idx, A.send_comm->idx.size()*sizeof(int), gpuMemcpyHostToDevice);
+    cudaMallocHost((void**)&send_comm_idx_d, A.send_comm->idx.size()*sizeof(int));
+    cudaMemcpy(send_comm_idx_d, A.send_comm->idx, A.send_comm->idx.size()*sizeof(int), cudaMemcpyHostToDevice);
 
     cudaFreeHost(off_proc_cols);
 }
