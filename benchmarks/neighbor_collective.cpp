@@ -2,6 +2,8 @@
 #include "tests/sparse_mat.hpp"
 #include "tests/par_binary_IO.hpp"
 
+#include <numeric>
+
 int main(int argc, char* argv[])
 {
     MPI_Init(&argc, &argv);
@@ -11,7 +13,10 @@ int main(int argc, char* argv[])
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
 
     double t0, tf;
+    
     int iters = 1000;
+    if(num_procs > 9000)
+	    iters = 100;
 
     if (argc == 1)
     {
@@ -70,7 +75,7 @@ int main(int argc, char* argv[])
     // Standard Communication (for comparisons)
     MPI_Barrier(MPI_COMM_WORLD);
     t0 = MPI_Wtime();
-    communicate(A, send_vals, std_recv_buffer, MPI_INT);
+    communicate2(A, packed_send_vals, std_recv_buffer, MPI_INT);
     tf = MPI_Wtime() - t0;
     MPI_Reduce(&tf, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
     if (rank == 0) { printf("Standard comm: %8e\n", t0); }
@@ -209,6 +214,32 @@ int main(int argc, char* argv[])
             break;
         }
     }
+
+	int reduce_data[4];
+	
+	reduce_data[0] = A.send_comm.counts.size();
+	reduce_data[1] = A.recv_comm.counts.size();
+	reduce_data[2] = std::accumulate(A.send_comm.counts.begin(),A.send_comm.counts.end(),0);
+	reduce_data[3] = std::accumulate(A.recv_comm.counts.begin(),A.recv_comm.counts.end(),0);
+	
+	
+	int max_data[4];
+	int min_data[4];
+	int sum_data[4];
+	
+	MPI_Reduce(reduce_data, max_data, 4, MPI_INT, MPI_MAX, 0, MPI_COMM_WORLD);
+	MPI_Reduce(reduce_data, min_data, 4, MPI_INT, MPI_MIN, 0, MPI_COMM_WORLD);
+	MPI_Reduce(reduce_data, sum_data, 4, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
+	
+	
+	if(rank == 0)
+	{
+		printf("Type Min Max Avg\n");
+		printf("Send_Counts %d %d %f\n", min_data[0], max_data[0], 1.0*sum_data[0]/num_procs);
+		printf("Recv_Counts %d %d %f\n", min_data[1], max_data[1], 1.0*sum_data[1]/num_procs);
+		printf("Send_Size   %d %d %f\n", min_data[2], max_data[2], 1.0*sum_data[2]/num_procs);
+		printf("Recv_Size   %d %d %f\n", min_data[3], max_data[3], 1.0*sum_data[3]/num_procs);
+	}
 
     MPI_Finalize();
     return 0;
