@@ -118,6 +118,116 @@ void form_recv_comm(ParMat<U>& A)
         A.recv_comm->counts[i] = A.recv_comm->ptr[i+1] - A.recv_comm->ptr[i];
 }
 
+template <typename U>
+void form_send_comm_standard_copy_to_cpu(ParMat<U>& A, long* off_proc_cols_d, int off_proc_cols_count, int* send_comm_idx_d)
+{
+    int rank, num_procs;
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
+
+    int total_bytes_opc = off_proc_cols_count*sizeof(long);
+    long* off_proc_cols;
+    cudaMallocHost((void**)&off_proc_cols, total_bytes_opc);
+
+    // Copy from GPU to CPU
+    gpuMemcpy(off_proc_cols, off_proc_cols_d, total_bytes_opc, gpuMemcpyDeviceToHost);
+
+    // Communicate on CPU
+    A.off_proc_columns = off_proc_cols; 
+    form_send_comm_standard(A);
+
+    // Copy from CPU to GPU
+    gpuMemcpy(send_comm_idx_d, A.send_comm->idx, A.send_comm->idx.size()*sizeof(int), gpuMemcpyHostToDevice);
+
+    cudaFreeHost(off_proc_cols);
+}
+
+__global__ void update(int n, long* idx_d, int first_col)
+{
+    int tid_x = threadIdx.x;
+    if (tid_x >= n)
+        return;
+    idx_d[tid_x] -= first_col;
+}
+
+template <typename U>
+void form_send_comm_standard_gpu_aware(ParMat<U>& A, long* off_proc_cols_d, int* send_comm_idx_d)
+{
+    int rank, num_procs;
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
+
+    std::vector<int> sizes(num_procs, 0);
+    int start, end, proc, count, ctr;
+    MPI_Status recv_status;
+
+    for (int i = 0; i < A.recv_comm->n_msgs; i++)
+        sizes[A.recv_comm->procs[i]] = A.recv_comm->ptr[i+1] - A.recv_comm->ptr[i];
+    MPI_Allreduce(MPI_IN_PLACE, sizes.data(), num_procs, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
+    A.send_comm->size_msgs = sizes[rank];
+
+    int msg_tag = 1234;
+    for(int i = 0; i < A.recv_comm->n_msgs; i++)
+    {
+        proc = A.recv_comm->procs[i];
+        MPI_Isend(off_proc_cols_d+A.recv_comm->ptr[i], A.recv_comm->counts[i], MPI_LONG, proc, msg_tag,
+                MPI_COMM_WORLD, &(A.recv_comm->req[i]));
+    }
+
+    ctr = 0;
+    A.send_comm->ptr.push_back(0);
+    while(ctr < A.send_comm->size_msgs)
+    {
+        // Wait for a message
+        MPI_Probe(MPI_ANY_SOURCE, msg_tag, MPI_COMM_WORLD, &recv_status);
+
+        // Get the source process and message size
+        proc = recv_status.MPI_SOURCE;
+        A.send_comm->procs.push_back(proc);
+        MPI_Get_count(&recv_status, MPI_LONG, &count);
+        A.send_comm->counts.push_back(count);
+
+        // Receive the message in GPU buffer
+        MPI_Recv(send_comm_idx_d+ctr, count, MPI_LONG, proc, msg_tag, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+        ctr += count; 
+        A.send_comm->ptr.push_back((U)(ctr));
+    }
+
+    // Set send sizes
+    A.send_comm->n_msgs = A.send_comm->procs.size();
+
+    if (A.send_comm->n_msgs)
+        A.send_comm->req.resize(A.send_comm->n_msgs);
+
+    if (A.recv_comm->n_msgs)
+        MPI_Waitall(A.recv_comm->n_msgs, A.recv_comm->req.data(), MPI_STATUSES_IGNORE);
+    
+    update<<<1, ctr>>>(ctr, send_comm_idx_d, A.first_col);
+}
+
+template <typename U>
+void form_send_comm_torsten_copy_to_cpu(ParMat<U>& A, long* off_proc_columns_d, int off_proc_cols_count, int* send_comm_idx_d)
+{
+    int rank, num_procs;
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
+
+    int total_bytes_opc = off_proc_cols_count*sizeof(long);
+    long* off_proc_cols;
+    cudaMallocHost((void**)&off_proc_cols, total_bytes_opc);
+
+    // Copy from GPU to CPU
+    gpuMemcpy(off_proc_cols, off_proc_cols_d, total_bytes_opc, gpuMemcpyDeviceToHost);
+
+    // Communicate on CPU
+    A.off_proc_columns = off_proc_cols;
+    form_send_comm_torsten(A);
+
+    // Copy from CPU to GPU
+    gpuMemcpy(send_comm_idx_d, A.send_comm->idx, A.send_comm->idx.size()*sizeof(int), gpuMemcpyHostToDevice);
+
+    cudaFreeHost(off_proc_cols);
+}
 
 // Must Form Recv Comm before Send!
 template <typename U>
@@ -139,10 +249,12 @@ void form_send_comm_standard(ParMat<U>& A)
 MPI_Barrier(MPI_COMM_WORLD);
 t0 = MPI_Wtime();
 #endif
+
     for (int i = 0; i < A.recv_comm->n_msgs; i++)
         sizes[A.recv_comm->procs[i]] = A.recv_comm->ptr[i+1] - A.recv_comm->ptr[i];
     MPI_Allreduce(MPI_IN_PLACE, sizes.data(), num_procs, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
     A.send_comm->size_msgs = sizes[rank];
+
 #ifdef PROFILE
 tfinal = (MPI_Wtime() - t0);
 MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
@@ -202,7 +314,7 @@ t0 = MPI_Wtime();
 #ifdef PROFILE
 tfinal = (MPI_Wtime() - t0);
 MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
-if (rank == 0) printf("P2P time %e\n", t0);
+if (rank == 0) printf("Standard P2P time %e\n", t0);
 #endif
 }
 
@@ -391,6 +503,7 @@ void form_send_comm_torsten_loc(ParMat<U>& A, MPIX_Comm* comm)
 template <typename U>
 void form_send_comm_torsten(ParMat<U>& A)
 {
+    double t0, tfinal;
     int rank, num_procs;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
@@ -401,8 +514,11 @@ void form_send_comm_torsten(ParMat<U>& A)
     MPI_Status recv_status;
     MPI_Request bar_req;
 
+    #ifdef PROFILE
+    MPI_Barrier(MPI_COMM_WORLD);
+    t0 = MPI_Wtime();
+    #endif
     // Allreduce to find size of data I will receive
-
     // Send a message to every process that I will need data from
     // Tell them which global indices I need from them
     int msg_tag = 72043;
@@ -413,17 +529,10 @@ void form_send_comm_torsten(ParMat<U>& A)
                 MPI_COMM_WORLD, &(A.recv_comm->req[i]));
     }
 
-//    MPI_Barrier(MPI_COMM_WORLD);
-//    if (rank == 0) printf("Send recv_comm msgs\n");
-
-    // Wait to receive values
-    // until I have received fewer than the number of global indices I am waiting on
     ctr = 0;
     A.send_comm->ptr.push_back(0);
-//int tmp = 0;
     while (1)
     {
-//tmp++;
         // Wait for a message
         MPI_Iprobe(MPI_ANY_SOURCE, msg_tag, MPI_COMM_WORLD, &flag, &recv_status);
         if (flag)
@@ -462,17 +571,14 @@ void form_send_comm_torsten(ParMat<U>& A)
                 ibar = 1;
                 MPI_Ibarrier(MPI_COMM_WORLD, &bar_req);
             }    
-/*	    if (tmp > 1000000)
-	    {
-if (rank == 271) for (int i = 0; i < A.recv_comm->n_msgs; i++)
-{
-	MPI_Test(&(A.recv_comm->req[i]), &flag, MPI_STATUS_IGNORE);
-	printf("Rank 271 recv from proc %d, flag = %d\n", A.recv_comm->procs[i], flag);
-}
-	    }
-	    */
         }
     }
+
+    #ifdef PROFILE
+    tfinal = (MPI_Wtime() - t0);
+    MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
+    if (rank == 0) printf("Torsten Dynamic P2P time %e\n", t0);
+    #endif
     
     // Set send sizes
     A.send_comm->n_msgs = A.send_comm->procs.size();
@@ -794,11 +900,17 @@ void form_comm(ParMat<U>& A)
 template <typename U, typename T>
 void communicate(ParMat<T>& A, std::vector<U>& data, std::vector<U>& recvbuf, MPI_Datatype type)
 {
+    
 	int rank; MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     int proc;
     T start, end;
     int tag = 2948;
     std::vector<U> sendbuf;
+    double t0, tfinal;
+    #ifdef PROFILE
+    MPI_Barrier(MPI_COMM_WORLD);
+    t0=MPI_Wtime();
+    #endif
     if (A.send_comm->size_msgs)
         sendbuf.resize(A.send_comm->size_msgs);
     for (int i = 0; i < A.send_comm->n_msgs; i++)
@@ -827,7 +939,74 @@ void communicate(ParMat<T>& A, std::vector<U>& data, std::vector<U>& recvbuf, MP
         MPI_Waitall(A.send_comm->n_msgs, A.send_comm->req.data(), MPI_STATUSES_IGNORE);
     if (A.recv_comm->n_msgs)
     MPI_Waitall(A.recv_comm->n_msgs, A.recv_comm->req.data(), MPI_STATUSES_IGNORE);
+    #ifdef PROFILE
+    tfinal = (MPI_Wtime() - t0);
+    MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
+    if (rank == 0) printf("Communicate time %e\n", t0);
+    #endif
 }
 
+/*
+template <typename U, typename T>
+void communicate_probe(ParMat<T>& A, std::vector<U>& data, std::vector<U>& recvbuf, MPI_Datatype type)
+{
+    int rank, num_procs; 
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
+
+    std::vector<U> sendbuf;
+    int proc, count;
+    T start, end;
+    MPI_Status recv_status;
+
+    int tag = 2948;
+    double t0, tfinal;
+
+    #ifdef PROFILE
+    MPI_Barrier(MPI_COMM_WORLD);
+    t0=MPI_Wtime();
+    #endif
+
+    if (A.send_comm->size_msgs)
+        sendbuf.resize(A.send_comm->size_msgs);
+    for (int i = 0; i < A.send_comm->n_msgs; i++)
+    {
+        proc = A.send_comm->procs[i];
+        start = A.send_comm->ptr[i];
+        end = A.send_comm->ptr[i+1];
+        for (T j = start; j < end; j++)
+        {
+            sendbuf[j] = data[A.send_comm->idx[j]];
+        }
+        MPI_Isend(&(sendbuf[start]), (int)(end - start), type, proc, tag, 
+                MPI_COMM_WORLD, &(A.send_comm->req[i]));
+    }
+
+    for (int i = 0; i < A.recv_comm->n_msgs; i++)
+    {
+        proc = A.recv_comm->procs[i];
+        start = A.recv_comm->ptr[i];
+        end = A.recv_comm->ptr[i+1];
+        // Wait for a message
+        MPI_Probe(MPI_ANY_SOURCE, tag, MPI_COMM_WORLD, &recv_status);
+        proc = recv_status.MPI_SOURCE;
+        MPI_Get_count(&recv_status, MPI_LONG, &count);
+
+
+        MPI_Irecv(&(recvbuf[start]), (int)(end - start), type, proc, tag,
+                MPI_COMM_WORLD, &(A.recv_comm->req[i]));
+    }
+
+    if (A.send_comm->n_msgs)
+        MPI_Waitall(A.send_comm->n_msgs, A.send_comm->req.data(), MPI_STATUSES_IGNORE);
+    if (A.recv_comm->n_msgs)
+    MPI_Waitall(A.recv_comm->n_msgs, A.recv_comm->req.data(), MPI_STATUSES_IGNORE);
+    #ifdef PROFILE
+    tfinal = (MPI_Wtime() - t0);
+    MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
+    if (rank == 0) printf("Communicate time w/ probe %e\n", t0);
+    #endif
+}
+*/
 #endif
 
