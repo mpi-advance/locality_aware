@@ -64,43 +64,36 @@ void test_matrix(const char* filename)
     if (A.recv_comm.size_msgs)
     {
         new_recv_vals.resize(A.recv_comm.size_msgs);
-    }
+    } 
 
     // Time original communciate (warm-up first)
     communicate(A, send_vals, recv_vals, MPI_INT);
     
-    MPI_Barrier(MPI_COMM_WORLD);
-    
+    MPI_Barrier(MPI_COMM_WORLD);   
     t0 = MPI_Wtime();
     for (int i = 0; i < n_iter; i++)
         communicate(A, send_vals, recv_vals, MPI_INT);
     tfinal = MPI_Wtime() - t0;
     MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
-    if (rank == 0) printf("%s Communication 1-1 Time: %e\n", filename, t0);
+    if (rank == 0) printf("%s Single Communicate Time: %e\n", filename, t0/n_iter);
 
-    MPI_Barrier(MPI_COMM_WORLD);
+    MPI_Barrier(MPI_COMM_WORLD);   
     t0 = MPI_Wtime();
     for (int i = 0; i < n_iter; i++)
         communicate(A, send_vals, recv_vals, MPI_INT);
     tfinal = MPI_Wtime() - t0;
     MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
-    if (rank == 0) printf("%s Communication 1-2 Time: %e\n", filename, t0);
+    if (rank == 0) printf("%s Single Communicate Time (2nd): %e\n", filename, t0/n_iter);
 
-    MPI_Barrier(MPI_COMM_WORLD);
+    MPI_Barrier(MPI_COMM_WORLD);   
     t0 = MPI_Wtime();
     for (int i = 0; i < n_iter; i++)
         communicate(A, send_vals, recv_vals, MPI_INT);
     tfinal = MPI_Wtime() - t0;
     MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
-    if (rank == 0) printf("%s Communication 1-3 Time: %e\n", filename, t0);
+    if (rank == 0) printf("%s Single Communicate Time (3rd): %e\n", filename, t0/n_iter);
 
-    MPI_Barrier(MPI_COMM_WORLD);
-    t0 = MPI_Wtime();
-    for (int i = 0; i < n_iter; i++)
-        communicate(A, send_vals, recv_vals, MPI_INT);
-    tfinal = MPI_Wtime() - t0;
-    MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
-    if (rank == 0) printf("%s Communication 1-4 Time: %e\n", filename, t0);
+
 
     // Time new communicate (warm-up first)
     communicate2(A, send_vals, new_recv_vals, MPI_INT);
@@ -111,7 +104,7 @@ void test_matrix(const char* filename)
         communicate2(A, send_vals, new_recv_vals, MPI_INT);
     tfinal = MPI_Wtime() - t0;
     MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
-    if (rank == 0) printf("%s Communication 2-1 Time: %e\n", filename, t0);
+    if (rank == 0) printf("%s Single Communicate 2 Time: %e\n", filename, t0/n_iter);
 
     MPI_Barrier(MPI_COMM_WORLD);
     t0 = MPI_Wtime();
@@ -119,7 +112,7 @@ void test_matrix(const char* filename)
         communicate2(A, send_vals, new_recv_vals, MPI_INT);
     tfinal = MPI_Wtime() - t0;
     MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
-    if (rank == 0) printf("%s Communication 2-2 Time: %e\n", filename, t0);
+    if (rank == 0) printf("%s Single Communicate 2 Time (2nd): %e\n", filename, t0/n_iter);
 
     MPI_Barrier(MPI_COMM_WORLD);
     t0 = MPI_Wtime();
@@ -127,15 +120,8 @@ void test_matrix(const char* filename)
         communicate2(A, send_vals, new_recv_vals, MPI_INT);
     tfinal = MPI_Wtime() - t0;
     MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
-    if (rank == 0) printf("%s Communication 2-3 Time: %e\n", filename, t0);
+    if (rank == 0) printf("%s Single Communicate 2 Time (3rd): %e\n", filename, t0/n_iter);
 
-    MPI_Barrier(MPI_COMM_WORLD);
-    t0 = MPI_Wtime();
-    for (int i = 0; i < n_iter; i++)
-        communicate2(A, send_vals, new_recv_vals, MPI_INT);
-    tfinal = MPI_Wtime() - t0;
-    MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
-    if (rank == 0) printf("%s Communication 2-4 Time: %e\n", filename, t0);
 
 
     // Check for correctness
@@ -203,4 +189,3 @@ TEST(RandomCommTest, TestsInTests)
     test_matrix("../../../test_data/lp_sctap2.pm");
     test_matrix("../../../test_data/lp_woodw.pm");
 }
-
