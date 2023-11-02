@@ -75,8 +75,10 @@ int main(int argc, char* argv[])
     // Standard Communication (for comparisons)
     MPI_Barrier(MPI_COMM_WORLD);
     t0 = MPI_Wtime();
-    communicate2(A, packed_send_vals, std_recv_buffer, MPI_INT);
-    tf = MPI_Wtime() - t0;
+    for (int i = 0; i < iters; i++){
+    	communicate2(A, packed_send_vals, std_recv_buffer, MPI_INT);
+    }
+    tf = (MPI_Wtime() - t0)/iters;
     MPI_Reduce(&tf, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
     if (rank == 0) { printf("Standard comm: %8e\n", t0); }
 
