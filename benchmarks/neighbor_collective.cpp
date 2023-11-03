@@ -12,6 +12,9 @@ int main(int argc, char* argv[])
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
 
+    if(rank == 0)
+	printf("Num ranks: %d\n", num_procs);
+
     double t0, tf;
     
     int iters = 1000;
@@ -76,7 +79,7 @@ int main(int argc, char* argv[])
     MPI_Barrier(MPI_COMM_WORLD);
     t0 = MPI_Wtime();
     for (int i = 0; i < iters; i++){
-    	communicate2(A, packed_send_vals, std_recv_buffer, MPI_INT);
+    	communicate3(A, packed_send_vals, std_recv_buffer, MPI_INT);
     }
     tf = (MPI_Wtime() - t0)/iters;
     MPI_Reduce(&tf, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);

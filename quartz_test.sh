@@ -1,6 +1,7 @@
 #!/bin/bash
 set -e
 
+#export BUILD_FOLDER=./build
 export BUILD_FOLDER=./build-openmpi
 export EXECUTABLE=${BUILD_FOLDER}/benchmarks/neighbor_collective
 export EXPERIMENT=6
@@ -9,7 +10,7 @@ mkdir -p data/${EXPERIMENT}
 
 # Iterate over job sizes (node count)
 #for i in {1,2,4,8,16,32,64,128,256,512,1024}
-for i in {4,8,16,32,64,128,256,512,1024}
+for i in {1,2,4,8,16,32,64,128,256,512}
 do
     export NUM_NODES=$i
     export JOB_NAME=MPIX_TOPO_${NUM_NODES}
