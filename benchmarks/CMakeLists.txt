@@ -30,4 +30,7 @@ else()
 
     add_executable(test_comm_setup, test_comm_setup.cpp)
     target_link_libraries(test_comm_setup mpi_advance ${MPI_LIBRARIES})
+
+    add_executable(test_comm_setup_GPU test_comm_setup_GPU.cpp)
+    target_link_libraries(test_comm_setup_GPU mpi_advance ${MPI_LIBRARIES})
 endif()

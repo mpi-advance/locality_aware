@@ -19,7 +19,7 @@ endif()
 option(GPU_AWARE "Use GPU-Aware MPI" ON)
 option(USE_GPU "Compile heterogeneous folder" OFF)
 option(USE_HIP "Compile with HIP Support" OFF)
-option(USE_CUDA "Compile with CUDA Support" OFF)
+option(USE_CUDA "Compile with CUDA Support" ON)
 option(ENABLE_UNIT_TESTS "Enable unit testing" ON)
 
 add_feature_info(gpu_aware GPU_AWARE "Use GPU-Aware MPI")
