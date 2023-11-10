@@ -53,7 +53,7 @@ int gpu_aware_alltoallv_pairwise(const void* sendbuf,
         const int rdispls[],
         MPI_Datatype recvtype,
         MPIX_Comm* comm)
-{//printf(//"Hello, gpu_aware_alltoallv_pairwise__***3\n");fflush(stdout);
+{
     return gpu_aware_alltoallv(alltoallv_pairwise,
         sendbuf,
         sendcounts,
@@ -64,7 +64,6 @@ int gpu_aware_alltoallv_pairwise(const void* sendbuf,
         rdispls,
         recvtype,
         comm);
-//printf(//"Hello, gpu_aware_alltoallv_pairwise__***4\n");fflush(stdout);
 
 }
 
@@ -77,7 +76,7 @@ int gpu_aware_alltoallv_nonblocking(const void* sendbuf,
         const int rdispls[],
         MPI_Datatype recvtype,
         MPIX_Comm* comm)
-{//printf("Hello, gpu_aware_alltoallv_nonblocking__***5\n");fflush(stdout);
+{
     return gpu_aware_alltoallv(alltoallv_nonblocking,
         sendbuf,
         sendcounts,
@@ -88,7 +87,7 @@ int gpu_aware_alltoallv_nonblocking(const void* sendbuf,
         rdispls,
         recvtype,
         comm);
-//printf("Hello, gpu_aware_alltoallv_nonblocking__***6\n");fflush(stdout);
+
 
 }
 
@@ -144,7 +143,57 @@ int copy_to_cpu_alltoallv(alltoallv_ftn f,
     return ierr;
 }
 
-int copy_to_cpu_alltoallv_pairwise(const void* sendbuf, 
+
+/*No mallocs in this version*/
+int copy_to_cpu_alltoallv_extra(alltoallv_ftn f,
+        const void* sendbuf,
+        const int sendcounts[],
+        const int sdispls[],
+        MPI_Datatype sendtype,
+        void* recvbuf,
+        const int recvcounts[],
+        const int rdispls[],
+        MPI_Datatype recvtype,
+        MPIX_Comm* comm,char* cpu_recvbuf,char* cpu_sendbuf)
+/* add these 2 params here; char* cpu_sendbuf;
+    char* cpu_recvbuf*/
+{
+    int ierr = 0;
+
+    int num_procs;
+    MPI_Comm_size(comm->global_comm, &num_procs);
+
+    int send_bytes, recv_bytes;
+    MPI_Type_size(sendtype, &send_bytes);
+    MPI_Type_size(recvtype, &recv_bytes);
+
+    int sendcount = 0;
+    int recvcount = 0;
+    for (int i = 0; i < num_procs; i++)
+    {
+        sendcount += sendcounts[i];
+        recvcount += recvcounts[i];
+    }
+
+    int total_bytes_s = sendcount * send_bytes;
+    int total_bytes_r = recvcount * recv_bytes;
+
+    // Copy from GPU to CPU
+    ierr += gpuMemcpy(cpu_sendbuf, sendbuf, total_bytes_s, gpuMemcpyDeviceToHost);
+
+    // Collective Among CPUs
+    ierr += f(cpu_sendbuf, sendcounts, sdispls, sendtype,
+            cpu_recvbuf, recvcounts, rdispls, recvtype, comm->global_comm);
+
+    // Copy from CPU to GPU
+    ierr += gpuMemcpy(recvbuf, cpu_recvbuf, total_bytes_r, gpuMemcpyHostToDevice);
+    
+return ierr;
+}
+
+
+
+int copy_to_cpu_alltoallv_pairwise(const void* sendbuf,
         const int sendcounts[],
         const int sdispls[],
         MPI_Datatype sendtype,
@@ -155,6 +204,27 @@ int copy_to_cpu_alltoallv_pairwise(const void* sendbuf,
         MPIX_Comm* comm)
 {
     return copy_to_cpu_alltoallv(alltoallv_pairwise,
+        sendbuf,
+        sendcounts,
+        sdispls,
+        sendtype,
+        recvbuf,
+        recvcounts,
+        rdispls,
+        recvtype,
+        comm);
+}
+int copy_to_cpu_alltoallv_pairwise_extra(const void* sendbuf, 
+        const int sendcounts[],
+        const int sdispls[],
+        MPI_Datatype sendtype,
+        void* recvbuf,
+        const int recvcounts[],
+        const int rdispls[],
+        MPI_Datatype recvtype,
+        MPIX_Comm* comm,char* cpu_recvbuf,char* cpu_sendbuf)
+{
+    return copy_to_cpu_alltoallv_extra(alltoallv_pairwise,
         sendbuf, 
         sendcounts,
         sdispls,
@@ -163,7 +233,7 @@ int copy_to_cpu_alltoallv_pairwise(const void* sendbuf,
         recvcounts,
         rdispls,
         recvtype,
-        comm);
+        comm, cpu_recvbuf, cpu_sendbuf);
 
 }
 
@@ -188,6 +258,32 @@ int copy_to_cpu_alltoallv_nonblocking(const void* sendbuf,
         recvtype,
         comm);
 }
+
+
+
+int copy_to_cpu_alltoallv_nonblocking_extra(const void* sendbuf,
+        const int sendcounts[],
+        const int sdispls[],
+        MPI_Datatype sendtype,
+        void* recvbuf,
+        const int recvcounts[],
+        const int rdispls[],
+        MPI_Datatype recvtype,
+        MPIX_Comm* comm,char* cpu_recvbuf,char* cpu_sendbuf)
+{
+    return copy_to_cpu_alltoallv_extra(alltoallv_pairwise,
+        sendbuf,
+        sendcounts,
+        sdispls,
+        sendtype,
+        recvbuf,
+        recvcounts,
+        rdispls,
+        recvtype,
+        comm, cpu_recvbuf, cpu_sendbuf);
+
+}
+
 
 int threaded_alltoallv_pairwise(const void* sendbuf,
         const int sendcounts[],
