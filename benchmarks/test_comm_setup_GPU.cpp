@@ -39,6 +39,15 @@ int main(int argc, char* argv[])
     readParMatrix(filename, A);
     form_recv_comm(A);
     
+    // Print max # of message and max message size counts
+    int max_n = A.recv_comm->n_msgs;
+    int max_size = A.recv_comm->size_msgs;
+    MPI_Allreduce(MPI_IN_PLACE, &max_n, MPI_INT, MPI_MAX, MPI_COMM_WORLD);
+    MPI_Allreduce(MPI_IN_PLACE, &max_size, MPI_INT, MPI_MAX, MPI_COMM_WORLD);
+    if (rank == 0) printf("Max N Msgs: %d\n", max_n);
+    if (rank == 0) printf("Max Size Msgs: %d\n", max_size);
+    MPI_Barrier(MPI_COMM_WORLD);
+
     // Copy off proc cols to GPU
     cudaMallocHost((void**)&off_proc_cols_d, sizeof(long)*(A.off_proc_columns.size()));
     cudaMemcpy(off_proc_cols_d, A.off_proc_columns, sizeof(long)*A.off_proc_columns, cudaMemcpyHostToDevice);
@@ -55,7 +64,7 @@ int main(int argc, char* argv[])
     }
     tfinal = MPI_Wtime() - t0;
     MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
-    if (rank == 0) printf("Standard copy to cpu: %e\n", t0);
+    if (rank == 0) printf("Standard copy to cpu: %e\n", (t0 / n_iter));
 
     // Test Standard gpu aware
     MPI_Barrier(MPI_COMM_WORLD);
@@ -68,7 +77,7 @@ int main(int argc, char* argv[])
     }
     tfinal = MPI_Wtime() - t0; 
     MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
-    if (rank == 0) printf("Standard gpu aware: %e\n", t0);
+    if (rank == 0) printf("Standard gpu aware: %e\n", (t0 / n_iter));
 
     // Test Torsten copy to cpu
     MPI_Barrier(MPI_COMM_WORLD);
@@ -80,7 +89,7 @@ int main(int argc, char* argv[])
     }
     tfinal = MPI_Wtime() - t0;
     MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
-    if (rank == 0) prtinf("Torsten copy to cpu: %e\n", t0);
+    if (rank == 0) prtinf("Torsten copy to cpu: %e\n", (t0 / n_iter));
 
     cudaFreeHost(off_proc_cols_d);
     MPI_Finalize();

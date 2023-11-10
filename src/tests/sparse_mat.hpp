@@ -119,7 +119,7 @@ void form_recv_comm(ParMat<U>& A)
 }
 
 template <typename U>
-void form_send_comm_standard_copy_to_cpu(ParMat<U>& A, long* off_proc_cols_d, int off_proc_cols_count, int* send_comm_idx_d)
+void form_send_comm_standard_copy_to_cpu(ParMat<U>& A, long* off_proc_cols_d, int off_proc_cols_count, long* send_comm_idx_d)
 {
     int rank, num_procs;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -137,10 +137,15 @@ void form_send_comm_standard_copy_to_cpu(ParMat<U>& A, long* off_proc_cols_d, in
     form_send_comm_standard(A);
 
     // Copy from CPU to GPU
-    cudaMallocHost((void**)&send_comm_idx_d, A.send_comm->idx.size()*sizeof(int));
-    cudaMemcpy(send_comm_idx_d, A.send_comm->idx, A.send_comm->idx.size()*sizeof(int), cudaMemcpyHostToDevice);
-
+    int total_bytes_transfer = A.send_comm->idx.size()*sizeof(long);
+    long* transfer_buf;
+    cudaMalloc((void**)&send_comm_idx_d, total_bytes_transfer);
+    cudaMallocHost((void**)&transfer_buf, total_bytes_transfer);
+    for (int i = 0; i < A.send_comm->idx.size(); i++)
+        transfer_buf[i] = (long)A.send_comm0>idx[i];
+    cudaMemcpy(send_comm_idx_d, transfer_buf, total_bytes_transfer, cudaMemcpyHostToDevice);
     cudaFreeHost(off_proc_cols);
+    cudaFreeHost(transfer_buf);
 }
 
 __global__ void update(int n, long* idx_d, int first_col)
@@ -152,13 +157,12 @@ __global__ void update(int n, long* idx_d, int first_col)
 }
 
 template <typename U>
-void form_send_comm_standard_gpu_aware(ParMat<U>& A, long* off_proc_cols_d, int* send_comm_idx_d)
+void form_send_comm_standard_gpu_aware(ParMat<U>& A, long* off_proc_cols_d, long* send_comm_idx_d)
 {
     int rank, num_procs;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
 
-    std::vector<long> recv_buf;
     std::vector<int> sizes(num_procs, 0);
     int start, end, proc, count, ctr;
     MPI_Status recv_status;
@@ -180,8 +184,8 @@ void form_send_comm_standard_gpu_aware(ParMat<U>& A, long* off_proc_cols_d, int*
     // until I have received fewer than the number of global indices
     if (A.send_comm->size_msgs)
     {
-        A.send_comm->idx.resize(A.send_comm->size_msgs);
-        recv_buf.resize(A.send_comm->size_msgs);
+        // Allocate idx vector on GPU
+        cudaMalloc((void**)&send_comm_idx_d, sizeof(long)*A.send_comm->size_msgs);
     }
     ctr = 0;
     A.send_comm->ptr.push_back(0);
@@ -197,11 +201,7 @@ void form_send_comm_standard_gpu_aware(ParMat<U>& A, long* off_proc_cols_d, int*
         A.send_comm->counts.push_back(count);
 
         // Receive the message in GPU buffer
-        MPI_Recv(&(recv_buf[ctr]), count, MPI_LONG, proc, msg_tag, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-        for (int i = 0; i < count; i++)
-        {
-            A.send_comm->idx[ctr+i] = (recv_buf[ctr+i] - A.first_col);
-        }
+        MPI_Recv(send_comm_idx_d+ctr, count, MPI_LONG, proc, msg_tag, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
         ctr += count; 
         A.send_comm->ptr.push_back((U)(ctr));
     }
@@ -215,13 +215,11 @@ void form_send_comm_standard_gpu_aware(ParMat<U>& A, long* off_proc_cols_d, int*
     if (A.recv_comm->n_msgs)
         MPI_Waitall(A.recv_comm->n_msgs, A.recv_comm->req.data(), MPI_STATUSES_IGNORE);
 
-    cudaMallocHost((void**)&send_comm_idx_d, A.send_comm->idx.size()*sizeof(int));
-    cudaMemcpy(send_comm_idx_d, A.send_comm->idx, A.send_comm->idx.size()*sizeof(int), cudaMemcpyHostToDevice);
-    //update<<<1, ctr>>>(ctr, send_comm_idx_d, A.first_col);
+    update<<<1, ctr>>>(ctr, send_comm_idx_d, A.first_col);
 }
 
 template <typename U>
-void form_send_comm_torsten_copy_to_cpu(ParMat<U>& A, long* off_proc_columns_d, int off_proc_cols_count, int* send_comm_idx_d)
+void form_send_comm_torsten_copy_to_cpu(ParMat<U>& A, long* off_proc_columns_d, int off_proc_cols_count, long* send_comm_idx_d)
 {
     int rank, num_procs;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -239,10 +237,15 @@ void form_send_comm_torsten_copy_to_cpu(ParMat<U>& A, long* off_proc_columns_d, 
     form_send_comm_torsten(A);
 
     // Copy from CPU to GPU
-    cudaMallocHost((void**)&send_comm_idx_d, A.send_comm->idx.size()*sizeof(int));
-    cudaMemcpy(send_comm_idx_d, A.send_comm->idx, A.send_comm->idx.size()*sizeof(int), cudaMemcpyHostToDevice);
-
+    int total_bytes_transfer = A.send_comm->idx.size()*sizeof(long);
+    long* transfer_buf; 
+    cudaMalloc((void**)&send_comm_idx_d, total_bytes_transfer);
+    cudaMallocHost((void**)&transfer_buf, total_bytes_transfer);
+    for (int i = 0 ; i < A.send_comm->idx.size(); i++)
+        transfer_buf[i] = (long)A.send_comm->idx[i];
+    cudaMemcpy(send_comm_idx_d, transfer_buf, total_bytes_transfer, cudaMemcpyHostToDevice);
     cudaFreeHost(off_proc_cols);
+    cudaFreeHost(transfer_buf);
 }
 
 // Must Form Recv Comm before Send!
