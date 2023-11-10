@@ -90,6 +90,7 @@ void test_matrix(const char* filename)
     std::vector<int> pmpi_recv_vals(A.recv_comm.size_msgs);
     std::vector<int> gpu_recv_vals(A.recv_comm.size_msgs);
 
+
     // Inter-CPU Alltoallv
     PMPI_Alltoallv(alltoallv_send_vals.data(), 
             sendcounts.data(),
@@ -150,6 +151,8 @@ void test_matrix(const char* filename)
     }
     cudaMemset(recvbuf_d, 0, A.recv_comm.size_msgs*sizeof(int));
 
+char* cpu_recvbuf; char* cpu_sendbuf;
+
     copy_to_cpu_alltoallv_pairwise(sendbuf_d,
             sendcounts.data(),
             sdispls.data(),
@@ -159,7 +162,17 @@ void test_matrix(const char* filename)
             rdispls.data(),
             MPI_INT,
             xcomm);
-    gpuMemcpy(gpu_recv_vals.data(), recvbuf_d, A.recv_comm.size_msgs*sizeof(int), gpuMemcpyDeviceToHost);
+  copy_to_cpu_alltoallv_pairwise_extra(sendbuf_d,
+            sendcounts.data(),
+            sdispls.data(),
+            MPI_INT,
+            recvbuf_d,
+            recvcounts.data(),
+            rdispls.data(),
+            MPI_INT,
+            xcomm,cpu_recvbuf,cpu_sendbuf); 
+
+   gpuMemcpy(gpu_recv_vals.data(), recvbuf_d, A.recv_comm.size_msgs*sizeof(int), gpuMemcpyDeviceToHost);
     for (int i = 0; i < A.recv_comm.size_msgs; i++)
     {
         ASSERT_EQ(pmpi_recv_vals[i], gpu_recv_vals[i]);
@@ -175,6 +188,18 @@ void test_matrix(const char* filename)
             rdispls.data(),
             MPI_INT,
             xcomm);
+
+
+    copy_to_cpu_alltoallv_nonblocking_extra(sendbuf_d,
+            sendcounts.data(),
+            sdispls.data(),
+            MPI_INT,
+            recvbuf_d,
+            recvcounts.data(),
+            rdispls.data(),
+            MPI_INT,
+            xcomm,cpu_recvbuf,cpu_sendbuf);
+
     gpuMemcpy(gpu_recv_vals.data(), recvbuf_d, A.recv_comm.size_msgs*sizeof(int), gpuMemcpyDeviceToHost);
     for (int i = 0; i < A.recv_comm.size_msgs; i++)
     {
