@@ -25,6 +25,7 @@
  *      - Load balacing is too expensive for 
  *          non-persistent Alltoallv
  *************************************************/
+ 
 int MPIX_Alltoallv(const void* sendbuf,
         const int sendcounts[],
         const int sdispls[],
@@ -43,7 +44,7 @@ int MPIX_Alltoallv(const void* sendbuf,
 
     if (send_type == cudaMemoryTypeDevice &&
             recv_type == cudaMemoryTypeDevice)
-    {
+    {  
         return copy_to_cpu_alltoallv_pairwise(sendbuf,
                 sendcounts,
                 sdispls,
@@ -153,8 +154,6 @@ else
     }else{    
 #endif
 
-//printf("Hello, alltoallv_pairwise__***3\n");fflush(stdout);
-//#ifndef GPU
 memcpy(
         recv_buffer + (rdispls[rank] * recv_size),
         send_buffer + (sdispls[rank] * send_size), 
@@ -300,7 +299,7 @@ int alltoallv_pairwise_nonblocking(const void* sendbuf,
         MPI_Datatype recvtype,
         MPI_Comm comm)
 {
-    int rank, num_procs;
+/*    int rank, num_procs;
     MPI_Comm_rank(comm, &rank);
     MPI_Comm_size(comm, &num_procs);
 
@@ -372,7 +371,101 @@ memcpy(recv_buffer + rdispls[rank] * recv_size,
 }
 #endif
 
+ */
+
+/*The alg below is faster than the above alg by 2 seconds; This because cudaMemcpyAsync instead of cudaMemcpy */
+
+int rank, num_procs;
+    MPI_Comm_rank(comm, &rank);
+    MPI_Comm_size(comm, &num_procs);
+ int nb_stride = 5;
+    int tag = 103044;
+    int send_proc, recv_proc;
+    int send_pos, recv_pos;
+    MPI_Status status;
+
+    int total_send_size = 0;
+    int total_recv_size = 0;
+    
+    MPI_Type_size(sendtype, &total_send_size);
+    MPI_Type_size(recvtype, &total_recv_size);
  
+/*********************/
+
+   // int tag = 103044;
+    int ctr;
+    //int send_proc, recv_proc;
+    //int send_pos, recv_pos;
+
+    int send_size, recv_size;
+    MPI_Type_size(sendtype, &send_size);
+    MPI_Type_size(recvtype, &recv_size);
+
+    MPI_Request* requests = (MPI_Request*)malloc(2*nb_stride*sizeof(MPI_Request));
+
+    char* send_buffer = (char*)sendbuf;
+    char* recv_buffer = (char*)recvbuf;
+/***************************/
+    // Calculate total send size
+    for (int i = 0; i < num_procs; i++) {
+        total_send_size += sendcounts[i] * total_send_size;
+    }
+
+    // Calculate total receive size
+    for (int i = 0; i < num_procs; i++) {
+        total_recv_size += recvcounts[i] * total_recv_size;
+    }
+
+    #ifdef GPU
+    cudaMemoryType send_type, recv_type;
+    cudaPointerAttributes send_mem, recv_mem;
+
+    cudaPointerGetAttributes(&send_mem, sendbuf);
+    cudaPointerGetAttributes(&recv_mem, recvbuf);
+
+    int send_ierr = cudaGetLastError();
+    int recv_ierr = cudaGetLastError();
+
+    if (send_ierr == cudaErrorInvalidValue)
+        send_type = cudaMemoryTypeHost;
+    else
+        send_type = send_mem.type;
+
+    if (recv_ierr == cudaErrorInvalidValue)
+        recv_type = cudaMemoryTypeHost;
+    else
+        recv_type = recv_mem.type;
+
+    if (send_type == cudaMemoryTypeDevice && recv_type == cudaMemoryTypeDevice) {
+        // GPU to GPU memory transfer asynchronously
+        cudaMemcpyAsync(recv_buffer + rdispls[rank] * total_recv_size,
+                        send_buffer + sdispls[rank] * total_send_size,
+                        sendcounts[rank] * total_send_size,
+                        cudaMemcpyDeviceToDevice);
+    } else if (send_type == cudaMemoryTypeDevice) {
+        // GPU to CPU memory transfer asynchronously
+        cudaMemcpyAsync(recv_buffer + rdispls[rank] * total_recv_size,
+                        send_buffer + sdispls[rank] * total_send_size,
+                        sendcounts[rank] * total_send_size,
+                        cudaMemcpyDeviceToHost);
+    } else if (recv_type == cudaMemoryTypeDevice) {
+        // CPU to GPU memory transfer asynchronously
+        cudaMemcpyAsync(recv_buffer + rdispls[rank] * total_recv_size,
+                        send_buffer + sdispls[rank] * total_send_size,
+                        sendcounts[rank] * total_send_size,
+                        cudaMemcpyHostToDevice);
+    }
+    #endif
+
+    #ifndef GPU
+    // CPU to CPU memory transfer
+    memcpy(recv_buffer + rdispls[rank] * total_recv_size,
+           send_buffer + sdispls[rank] * total_send_size,
+           sendcounts[rank] * total_send_size);
+    #endif
+
+
+
     // For each step i
     // exchange among procs stride (i+1) apart
     ctr = 0;
