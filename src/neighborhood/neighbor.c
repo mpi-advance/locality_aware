@@ -41,7 +41,164 @@ int MPIX_Neighbor_alltoallw(
     return ierr;
 }
 
-int MPIX_Neighbor_alltoallv(
+
+int MPIX_Neighbor_topo_alltoallv(
+        const void* sendbuf,
+        const int sendcounts[],
+        const int sdispls[],
+        MPI_Datatype sendtype,
+        void* recvbuf,
+        const int recvcounts[],
+        const int rdispls[],
+        MPI_Datatype recvtype,
+        MPIX_Topo* topo,
+        MPIX_Comm* comm)
+{
+
+    MPIX_Request* request;
+    MPI_Status status;
+
+    int ierr = MPIX_Neighbor_topo_alltoallv_init(sendbuf,
+            sendcounts,
+            sdispls,
+            sendtype,
+            recvbuf,
+            recvcounts,
+            rdispls,
+            recvtype,
+            topo,
+            comm,
+            MPI_INFO_NULL,
+            &request);
+
+    MPIX_Start(request);
+    MPIX_Wait(request, &status);
+    MPIX_Request_free(request);
+
+    return ierr;
+}
+
+int MPIX_Neighbor_topo_alltoallv_init(
+        const void* sendbuf,
+        const int sendcounts[],
+        const int sdispls[],
+        MPI_Datatype sendtype,
+        void* recvbuf,
+        const int recvcounts[],
+        const int rdispls[],
+        MPI_Datatype recvtype,
+        MPIX_Topo* topo,
+        MPIX_Comm* comm,
+        MPI_Info info,
+        MPIX_Request** request_ptr)
+{
+    int tag = 349526;
+
+    int indegree, outdegree, weighted;
+    MPIX_Topo_dist_graph_neighbors_count(
+            topo,
+            &indegree,
+            &outdegree);
+
+    int* sources = NULL;
+    int* destinations = NULL;
+
+    if (indegree)
+    {
+        sources = (int*)malloc(indegree*sizeof(int));
+    }
+
+    if (outdegree)
+    {
+        destinations = (int*)malloc(outdegree*sizeof(int));
+    }
+
+    MPIX_Topo_dist_graph_neighbors(
+            topo,
+            indegree,
+            outdegree,
+            sources,
+            destinations);
+
+    MPIX_Request* request;
+    init_request(&request);
+
+    request->global_n_msgs = indegree+outdegree;
+    allocate_requests(request->global_n_msgs, &(request->global_requests));
+
+    const char* send_buffer = (char*) sendbuf;
+    char* recv_buffer = (char*) recvbuf;
+
+    int send_size, recv_size;
+    MPI_Type_size(sendtype, &send_size);
+    MPI_Type_size(recvtype, &recv_size);
+
+    for (int i = 0; i < indegree; i++)
+    {
+        MPI_Recv_init(&(recv_buffer[rdispls[i]*recv_size]),
+                recvcounts[i],
+                recvtype,
+                sources[i],
+                tag,
+                comm->global_comm,
+                &(request->global_requests[i]));
+    }
+
+    for (int i = 0; i < outdegree; i++)
+    {
+        MPI_Send_init(&(send_buffer[sdispls[i]*send_size]),
+                sendcounts[i],
+                sendtype,
+                destinations[i],
+                tag,
+                comm->global_comm,
+                &(request->global_requests[indegree+i]));
+    }
+
+    free(sources);
+    free(destinations);
+
+    *request_ptr = request;
+
+    return MPI_SUCCESS;
+}
+
+
+int MPIX_Neighbor_part_locality_alltoallv(
+        const void* sendbuffer,
+        const int sendcounts[],
+        const int sdispls[],
+        MPI_Datatype sendtype,
+        void* recvbuffer,
+        const int recvcounts[],
+        const int rdispls[],
+        MPI_Datatype recvtype,
+        MPIX_Comm* comm)
+{
+
+    MPIX_Request* request;
+    MPI_Status status;
+
+    int ierr = MPIX_Neighbor_part_locality_alltoallv_init(sendbuffer,
+            sendcounts,
+            sdispls,
+            sendtype,
+            recvbuffer,
+            recvcounts,
+            rdispls,
+            recvtype,
+            comm,
+            MPI_INFO_NULL, 
+            &request);
+
+    MPIX_Start(request);
+    MPIX_Wait(request, &status);
+    MPIX_Request_free(request);
+
+    return ierr;
+}
+
+int MPIX_Neighbor_locality_alltoallv(
         const void* sendbuffer,
         const int sendcounts[],
         const int sdispls[],
@@ -135,6 +292,147 @@ int MPIX_Neighbor_alltoallv(
 
 }
 
+int MPIX_Neighbor_locality_topo_alltoallv_init(
+        const void* sendbuffer,
+        const int sendcounts[],
+        const int sdispls[],
+        const long global_sindices[],
+        MPI_Datatype sendtype,
+        void* recvbuffer,
+        const int recvcounts[],
+        const int rdispls[],
+        const long global_rindices[],
+        MPI_Datatype recvtype,
+        MPIX_Topo* topo,
+        MPIX_Comm* comm,
+        MPI_Info info,
+        MPIX_Request** request_ptr)
+{
+    int tag = 304591;
+    int indegree, outdegree;
+    MPIX_Topo_dist_graph_neighbors_count(
+            topo,
+            &indegree,
+            &outdegree);
+
+    int* sources = NULL;
+    int* destinations = NULL;
+
+    if (indegree)
+    {
+        sources = (int*)malloc(indegree*sizeof(int));
+    }
+
+    if (outdegree)
+    {
+        destinations = (int*)malloc(outdegree*sizeof(int));
+    }
+
+    MPIX_Topo_dist_graph_neighbors(
+            topo,
+            indegree,
+            outdegree,
+            sources,
+            destinations);
+
+    MPIX_Request* request;
+    init_request(&request);
+
+    // Initialize Locality-Aware Communication Strategy (3-Step)
+    // E.G. Determine which processes talk to eachother at every step
+    // TODO : instead of mpi_comm, use comm
+    //        - will need to create local_comm in dist_graph_create_adjacent...
+    init_locality(outdegree,
+            destinations,
+            sdispls,
+            sendcounts,
+            indegree,
+            sources,
+            rdispls,
+            recvcounts,
+            global_sindices,
+            global_rindices,
+            sendtype,
+            recvtype,
+            comm, // communicator used in dist_graph_create_adjacent
+            request);
+
+    request->sendbuf = sendbuffer;
+    request->recvbuf = recvbuffer;
+    MPI_Type_size(recvtype, &(request->recv_size));
+
+    // Local L Communication
+    init_communication(request->locality->local_L_comm->send_data->buffer,
+            request->locality->local_L_comm->send_data->num_msgs,
+            request->locality->local_L_comm->send_data->procs,
+            request->locality->local_L_comm->send_data->indptr,
+            sendtype,
+            request->locality->local_L_comm->recv_data->buffer,
+            request->locality->local_L_comm->recv_data->num_msgs,
+            request->locality->local_L_comm->recv_data->procs,
+            request->locality->local_L_comm->recv_data->indptr,
+            recvtype,
+            request->locality->local_L_comm->tag,
+            comm->local_comm,
+            &(request->local_L_n_msgs),
+            &(request->local_L_requests));
+
+    // Local S Communication
+    init_communication(request->locality->local_S_comm->send_data->buffer,
+            request->locality->local_S_comm->send_data->num_msgs,
+            request->locality->local_S_comm->send_data->procs,
+            request->locality->local_S_comm->send_data->indptr,
+            sendtype,
+            request->locality->local_S_comm->recv_data->buffer,
+            request->locality->local_S_comm->recv_data->num_msgs,
+            request->locality->local_S_comm->recv_data->procs,
+            request->locality->local_S_comm->recv_data->indptr,
+            recvtype,
+            request->locality->local_S_comm->tag,
+            comm->local_comm,
+            &(request->local_S_n_msgs),
+            &(request->local_S_requests));
+
+    // Global Communication
+    init_communication(request->locality->global_comm->send_data->buffer,
+            request->locality->global_comm->send_data->num_msgs,
+            request->locality->global_comm->send_data->procs,
+            request->locality->global_comm->send_data->indptr,
+            sendtype,
+            request->locality->global_comm->recv_data->buffer,
+            request->locality->global_comm->recv_data->num_msgs,
+            request->locality->global_comm->recv_data->procs,
+            request->locality->global_comm->recv_data->indptr,
+            recvtype,
+            request->locality->global_comm->tag,
+            comm->global_comm,
+            &(request->global_n_msgs),
+            &(request->global_requests));
+
+    // Local R Communication
+    init_communication(request->locality->local_R_comm->send_data->buffer,
+            request->locality->local_R_comm->send_data->num_msgs,
+            request->locality->local_R_comm->send_data->procs,
+            request->locality->local_R_comm->send_data->indptr,
+            sendtype,
+            request->locality->local_R_comm->recv_data->buffer,
+            request->locality->local_R_comm->recv_data->num_msgs,
+            request->locality->local_R_comm->recv_data->procs,
+            request->locality->local_R_comm->recv_data->indptr,
+            recvtype,
+            request->locality->local_R_comm->tag,
+            comm->local_comm,
+            &(request->local_R_n_msgs),
+            &(request->local_R_requests));
+
+    free(sources);
+    free(destinations);
+
+    *request_ptr = request;
+
+    return 0;
+
+}
 
 int MPIX_Neighbor_part_locality_alltoallv(
         const void* sendbuffer,
@@ -174,7 +472,103 @@ int MPIX_Neighbor_part_locality_alltoallv(
     return ierr;
 }
 
-int MPIX_Neighbor_locality_alltoallv(
+int MPIX_Neighbor_part_locality_topo_alltoallv_init(
+        const void* sendbuffer,
+        const int sendcounts[],
+        const int sdispls[],
+        MPI_Datatype sendtype,
+        void* recvbuffer,
+        const int recvcounts[],
+        const int rdispls[],
+        MPI_Datatype recvtype,
+        MPIX_Topo* topo,
+        MPIX_Comm* comm,
+        MPI_Info info,
+        MPIX_Request** request_ptr)
+{
+    int rank;
+    MPI_Comm_rank(comm->global_comm, &rank);
+
+    int tag = 304591;
+    int indegree, outdegree;
+    MPIX_Topo_dist_graph_neighbors_count(
+            topo,
+            &indegree,
+            &outdegree);
+
+    int* sources = NULL;
+    int* destinations = NULL;
+
+    if (indegree)
+    {
+        sources = (int*)malloc(indegree*sizeof(int));
+    }
+
+    if (outdegree)
+    {
+        destinations = (int*)malloc(outdegree*sizeof(int));
+    }
+
+    MPIX_Topo_dist_graph_neighbors(
+            topo,
+            indegree,
+            outdegree,
+            sources,
+            destinations);
+
+    // Make separate temporary displs incase sendbuffer/recvbuffer are not contiguous
+    int* send_displs = (int*)malloc(outdegree*sizeof(int));
+    int* recv_displs = (int*)malloc(indegree*sizeof(int));
+
+    long send_size = 0;
+    for (int i = 0; i < outdegree; i++)
+    {
+        send_displs[i] = send_size;
+        send_size += sendcounts[i];
+    }
+    long recv_size = 0;
+    for (int i = 0; i < indegree; i++)
+    {
+        recv_displs[i] = recv_size;
+        recv_size += recvcounts[i];
+    }
+
+    long first_send;
+    // TODO?
+    MPI_Exscan(&send_size, &first_send, 1, MPI_LONG, MPI_SUM, comm->global_comm);
+    if (rank == 0) first_send = 0;
+
+    long* global_send_indices = NULL;
+    long* global_recv_indices = NULL;
+
+    if (send_size)
+        global_send_indices = (long*)malloc(send_size*sizeof(long));
+    if (recv_size)
+        global_recv_indices = (long*)malloc(recv_size*sizeof(long));
+    for (int i = 0; i < send_size; i++)
+        global_send_indices[i] = first_send + i;
+
+
+    MPIX_Neighbor_topo_alltoallv(global_send_indices, sendcounts, send_displs, MPI_LONG,
+            global_recv_indices, recvcounts, recv_displs, MPI_LONG, topo, comm);
+
+    free(send_displs);
+    free(recv_displs);
+
+    free(sources);
+    free(destinations);
+
+    int err = MPIX_Neighbor_locality_topo_alltoallv_init(sendbuffer, sendcounts, sdispls,
+            global_send_indices, sendtype, recvbuffer, recvcounts, rdispls,
+            global_recv_indices, recvtype, topo, comm, info, request_ptr);
+
+    free(global_send_indices);
+    free(global_recv_indices);
+
+    return err;
+}
+
+int MPIX_Neighbor_part_locality_alltoallv_init(
         const void* sendbuffer,
         const int sendcounts[],
         const int sdispls[],
