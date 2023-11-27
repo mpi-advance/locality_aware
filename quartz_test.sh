@@ -2,17 +2,18 @@
 set -e
 
 export MPI_NAME=openmpi
+#export MPI_NAME=mvapich
 #export BUILD_FOLDER=./build
 export BUILD_FOLDER=./build-${MPI_NAME}
-export EXECUTABLE=${BUILD_FOLDER}/benchmarks/neighbor_collective_flip
-export EXPERIMENT=7
+export EXECUTABLE=${BUILD_FOLDER}/benchmarks/neighbor_collective
+export EXPERIMENT=6
 
 mkdir -p data/${EXPERIMENT}/${MPI_NAME}
 
 # Iterate over job sizes (node count)
-#for i in {1,2,4,8,16,32,64,128,256,512,1024}
+for i in {1,2,4,8,16,32,64,128,256,512,1024}
 #for i in {1,2}
-for i in {4,8,16,32,64,128,256,512,1024}
+#for i in {4,8,16,32,64,128,256,512,1024}
 do
     export NUM_NODES=$i
     export JOB_NAME=MPIX_TOPO_${NUM_NODES}
@@ -31,7 +32,6 @@ do
     echo "#SBATCH --sockets-per-node=2" >> temp_sbatch
     echo "#SBATCH --cores-per-socket=18" >> temp_sbatch
     echo "#SBATCH --partition=pbatch" >> temp_sbatch
-    #echo "#SBATCH --output=data/${EXPERIMENT}/output-%A.out" >> temp_sbatch
     echo "#SBATCH --output=data/${EXPERIMENT}/${MPI_NAME}/output-%A.out" >> temp_sbatch
     
     echo "module load ${MODULES_TO_USE}" >> temp_sbatch
@@ -48,6 +48,8 @@ do
     echo "srun ${EXECUTABLE} ./test_data/mycielskian17.pm " >> temp_sbatch
     
     # Launch generated script
+    sbatch temp_sbatch
+    sbatch temp_sbatch
     sbatch temp_sbatch
 
     # Remove generated script
