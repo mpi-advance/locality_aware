@@ -8,6 +8,9 @@ set(CMAKE_C_STANDARD 99)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
+find_package(MPI REQUIRED)
+include_directories(${MPI_INCLUDE_PATH})
+
 find_package(OpenMP)
 if (OPENMP_FOUND)
     set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
@@ -21,10 +24,12 @@ option(USE_GPU "Compile heterogeneous folder" OFF)
 option(USE_HIP "Compile with HIP Support" OFF)
 option(USE_CUDA "Compile with CUDA Support" ON)
 option(ENABLE_UNIT_TESTS "Enable unit testing" ON)
+option(USING_AMD "Compile on AMD GPU machine" OFF)
 
 add_feature_info(gpu_aware GPU_AWARE "Use GPU-Aware MPI")
 add_feature_info(use_hip USE_HIP "Compile with HIP Support")
 add_feature_info(use_cuda USE_CUDA "Compile with CUDA Support")
+add_feature_info(using_amd USING_AMD "Compile on machine with AMD GPUs")
 
 
 set(MPIRUN "mpirun" CACHE STRING "MPIRUN command")
@@ -47,19 +52,16 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
 
 cmake_policy(SET CMP0104 OLD)
 
-#execute_process(COMMAND ${GIT_EXECUTABLE} submodule update --init --recursive
-#                        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-#                        RESULT_VARIABLE GIT_SUBMOD_RESULT)
-
 if (USING_AMD)
+    if (GPU_AWARE)
+        add_definitions(-DGPU_AWARE)
+    endif()
     set(USE_HIP ON)
     set(USE_CUDA OFF)
-    set(ATDM_MPI_LIB "mpi_amd")
+    set(USE_GPU ON)
     set(MPICH_GPU_SUPPORT_ENABLED 1)
-    include_directories($ENV{ROCM_PATH}/include)
-    set(CMAKE_EXE_LINKER_FLAGS "-L$ENV{ROCM_PATH}/lib -Wl,-rpath,$ENV{ROCM_PATH}/lib -lamdhip64 -L$ENV{CRAY_MPICH_DIR}/lib -Wl,-rpath,$ENV{CRAY_MPICH_DIR}/lib -l$ENV{ATDM_MPI_LIB} -L$ENV{CRAY_MPICH_ROOTDIR}/gtl/lib -Wl,-rpath,$ENV{CRAY_MPICH_ROOTDIR}/gtl/lib -lmpi_gtl_hsa -L$ENV{ROCM_PATH}/llvm/lib/clang/15.0.0/lib/linux/ -lclang_rt.builtins-x86_64 -x none")
-    set(CMAKE_SHARED_LINKER_FLAGS "-x none")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --rocm-path=$ROCM_PATH -D__HIP_PLATFORM_AMD__")
+    set(CMAKE_EXE_LINKER_FLAGS "-L/opt/cray/pe/mpich/8.1.26/gtl/lib -Wl,-rpath=/opt/cray/pe/mpich/8.1.26/gtl/lib -lmpi_gtl_hsa")
+    add_definitions(-D__HIP_PLATFORM_AMD__)
 endif(USING_AMD)
 
 if (USE_CUDA)
