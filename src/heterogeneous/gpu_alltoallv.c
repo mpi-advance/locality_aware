@@ -271,7 +271,7 @@ int copy_to_cpu_alltoallv_nonblocking_extra(const void* sendbuf,
         MPI_Datatype recvtype,
         MPIX_Comm* comm,char* cpu_recvbuf,char* cpu_sendbuf)
 {
-    return copy_to_cpu_alltoallv_extra(alltoallv_pairwise,
+    return copy_to_cpu_alltoallv_extra(alltoallv_nonblocking,
         sendbuf,
         sendcounts,
         sdispls,
