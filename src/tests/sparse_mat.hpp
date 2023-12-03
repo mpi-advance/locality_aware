@@ -381,6 +381,9 @@ void order_comm(ParMat<T>&A, std::vector<U>& data, std::vector<U>& recvbuf, MPI_
     if (A.send_comm.size_msgs)
         sendbuf.resize(A.send_comm.size_msgs);
 
+    std::vector<MPI_Request> two_req;
+    two_req.reserve(A.recv_comm.n_msgs + A.send_comm.n_msgs);
+
     for (int i = 0; i < A.send_comm.n_msgs; i++)
     {
         proc = A.send_comm.procs[i];
@@ -406,12 +409,17 @@ void order_comm(ParMat<T>&A, std::vector<U>& data, std::vector<U>& recvbuf, MPI_
         new_proc_to_orig_pos[proc] = i;
         int count;
         MPI_Get_count(&status, type, &count);
-        MPI_Recv(&(recvbuf[0]), count, type, proc, tag,
-                MPI_COMM_WORLD, &status);
+        
+        MPI_Irecv(&(recvbuf[0]), count, type, proc, tag,
+                MPI_COMM_WORLD, &(A.recv_comm.req[i]));
     }
 
-    if (A.send_comm.n_msgs)
-        MPI_Waitall(A.send_comm.n_msgs, A.send_comm.req.data(), MPI_STATUSES_IGNORE);
+    std::vector<MPI_Request> sendrecv_reqs;
+    sendrecv_reqs.reserve(A.recv_comm.req.size() + A.send_comm.req.size());
+    sendrecv_reqs.insert(sendrecv_reqs.end(), A.send_comm.req.begin(), A.send_comm.req.end());
+    sendrecv_reqs.insert(sendrecv_reqs.end(), A.recv_comm.req.begin(), A.recv_comm.req.end());
+
+    MPI_Waitall(sendrecv_reqs.size(), sendrecv_reqs.data(), MPI_STATUSES_IGNORE);
 
     for (int i = 0; i < A.recv_comm.n_msgs; i++)
     {   
