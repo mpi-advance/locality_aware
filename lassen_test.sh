@@ -1,22 +1,22 @@
 #!/bin/bash
 set -e
 
-#export BUILD_FOLDER=./build
-export BUILD_FOLDER=./build-spectrum
-export EXECUTABLE=${BUILD_FOLDER}/benchmarks/neighbor_collective
-export EXPERIMENT=lassen/6
+export MPI_NAME=spectrum
+export BUILD_FOLDER=./build-${MPI_NAME}
+export EXECUTABLE=${BUILD_FOLDER}/benchmarks/neighbor_collective_flip
+#export EXECUTABLE=${BUILD_FOLDER}/benchmarks/neighbor_collective
+export EXPERIMENT=7
 
-mkdir -p data/${EXPERIMENT}
+mkdir -p data/${EXPERIMENT}/${MPI_NAME}
 
 # Iterate over job sizes (node count)
-#for i in {1,2,4,8,16,32,64,128,256}
-for i in {32,64,128,256}
+for i in {1,2,4,8,16,32,64,128,256}
+#for i in {1,2}
+#for i in {4,8,16,32,64,128,256}
 do
     export NUM_NODES=$i
     export JOB_NAME=MPIX_TOPO_${NUM_NODES}
     #export MODULES_TO_USE="gcc/8.5 mvapich2/2.3.7"
-    #export MODULES_TO_USE="gcc/11.2.1 openmpi"
-    #export MODULES_TO_USE="openmpi"
     export MODULES_TO_USE="gcc/8.3.1"
 
     echo "Running ${JOB_NAME} on ${NUM_NODES} nodes using ${MODULES_TO_USE}."
@@ -26,7 +26,7 @@ do
     echo "#BSUB -nnodes ${NUM_NODES}" >> temp_sbatch
     echo "#BSUB -W 60" >> temp_sbatch
     echo "#BSUB -q pbatch" >> temp_sbatch
-    echo "#BSUB -o data/${EXPERIMENT}/output-${i}.out" >> temp_sbatch
+    echo "#BSUB -o data/${EXPERIMENT}/${MPI_NAME}/output-${i}-%J.out" >> temp_sbatch
     
     echo "module load ${MODULES_TO_USE}" >> temp_sbatch
     echo "echo \"Number of Nodes: $NUM_NODES\"" >> temp_sbatch 	
@@ -42,6 +42,8 @@ do
     echo "lrun -N${i} -T40 ${EXECUTABLE} ./test_data/mycielskian17.pm " >> temp_sbatch
     
     # Launch generated script
+    bsub temp_sbatch
+    bsub temp_sbatch
     bsub temp_sbatch
 
     # Remove generated script
