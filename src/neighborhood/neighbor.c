@@ -153,7 +153,7 @@ int MPIX_Neighbor_alltoallv(
         const int recvcounts[],
         const int rdispls[],
         MPI_Datatype recvtype,
-        MPIX_Comm* comm)
+        MPI_Comm comm)
 {
 
     MPIX_Request* request;
@@ -262,7 +262,7 @@ int MPIX_Neighbor_alltoallv_init(
         const int recvcounts[],
         const int rdispls[],
         MPI_Datatype recvtype,
-        MPIX_Comm* comm,
+        MPI_Comm comm,
         MPI_Info info,
         MPIX_Request** request_ptr)
 {
@@ -270,7 +270,7 @@ int MPIX_Neighbor_alltoallv_init(
 
     int indegree, outdegree, weighted;
     MPI_Dist_graph_neighbors_count(
-            comm->neighbor_comm, 
+            comm, 
             &indegree, 
             &outdegree, 
             &weighted);
@@ -293,7 +293,7 @@ int MPIX_Neighbor_alltoallv_init(
     }
 
     MPI_Dist_graph_neighbors(
-            comm->neighbor_comm, 
+            comm, 
             indegree, 
             sources, 
             sourceweights,
@@ -321,7 +321,7 @@ int MPIX_Neighbor_alltoallv_init(
                 recvtype, 
                 sources[i],
                 tag,
-                comm->neighbor_comm, 
+                comm, 
                 &(request->global_requests[i]));
     }
 
@@ -332,7 +332,7 @@ int MPIX_Neighbor_alltoallv_init(
                 sendtype,
                 destinations[i],
                 tag,
-                comm->neighbor_comm,
+                comm,
                 &(request->global_requests[indegree+i]));
     }
 
@@ -660,7 +660,7 @@ int MPIX_Neighbor_part_locality_alltoallv_init(
 
 
     MPIX_Neighbor_alltoallv(global_send_indices, sendcounts, send_displs, MPI_LONG, 
-            global_recv_indices, recvcounts, recv_displs, MPI_LONG, comm);
+            global_recv_indices, recvcounts, recv_displs, MPI_LONG, comm->neighbor_comm);
 
     free(send_displs);
     free(recv_displs);

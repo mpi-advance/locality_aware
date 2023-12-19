@@ -67,7 +67,7 @@ void test_matrix(const char* filename)
 
     communicate(A, send_vals, std_recv_vals, MPI_INT);
 
-    MPI_Comm std_comm = NULL;
+    MPI_Comm std_comm;
     MPI_Status status;
     MPIX_Comm* neighbor_comm;
     MPIX_Request* neighbor_request;
@@ -79,7 +79,7 @@ void test_matrix(const char* filename)
     if (A.send_comm.n_msgs  == 0)
         d = MPI_WEIGHTS_EMPTY;
 
-    MPI_Dist_graph_create_adjacent(MPI_COMM_WORLD,
+    PMPI_Dist_graph_create_adjacent(MPI_COMM_WORLD,
             A.recv_comm.n_msgs,
             s,
             MPI_UNWEIGHTED,
@@ -89,6 +89,16 @@ void test_matrix(const char* filename)
             MPI_INFO_NULL, 
             0, 
             &std_comm);
+
+    PMPI_Neighbor_alltoallv(alltoallv_send_vals.data(),
+            A.send_comm.counts.data(),
+            A.send_comm.ptr.data(), 
+            MPI_INT,
+            neigh_recv_vals.data(),
+            A.recv_comm.counts.data(),
+            A.recv_comm.ptr.data(),
+            MPI_INT,
+            std_comm);
 
     MPIX_Dist_graph_create_adjacent(MPI_COMM_WORLD,
             A.recv_comm.n_msgs,
@@ -112,7 +122,7 @@ void test_matrix(const char* filename)
             A.recv_comm.counts.data(),
             A.recv_comm.ptr.data(), 
             MPI_INT,
-            neighbor_comm);
+            std_comm);
 
     for (int i = 0; i < A.recv_comm.size_msgs; i++)
     {
@@ -128,7 +138,7 @@ void test_matrix(const char* filename)
             A.recv_comm.counts.data(),
             A.recv_comm.ptr.data(), 
             MPI_INT,
-            neighbor_comm, 
+            std_comm, 
             MPI_INFO_NULL,
             &neighbor_request);
 
@@ -178,7 +188,6 @@ void test_matrix(const char* filename)
             MPI_INFO_NULL,
             &neighbor_request);
 
-
     MPIX_Start(neighbor_request);
     MPIX_Wait(neighbor_request, &status);
     MPIX_Request_free(neighbor_request);
@@ -190,7 +199,7 @@ void test_matrix(const char* filename)
     }
 
     MPIX_Comm_free(neighbor_comm);
-    MPI_Comm_free(&std_comm);
+    PMPI_Comm_free(&std_comm);
 }
 
 int main(int argc, char** argv)

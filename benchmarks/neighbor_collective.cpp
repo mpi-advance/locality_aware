@@ -114,8 +114,8 @@ int main(int argc, char* argv[])
 
     // MPI Advance : Neighbor Collective 
     // 1. Create Topology Communicator
-    MPIX_Comm* xcomm;
-    MPIX_Dist_graph_create_adjacent(MPI_COMM_WORLD,
+    MPI_Comm xcomm;
+    MPI_Dist_graph_create_adjacent(MPI_COMM_WORLD,
             A.recv_comm.n_msgs,
             recv_procs, 
             MPI_UNWEIGHTED,
@@ -136,7 +136,7 @@ int main(int argc, char* argv[])
             MPI_INT,
             xcomm);
     // 3. Free Topology Communicator
-    MPIX_Comm_free(xcomm);
+    MPI_Comm_free(&xcomm);
 
     // Error Checking
     for (int i = 0; i < A.recv_comm.size_msgs; i++)
