@@ -174,13 +174,11 @@ int main(int argc, char* argv[])
 
     // MPI Advance : Neighbor Collective 
     // 1. Create Topology Communicator
-    MPIX_Comm* xcomm;
-    MPIX_Comm_init(&xcomm, MPI_COMM_WORLD);
     MPIX_Topo* topo;
     MPI_Barrier(MPI_COMM_WORLD);
     t0 = MPI_Wtime();
     for (int i = 0; i < iters; i++) {
-        MPIX_Topo_dist_graph_create_adjacent(xcomm,
+        MPIX_Topo_dist_graph_create_adjacent(
                A.recv_comm.n_msgs,
                recv_procs, 
                MPI_UNWEIGHTED,
@@ -200,12 +198,12 @@ int main(int argc, char* argv[])
                A.recv_comm.ptr.data(),
                MPI_INT,
                topo,
-               xcomm);
+               MPI_COMM_WORLD);
 
         MPIX_Topo_free(topo);
 
 	// Now do the flip!
-	MPIX_Topo_dist_graph_create_adjacent(xcomm,
+	MPIX_Topo_dist_graph_create_adjacent(
                A.send_comm.n_msgs,
                send_procs,
                MPI_UNWEIGHTED,
@@ -225,7 +223,7 @@ int main(int argc, char* argv[])
                A.send_comm.ptr.data(),
                MPI_INT,
                topo,
-               xcomm);
+               MPI_COMM_WORLD);
 
         MPIX_Topo_free(topo);
     }

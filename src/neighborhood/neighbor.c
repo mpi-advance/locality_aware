@@ -189,7 +189,7 @@ int MPIX_Neighbor_topo_alltoallv(
         const int rdispls[],
         MPI_Datatype recvtype,
         MPIX_Topo* topo,
-        MPIX_Comm* comm)
+        MPI_Comm comm)
 {
 
     MPIX_Request* request;
@@ -225,7 +225,7 @@ int MPIX_Neighbor_topo_alltoallv_init(
         const int rdispls[],
         MPI_Datatype recvtype,
         MPIX_Topo* topo,
-        MPIX_Comm* comm,
+        MPI_Comm comm,
         MPI_Info info,
         MPIX_Request** request_ptr)
 {
@@ -284,7 +284,7 @@ int MPIX_Neighbor_topo_alltoallv_init(
                 recvtype, 
                 sources[i],
                 tag,
-                comm->global_comm, 
+                comm, 
                 &(request->global_requests[i]));
     }
 
@@ -295,7 +295,7 @@ int MPIX_Neighbor_topo_alltoallv_init(
                 sendtype,
                 destinations[i],
                 tag,
-                comm->global_comm,
+                comm,
                 &(request->global_requests[indegree+i]));
     }
 

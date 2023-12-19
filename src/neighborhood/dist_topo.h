@@ -23,8 +23,7 @@ typedef struct _MPIX_Topo
     int reorder;
 } MPIX_Topo;
 
-int MPIX_Topo_dist_graph_create_adjacent(
-        MPIX_Comm *comm, 
+int MPIX_Topo_dist_graph_create_adjacent( 
         int indegree,
         const int sources[],
         const int sourceweights[],

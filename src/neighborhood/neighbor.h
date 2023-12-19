@@ -24,7 +24,7 @@ int MPIX_Neighbor_topo_alltoallv(
         const int rdispls[],
         MPI_Datatype recvtype,
         MPIX_Topo* topo,
-        MPIX_Comm* comm);
+        MPI_Comm comm);
 
 int MPIX_Neighbor_topo_alltoallv_init(
         const void* sendbuf,
@@ -36,10 +36,9 @@ int MPIX_Neighbor_topo_alltoallv_init(
         const int rdispls[],
         MPI_Datatype recvtype,
         MPIX_Topo* topo,
-        MPIX_Comm* comm,
+        MPI_Comm comm,
         MPI_Info info,
         MPIX_Request** request_ptr);
-
 
 
 // Standard Neighbor Alltoallv

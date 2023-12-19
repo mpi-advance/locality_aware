@@ -162,13 +162,11 @@ int main(int argc, char* argv[])
 
     // MPI Advance : Neighbor Collective 
     // 1. Create Topology Communicator
-    MPIX_Comm* xcomm;
-    MPIX_Comm_init(&xcomm, MPI_COMM_WORLD);
     MPIX_Topo* topo;
     MPI_Barrier(MPI_COMM_WORLD);
     t0 = MPI_Wtime();
     for (int i = 0; i < iters; i++) {
-        MPIX_Topo_dist_graph_create_adjacent(xcomm,
+        MPIX_Topo_dist_graph_create_adjacent(
                A.recv_comm.n_msgs,
                recv_procs,
                MPI_UNWEIGHTED,
@@ -183,7 +181,7 @@ int main(int argc, char* argv[])
     tf = (MPI_Wtime() - t0) / iters;
     MPI_Reduce(&tf, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
     if (rank == 0) { printf("MPI advance graph create: %8e\n", t0); }
-    MPIX_Topo_dist_graph_create_adjacent(xcomm,
+    MPIX_Topo_dist_graph_create_adjacent(
             A.recv_comm.n_msgs,
             recv_procs,
             MPI_UNWEIGHTED,
@@ -207,14 +205,13 @@ int main(int argc, char* argv[])
                A.recv_comm.ptr.data(), 
                MPI_INT,
                topo,
-               xcomm);
+               MPI_COMM_WORLD);
     }
     tf = (MPI_Wtime() - t0) / iters;
     MPI_Reduce(&tf, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
     if (rank == 0) { printf("MPI advance neighbor: %8e\n", t0); }
     // 3. Free Topology Communicator
     MPIX_Topo_free(topo);
-    MPIX_Comm_free(xcomm);
 
     // Error Checking
     for (int i = 0; i < A.recv_comm.size_msgs; i++)
