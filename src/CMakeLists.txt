@@ -14,13 +14,20 @@ add_library(mpi_advance STATIC
 
 target_link_libraries(mpi_advance ${MPI_LIBRARIES} stdc++)
 
+string(TOLOWER ${CMAKE_BUILD_TYPE} build_type)
+if(build_type STREQUAL "debug")
+	# add additional debug flags for DEBUG
+	message(STATUS "Adding flags for debug build")
+	target_compile_options(mpi_advance PRIVATE -Wall -Wextra )
+    target_compile_options(mpi_advance PRIVATE -Wno-unused-parameter)
+endif()
+
 install(TARGETS mpi_advance DESTINATION "lib")
-install(FILES mpi_advance.h DESTINATION "include/src")
-install(FILES utils.h DESTINATION "include/src")
-install(FILES ${locality_HEADERS} DESTINATION "include/src/locality")
-install(FILES ${collective_HEADERS} DESTINATION "include/src/collective")
-install(FILES ${neighborhood_HEADERS} DESTINATION "include/src/neighborhood")
-install(FILES ${persistent_HEADERS} DESTINATION "include/src/persistent")
+install(FILES mpi_advance.h utils.h DESTINATION "include")
+install(FILES ${locality_HEADERS} DESTINATION "include/locality")
+install(FILES ${collective_HEADERS} DESTINATION "include/collective")
+install(FILES ${neighborhood_HEADERS} DESTINATION "include/neighborhood")
+install(FILES ${persistent_HEADERS} DESTINATION "include/persistent")
 
 if (ENABLE_UNIT_TESTS)
     enable_testing()

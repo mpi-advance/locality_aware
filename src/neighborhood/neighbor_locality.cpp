@@ -241,7 +241,7 @@ void map_procs_to_nodes(LocalityComm* locality, const int orig_num_msgs,
         local_proc = local_num_procs - 1;
         inc = -1;
     }
-    for (int i = 0; i < msg_nodes.size(); i++)
+    for (size_t i = 0; i < msg_nodes.size(); i++)
     {
         node = msg_nodes[i];
         msg_node_to_local[node] = local_proc;
@@ -409,7 +409,7 @@ void form_local_comm(const int orig_num_sends, const int* orig_send_procs,
         MPI_Probe(MPI_ANY_SOURCE, tag, locality->communicators->local_comm, &recv_status);
         proc = recv_status.MPI_SOURCE;
         MPI_Get_count(&recv_status, MPI_INT, &size);
-        if (size > recv_buffer.size())
+        if (size > (int) recv_buffer.size())
             recv_buffer.resize(size);
         MPI_Recv(recv_buffer.data(), size, MPI_INT, proc, tag, locality->communicators->local_comm, &recv_status);
         proc_pos[proc] = recv_data->num_msgs;
@@ -468,11 +468,9 @@ void form_global_comm(CommData* local_data, CommData* global_data,
     MPI_Comm_rank(mpix_comm->local_comm, &local_rank);
     MPI_Comm_size(mpix_comm->local_comm, &local_num_procs);
     int num_nodes = mpix_comm->num_nodes;
-    int rank_node = mpix_comm->rank_node;
 
-    int node_idx;
+    int node_idx, node;
     int start, end, idx;
-    int ctr, node, size;
 
     node_sizes.resize(num_nodes, 0);
 
@@ -535,7 +533,7 @@ void update_global_comm(LocalityComm* locality)
     int* send_buffer = NULL;
     int send_tag = 32148532;
     int recv_tag = 52395234;
-    int node, global_proc, tag;
+    int node, global_proc;
     int num_to_recv;
     MPI_Status recv_status;
     std::vector<int> send_nodes(num_nodes, 0);

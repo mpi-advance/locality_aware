@@ -235,27 +235,34 @@ int MPIX_Neighbor_topo_alltoallv_init(
     MPIX_Topo_dist_graph_neighbors_count(
             topo, 
             &indegree, 
-            &outdegree);
+            &outdegree,
+            &weighted);
 
     int* sources = NULL;
+    int* sourceweights = NULL;
     int* destinations = NULL;
+    int* destweights = NULL;
 
     if (indegree)
     {
         sources = (int*)malloc(indegree*sizeof(int));
+        sourceweights = (int*)malloc(indegree*sizeof(int));
     }
 
     if (outdegree)
     {
         destinations = (int*)malloc(outdegree*sizeof(int));
+        destweights = (int*)malloc(outdegree*sizeof(int));
     }
 
     MPIX_Topo_dist_graph_neighbors(
             topo, 
             indegree, 
-            outdegree, 
             sources, 
-            destinations); 
+            sourceweights,
+            outdegree, 
+            destinations, 
+            destweights); 
 
     MPIX_Request* request;
     init_request(&request);
@@ -564,8 +571,6 @@ int MPIX_Neighbor_locality_alltoallv_init(
         MPI_Info info,
         MPIX_Request** request_ptr)
 {
-
-    int tag = 304591;
     int indegree, outdegree, weighted;
     MPI_Dist_graph_neighbors_count(
             comm->neighbor_comm, 
@@ -716,7 +721,6 @@ int MPIX_Neighbor_part_locality_alltoallv_init(
     int rank; 
     MPI_Comm_rank(comm->global_comm, &rank);
 
-    int tag = 304591;
     int indegree, outdegree, weighted;
     MPI_Dist_graph_neighbors_count(
             comm->neighbor_comm, 

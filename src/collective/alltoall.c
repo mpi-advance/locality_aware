@@ -212,8 +212,6 @@ int alltoall_pairwise_loc(const void* sendbuf,
     num_nodes = mpi_comm->num_nodes;
     rank_node = mpi_comm->rank_node;
 
-    const char* send_buffer = (char*) sendbuf;
-    char* recv_buffer = (char*) recvbuf;
     int sbytes, rbytes;
     MPI_Type_size(sendtype, &sbytes);
     MPI_Type_size(recvtype, &rbytes);

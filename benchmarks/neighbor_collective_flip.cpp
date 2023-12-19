@@ -180,12 +180,15 @@ int main(int argc, char* argv[])
     MPI_Barrier(MPI_COMM_WORLD);
     t0 = MPI_Wtime();
     for (int i = 0; i < iters; i++) {
-        MPIX_Topo_dist_graph_adjacent(xcomm,
+        MPIX_Topo_dist_graph_create_adjacent(xcomm,
                A.recv_comm.n_msgs,
                recv_procs, 
+               MPI_UNWEIGHTED,
                A.send_comm.n_msgs, 
                send_procs,
-               MPI_INFO_NULL, 
+               MPI_UNWEIGHTED,
+               MPI_INFO_NULL,
+               false,
                &topo);
 	
 	MPIX_Neighbor_topo_alltoallv(packed_send_vals.data(),
@@ -202,12 +205,15 @@ int main(int argc, char* argv[])
         MPIX_Topo_free(topo);
 
 	// Now do the flip!
-	MPIX_Topo_dist_graph_adjacent(xcomm,
+	MPIX_Topo_dist_graph_create_adjacent(xcomm,
                A.send_comm.n_msgs,
                send_procs,
+               MPI_UNWEIGHTED,
                A.recv_comm.n_msgs,
                recv_procs,
+               MPI_UNWEIGHTED,
                MPI_INFO_NULL,
+               false,
                &topo);
 
         MPIX_Neighbor_topo_alltoallv(mpix_recv_buffer.data(),

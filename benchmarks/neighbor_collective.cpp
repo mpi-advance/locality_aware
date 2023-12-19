@@ -168,24 +168,30 @@ int main(int argc, char* argv[])
     MPI_Barrier(MPI_COMM_WORLD);
     t0 = MPI_Wtime();
     for (int i = 0; i < iters; i++) {
-        MPIX_Topo_dist_graph_adjacent(xcomm,
+        MPIX_Topo_dist_graph_create_adjacent(xcomm,
                A.recv_comm.n_msgs,
-               recv_procs, 
+               recv_procs,
+               MPI_UNWEIGHTED,
                A.send_comm.n_msgs, 
                send_procs,
-               MPI_INFO_NULL, 
+               MPI_UNWEIGHTED,
+               MPI_INFO_NULL,
+               false,
                &topo);
         MPIX_Topo_free(topo);
     }
     tf = (MPI_Wtime() - t0) / iters;
     MPI_Reduce(&tf, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
     if (rank == 0) { printf("MPI advance graph create: %8e\n", t0); }
-    MPIX_Topo_dist_graph_adjacent(xcomm,
+    MPIX_Topo_dist_graph_create_adjacent(xcomm,
             A.recv_comm.n_msgs,
-            recv_procs, 
+            recv_procs,
+            MPI_UNWEIGHTED,
             A.send_comm.n_msgs, 
             send_procs,
-            MPI_INFO_NULL, 
+            MPI_UNWEIGHTED,
+            MPI_INFO_NULL,
+            false,
             &topo);
 
     // 2. Call Neighbor Alltoallv
