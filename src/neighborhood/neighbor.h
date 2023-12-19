@@ -54,7 +54,7 @@ int MPIX_Neighbor_alltoallv(
         const int recvcounts[],
         const int rdispls[],
         MPI_Datatype recvtype,
-        MPIX_Comm* comm);
+        MPI_Comm comm);
 
 
 // Standard Neighbor Alltoallv
@@ -112,7 +112,7 @@ int MPIX_Neighbor_alltoallv_init(
         const int recvcounts[],
         const int rdispls[],
         MPI_Datatype recvtype,
-        MPIX_Comm* comm,
+        MPI_Comm comm,
         MPI_Info info,
         MPIX_Request** request_ptr);
 
