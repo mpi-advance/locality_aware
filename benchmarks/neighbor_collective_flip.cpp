@@ -17,7 +17,7 @@ int main(int argc, char* argv[])
 
     double t0, tf;
     
-    int iters = 100;
+    int iters = 20;
 
     if (argc == 1)
     {

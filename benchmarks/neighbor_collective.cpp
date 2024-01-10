@@ -17,9 +17,9 @@ int main(int argc, char* argv[])
 
     double t0, tf;
     
-    int iters = 1000;
+    int iters = 200;
     if(num_procs > 9000)
-	    iters = 100;
+	    iters = 20;
 
     if (argc == 1)
     {
