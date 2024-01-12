@@ -251,28 +251,47 @@ int MPIX_Neighbor_topo_alltoallv(
         MPIX_Topo* topo,
         MPI_Comm comm)
 {
+    int tag = 349529;
 
-    MPIX_Request* request;
-    MPI_Status status;
+    MPI_Request* send_requests = (MPI_Request*)malloc((*topo).outdegree*sizeof(MPI_Request));
+    MPI_Request* recv_requests = (MPI_Request*)malloc((*topo).indegree*sizeof(MPI_Request));
 
-    int ierr = MPIX_Neighbor_topo_alltoallv_init(sendbuf,
-            sendcounts,
-            sdispls,
-            sendtype,
-            recvbuf,
-            recvcounts,
-            rdispls,
-            recvtype,
-            topo,
-            comm,
-            MPI_INFO_NULL, 
-            &request);
+    const char* send_buffer = (char*) sendbuf;
+    char* recv_buffer = (char*) recvbuf;
 
-    MPIX_Start(request);
-    MPIX_Wait(request, &status);
-    MPIX_Request_free(request);
+    int send_size, recv_size;
+    MPI_Type_size(sendtype, &send_size);
+    MPI_Type_size(recvtype, &recv_size);
 
-    return ierr;
+    for (int i = 0; i < (*topo).indegree; i++)
+    {
+        MPI_Irecv(&(recv_buffer[rdispls[i]*recv_size]), 
+                recvcounts[i],
+                recvtype, 
+                (*topo).sources[i],
+                tag,
+                comm, 
+                &(recv_requests[i]));
+    }
+
+    for (int i = 0; i < (*topo).outdegree; i++)
+    {
+        MPI_Isend(&(send_buffer[sdispls[i]*send_size]),
+                sendcounts[i],
+                sendtype,
+                (*topo).destinations[i],
+                tag,
+                comm,
+                &(send_requests[i]));
+    }
+
+    MPI_Waitall((*topo).indegree, recv_requests, MPI_STATUSES_IGNORE);
+    MPI_Waitall((*topo).outdegree, send_requests, MPI_STATUSES_IGNORE);
+
+    free(send_requests);
+    free(recv_requests);
+
+    return MPI_SUCCESS;
 }
 
 int MPIX_Neighbor_topo_alltoallv_init(
