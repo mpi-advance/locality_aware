@@ -398,29 +398,32 @@ void communicate3(ParMat<T>& A, std::vector<U>& sendbuf, std::vector<U>& recvbuf
         MPI_Send_init(&(sendbuf[start]), (int)(end - start), type, proc, tag, 
                 MPI_COMM_WORLD, &(A.send_comm.req[i]));
     }
-    if (A.send_comm.n_msgs)
-        MPI_Startall(A.send_comm.n_msgs, A.send_comm.req.data());
+
     if (A.recv_comm.n_msgs)
     	MPI_Startall(A.recv_comm.n_msgs, A.recv_comm.req.data());
     
     if (A.send_comm.n_msgs)
-    {
-        MPI_Waitall(A.send_comm.n_msgs, A.send_comm.req.data(), MPI_STATUSES_IGNORE);
-	for (int i = 0; i < A.send_comm.n_msgs; i++)
-		MPI_Request_free(&(A.send_comm.req[i]));
-    }
+        MPI_Startall(A.send_comm.n_msgs, A.send_comm.req.data());
+    
     if (A.recv_comm.n_msgs)
     {
     	MPI_Waitall(A.recv_comm.n_msgs, A.recv_comm.req.data(), MPI_STATUSES_IGNORE);
-	for (int i = 0; i < A.recv_comm.n_msgs; i++)
-		MPI_Request_free(&(A.recv_comm.req[i]));
+        for (int i = 0; i < A.recv_comm.n_msgs; i++)
+            MPI_Request_free(&(A.recv_comm.req[i]));
     }
+
+    if (A.send_comm.n_msgs)
+    {
+        MPI_Waitall(A.send_comm.n_msgs, A.send_comm.req.data(), MPI_STATUSES_IGNORE);
+        for (int i = 0; i < A.send_comm.n_msgs; i++)
+            MPI_Request_free(&(A.send_comm.req[i]));
+    }
+
 }
 
 template <typename U, typename T>
 void communicate2(ParMat<T>& A, std::vector<U>& sendbuf, std::vector<U>& recvbuf, MPI_Datatype type)
 {
-
     int proc;
     T start, end;
     int tag = 2948;
