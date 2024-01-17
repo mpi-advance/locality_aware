@@ -446,11 +446,10 @@ void communicate2(ParMat<T>& A, std::vector<U>& sendbuf, std::vector<U>& recvbuf
                 MPI_COMM_WORLD, &(A.send_comm.req[i]));
     }
 
-
-    if (A.send_comm.n_msgs)
-        MPI_Waitall(A.send_comm.n_msgs, A.send_comm.req.data(), MPI_STATUSES_IGNORE);
     if (A.recv_comm.n_msgs)
     	MPI_Waitall(A.recv_comm.n_msgs, A.recv_comm.req.data(), MPI_STATUSES_IGNORE);
+    if (A.send_comm.n_msgs)
+        MPI_Waitall(A.send_comm.n_msgs, A.send_comm.req.data(), MPI_STATUSES_IGNORE);
 }
 
 template <typename U, typename T>
