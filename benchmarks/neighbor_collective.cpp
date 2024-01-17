@@ -79,7 +79,7 @@ int main(int argc, char* argv[])
     MPI_Barrier(MPI_COMM_WORLD);
     t0 = MPI_Wtime();
     for (int i = 0; i < iters; i++){
-    	communicate3(A, packed_send_vals, std_recv_buffer, MPI_INT);
+    	communicate2(A, packed_send_vals, std_recv_buffer, MPI_INT);
     }
     tf = (MPI_Wtime() - t0)/iters;
     MPI_Reduce(&tf, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
