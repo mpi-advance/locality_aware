@@ -102,40 +102,31 @@ if (USE_HIP)
 endif(USE_HIP)
 
 
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE Release)
+endif()
+
 ##################### 
 ## GOOGLETEST      ##
 #####################
-include(FetchContent)
 
-FetchContent_Declare(
-  googletest
-  GIT_REPOSITORY https://github.com/google/googletest.git
-  # Specify the commit you depend on and update it regularly.
-  GIT_TAG 58d77fa8070e8cec2dc1ed015d66b454c8d78850
-)
-# For Windows: Prevent overriding the parent project's compiler/linker settings
-set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-FetchContent_MakeAvailable(googletest)
+if(ENABLE_UNIT_TESTS)
+
+  include(FetchContent)
+
+  FetchContent_Declare(
+    googletest
+    GIT_REPOSITORY https://github.com/google/googletest.git
+    # Specify the commit you depend on and update it regularly.
+    GIT_TAG 58d77fa8070e8cec2dc1ed015d66b454c8d78850
+  )
+  # For Windows: Prevent overriding the parent project's compiler/linker settings
+  set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+  FetchContent_MakeAvailable(googletest)
+endif()
 #####################
 
-include_directories(.)
-include_directories(src)
-add_subdirectory(src)
-if (USE_CUDA)
-    target_compile_options(mpi_advance PRIVATE
-    $<$<COMPILE_LANGUAGE:CUDA>: # Flags for CUDA Objects
-    -lineinfo
-    -Xcompiler -fopenmp
-    >
-    $<$<COMPILE_LANGUAGE:CXX>: # Flags for C++ Objects
-    -fno-omit-frame-pointer
-    -fopenmp
-    >
-    )
-    set_property(TARGET mpi_advance PROPERTY CUDA_SEPARABLE_COMPILATION ON)
-endif(USE_CUDA)
+include_directories("src")
+add_subdirectory("src")
 
 add_subdirectory(benchmarks)
-
-enable_testing()
-

@@ -172,12 +172,117 @@ int alltoall_nonblocking(const void* sendbuf,
     if (send_type == gpuMemoryTypeDevice ||
             recv_type == gpuMemoryTypeDevice)
     {
-        get_memcpy_kind(send_type, recv_type, &memcpy_kind);
-        int ierr = gpuMemcpy(recv_buffer + (rank * recvcount * recv_size),
-                send_buffer + (rank * sendcount * send_size),
-                sendcount * send_size,
-                memcpy_kind);
-        gpu_check(ierr);
+        recv_proc = rank - stride;
+        if (recv_proc < 0) recv_proc += num_procs;
+        send_proc = rank + stride;
+        if (send_proc >= num_procs) send_proc -= num_procs;
+
+        group_size = stride * recvcount;
+        
+        ctr = 0;
+        for (int i = group_size; i < total_count; i += (group_size*2))
+        {
+            for (int j = 0; j < group_size; j++)
+            {
+                for (int k = 0; k < recv_size; k++)
+                {
+                    contig_buf[ctr*recv_size+k] = recv_buffer[(i+j)*recv_size+k];
+                }
+                ctr++;
+            }
+        }
+
+        size = ((int)(total_count / group_size) * group_size) / 2;
+
+        MPI_Isend(contig_buf, size, recvtype, send_proc, tag, comm, &(requests[0]));
+        MPI_Irecv(tmpbuf, size, recvtype, recv_proc, tag, comm, &(requests[1]));
+        MPI_Waitall(2, requests, MPI_STATUSES_IGNORE);
+
+        ctr = 0;
+        for (int i = group_size; i < total_count; i += (group_size*2))
+        {
+            for (int j = 0; j < group_size; j++)
+            {
+                for (int k = 0; k < recv_size; k++)
+                {
+                    recv_buffer[(i+j)*recv_size+k] = tmpbuf[ctr*recv_size+k];
+                }
+                ctr++;
+            }
+        }
+
+        stride *= 2;
+
+    } 
+
+    // 3. rotate local data
+    if (rank < num_procs)
+        rotate(recv_buffer, (rank+1)*msg_size, num_procs*msg_size);
+
+
+    // TODO :: REVERSE!
+
+    return 0;
+}
+
+
+// 2-Step Aggregation (large messages)
+// Gather all data to be communicated between nodes
+// Send to node+i, recv from node-i
+int alltoall_pairwise_loc(const void* sendbuf,
+        const int sendcount,
+        MPI_Datatype sendtype,
+        void* recvbuf,
+        const int recvcount,
+        MPI_Datatype recvtype,
+        MPIX_Comm* mpi_comm)
+{
+    int rank, num_procs;
+    int local_rank, PPN; 
+    int num_nodes, rank_node;
+    MPI_Comm_rank(mpi_comm->global_comm, &rank);
+    MPI_Comm_size(mpi_comm->global_comm, &num_procs);
+    MPI_Comm_rank(mpi_comm->local_comm, &local_rank);
+    MPI_Comm_size(mpi_comm->local_comm, &PPN);
+    num_nodes = mpi_comm->num_nodes;
+    rank_node = mpi_comm->rank_node;
+
+    int sbytes, rbytes;
+    MPI_Type_size(sendtype, &sbytes);
+    MPI_Type_size(recvtype, &rbytes);
+    int sendcount_node = sendcount * PPN;
+    int recvcount_node = recvcount * PPN;
+    int recv_bytes = recvcount*rbytes;
+    int send_bytes_node = sendcount_node * sbytes;
+    int recv_bytes_node = recvcount_node * rbytes;
+
+    int tag = 102913;
+    int send_proc, recv_proc;
+    int send_pos, recv_pos;
+    int send_node, recv_node;
+    MPI_Status status;
+    char* tmpbuf = (char*)malloc(num_procs*recv_bytes);
+
+    /************************************************
+     * Step 1 : Send aggregated data to node
+     ***********************************************/
+    for (int i = 0; i < num_nodes; i++)
+    {
+        send_node = rank_node + i;
+        if (send_node >= num_nodes)
+            send_node -= num_nodes;
+        recv_node = rank_node - i;
+        if (recv_node < 0)
+            recv_node += num_nodes;
+
+        send_pos = send_node * send_bytes_node;
+        recv_pos = recv_node * recv_bytes_node;
+
+        MPI_Sendrecv(sendbuf + send_pos, sendcount_node, sendtype, 
+                send_node*PPN + local_rank, tag,
+                tmpbuf + recv_pos, recvcount_node, recvtype,
+                recv_node*PPN + local_rank, tag, 
+                mpi_comm->global_comm, &status);
     }
     else
 #endif
