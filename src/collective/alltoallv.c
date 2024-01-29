@@ -1,7 +1,10 @@
-#include "alltoallv.h"
+
+#include "/g/g92/enamug/clean/locality_aware/src/collective/alltoallv.h"
 #include <string.h>
 #include <math.h>
 #include "utils.h"
+#include "/g/g92/enamug/clean/locality_aware/src/collective/collective.h"
+
 
 /**************************************************
  * Locality-Aware Point-to-Point Alltoallv
@@ -54,7 +57,7 @@ int MPIX_Alltoallv(const void* sendbuf,
         MPI_Datatype recvtype,
         MPIX_Comm* mpi_comm)
 {
-    return alltoallv_waitany(sendbuf,
+    return /* alltoallv_waitany*/alltoallv_pairwise(sendbuf,
         sendcounts,
         sdispls,
         sendtype,
@@ -63,9 +66,9 @@ int MPIX_Alltoallv(const void* sendbuf,
         rdispls,
         recvtype,
         mpi_comm->global_comm);
-}
+}//changed this temporarily 
 
-
+/*
 int alltoallv_pairwise(const void* sendbuf,
         const int sendcounts[],
         const int sdispls[],
@@ -85,6 +88,28 @@ int alltoallv_pairwise(const void* sendbuf,
     int send_pos, recv_pos;
     MPI_Status status;
 
+*/
+int alltoallv_pairwise(const void* sendbuf,
+        const int sendcounts[],
+        const int sdispls[],
+        MPI_Datatype sendtype,
+        void* recvbuf,
+        const int recvcounts[],
+        const int rdispls[],
+        MPI_Datatype recvtype,
+        MPI_Comm comm)
+
+{   printf("Hello, mpi-advance!");
+
+    int rank, num_procs;
+    MPI_Comm_rank(comm, &rank);
+    MPI_Comm_size(comm, &num_procs);
+
+    int tag = 103044;
+    int send_proc, recv_proc;
+    int send_pos, recv_pos;
+    MPI_Status status;
+
     int send_size, recv_size;
     MPI_Type_size(sendtype, &send_size);
     MPI_Type_size(recvtype, &recv_size);
@@ -93,6 +118,7 @@ int alltoallv_pairwise(const void* sendbuf,
         recvbuf + (rdispls[rank] * recv_size),
         sendbuf + (sdispls[rank] * send_size), 
         sendcounts[rank] * send_size);        
+
 
     // Send to rank + i
     // Recv from rank - i
@@ -159,7 +185,7 @@ int alltoallv_nonblocking(const void* sendbuf,
 
         send_pos = sdispls[send_proc] * send_size;
         recv_pos = rdispls[recv_proc] * recv_size;
-
+//printf("process:%d is sending to process to process: %d \n", recv_proc,send_proc);
         MPI_Isend(sendbuf + send_pos, sendcounts[send_proc], sendtype, send_proc, tag,
                 comm, &(requests[i-1]));
         MPI_Irecv(recvbuf + recv_pos, recvcounts[recv_proc], recvtype, recv_proc, tag,
@@ -167,11 +193,342 @@ int alltoallv_nonblocking(const void* sendbuf,
     }
 
     MPI_Waitall(2*(num_procs-1), requests, MPI_STATUSES_IGNORE);
+ 
 
     free(requests);
 
     return 0;
 }
+
+
+
+
+
+int alltoallv_pairwise_nonblocking_waitany(const void* sendbuf,
+        const int sendcounts[],
+        const int sdispls[],
+        MPI_Datatype sendtype,
+        void* recvbuf,
+        const int recvcounts[],
+        const int rdispls[],
+        MPI_Datatype recvtype,
+        MPI_Comm comm)
+{
+        int rank, num_procs;
+    MPI_Comm_rank(comm, &rank);
+    MPI_Comm_size(comm, &num_procs);
+
+    // Tuning Parameter : number of non-blocking messages between waits 
+    int nb_stride = 5; 
+
+    int tag = 103044;
+    int ctr;
+    int send_proc, recv_proc;
+    int send_pos, recv_pos;
+    MPI_Status status;
+
+    int send_size, recv_size;
+    MPI_Type_size(sendtype, &send_size);
+    MPI_Type_size(recvtype, &recv_size);
+    int finished = 0;
+
+    MPI_Request* requests = (MPI_Request*)malloc(2*nb_stride*sizeof(MPI_Request));
+
+    memcpy(
+        recvbuf + (rdispls[rank] * recv_size),
+        sendbuf + (sdispls[rank] * send_size), 
+        sendcounts[rank] * send_size);        
+
+    // For each step i
+    // exchange among procs stride (i+1) apart
+    ctr = 0;
+    for (int i = 1; i <= nb_stride && i < num_procs; i++)
+
+
+    // Send to rank + i
+    // Recv from rank - i
+  
+    {
+        send_proc = rank + i;
+        if (send_proc >= num_procs)
+            send_proc -= num_procs;
+        recv_proc = rank - i;
+        if (recv_proc < 0)
+            recv_proc += num_procs;
+
+        send_pos = sdispls[send_proc] * send_size;
+        recv_pos = rdispls[recv_proc] * recv_size;
+
+
+        MPI_Isend(sendbuf + send_pos, sendcounts[send_proc], sendtype, send_proc, tag,
+                comm, &(requests[ctr++]));
+        MPI_Irecv(recvbuf + recv_pos, recvcounts[recv_proc], recvtype, recv_proc, tag,
+                comm, &(requests[ctr++]));
+
+    }
+
+    if (nb_stride >= num_procs)
+    {
+        MPI_Waitall(2*(num_procs-1), requests, MPI_STATUSES_IGNORE);
+          free(requests);
+          return 0;
+    }
+
+    int send_idx = nb_stride;
+    int recv_idx = nb_stride;
+    int idx;
+    int request_finished = 0;
+
+
+    while (1)
+    {   
+        
+        MPI_Waitany(2*nb_stride, requests, &idx, MPI_STATUSES_IGNORE);
+
+        if (idx == MPI_UNDEFINED)
+        {
+            break;
+        }
+
+        if (idx % 2 == 0 && send_idx < num_procs)
+        {
+            send_proc = rank + send_idx;
+            if (send_proc >= num_procs)
+                send_proc -= num_procs;
+            send_pos = sdispls[send_proc] * send_size;
+            MPI_Isend(sendbuf + send_pos, sendcounts[send_proc], sendtype, send_proc, tag,
+                    comm, &(requests[idx]));
+            send_idx++;
+        }
+        else if (idx % 2 == 1 && recv_idx < num_procs)
+        {
+            recv_proc = rank - recv_idx;
+            if (recv_proc < 0)
+                recv_proc += num_procs;
+            recv_pos = rdispls[recv_proc] * recv_size;
+
+            MPI_Irecv(recvbuf + recv_pos, recvcounts[recv_proc], recvtype, recv_proc, tag,
+                    comm, &(requests[idx]));
+            recv_idx++;
+        }
+
+    }
+ 
+
+
+    free(requests);
+return 0;
+}
+
+int alltoallv_pairwise_nonblocking_testany(const void* sendbuf,
+        const int sendcounts[],
+        const int sdispls[],
+        MPI_Datatype sendtype,
+        void* recvbuf,
+        const int recvcounts[],
+        const int rdispls[],
+        MPI_Datatype recvtype,
+        MPI_Comm comm)
+{
+        int rank, num_procs;
+    MPI_Comm_rank(comm, &rank);
+    MPI_Comm_size(comm, &num_procs);
+
+    // Tuning Parameter : number of non-blocking messages between waits 
+    int nb_stride = 5; 
+
+    int tag = 103044;
+    int ctr;
+    int send_proc, recv_proc;
+    int send_pos, recv_pos;
+    MPI_Status status;
+
+    int send_size, recv_size;
+    MPI_Type_size(sendtype, &send_size);
+    MPI_Type_size(recvtype, &recv_size);
+    int finished = 0;
+
+    MPI_Request* requests = (MPI_Request*)malloc(2*nb_stride*sizeof(MPI_Request));
+
+    memcpy(
+        recvbuf + (rdispls[rank] * recv_size),
+        sendbuf + (sdispls[rank] * send_size), 
+        sendcounts[rank] * send_size);        
+
+    // For each step i
+    // exchange among procs stride (i+1) apart
+    ctr = 0;
+    for (int i = 1; i <= nb_stride && i < num_procs; i++)
+
+    {
+        send_proc = rank + i;
+        if (send_proc >= num_procs)
+            send_proc -= num_procs;
+        recv_proc = rank - i;
+        if (recv_proc < 0)
+            recv_proc += num_procs;
+
+        send_pos = sdispls[send_proc] * send_size;
+        recv_pos = rdispls[recv_proc] * recv_size;
+
+        MPI_Isend(sendbuf + send_pos, sendcounts[send_proc], sendtype, send_proc, tag,
+                comm, &(requests[ctr++]));
+        MPI_Irecv(recvbuf + recv_pos, recvcounts[recv_proc], recvtype, recv_proc, tag,
+                comm, &(requests[ctr++]));
+
+
+    }
+  
+
+
+  
+    int request_finished = 0;
+   
+    if (nb_stride >= num_procs)
+    {
+       // MPI_Waitall(2*(num_procs-1), requests, MPI_STATUSES_IGNORE);
+
+        MPI_Waitall(2*(num_procs-1), requests, MPI_STATUSES_IGNORE);
+        free(requests);
+        return 0;
+    }
+
+    int send_idx = nb_stride;
+    int recv_idx = nb_stride;
+    int idx;
+
+   
+    //MPI_Testany(2*nb_stride, requests, &idx,&request_finished, MPI_STATUSES_IGNORE);
+
+    while (1)
+    {   
+        
+      
+        MPI_Testany(2*nb_stride, requests, &idx,&request_finished, MPI_STATUSES_IGNORE);
+         
+         if(request_finished == 0)
+         {
+             continue;
+         }
+
+        if (idx == MPI_UNDEFINED)
+        {
+            break;
+        }
+
+        if (idx % 2 == 0 && send_idx < num_procs)
+        {
+            send_proc = rank + send_idx;
+            if (send_proc >= num_procs)
+                send_proc -= num_procs;
+            send_pos = sdispls[send_proc] * send_size;
+            MPI_Isend(sendbuf + send_pos, sendcounts[send_proc], sendtype, send_proc, tag,
+                    comm, &(requests[idx]));
+            send_idx++;
+        }
+        else if (idx % 2 == 1 && recv_idx < num_procs)
+        {
+            recv_proc = rank - recv_idx;
+            if (recv_proc < 0)
+                recv_proc += num_procs;
+            recv_pos = rdispls[recv_proc] * recv_size;
+
+            MPI_Irecv(recvbuf + recv_pos, recvcounts[recv_proc], recvtype, recv_proc, tag,
+                    comm, &(requests[idx]));
+            recv_idx++;
+        }
+    }
+
+    
+
+    free(requests);
+return 0;
+}
+
+
+
+int alltoallv_nonblocking_waitsome(const void* sendbuf,
+        const int sendcounts[],
+        const int sdispls[],
+        MPI_Datatype sendtype,
+        void* recvbuf,
+        const int recvcounts[],
+        const int rdispls[],
+        MPI_Datatype recvtype,
+        MPI_Comm comm)
+{
+    int rank, num_procs;
+    MPI_Comm_rank(comm, &rank);
+    MPI_Comm_size(comm, &num_procs);
+
+    int tag = 103044;
+    int send_proc, recv_proc;
+    int number_of_completed_operation=0;
+    int send_pos, recv_pos;
+    MPI_Status status;
+
+    int send_size, recv_size;
+    MPI_Type_size(sendtype, &send_size);
+    MPI_Type_size(recvtype, &recv_size);
+
+    MPI_Request* requests = (MPI_Request*)malloc(2*(num_procs-1)*sizeof(MPI_Request));
+    int* indices = (int *)malloc((2*(num_procs-1))*sizeof(int));
+     MPI_Status* statuses = (MPI_Status*)malloc(sizeof(MPI_Status)*(2*(num_procs-1)));
+   
+
+    memcpy(
+        recvbuf + (rdispls[rank] * recv_size),
+        sendbuf + (sdispls[rank] * send_size), 
+        sendcounts[rank] * send_size);        
+
+    // For each step i
+    // exchange among procs stride (i+1) apart
+    for (int i = 1; i < num_procs; i++)
+    {
+        send_proc = rank + i;
+        if (send_proc >= num_procs)
+            send_proc -= num_procs;
+        recv_proc = rank - i;
+        if (recv_proc < 0)
+            recv_proc += num_procs;
+
+        send_pos = sdispls[send_proc] * send_size;
+        recv_pos = rdispls[recv_proc] * recv_size;
+//printf("process:%d is sending to process to process: %d \n", recv_proc,send_proc);
+        MPI_Isend(sendbuf + send_pos, sendcounts[send_proc], sendtype, send_proc, tag,
+                comm, &(requests[i-1]));
+        MPI_Irecv(recvbuf + recv_pos, recvcounts[recv_proc], recvtype, recv_proc, tag,
+                comm, &(requests[num_procs+i-2]));
+    }
+     int number_of_left_messages = (2*(num_procs-1));
+   
+MPI_Waitsome(2*(num_procs-1), requests, &number_of_completed_operation, indices, statuses);
+ 
+     number_of_left_messages = number_of_left_messages - number_of_completed_operation;
+ 
+  
+
+  
+ while (number_of_left_messages > 0 && number_of_completed_operation >= 0)
+ {
+
+ MPI_Waitsome(2*(num_procs-1), requests, &number_of_completed_operation, indices, statuses);
+ 
+
+ number_of_left_messages = number_of_left_messages - number_of_completed_operation;
+
+ 
+ }
+
+   free(requests);
+   free(indices);
+   free(statuses);
+
+    return 0;
+} 
+
+
+
 
 int alltoallv_pairwise_nonblocking(const void* sendbuf,
         const int sendcounts[],
@@ -222,6 +579,9 @@ int alltoallv_pairwise_nonblocking(const void* sendbuf,
         send_pos = sdispls[send_proc] * send_size;
         recv_pos = rdispls[recv_proc] * recv_size;
 
+  //  printf("process:%d is sending to process to process: %d \n", recv_proc,/*send_proc*/i);
+   
+
         MPI_Isend(sendbuf + send_pos, sendcounts[send_proc], sendtype, send_proc, tag,
                 comm, &(requests[ctr++]));
         MPI_Irecv(recvbuf + recv_pos, recvcounts[recv_proc], recvtype, recv_proc, tag,
@@ -236,109 +596,6 @@ int alltoallv_pairwise_nonblocking(const void* sendbuf,
     
     if (ctr)
         MPI_Waitall(ctr, requests, MPI_STATUSES_IGNORE);
-
-    free(requests);
-
-    return 0;
-}
-
-int alltoallv_waitany(const void* sendbuf,
-        const int sendcounts[],
-        const int sdispls[],
-        MPI_Datatype sendtype,
-        void* recvbuf,
-        const int recvcounts[],
-        const int rdispls[],
-        MPI_Datatype recvtype,
-        MPI_Comm comm)
-{
-    int rank, num_procs;
-    MPI_Comm_rank(comm, &rank);
-    MPI_Comm_size(comm, &num_procs);
-
-    // Tuning Parameter : number of non-blocking messages between waits 
-    int nb_stride = 5;
-
-    int tag = 103044;
-    int ctr;
-    int send_proc, recv_proc;
-    int send_pos, recv_pos;
-    MPI_Status status;
-
-    int send_size, recv_size;
-    MPI_Type_size(sendtype, &send_size);
-    MPI_Type_size(recvtype, &recv_size);
-
-    MPI_Request* requests = (MPI_Request*)malloc(2*nb_stride*sizeof(MPI_Request));
-
-    memcpy(
-        recvbuf + (rdispls[rank] * recv_size),
-        sendbuf + (sdispls[rank] * send_size), 
-        sendcounts[rank] * send_size);        
-
-    // For each step i
-    // exchange among procs stride (i+1) apart
-    ctr = 0;
-    for (int i = 1; i <= nb_stride && i < num_procs; i++)
-    {
-        send_proc = rank + i;
-        if (send_proc >= num_procs)
-            send_proc -= num_procs;
-        recv_proc = rank - i;
-        if (recv_proc < 0)
-            recv_proc += num_procs;
-
-        send_pos = sdispls[send_proc] * send_size;
-        recv_pos = rdispls[recv_proc] * recv_size;
-
-        MPI_Isend(sendbuf + send_pos, sendcounts[send_proc], sendtype, send_proc, tag,
-                comm, &(requests[ctr++]));
-        MPI_Irecv(recvbuf + recv_pos, recvcounts[recv_proc], recvtype, recv_proc, tag,
-                comm, &(requests[ctr++]));
-
-    }
-
-    if (nb_stride >= num_procs)
-    {
-        MPI_Waitall(2*(num_procs-1), requests, MPI_STATUSES_IGNORE);
-        free(requests);
-        return 0;
-    }
-
-    int send_idx = nb_stride;
-    int recv_idx = nb_stride;
-    int idx;
-    while (1)
-    {
-        MPI_Waitany(2*nb_stride, requests, &idx, MPI_STATUSES_IGNORE);
-
-        if (idx == MPI_UNDEFINED)
-        {
-            break;
-        }
-
-        if (idx % 2 == 0 && send_idx < num_procs)
-        {
-            send_proc = rank + send_idx;
-            if (send_proc >= num_procs)
-                send_proc -= num_procs;
-            send_pos = sdispls[send_proc] * send_size;
-            MPI_Isend(sendbuf + send_pos, sendcounts[send_proc], sendtype, send_proc, tag,
-                    comm, &(requests[idx]));
-            send_idx++;
-        }
-        else if (idx % 2 == 1 && recv_idx < num_procs)
-        {
-            recv_proc = rank - recv_idx;
-            if (recv_proc < 0)
-                recv_proc += num_procs;
-            recv_pos = rdispls[recv_proc] * recv_size;
-
-            MPI_Irecv(recvbuf + recv_pos, recvcounts[recv_proc], recvtype, recv_proc, tag,
-                    comm, &(requests[idx]));
-            recv_idx++;
-        }
-    }
 
     free(requests);
 
