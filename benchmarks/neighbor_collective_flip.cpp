@@ -17,9 +17,7 @@ int main(int argc, char* argv[])
 
     double t0, tf;
     
-    int iters = 200;
-    if(num_procs > 9000)
-	    iters = 20;
+    int iters = 20;
 
     if (argc == 1)
     {
@@ -55,12 +53,15 @@ int main(int argc, char* argv[])
 
     // Allocate and Fill Packed Send Buffer
     std::vector<int> packed_send_vals;
+    std::vector<int> pure_packed_send;
     if (A.send_comm.size_msgs)
     {
         packed_send_vals.resize(A.send_comm.size_msgs);
+        pure_packed_send.resize(A.send_comm.size_msgs);
         for (int i = 0; i < A.send_comm.size_msgs; i++)
         {
             packed_send_vals[i] = send_vals[A.send_comm.idx[i]];
+	    pure_packed_send[i] = send_vals[A.send_comm.idx[i]];
         }
     }
 
@@ -79,7 +80,8 @@ int main(int argc, char* argv[])
     MPI_Barrier(MPI_COMM_WORLD);
     t0 = MPI_Wtime();
     for (int i = 0; i < iters; i++){
-    	communicate2(A, packed_send_vals, std_recv_buffer, MPI_INT);
+    	communicate3(A, packed_send_vals, std_recv_buffer, MPI_INT);
+    	communicate3_flip(A, packed_send_vals, std_recv_buffer, MPI_INT);
     }
     tf = (MPI_Wtime() - t0)/iters;
     MPI_Reduce(&tf, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
@@ -112,41 +114,45 @@ int main(int argc, char* argv[])
                MPI_INFO_NULL, 
                0, 
                &std_comm);
+
+       MPI_Neighbor_alltoallv(packed_send_vals.data(),
+               A.send_comm.counts.data(),
+               A.send_comm.ptr.data(),
+               MPI_INT,
+               neigh_recv_buffer.data(),
+               A.recv_comm.counts.data(),
+               A.recv_comm.ptr.data(),
+               MPI_INT,
+               std_comm);
+
+       MPI_Comm_free(&std_comm);
+       // Now flip
+       MPI_Dist_graph_create_adjacent(MPI_COMM_WORLD,
+               A.send_comm.n_msgs,
+               send_procs,
+               MPI_UNWEIGHTED,
+               A.recv_comm.n_msgs,
+               recv_procs,
+               MPI_UNWEIGHTED,
+               MPI_INFO_NULL,
+               0,
+               &std_comm);
+
+       MPI_Neighbor_alltoallv(neigh_recv_buffer.data(),
+               A.recv_comm.counts.data(),
+               A.recv_comm.ptr.data(),
+               MPI_INT,
+               packed_send_vals.data(),
+               A.send_comm.counts.data(),
+               A.send_comm.ptr.data(),
+               MPI_INT,
+               std_comm);
+
        MPI_Comm_free(&std_comm);
     }
     tf = (MPI_Wtime() - t0) / iters;
     MPI_Reduce(&tf, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
     if (rank == 0) { printf("Standard graph create: %8e\n", t0); }
-    MPI_Dist_graph_create_adjacent(MPI_COMM_WORLD,
-            A.recv_comm.n_msgs,
-            recv_procs,
-            MPI_UNWEIGHTED,
-            A.send_comm.n_msgs, 
-            send_procs,
-            MPI_UNWEIGHTED,
-            MPI_INFO_NULL, 
-            0, 
-            &std_comm);
-
-    // 2. Call Neighbor Alltoallv
-    MPI_Barrier(MPI_COMM_WORLD);
-    t0 = MPI_Wtime();
-    for (int i = 0; i < iters; i++) {
-       MPI_Neighbor_alltoallv(packed_send_vals.data(), 
-               A.send_comm.counts.data(),
-               A.send_comm.ptr.data(), 
-               MPI_INT,
-               neigh_recv_buffer.data(), 
-               A.recv_comm.counts.data(),
-               A.recv_comm.ptr.data(), 
-               MPI_INT,
-               std_comm);
-    }
-    tf = (MPI_Wtime() - t0) / iters;
-    MPI_Reduce(&tf, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
-    if (rank == 0) { printf("Standard neighbor: %8e\n", t0); }
-    // 3. Free Topology Communicator
-    MPI_Comm_free(&std_comm);
 
     // Error Checking
     for (int i = 0; i < A.recv_comm.size_msgs; i++)
@@ -157,8 +163,14 @@ int main(int argc, char* argv[])
             break;
         }
     }
-
-
+    for (int i = 0; i < A.send_comm.size_msgs; i++)
+    {
+        if (pure_packed_send[i] != packed_send_vals[i])
+        {
+            printf("Rank %d recvd incorrect (send) value! (MPI Version) \n", rank);
+            break;
+	}
+    }
 
     // MPI Advance : Neighbor Collective 
     // 1. Create Topology Communicator
@@ -168,7 +180,7 @@ int main(int argc, char* argv[])
     for (int i = 0; i < iters; i++) {
         MPIX_Topo_dist_graph_create_adjacent(
                A.recv_comm.n_msgs,
-               recv_procs,
+               recv_procs, 
                MPI_UNWEIGHTED,
                A.send_comm.n_msgs, 
                send_procs,
@@ -176,42 +188,48 @@ int main(int argc, char* argv[])
                MPI_INFO_NULL,
                false,
                &topo);
+	
+	MPIX_Neighbor_topo_alltoallv(packed_send_vals.data(),
+               A.send_comm.counts.data(),
+               A.send_comm.ptr.data(),
+               MPI_INT,
+               mpix_recv_buffer.data(),
+               A.recv_comm.counts.data(),
+               A.recv_comm.ptr.data(),
+               MPI_INT,
+               topo,
+               MPI_COMM_WORLD);
+
+        MPIX_Topo_free(topo);
+
+	// Now do the flip!
+	MPIX_Topo_dist_graph_create_adjacent(
+               A.send_comm.n_msgs,
+               send_procs,
+               MPI_UNWEIGHTED,
+               A.recv_comm.n_msgs,
+               recv_procs,
+               MPI_UNWEIGHTED,
+               MPI_INFO_NULL,
+               false,
+               &topo);
+
+        MPIX_Neighbor_topo_alltoallv(mpix_recv_buffer.data(),
+               A.recv_comm.counts.data(),
+               A.recv_comm.ptr.data(),
+               MPI_INT,
+               pure_packed_send.data(),
+               A.send_comm.counts.data(),
+               A.send_comm.ptr.data(),
+               MPI_INT,
+               topo,
+               MPI_COMM_WORLD);
+
         MPIX_Topo_free(topo);
     }
     tf = (MPI_Wtime() - t0) / iters;
     MPI_Reduce(&tf, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
     if (rank == 0) { printf("MPI advance graph create: %8e\n", t0); }
-    MPIX_Topo_dist_graph_create_adjacent(
-            A.recv_comm.n_msgs,
-            recv_procs,
-            MPI_UNWEIGHTED,
-            A.send_comm.n_msgs, 
-            send_procs,
-            MPI_UNWEIGHTED,
-            MPI_INFO_NULL,
-            false,
-            &topo);
-
-    // 2. Call Neighbor Alltoallv
-    MPI_Barrier(MPI_COMM_WORLD);
-    t0 = MPI_Wtime();
-    for (int i = 0; i < iters; i++) {
-       MPIX_Neighbor_topo_alltoallv(packed_send_vals.data(), 
-               A.send_comm.counts.data(),
-               A.send_comm.ptr.data(), 
-               MPI_INT,
-               mpix_recv_buffer.data(), 
-               A.recv_comm.counts.data(),
-               A.recv_comm.ptr.data(), 
-               MPI_INT,
-               topo,
-               MPI_COMM_WORLD);
-    }
-    tf = (MPI_Wtime() - t0) / iters;
-    MPI_Reduce(&tf, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
-    if (rank == 0) { printf("MPI advance neighbor: %8e\n", t0); }
-    // 3. Free Topology Communicator
-    MPIX_Topo_free(topo);
 
     // Error Checking
     for (int i = 0; i < A.recv_comm.size_msgs; i++)
@@ -223,23 +241,32 @@ int main(int argc, char* argv[])
         }
     }
 
+    for (int i = 0; i < A.send_comm.size_msgs; i++)
+    {
+        if (pure_packed_send[i] != packed_send_vals[i])
+        {
+            printf("Rank %d recvd incorrect (send) value! (MPI Version) \n", rank);
+            break;
+        }
+    }
+
 	int reduce_data[4];
-	
+
 	reduce_data[0] = A.send_comm.counts.size();
 	reduce_data[1] = A.recv_comm.counts.size();
 	reduce_data[2] = std::accumulate(A.send_comm.counts.begin(),A.send_comm.counts.end(),0);
 	reduce_data[3] = std::accumulate(A.recv_comm.counts.begin(),A.recv_comm.counts.end(),0);
-	
-	
+
+
 	int max_data[4];
 	int min_data[4];
 	int sum_data[4];
-	
+
 	MPI_Reduce(reduce_data, max_data, 4, MPI_INT, MPI_MAX, 0, MPI_COMM_WORLD);
 	MPI_Reduce(reduce_data, min_data, 4, MPI_INT, MPI_MIN, 0, MPI_COMM_WORLD);
 	MPI_Reduce(reduce_data, sum_data, 4, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
-	
-	
+
+
 	if(rank == 0)
 	{
 		printf("Type Min Max Avg\n");

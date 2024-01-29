@@ -4,6 +4,7 @@
 #include <mpi.h>
 #include <stdlib.h>
 #include "dist_graph.h"
+#include "dist_topo.h"
 #include "persistent/persistent.h"
 #include "locality/locality_comm.h"
 
@@ -12,6 +13,32 @@
 extern "C"
 {
 #endif
+
+int MPIX_Neighbor_topo_alltoallv(
+        const void* sendbuf,
+        const int sendcounts[],
+        const int sdispls[],
+        MPI_Datatype sendtype,
+        void* recvbuf,
+        const int recvcounts[],
+        const int rdispls[],
+        MPI_Datatype recvtype,
+        MPIX_Topo* topo,
+        MPI_Comm comm);
+
+int MPIX_Neighbor_topo_alltoallv_init(
+        const void* sendbuf,
+        const int sendcounts[],
+        const int sdispls[],
+        MPI_Datatype sendtype,
+        void* recvbuf,
+        const int recvcounts[],
+        const int rdispls[],
+        MPI_Datatype recvtype,
+        MPIX_Topo* topo,
+        MPI_Comm comm,
+        MPI_Info info,
+        MPIX_Request** request_ptr);
 
 
 // Standard Neighbor Alltoallv
@@ -26,7 +53,7 @@ int MPIX_Neighbor_alltoallv(
         const int recvcounts[],
         const int rdispls[],
         MPI_Datatype recvtype,
-        MPIX_Comm* comm);
+        MPI_Comm comm);
 
 
 // Standard Neighbor Alltoallv
@@ -84,7 +111,7 @@ int MPIX_Neighbor_alltoallv_init(
         const int recvcounts[],
         const int rdispls[],
         MPI_Datatype recvtype,
-        MPIX_Comm* comm,
+        MPI_Comm comm,
         MPI_Info info,
         MPIX_Request** request_ptr);
 
