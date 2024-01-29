@@ -114,7 +114,7 @@ TEST(RandomCommTest, TestsInTests)
             recv_data.counts.data(),
             recv_data.indptr.data(), 
             MPI_INT,
-            neighbor_comm, 
+            std_comm, 
             MPI_INFO_NULL,
             &neighbor_request);
     MPIX_Start(neighbor_request);

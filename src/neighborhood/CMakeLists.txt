@@ -1,6 +1,7 @@
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(neighborhood_HEADERS
+    neighborhood/dist_topo.h
     neighborhood/dist_graph.h
     neighborhood/dist_topo.h
     neighborhood/neighbor.h
@@ -8,6 +9,7 @@ set(neighborhood_HEADERS
     )
 
 set(neighborhood_SOURCES
+    neighborhood/dist_topo.c
     neighborhood/dist_graph.c
     neighborhood/dist_topo.c
     neighborhood/neighbor.c
