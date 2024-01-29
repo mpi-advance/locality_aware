@@ -2,6 +2,7 @@
 #include <string.h>
 #include <math.h>
 #include "utils.h"
+#include "error.h"
 
 // TODO : Add Locality-Aware Bruck Alltoall Algorithm!
 // TODO : Change to PMPI_Alltoall and test with profiling library!
@@ -64,8 +65,8 @@ int alltoall_pairwise(const void* sendbuf,
         MPI_Comm comm)
 {
     int rank, num_procs;
-    MPI_Comm_rank(comm, &rank);
-    MPI_Comm_size(comm, &num_procs);
+    MPI_ADVANCE_SUCCESS_OR_RETURN(MPI_Comm_rank(comm, &rank));
+    MPI_ADVANCE_SUCCESS_OR_RETURN(MPI_Comm_size(comm, &num_procs));
 
     int tag = 102944;
     int send_proc, recv_proc;
@@ -73,8 +74,8 @@ int alltoall_pairwise(const void* sendbuf,
     MPI_Status status;
 
     int send_size, recv_size;
-    MPI_Type_size(sendtype, &send_size);
-    MPI_Type_size(recvtype, &recv_size);
+    MPI_ADVANCE_SUCCESS_OR_RETURN(MPI_Type_size(sendtype, &send_size));
+    MPI_ADVANCE_SUCCESS_OR_RETURN(MPI_Type_size(recvtype, &recv_size));
 
     // Send to rank + i
     // Recv from rank - i
@@ -89,10 +90,12 @@ int alltoall_pairwise(const void* sendbuf,
         send_pos = send_proc * sendcount * send_size;
         recv_pos = recv_proc * recvcount * recv_size;
 
-        MPI_Sendrecv(sendbuf + send_pos, sendcount, sendtype, send_proc, tag,
+        MPI_ADVANCE_SUCCESS_OR_RETURN(MPI_Sendrecv(sendbuf + send_pos, sendcount, sendtype, send_proc, tag,
                 recvbuf + recv_pos, recvcount, recvtype, recv_proc, tag,
-                comm, &status);
+                comm, &status));
     }
+
+    return MPI_SUCCESS;
 }
 
 int alltoall_bruck(const void* sendbuf,
