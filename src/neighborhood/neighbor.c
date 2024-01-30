@@ -743,7 +743,6 @@ int MPIX_Neighbor_part_locality_topo_alltoallv_init(
     }
 
     long first_send;
-    // TODO?
     MPI_Exscan(&send_size, &first_send, 1, MPI_LONG, MPI_SUM, comm->global_comm);
     if (rank == 0) first_send = 0;
 
@@ -758,8 +757,8 @@ int MPIX_Neighbor_part_locality_topo_alltoallv_init(
         global_send_indices[i] = first_send + i;
 
 
-    MPIX_Neighbor_alltoallv(global_send_indices, sendcounts, send_displs, MPI_LONG, 
-            global_recv_indices, recvcounts, recv_displs, MPI_LONG, comm->neighbor_comm);
+    MPIX_Neighbor_topo_alltoallv(global_send_indices, sendcounts, send_displs, MPI_LONG,
+            global_recv_indices, recvcounts, recv_displs, MPI_LONG, topo, comm->global_comm);
 
     free(send_displs);
     free(recv_displs);
