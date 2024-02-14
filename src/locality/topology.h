@@ -23,17 +23,33 @@ typedef struct _MPIX_Comm
     int num_nodes;
     int rank_node;
     int ppn;
+
+    MPI_Win win;
+    char* win_array;
+    int win_bytes;
+    int win_type_bytes;
+
+    MPI_Request* requests;
+    int n_requests;
 } MPIX_Comm;
 
-int MPIX_Comm_init(MPIX_Comm** comm_dist_graph_ptr, MPI_Comm global_comm);
-int MPIX_Comm_free(MPIX_Comm* comm_dist_graph);
+int MPIX_Comm_init(MPIX_Comm** xcomm_ptr, MPI_Comm global_comm);
+int MPIX_Comm_free(MPIX_Comm* xcomm);
+
+int MPIX_Comm_topo_init(MPIX_Comm* xcomm);
+int MPIX_Comm_topo_free(MPIX_Comm* xcomm);
+
+int MPIX_Comm_win_init(MPIX_Comm* xcomm, int bytes, int type_bytes);
+int MPIX_Comm_win_free(MPIX_Comm* xcomm);
+
+int MPIX_Comm_req_resize(MPIX_Comm* xcomm, int n);
 
 int get_node(const MPIX_Comm* data, const int proc);
 int get_local_proc(const MPIX_Comm* data, const int proc);
 int get_global_proc(const MPIX_Comm* data, const int node, const int local_proc);
 
 // For testing purposes (manually set PPN)
-void update_locality(MPIX_Comm* comm_dist_graph, int ppn);
+void update_locality(MPIX_Comm* xcomm, int ppn);
 
 #ifdef __cplusplus
 }

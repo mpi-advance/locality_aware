@@ -14,6 +14,7 @@
 #include "neighborhood/dist_graph.h"
 #include "neighborhood/dist_topo.h"
 #include "neighborhood/neighbor.h"
+#include "neighborhood/sparse_coll.h"
 
 
 #endif
