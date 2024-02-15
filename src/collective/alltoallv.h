@@ -23,15 +23,6 @@ int alltoallv_pairwise(const void* sendbuf,
         const int rdispls[],
         MPI_Datatype recvtype,
         MPI_Comm comm);
-int alltoallv_pairwise_log2(const void* sendbuf,
-        const int sendcounts[],
-        const int sdispls[],
-        MPI_Datatype sendtype,
-        void* recvbuf,
-        const int recvcounts[],
-        const int rdispls[],
-        MPI_Datatype recvtype,
-        MPI_Comm comm);
 int alltoallv_nonblocking(const void* sendbuf,
         const int sendcounts[],
         const int sdispls[],
@@ -69,12 +60,7 @@ int alltoallv_pairwise_nonblocking_log2(const void* sendbuf,
         MPI_Datatype recvtype,
         MPI_Comm comm);
 
-
-
-
-
-
-int alltoallv_pairwise_loc(const void* sendbuf,
+int alltoallv_pairwise_locality(const void* sendbuf,
         const int sendcounts[],
         const int sdispls[],
         MPI_Datatype sendtype,

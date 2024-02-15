@@ -5,59 +5,74 @@ set(CMAKE_C_STANDARD 99)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
-## User customizable build options
 option(ENABLE_UNIT_TESTS "Enable unit testing" OFF)
-set(MPI_ADVANCE_ALLGATHER_MODE  "default" CACHE STRING "The underlying algorithm for MPI Advance MPI_Allgather wrapper")
-set(MPI_ADVANCE_XALLGATHER_MODE "default" CACHE STRING "The underlying algorithm for MPIX_Allgather")
-set(MPI_ADVANCE_ALLTOALL_MODE   "default" CACHE STRING "The underlying algorithm for MPI Advance MPI_Alltoall wrapper")
-set(MPI_ADVANCE_XALLTOALL_MODE  "default" CACHE STRING "The underlying algorithm for MPIX_Alltoall")
 
-set(MPI_ADVANCE_ALLGATHER_MODES "bruck;p2p;ring;")
-set_property(CACHE MPI_ADVANCE_ALLGATHER_MODE PROPERTY STRINGS ${MPI_ADVANCE_ALLGATHER_MODES})
+# A helper function to handle processing of the various collective modes in MPI Advance
+# collective_name = the name of the collective, case-insensitive (e.g Alltoall)
+# var_description = the description to be displayed with the associated cmake option
+# var_options     = A cmake list containing valid options for choices for the collective algorithms
+# default_mode    = Only used for print outs, to say what the default algorithm is if not specified.
+# 
+# Creates the following variable that users can specify from command line:
+# -> "MPI_ADVANCE_${uc_name}_MODE" where:
+#     ${uc_name} is the capitalized version of ${collective_name}
+# For example, if "add_mpi_advance_option(BCast ... ... ...)" is called in the cmake code,
+# the user can do "-DMPI_ADVANCE_BCAST_MODE=YYY" to select the YYY algorithm for "BCast"
+#
+# If the created cmake variable is set, the the following defines is added to the compile:
+# -> "-DMPI_ADVANCE_${uc_name}_{lower_name}" where:
+#    ${uc_name} is the capitalized version of ${collective_name}
+#    ${collective_name} is the lower case version of the variable selected by the user
+#
+function(add_mpi_advance_option collective_name var_description var_options default_mode)
+  string(TOUPPER ${collective_name} uc_name)
+  set(var_name "MPI_ADVANCE_${uc_name}_MODE")
+  set(${var_name} "default" CACHE STRING ${var_description})
 
-set(MPI_ADVANCE_XALLGATHER_MODES "bruck;p2p;ring;heir_bruck;mult_heir_bruck")
-set_property(CACHE MPI_ADVANCE_XALLGATHER_MODE PROPERTY STRINGS ${MPI_ADVANCE_XALLGATHER_MODES})
+  set(MA_COLLECTIVE_OPTIONS ${var_options})
+  set_property(CACHE ${var_name} PROPERTY STRINGS MA_COLLECTIVE_OPTIONS)
 
-set(MPI_ADVANCE_ALLTOALL_MODES "pairwise;bruck")
-set_property(CACHE MPI_ADVANCE_ALLTOALL_MODE PROPERTY STRINGS ${MPI_ADVANCE_ALLTOALL_MODES})
+  string(TOLOWER ${${var_name}} lower_name )
 
-set(MPI_ADVANCE_XALLTOALL_MODES "pairwise")
-set_property(CACHE MPI_ADVANCE_XALLTOALL_MODE PROPERTY STRINGS ${MPI_ADVANCE_XALLTOALL_MODES})
+  if(lower_name IN_LIST MA_COLLECTIVE_OPTIONS)
+    add_definitions(-DMPI_ADVANCE_${uc_name}_${lower_name})
+    message(STATUS "Using the ${lower_name} for ${var_name}.")
+  else()
+    message(STATUS "No ${var_name} provided, defaulting to ${default_mode}.")
+  endif()
+endfunction()
 
-## Process user options
-# Allgather mode:
-string( TOLOWER "${MPI_ADVANCE_ALLGATHER_MODE}" MPI_ADVANCE_ALLGATHER_MODE )
-if(MPI_ADVANCE_ALLGATHER_MODE IN_LIST MPI_ADVANCE_ALLGATHER_MODES)
-  add_definitions(-DMPI_ADVANCE_ALLGATHER_${MPI_ADVANCE_ALLGATHER_MODE})
-  message(STATUS "Using the ${MPI_ADVANCE_ALLGATHER_MODE} MPI Advanced MPI_Allgather mode.")
-else()
-  message(STATUS "No MPI_ADVANCE_ALLGATHER_MODE provided, defaulting to PMPI_Allgather")
-endif()
-# XAllgather mode:
-string( TOLOWER "${MPI_ADVANCE_XALLGATHER_MODE}" MPI_ADVANCE_XALLGATHER_MODE )
-if(MPI_ADVANCE_XALLGATHER_MODE IN_LIST MPI_ADVANCE_XALLGATHER_MODES)
-  add_definitions(-DMPI_ADVANCE_ALLGATHER_${MPI_ADVANCE_XALLGATHER_MODE})
-  message(STATUS "Using the ${MPI_ADVANCE_XALLGATHER_MODE} MPI Advanced MPIX_Allgather mode.")
-else()
-  message(STATUS "No MPI_ADVANCE_XALLGATHER_MODE provided, defaulting to locality p2p mode.")
-endif()
-# Alltoall mode:
-string( TOLOWER "${MPI_ADVANCE_ALLTOALL_MODE}" MPI_ADVANCE_ALLTOALL_MODE )
-if(MPI_ADVANCE_ALLTOALL_MODE IN_LIST MPI_ADVANCE_ALLTOALL_MODES)
-  add_definitions(-DMPI_ADVANCE_ALLTOALL_${MPI_ADVANCE_ALLTOALL_MODE})
-  message(STATUS "Using the ${MPI_ADVANCE_ALLTOALL_MODE} MPI Advanced MPI_Alltoall mode.")
-else()
-  message(STATUS "No MPI_ADVANCE_ALLTOALL_MODE provided, defaulting PMPI_Alltoall.")
-endif()
-# XAlltoall mode:
-string( TOLOWER "${MPI_ADVANCE_XALLTOALL_MODE}" MPI_ADVANCE_XALLTOALL_MODE )
-if(MPI_ADVANCE_XALLTOALL_MODE IN_LIST MPI_ADVANCE_XALLTOALL_MODES)
-  add_definitions(-DMPI_ADVANCE_XALLTOALL_${MPI_ADVANCE_XALLTOALL_MODE})
-  message(STATUS "Using the ${MPI_ADVANCE_XALLTOALL_MODE} MPI Advanced MPIX_Alltoall mode.")
-else()
-  message(STATUS "No MPI_ADVANCE_XALLTOALL_MODE provided, defaulting to pairwise locality mode.")
-endif()
-## end processing user options
+
+# Add all the collectives that have options here
+add_mpi_advance_option(ALLGATHER
+                       "The underlying algorithm for MPI Advance MPI_Allgather wrapper"
+                       "bruck;p2p;ring;"
+                       "PMPI_Allgather")
+
+add_mpi_advance_option(XALLGATHER
+                       "The underlying algorithm for MPIX_Allgather"
+                       "bruck;p2p;ring;heir_bruck;mult_heir_bruck"
+                       "p2p")
+
+add_mpi_advance_option(ALLTOALL
+                       "The underlying algorithm for MPI Advance MPI_Alltoall wrapper"
+                       "pairwise;bruck"
+                       "PMPI_Alltoall")
+
+add_mpi_advance_option(XALLTOALL
+                       "The underlying algorithm for MPIX_Alltoall"
+                       "pairwise_locality"
+                       "pairwise_locality")
+
+add_mpi_advance_option(ALLTOALLV
+                       "The underlying algorithm for MPI Advance MPI_Alltoallv wrapper"
+                       "pairwise;nonblocking;pairwise_nonblocking;waitany;pairwise_nonblocking_log2"
+                       "PMPI_Alltoallv")
+
+add_mpi_advance_option(XALLTOALLV
+                       "The underlying algorithm for MPIX_Alltoallv"
+                       "pairwise_locality"
+                       "pairwise_locality")
 
 find_package(MPI REQUIRED)
 if (MPI_VERSION EQUAL 3)

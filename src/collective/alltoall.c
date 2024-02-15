@@ -178,17 +178,17 @@ int MPIX_Alltoall(const void* sendbuf,
         MPI_Datatype recvtype,
         MPIX_Comm* mpi_comm)
 {
-#ifdef MPI_ADVANCE_XALLTOALL_pairwise
-    return alltoall_pairwise_loc(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, mpi_comm);
+#ifdef MPI_ADVANCE_XALLTOALL_pairwise_locality
+    return alltoall_pairwise_locality(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, mpi_comm);
 #else
-    return alltoall_pairwise_loc(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, mpi_comm);
+    return alltoall_pairwise_locality(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, mpi_comm);
 #endif
 }
 
 // 2-Step Aggregation (large messages)
 // Gather all data to be communicated between nodes
 // Send to node+i, recv from node-i
-int alltoall_pairwise_loc(const void* sendbuf,
+int alltoall_pairwise_locality(const void* sendbuf,
         const int sendcount,
         MPI_Datatype sendtype,
         void* recvbuf,

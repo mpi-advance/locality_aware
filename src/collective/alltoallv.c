@@ -3,25 +3,6 @@
 #include <math.h>
 #include "utils.h"
 
-/**************************************************
- * Locality-Aware Point-to-Point Alltoallv
- * Same as PMPI_Alltoall (no load balancing)
- *  - Aggregates messages locally to reduce 
- *      non-local communication
- *  - First redistributes on-node so that each
- *      process holds all data for a subset
- *      of other nodes
- *  - Then, performs inter-node communication
- *      during which each process exchanges
- *      data with their assigned subset of nodes
- *  - Finally, redistribute received data
- *      on-node so that each process holds
- *      the correct final data
- *  - To be used when sizes are relatively balanced
- *  - For load balancing, use persistent version
- *      - Load balancing is too expensive for 
- *          non-persistent Alltoallv
- *************************************************/
 int MPI_Alltoallv(const void* sendbuf,
         const int sendcounts[],
         const int sdispls[],
@@ -32,39 +13,20 @@ int MPI_Alltoallv(const void* sendbuf,
         MPI_Datatype recvtype,
         MPI_Comm comm)
 {
-    return alltoallv_pairwise(
-        sendbuf,
-        sendcounts,
-        sdispls,
-        sendtype,
-        recvbuf,
-        recvcounts,
-        rdispls,
-        recvtype,
-        comm);
+#ifdef MPI_ADVANCE_ALLTOALLV_pairwise
+    return alltoallv_pairwise(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm);
+#elif MPI_ADVANCE_ALLTOALLV_nonblocking
+    return alltoallv_nonblocking(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm);
+#elif MPI_ADVANCE_ALLTOALLV_pairwise_nonblocking
+    return alltoallv_pairwise_nonblocking(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm);
+#elif MPI_ADVANCE_ALLTOALLV_waitany
+    return alltoallv_waitany(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm);
+#elif MPI_ADVANCE_ALLTOALLV_pairwise_nonblocking_log2
+    return alltoallv_pairwise_nonblocking_log2(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm);
+#else
+    return PMPI_Alltoallv(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm);
+#endif
 }
-
-int MPIX_Alltoallv(const void* sendbuf,
-        const int sendcounts[],
-        const int sdispls[],
-        MPI_Datatype sendtype,
-        void* recvbuf,
-        const int recvcounts[],
-        const int rdispls[],
-        MPI_Datatype recvtype,
-        MPIX_Comm* mpi_comm)
-{
-    return alltoallv_waitany(sendbuf,
-        sendcounts,
-        sdispls,
-        sendtype,
-        recvbuf,
-        recvcounts,
-        rdispls,
-        recvtype,
-        mpi_comm->global_comm);
-}
-
 
 int alltoallv_pairwise(const void* sendbuf,
         const int sendcounts[],
@@ -345,6 +307,42 @@ int alltoallv_waitany(const void* sendbuf,
     return 0;
 }
 
+/**************************************************
+ * Locality-Aware Point-to-Point Alltoallv
+ * Same as PMPI_Alltoall (no load balancing)
+ *  - Aggregates messages locally to reduce 
+ *      non-local communication
+ *  - First redistributes on-node so that each
+ *      process holds all data for a subset
+ *      of other nodes
+ *  - Then, performs inter-node communication
+ *      during which each process exchanges
+ *      data with their assigned subset of nodes
+ *  - Finally, redistribute received data
+ *      on-node so that each process holds
+ *      the correct final data
+ *  - To be used when sizes are relatively balanced
+ *  - For load balancing, use persistent version
+ *      - Load balancing is too expensive for 
+ *          non-persistent Alltoallv
+ *************************************************/
+int MPIX_Alltoallv(const void* sendbuf,
+        const int sendcounts[],
+        const int sdispls[],
+        MPI_Datatype sendtype,
+        void* recvbuf,
+        const int recvcounts[],
+        const int rdispls[],
+        MPI_Datatype recvtype,
+        MPIX_Comm* mpi_comm)
+{
+#ifdef MPI_ADVANCE_ALLTOALLV_pairwise_locality
+    return alltoallv_pairwise_locality(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, mpi_comm);
+#else
+    return alltoallv_pairwise_locality(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, mpi_comm);
+#endif
+}
+
 // 2-Step Aggregation (large messages)
 // Gather all data to be communicated between nodes
 // Send to node+i, recv from node-i
@@ -356,7 +354,7 @@ int alltoallv_waitany(const void* sendbuf,
 //         a tolerance.  Any message with size < tolerance, aggregate
 //         this data with other processes locally.
 //     How should we aggregate data when using GPU memory??
-int alltoallv_pairwise_loc(const void* sendbuf,
+int alltoallv_pairwise_locality(const void* sendbuf,
         const int sendcounts[],
         const int sdispls[],
         MPI_Datatype sendtype,
