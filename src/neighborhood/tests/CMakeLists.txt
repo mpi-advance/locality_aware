@@ -22,3 +22,7 @@ add_executable(test_suitesparse_alltoall_crs test_suitesparse_alltoall_crs.cpp)
 target_link_libraries(test_suitesparse_alltoall_crs mpi_advance gtest pthread )
 add_test(SuitesparseAlltoallCRS mpirun -n 16 ./test_suitesparse_alltoall_crs)
 
+add_executable(test_suitesparse_alltoallv_crs test_suitesparse_alltoallv_crs.cpp) 
+target_link_libraries(test_suitesparse_alltoallv_crs mpi_advance gtest pthread )
+add_test(SuitesparseAlltoallvCRS mpirun -n 16 ./test_suitesparse_alltoallv_crs)
+

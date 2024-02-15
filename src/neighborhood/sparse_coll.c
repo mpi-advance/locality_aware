@@ -13,8 +13,7 @@ int MPIX_Alltoall_crs(
         int recvcount,
         MPI_Datatype recvtype,
         int* recvvals,
-        MPIX_Comm* xcomm
-        )
+        MPIX_Comm* xcomm)
 {
     return alltoall_crs_rma(send_nnz, dest, sendcount, sendtype, sendvals,
             recv_nnz, src, recvcount, recvtype, recvvals, xcomm);
@@ -23,19 +22,22 @@ int MPIX_Alltoall_crs(
 int MPIX_Alltoallv_crs(
         int send_nnz,
         int* dest,
-        int* sendcount,
+        int* sendcounts,
+        int* sdispls,
         MPI_Datatype sendtype,
         int* sendvals,
         int* recv_nnz,
+        int* recv_size,
         int* src,
-        int* recvcount,
+        int* recvcounts,
+        int* rdispls,
         MPI_Datatype recvtype,
         int* recvvals,
-        MPI_Comm comm
-        )
+        MPIX_Comm* comm)
 {
-
-    return MPI_SUCCESS;
+    return alltoallv_crs_personalized(send_nnz, dest, sendcounts, sdispls,
+            sendtype, sendvals, recv_nnz, recv_size, src, recvcounts, 
+            rdispls, recvtype, recvvals, comm);
 }
 
 int alltoall_crs_rma(int send_nnz, int* dest, int sendcount, 
@@ -165,6 +167,8 @@ int alltoall_crs_personalized(int send_nnz, int* dest, int sendcount,
 
     if (send_nnz)
         MPI_Waitall(send_nnz, comm->requests, MPI_STATUSES_IGNORE);
+
+    return MPI_SUCCESS;
 }
 
 
@@ -230,6 +234,82 @@ int alltoall_crs_nonblocking(int send_nnz, int* dest, int sendcount,
         }
     }
     *recv_nnz = ctr;
+
+    return MPI_SUCCESS;
+}
+
+
+
+
+
+
+
+int alltoallv_crs_personalized(int send_nnz, int* dest, int* sendcounts,
+        int* sdispls, MPI_Datatype sendtype, void* sendvals,
+        int* recv_nnz, int* recv_size, int* src, int* recvcounts, 
+        int* rdispls, MPI_Datatype recvtype, void* recvvals, MPIX_Comm* comm)
+{
+    int rank, num_procs;
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
+
+    int tag = 928431;
+    MPI_Status recv_status;
+    int proc, ctr, idx, count;
+
+    char* send_buffer = (char*)sendvals;
+    char* recv_buffer = (char*)recvvals;
+    int send_bytes, recv_bytes;
+    MPI_Type_size(sendtype, &send_bytes);
+    MPI_Type_size(recvtype, &recv_bytes);
+
+
+    if (*recv_size < 0)
+    {
+        int* msg_counts = (int*)malloc(num_procs*sizeof(int));
+        memset(msg_counts, 0, num_procs*sizeof(int));
+
+        for (int i = 0; i < send_nnz; i++)
+        {
+            msg_counts[dest[i]] = sendcounts[i]*send_bytes;
+        }
+        MPI_Allreduce(MPI_IN_PLACE, msg_counts, num_procs, MPI_INT, 
+                MPI_SUM, MPI_COMM_WORLD);
+        *recv_size = msg_counts[rank] / recv_bytes;
+        free(msg_counts);
+    }
+
+    if (comm->n_requests < send_nnz)
+        MPIX_Comm_req_resize(comm, send_nnz);
+
+    for (int i = 0; i < send_nnz; i++)
+    {
+        proc = dest[i];
+        MPI_Isend(&(send_buffer[sdispls[i]*send_bytes]), sendcounts[i]*send_bytes, MPI_BYTE, 
+                proc, tag, comm->global_comm, &(comm->requests[i]));
+    }
+
+    ctr = 0;
+    idx = 0;
+    rdispls[0] = 0;
+    int bytes = *recv_size * recv_bytes;
+    while (ctr < bytes )
+    {
+        MPI_Probe(MPI_ANY_SOURCE, tag, comm->global_comm, &recv_status);
+        MPI_Get_count(&recv_status, MPI_BYTE, &count);
+        proc = recv_status.MPI_SOURCE;
+        src[idx] = proc;
+        recvcounts[idx] = count / recv_bytes;
+        rdispls[idx+1] = rdispls[idx] + recvcounts[idx];
+        MPI_Recv(&(recv_buffer[ctr]), count, MPI_BYTE, proc, tag,
+                comm->global_comm, &recv_status);
+        ctr += count;
+        idx++;
+    }
+    *recv_nnz = idx;
+
+    if (send_nnz)
+        MPI_Waitall(send_nnz, comm->requests, MPI_STATUSES_IGNORE);
 
     return MPI_SUCCESS;
 }

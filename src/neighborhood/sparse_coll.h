@@ -29,16 +29,18 @@ int MPIX_Alltoall_crs(
 int MPIX_Alltoallv_crs(
         int send_nnz,
         int* dest,
-        int* sendcount,
+        int* sendcounts,
+        int* sdispls,
         MPI_Datatype sendtype,
         int* sendvals,
         int* recv_nnz,
+        int* recv_size,
         int* src,
-        int* recvcount,
+        int* recvcounts,
+        int* rdispls,
         MPI_Datatype recvtype,
         int* recvvals,
-        MPI_Comm comm
-        );
+        MPIX_Comm* comm);
 
 
 int alltoall_crs_rma(int send_nnz, int* dest, int sendcount,
@@ -60,6 +62,13 @@ int alltoall_crs_nonblocking_loc(int send_nnz, int* dest, int sendcount,
         MPI_Datatype sendtype, void* sendvals,
         int* recv_nnz, int* src, int recvcount, MPI_Datatype recvtype,
         void* recvvals, MPIX_Comm* comm);
+
+
+
+int alltoallv_crs_personalized(int send_nnz, int* dest, int* sendcounts,
+        int* sdispls, MPI_Datatype sendtype, void* sendvals,
+        int* recv_nnz, int* recv_size, int* src, int* recvcounts, 
+        int* rdispls, MPI_Datatype recvtype, void* recvvals, MPIX_Comm* comm);
 
 #ifdef __cplusplus
 }
