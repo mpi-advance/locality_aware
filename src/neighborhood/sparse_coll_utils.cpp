@@ -141,7 +141,6 @@ int alltoall_crs_nonblocking_loc(int send_nnz, int* dest, int sendcount,
     count = recv_buf.size();
     if (count)
         local_send_buffer.resize(count);
-    printf("recv_buf size %d\n", recv_buf.size());
 
     ctr = 0;
     idx = 0;
@@ -178,7 +177,6 @@ int alltoall_crs_nonblocking_loc(int send_nnz, int* dest, int sendcount,
         if (displs[i+1] == displs[i])
             continue;
 
-        printf("Rank %d sending buffer[0] = proc %d to rank %d\n", rank, (int)(local_send_buffer[displs[i]]), i);
         MPI_Isend(&(local_send_buffer[displs[i]]), displs[i+1] - displs[i], MPI_BYTE, i, tag,
                 comm->local_comm, &(comm->requests[n_sends++]));
     }
@@ -204,8 +202,6 @@ int alltoall_crs_nonblocking_loc(int send_nnz, int* dest, int sendcount,
                 comm->local_comm, MPI_STATUS_IGNORE);
         int a;
         memcpy(&a, &(local_recv_buffer[ctr]), sizeof(int));
-        printf("Rank %d recvd buffer[0] = proc %d from rank %d\n", rank, a, proc);
-//        printf("Rank %d recvd buffer[0] = proc %d from rank %d\n", rank, (int)(local_recv_buffer[ctr]), proc);
 
         ctr += count;
     }
@@ -225,7 +221,6 @@ int alltoall_crs_nonblocking_loc(int send_nnz, int* dest, int sendcount,
         new_idx += recv_bytes;
     }
     *recv_nnz = n_recvs;
-    printf("Rank %d n_recvs %d\n", rank, n_recvs);
 
     return MPI_SUCCESS;
 }

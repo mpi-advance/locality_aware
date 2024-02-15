@@ -125,13 +125,10 @@ TEST(RandomCommTest, TestsInTests)
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
 
-    /*
     test_matrix("../../../../test_data/dwt_162.pm");
     test_matrix("../../../../test_data/odepa400.pm");
     test_matrix("../../../../test_data/ww_36_pmec_36.pm");
-    */
     test_matrix("../../../../test_data/bcsstk01.pm");
-    /*
     test_matrix("../../../../test_data/west0132.pm");
     test_matrix("../../../../test_data/gams10a.pm");
     test_matrix("../../../../test_data/gams10am.pm");
@@ -147,6 +144,5 @@ TEST(RandomCommTest, TestsInTests)
     test_matrix("../../../../test_data/can_1072.pm");
     test_matrix("../../../../test_data/lp_woodw.pm");
     test_matrix("../../../../test_data/lp_sctap2.pm");
-    */
 }
 
