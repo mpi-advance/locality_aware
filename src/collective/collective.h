@@ -4,7 +4,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <mpi.h>
-//#include <mpt.h>
 #include "utils.h"
 #include "allgather.h"
 #include "alltoall.h"
@@ -49,6 +48,14 @@ int MPI_Allgather(const void* sendbuf,
         int recvcount,
         MPI_Datatype recvtype,
         MPI_Comm comm);
+
+int MPIX_Allgather(const void* sendbuf,
+        int sendcount,
+        MPI_Datatype sendtype,
+        void* recvbuf,
+        int recvcount,
+        MPI_Datatype recvtype,
+        MPIX_Comm* comm);
 
 #ifdef __cplusplus
 }

@@ -1,23 +1,41 @@
-cmake_minimum_required(VERSION 3.14) #3.14 required for new version of googletest
-project(mpi_advance)
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
+cmake_minimum_required(VERSION 3.14 FATAL_ERROR) #3.14 required for new version of googletest
+project(mpi_advance VERSION 2.0 LANGUAGES C CXX)
 
-enable_language(C)
-enable_language(CXX)
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
+## User customizable build options
+option(ENABLE_UNIT_TESTS "Enable unit testing" OFF)
+set(MPI_ADVANCE_ALLGATHER_MODE "default" CACHE STRING "The underlying algorithm for MPI_Allgather wrapper called by this library.")
+set(MPI_ADVANCE_XALLGATHER_MODE "default" CACHE STRING "The underlying algorithm for MPIX_Allgather")
 
-option(ENABLE_UNIT_TESTS "Enable unit testing" ON)
+set(MPI_ADVANCE_ALLGATHER_MODES "bruck;p2p;ring;")
+set_property(CACHE MPI_ADVANCE_ALLGATHER_MODE PROPERTY STRINGS ${MPI_ADVANCE_ALLGATHER_MODES})
+
+set(MPI_ADVANCE_XALLGATHER_MODES "bruck;p2p;ring;heir_bruck;mult_heir_bruck")
+set_property(CACHE MPI_ADVANCE_XALLGATHER_MODE PROPERTY STRINGS ${MPI_ADVANCE_XALLGATHER_MODES})
+
+## Process user options
+# Allgather mode:
+string( TOLOWER "${MPI_ADVANCE_ALLGATHER_MODE}" MPI_ADVANCE_ALLGATHER_MODE )
+if(MPI_ADVANCE_ALLGATHER_MODE IN_LIST MPI_ADVANCE_ALLGATHER_MODES)
+  add_definitions(-DMPI_ADVANCE_ALLGATHER_${MPI_ADVANCE_ALLGATHER_MODE})
+  message(STATUS "Using the ${MPI_ADVANCE_ALLGATHER_MODE} MPI Advanced MPI_Allgather mode.")
+else()
+  message(STATUS "No MPI_ADVANCE_ALLGATHER_MODE provided, defaulting to PMPI_Allgather")
+endif()
+# XAllgather mode:
+string( TOLOWER "${MPI_ADVANCE_XALLGATHER_MODE}" MPI_ADVANCE_XALLGATHER_MODE )
+if(MPI_ADVANCE_XALLGATHER_MODE IN_LIST MPI_ADVANCE_XALLGATHER_MODES)
+  add_definitions(-DMPI_ADVANCE_ALLGATHER_${MPI_ADVANCE_XALLGATHER_MODE})
+  message(STATUS "Using the ${MPI_ADVANCE_XALLGATHER_MODE} MPI Advanced MPIX_Allgather mode.")
+else()
+  message(STATUS "No MPI_ADVANCE_XALLGATHER_MODE provided, defaulting to locality p2p mode.")
+endif()
+## end processing user options
 
 find_package(MPI REQUIRED)
-include_directories(${MPI_INCLUDE_PATH})
-
-execute_process(COMMAND ${GIT_EXECUTABLE} submodule update --init --recursive
-                        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-                        RESULT_VARIABLE GIT_SUBMOD_RESULT)
-
 if (MPI_VERSION EQUAL 3)
     add_definitions(-DUSING_MPI3)
 endif()
@@ -29,7 +47,6 @@ endif()
 ##################### 
 ## GOOGLETEST      ##
 #####################
-
 if(ENABLE_UNIT_TESTS)
 
   include(FetchContent)
@@ -46,7 +63,7 @@ if(ENABLE_UNIT_TESTS)
 endif()
 #####################
 
-include_directories("src")
-add_subdirectory("src")
+include_directories(src)
+add_subdirectory(src)
 
 add_subdirectory(benchmarks)

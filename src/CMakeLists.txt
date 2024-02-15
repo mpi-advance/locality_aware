@@ -12,7 +12,7 @@ add_library(mpi_advance STATIC
     ${persistent_SOURCES} ${persistent_HEADERS}
     ${neighborhood_SOURCES} ${neighborhood_HEADERS})
 
-target_link_libraries(mpi_advance ${MPI_LIBRARIES} stdc++)
+target_link_libraries(mpi_advance MPI::MPI_C)
 
 install(TARGETS mpi_advance DESTINATION "lib")
 install(FILES mpi_advance.h utils.h DESTINATION "include")

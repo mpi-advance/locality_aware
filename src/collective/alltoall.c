@@ -9,7 +9,7 @@
 /**************************************************
  * Locality-Aware Point-to-Point Alltoall
  *  - Aggregates messages locally to reduce 
- *      non-local communciation
+ *      non-local communication
  *  - First redistributes on-node so that each
  *      process holds all data for a subset
  *      of other nodes

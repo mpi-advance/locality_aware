@@ -7,7 +7,7 @@
  * Locality-Aware Point-to-Point Alltoallv
  * Same as PMPI_Alltoall (no load balancing)
  *  - Aggregates messages locally to reduce 
- *      non-local communciation
+ *      non-local communication
  *  - First redistributes on-node so that each
  *      process holds all data for a subset
  *      of other nodes
@@ -18,8 +18,8 @@
  *      on-node so that each process holds
  *      the correct final data
  *  - To be used when sizes are relatively balanced
- *  - For load balacing, use persistent version
- *      - Load balacing is too expensive for 
+ *  - For load balancing, use persistent version
+ *      - Load balancing is too expensive for 
  *          non-persistent Alltoallv
  *************************************************/
 int MPI_Alltoallv(const void* sendbuf,

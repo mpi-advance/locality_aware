@@ -74,5 +74,3 @@ void get_local_comm_data(LocalityComm* locality,
     *max_non_local_size = sizes[3];
 
 }
-
-

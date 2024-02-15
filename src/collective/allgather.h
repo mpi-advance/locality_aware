@@ -34,21 +34,23 @@ int allgather_ring(const void* sendbuf,
         int recvcount,
         MPI_Datatype recvtype,
         MPI_Comm comm);
-int allgather_loc_p2p(const void* sendbuf,
+
+// Locality helper functions
+int allgather_bruck_locality(const void* sendbuf,
         int sendcount,
         MPI_Datatype sendtype,
         void* recvbuf,
         int recvcount,
         MPI_Datatype recvtype,
         MPIX_Comm* comm);
-int allgather_loc_bruck(const void* sendbuf,
+int allgather_p2p_locality(const void* sendbuf,
         int sendcount,
         MPI_Datatype sendtype,
         void* recvbuf,
         int recvcount,
         MPI_Datatype recvtype,
         MPIX_Comm* comm);
-int allgather_loc_ring(const void* sendbuf,
+int allgather_ring_locality(const void* sendbuf,
         int sendcount,
         MPI_Datatype sendtype,
         void* recvbuf,
@@ -69,7 +71,6 @@ int allgather_mult_hier_bruck(const void* sendbuf,
         int recvcount,
         MPI_Datatype recvtype,
         MPIX_Comm* comm);
-
 
 
 #ifdef __cplusplus
