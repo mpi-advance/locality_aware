@@ -51,7 +51,7 @@ add_mpi_advance_option(ALLGATHER
 
 add_mpi_advance_option(XALLGATHER
                        "The underlying algorithm for MPIX_Allgather"
-                       "bruck;p2p;ring;heir_bruck;mult_heir_bruck"
+                       "bruck_locality;p2p_locality;ring_locality;heir_bruck;mult_heir_bruck"
                        "p2p")
 
 add_mpi_advance_option(ALLTOALL

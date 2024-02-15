@@ -164,11 +164,11 @@ int MPIX_Allgather(const void* sendbuf,
         MPI_Datatype recvtype,
         MPIX_Comm* comm)
 {
-#ifdef MPI_ADVANCE_ALLGATHER_locality_bruck
+#ifdef MPI_ADVANCE_ALLGATHER_bruck_locality
     return allgather_bruck_locality(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm);
-#elif MPI_ADVANCE_ALLGATHER_locality_p2p
+#elif MPI_ADVANCE_ALLGATHER_p2p_locality
     return allgather_p2p_locality(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm);
-#elif MPI_ADVANCE_ALLGATHER_locality_ring
+#elif MPI_ADVANCE_ALLGATHER_ring_locality
     return allgather_ring_locality(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm);
 #elif MPI_ADVANCE_ALLGATHER_heir_bruck
     return allgather_hier_bruck(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm);
