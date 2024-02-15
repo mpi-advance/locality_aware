@@ -16,7 +16,7 @@ set(neighborhood_SOURCES
     neighborhood/neighbor.c
     neighborhood/neighbor_locality.cpp
     neighborhood/sparse_coll.c
-#    neighborhood/sparse_coll_utils.cpp
+    neighborhood/sparse_coll_utils.cpp
     PARENT_SCOPE
     )
 

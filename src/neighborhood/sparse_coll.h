@@ -56,8 +56,16 @@ int alltoall_crs_nonblocking(int send_nnz, int* dest, int sendcount,
         int* recv_nnz, int* src, int recvcount, MPI_Datatype recvtype,
         void* recvvals, MPIX_Comm* comm);
 
+int alltoall_crs_nonblocking_loc(int send_nnz, int* dest, int sendcount,
+        MPI_Datatype sendtype, void* sendvals,
+        int* recv_nnz, int* src, int recvcount, MPI_Datatype recvtype,
+        void* recvvals, MPIX_Comm* comm);
+
 #ifdef __cplusplus
 }
+
+
+
 #endif
 
 
