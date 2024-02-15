@@ -130,7 +130,7 @@ int alltoall_crs_nonblocking_loc(int send_nnz, int* dest, int sendcount,
         memcpy(&proc, &(recv_buf[ctr]), sizeof(int));
         proc -= (comm->rank_node * PPN);
         ctr += recv_bytes + sizeof(int);
-        msg_counts[proc - comm->rank_node*PPN] += recv_bytes + sizeof(int);
+        msg_counts[proc] += recv_bytes + sizeof(int);
     }
 
     std::vector<int> displs(PPN+1);
@@ -142,7 +142,6 @@ int alltoall_crs_nonblocking_loc(int send_nnz, int* dest, int sendcount,
     if (count)
         local_send_buffer.resize(count);
     printf("recv_buf size %d\n", recv_buf.size());
-    /*
 
     ctr = 0;
     idx = 0;
@@ -227,7 +226,7 @@ int alltoall_crs_nonblocking_loc(int send_nnz, int* dest, int sendcount,
     }
     *recv_nnz = n_recvs;
     printf("Rank %d n_recvs %d\n", rank, n_recvs);
-*/
+
     return MPI_SUCCESS;
 }
 

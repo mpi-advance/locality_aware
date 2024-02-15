@@ -93,21 +93,16 @@ void test_matrix(const char* filename)
     alltoall_crs_nonblocking_loc(A.recv_comm.n_msgs, A.recv_comm.procs.data(), 1, MPI_INT,
             A.recv_comm.counts.data(), &n_recvs, src.data(), 1, MPI_INT,
             recvvals.data(), xcomm);
-    printf("Expect rank %d to recv %d\n", rank, A.send_comm.n_msgs);
 
-    /*
     ASSERT_EQ(n_recvs, A.send_comm.n_msgs);
     for (int i = 0; i < n_recvs; i++)
     {
         recvcounts[src[i]] = recvvals[i];
-        printf("Rank %d recvd %d from %d\n", rank, recvvals[i],src[i]);
     }
     for (int i = 0; i < A.send_comm.n_msgs; i++)
     {
-        printf("Rank %d should recv %d from %d\n", rank, A.send_comm.counts[i], A.send_comm.procs[i]);
-//        ASSERT_EQ(A.send_comm.counts[i], recvcounts[A.send_comm.procs[i]]);
+        ASSERT_EQ(A.send_comm.counts[i], recvcounts[A.send_comm.procs[i]]);
     }
-*/
 
     MPIX_Comm_free(xcomm);
 }
