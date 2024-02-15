@@ -7,14 +7,22 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 ## User customizable build options
 option(ENABLE_UNIT_TESTS "Enable unit testing" OFF)
-set(MPI_ADVANCE_ALLGATHER_MODE "default" CACHE STRING "The underlying algorithm for MPI_Allgather wrapper called by this library.")
+set(MPI_ADVANCE_ALLGATHER_MODE  "default" CACHE STRING "The underlying algorithm for MPI Advance MPI_Allgather wrapper")
 set(MPI_ADVANCE_XALLGATHER_MODE "default" CACHE STRING "The underlying algorithm for MPIX_Allgather")
+set(MPI_ADVANCE_ALLTOALL_MODE   "default" CACHE STRING "The underlying algorithm for MPI Advance MPI_Alltoall wrapper")
+set(MPI_ADVANCE_XALLTOALL_MODE  "default" CACHE STRING "The underlying algorithm for MPIX_Alltoall")
 
 set(MPI_ADVANCE_ALLGATHER_MODES "bruck;p2p;ring;")
 set_property(CACHE MPI_ADVANCE_ALLGATHER_MODE PROPERTY STRINGS ${MPI_ADVANCE_ALLGATHER_MODES})
 
 set(MPI_ADVANCE_XALLGATHER_MODES "bruck;p2p;ring;heir_bruck;mult_heir_bruck")
 set_property(CACHE MPI_ADVANCE_XALLGATHER_MODE PROPERTY STRINGS ${MPI_ADVANCE_XALLGATHER_MODES})
+
+set(MPI_ADVANCE_ALLTOALL_MODES "pairwise;bruck")
+set_property(CACHE MPI_ADVANCE_ALLTOALL_MODE PROPERTY STRINGS ${MPI_ADVANCE_ALLTOALL_MODES})
+
+set(MPI_ADVANCE_XALLTOALL_MODES "pairwise")
+set_property(CACHE MPI_ADVANCE_XALLTOALL_MODE PROPERTY STRINGS ${MPI_ADVANCE_XALLTOALL_MODES})
 
 ## Process user options
 # Allgather mode:
@@ -32,6 +40,22 @@ if(MPI_ADVANCE_XALLGATHER_MODE IN_LIST MPI_ADVANCE_XALLGATHER_MODES)
   message(STATUS "Using the ${MPI_ADVANCE_XALLGATHER_MODE} MPI Advanced MPIX_Allgather mode.")
 else()
   message(STATUS "No MPI_ADVANCE_XALLGATHER_MODE provided, defaulting to locality p2p mode.")
+endif()
+# Alltoall mode:
+string( TOLOWER "${MPI_ADVANCE_ALLTOALL_MODE}" MPI_ADVANCE_ALLTOALL_MODE )
+if(MPI_ADVANCE_ALLTOALL_MODE IN_LIST MPI_ADVANCE_ALLTOALL_MODES)
+  add_definitions(-DMPI_ADVANCE_ALLTOALL_${MPI_ADVANCE_ALLTOALL_MODE})
+  message(STATUS "Using the ${MPI_ADVANCE_ALLTOALL_MODE} MPI Advanced MPI_Alltoall mode.")
+else()
+  message(STATUS "No MPI_ADVANCE_ALLTOALL_MODE provided, defaulting PMPI_Alltoall.")
+endif()
+# XAlltoall mode:
+string( TOLOWER "${MPI_ADVANCE_XALLTOALL_MODE}" MPI_ADVANCE_XALLTOALL_MODE )
+if(MPI_ADVANCE_XALLTOALL_MODE IN_LIST MPI_ADVANCE_XALLTOALL_MODES)
+  add_definitions(-DMPI_ADVANCE_XALLTOALL_${MPI_ADVANCE_XALLTOALL_MODE})
+  message(STATUS "Using the ${MPI_ADVANCE_XALLTOALL_MODE} MPI Advanced MPIX_Alltoall mode.")
+else()
+  message(STATUS "No MPI_ADVANCE_XALLTOALL_MODE provided, defaulting to pairwise locality mode.")
 endif()
 ## end processing user options
 

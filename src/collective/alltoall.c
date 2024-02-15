@@ -3,23 +3,6 @@
 #include <math.h>
 #include "utils.h"
 
-// TODO : Add Locality-Aware Bruck Alltoall Algorithm!
-// TODO : Change to PMPI_Alltoall and test with profiling library!
-
-/**************************************************
- * Locality-Aware Point-to-Point Alltoall
- *  - Aggregates messages locally to reduce 
- *      non-local communication
- *  - First redistributes on-node so that each
- *      process holds all data for a subset
- *      of other nodes
- *  - Then, performs inter-node communication
- *      during which each process exchanges
- *      data with their assigned subset of nodes
- *  - Finally, redistribute received data
- *      on-node so that each process holds
- *      the correct final data
- *************************************************/
 int MPI_Alltoall(const void* sendbuf,
         const int sendcount,
         MPI_Datatype sendtype,
@@ -28,31 +11,13 @@ int MPI_Alltoall(const void* sendbuf,
         MPI_Datatype recvtype,
         MPI_Comm comm)
 {
-    return alltoall_pairwise(sendbuf,
-        sendcount,
-        sendtype,
-        recvbuf,
-        recvcount,
-        recvtype,
-        comm);
-}
-
-
-int MPIX_Alltoall(const void* sendbuf,
-        const int sendcount,
-        MPI_Datatype sendtype,
-        void* recvbuf,
-        const int recvcount,
-        MPI_Datatype recvtype,
-        MPIX_Comm* mpi_comm)
-{    
-    return alltoall_pairwise_loc(sendbuf,
-        sendcount,
-        sendtype,
-        recvbuf,
-        recvcount,
-        recvtype,
-        mpi_comm);
+#ifdef MPI_ADVANCE_ALLTOALL_pairwise
+    return alltoall_pairwise(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm);
+#elif MPI_ADVANCE_ALLTOALL_bruck
+    return alltoall_bruck(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm);
+#else
+    return PMPI_Alltoall(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm);
+#endif
 }
 
 int alltoall_pairwise(const void* sendbuf,
@@ -190,6 +155,35 @@ int alltoall_bruck(const void* sendbuf,
     return 0;
 }
 
+// TODO : Add Locality-Aware Bruck Alltoall Algorithm!
+/**************************************************
+ * Locality-Aware Point-to-Point Alltoall
+ *  - Aggregates messages locally to reduce 
+ *      non-local communication
+ *  - First redistributes on-node so that each
+ *      process holds all data for a subset
+ *      of other nodes
+ *  - Then, performs inter-node communication
+ *      during which each process exchanges
+ *      data with their assigned subset of nodes
+ *  - Finally, redistribute received data
+ *      on-node so that each process holds
+ *      the correct final data
+ *************************************************/
+int MPIX_Alltoall(const void* sendbuf,
+        const int sendcount,
+        MPI_Datatype sendtype,
+        void* recvbuf,
+        const int recvcount,
+        MPI_Datatype recvtype,
+        MPIX_Comm* mpi_comm)
+{
+#ifdef MPI_ADVANCE_XALLTOALL_pairwise
+    return alltoall_pairwise_loc(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, mpi_comm);
+#else
+    return alltoall_pairwise_loc(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, mpi_comm);
+#endif
+}
 
 // 2-Step Aggregation (large messages)
 // Gather all data to be communicated between nodes

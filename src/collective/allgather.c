@@ -20,9 +20,10 @@ int MPI_Allgather(const void* sendbuf,
     return allgather_p2p(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm);
 #elif MPI_ADVANCE_ALLGATHER_ring
     return allgather_ring(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm);
-#endif
+#else
     // Default will call from MPI implementation
     return PMPI_Allgather(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm);
+#endif
 }
 
 int allgather_bruck(const void* sendbuf,
@@ -173,9 +174,10 @@ int MPIX_Allgather(const void* sendbuf,
     return allgather_hier_bruck(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm);
 #elif MPI_ADVANCE_ALLGATHER_mult_hier_bruck
     return allgather_mult_hier_bruck(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm);
-#endif 
+#else
     // Default will call p2p
     return allgather_p2p_locality(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm);
+#endif
 }
 
 int allgather_bruck_locality(const void *sendbuf, int sendcount, MPI_Datatype sendtype,
