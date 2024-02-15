@@ -253,7 +253,7 @@ int alltoallv_crs_personalized(int send_nnz, int* dest, int* sendcounts,
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
 
-    int tag = 928431;
+    int tag = 828431;
     MPI_Status recv_status;
     int proc, ctr, idx, count;
 
@@ -314,3 +314,77 @@ int alltoallv_crs_personalized(int send_nnz, int* dest, int* sendcounts,
     return MPI_SUCCESS;
 }
 
+
+
+int alltoallv_crs_nonblocking(int send_nnz, int* dest, int* sendcounts,
+        int* sdispls, MPI_Datatype sendtype, void* sendvals,
+        int* recv_nnz, int* recv_size, int* src, int* recvcounts, 
+        int* rdispls, MPI_Datatype recvtype, void* recvvals, MPIX_Comm* comm)
+{
+    int rank, num_procs;
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
+
+    char* send_buffer = (char*)sendvals;
+    char* recv_buffer = (char*)recvvals;
+    int send_bytes, recv_bytes;
+    MPI_Type_size(sendtype, &send_bytes);
+    MPI_Type_size(recvtype, &recv_bytes);
+
+    int proc, ctr, flag, ibar, idx, count;
+    MPI_Status recv_status;
+    MPI_Request bar_req;
+    int tag = 797239;
+
+    if (comm->n_requests < send_nnz)
+        MPIX_Comm_req_resize(comm, send_nnz);
+
+    for (int i = 0; i < send_nnz; i++)
+    {
+        proc = dest[i];
+        MPI_Issend(&(send_buffer[sdispls[i]*send_bytes]), sendcounts[i]*send_bytes, MPI_BYTE, 
+                proc, tag, comm->global_comm, &(comm->requests[i]));
+    }
+
+    ibar = 0;
+    ctr = 0;
+    idx = 0;
+    while (1)
+    {
+        MPI_Iprobe(MPI_ANY_SOURCE, tag, comm->global_comm, &flag, &recv_status);
+        if (flag)
+        {
+            MPI_Probe(MPI_ANY_SOURCE, tag, comm->global_comm, &recv_status);
+            MPI_Get_count(&recv_status, MPI_BYTE, &count);
+            proc = recv_status.MPI_SOURCE;
+            src[idx] = proc;
+            recvcounts[idx] = count / recv_bytes;
+            rdispls[idx+1] = rdispls[idx] + recvcounts[idx];
+            MPI_Recv(&(recv_buffer[ctr]), count, MPI_BYTE, proc, tag,
+                    comm->global_comm, &recv_status);
+            ctr += count;
+            idx++;
+        }
+        if (ibar)
+        {
+           MPI_Test(&bar_req, &flag, &recv_status);
+           if (flag) 
+               break;
+        }
+        else
+        {
+            MPI_Testall(send_nnz, comm->requests, &flag, MPI_STATUSES_IGNORE);
+            if (flag)
+            {
+                ibar = 1;
+                MPI_Ibarrier(comm->global_comm, &bar_req);
+            }
+        }
+    }
+    *recv_nnz = idx;
+    *recv_size = ctr / recv_bytes;
+
+    return MPI_SUCCESS;
+}
+
+ 

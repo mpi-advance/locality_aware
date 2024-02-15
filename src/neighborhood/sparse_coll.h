@@ -70,6 +70,23 @@ int alltoallv_crs_personalized(int send_nnz, int* dest, int* sendcounts,
         int* recv_nnz, int* recv_size, int* src, int* recvcounts, 
         int* rdispls, MPI_Datatype recvtype, void* recvvals, MPIX_Comm* comm);
 
+int alltoallv_crs_personalized_loc(int send_nnz, int* dest, int* sendcounts,
+        int* sdispls, MPI_Datatype sendtype, void* sendvals,
+        int* recv_nnz, int* recv_size, int* src, int* recvcounts, 
+        int* rdispls, MPI_Datatype recvtype, void* recvvals, MPIX_Comm* comm);
+
+int alltoallv_crs_nonblocking(int send_nnz, int* dest, int* sendcounts,
+        int* sdispls, MPI_Datatype sendtype, void* sendvals,
+        int* recv_nnz, int* recv_size, int* src, int* recvcounts, 
+        int* rdispls, MPI_Datatype recvtype, void* recvvals, MPIX_Comm* comm);
+
+int alltoallv_crs_nonblocking_loc(int send_nnz, int* dest, int* sendcounts,
+        int* sdispls, MPI_Datatype sendtype, void* sendvals,
+        int* recv_nnz, int* recv_size, int* src, int* recvcounts, 
+        int* rdispls, MPI_Datatype recvtype, void* recvvals, MPIX_Comm* comm);
+
+
+
 #ifdef __cplusplus
 }
 

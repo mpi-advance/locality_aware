@@ -65,6 +65,25 @@ void test_matrix(const char* filename)
             ASSERT_EQ(recvvals[rdispls[i] + j] - A.first_col, 
                     A.send_comm.idx[A.send_comm.ptr[idx] + j]);
     }
+
+    /* TEST NONBLOCKING VERSION */
+    s_recvs = -1;
+    alltoallv_crs_nonblocking(A.recv_comm.n_msgs, A.recv_comm.procs.data(),
+            A.recv_comm.counts.data(), A.recv_comm.ptr.data(), MPI_LONG,
+            A.off_proc_columns.data(), 
+            &n_recvs, &s_recvs, src.data(), recvcounts.data(), 
+           rdispls.data(), MPI_LONG, recvvals.data(), xcomm); 
+    ASSERT_EQ(n_recvs, A.send_comm.n_msgs);
+    ASSERT_EQ(s_recvs, A.send_comm.size_msgs);
+    for (int i = 0; i < n_recvs; i++)
+    {
+        proc = src[i];
+        idx = orig_proc_idx[proc];
+        ASSERT_EQ(recvcounts[i], A.send_comm.counts[idx]);
+        for (int j = 0; j < recvcounts[i]; j++)
+            ASSERT_EQ(recvvals[rdispls[i] + j] - A.first_col, 
+                    A.send_comm.idx[A.send_comm.ptr[idx] + j]);
+    }    
     
     MPIX_Comm_free(xcomm);
 }
