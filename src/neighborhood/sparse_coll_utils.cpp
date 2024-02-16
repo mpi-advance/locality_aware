@@ -1,4 +1,5 @@
 #include "sparse_coll.h"
+#include <cstring>
 #include <vector>
 
 /* Assumes SMP Ordering of ranks across nodes (aggregates ranks 0-PPN) */
