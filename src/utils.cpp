@@ -1,6 +1,26 @@
 #include "utils.h"
 #include <algorithm>
 
+int MPIX_Info_init(MPIX_Info** info_ptr)
+{
+    MPIX_Info* xinfo = (MPIX_Info*)malloc(sizeof(MPIX_Info));
+    xinfo->tag = 159;
+    xinfo->crs_num_initialized = 0;
+    xinfo->crs_size_initialized = 0;
+
+    *info_ptr = xinfo;
+
+    return MPI_SUCCESS;
+}
+
+int MPIX_Info_free(MPIX_Info** info_ptr)
+{
+    MPIX_Info* xinfo = *info_ptr;
+    free(xinfo);
+
+    return MPI_SUCCESS;
+}
+
 void sort(int n_objects, int* object_indices, int* object_values)
 {
     std::sort(object_indices, object_indices+n_objects,

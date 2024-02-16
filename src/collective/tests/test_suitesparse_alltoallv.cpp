@@ -201,7 +201,7 @@ void test_matrix(const char* filename)
     }
 
 
-    MPIX_Comm_free(locality_comm);
+    MPIX_Comm_free(&locality_comm);
 }
 
 int main(int argc, char** argv)

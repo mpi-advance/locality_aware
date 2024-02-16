@@ -6,7 +6,7 @@
 int alltoall_crs_personalized_loc(int send_nnz, int* dest, int sendcount, 
         MPI_Datatype sendtype, void* sendvals,
         int* recv_nnz, int* src, int recvcount, MPI_Datatype recvtype,
-        void* recvvals, MPIX_Comm* comm)
+        void* recvvals, MPIX_Info* xinfo, MPIX_Comm* comm)
 {
     int rank, num_procs, local_rank, PPN;
     MPI_Comm_rank(comm->global_comm, &rank);
@@ -29,11 +29,12 @@ int alltoall_crs_personalized_loc(int send_nnz, int* dest, int sendcount,
     if (comm->n_requests < send_nnz)
         MPIX_Comm_req_resize(comm, send_nnz);
 
-    int tag = 790382;
     MPI_Status recv_status;
     MPI_Request bar_req;
     int proc, ctr, flag, ibar;
     int first, last, count, n_msgs, n_sends, n_recvs, idx, new_idx;
+    int tag = xinfo->tag;
+    xinfo->tag = (xinfo->tag + 1 % MPI_TAG_UB);
 
     std::vector<char> node_send_buffer;
     std::vector<char> local_send_buffer;
@@ -154,6 +155,7 @@ int alltoall_crs_personalized_loc(int send_nnz, int* dest, int sendcount,
         displs[i+1] = displs[i] + msg_counts[i];
 
     tag++;
+    xinfo->tag = (xinfo->tag + 1 % MPI_TAG_UB);
 
     MPI_Allreduce(MPI_IN_PLACE, msg_counts.data(), PPN, MPI_INT, MPI_SUM, comm->local_comm);
     int recv_count = msg_counts[local_rank];
@@ -219,7 +221,7 @@ int alltoall_crs_personalized_loc(int send_nnz, int* dest, int sendcount,
 int alltoall_crs_nonblocking_loc(int send_nnz, int* dest, int sendcount, 
         MPI_Datatype sendtype, void* sendvals,
         int* recv_nnz, int* src, int recvcount, MPI_Datatype recvtype,
-        void* recvvals, MPIX_Comm* comm)
+        void* recvvals, MPIX_Info* xinfo, MPIX_Comm* comm)
 { 
     int rank, num_procs, local_rank, PPN;
     MPI_Comm_rank(comm->global_comm, &rank);
@@ -242,11 +244,12 @@ int alltoall_crs_nonblocking_loc(int send_nnz, int* dest, int sendcount,
     if (comm->n_requests < send_nnz)
         MPIX_Comm_req_resize(comm, send_nnz);
 
-    int tag = 790382;
     MPI_Status recv_status;
     MPI_Request bar_req;
     int proc, ctr, flag, ibar;
     int first, last, count, n_msgs, n_sends, n_recvs, idx, new_idx;
+    int tag = xinfo->tag;
+    xinfo->tag = (xinfo->tag + 1 % MPI_TAG_UB);
 
     std::vector<char> node_send_buffer;
     std::vector<char> local_send_buffer;
@@ -377,6 +380,7 @@ int alltoall_crs_nonblocking_loc(int send_nnz, int* dest, int sendcount,
         displs[i+1] = displs[i] + msg_counts[i];
 
     tag++;
+    xinfo->tag = (xinfo->tag + 1 % MPI_TAG_UB);
 
     MPI_Allreduce(MPI_IN_PLACE, msg_counts.data(), PPN, MPI_INT, MPI_SUM, comm->local_comm);
     int recv_count = msg_counts[local_rank];

@@ -198,7 +198,7 @@ void test_matrix(const char* filename)
         ASSERT_EQ(std_recv_vals[i], locality_recv_vals[i]);
     }
 
-    MPIX_Comm_free(neighbor_comm);
+    MPIX_Comm_free(&neighbor_comm);
     PMPI_Comm_free(&std_comm);
 }
 

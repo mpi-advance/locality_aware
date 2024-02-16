@@ -4,6 +4,7 @@
 #include "mpi.h"
 #include "locality/locality_comm.h"
 #include "locality/topology.h"
+#include "utils.h"
 
 // Declarations of C++ methods
 #ifdef __cplusplus
@@ -23,11 +24,13 @@ int MPIX_Alltoall_crs(
         int recvcount,
         MPI_Datatype recvtype,
         int* recvvals,
-        MPIX_Comm* comm
+        MPIX_Info* xinfo,
+        MPIX_Comm* xcomm
         );
 
 int MPIX_Alltoallv_crs(
         int send_nnz,
+        int send_size,
         int* dest,
         int* sendcounts,
         int* sdispls,
@@ -40,55 +43,56 @@ int MPIX_Alltoallv_crs(
         int* rdispls,
         MPI_Datatype recvtype,
         int* recvvals,
+        MPIX_Info* xinfo,
         MPIX_Comm* comm);
 
 
 int alltoall_crs_rma(int send_nnz, int* dest, int sendcount,
         MPI_Datatype sendtype, void* sendvals,
         int* recv_nnz, int* src, int recvcount, MPI_Datatype recvtype,
-        void* recvvals, MPIX_Comm* comm);
+        void* recvvals, MPIX_Info* xinfo, MPIX_Comm* comm);
 
 int alltoall_crs_personalized(int send_nnz, int* dest, int sendcount,
         MPI_Datatype sendtype, void* sendvals,
         int* recv_nnz, int* src, int recvcount, MPI_Datatype recvtype,
-        void* recvvals, MPIX_Comm* comm);
+        void* recvvals, MPIX_Info* xinfo, MPIX_Comm* comm);
 
 int alltoall_crs_personalized_loc(int send_nnz, int* dest, int sendcount,
         MPI_Datatype sendtype, void* sendvals,
         int* recv_nnz, int* src, int recvcount, MPI_Datatype recvtype,
-        void* recvvals, MPIX_Comm* comm);
+        void* recvvals, MPIX_Info* xinfo, MPIX_Comm* comm);
 
 int alltoall_crs_nonblocking(int send_nnz, int* dest, int sendcount,
         MPI_Datatype sendtype, void* sendvals,
         int* recv_nnz, int* src, int recvcount, MPI_Datatype recvtype,
-        void* recvvals, MPIX_Comm* comm);
+        void* recvvals, MPIX_Info* xinfo,  MPIX_Comm* comm);
 
 int alltoall_crs_nonblocking_loc(int send_nnz, int* dest, int sendcount,
         MPI_Datatype sendtype, void* sendvals,
         int* recv_nnz, int* src, int recvcount, MPI_Datatype recvtype,
-        void* recvvals, MPIX_Comm* comm);
+        void* recvvals, MPIX_Info* xinfo, MPIX_Comm* comm);
 
 
 
-int alltoallv_crs_personalized(int send_nnz, int* dest, int* sendcounts,
+int alltoallv_crs_personalized(int send_nnz, int send_size, int* dest, int* sendcounts,
         int* sdispls, MPI_Datatype sendtype, void* sendvals,
         int* recv_nnz, int* recv_size, int* src, int* recvcounts, 
-        int* rdispls, MPI_Datatype recvtype, void* recvvals, MPIX_Comm* comm);
+        int* rdispls, MPI_Datatype recvtype, void* recvvals, MPIX_Info* xinfo, MPIX_Comm* comm);
 
-int alltoallv_crs_personalized_loc(int send_nnz, int* dest, int* sendcounts,
+int alltoallv_crs_personalized_loc(int send_nnz, int send_size, int* dest, int* sendcounts,
         int* sdispls, MPI_Datatype sendtype, void* sendvals,
         int* recv_nnz, int* recv_size, int* src, int* recvcounts, 
-        int* rdispls, MPI_Datatype recvtype, void* recvvals, MPIX_Comm* comm);
+        int* rdispls, MPI_Datatype recvtype, void* recvvals, MPIX_Info* xinfo, MPIX_Comm* comm);
 
-int alltoallv_crs_nonblocking(int send_nnz, int* dest, int* sendcounts,
+int alltoallv_crs_nonblocking(int send_nnz, int send_size, int* dest, int* sendcounts,
         int* sdispls, MPI_Datatype sendtype, void* sendvals,
         int* recv_nnz, int* recv_size, int* src, int* recvcounts, 
-        int* rdispls, MPI_Datatype recvtype, void* recvvals, MPIX_Comm* comm);
+        int* rdispls, MPI_Datatype recvtype, void* recvvals, MPIX_Info* xinfo, MPIX_Comm* comm);
 
-int alltoallv_crs_nonblocking_loc(int send_nnz, int* dest, int* sendcounts,
+int alltoallv_crs_nonblocking_loc(int send_nnz, int send_size, int* dest, int* sendcounts,
         int* sdispls, MPI_Datatype sendtype, void* sendvals,
         int* recv_nnz, int* recv_size, int* src, int* recvcounts, 
-        int* rdispls, MPI_Datatype recvtype, void* recvvals, MPIX_Comm* comm);
+        int* rdispls, MPI_Datatype recvtype, void* recvvals, MPIX_Info* xinfo, MPIX_Comm* comm);
 
 
 
