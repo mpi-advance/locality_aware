@@ -7,8 +7,8 @@
 #SBATCH --cores-per-socket=16
 #SBATCH --cpus-per-task=1
 #SBATCH --time=00:10:00
-##SBATCH --partition=pbatch
-#SBATCH --partition=pdebug
+#SBATCH --partition=pbatch
+##SBATCH --partition=pdebug
 
 cd /g/g14/bienz1/locality_aware/build/benchmarks
 

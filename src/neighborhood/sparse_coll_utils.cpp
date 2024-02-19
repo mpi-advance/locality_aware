@@ -573,6 +573,7 @@ int alltoallv_crs_personalized_loc(int send_nnz, int send_size, int* dest, int* 
         msg_counts[proc] += size + 2*sizeof(int);
     }
 
+/*
     std::vector<int> displs(PPN+1);
     displs[0] = 0;
     for (int i = 0; i < PPN; i++)
@@ -674,6 +675,7 @@ int alltoallv_crs_personalized_loc(int send_nnz, int send_size, int* dest, int* 
     }
     *recv_nnz = n_recvs;
     *recv_size = size_recvs;
+*/
 
     return MPI_SUCCESS;
 }

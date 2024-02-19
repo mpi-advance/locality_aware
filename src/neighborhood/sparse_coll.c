@@ -311,7 +311,7 @@ int alltoallv_crs_personalized(int send_nnz, int send_size, int* dest, int* send
     idx = 0;
     rdispls[0] = 0;
     int bytes = *recv_size * recv_bytes;
-    while (ctr < bytes )
+    while (ctr < bytes)
     {
         MPI_Probe(MPI_ANY_SOURCE, tag, comm->global_comm, &recv_status);
         MPI_Get_count(&recv_status, MPI_BYTE, &count);

@@ -4,6 +4,30 @@
 
 #include <numeric>
 
+void compare(int n_recvs, int* src, int* counts, int orig_n_recvs, int* orig_proc_counts)
+{
+    int rank;
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+
+    if (n_recvs != orig_n_recvs)
+    {
+        printf("Num Messages Incorrect! Rank %d got %d, should be %d\n", 
+                rank, n_recvs, orig_n_recvs);
+		return;
+    }
+
+    for (int i = 0; i < n_recvs; i++)
+    {
+        if (orig_proc_counts[src[i]] != counts[i])
+        {
+            printf("Rank %d, msgcounts from proc %d incorrect!  Got %d, should be %d\n",
+                    rank, src[i], orig_proc_counts[src[i]], counts[i]);
+            break;
+        }
+    }
+}
+
+
 int main(int argc, char* argv[])
 {
     MPI_Init(&argc, &argv);
@@ -15,7 +39,7 @@ int main(int argc, char* argv[])
     double t0, tfinal;
     
     int n_iter = 1000;
-    if(num_procs > 9000)
+    if(num_procs > 1000)
 	    n_iter = 100;
 
     if (argc == 1)
@@ -84,7 +108,9 @@ int main(int argc, char* argv[])
     int n_recvs;
     std::vector<int> src(A.send_comm.n_msgs+1);
     std::vector<int> recvvals(A.send_comm.n_msgs+1);
-    std::vector<int> recvcounts(num_procs, 0);
+    std::vector<int> proc_count(num_procs, -1);
+    for (int i = 0; i < A.send_comm.n_msgs; i++)
+        proc_count[A.send_comm.procs[i]] = A.send_comm.counts[i];
 
 
 	// Time RMA
@@ -100,6 +126,7 @@ int main(int argc, char* argv[])
     tfinal = MPI_Wtime() - t0;
     MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
     if (rank == 0) printf("MPI_Alltoall_crs Time (RMA VERSION): %e\n", t0/n_iter);
+    compare(n_recvs, src.data(), recvvals.data(), A.send_comm.n_msgs, proc_count.data());
 
 	// Time Personalized
     MPI_Barrier(MPI_COMM_WORLD);
@@ -114,6 +141,7 @@ int main(int argc, char* argv[])
     tfinal = MPI_Wtime() - t0;
     MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
     if (rank == 0) printf("MPI_Alltoall_crs Time (Personalized VERSION): %e\n", t0/n_iter);
+    compare(n_recvs, src.data(), recvvals.data(), A.send_comm.n_msgs, proc_count.data());
 
 	// Time Nonblocking
     MPI_Barrier(MPI_COMM_WORLD);
@@ -128,7 +156,7 @@ int main(int argc, char* argv[])
     tfinal = MPI_Wtime() - t0;
     MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
     if (rank == 0) printf("MPI_Alltoall_crs Time (Nonblocking VERSION): %e\n", t0/n_iter);
-
+    compare(n_recvs, src.data(), recvvals.data(), A.send_comm.n_msgs, proc_count.data());
 
 	// Time Personalized Locality
     MPI_Barrier(MPI_COMM_WORLD);
@@ -143,6 +171,7 @@ int main(int argc, char* argv[])
     tfinal = MPI_Wtime() - t0;
     MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
     if (rank == 0) printf("MPI_Alltoall_crs Time (Personalized Locality VERSION): %e\n", t0/n_iter);
+    compare(n_recvs, src.data(), recvvals.data(), A.send_comm.n_msgs, proc_count.data());
 
 	// Time Nonblocking Locality
     MPI_Barrier(MPI_COMM_WORLD);
@@ -157,6 +186,7 @@ int main(int argc, char* argv[])
     tfinal = MPI_Wtime() - t0;
     MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
     if (rank == 0) printf("MPI_Alltoall_crs Time (Nonblocking Locality VERSION): %e\n", t0/n_iter);
+    compare(n_recvs, src.data(), recvvals.data(), A.send_comm.n_msgs, proc_count.data());
     
     MPIX_Info_free(&xinfo);
     MPIX_Comm_free(&xcomm);
