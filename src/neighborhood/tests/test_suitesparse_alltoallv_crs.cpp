@@ -39,16 +39,20 @@ void test_matrix(const char* filename)
     ParMat<int> A;
     readParMatrix(filename, A);
     form_comm(A);
+    std::vector<int> proc_counts(num_procs, 0);
+    std::vector<int> proc_displs(num_procs, 0);
+    for (int i = 0; i < A.send_comm.n_msgs; i++)
+    {
+        int proc = A.send_comm.procs[i];
+        proc_counts[proc] = A.send_comm.counts[i];
+        proc_displs[proc] = A.send_comm.ptr[i];
+    }
 
     int n_recvs, s_recvs, proc, idx;
     std::vector<int> src(A.send_comm.n_msgs+1);
-    std::vector<int> recvcounts(A.send_comm.n_msgs+1);
     std::vector<int> rdispls(A.send_comm.n_msgs+1);
+    std::vector<int> recvcounts(A.send_comm.n_msgs+1);
     std::vector<long> recvvals(A.send_comm.size_msgs+1);
-
-    std::vector<int> orig_proc_idx(num_procs, -1);
-    for (int i = 0; i < A.send_comm.n_msgs; i++)
-        orig_proc_idx[A.send_comm.procs[i]] = i;
 
     /* TEST PERSONALIZED VERSION */
     s_recvs = -1;
@@ -62,11 +66,10 @@ void test_matrix(const char* filename)
     for (int i = 0; i < n_recvs; i++)
     {
         proc = src[i];
-        idx = orig_proc_idx[proc];
-        ASSERT_EQ(recvcounts[i], A.send_comm.counts[idx]);
+        ASSERT_EQ(recvcounts[i], proc_counts[proc]);
         for (int j = 0; j < recvcounts[i]; j++)
             ASSERT_EQ(recvvals[rdispls[i] + j] - A.first_col, 
-                    A.send_comm.idx[A.send_comm.ptr[idx] + j]);
+                    A.send_comm.idx[proc_displs[proc] + j]);
     }
 
     /* TEST NONBLOCKING VERSION */
@@ -81,12 +84,48 @@ void test_matrix(const char* filename)
     for (int i = 0; i < n_recvs; i++)
     {
         proc = src[i];
-        idx = orig_proc_idx[proc];
-        ASSERT_EQ(recvcounts[i], A.send_comm.counts[idx]);
+        ASSERT_EQ(recvcounts[i], proc_counts[proc]);
         for (int j = 0; j < recvcounts[i]; j++)
             ASSERT_EQ(recvvals[rdispls[i] + j] - A.first_col, 
-                    A.send_comm.idx[A.send_comm.ptr[idx] + j]);
-    }    
+                    A.send_comm.idx[proc_displs[proc] + j]);
+    }   
+
+
+    /* TEST PERSONALIZED LOCALITY VERSION */
+    s_recvs = -1;
+    alltoallv_crs_personalized_loc(A.recv_comm.n_msgs, A.recv_comm.size_msgs, A.recv_comm.procs.data(),
+            A.recv_comm.counts.data(), A.recv_comm.ptr.data(), MPI_LONG,
+            A.off_proc_columns.data(), 
+            &n_recvs, &s_recvs, src.data(), recvcounts.data(), 
+           rdispls.data(), MPI_LONG, recvvals.data(), xinfo, xcomm); 
+    ASSERT_EQ(n_recvs, A.send_comm.n_msgs);
+    ASSERT_EQ(s_recvs, A.send_comm.size_msgs);
+    for (int i = 0; i < n_recvs; i++)
+    {
+        proc = src[i];
+        ASSERT_EQ(recvcounts[i], proc_counts[proc]);
+        for (int j = 0; j < recvcounts[i]; j++)
+            ASSERT_EQ(recvvals[rdispls[i] + j] - A.first_col, 
+                    A.send_comm.idx[proc_displs[proc] + j]);
+    }
+
+    /* TEST PERSONALIZED LOCALITY VERSION */
+    s_recvs = -1;
+    alltoallv_crs_nonblocking_loc(A.recv_comm.n_msgs, A.recv_comm.size_msgs, A.recv_comm.procs.data(),
+            A.recv_comm.counts.data(), A.recv_comm.ptr.data(), MPI_LONG,
+            A.off_proc_columns.data(), 
+            &n_recvs, &s_recvs, src.data(), recvcounts.data(), 
+           rdispls.data(), MPI_LONG, recvvals.data(), xinfo, xcomm); 
+    ASSERT_EQ(n_recvs, A.send_comm.n_msgs);
+    ASSERT_EQ(s_recvs, A.send_comm.size_msgs);
+    for (int i = 0; i < n_recvs; i++)
+    {
+        proc = src[i];
+        ASSERT_EQ(recvcounts[i], proc_counts[proc]);
+        for (int j = 0; j < recvcounts[i]; j++)
+            ASSERT_EQ(recvvals[rdispls[i] + j] - A.first_col, 
+                    A.send_comm.idx[proc_displs[proc] + j]);
+    }
     
     MPIX_Info_free(&xinfo);
     MPIX_Comm_free(&xcomm);
