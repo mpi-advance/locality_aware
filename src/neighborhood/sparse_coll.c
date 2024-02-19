@@ -81,14 +81,14 @@ int alltoall_crs_rma(int send_nnz, int* dest, int sendcount,
     send_bytes *= sendcount;
     recv_bytes *= recvcount;
 
-    MPI_Barrier(MPI_COMM_WORLD);
+    MPI_Barrier(comm->global_comm);
     MPI_Win_fence(MPI_MODE_NOSTORE|MPI_MODE_NOPRECEDE, comm->win);
     for (int i = 0; i < send_nnz; i++)
     {
          MPI_Put(&(send_buffer[i*send_bytes]), send_bytes, MPI_CHAR,
                  dest[i], rank*recv_bytes, recv_bytes, MPI_CHAR, comm->win);
     }
-    MPI_Barrier(MPI_COMM_WORLD);
+    MPI_Barrier(comm->global_comm);
     MPI_Win_fence(MPI_MODE_NOPUT|MPI_MODE_NOSUCCEED, comm->win);
 
     ctr = 0;
@@ -123,8 +123,8 @@ int alltoall_crs_personalized(int send_nnz, int* dest, int sendcount,
         void* recvvals, MPIX_Info* xinfo, MPIX_Comm* comm)
 {
     int rank, num_procs;
-    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-    MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
+    MPI_Comm_rank(comm->global_comm, &rank);
+    MPI_Comm_size(comm->global_comm, &num_procs);
 
     MPI_Status recv_status;
     int proc, ctr;
@@ -148,7 +148,7 @@ int alltoall_crs_personalized(int send_nnz, int* dest, int sendcount,
 
         for (int i = 0; i < send_nnz; i++)
             msg_counts[dest[i]] = 1;
-        MPI_Allreduce(MPI_IN_PLACE, msg_counts, num_procs, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
+        MPI_Allreduce(MPI_IN_PLACE, msg_counts, num_procs, MPI_INT, MPI_SUM, comm->global_comm);
         *recv_nnz = msg_counts[rank];
         free(msg_counts);
     }
@@ -188,8 +188,8 @@ int alltoall_crs_nonblocking(int send_nnz, int* dest, int sendcount,
         void* recvvals, MPIX_Info* xinfo, MPIX_Comm* comm)
 {
     int rank, num_procs;
-    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-    MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
+    MPI_Comm_rank(comm->global_comm, &rank);
+    MPI_Comm_size(comm->global_comm, &num_procs);
 
     char* send_buffer;
     if (send_nnz)
@@ -263,8 +263,8 @@ int alltoallv_crs_personalized(int send_nnz, int send_size, int* dest, int* send
         int* rdispls, MPI_Datatype recvtype, void* recvvals, MPIX_Info* xinfo, MPIX_Comm* comm)
 {
     int rank, num_procs;
-    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-    MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
+    MPI_Comm_rank(comm->global_comm, &rank);
+    MPI_Comm_size(comm->global_comm, &num_procs);
 
     MPI_Status recv_status;
     int proc, ctr, idx, count;
@@ -288,7 +288,7 @@ int alltoallv_crs_personalized(int send_nnz, int send_size, int* dest, int* send
             msg_counts[dest[i]] = sendcounts[i]*send_bytes;
         }
         MPI_Allreduce(MPI_IN_PLACE, msg_counts, num_procs, MPI_INT, 
-                MPI_SUM, MPI_COMM_WORLD);
+                MPI_SUM, comm->global_comm);
         *recv_size = msg_counts[rank] / recv_bytes;
         free(msg_counts);
     }
@@ -340,8 +340,8 @@ int alltoallv_crs_nonblocking(int send_nnz, int send_size, int* dest, int* sendc
         int* rdispls, MPI_Datatype recvtype, void* recvvals, MPIX_Info* xinfo, MPIX_Comm* comm)
 {
     int rank, num_procs;
-    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-    MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
+    MPI_Comm_rank(comm->global_comm, &rank);
+    MPI_Comm_size(comm->global_comm, &num_procs);
 
     char* send_buffer = (char*)sendvals;
     char* recv_buffer = (char*)recvvals;
