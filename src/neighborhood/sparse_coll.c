@@ -13,14 +13,16 @@ int MPIX_Alltoall_crs(
         int recvcount,
         MPI_Datatype recvtype,
         int* recvvals,
+        MPIX_Info* xinfo,
         MPIX_Comm* xcomm)
 {
     return alltoall_crs_rma(send_nnz, dest, sendcount, sendtype, sendvals,
-            recv_nnz, src, recvcount, recvtype, recvvals, xcomm);
+            recv_nnz, src, recvcount, recvtype, recvvals, xinfo, xcomm);
 }
 
 int MPIX_Alltoallv_crs(
         int send_nnz,
+        int send_size,
         int* dest,
         int* sendcounts,
         int* sdispls,
@@ -33,17 +35,18 @@ int MPIX_Alltoallv_crs(
         int* rdispls,
         MPI_Datatype recvtype,
         int* recvvals,
-        MPIX_Comm* comm)
+        MPIX_Info* xinfo,
+        MPIX_Comm* xcomm)
 {
-    return alltoallv_crs_personalized(send_nnz, dest, sendcounts, sdispls,
+    return alltoallv_crs_personalized(send_nnz, send_size, dest, sendcounts, sdispls,
             sendtype, sendvals, recv_nnz, recv_size, src, recvcounts, 
-            rdispls, recvtype, recvvals, comm);
+            rdispls, recvtype, recvvals, xinfo, xcomm);
 }
 
 int alltoall_crs_rma(int send_nnz, int* dest, int sendcount, 
         MPI_Datatype sendtype, void* sendvals,
         int* recv_nnz, int* src, int recvcount, MPI_Datatype recvtype,
-        void* recvvals, MPIX_Comm* comm)
+        void* recvvals, MPIX_Info* xinfo, MPIX_Comm* comm)
 { 
     int rank, num_procs;
     MPI_Comm_rank(comm->global_comm, &rank);
@@ -54,8 +57,10 @@ int alltoall_crs_rma(int send_nnz, int* dest, int sendcount,
     MPI_Status recv_status;
 
     // Get bytes per datatype, total bytes to be recvd (size of win_array)
-    char* send_buffer = (char*)sendvals;
-    char* recv_buffer = (char*)recvvals;
+    char* send_buffer;
+    if (send_nnz)
+        send_buffer = (char*)(sendvals);
+
     int send_bytes, recv_bytes;
     MPI_Type_size(sendtype, &send_bytes);
     MPI_Type_size(recvtype, &recv_bytes);
@@ -100,6 +105,7 @@ int alltoall_crs_rma(int send_nnz, int* dest, int sendcount,
         }
         if (flag)
         {
+            char* recv_buffer = (char*)recvvals;
             src[ctr] = i;
             memcpy(&(recv_buffer[ctr*recv_bytes]), &(comm->win_array[i*recv_bytes]), recv_bytes);
             ctr++;
@@ -114,25 +120,28 @@ int alltoall_crs_rma(int send_nnz, int* dest, int sendcount,
 int alltoall_crs_personalized(int send_nnz, int* dest, int sendcount,
         MPI_Datatype sendtype, void* sendvals,
         int* recv_nnz, int* src, int recvcount, MPI_Datatype recvtype,
-        void* recvvals, MPIX_Comm* comm)
+        void* recvvals, MPIX_Info* xinfo, MPIX_Comm* comm)
 {
     int rank, num_procs;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
 
-    int tag = 928431;
     MPI_Status recv_status;
     int proc, ctr;
+    int tag = xinfo->tag;
+    xinfo->tag = (xinfo->tag + 1 % MPI_TAG_UB);
 
-    char* send_buffer = (char*)sendvals;
-    char* recv_buffer = (char*)recvvals;
+
+    char* send_buffer;
+    if (send_nnz)
+        send_buffer = (char*)(sendvals);
     int send_bytes, recv_bytes;
     MPI_Type_size(sendtype, &send_bytes);
     MPI_Type_size(recvtype, &recv_bytes);
     send_bytes *= sendcount;
     recv_bytes *= recvcount;
 
-    if (*recv_nnz < 0)
+    if (!(xinfo->crs_num_initialized))
     {
         int* msg_counts = (int*)malloc(num_procs*sizeof(int));
         memset(msg_counts, 0, num_procs*sizeof(int));
@@ -157,6 +166,7 @@ int alltoall_crs_personalized(int send_nnz, int* dest, int sendcount,
     ctr = 0;
     while (ctr < *recv_nnz)
     {
+        char* recv_buffer = (char*)recvvals;
         MPI_Probe(MPI_ANY_SOURCE, tag, comm->global_comm, &recv_status);
         proc = recv_status.MPI_SOURCE;
         src[ctr] = proc;
@@ -175,14 +185,15 @@ int alltoall_crs_personalized(int send_nnz, int* dest, int sendcount,
 int alltoall_crs_nonblocking(int send_nnz, int* dest, int sendcount,
         MPI_Datatype sendtype, void* sendvals,
         int* recv_nnz, int* src, int recvcount, MPI_Datatype recvtype,
-        void* recvvals, MPIX_Comm* comm)
+        void* recvvals, MPIX_Info* xinfo, MPIX_Comm* comm)
 {
     int rank, num_procs;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
 
-    char* send_buffer = (char*)sendvals;
-    char* recv_buffer = (char*)recvvals;
+    char* send_buffer;
+    if (send_nnz)
+        send_buffer = (char*)(sendvals);
     int send_bytes, recv_bytes;
     MPI_Type_size(sendtype, &send_bytes);
     MPI_Type_size(recvtype, &recv_bytes);
@@ -192,7 +203,8 @@ int alltoall_crs_nonblocking(int send_nnz, int* dest, int sendcount,
     int proc, ctr, flag, ibar;
     MPI_Status recv_status;
     MPI_Request bar_req;
-    int tag = 897239;
+    int tag = xinfo->tag;
+    xinfo->tag = (xinfo->tag + 1 % MPI_TAG_UB);
 
     if (comm->n_requests < send_nnz)
         MPIX_Comm_req_resize(comm, send_nnz);
@@ -211,6 +223,7 @@ int alltoall_crs_nonblocking(int send_nnz, int* dest, int sendcount,
         MPI_Iprobe(MPI_ANY_SOURCE, tag, comm->global_comm, &flag, &recv_status);
         if (flag)
         {
+            char* recv_buffer = (char*)recvvals;
             proc = recv_status.MPI_SOURCE;
             src[ctr] = proc;
             MPI_Recv(&(recv_buffer[ctr*recv_bytes]), recv_bytes, MPI_BYTE, proc, tag,
@@ -244,18 +257,19 @@ int alltoall_crs_nonblocking(int send_nnz, int* dest, int sendcount,
 
 
 
-int alltoallv_crs_personalized(int send_nnz, int* dest, int* sendcounts,
+int alltoallv_crs_personalized(int send_nnz, int send_size, int* dest, int* sendcounts,
         int* sdispls, MPI_Datatype sendtype, void* sendvals,
         int* recv_nnz, int* recv_size, int* src, int* recvcounts, 
-        int* rdispls, MPI_Datatype recvtype, void* recvvals, MPIX_Comm* comm)
+        int* rdispls, MPI_Datatype recvtype, void* recvvals, MPIX_Info* xinfo, MPIX_Comm* comm)
 {
     int rank, num_procs;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
 
-    int tag = 828431;
     MPI_Status recv_status;
     int proc, ctr, idx, count;
+    int tag = xinfo->tag;
+    xinfo->tag = (xinfo->tag + 1 % MPI_TAG_UB);
 
     char* send_buffer = (char*)sendvals;
     char* recv_buffer = (char*)recvvals;
@@ -264,7 +278,7 @@ int alltoallv_crs_personalized(int send_nnz, int* dest, int* sendcounts,
     MPI_Type_size(recvtype, &recv_bytes);
 
 
-    if (*recv_size < 0)
+    if (!(xinfo->crs_num_initialized) && !(xinfo->crs_size_initialized))
     {
         int* msg_counts = (int*)malloc(num_procs*sizeof(int));
         memset(msg_counts, 0, num_procs*sizeof(int));
@@ -278,6 +292,10 @@ int alltoallv_crs_personalized(int send_nnz, int* dest, int* sendcounts,
         *recv_size = msg_counts[rank] / recv_bytes;
         free(msg_counts);
     }
+    else if (!(xinfo->crs_num_initialized))
+        *recv_nnz = -1;
+    else if (!(xinfo->crs_size_initialized))
+        *recv_size = -1;
 
     if (comm->n_requests < send_nnz)
         MPIX_Comm_req_resize(comm, send_nnz);
@@ -316,10 +334,10 @@ int alltoallv_crs_personalized(int send_nnz, int* dest, int* sendcounts,
 
 
 
-int alltoallv_crs_nonblocking(int send_nnz, int* dest, int* sendcounts,
+int alltoallv_crs_nonblocking(int send_nnz, int send_size, int* dest, int* sendcounts,
         int* sdispls, MPI_Datatype sendtype, void* sendvals,
         int* recv_nnz, int* recv_size, int* src, int* recvcounts, 
-        int* rdispls, MPI_Datatype recvtype, void* recvvals, MPIX_Comm* comm)
+        int* rdispls, MPI_Datatype recvtype, void* recvvals, MPIX_Info* xinfo, MPIX_Comm* comm)
 {
     int rank, num_procs;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -334,7 +352,8 @@ int alltoallv_crs_nonblocking(int send_nnz, int* dest, int* sendcounts,
     int proc, ctr, flag, ibar, idx, count;
     MPI_Status recv_status;
     MPI_Request bar_req;
-    int tag = 797239;
+    int tag = xinfo->tag;
+    xinfo->tag = (xinfo->tag + 1 % MPI_TAG_UB);
 
     if (comm->n_requests < send_nnz)
         MPIX_Comm_req_resize(comm, send_nnz);

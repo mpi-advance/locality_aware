@@ -161,7 +161,7 @@ TEST(RandomCommTest, TestsInTests)
             ASSERT_EQ(std_allgather[j], mult_hier_bruck_allgather[j]);
     }
 
-    MPIX_Comm_free(locality_comm);
+    MPIX_Comm_free(&locality_comm);
 }
 
 

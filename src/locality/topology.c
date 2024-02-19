@@ -80,8 +80,10 @@ int MPIX_Comm_req_resize(MPIX_Comm* xcomm, int n)
     return MPI_SUCCESS;
 }
 
-int MPIX_Comm_free(MPIX_Comm* xcomm)
+int MPIX_Comm_free(MPIX_Comm** xcomm_ptr)
 {
+    MPIX_Comm* xcomm = *xcomm_ptr;
+
     if (xcomm->n_requests > 0)
         free(xcomm->requests);
 

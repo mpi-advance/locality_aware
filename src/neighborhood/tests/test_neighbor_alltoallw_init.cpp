@@ -123,7 +123,7 @@ TEST(RandomCommTest, TestsInTests)
     }
 
     MPIX_Request_free(neighbor_request);
-    MPIX_Comm_free(neighbor_comm);
+    MPIX_Comm_free(&neighbor_comm);
     MPI_Comm_free(&std_comm);
 
 }

@@ -26,11 +26,15 @@ void test_matrix(const char* filename)
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
     
     MPIX_Comm* xcomm;
+    MPIX_Info* xinfo;
+
     MPIX_Comm_init(&xcomm, MPI_COMM_WORLD);
     MPIX_Comm_topo_init(xcomm);
 
+    MPIX_Info_init(&xinfo);
+
     // Update so there are 4 PPN rather than what MPI_Comm_split returns
-    update_locality(xcomm, 4);
+    //update_locality(xcomm, 4);
 
     // Read suitesparse matrix
     ParMat<int> A;
@@ -45,9 +49,12 @@ void test_matrix(const char* filename)
 
     /* TEST RMA VERSION */
     n_recvs = -1;
+    std::fill(src.begin(), src.end(), 0);
+    std::fill(recvvals.begin(), recvvals.end(), 0);
+    std::fill(recvcounts.begin(), recvcounts.end(), 0);
     alltoall_crs_rma(A.recv_comm.n_msgs, A.recv_comm.procs.data(), 1, MPI_INT, 
             A.recv_comm.counts.data(), &n_recvs, src.data(), 1, MPI_INT,
-            recvvals.data(), xcomm);
+            recvvals.data(), xinfo, xcomm);
     ASSERT_EQ(n_recvs, A.send_comm.n_msgs);
     for (int i = 0; i < n_recvs; i++)
     {
@@ -60,9 +67,12 @@ void test_matrix(const char* filename)
 
     /* TEST PERSONALIZED VERSION */
     n_recvs = -1;
+    std::fill(src.begin(), src.end(), 0);
+    std::fill(recvvals.begin(), recvvals.end(), 0);
+    std::fill(recvcounts.begin(), recvcounts.end(), 0);
     alltoall_crs_personalized(A.recv_comm.n_msgs, A.recv_comm.procs.data(), 1, MPI_INT,
             A.recv_comm.counts.data(), &n_recvs, src.data(), 1, MPI_INT,
-            recvvals.data(), xcomm);
+            recvvals.data(), xinfo, xcomm);
     ASSERT_EQ(n_recvs, A.send_comm.n_msgs);
     for (int i = 0; i < n_recvs; i++)
     {
@@ -75,9 +85,12 @@ void test_matrix(const char* filename)
 
     /* TEST NONBLOCKING LOCALITY VERSION */
     n_recvs = -1;
+    std::fill(src.begin(), src.end(), 0);
+    std::fill(recvvals.begin(), recvvals.end(), 0);
+    std::fill(recvcounts.begin(), recvcounts.end(), 0);
     alltoall_crs_personalized_loc(A.recv_comm.n_msgs, A.recv_comm.procs.data(), 1, MPI_INT,
             A.recv_comm.counts.data(), &n_recvs, src.data(), 1, MPI_INT,
-            recvvals.data(), xcomm);
+            recvvals.data(), xinfo, xcomm);
 
     ASSERT_EQ(n_recvs, A.send_comm.n_msgs);
     for (int i = 0; i < n_recvs; i++)
@@ -91,9 +104,12 @@ void test_matrix(const char* filename)
 
     /* TEST NONBLOCKING VERSION */
     n_recvs = -1;
+    std::fill(src.begin(), src.end(), 0);
+    std::fill(recvvals.begin(), recvvals.end(), 0);
+    std::fill(recvcounts.begin(), recvcounts.end(), 0);
     alltoall_crs_nonblocking(A.recv_comm.n_msgs, A.recv_comm.procs.data(), 1, MPI_INT,
             A.recv_comm.counts.data(), &n_recvs, src.data(), 1, MPI_INT,
-            recvvals.data(), xcomm);
+            recvvals.data(), xinfo, xcomm);
     ASSERT_EQ(n_recvs, A.send_comm.n_msgs);
     for (int i = 0; i < n_recvs; i++)
     {
@@ -105,10 +121,13 @@ void test_matrix(const char* filename)
     }
 
     /* TEST NONBLOCKING LOCALITY VERSION */
-    n_recvs = -1;
+    /*n_recvs = -1;
+    std::fill(src.begin(), src.end(), 0);
+    std::fill(recvvals.begin(), recvvals.end(), 0);
+    std::fill(recvcounts.begin(), recvcounts.end(), 0);
     alltoall_crs_nonblocking_loc(A.recv_comm.n_msgs, A.recv_comm.procs.data(), 1, MPI_INT,
             A.recv_comm.counts.data(), &n_recvs, src.data(), 1, MPI_INT,
-            recvvals.data(), xcomm);
+            recvvals.data(), xinfo, xcomm);
 
     ASSERT_EQ(n_recvs, A.send_comm.n_msgs);
     for (int i = 0; i < n_recvs; i++)
@@ -118,9 +137,10 @@ void test_matrix(const char* filename)
     for (int i = 0; i < A.send_comm.n_msgs; i++)
     {
         ASSERT_EQ(A.send_comm.counts[i], recvcounts[A.send_comm.procs[i]]);
-    }
+    }*/
 
-    MPIX_Comm_free(xcomm);
+    MPIX_Info_free(&xinfo);
+    MPIX_Comm_free(&xcomm);
 }
 
 

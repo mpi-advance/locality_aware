@@ -34,7 +34,7 @@ typedef struct _MPIX_Comm
 } MPIX_Comm;
 
 int MPIX_Comm_init(MPIX_Comm** xcomm_ptr, MPI_Comm global_comm);
-int MPIX_Comm_free(MPIX_Comm* xcomm);
+int MPIX_Comm_free(MPIX_Comm** xcomm_ptr);
 
 int MPIX_Comm_topo_init(MPIX_Comm* xcomm);
 int MPIX_Comm_topo_free(MPIX_Comm* xcomm);

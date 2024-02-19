@@ -99,7 +99,7 @@ TEST(RandomCommTest, TestsInTests)
             ASSERT_EQ(std_alltoall[j], bruck_alltoall[j]);*/
     }
 
-    MPIX_Comm_free(locality_comm);
+    MPIX_Comm_free(&locality_comm);
 }
 
 

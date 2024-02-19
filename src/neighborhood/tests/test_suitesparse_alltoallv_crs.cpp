@@ -29,6 +29,9 @@ void test_matrix(const char* filename)
     MPIX_Comm_init(&xcomm, MPI_COMM_WORLD);
     MPIX_Comm_topo_init(xcomm);
 
+    MPIX_Info* xinfo;
+    MPIX_Info_init(&xinfo);
+
     // Update so there are 4 PPN rather than what MPI_Comm_split returns
     update_locality(xcomm, 4);
 
@@ -49,11 +52,11 @@ void test_matrix(const char* filename)
 
     /* TEST PERSONALIZED VERSION */
     s_recvs = -1;
-    alltoallv_crs_personalized(A.recv_comm.n_msgs, A.recv_comm.procs.data(),
+    alltoallv_crs_personalized(A.recv_comm.n_msgs, A.recv_comm.size_msgs, A.recv_comm.procs.data(),
             A.recv_comm.counts.data(), A.recv_comm.ptr.data(), MPI_LONG,
             A.off_proc_columns.data(), 
             &n_recvs, &s_recvs, src.data(), recvcounts.data(), 
-           rdispls.data(), MPI_LONG, recvvals.data(), xcomm); 
+           rdispls.data(), MPI_LONG, recvvals.data(), xinfo, xcomm); 
     ASSERT_EQ(n_recvs, A.send_comm.n_msgs);
     ASSERT_EQ(s_recvs, A.send_comm.size_msgs);
     for (int i = 0; i < n_recvs; i++)
@@ -68,11 +71,11 @@ void test_matrix(const char* filename)
 
     /* TEST NONBLOCKING VERSION */
     s_recvs = -1;
-    alltoallv_crs_nonblocking(A.recv_comm.n_msgs, A.recv_comm.procs.data(),
+    alltoallv_crs_nonblocking(A.recv_comm.n_msgs, A.recv_comm.size_msgs, A.recv_comm.procs.data(),
             A.recv_comm.counts.data(), A.recv_comm.ptr.data(), MPI_LONG,
             A.off_proc_columns.data(), 
             &n_recvs, &s_recvs, src.data(), recvcounts.data(), 
-           rdispls.data(), MPI_LONG, recvvals.data(), xcomm); 
+           rdispls.data(), MPI_LONG, recvvals.data(), xinfo, xcomm); 
     ASSERT_EQ(n_recvs, A.send_comm.n_msgs);
     ASSERT_EQ(s_recvs, A.send_comm.size_msgs);
     for (int i = 0; i < n_recvs; i++)
@@ -85,7 +88,8 @@ void test_matrix(const char* filename)
                     A.send_comm.idx[A.send_comm.ptr[idx] + j]);
     }    
     
-    MPIX_Comm_free(xcomm);
+    MPIX_Info_free(&xinfo);
+    MPIX_Comm_free(&xcomm);
 }
 
 

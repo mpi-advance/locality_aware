@@ -101,7 +101,7 @@ TEST(RandomCommTest, TestsInTests)
             ASSERT_EQ(std_alltoallv[j], loc_pairwise_alltoallv[j]);
     }
 
-    MPIX_Comm_free(locality_comm);
+    MPIX_Comm_free(&locality_comm);
 }
 
 

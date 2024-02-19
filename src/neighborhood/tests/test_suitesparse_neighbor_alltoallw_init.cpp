@@ -119,7 +119,7 @@ void test_matrix(const char* filename)
         ASSERT_EQ(std_recv_vals[i], new_recv_vals[i]);
     }
     MPIX_Request_free(neighbor_request);
-    MPIX_Comm_free(neighbor_comm);
+    MPIX_Comm_free(&neighbor_comm);
 
 }
 
