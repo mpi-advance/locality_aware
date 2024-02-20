@@ -13,21 +13,21 @@ extern "C"
 #endif
 
 // Helper Functions
-int allgather_bruck(const void* sendbuf,
+int MPIX_Allgather_bruck(const void* sendbuf,
         int sendcount,
         MPI_Datatype sendtype,
         void* recvbuf,
         int recvcount,
         MPI_Datatype recvtype,
         MPI_Comm comm);
-int allgather_p2p(const void* sendbuf,
+int MPIX_Allgather_p2p(const void* sendbuf,
         int sendcount,
         MPI_Datatype sendtype,
         void* recvbuf,
         int recvcount,
         MPI_Datatype recvtype,
         MPI_Comm comm);
-int allgather_ring(const void* sendbuf,
+int MPIX_Allgather_ring(const void* sendbuf,
         int sendcount,
         MPI_Datatype sendtype,
         void* recvbuf,
@@ -36,35 +36,35 @@ int allgather_ring(const void* sendbuf,
         MPI_Comm comm);
 
 // Locality helper functions
-int allgather_bruck_locality(const void* sendbuf,
+int MPIX_Allgather_bruck_locality(const void* sendbuf,
         int sendcount,
         MPI_Datatype sendtype,
         void* recvbuf,
         int recvcount,
         MPI_Datatype recvtype,
         MPIX_Comm* comm);
-int allgather_p2p_locality(const void* sendbuf,
+int MPIX_Allgather_p2p_locality(const void* sendbuf,
         int sendcount,
         MPI_Datatype sendtype,
         void* recvbuf,
         int recvcount,
         MPI_Datatype recvtype,
         MPIX_Comm* comm);
-int allgather_ring_locality(const void* sendbuf,
+int MPIX_Allgather_ring_locality(const void* sendbuf,
         int sendcount,
         MPI_Datatype sendtype,
         void* recvbuf,
         int recvcount,
         MPI_Datatype recvtype,
         MPIX_Comm* comm);
-int allgather_hier_bruck(const void* sendbuf,
+int MPIX_Allgather_hier_bruck(const void* sendbuf,
         int sendcount,
         MPI_Datatype sendtype,
         void* recvbuf,
         int recvcount,
         MPI_Datatype recvtype,
         MPIX_Comm* comm);
-int allgather_mult_hier_bruck(const void* sendbuf,
+int MPIX_Allgather_mult_hier_bruck(const void* sendbuf,
         int sendcount,
         MPI_Datatype sendtype,
         void* recvbuf,

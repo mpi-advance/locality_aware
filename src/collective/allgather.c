@@ -15,18 +15,18 @@ int MPI_Allgather(const void* sendbuf,
         MPI_Comm comm)
 {
 #ifdef MPI_ADVANCE_ALLGATHER_bruck
-    return allgather_bruck(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm);
+    return MPIX_Allgather_bruck(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm);
 #elif MPI_ADVANCE_ALLGATHER_p2p
-    return allgather_p2p(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm);
+    return MPIX_Allgather_p2p(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm);
 #elif MPI_ADVANCE_ALLGATHER_ring
-    return allgather_ring(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm);
+    return MPIX_Allgather_ring(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm);
 #else
     // Default will call from MPI implementation
     return PMPI_Allgather(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm);
 #endif
 }
 
-int allgather_bruck(const void* sendbuf,
+int MPIX_Allgather_bruck(const void* sendbuf,
         int sendcount,
         MPI_Datatype sendtype,
         void* recvbuf, 
@@ -80,7 +80,7 @@ int allgather_bruck(const void* sendbuf,
 }
 
 
-int allgather_p2p(const void *sendbuf, int sendcount, MPI_Datatype sendtype,
+int MPIX_Allgather_p2p(const void *sendbuf, int sendcount, MPI_Datatype sendtype,
         void *recvbuf, int recvcount, MPI_Datatype recvtype, MPI_Comm comm)
 {
     int rank, num_procs;
@@ -107,7 +107,7 @@ int allgather_p2p(const void *sendbuf, int sendcount, MPI_Datatype sendtype,
     return 0;
 }
 
-int allgather_ring(const void *sendbuf, int sendcount, MPI_Datatype sendtype,
+int MPIX_Allgather_ring(const void *sendbuf, int sendcount, MPI_Datatype sendtype,
         void *recvbuf, int recvcount, MPI_Datatype recvtype, MPI_Comm comm)
 {
     int rank, num_procs;
@@ -165,22 +165,22 @@ int MPIX_Allgather(const void* sendbuf,
         MPIX_Comm* comm)
 {
 #ifdef MPI_ADVANCE_ALLGATHER_bruck_locality
-    return allgather_bruck_locality(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm);
+    return MPIX_Allgather_bruck_locality(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm);
 #elif MPI_ADVANCE_ALLGATHER_p2p_locality
-    return allgather_p2p_locality(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm);
+    return MPIX_Allgather_p2p_locality(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm);
 #elif MPI_ADVANCE_ALLGATHER_ring_locality
-    return allgather_ring_locality(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm);
+    return MPIX_Allgather_ring_locality(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm);
 #elif MPI_ADVANCE_ALLGATHER_heir_bruck
-    return allgather_hier_bruck(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm);
+    return MPIX_Allgather_hier_bruck(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm);
 #elif MPI_ADVANCE_ALLGATHER_mult_hier_bruck
-    return allgather_mult_hier_bruck(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm);
+    return MPIX_Allgather_mult_hier_bruck(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm);
 #else
     // Default will call p2p
-    return allgather_p2p_locality(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm);
+    return MPIX_Allgather_p2p_locality(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm);
 #endif
 }
 
-int allgather_bruck_locality(const void *sendbuf, int sendcount, MPI_Datatype sendtype,
+int MPIX_Allgather_bruck_locality(const void *sendbuf, int sendcount, MPI_Datatype sendtype,
         void *recvbuf, int recvcount, MPI_Datatype recvtype, MPIX_Comm* comm)
 {
     int rank, num_procs;
@@ -202,7 +202,7 @@ int allgather_bruck_locality(const void *sendbuf, int sendcount, MPI_Datatype se
     int tag = 102943;
 
     // Perform Local Allgather
-    allgather_bruck(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm->local_comm);
+    MPIX_Allgather_bruck(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm->local_comm);
 
     // Perform allgather with PPN nodes at once
     // First send to node - (1 to PPN) nodes and recv from node + (1 to PPN) nodes
@@ -235,7 +235,7 @@ int allgather_bruck_locality(const void *sendbuf, int sendcount, MPI_Datatype se
         }
 
 
-        allgather_bruck(&(recv_buffer[recv_pos*recv_size]), size, recvtype, recvbuf, size, recvtype, comm->local_comm);
+        MPIX_Allgather_bruck(&(recv_buffer[recv_pos*recv_size]), size, recvtype, recvbuf, size, recvtype, comm->local_comm);
 
         stride *= PPN;
     }
@@ -249,7 +249,7 @@ int allgather_bruck_locality(const void *sendbuf, int sendcount, MPI_Datatype se
     return 0;
 }
 
-int allgather_p2p_locality(const void *sendbuf, int sendcount, MPI_Datatype sendtype,
+int MPIX_Allgather_p2p_locality(const void *sendbuf, int sendcount, MPI_Datatype sendtype,
         void *recvbuf, int recvcount, MPI_Datatype recvtype, MPIX_Comm* comm)
 {
     int rank, num_procs;
@@ -388,7 +388,7 @@ int allgather_ring_overlap(const void *sendbuf, int sendcount, MPI_Datatype send
     return flag;
 }
 
-int allgather_ring_locality(const void *sendbuf, int sendcount, MPI_Datatype sendtype,
+int MPIX_Allgather_ring_locality(const void *sendbuf, int sendcount, MPI_Datatype sendtype,
         void *recvbuf, int recvcount, MPI_Datatype recvtype, MPIX_Comm* comm)
 {
     int rank, num_procs;
@@ -460,7 +460,7 @@ int allgather_ring_locality(const void *sendbuf, int sendcount, MPI_Datatype sen
         sendbuf_tmp = recvbuf_tmp;
         recvbuf_tmp = tmp_ptr;
     }
-    allgather_ring(sendbuf_tmp, recvcount, recvtype, &(recv_buffer[node_pos*recv_size]), recvcount, recvtype, comm->local_comm);    
+    MPIX_Allgather_ring(sendbuf_tmp, recvcount, recvtype, &(recv_buffer[node_pos*recv_size]), recvcount, recvtype, comm->local_comm);    
 
     free(tmpbuf0);
     free(tmpbuf1);
@@ -469,7 +469,7 @@ int allgather_ring_locality(const void *sendbuf, int sendcount, MPI_Datatype sen
 
 }
 
-int allgather_hier_bruck(const void *sendbuf, int sendcount, MPI_Datatype sendtype,
+int MPIX_Allgather_hier_bruck(const void *sendbuf, int sendcount, MPI_Datatype sendtype,
         void *recvbuf, int recvcount, MPI_Datatype recvtype, MPIX_Comm* comm)
 {
     int num_procs;
@@ -487,14 +487,14 @@ int allgather_hier_bruck(const void *sendbuf, int sendcount, MPI_Datatype sendty
     gather(sendbuf, sendcount, sendtype, tmpbuf, recvcount, recvtype, 0, comm->local_comm);
     if (local_rank == 0)
     {
-        allgather_bruck(tmpbuf, recvcount*PPN, recvtype, recvbuf, recvcount*PPN, recvtype, comm->group_comm);
+        MPIX_Allgather_bruck(tmpbuf, recvcount*PPN, recvtype, recvbuf, recvcount*PPN, recvtype, comm->group_comm);
     }
     bcast(recvbuf, recvcount*num_procs, recvtype, 0, comm->local_comm);
 
     free(tmpbuf);
 }
 
-int allgather_mult_hier_bruck(const void *sendbuf, int sendcount, MPI_Datatype sendtype,
+int MPIX_Allgather_mult_hier_bruck(const void *sendbuf, int sendcount, MPI_Datatype sendtype,
         void *recvbuf, int recvcount, MPI_Datatype recvtype, MPIX_Comm* comm)
 {
     int num_procs;
@@ -512,8 +512,8 @@ int allgather_mult_hier_bruck(const void *sendbuf, int sendcount, MPI_Datatype s
     char* tmpbuf = (char*)malloc(recvcount*num_procs*recv_size);
     char* recv_buffer = (char*)recvbuf;
 
-    allgather_bruck(sendbuf, sendcount, sendtype, tmpbuf, recvcount, recvtype, comm->group_comm);
-    allgather_bruck(tmpbuf, recvcount*group_size, recvtype, 
+    MPIX_Allgather_bruck(sendbuf, sendcount, sendtype, tmpbuf, recvcount, recvtype, comm->group_comm);
+    MPIX_Allgather_bruck(tmpbuf, recvcount*group_size, recvtype, 
                 tmpbuf, recvcount*group_size, recvtype, comm->local_comm);
 
     for (int i = 0; i < ppn; i++)

@@ -14,7 +14,7 @@ extern "C"
 #endif
 
 // Helper Functions
-int alltoall_pairwise(const void* sendbuf,
+int MPIX_Alltoall_pairwise(const void* sendbuf,
         const int sendcount,
         MPI_Datatype sendtype,
         void* recvbuf,
@@ -22,7 +22,7 @@ int alltoall_pairwise(const void* sendbuf,
         MPI_Datatype recvtype,
         MPI_Comm comm);
 
-int alltoall_bruck(const void* sendbuf,
+int MPIX_Alltoall_bruck(const void* sendbuf,
         const int sendcount,
         MPI_Datatype sendtype,
         void* recvbuf,
@@ -31,7 +31,7 @@ int alltoall_bruck(const void* sendbuf,
         MPI_Comm comm);
 
 // Locality-Aware Helper Functions
-int alltoall_pairwise_locality(const void* sendbuf,
+int MPIX_Alltoall_pairwise_locality(const void* sendbuf,
         const int sendcount,
         MPI_Datatype sendtype,
         void* recvbuf,

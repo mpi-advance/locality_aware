@@ -12,15 +12,15 @@ int MPI_Alltoall(const void* sendbuf,
         MPI_Comm comm)
 {
 #ifdef MPI_ADVANCE_ALLTOALL_pairwise
-    return alltoall_pairwise(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm);
+    return MPIX_Alltoall_pairwise(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm);
 #elif MPI_ADVANCE_ALLTOALL_bruck
-    return alltoall_bruck(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm);
+    return MPIX_Alltoall_bruck(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm);
 #else
     return PMPI_Alltoall(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm);
 #endif
 }
 
-int alltoall_pairwise(const void* sendbuf,
+int MPIX_Alltoall_pairwise(const void* sendbuf,
         const int sendcount,
         MPI_Datatype sendtype,
         void* recvbuf,
@@ -60,7 +60,7 @@ int alltoall_pairwise(const void* sendbuf,
     }
 }
 
-int alltoall_bruck(const void* sendbuf,
+int MPIX_Alltoall_bruck(const void* sendbuf,
         const int sendcount,
         MPI_Datatype sendtype,
         void* recvbuf,
@@ -179,16 +179,16 @@ int MPIX_Alltoall(const void* sendbuf,
         MPIX_Comm* mpi_comm)
 {
 #ifdef MPI_ADVANCE_XALLTOALL_pairwise_locality
-    return alltoall_pairwise_locality(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, mpi_comm);
+    return MPIX_Alltoall_pairwise_locality(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, mpi_comm);
 #else
-    return alltoall_pairwise_locality(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, mpi_comm);
+    return MPIX_Alltoall_pairwise_locality(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, mpi_comm);
 #endif
 }
 
 // 2-Step Aggregation (large messages)
 // Gather all data to be communicated between nodes
 // Send to node+i, recv from node-i
-int alltoall_pairwise_locality(const void* sendbuf,
+int MPIX_Alltoall_pairwise_locality(const void* sendbuf,
         const int sendcount,
         MPI_Datatype sendtype,
         void* recvbuf,

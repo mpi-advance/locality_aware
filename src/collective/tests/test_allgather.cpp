@@ -70,7 +70,7 @@ TEST(RandomCommTest, TestsInTests)
                 MPI_COMM_WORLD);
 
         // Bruck Allgather 
-        allgather_bruck(local_data.data(), 
+        MPIX_Allgather_bruck(local_data.data(), 
                 s, 
                 MPI_INT,
                 bruck_allgather.data(), 
@@ -82,7 +82,7 @@ TEST(RandomCommTest, TestsInTests)
 
 
         // P2P Allgather 
-        allgather_p2p(local_data.data(), 
+        MPIX_Allgather_p2p(local_data.data(), 
                 s, 
                 MPI_INT,
                 p2p_allgather.data(), 
@@ -94,7 +94,7 @@ TEST(RandomCommTest, TestsInTests)
 
 
         // Ring Allgather 
-        allgather_ring(local_data.data(), 
+        MPIX_Allgather_ring(local_data.data(), 
                 s, 
                 MPI_INT,
                 ring_allgather.data(), 
@@ -105,7 +105,7 @@ TEST(RandomCommTest, TestsInTests)
             ASSERT_EQ(std_allgather[j], ring_allgather[j]);
 
         // Locality P2P Allgather 
-        allgather_p2p_locality(local_data.data(), 
+        MPIX_Allgather_p2p_locality(local_data.data(), 
                 s, 
                 MPI_INT,
                 loc_p2p_allgather.data(), 
@@ -117,7 +117,7 @@ TEST(RandomCommTest, TestsInTests)
 
 
         // Locality Bruck Allgather 
-        allgather_bruck_locality(local_data.data(), 
+        MPIX_Allgather_bruck_locality(local_data.data(), 
                 s, 
                 MPI_INT,
                 loc_bruck_allgather.data(), 
@@ -128,7 +128,7 @@ TEST(RandomCommTest, TestsInTests)
             ASSERT_EQ(std_allgather[j], loc_bruck_allgather[j]);
 
         // Locality Ring Allgather 
-        allgather_ring_locality(local_data.data(), 
+        MPIX_Allgather_ring_locality(local_data.data(), 
                 s, 
                 MPI_INT,
                 loc_ring_allgather.data(), 
@@ -139,7 +139,7 @@ TEST(RandomCommTest, TestsInTests)
             ASSERT_EQ(std_allgather[j], loc_ring_allgather[j]);
 
         // Hierarchical Bruck Allgather 
-        allgather_hier_bruck(local_data.data(), 
+        MPIX_Allgather_hier_bruck(local_data.data(), 
                 s, 
                 MPI_INT,
                 hier_bruck_allgather.data(), 
@@ -150,7 +150,7 @@ TEST(RandomCommTest, TestsInTests)
             ASSERT_EQ(std_allgather[j], hier_bruck_allgather[j]);
 
         // Hierarchical (MULT) Bruck Allgather 
-        allgather_mult_hier_bruck(local_data.data(), 
+        MPIX_Allgather_mult_hier_bruck(local_data.data(), 
                 s, 
                 MPI_INT,
                 mult_hier_bruck_allgather.data(), 

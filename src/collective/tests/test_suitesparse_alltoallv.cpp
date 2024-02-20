@@ -140,7 +140,7 @@ void test_matrix(const char* filename)
 	*/
 
     // Test Each of the Standard (Pairwise) Implementations
-    alltoallv_pairwise(alltoallv_send_vals.data(), 
+    MPIX_Alltoallv_pairwise(alltoallv_send_vals.data(), 
             sendcounts.data(),
             sdispls.data(),
             MPI_INT,
@@ -155,7 +155,7 @@ void test_matrix(const char* filename)
         ASSERT_EQ(std_recv_vals[i], mpi_recv_vals[i]);
     }
     
-    alltoallv_nonblocking(alltoallv_send_vals.data(), 
+    MPIX_Alltoallv_nonblocking(alltoallv_send_vals.data(), 
             sendcounts.data(),
             sdispls.data(),
             MPI_INT,
@@ -170,7 +170,7 @@ void test_matrix(const char* filename)
         ASSERT_EQ(std_recv_vals[i], mpi_recv_vals[i]);
     }
 
-    alltoallv_pairwise_nonblocking(alltoallv_send_vals.data(), 
+    MPIX_Alltoallv_pairwise_nonblocking(alltoallv_send_vals.data(), 
             sendcounts.data(),
             sdispls.data(),
             MPI_INT,
@@ -185,7 +185,7 @@ void test_matrix(const char* filename)
         ASSERT_EQ(std_recv_vals[i], mpi_recv_vals[i]);
     }
 
-    alltoallv_waitany(alltoallv_send_vals.data(), 
+    MPIX_Alltoallv_waitany(alltoallv_send_vals.data(), 
             sendcounts.data(),
             sdispls.data(),
             MPI_INT,

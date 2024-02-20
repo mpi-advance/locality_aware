@@ -86,17 +86,6 @@ TEST(RandomCommTest, TestsInTests)
                 locality_comm);
         for (int j = 0; j < s*num_procs; j++)
             ASSERT_EQ(std_alltoall[j], loc_pairwise_alltoall[j]);
-
-        /*
-        alltoall_bruck(local_data.data(), 
-                s, 
-                MPI_INT,
-                bruck_alltoall.data(), 
-                s, 
-                MPI_INT,
-                MPI_COMM_WORLD);
-        for (int j = 0; j < s*num_procs; j++)
-            ASSERT_EQ(std_alltoall[j], bruck_alltoall[j]);*/
     }
 
     MPIX_Comm_free(locality_comm);

@@ -14,21 +14,21 @@ int MPI_Alltoallv(const void* sendbuf,
         MPI_Comm comm)
 {
 #ifdef MPI_ADVANCE_ALLTOALLV_pairwise
-    return alltoallv_pairwise(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm);
+    return MPIX_Alltoallv_pairwise(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm);
 #elif MPI_ADVANCE_ALLTOALLV_nonblocking
-    return alltoallv_nonblocking(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm);
+    return MPIX_Alltoallv_nonblocking(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm);
 #elif MPI_ADVANCE_ALLTOALLV_pairwise_nonblocking
-    return alltoallv_pairwise_nonblocking(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm);
+    return MPIX_Alltoallv_pairwise_nonblocking(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm);
 #elif MPI_ADVANCE_ALLTOALLV_waitany
-    return alltoallv_waitany(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm);
+    return MPIX_Alltoallv_waitany(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm);
 #elif MPI_ADVANCE_ALLTOALLV_pairwise_nonblocking_log2
-    return alltoallv_pairwise_nonblocking_log2(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm);
+    return MPIX_Alltoallv_pairwise_nonblocking_log2(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm);
 #else
     return PMPI_Alltoallv(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm);
 #endif
 }
 
-int alltoallv_pairwise(const void* sendbuf,
+int MPIX_Alltoallv_pairwise(const void* sendbuf,
         const int sendcounts[],
         const int sdispls[],
         MPI_Datatype sendtype,
@@ -78,7 +78,7 @@ int alltoallv_pairwise(const void* sendbuf,
     return 0;
 }
 
-int alltoallv_nonblocking(const void* sendbuf,
+int MPIX_Alltoallv_nonblocking(const void* sendbuf,
         const int sendcounts[],
         const int sdispls[],
         MPI_Datatype sendtype,
@@ -135,7 +135,7 @@ int alltoallv_nonblocking(const void* sendbuf,
     return 0;
 }
 
-int alltoallv_pairwise_nonblocking(const void* sendbuf,
+int MPIX_Alltoallv_pairwise_nonblocking(const void* sendbuf,
         const int sendcounts[],
         const int sdispls[],
         MPI_Datatype sendtype,
@@ -204,7 +204,7 @@ int alltoallv_pairwise_nonblocking(const void* sendbuf,
     return 0;
 }
 
-int alltoallv_waitany(const void* sendbuf,
+int MPIX_Alltoallv_waitany(const void* sendbuf,
         const int sendcounts[],
         const int sdispls[],
         MPI_Datatype sendtype,
@@ -337,9 +337,9 @@ int MPIX_Alltoallv(const void* sendbuf,
         MPIX_Comm* mpi_comm)
 {
 #ifdef MPI_ADVANCE_ALLTOALLV_pairwise_locality
-    return alltoallv_pairwise_locality(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, mpi_comm);
+    return MPIX_Alltoallv_pairwise_locality(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, mpi_comm);
 #else
-    return alltoallv_pairwise_locality(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, mpi_comm);
+    return MPIX_Alltoallv_pairwise_locality(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, mpi_comm);
 #endif
 }
 
@@ -354,7 +354,7 @@ int MPIX_Alltoallv(const void* sendbuf,
 //         a tolerance.  Any message with size < tolerance, aggregate
 //         this data with other processes locally.
 //     How should we aggregate data when using GPU memory??
-int alltoallv_pairwise_locality(const void* sendbuf,
+int MPIX_Alltoallv_pairwise_locality(const void* sendbuf,
         const int sendcounts[],
         const int sdispls[],
         MPI_Datatype sendtype,
