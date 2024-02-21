@@ -412,14 +412,27 @@ void order_comm(ParMat<T>&A, std::vector<U>& data, std::vector<U>& recvbuf, MPI_
         
         MPI_Irecv(&(recvbuf[0]), count, type, proc, tag,
                 MPI_COMM_WORLD, &(A.recv_comm.req[i]));
+        
+        /*
+        MPI_Recv(&(recvbuf[0]), count, type, proc, tag,
+                MPI_COMM_WORLD, &status);
+        */
     }
 
+    /*
+    if (A.send_comm.n_msgs)
+        MPI_Waitall(A.send_comm.n_msgs, A.send_comm.req.data(), MPI_STATUSES_IGNORE);
+
+    */
+
+    
     std::vector<MPI_Request> sendrecv_reqs;
     sendrecv_reqs.reserve(A.recv_comm.req.size() + A.send_comm.req.size());
     sendrecv_reqs.insert(sendrecv_reqs.end(), A.send_comm.req.begin(), A.send_comm.req.end());
     sendrecv_reqs.insert(sendrecv_reqs.end(), A.recv_comm.req.begin(), A.recv_comm.req.end());
 
     MPI_Waitall(sendrecv_reqs.size(), sendrecv_reqs.data(), MPI_STATUSES_IGNORE);
+    
 
     for (int i = 0; i < A.recv_comm.n_msgs; i++)
     {   
@@ -468,5 +481,4 @@ void communicate2(ParMat<T>& A, std::vector<U>& data, std::vector<U>& recvbuf, M
     if (A.recv_comm.n_msgs)
         MPI_Waitall(A.recv_comm.n_msgs, A.recv_comm.req.data(), MPI_STATUSES_IGNORE);
 }
-
 #endif

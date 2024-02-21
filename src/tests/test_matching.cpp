@@ -11,6 +11,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <iostream>
+#include <dirent.h>
 #include <assert.h>
 #include <vector>
 #include <numeric>
@@ -56,7 +57,6 @@ void test_matrix(const char* filename)
     {
         recv_vals.resize(A.recv_comm.size_msgs);
     }
-
     // Order recv procs for communicate correctness test
     order_comm(A, send_vals, recv_vals, MPI_INT); 
 
@@ -76,7 +76,7 @@ void test_matrix(const char* filename)
     tfinal = MPI_Wtime() - t0;
     MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
     if (rank == 0) printf("%s Single Communicate Time: %e\n", filename, t0/n_iter);
-
+/*
     MPI_Barrier(MPI_COMM_WORLD);   
     t0 = MPI_Wtime();
     for (int i = 0; i < n_iter; i++)
@@ -92,7 +92,7 @@ void test_matrix(const char* filename)
     tfinal = MPI_Wtime() - t0;
     MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
     if (rank == 0) printf("%s Single Communicate Time (3rd): %e\n", filename, t0/n_iter);
-
+*/
 
 
     // Time new communicate (warm-up first)
@@ -105,7 +105,7 @@ void test_matrix(const char* filename)
     tfinal = MPI_Wtime() - t0;
     MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
     if (rank == 0) printf("%s Single Communicate 2 Time: %e\n", filename, t0/n_iter);
-
+/*
     MPI_Barrier(MPI_COMM_WORLD);
     t0 = MPI_Wtime();
     for (int i = 0; i < n_iter; i++)
@@ -121,7 +121,7 @@ void test_matrix(const char* filename)
     tfinal = MPI_Wtime() - t0;
     MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
     if (rank == 0) printf("%s Single Communicate 2 Time (3rd): %e\n", filename, t0/n_iter);
-
+*/
 
 
     // Check for correctness
@@ -152,6 +152,7 @@ void test_matrix(const char* filename)
     //        form_send_comm methods in src/test/sparse_mat.hpp
 }
 
+
 int main(int argc, char** argv)
 {
     MPI_Init(&argc, &argv);
@@ -167,25 +168,54 @@ TEST(RandomCommTest, TestsInTests)
     // Get MPI Information
     int rank, num_procs;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-    MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
-
-    test_matrix("../../../test_data/dwt_162.pm");
-    test_matrix("../../../test_data/odepa400.pm");
-    test_matrix("../../../test_data/ww_36_pmec_36.pm");
-    test_matrix("../../../test_data/bcsstk01.pm");
-    test_matrix("../../../test_data/west0132.pm");
-    test_matrix("../../../test_data/gams10a.pm");
-    test_matrix("../../../test_data/gams10am.pm");
-    test_matrix("../../../test_data/D_10.pm");
-    test_matrix("../../../test_data/oscil_dcop_11.pm");
-    test_matrix("../../../test_data/tumorAntiAngiogenesis_4.pm");
-    test_matrix("../../../test_data/ch5-5-b1.pm");
-    test_matrix("../../../test_data/msc01050.pm");
-    test_matrix("../../../test_data/SmaGri.pm");
-    test_matrix("../../../test_data/radfr1.pm");
-    test_matrix("../../../test_data/bibd_49_3.pm");
-    test_matrix("../../../test_data/can_1054.pm");
-    test_matrix("../../../test_data/can_1072.pm");
-    test_matrix("../../../test_data/lp_sctap2.pm");
-    test_matrix("../../../test_data/lp_woodw.pm");
+    MPI_Comm_size(MPI_COMM_WORLD, &num_procs); 
+    test_matrix("../../../output-p/adder_dcop_02.pm");
+    test_matrix("../../../output-p/barth5.pm");
+    test_matrix("../../../output-p/bcsstk27.pm");
+    test_matrix("../../../output-p/bcsstk34.pm");
+    test_matrix("../../../output-p/bcsstm02.pm");
+    test_matrix("../../../output-p/bfwb782.pm");
+    test_matrix("../../../output-p/bp_800.pm");
+    test_matrix("../../../output-p/bwm200.pm");
+    test_matrix("../../../output-p/c-67.pm");
+    test_matrix("../../../output-p/can_144.pm");
+    test_matrix("../../../output-p/can_256.pm");
+    test_matrix("../../../output-p/cavity24.pm");
+    test_matrix("../../../output-p/cell1.pm");
+    test_matrix("../../../output-p/Chem97ZtZ.pm");
+    test_matrix("../../../output-p/dwt_607.pm");
+    test_matrix("../../../output-p/ex32.pm");
+    test_matrix("../../../output-p/ex36.pm");
+    test_matrix("../../../output-p/fpga_dcop_14.pm");
+    test_matrix("../../../output-p/fpga_dcop_18.pm");
+    test_matrix("../../../output-p/fpga_dcop_46.pm");
+    test_matrix("../../../output-p/fpga_trans_02.pm");
+    test_matrix("../../../output-p/fs_680_3.pm");
+    test_matrix("../../../output-p/fxm3_6.pm");
+    test_matrix("../../../output-p/G26.pm");
+    test_matrix("../../../output-p/G40.pm");
+    test_matrix("../../../output-p/G49.pm");
+    test_matrix("../../../output-p/G50.pm");
+    test_matrix("../../../output-p/g7jac180.pm");
+    test_matrix("../../../output-p/GD06_theory.pm");
+    test_matrix("../../../output-p/hcircuit.pm");
+    test_matrix("../../../output-p/lp_czprob.pm");
+    test_matrix("../../../output-p/lpi_cplex2.pm");
+    test_matrix("../../../output-p/lpi_klein1.pm");
+    test_matrix("../../../output-p/lp_kb2.pm");
+    test_matrix("../../../output-p/lp_nug06.pm");
+     test_matrix("../../../output-p/lp_sc105.pm");
+    test_matrix("../../../output-p/lp_standmps.pm");
+    test_matrix("../../../output-p/lp_stocfor3.pm");
+    test_matrix("../../../output-p/lp_tuff.pm");
+    test_matrix("../../../output-p/lshp1009.pm");
+     test_matrix("../../../output-p/oscil_dcop_20.pm");
+    test_matrix("../../../output-p/oscil_trans_01.pm");
+    test_matrix("../../../output-p/pde900.pm");
+    test_matrix("../../../output-p/rajat03.pm");
+    test_matrix("../../../output-p/rajat11.pm");
+     test_matrix("../../../output-p/sinc12.pm");
+    test_matrix("../../../output-p/str_600.pm");
+    test_matrix("../../../output-p/trans4.pm");
+    test_matrix("../../../output-p/west0989.pm");
 }
