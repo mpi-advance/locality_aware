@@ -37,7 +37,7 @@ void compare(int n_recvs, int s_recvs, int* src, int* counts, int* displs, long*
         {
             if (indices[displs[i] + j] != orig_indices[orig_proc_displs[src[i]] + j])
             {
-                printf("Rank %d, indices from proc %d at pos %d incorrect!  Got %d, should be %d\n",
+                printf("Rank %d, indices from proc %d at pos %d incorrect!  Got %lu, should be %lu\n",
                         rank, src[i], j, indices[displs[i]+j], orig_indices[orig_proc_displs[src[i]+j]]);
                 break;
             }
