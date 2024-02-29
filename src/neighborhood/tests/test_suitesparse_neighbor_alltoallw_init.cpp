@@ -85,6 +85,9 @@ void test_matrix(const char* filename)
     
 
     // 2. Node-Aware Communication
+    MPIX_Info* xinfo;
+    MPIX_Info_init(&xinfo);
+
     MPIX_Comm* neighbor_comm;
     MPIX_Request* neighbor_request;
     MPIX_Dist_graph_create_adjacent(MPI_COMM_WORLD,
@@ -107,7 +110,7 @@ void test_matrix(const char* filename)
             A.recv_comm.ptr.data(), 
             recvtypes.data(),
             neighbor_comm, 
-            MPI_INFO_NULL,
+            xinfo,
             &neighbor_request);
 
     MPIX_Start(neighbor_request);
@@ -118,7 +121,8 @@ void test_matrix(const char* filename)
     {
         ASSERT_EQ(std_recv_vals[i], new_recv_vals[i]);
     }
-    MPIX_Request_free(neighbor_request);
+    MPIX_Info_free(&xinfo);
+    MPIX_Request_free(&neighbor_request);
     MPIX_Comm_free(&neighbor_comm);
 
 }

@@ -54,7 +54,7 @@ void init_locality(const int n_sends,
         const long* global_recv_indices,
         const MPI_Datatype sendtype, 
         const MPI_Datatype recvtype,
-        const MPIX_Comm* mpix_comm,
+        MPIX_Comm* mpix_comm,
         MPIX_Request* request)
 {
     // Get MPI Information
@@ -166,6 +166,10 @@ void init_locality(const int n_sends,
 
     // Copy to pointer for return
     request->locality = locality_comm;
+    request->tag = locality_comm->global_comm->tag;
+    request->global_n_sends =  locality_comm->global_comm->send_data->num_msgs;
+    request->global_n_recvs =  locality_comm->global_comm->recv_data->num_msgs;
+    request->global_n_msgs = request->global_n_sends + request->global_n_recvs;
 }
 
 // Destroy NAPComm* structure

@@ -20,6 +20,8 @@ int MPIX_Comm_init(MPIX_Comm** xcomm_ptr, MPI_Comm global_comm)
 
     xcomm->requests = NULL;
     xcomm->n_requests = 0;
+
+    xcomm->tag = 152;
     
     *xcomm_ptr = xcomm;
 

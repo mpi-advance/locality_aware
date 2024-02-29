@@ -21,10 +21,20 @@ typedef struct _MPIX_Request
     MPI_Request* global_requests;
 
     LocalityComm* locality;
+    MPIX_Comm* xcomm;
 
     const void* sendbuf; // pointer to sendbuf (where original data begins)
     void* recvbuf; // pointer to recvbuf (where final data goes)
     int recv_size;
+    int global_n_sends;
+    int global_n_recvs;
+    MPI_Datatype recvtype;
+    int tag;
+
+    int* recv_procs;
+    int* rdispls;
+
+    int reorder;
 } MPIX_Request;
 
 // Starting locality-aware requests
@@ -41,8 +51,13 @@ int MPIX_Start(MPIX_Request* request);
 int MPIX_Wait(MPIX_Request* request, MPI_Status* status);
 
 
-int MPIX_Request_free(MPIX_Request* request);
+int MPIX_Request_init(MPIX_Request** request, MPIX_Comm* xcomm);
+int MPIX_Request_free(MPIX_Request** request);
 
+int reorder_wait(MPIX_Request* request);
+
+int store_sources(MPIX_Request* request, int n_procs, int* procs);
+int store_rdispls(MPIX_Request* request, int n_rdispls, int* rdispls);
 
 #ifdef __cplusplus
 }

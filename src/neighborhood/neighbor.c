@@ -1,26 +1,5 @@
 #include "neighbor.h"
 
-void init_request(MPIX_Request** request_ptr)
-{
-    MPIX_Request* request = (MPIX_Request*)malloc(sizeof(MPIX_Request));
-
-    request->locality = NULL;
-
-    request->local_L_n_msgs = 0;
-    request->local_S_n_msgs = 0;
-    request->local_R_n_msgs = 0;
-    request->global_n_msgs = 0;
-
-    request->local_L_requests = NULL;
-    request->local_S_requests = NULL;
-    request->local_R_requests = NULL;
-    request->global_requests = NULL;
-
-    request->recv_size = 0;
-
-    *request_ptr = request;
-}
-
 void destroy_request(MPIX_Request* request)
 {
     if (request->local_L_n_msgs)
@@ -153,14 +132,14 @@ int MPIX_Neighbor_alltoallv(
         const int recvcounts[],
         const int rdispls[],
         MPI_Datatype recvtype,
-        MPI_Comm comm)
+        MPIX_Comm* comm)
 {
 
     int tag = 349526;
 
     int indegree, outdegree, weighted;
     MPI_Dist_graph_neighbors_count(
-            comm, 
+            comm->neighbor_comm, 
             &indegree, 
             &outdegree, 
             &weighted);
@@ -183,7 +162,7 @@ int MPIX_Neighbor_alltoallv(
     }
 
     MPI_Dist_graph_neighbors(
-            comm, 
+            comm->neighbor_comm, 
             indegree, 
             sources, 
             sourceweights,
@@ -208,7 +187,7 @@ int MPIX_Neighbor_alltoallv(
                 recvtype, 
                 sources[i],
                 tag,
-                comm, 
+                comm->neighbor_comm, 
                 &(recv_requests[i]));
     }
 
@@ -219,7 +198,7 @@ int MPIX_Neighbor_alltoallv(
                 sendtype,
                 destinations[i],
                 tag,
-                comm,
+                comm->neighbor_comm,
                 &(send_requests[i]));
     }
 
@@ -249,7 +228,7 @@ int MPIX_Neighbor_topo_alltoallv(
         const int rdispls[],
         MPI_Datatype recvtype,
         MPIX_Topo* topo,
-        MPI_Comm comm)
+        MPIX_Comm* comm)
 {
     int tag = 349529;
 
@@ -270,7 +249,7 @@ int MPIX_Neighbor_topo_alltoallv(
                 recvtype, 
                 (*topo).sources[i],
                 tag,
-                comm, 
+                comm->neighbor_comm, 
                 &(recv_requests[i]));
     }
 
@@ -281,7 +260,7 @@ int MPIX_Neighbor_topo_alltoallv(
                 sendtype,
                 (*topo).destinations[i],
                 tag,
-                comm,
+                comm->neighbor_comm,
                 &(send_requests[i]));
     }
 
@@ -304,8 +283,8 @@ int MPIX_Neighbor_topo_alltoallv_init(
         const int rdispls[],
         MPI_Datatype recvtype,
         MPIX_Topo* topo,
-        MPI_Comm comm,
-        MPI_Info info,
+        MPIX_Comm* comm,
+        MPIX_Info* info,
         MPIX_Request** request_ptr)
 {
     int tag = 349526;
@@ -344,9 +323,16 @@ int MPIX_Neighbor_topo_alltoallv_init(
             destweights); 
 
     MPIX_Request* request;
-    init_request(&request);
+    MPIX_Request_init(&request, comm);
 
     request->global_n_msgs = indegree+outdegree;
+    request->global_n_sends = outdegree;
+    request->global_n_recvs = indegree;
+    request->tag = tag;
+    request->recvtype = recvtype;
+    store_sources(request, request->global_n_recvs, sources);
+    store_rdispls(request, request->global_n_recvs, rdispls);
+
     allocate_requests(request->global_n_msgs, &(request->global_requests));
 
     const char* send_buffer = (char*) sendbuf;
@@ -363,7 +349,7 @@ int MPIX_Neighbor_topo_alltoallv_init(
                 recvtype, 
                 sources[i],
                 tag,
-                comm, 
+                comm->neighbor_comm, 
                 &(request->global_requests[i]));
     }
 
@@ -374,7 +360,7 @@ int MPIX_Neighbor_topo_alltoallv_init(
                 sendtype,
                 destinations[i],
                 tag,
-                comm,
+                comm->neighbor_comm,
                 &(request->global_requests[indegree+i]));
     }
 
@@ -473,15 +459,15 @@ int MPIX_Neighbor_alltoallv_init(
         const int recvcounts[],
         const int rdispls[],
         MPI_Datatype recvtype,
-        MPI_Comm comm,
-        MPI_Info info,
+        MPIX_Comm* comm,
+        MPIX_Info* info,
         MPIX_Request** request_ptr)
 {
     int tag = 349526;
 
     int indegree, outdegree, weighted;
     MPI_Dist_graph_neighbors_count(
-            comm, 
+            comm->neighbor_comm, 
             &indegree, 
             &outdegree, 
             &weighted);
@@ -504,7 +490,7 @@ int MPIX_Neighbor_alltoallv_init(
     }
 
     MPI_Dist_graph_neighbors(
-            comm, 
+            comm->neighbor_comm, 
             indegree, 
             sources, 
             sourceweights,
@@ -513,9 +499,17 @@ int MPIX_Neighbor_alltoallv_init(
             destweights);
 
     MPIX_Request* request;
-    init_request(&request);
+    MPIX_Request_init(&request, comm);
 
     request->global_n_msgs = indegree+outdegree;
+    request->global_n_sends = outdegree;
+    request->global_n_recvs = indegree;
+    request->tag = tag;
+    request->recvtype = recvtype;
+    store_sources(request, request->global_n_recvs, sources);
+    store_rdispls(request, request->global_n_recvs, rdispls);
+    request->recvbuf = recvbuffer;
+
     allocate_requests(request->global_n_msgs, &(request->global_requests));
 
     const char* send_buffer = (char*) sendbuffer;
@@ -532,7 +526,7 @@ int MPIX_Neighbor_alltoallv_init(
                 recvtype, 
                 sources[i],
                 tag,
-                comm, 
+                comm->neighbor_comm, 
                 &(request->global_requests[i]));
     }
 
@@ -543,7 +537,7 @@ int MPIX_Neighbor_alltoallv_init(
                 sendtype,
                 destinations[i],
                 tag,
-                comm,
+                comm->neighbor_comm,
                 &(request->global_requests[indegree+i]));
     }
 
@@ -572,7 +566,7 @@ int MPIX_Neighbor_alltoallw_init(
         const MPI_Aint rdispls[],
         MPI_Datatype* recvtypes,
         MPIX_Comm* comm,
-        MPI_Info info,
+        MPIX_Info* info,
         MPIX_Request** request_ptr)
 {
     int tag = 349526;
@@ -598,7 +592,7 @@ int MPIX_Neighbor_alltoallw_init(
             destweights);
 
     MPIX_Request* request;
-    init_request(&request);
+    MPIX_Request_init(&request, comm);
 
     request->global_n_msgs = indegree+outdegree;
     allocate_requests(request->global_n_msgs, &(request->global_requests));
@@ -647,9 +641,12 @@ int MPIX_Neighbor_locality_topo_alltoallv_init(
         MPI_Datatype recvtype,
         MPIX_Topo* topo,
         MPIX_Comm* comm,
-        MPI_Info info,
+        MPIX_Info* info,
         MPIX_Request** request_ptr)
 {
+    if (comm->local_comm == MPI_COMM_NULL)
+        MPIX_Comm_topo_init(comm);
+
     int tag = 304591;
     int indegree, outdegree, weighted;
     MPIX_Topo_dist_graph_neighbors_count(
@@ -685,7 +682,10 @@ int MPIX_Neighbor_locality_topo_alltoallv_init(
             destweights);
 
     MPIX_Request* request;
-    init_request(&request);
+    MPIX_Request_init(&request, comm);
+
+    request->tag = tag;
+    request->recvtype = recvtype;
 
     // Initialize Locality-Aware Communication Strategy (3-Step)
     // E.G. Determine which processes talk to eachother at every step
@@ -706,8 +706,12 @@ int MPIX_Neighbor_locality_topo_alltoallv_init(
             comm, // communicator used in dist_graph_create_adjacent
             request);
 
+    request->recvtype = recvtype;
     request->sendbuf = sendbuffer;
     request->recvbuf = recvbuffer;
+    store_sources(request, request->global_n_recvs, request->locality->global_comm->recv_data->procs);
+    store_rdispls(request, request->global_n_recvs, request->locality->global_comm->recv_data->indptr);
+
     MPI_Type_size(recvtype, &(request->recv_size));
 
     // Local L Communication
@@ -754,7 +758,7 @@ int MPIX_Neighbor_locality_topo_alltoallv_init(
             request->locality->global_comm->recv_data->indptr,
             recvtype,
             request->locality->global_comm->tag,
-            comm->global_comm,
+            comm->neighbor_comm,
             &(request->global_n_msgs),
             &(request->global_requests));
 
@@ -799,9 +803,12 @@ int MPIX_Neighbor_locality_alltoallv_init(
         const long global_rindices[],
         MPI_Datatype recvtype,
         MPIX_Comm* comm,
-        MPI_Info info,
+        MPIX_Info* info,
         MPIX_Request** request_ptr)
 {
+    if (comm->local_comm == MPI_COMM_NULL)
+        MPIX_Comm_topo_init(comm);
+
     int indegree, outdegree, weighted;
     MPI_Dist_graph_neighbors_count(
             comm->neighbor_comm, 
@@ -836,7 +843,8 @@ int MPIX_Neighbor_locality_alltoallv_init(
             destweights);
 
     MPIX_Request* request;
-    init_request(&request);
+    MPIX_Request_init(&request, comm);
+
 
     // Initialize Locality-Aware Communication Strategy (3-Step)
     // E.G. Determine which processes talk to eachother at every step
@@ -857,8 +865,11 @@ int MPIX_Neighbor_locality_alltoallv_init(
             comm, // communicator used in dist_graph_create_adjacent 
             request);
 
+    request->recvtype = recvtype;
     request->sendbuf = sendbuffer;
     request->recvbuf = recvbuffer;
+    store_sources(request, request->global_n_recvs, request->locality->global_comm->recv_data->procs);
+    store_rdispls(request, request->global_n_recvs, request->locality->global_comm->recv_data->indptr);
     MPI_Type_size(recvtype, &(request->recv_size));
 
     // Local L Communication
@@ -905,7 +916,7 @@ int MPIX_Neighbor_locality_alltoallv_init(
             request->locality->global_comm->recv_data->indptr,
             recvtype,
             request->locality->global_comm->tag,
-            comm->global_comm,
+            comm->neighbor_comm,
             &(request->global_n_msgs),
             &(request->global_requests));
 
@@ -947,9 +958,12 @@ int MPIX_Neighbor_part_locality_topo_alltoallv_init(
         MPI_Datatype recvtype,
         MPIX_Topo* topo,
         MPIX_Comm* comm,
-        MPI_Info info,
+        MPIX_Info* info,
         MPIX_Request** request_ptr)
 {
+    if (comm->local_comm == MPI_COMM_NULL)
+        MPIX_Comm_topo_init(comm);
+
     int rank;
     MPI_Comm_rank(comm->global_comm, &rank);
 
@@ -1020,7 +1034,7 @@ int MPIX_Neighbor_part_locality_topo_alltoallv_init(
 
 
     MPIX_Neighbor_topo_alltoallv(global_send_indices, sendcounts, send_displs, MPI_LONG,
-            global_recv_indices, recvcounts, recv_displs, MPI_LONG, topo, comm->global_comm);
+            global_recv_indices, recvcounts, recv_displs, MPI_LONG, topo, comm);
 
     free(send_displs);
     free(recv_displs);
@@ -1050,9 +1064,12 @@ int MPIX_Neighbor_part_locality_alltoallv_init(
         const int rdispls[],
         MPI_Datatype recvtype,
         MPIX_Comm* comm,
-        MPI_Info info,
+        MPIX_Info* info,
         MPIX_Request** request_ptr)
 {
+    if (comm->local_comm == MPI_COMM_NULL)
+        MPIX_Comm_topo_init(comm);
+
     int rank; 
     MPI_Comm_rank(comm->global_comm, &rank);
 
@@ -1122,7 +1139,7 @@ int MPIX_Neighbor_part_locality_alltoallv_init(
 
 
     MPIX_Neighbor_alltoallv(global_send_indices, sendcounts, send_displs, MPI_LONG, 
-            global_recv_indices, recvcounts, recv_displs, MPI_LONG, comm->neighbor_comm);
+            global_recv_indices, recvcounts, recv_displs, MPI_LONG, comm);
 
     free(send_displs);
     free(recv_displs);

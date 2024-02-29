@@ -23,7 +23,7 @@ typedef struct _LocalityComm
     const MPIX_Comm* communicators;
 } LocalityComm;
 
-void init_locality_comm(LocalityComm** locality_ptr, const MPIX_Comm* comm,
+void init_locality_comm(LocalityComm** locality_ptr, MPIX_Comm* comm,
         MPI_Datatype sendtype, MPI_Datatype recvtype);
 void finalize_locality_comm(LocalityComm* locality);
 void destroy_locality_comm(LocalityComm* locality);

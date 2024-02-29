@@ -125,8 +125,8 @@ int alltoall_crs_personalized(int send_nnz, int* dest, int sendcount,
 
     MPI_Status recv_status;
     int proc, ctr;
-    int tag = xinfo->tag;
-    xinfo->tag = (xinfo->tag + 1 % MPI_TAG_UB);
+    int tag = comm->tag;
+    comm->tag = (comm->tag + 1 % MPI_TAG_UB);
 
 
     char* send_buffer;
@@ -200,8 +200,8 @@ int alltoall_crs_nonblocking(int send_nnz, int* dest, int sendcount,
     int proc, ctr, flag, ibar;
     MPI_Status recv_status;
     MPI_Request bar_req;
-    int tag = xinfo->tag;
-    xinfo->tag = (xinfo->tag + 1 % MPI_TAG_UB);
+    int tag = comm->tag;
+    comm->tag = (comm->tag + 1 % MPI_TAG_UB);
 
     if (comm->n_requests < send_nnz)
         MPIX_Comm_req_resize(comm, send_nnz);
@@ -265,8 +265,8 @@ int alltoallv_crs_personalized(int send_nnz, int send_size, int* dest, int* send
 
     MPI_Status recv_status;
     int proc, ctr, idx, count;
-    int tag = xinfo->tag;
-    xinfo->tag = (xinfo->tag + 1 % MPI_TAG_UB);
+    int tag = comm->tag;
+    comm->tag = (comm->tag + 1 % MPI_TAG_UB);
 
     char* send_buffer = (char*)sendvals;
     char* recv_buffer = (char*)recvvals;
@@ -349,8 +349,8 @@ int alltoallv_crs_nonblocking(int send_nnz, int send_size, int* dest, int* sendc
     int proc, ctr, flag, ibar, idx, count;
     MPI_Status recv_status;
     MPI_Request bar_req;
-    int tag = xinfo->tag;
-    xinfo->tag = (xinfo->tag + 1 % MPI_TAG_UB);
+    int tag = comm->tag;
+    comm->tag = (comm->tag + 1 % MPI_TAG_UB);
 
     if (comm->n_requests < send_nnz)
         MPIX_Comm_req_resize(comm, send_nnz);

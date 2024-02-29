@@ -26,3 +26,11 @@ add_executable(test_suitesparse_alltoallv_crs test_suitesparse_alltoallv_crs.cpp
 target_link_libraries(test_suitesparse_alltoallv_crs mpi_advance gtest pthread )
 add_test(SuitesparseAlltoallvCRS mpirun -n 16 ./test_suitesparse_alltoallv_crs)
 
+
+add_executable(test_neighbor_reorder test_neighbor_reorder.cpp)
+target_link_libraries(test_neighbor_reorder mpi_advance gtest pthread )
+add_test(PersistentNeighReorderTest mpirun -n 16 ./test_neighbor_reorder)
+
+add_executable(test_suitesparse_neighbor_reorder test_suitesparse_neighbor_reorder.cpp)
+target_link_libraries(test_suitesparse_neighbor_reorder mpi_advance gtest pthread )
+add_test(SuitesparseReorderTest mpirun -n 16 ./test_suitesparse_neighbor_reorder)

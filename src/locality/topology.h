@@ -31,6 +31,8 @@ typedef struct _MPIX_Comm
 
     MPI_Request* requests;
     int n_requests;
+
+    int tag;
 } MPIX_Comm;
 
 int MPIX_Comm_init(MPIX_Comm** xcomm_ptr, MPI_Comm global_comm);

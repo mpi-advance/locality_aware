@@ -7,6 +7,7 @@
 #include "dist_topo.h"
 #include "persistent/persistent.h"
 #include "locality/locality_comm.h"
+#include "utils.h"
 
 // Declarations of C++ methods
 #ifdef __cplusplus
@@ -24,7 +25,7 @@ int MPIX_Neighbor_topo_alltoallv(
         const int rdispls[],
         MPI_Datatype recvtype,
         MPIX_Topo* topo,
-        MPI_Comm comm);
+        MPIX_Comm* comm);
 
 int MPIX_Neighbor_topo_alltoallv_init(
         const void* sendbuf,
@@ -36,8 +37,8 @@ int MPIX_Neighbor_topo_alltoallv_init(
         const int rdispls[],
         MPI_Datatype recvtype,
         MPIX_Topo* topo,
-        MPI_Comm comm,
-        MPI_Info info,
+        MPIX_Comm* comm,
+        MPIX_Info* info,
         MPIX_Request** request_ptr);
 
 
@@ -53,7 +54,7 @@ int MPIX_Neighbor_alltoallv(
         const int recvcounts[],
         const int rdispls[],
         MPI_Datatype recvtype,
-        MPI_Comm comm);
+        MPIX_Comm* comm);
 
 
 // Standard Neighbor Alltoallv
@@ -111,8 +112,8 @@ int MPIX_Neighbor_alltoallv_init(
         const int recvcounts[],
         const int rdispls[],
         MPI_Datatype recvtype,
-        MPI_Comm comm,
-        MPI_Info info,
+        MPIX_Comm* comm,
+        MPIX_Info* info,
         MPIX_Request** request_ptr);
 
 
@@ -129,7 +130,7 @@ int MPIX_Neighbor_alltoallw_init(
         const MPI_Aint rdispls[],
         MPI_Datatype* recvtypes,
         MPIX_Comm* comm,
-        MPI_Info info,
+        MPIX_Info* info,
         MPIX_Request** request_ptr);
 
 
@@ -148,7 +149,7 @@ int MPIX_Neighbor_locality_alltoallv_init(
         const long global_rindices[],
         MPI_Datatype recvtype,
         MPIX_Comm* comm,
-        MPI_Info info,
+        MPIX_Info* info,
         MPIX_Request** request_ptr);
 int MPIX_Neighbor_locality_topo_alltoallv_init(
         const void* sendbuf,
@@ -163,7 +164,7 @@ int MPIX_Neighbor_locality_topo_alltoallv_init(
         MPI_Datatype recvtype,
         MPIX_Topo* topo,
         MPIX_Comm* comm,
-        MPI_Info info,
+        MPIX_Info* info,
         MPIX_Request** request_ptr);
 int MPIX_Neighbor_part_locality_alltoallv_init(
         const void* sendbuf,
@@ -175,7 +176,7 @@ int MPIX_Neighbor_part_locality_alltoallv_init(
         const int rdispls[],
         MPI_Datatype recvtype,
         MPIX_Comm* comm,
-        MPI_Info info,
+        MPIX_Info* info,
         MPIX_Request** request_ptr);
 int MPIX_Neighbor_part_locality_topo_alltoallv_init(
         const void* sendbuf,
@@ -188,7 +189,7 @@ int MPIX_Neighbor_part_locality_topo_alltoallv_init(
         MPI_Datatype recvtype,
         MPIX_Topo* topo,
         MPIX_Comm* comm,
-        MPI_Info info,
+        MPIX_Info* info,
         MPIX_Request** request_ptr);
 
 
@@ -204,7 +205,7 @@ void init_locality(const int n_sends,
         const long* global_recv_indices,
         const MPI_Datatype sendtype, 
         const MPI_Datatype recvtype,
-        const MPIX_Comm* mpix_comm,
+        MPIX_Comm* mpix_comm,
         MPIX_Request* request);
 
 

@@ -48,6 +48,7 @@ if(ENABLE_UNIT_TESTS)
   FetchContent_MakeAvailable(googletest)
 endif()
 #####################
+enable_testing()
 
 include_directories("src")
 add_subdirectory("src")

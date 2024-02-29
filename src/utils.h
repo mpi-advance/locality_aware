@@ -10,7 +10,6 @@ extern "C"
 
 typedef struct _MPIX_Info
 {
-    int tag;
     int crs_num_initialized;
     int crs_size_initialized;
 } MPIX_Info;

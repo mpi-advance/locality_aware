@@ -33,8 +33,8 @@ int alltoall_crs_personalized_loc(int send_nnz, int* dest, int sendcount,
     MPI_Status recv_status;
     int proc, ctr, start, end;
     int first, last, count, n_msgs, n_sends, n_recvs, idx, new_idx;
-    int tag = xinfo->tag;
-    xinfo->tag = (xinfo->tag + 1 % MPI_TAG_UB);
+    int tag = comm->tag;
+    comm->tag = (comm->tag + 1 % MPI_TAG_UB);
 
     std::vector<char> node_send_buffer;
     std::vector<char> local_send_buffer;
@@ -161,8 +161,8 @@ int alltoall_crs_personalized_loc(int send_nnz, int* dest, int sendcount,
     for (int i = 0; i < PPN; i++)
         displs[i+1] = displs[i] + msg_counts[i];
 
-    tag = xinfo->tag;
-    xinfo->tag = (xinfo->tag + 1 % MPI_TAG_UB);
+    tag = comm->tag;
+    comm->tag = (comm->tag + 1 % MPI_TAG_UB);
 
     MPI_Allreduce(MPI_IN_PLACE, msg_counts.data(), PPN, MPI_INT, MPI_SUM, comm->local_comm);
     int recv_count = msg_counts[local_rank];
@@ -256,8 +256,8 @@ int alltoall_crs_nonblocking_loc(int send_nnz, int* dest, int sendcount,
     MPI_Request bar_req;
     int proc, ctr, flag, ibar, start, end;
     int first, last, count, n_msgs, n_sends, n_recvs, idx, new_idx;
-    int tag = xinfo->tag;
-    xinfo->tag = (xinfo->tag + 1 % MPI_TAG_UB);
+    int tag = comm->tag;
+    comm->tag = (comm->tag + 1 % MPI_TAG_UB);
 
     std::vector<char> node_send_buffer;
     std::vector<char> local_send_buffer;
@@ -405,8 +405,8 @@ int alltoall_crs_nonblocking_loc(int send_nnz, int* dest, int sendcount,
     for (int i = 0; i < PPN; i++)
         displs[i+1] = displs[i] + msg_counts[i];
 
-    tag = xinfo->tag;
-    xinfo->tag = (xinfo->tag + 1 % MPI_TAG_UB);
+    tag = comm->tag;
+    comm->tag = (comm->tag + 1 % MPI_TAG_UB);
 
     MPI_Allreduce(MPI_IN_PLACE, msg_counts.data(), PPN, MPI_INT, MPI_SUM, comm->local_comm);
     int recv_count = msg_counts[local_rank];
@@ -485,8 +485,8 @@ int alltoallv_crs_personalized_loc(int send_nnz, int send_size, int* dest, int* 
     if (comm->n_requests < send_nnz)
         MPIX_Comm_req_resize(comm, send_nnz);
 
-    int tag = xinfo->tag;
-    xinfo->tag = (xinfo->tag + 1 % MPI_TAG_UB);
+    int tag = comm->tag;
+    comm->tag = (comm->tag + 1 % MPI_TAG_UB);
 
     char* send_buffer = (char*)sendvals;
     char* recv_buffer = (char*)recvvals;
@@ -643,8 +643,8 @@ int alltoallv_crs_personalized_loc(int send_nnz, int send_size, int* dest, int* 
     // Tell them which global indices I need from them
     std::vector<MPI_Request> local_req(PPN);
 
-    tag = xinfo->tag;
-    xinfo->tag = (xinfo->tag + 1 % MPI_TAG_UB);
+    tag = comm->tag;
+    comm->tag = (comm->tag + 1 % MPI_TAG_UB);
 
     n_sends = 0;
     for (int i = 0; i < PPN; i++)
@@ -719,8 +719,8 @@ int alltoallv_crs_nonblocking_loc(int send_nnz, int send_size, int* dest, int* s
     if (comm->n_requests < send_nnz)
         MPIX_Comm_req_resize(comm, send_nnz);
 
-    int tag = xinfo->tag;
-    xinfo->tag = (xinfo->tag + 1 % MPI_TAG_UB);
+    int tag = comm->tag;
+    comm->tag = (comm->tag + 1 % MPI_TAG_UB);
 
     char* send_buffer = (char*)sendvals;
     char* recv_buffer = (char*)recvvals;
@@ -896,8 +896,8 @@ int alltoallv_crs_nonblocking_loc(int send_nnz, int send_size, int* dest, int* s
     // Tell them which global indices I need from them
     std::vector<MPI_Request> local_req(PPN);
 
-    tag = xinfo->tag;
-    xinfo->tag = (xinfo->tag + 1 % MPI_TAG_UB);
+    tag = comm->tag;
+    comm->tag = (comm->tag + 1 % MPI_TAG_UB);
 
     n_sends = 0;
     for (int i = 0; i < PPN; i++)
