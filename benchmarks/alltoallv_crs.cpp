@@ -108,7 +108,7 @@ int main(int argc, char* argv[])
     MPIX_Comm_topo_init(xcomm);
     update_locality(xcomm, 4);
 
-    int n_recvs, s_recvs, proc, idx;
+    int n_recvs, s_recvs, proc;
     std::vector<int> src(A.send_comm.n_msgs+1);
     std::vector<int> rdispls(A.send_comm.n_msgs+1);
     std::vector<int> recvcounts(A.send_comm.n_msgs+1);

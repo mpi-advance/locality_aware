@@ -55,12 +55,12 @@ TEST(RandomCommTest, TestsInTests)
 
         // Will only be clean for up to double digit process counts
         displs[0] = 0;
-        for (int i = 0; i < num_procs; i++)
+        for (int j = 0; j < num_procs; j++)
         {
-            for (int j = 0; j < s; j++)
-                local_data[i*s + j] = rank*10000 + i*100 + j;
-            sizes[i] = s;
-            displs[i+1] = displs[i] + s;
+            for (int k = 0; k < s; k++)
+                local_data[j*s + k] = rank*10000 + j*100 + k;
+            sizes[j] = s;
+            displs[j+1] = displs[j] + s;
         }
 
 

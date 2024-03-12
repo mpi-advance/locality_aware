@@ -1,6 +1,8 @@
 #ifndef MPI_ADVANCE_H
 #define MPI_ADVANCE_H
 
+#include "utils.h"
+
 #include "locality/comm_data.h"
 #include "locality/comm_pkg.h"
 #include "locality/locality_comm.h"

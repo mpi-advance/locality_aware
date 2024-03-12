@@ -38,7 +38,6 @@ void test_matrix(const char* filename)
 
     // Read suitesparse matrix
     ParMat<int> A;
-    int idx;
     readParMatrix(filename, A);
     form_comm(A);
     std::vector<int> proc_counts(num_procs, 0);

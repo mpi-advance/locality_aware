@@ -48,7 +48,7 @@ void test_matrix(const char* filename)
         proc_displs[proc] = A.send_comm.ptr[i];
     }
 
-    int n_recvs, s_recvs, proc, idx;
+    int n_recvs, s_recvs, proc;
     std::vector<int> src(A.send_comm.n_msgs+1);
     std::vector<int> rdispls(A.send_comm.n_msgs+1);
     std::vector<int> recvcounts(A.send_comm.n_msgs+1);
