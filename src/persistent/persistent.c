@@ -159,7 +159,6 @@ int reorder_wait(MPIX_Request* request)
     MPI_Status status;
 
     MPI_Type_size(request->recvtype, &recv_size);
-        //printf("Rank %d should recv %d msgs\n", rank, request->global_n_recvs);
         
     char* recv_buffer = NULL;
     if (request->global_n_recvs)
@@ -184,7 +183,6 @@ int reorder_wait(MPIX_Request* request)
                     &(request->global_requests[i]));
             MPI_Start(&(request->global_requests[i]));
             MPI_Wait(&(request->global_requests[i]), &status);
-            //printf("Rank %d recvd i %d from proc %d, count %d, at recv_buffer[%d]\n", rank, i, proc, count, orig_ptr[proc]*recv_size); 
         }
 
         free(orig_ptr);
@@ -196,7 +194,6 @@ int reorder_wait(MPIX_Request* request)
                 MPI_STATUSES_IGNORE);
 
     MPI_Barrier(request->xcomm->global_comm);
-    printf("Rank %d past barrier!\n", rank);
     return ierr;
 }
 
