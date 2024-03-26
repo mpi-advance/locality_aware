@@ -77,6 +77,7 @@ int MPIX_Comm_req_resize(MPIX_Comm* xcomm, int n)
     if (n <= 0) return MPI_SUCCESS;
 
     xcomm->n_requests = n;
+printf("Setting xcomm->n_reqeusts to %d!\n", xcomm->n_requests);
     xcomm->requests = (MPI_Request*)realloc(xcomm->requests, n*sizeof(MPI_Request));
 
     return MPI_SUCCESS;
@@ -85,6 +86,8 @@ int MPIX_Comm_req_resize(MPIX_Comm* xcomm, int n)
 int MPIX_Comm_free(MPIX_Comm** xcomm_ptr)
 {
     MPIX_Comm* xcomm = *xcomm_ptr;
+    if (xcomm == NULL) 
+        return;
 
     if (xcomm->n_requests > 0)
         free(xcomm->requests);
