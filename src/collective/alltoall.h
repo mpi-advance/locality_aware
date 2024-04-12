@@ -39,6 +39,14 @@ int alltoall_pairwise_loc(const void* sendbuf,
         MPI_Datatype recvtype,
         MPIX_Comm* comm);
 
+int alltoall_rma(const void* sendbuf,
+        const int sendcount,
+        MPI_Datatype sendtype,
+        void* recvbuf,
+        const int recvcount,
+        MPI_Datatype recvtype,
+        MPIX_Comm* comm);
+
 
 #ifdef __cplusplus
 }

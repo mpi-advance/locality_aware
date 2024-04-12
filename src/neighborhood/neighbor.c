@@ -383,6 +383,9 @@ int MPIX_Neighbor_topo_alltoallv_init(
     free(destinations);
     free(destweights);
 
+    request->start_function = neighbor_start;
+    request->wait_function = neighbor_wait;
+
     *request_ptr = request;
 
     return MPI_SUCCESS;
@@ -552,6 +555,9 @@ int MPIX_Neighbor_alltoallv_init(
     free(destinations);
     free(destweights);
 
+    request->start_function = neighbor_start;
+    request->wait_function = neighbor_wait;
+
     *request_ptr = request;
 
     return MPI_SUCCESS;
@@ -628,6 +634,9 @@ int MPIX_Neighbor_alltoallw_init(
                 &(request->global_requests[i]));
 
     }
+
+    request->start_function = neighbor_start;
+    request->wait_function = neighbor_wait;
 
     *request_ptr = request;
 
@@ -779,6 +788,9 @@ int MPIX_Neighbor_locality_topo_alltoallv_init(
     free(destinations);
     free(destweights);
 
+    request->start_function = neighbor_start;
+    request->wait_function = neighbor_wait;
+
     *request_ptr = request;
 
     return 0;
@@ -929,6 +941,9 @@ int MPIX_Neighbor_locality_alltoallv_init(
     free(sourceweights);
     free(destinations);
     free(destweights);
+
+    request->start_function = neighbor_start;
+    request->wait_function = neighbor_wait;
 
     *request_ptr = request;
 

@@ -49,6 +49,8 @@ if(ENABLE_UNIT_TESTS)
 endif()
 #####################
 
+enable_testing()
+
 include_directories("src")
 add_subdirectory("src")
 

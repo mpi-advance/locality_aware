@@ -55,6 +55,52 @@ int MPIX_Alltoall(const void* sendbuf,
         mpi_comm);
 }
 
+int alltoall_rma(const void* sendbuf,
+        const int sendcount,
+        MPI_Datatype sendtype,
+        void* recvbuf, 
+        const int recvcount,
+        MPI_Datatype recvtype,
+        MPIX_Comm* xcomm)
+{
+    int rank, num_procs;
+    MPI_Comm_rank(xcomm->global_comm, &rank);
+    MPI_Comm_size(xcomm->global_comm, &num_procs);
+
+    char* send_buffer = (char*)(sendbuf);
+    char* recv_buffer = (char*)(recvbuf);
+
+    int send_bytes, recv_bytes;
+    MPI_Type_size(sendtype, &send_bytes);
+    MPI_Type_size(recvtype, &recv_bytes);
+    int bytes = num_procs * recvcount * recv_bytes;
+
+    if (xcomm->win_bytes != bytes
+            || xcomm->win_type_bytes != 1)
+        MPIX_Comm_win_free(xcomm);
+
+    if (xcomm->win == MPI_WIN_NULL)
+    {
+        MPIX_Comm_win_init(xcomm, bytes, 1);
+    }
+
+    send_bytes *= sendcount;
+    recv_bytes *= recvcount;
+
+    MPI_Win_fence(MPI_MODE_NOSTORE|MPI_MODE_NOPRECEDE, xcomm->win);
+    for (int i = 0; i < num_procs; i++)
+    {
+         MPI_Put(&(send_buffer[i*send_bytes]), send_bytes, MPI_CHAR,
+                 i, rank*recv_bytes, recv_bytes, MPI_CHAR, xcomm->win);
+    }
+    MPI_Win_fence(MPI_MODE_NOPUT|MPI_MODE_NOSUCCEED, xcomm->win);
+
+    // Need to memcpy because win_array is created with window
+    // TODO : could explore just attaching recv_buffer to existing dynamic window 
+    //        with persistent collectives
+    memcpy(recv_buffer, xcomm->win_array, bytes);
+}
+
 int alltoall_pairwise(const void* sendbuf,
         const int sendcount,
         MPI_Datatype sendtype,
@@ -76,6 +122,9 @@ int alltoall_pairwise(const void* sendbuf,
     MPI_Type_size(sendtype, &send_size);
     MPI_Type_size(recvtype, &recv_size);
 
+    char* send_buffer = (char*)(sendbuf);
+    char* recv_buffer = (char*)(recvbuf);
+
     // Send to rank + i
     // Recv from rank - i
     for (int i = 0; i < num_procs; i++)
@@ -89,12 +138,13 @@ int alltoall_pairwise(const void* sendbuf,
         send_pos = send_proc * sendcount * send_size;
         recv_pos = recv_proc * recvcount * recv_size;
 
-        MPI_Sendrecv(sendbuf + send_pos, sendcount, sendtype, send_proc, tag,
-                recvbuf + recv_pos, recvcount, recvtype, recv_proc, tag,
+        MPI_Sendrecv(send_buffer + send_pos, sendcount, sendtype, send_proc, tag,
+                recv_buffer + recv_pos, recvcount, recvtype, recv_proc, tag,
                 comm, &status);
     }
 }
 
+/*
 int alltoall_bruck(const void* sendbuf,
         const int sendcount,
         MPI_Datatype sendtype,
@@ -135,7 +185,7 @@ int alltoall_bruck(const void* sendbuf,
 
     // 2. send to left, recv from right
     stride = 1;
-    for (int i = 0; i < num_steps; i++)
+    for (int step = 0; step < num_steps; step++)
     {
         recv_proc = rank - stride;
         if (recv_proc < 0) recv_proc += num_procs;
@@ -189,6 +239,7 @@ int alltoall_bruck(const void* sendbuf,
 
     return 0;
 }
+*/
 
 
 // 2-Step Aggregation (large messages)
@@ -211,6 +262,9 @@ int alltoall_pairwise_loc(const void* sendbuf,
     MPI_Comm_size(mpi_comm->local_comm, &PPN);
     num_nodes = mpi_comm->num_nodes;
     rank_node = mpi_comm->rank_node;
+
+    char* send_buffer = (char*)(sendbuf);
+    char* recv_buffer = (char*)(recvbuf);
 
     int sbytes, rbytes;
     MPI_Type_size(sendtype, &sbytes);
@@ -243,7 +297,7 @@ int alltoall_pairwise_loc(const void* sendbuf,
         send_pos = send_node * send_bytes_node;
         recv_pos = recv_node * recv_bytes_node;
 
-        MPI_Sendrecv(sendbuf + send_pos, sendcount_node, sendtype, 
+        MPI_Sendrecv(send_buffer + send_pos, sendcount_node, sendtype, 
                 send_node*PPN + local_rank, tag,
                 tmpbuf + recv_pos, recvcount_node, recvtype,
                 recv_node*PPN + local_rank, tag, 
@@ -255,7 +309,7 @@ int alltoall_pairwise_loc(const void* sendbuf,
      ************************************************/
     for (int i = 0; i < num_nodes; i++)
         for (int j = 0; j < PPN; j++)
-            memcpy(recvbuf + ((j*num_nodes+i)*recv_bytes),
+            memcpy(recv_buffer + ((j*num_nodes+i)*recv_bytes),
                     tmpbuf + ((i*PPN+j)*recv_bytes),
                     recv_bytes);
 
@@ -271,7 +325,7 @@ int alltoall_pairwise_loc(const void* sendbuf,
         send_pos = send_proc * recv_bytes * num_nodes;
         recv_pos = recv_proc * recv_bytes * num_nodes;
 
-        MPI_Sendrecv(recvbuf + send_pos, recvcount * num_nodes, recvtype,
+        MPI_Sendrecv(recv_buffer + send_pos, recvcount * num_nodes, recvtype,
                 send_proc, tag,
                 tmpbuf + recv_pos, recvcount * num_nodes, recvtype,
                 recv_proc, tag,
@@ -281,7 +335,7 @@ int alltoall_pairwise_loc(const void* sendbuf,
 
     for (int i = 0; i < num_nodes; i++)
         for (int j = 0; j < PPN; j++)
-            memcpy(recvbuf + ((i*PPN+j)*recv_bytes),
+            memcpy(recv_buffer + ((i*PPN+j)*recv_bytes),
                     tmpbuf + ((j*num_nodes+i)*recv_bytes),
                     recv_bytes);
 

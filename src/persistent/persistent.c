@@ -1,11 +1,67 @@
 #include "persistent.h"
 
 
+int MPIX_Start(MPIX_Request* request)
+{
+    if (request == NULL)
+        return 0;
+
+    mpix_start_ftn start_function = (mpix_start_ftn)(request->start_function);
+    return start_function(request);
+}
+
+int MPIX_Wait(MPIX_Request* request, MPI_Status* status)
+{
+    if (request == NULL)
+        return 0;
+
+    mpix_wait_ftn wait_function = (mpix_wait_ftn)(request->wait_function);
+    return wait_function(request, status);
+}
+
+int MPIX_Request_free(MPIX_Request* request)
+{
+    if (request->local_L_n_msgs)
+    {
+        for (int i = 0; i < request->local_L_n_msgs; i++)
+            MPI_Request_free(&(request->local_L_requests[i]));
+        free(request->local_L_requests);
+    }
+    if (request->local_S_n_msgs)
+    {
+        for (int i = 0; i < request->local_S_n_msgs; i++)
+            MPI_Request_free(&(request->local_S_requests[i]));
+        free(request->local_S_requests);
+    }
+    if (request->local_R_n_msgs)
+    {
+        for (int i = 0; i < request->local_R_n_msgs; i++)
+            MPI_Request_free(&(request->local_R_requests[i]));
+        free(request->local_R_requests);
+    }
+    if (request->global_n_msgs)
+    {
+        for (int i = 0; i < request->global_n_msgs; i++)
+            MPI_Request_free(&(request->global_requests[i]));
+        free(request->global_requests);
+    }
+
+    // If Locality-Aware
+    if (request->locality)
+        destroy_locality_comm(request->locality);
+
+    free(request);
+
+    return 0;
+}
+
+
+
 // Starting locality-aware requests
 // 1. Start Local_L
 // 2. Start and wait for local_S
 // 3. Start global
-int MPIX_Start(MPIX_Request* request)
+int neighbor_start(MPIX_Request* request)
 {
     if (request == NULL)
         return 0;
@@ -70,7 +126,7 @@ int MPIX_Start(MPIX_Request* request)
 // 2. Start and wait for local_R
 // 3. Wait for local_L
 // TODO : Currently ignores the status!
-int MPIX_Wait(MPIX_Request* request, MPI_Status* status)
+int neighbor_wait(MPIX_Request* request, MPI_Status* status)
 {
     if (request == NULL)
         return 0;
@@ -132,39 +188,4 @@ int MPIX_Wait(MPIX_Request* request, MPI_Status* status)
 }
 
 
-int MPIX_Request_free(MPIX_Request* request)
-{
-    if (request->local_L_n_msgs)
-    {
-        for (int i = 0; i < request->local_L_n_msgs; i++)
-            MPI_Request_free(&(request->local_L_requests[i]));
-        free(request->local_L_requests);
-    }
-    if (request->local_S_n_msgs)
-    {
-        for (int i = 0; i < request->local_S_n_msgs; i++)
-            MPI_Request_free(&(request->local_S_requests[i]));
-        free(request->local_S_requests);
-    }
-    if (request->local_R_n_msgs)
-    {
-        for (int i = 0; i < request->local_R_n_msgs; i++)
-            MPI_Request_free(&(request->local_R_requests[i]));
-        free(request->local_R_requests);
-    }
-    if (request->global_n_msgs)
-    {
-        for (int i = 0; i < request->global_n_msgs; i++)
-            MPI_Request_free(&(request->global_requests[i]));
-        free(request->global_requests);
-    }
-
-    // If Locality-Aware
-    if (request->locality)
-        destroy_locality_comm(request->locality);
-
-    free(request);
-
-    return 0;
-}
 

@@ -34,7 +34,7 @@ void test_matrix(const char* filename)
     MPIX_Info_init(&xinfo);
 
     // Update so there are 4 PPN rather than what MPI_Comm_split returns
-    update_locality(xcomm, 4);
+    //update_locality(xcomm, 4);
 
     // Read suitesparse matrix
     ParMat<int> A;
@@ -49,7 +49,7 @@ void test_matrix(const char* filename)
     std::vector<int> src(A.send_comm.n_msgs+1);
     std::vector<int> recvvals(A.send_comm.n_msgs+1);
 
-    /* TEST RMA VERSION */
+    // TEST RMA VERSION 
     n_recvs = -1;
     std::fill(src.begin(), src.end(), 0);
     std::fill(recvvals.begin(), recvvals.end(), 0);
@@ -60,7 +60,7 @@ void test_matrix(const char* filename)
     for (int i = 0; i < n_recvs; i++)
         ASSERT_EQ(recvvals[i], proc_counts[src[i]]);
 
-    /* TEST PERSONALIZED VERSION */
+    // TEST PERSONALIZED VERSION 
     n_recvs = -1;
     std::fill(src.begin(), src.end(), 0);
     std::fill(recvvals.begin(), recvvals.end(), 0);
@@ -71,7 +71,7 @@ void test_matrix(const char* filename)
     for (int i = 0; i < n_recvs; i++)
         ASSERT_EQ(recvvals[i], proc_counts[src[i]]);
 
-    /* TEST PERSONALIZED LOCALITY VERSION */
+    // TEST PERSONALIZED LOCALITY VERSION 
     n_recvs = -1;
     std::fill(src.begin(), src.end(), 0);
     std::fill(recvvals.begin(), recvvals.end(), 0);
@@ -82,7 +82,7 @@ void test_matrix(const char* filename)
     for (int i = 0; i < n_recvs; i++)
         ASSERT_EQ(recvvals[i], proc_counts[src[i]]);
 
-    /* TEST NONBLOCKING VERSION */
+    // TEST NONBLOCKING VERSION 
     n_recvs = -1;
     std::fill(src.begin(), src.end(), 0);
     std::fill(recvvals.begin(), recvvals.end(), 0);
@@ -93,7 +93,7 @@ void test_matrix(const char* filename)
     for (int i = 0; i < n_recvs; i++)
         ASSERT_EQ(recvvals[i], proc_counts[src[i]]);
 
-    /* TEST NONBLOCKING LOCALITY VERSION */
+    // TEST NONBLOCKING LOCALITY VERSION 
     n_recvs = -1;
     std::fill(src.begin(), src.end(), 0);
     std::fill(recvvals.begin(), recvvals.end(), 0);
