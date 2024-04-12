@@ -1,5 +1,39 @@
 #include "persistent.h"
 
+int MPIX_Request_init(MPIX_Request** request_ptr)
+{
+    MPIX_Request* request = (MPIX_Request*)malloc(sizeof(MPIX_Request));
+
+    request->locality = NULL;
+
+    request->local_L_n_msgs = 0;
+    request->local_S_n_msgs = 0;
+    request->local_R_n_msgs = 0;
+    request->global_n_msgs = 0;
+
+    request->local_L_requests = NULL;
+    request->local_S_requests = NULL;
+    request->local_R_requests = NULL;
+    request->global_requests = NULL;
+
+    request->recv_size = 0;
+
+    *request_ptr = request;
+
+    return MPI_SUCCESS;
+}
+
+int allocate_requests(int n_requests, MPI_Request** request_ptr)
+{
+    if (n_requests)
+    {
+        MPI_Request* request = (MPI_Request*)malloc(sizeof(MPI_Request)*n_requests);
+        *request_ptr = request;
+    }
+    else *request_ptr = NULL;
+
+    return MPI_SUCCESS;
+}
 
 int MPIX_Start(MPIX_Request* request)
 {
@@ -186,6 +220,40 @@ int neighbor_wait(MPIX_Request* request, MPI_Status* status)
 
     return ierr;
 }
+
+
+// Batched Persistent Alltoall Operation
+int batch_start(MPIX_Request* request)
+{
+    if (request == NULL)
+        return 0;
+
+    MPI_Startall(2*request->batch, request->global_requests);
+
+    return MPI_SUCCESS;
+}
+
+int batch_wait(MPIX_Request* request, MPI_Status* status)
+{
+    int n = request->batch;
+    MPI_Waitall(2*n, request->global_requests, MPI_STATUSES_IGNORE);
+
+    int num_procs = request->global_n_msgs / 2;
+
+    for (int i = n; i < num_procs; i += n)
+    {
+        if (i + n > num_procs)
+            n = num_procs - i;
+            
+
+        MPI_Startall(2*n, &(request->global_requests[2*i]));
+        MPI_Waitall(2*n, &(request->global_requests[2*i]), MPI_STATUSES_IGNORE);
+    }
+        
+
+    return MPI_SUCCESS;
+}
+
 
 
 

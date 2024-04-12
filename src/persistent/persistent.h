@@ -25,6 +25,7 @@ typedef struct _MPIX_Request
     const void* sendbuf; // pointer to sendbuf (where original data begins)
     void* recvbuf; // pointer to recvbuf (where final data goes)
     int recv_size;
+    int batch;
 
     void* start_function;
     void* wait_function; 
@@ -40,9 +41,13 @@ int MPIX_Wait(MPIX_Request* request, MPI_Status* status);
 int neighbor_start(MPIX_Request* request);
 int neighbor_wait(MPIX_Request* request, MPI_Status* status);
 
+int batch_start(MPIX_Request* request);
+int batch_wait(MPIX_Request* request, MPI_Status* status);
 
-
+int MPIX_Request_init(MPIX_Request** request);
 int MPIX_Request_free(MPIX_Request* request);
+
+int allocate_requests(int n, MPI_Request** request_ptr);
 
 #ifdef __cplusplus
 }

@@ -1,53 +1,5 @@
 #include "neighbor.h"
 
-void init_request(MPIX_Request** request_ptr)
-{
-    MPIX_Request* request = (MPIX_Request*)malloc(sizeof(MPIX_Request));
-
-    request->locality = NULL;
-
-    request->local_L_n_msgs = 0;
-    request->local_S_n_msgs = 0;
-    request->local_R_n_msgs = 0;
-    request->global_n_msgs = 0;
-
-    request->local_L_requests = NULL;
-    request->local_S_requests = NULL;
-    request->local_R_requests = NULL;
-    request->global_requests = NULL;
-
-    request->recv_size = 0;
-
-    *request_ptr = request;
-}
-
-void destroy_request(MPIX_Request* request)
-{
-    if (request->local_L_n_msgs)
-        free(request->local_L_requests);
-    if (request->local_S_n_msgs)
-        free(request->local_S_requests);
-    if (request->local_R_n_msgs)
-        free(request->local_R_requests);
-    if (request->global_n_msgs)
-        free(request->global_requests);
-
-    if (request->locality)
-        destroy_locality_comm(request->locality);
-
-    free(request);
-}
-
-void allocate_requests(int n_requests, MPI_Request** request_ptr)
-{
-    if (n_requests)
-    {
-        MPI_Request* request = (MPI_Request*)malloc(sizeof(MPI_Request)*n_requests);
-        *request_ptr = request;
-    }
-    else *request_ptr = NULL;
-}
-
 int init_communication(const void* sendbuffer,
         int n_sends,
         const int* send_procs,
@@ -344,7 +296,7 @@ int MPIX_Neighbor_topo_alltoallv_init(
             destweights); 
 
     MPIX_Request* request;
-    init_request(&request);
+    MPIX_Request_init(&request);
 
     request->global_n_msgs = indegree+outdegree;
     allocate_requests(request->global_n_msgs, &(request->global_requests));
@@ -516,7 +468,8 @@ int MPIX_Neighbor_alltoallv_init(
             destweights);
 
     MPIX_Request* request;
-    init_request(&request);
+    MPIX_Request_init(&request);
+    
 
     request->global_n_msgs = indegree+outdegree;
     allocate_requests(request->global_n_msgs, &(request->global_requests));
@@ -604,7 +557,7 @@ int MPIX_Neighbor_alltoallw_init(
             destweights);
 
     MPIX_Request* request;
-    init_request(&request);
+    MPIX_Request_init(&request);
 
     request->global_n_msgs = indegree+outdegree;
     allocate_requests(request->global_n_msgs, &(request->global_requests));
@@ -694,7 +647,7 @@ int MPIX_Neighbor_locality_topo_alltoallv_init(
             destweights);
 
     MPIX_Request* request;
-    init_request(&request);
+    MPIX_Request_init(&request);
 
     // Initialize Locality-Aware Communication Strategy (3-Step)
     // E.G. Determine which processes talk to eachother at every step
@@ -848,7 +801,7 @@ int MPIX_Neighbor_locality_alltoallv_init(
             destweights);
 
     MPIX_Request* request;
-    init_request(&request);
+    MPIX_Request_init(&request);
 
     // Initialize Locality-Aware Communication Strategy (3-Step)
     // E.G. Determine which processes talk to eachother at every step
