@@ -18,6 +18,13 @@ int MPIX_Request_init(MPIX_Request** request_ptr)
 
     request->recv_size = 0;
 
+    request->xcomm = NULL;
+    request->sdispls = NULL;
+    request->put_displs = NULL;
+    request->send_sizes = NULL;
+    request->recv_sizes = NULL;
+    request->n_puts = 0;
+
     *request_ptr = request;
 
     return MPI_SUCCESS;
@@ -83,6 +90,15 @@ int MPIX_Request_free(MPIX_Request* request)
     // If Locality-Aware
     if (request->locality)
         destroy_locality_comm(request->locality);
+
+    if (request->sdispls)
+        free(request->sdispls);
+    if (request->put_displs)
+        free(request->put_displs);
+    if (request->send_sizes)
+        free(request->send_sizes);
+    if (request->recv_sizes)
+        free(request->recv_sizes);
 
     free(request);
 
@@ -252,6 +268,33 @@ int batch_wait(MPIX_Request* request, MPI_Status* status)
         
 
     return MPI_SUCCESS;
+}
+
+// RMA Persistent Alltoall Operation
+int rma_start(MPIX_Request* request)
+{
+    return MPI_SUCCESS;
+}
+int rma_wait(MPIX_Request* request, MPI_Status* status)
+{
+    char* send_buffer = (char*)(request->sendbuf);
+    char* recv_buffer = (char*)(request->recvbuf);
+
+    MPI_Win_fence(MPI_MODE_NOSTORE|MPI_MODE_NOPRECEDE, request->xcomm->win);
+    for (int i = 0; i < request->n_puts; i++)
+    {
+         MPI_Put(&(send_buffer[request->sdispls[i]]), request->send_sizes[i], MPI_CHAR,
+                 i, request->put_displs[i], request->recv_sizes[i], MPI_CHAR, request->xcomm->win);
+    }
+    MPI_Win_fence(MPI_MODE_NOPUT|MPI_MODE_NOSUCCEED, request->xcomm->win);
+
+    // Need to memcpy because win_array is created with window
+    // TODO : could explore just attaching recv_buffer to existing dynamic window 
+    //        with persistent collectives
+    memcpy(recv_buffer, request->xcomm->win_array, request->recv_size);
+
+    return MPI_SUCCESS;
+
 }
 
 

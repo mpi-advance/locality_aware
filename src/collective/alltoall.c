@@ -149,6 +149,69 @@ int alltoall_pairwise(const void* sendbuf,
     return MPI_SUCCESS;
 }
 
+int alltoall_rma_init(const void* sendbuf,
+        const int sendcount,
+        MPI_Datatype sendtype,
+        void* recvbuf,
+        const int recvcount,
+        MPI_Datatype recvtype,
+        MPIX_Comm* xcomm,
+        MPIX_Info* xinfo,
+        MPIX_Request** request_ptr)
+{
+    int rank, num_procs;
+    MPI_Comm_rank(xcomm->global_comm, &rank);
+    MPI_Comm_size(xcomm->global_comm, &num_procs);
+
+    MPIX_Request* request;
+    MPIX_Request_init(&request);
+    
+    request->start_function = rma_start;
+    request->wait_function = rma_wait;
+
+    request->sendbuf = sendbuf;
+    request->recvbuf = recvbuf;
+
+    int send_bytes, recv_bytes;
+    MPI_Type_size(sendtype, &send_bytes);
+    MPI_Type_size(recvtype, &recv_bytes);
+    int bytes = num_procs * recvcount * recv_bytes;
+
+    if (xcomm->win_bytes != bytes
+            || xcomm->win_type_bytes != 1)
+        MPIX_Comm_win_free(xcomm);
+
+    if (xcomm->win == MPI_WIN_NULL)
+    {
+        MPIX_Comm_win_init(xcomm, bytes, 1);
+    }
+
+    send_bytes *= sendcount;
+    recv_bytes *= recvcount;
+
+    request->n_puts = num_procs;
+
+    request->xcomm = xcomm;
+    request->sdispls = (int*)malloc(num_procs*sizeof(int));
+    request->put_displs = (int*)malloc(num_procs*sizeof(int));
+    request->send_sizes = (int*)malloc(num_procs*sizeof(int));
+    request->recv_sizes = (int*)malloc(num_procs*sizeof(int));
+    request->recv_size = bytes;
+
+    for (int i = 0; i < num_procs; i++)
+    {
+        request->sdispls[i] = i*send_bytes;
+        request->put_displs[i] = rank*recv_bytes;
+        request->send_sizes[i] = send_bytes;
+        request->recv_sizes[i] = recv_bytes;
+    }
+
+    *request_ptr = request;
+
+    return MPI_SUCCESS;
+
+}
+
 int alltoall_init(const void* sendbuf,
         const int sendcount,
         MPI_Datatype sendtype,

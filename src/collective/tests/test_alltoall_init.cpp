@@ -41,6 +41,7 @@ TEST(RandomCommTest, TestsInTests)
     std::vector<int> std_alltoall(max_s*num_procs);
     std::vector<int> pairwise_alltoall(max_s*num_procs);
     std::vector<int> nonblocking_alltoall(max_s*num_procs);
+    std::vector<int> rma_alltoall(max_s*num_procs);
 
     MPIX_Comm* xcomm;
     MPIX_Comm_init(&xcomm, MPI_COMM_WORLD);
@@ -74,6 +75,7 @@ TEST(RandomCommTest, TestsInTests)
 
         MPI_Start(&request);
         MPI_Wait(&request, MPI_STATUS_IGNORE);
+        MPI_Request_free(&request);
 
         alltoall_pairwise_init(local_data.data(), 
                 s,
@@ -88,6 +90,7 @@ TEST(RandomCommTest, TestsInTests)
         MPIX_Wait(xrequest, MPI_STATUS_IGNORE);
         for (int j = 0; j < s*num_procs; j++)
             ASSERT_EQ(std_alltoall[j], pairwise_alltoall[j]);
+        MPIX_Request_free(xrequest);
 
         alltoall_nonblocking_init(local_data.data(), 
                 s,
@@ -102,13 +105,25 @@ TEST(RandomCommTest, TestsInTests)
         MPIX_Wait(xrequest, MPI_STATUS_IGNORE);
         for (int j = 0; j < s*num_procs; j++)
             ASSERT_EQ(std_alltoall[j], nonblocking_alltoall[j]);
+        MPIX_Request_free(xrequest);
 
+        alltoall_rma_init(local_data.data(), 
+                s,
+                MPI_INT, 
+                rma_alltoall.data(), 
+                s, 
+                MPI_INT,
+                xcomm, 
+                xinfo,
+                &xrequest);
+        MPIX_Start(xrequest);
+        MPIX_Wait(xrequest, MPI_STATUS_IGNORE);
+        for (int j = 0; j < s*num_procs; j++)
+            ASSERT_EQ(std_alltoall[j], rma_alltoall[j]);
+        MPIX_Request_free(xrequest);
     }
 
-    MPI_Request_free(&request);
 
-
-    MPIX_Request_free(xrequest);
     MPIX_Info_free(&xinfo);
     MPIX_Comm_free(&xcomm);
 }

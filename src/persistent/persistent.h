@@ -2,6 +2,7 @@
 #define MPI_ADVANCE_PERSISTENT_H
 
 #include "locality/locality_comm.h"
+#include <string.h>
 
 #ifdef __cplusplus
 extern "C"
@@ -27,8 +28,16 @@ typedef struct _MPIX_Request
     int recv_size;
     int batch;
 
-    void* start_function;
-    void* wait_function; 
+    void* start_function; // points to MPIX_Start impl to call
+    void* wait_function;  // points to MPIX_Wait impl to call
+
+    MPIX_Comm* xcomm; // always just reference to, not allocated here
+    int* sdispls;
+    int* put_displs;
+    int* send_sizes;
+    int* recv_sizes;
+    int n_puts;
+
 
 } MPIX_Request;
 
@@ -43,6 +52,9 @@ int neighbor_wait(MPIX_Request* request, MPI_Status* status);
 
 int batch_start(MPIX_Request* request);
 int batch_wait(MPIX_Request* request, MPI_Status* status);
+int rma_start(MPIX_Request* request);
+int rma_wait(MPIX_Request* request, MPI_Status* status);
+
 
 int MPIX_Request_init(MPIX_Request** request);
 int MPIX_Request_free(MPIX_Request* request);
