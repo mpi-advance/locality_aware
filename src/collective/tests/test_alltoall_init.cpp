@@ -62,8 +62,8 @@ TEST(RandomCommTest, TestsInTests)
             for (int k = 0; k < s; k++)
                 local_data[j*s + k] = rank*10000 + j*100 + k;
 
-        // Standard Alltoall
-        PMPI_Alltoall_init(local_data.data(), 
+        // with out edit
+      /*  PMPI_Alltoall_init(local_data.data(), 
                 s,
                 MPI_INT, 
                 std_alltoall.data(), 
@@ -72,6 +72,22 @@ TEST(RandomCommTest, TestsInTests)
                 MPI_COMM_WORLD, 
                 MPI_INFO_NULL,
                 &request);
+*/
+
+
+//(const void *sendbuf, int sendcount, MPI_Datatype sendtype,
+  //                               void *recvbuf, int recvcount,
+        //                         MPI_Datatype recvtype, MPI_Comm comm);
+
+//edited version 
+        PMPI_Alltoall(local_data.data(), 
+                s,
+                MPI_INT, 
+                std_alltoall.data(), 
+                s, 
+                MPI_INT,
+                MPI_COMM_WORLD 
+                );
 
         MPI_Start(&request);
         MPI_Wait(&request, MPI_STATUS_IGNORE);
