@@ -19,3 +19,6 @@ add_executable(test_alltoall_init test_alltoall_init.cpp)
 target_link_libraries(test_alltoall_init mpi_advance gtest pthread )
 add_test(PersistentAlltoallTest mpirun -n 16 ./test_alltoall)
 
+add_executable(test_alltoallv_init test_alltoallv_init.cpp)
+target_link_libraries(test_alltoallv_init mpi_advance gtest pthread )
+add_test(PersistentAlltoallvTest mpirun -n 16 ./test_alltoallv)

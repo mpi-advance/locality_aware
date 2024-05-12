@@ -7,7 +7,7 @@
 #include "utils.h"
 #include "collective.h"
 #include "locality/topology.h"
-
+#include "persistent/persistent.h"
 #ifdef __cplusplus
 extern "C"
 {
@@ -41,6 +41,20 @@ int alltoallv_nonblocking(const void* sendbuf,
         const int rdispls[],
         MPI_Datatype recvtype,
         MPI_Comm comm);
+
+int alltoallv_nonblocking_init(const void* sendbuf,
+       const int sendcounts[],
+        const int sdispls[],
+        MPI_Datatype sendtype,
+        void* recvbuf,
+       const int recvcounts[],
+       const int rdispls[],
+        MPI_Datatype recvtype,
+        //MPI_Comm comm,
+        MPIX_Comm* xcomm,
+        MPIX_Info* xinfo,
+        MPIX_Request** request_ptr); 
+
 int alltoallv_pairwise_nonblocking(const void* sendbuf,
         const int sendcounts[],
         const int sdispls[],

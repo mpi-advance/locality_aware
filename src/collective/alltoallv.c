@@ -173,6 +173,75 @@ int alltoallv_nonblocking(const void* sendbuf,
     return 0;
 }
 
+/**new
+ *To be remamed alltoallv_init just like alltoall_init *
+ * **/
+
+int alltoallv_nonblocking_init(const void* sendbuf,
+       const int sendcounts[],
+        const int sdispls[],
+        MPI_Datatype sendtype,
+        void* recvbuf,
+       const int recvcounts[],
+       const int rdispls[],
+        MPI_Datatype recvtype,
+        MPIX_Comm* xcomm,
+        MPIX_Info* xinfo,
+        MPIX_Request** request_ptr)
+{
+    
+
+ 
+int rank, num_procs;
+    MPI_Comm_rank(xcomm->global_comm, &rank);
+    MPI_Comm_size(xcomm->global_comm, &num_procs);
+
+    MPIX_Request* request;
+    MPIX_Request_init(&request);
+    request->global_n_msgs = 2*num_procs;
+    allocate_requests(request->global_n_msgs, &(request->global_requests));
+
+    request->start_function = batch_start;
+    request->wait_function = batch_wait;
+
+    int tag = 102944;
+    int send_proc, recv_proc;
+    int send_pos, recv_pos;
+    MPI_Status status;
+
+    int send_size, recv_size;
+    MPI_Type_size(sendtype, &send_size);
+    MPI_Type_size(recvtype, &recv_size);
+
+    char* send_buffer = (char*)(sendbuf);
+    char* recv_buffer = (char*)(recvbuf);    
+
+    // Initialize persistent send and receive requests
+    for (int i = 0; i < num_procs; i++) {
+        send_proc = (rank + i) % num_procs;  
+        recv_proc = (rank - i + num_procs) % num_procs;  
+
+        send_pos = sdispls[send_proc] * send_size;
+        recv_pos = rdispls[recv_proc] * recv_size;
+
+
+MPI_Send_init(send_buffer + send_pos, sendcounts[send_proc], sendtype, send_proc, tag,
+                xcomm->global_comm, &(request->global_requests[2*i]));
+        // Initialize persistent receive request 
+        MPI_Recv_init(recvbuf + recv_pos, recvcounts[recv_proc], recvtype, recv_proc, tag,
+                xcomm->global_comm, &(request->global_requests[2*i + 1]));
+    }
+
+    // Set the request pointer to the newly created request array
+    *request_ptr = request;
+
+    return 0;  // Return success
+}
+
+
+
+
+
 int alltoallv_pairwise_nonblocking(const void* sendbuf,
         const int sendcounts[],
         const int sdispls[],
