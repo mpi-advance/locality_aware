@@ -39,10 +39,11 @@ TEST(RandomCommTest, TestsInTests)
     std::vector<int> local_data(max_s*num_procs);
 
     std::vector<int> std_alltoall(max_s*num_procs);
-    std::vector<int> pairwise_alltoall(max_s*num_procs);
+    std::vector<int> pairwise_alltoallv(max_s*num_procs);
     std::vector<int> nonblocking_alltoallv(max_s*num_procs);
-    std::vector<int> rma_alltoall(max_s*num_procs);
-      
+ //   std::vector<int> rma_alltoall(max_s*num_procs);
+                         
+     std::vector<int> alltoallvint(max_s*num_procs); 
     std::vector<int> sizes(num_procs);
     std::vector<int> displs(num_procs+1);
 
@@ -139,6 +140,50 @@ TEST(RandomCommTest, TestsInTests)
         for (int j = 0; j < s*num_procs; j++)
             ASSERT_EQ(std_alltoall[j], nonblocking_alltoallv[j]);
         MPIX_Request_free(xrequest);
+
+
+
+alltoallv_init(local_data.data(),
+
+                sizes.data(),
+                displs.data(),
+                MPI_INT,
+                alltoallvint.data(),
+
+                sizes.data(),
+                displs.data(),
+                MPI_INT,
+                xcomm,
+
+                xinfo,
+                &xrequest);
+        MPIX_Start(xrequest);
+        MPIX_Wait(xrequest, MPI_STATUS_IGNORE);
+        for (int j = 0; j < s*num_procs; j++)
+            ASSERT_EQ(std_alltoall[j], alltoallvint[j]);
+        MPIX_Request_free(xrequest);
+
+
+alltoallv_pairwise_init(local_data.data(),
+
+                sizes.data(),
+                displs.data(),
+                MPI_INT,
+                pairwise_alltoallv.data(),
+
+                sizes.data(),
+                displs.data(),
+                MPI_INT,
+                xcomm,
+
+                xinfo,
+                &xrequest);
+        MPIX_Start(xrequest);
+        MPIX_Wait(xrequest, MPI_STATUS_IGNORE);
+        for (int j = 0; j < s*num_procs; j++)
+            ASSERT_EQ(std_alltoall[j], pairwise_alltoallv[j]);
+        MPIX_Request_free(xrequest);
+
 
     /*    alltoall_rma_init(local_data.data(), 
                 s,

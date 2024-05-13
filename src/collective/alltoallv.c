@@ -174,10 +174,12 @@ int alltoallv_nonblocking(const void* sendbuf,
 }
 
 /**new
- *To be remamed alltoallv_init just like alltoall_init *
- * **/
-
-int alltoallv_nonblocking_init(const void* sendbuf,
+ * alltoallv_init 
+ * 
+*
+*/
+    
+int alltoallv_init(const void* sendbuf,
        const int sendcounts[],
         const int sdispls[],
         MPI_Datatype sendtype,
@@ -188,10 +190,8 @@ int alltoallv_nonblocking_init(const void* sendbuf,
         MPIX_Comm* xcomm,
         MPIX_Info* xinfo,
         MPIX_Request** request_ptr)
-{
-    
 
- 
+{
 int rank, num_procs;
     MPI_Comm_rank(xcomm->global_comm, &rank);
     MPI_Comm_size(xcomm->global_comm, &num_procs);
@@ -239,6 +239,57 @@ MPI_Send_init(send_buffer + send_pos, sendcounts[send_proc], sendtype, send_proc
 }
 
 
+
+int alltoallv_nonblocking_init(const void* sendbuf,
+       const int sendcounts[],
+        const int sdispls[],
+        MPI_Datatype sendtype,
+        void* recvbuf,
+       const int recvcounts[],
+       const int rdispls[],
+        MPI_Datatype recvtype,
+        MPIX_Comm* xcomm,
+        MPIX_Info* xinfo,
+        MPIX_Request** request_ptr)
+{
+
+int num_procs;
+    MPI_Comm_size(xcomm->global_comm, &num_procs);
+
+alltoallv_init(sendbuf,sendcounts,sdispls, sendtype, recvbuf, recvcounts,rdispls, recvtype, xcomm,
+            xinfo, request_ptr);
+    (*request_ptr)->batch = num_procs;
+
+    return MPI_SUCCESS;
+
+
+}
+
+
+
+int alltoallv_pairwise_init(const void* sendbuf,
+       const int sendcounts[],
+        const int sdispls[],
+        MPI_Datatype sendtype,
+        void* recvbuf,
+       const int recvcounts[],
+       const int rdispls[],
+        MPI_Datatype recvtype,
+        //MPI_Comm comm,
+        MPIX_Comm* xcomm,
+        MPIX_Info* xinfo,
+        MPIX_Request** request_ptr)
+{
+
+alltoallv_init(sendbuf,sendcounts,sdispls, sendtype, recvbuf, recvcounts,rdispls, recvtype, xcomm,
+            xinfo, request_ptr);
+    (*request_ptr)->batch = 1;
+
+    return MPI_SUCCESS;
+
+
+
+}
 
 
 
