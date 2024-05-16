@@ -42,7 +42,7 @@ TEST(RandomCommTest, TestsInTests)
     std::vector<int> std_alltoallv(max_s*num_procs);
     std::vector<int> pairwise_alltoallv(max_s*num_procs);
     std::vector<int> nonblocking_alltoallv(max_s*num_procs);
- //   std::vector<int> rma_alltoall(max_s*num_procs);
+    std::vector<int> rma_alltoallv(max_s*num_procs);
                          
      std::vector<int> alltoallvint(max_s*num_procs); 
     std::vector<int> sizes(num_procs);
@@ -87,20 +87,6 @@ TEST(RandomCommTest, TestsInTests)
 */
 
 
-
-//edited version 
-        PMPI_Alltoall(local_data.data(), 
-                s,
-                MPI_INT, 
-                std_alltoall.data(), 
-                s, 
-                MPI_INT,
-                MPI_COMM_WORLD 
-                );
-
-        MPI_Start(&request);
-        MPI_Wait(&request, MPI_STATUS_IGNORE);
-        MPI_Request_free(&request);
 
 
 
@@ -180,20 +166,29 @@ alltoallv_pairwise_init(local_data.data(),
         MPIX_Request_free(xrequest);
 
 
-    /*    alltoall_rma_init(local_data.data(), 
-                s,
-                MPI_INT, 
-                rma_alltoall.data(), 
-                s, 
+
+    alltoallv_rma_init(local_data.data(),
+
+                sizes.data(),
+                displs.data(),
                 MPI_INT,
-                xcomm, 
+                rma_alltoallv.data(),
+
+                sizes.data(),
+                displs.data(),
+                MPI_INT,
+                xcomm,
+
                 xinfo,
                 &xrequest);
         MPIX_Start(xrequest);
         MPIX_Wait(xrequest, MPI_STATUS_IGNORE);
         for (int j = 0; j < s*num_procs; j++)
-            ASSERT_EQ(std_alltoall[j], rma_alltoall[j]);
-        MPIX_Request_free(xrequest);*/
+            ASSERT_EQ(std_alltoallv[j], rma_alltoallv[j]);
+        MPIX_Request_free(xrequest);
+
+
+
     }
 
 

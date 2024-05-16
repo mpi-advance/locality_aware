@@ -173,7 +173,82 @@ int alltoallv_nonblocking(const void* sendbuf,
     return 0;
 }
 
-/**new
+/*New RMA*/
+
+//alltoallv_rma_init
+int alltoallv_rma_init(const void* sendbuf,
+        const int* sendcounts,
+        const int* sdispls,
+        MPI_Datatype sendtype,
+        void* recvbuf,
+        const int* recvcounts,
+        const int*  rdispls,
+        MPI_Datatype recvtype,
+        MPIX_Comm* xcomm,
+        MPIX_Info* xinfo,
+        MPIX_Request** request_ptr)
+{
+
+    int rank, num_procs;
+    MPI_Comm_rank(xcomm->global_comm, &rank);
+    MPI_Comm_size(xcomm->global_comm, &num_procs);
+
+    MPIX_Request* request;
+    MPIX_Request_init(&request);
+
+    request->start_function = rma_start;
+    request->wait_function = rma_wait;
+
+    request->sendbuf = sendbuf;
+    request->recvbuf = recvbuf;
+
+    int sendtype_size, recvtype_size;
+    MPI_Type_size(sendtype, &sendtype_size);
+    MPI_Type_size(recvtype, &recvtype_size);
+
+    int total_send_bytes = 0;
+    int total_recv_bytes = 0;
+    for (int i = 0; i < num_procs; i++) {
+        total_send_bytes += sendcounts[i] * sendtype_size;
+        total_recv_bytes += recvcounts[i] * recvtype_size;
+    }
+
+    if (xcomm->win_bytes != total_recv_bytes
+            || xcomm->win_type_bytes != 1)
+        MPIX_Comm_win_free(xcomm);
+
+    if (xcomm->win == MPI_WIN_NULL)
+    {
+        MPIX_Comm_win_init(xcomm, total_recv_bytes, 1);
+    }
+
+    request->n_puts = num_procs;
+
+    request->xcomm = xcomm;
+    request->sdispls = (int*)malloc(num_procs * sizeof(int));
+    request->put_displs = (int*)malloc(num_procs * sizeof(int));
+    request->send_sizes = (int*)malloc(num_procs * sizeof(int));
+    request->recv_sizes = (int*)malloc(num_procs * sizeof(int));
+    request->recv_size = total_recv_bytes;
+
+    for (int i = 0; i < num_procs; i++)
+    {
+        request->sdispls[i] = sdispls[i];
+        request->put_displs[i] = rank * recvtype_size + rdispls[i];
+        request->send_sizes[i] = sendcounts[i] * sendtype_size;
+        request->recv_sizes[i] = recvcounts[i] * recvtype_size;
+    }
+
+    *request_ptr = request;
+
+    return MPI_SUCCESS;
+}
+
+
+
+
+
+/*
  * alltoallv_init 
  * 
 *
