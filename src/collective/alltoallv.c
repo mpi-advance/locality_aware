@@ -173,6 +173,60 @@ int alltoallv_nonblocking(const void* sendbuf,
     return 0;
 }
 
+/*alltoallv_rma*/
+
+int alltoallv_rma(const void* sendbuf,
+        const int sendcounts[],
+        const int sdispls[],
+        MPI_Datatype sendtype,
+        void* recvbuf,
+        const int recvcounts[],
+        const int rdispls[],
+        MPI_Datatype recvtype,
+        MPIX_Comm* xcomm)
+{
+    int rank, num_procs;
+    MPI_Comm_rank(xcomm->global_comm, &rank);
+    MPI_Comm_size(xcomm->global_comm, &num_procs);
+
+    char* send_buffer = (char*)(sendbuf);
+    char* recv_buffer = (char*)(recvbuf);
+
+    int send_bytes, recv_bytes;
+    MPI_Type_size(sendtype, &send_bytes);
+    MPI_Type_size(recvtype, &recv_bytes);
+
+    // Calculating the total bytes for the receive buffer
+    int total_recv_bytes = 0;
+    for (int i = 0; i < num_procs; i++) {
+        total_recv_bytes += recvcounts[i] * recv_bytes;
+    }
+    
+     /*Checking if the window size changed, the freeing it */
+    if (xcomm->win_bytes != total_recv_bytes || xcomm->win_type_bytes != 1) {
+        MPIX_Comm_win_free(xcomm);
+    }
+
+    /*Initialize the window, size= total_recv_bytes, if its empty and win_type_bytes=1
+    the window is byte-addressable, with each element being 1 byte in size*/
+
+    if (xcomm->win == MPI_WIN_NULL) {
+        MPIX_Comm_win_init(xcomm, total_recv_bytes, 1);
+    }
+    
+    MPI_Win_fence(MPI_MODE_NOSTORE | MPI_MODE_NOPRECEDE, xcomm->win);
+    for (int i = 0; i < num_procs; i++) {
+        MPI_Put(&(send_buffer[sdispls[i] * send_bytes]), sendcounts[i] * send_bytes, MPI_CHAR,
+                i, rdispls[rank] * recv_bytes, recvcounts[rank] * recv_bytes, MPI_CHAR, xcomm->win);
+    }
+    MPI_Win_fence(MPI_MODE_NOPUT | MPI_MODE_NOSUCCEED, xcomm->win);
+
+    memcpy(recv_buffer, xcomm->win_array, total_recv_bytes);
+
+    return MPI_SUCCESS;
+}
+
+
 /*New RMA*/
 
 //alltoallv_rma_init
