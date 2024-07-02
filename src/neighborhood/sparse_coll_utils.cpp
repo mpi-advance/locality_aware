@@ -15,6 +15,7 @@ int alltoall_crs_personalized_loc(int send_nnz, int* dest, int sendcount,
     if (comm->local_comm == MPI_COMM_NULL)
         MPIX_Comm_topo_init(comm);
 
+
     MPI_Comm_rank(comm->local_comm, &local_rank);
     MPI_Comm_size(comm->local_comm, &PPN);
 
@@ -593,8 +594,12 @@ int alltoallv_crs_personalized_loc(int send_nnz, int send_size, int* dest, int* 
         local_buf.resize(origin_displs[n_recvs]);
 
     int idx = 0;
-    std::vector<char> recv_byte_buf(recv_buf.size());
-    MPI_Pack(recv_buf.data(), recv_buf.size(), MPI_BYTE, recv_byte_buf.data(), recv_byte_buf.size(), &idx, comm->local_comm);
+    std::vector<char> recv_byte_buf;
+    if (recv_buf.size())
+    {
+        recv_byte_buf.resize(recv_buf.size());
+        MPI_Pack(recv_buf.data(), recv_buf.size(), MPI_BYTE, recv_byte_buf.data(), recv_byte_buf.size(), &idx, comm->local_comm);
+    }
 
     idx = 0;
     while (idx < origin_displs[n_recvs])
@@ -845,8 +850,12 @@ int alltoallv_crs_nonblocking_loc(int send_nnz, int send_size, int* dest, int* s
         local_buf.resize(origin_displs[n_recvs]);
 
     int idx = 0;
-    std::vector<char> recv_byte_buf(recv_buf.size());
-    MPI_Pack(recv_buf.data(), recv_buf.size(), MPI_BYTE, recv_byte_buf.data(), recv_byte_buf.size(), &idx, comm->local_comm);
+    std::vector<char> recv_byte_buf;
+    if (recv_buf.size())
+    {
+        recv_byte_buf.resize(recv_buf.size());
+        MPI_Pack(recv_buf.data(), recv_buf.size(), MPI_BYTE, recv_byte_buf.data(), recv_byte_buf.size(), &idx, comm->local_comm);
+    }
 
     idx = 0;
     while (idx < origin_displs[n_recvs])

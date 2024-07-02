@@ -164,7 +164,6 @@ int main(int argc, char* argv[])
             A.send_comm.n_msgs, A.send_comm.size_msgs, proc_count.data(), proc_displs.data(),
             orig_indices.data());
 
-n_iter=1;
     // Time Personalized Locality
     MPI_Barrier(MPI_COMM_WORLD);
     t0 = MPI_Wtime();

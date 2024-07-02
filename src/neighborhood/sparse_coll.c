@@ -273,7 +273,6 @@ int alltoallv_crs_personalized(int send_nnz, int send_size, int* dest, int* send
     MPI_Type_size(sendtype, &send_bytes);
     MPI_Type_size(recvtype, &recv_bytes);
 
-
     if (!(xinfo->crs_num_initialized) && !(xinfo->crs_size_initialized))
     {
         int* msg_counts = (int*)malloc(num_procs*sizeof(int));
