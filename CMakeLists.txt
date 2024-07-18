@@ -118,3 +118,5 @@ endif(USE_CUDA)
 
 add_subdirectory(benchmarks)
 
+target_link_libraries(mpi_advance /g/g92/enamug/install/lib64/libcaliper.so)
+target_include_directories(mpi_advance PUBLIC /g/g92/enamug/install/include)
