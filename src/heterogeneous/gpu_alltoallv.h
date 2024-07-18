@@ -40,6 +40,8 @@ int copy_to_cpu_alltoallv_extra(alltoallv_ftn f,
         MPI_Datatype recvtype,
         MPIX_Comm* comm, char* cpu_recvbuf,char* cpu_sendbuf);
 
+
+
 int gpu_aware_alltoallv_pairwise(const void* sendbuf, 
         const int sendcounts[],
         const int sdispls[],
@@ -112,7 +114,15 @@ int copy_to_cpu_alltoallv_nonblocking_extra(const void* sendbuf,
         MPI_Datatype recvtype,
         MPIX_Comm* comm,char* cpu_recvbuf,char* cpu_sendbuf);
 
-
+int copy_to_cpu_alltoallv_MPI_Alltoallv_extra(const void* sendbuf,
+        const int sendcounts[],
+        const int sdispls[],
+        MPI_Datatype sendtype,
+        void* recvbuf,
+        const int recvcounts[],
+        const int rdispls[],
+        MPI_Datatype recvtype,
+        MPIX_Comm* comm,char* cpu_recvbuf,char* cpu_sendbuf);
 
 
 int threaded_alltoallv_pairwise(const void* sendbuf,
