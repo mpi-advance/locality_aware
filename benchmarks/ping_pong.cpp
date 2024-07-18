@@ -19,12 +19,9 @@ int main(int argc, char* argv[])
     int max_s = pow(2, max_i);
     int n_iter = 100;
     double t0, tfinal;
-    srand(time(NULL));
-    std::vector<double> send_data(max_s*num_procs);
-    std::vector<double> pmpi_alltoall(max_s*num_procs);
-    std::vector<double> mpix_alltoall(max_s*num_procs);
-    for (int j = 0; j < max_s*num_procs; j++)
-        send_data[j] = rand();
+
+    std::vector<double> send_data_h(max_s);
+    std::vector<double> recv_data_h(max_s);
 
     double* send_data_d;
     double* recv_data_d;
@@ -32,11 +29,29 @@ int main(int argc, char* argv[])
     gpuMalloc((void**)(&recv_data_d), max_s*num_procs*sizeof(double));
     gpuMemcpy(send_data_d, send_data.data(), max_s*num_procs*sizeof(double), gpuMemcpyHostToDevice);
 
-    MPIX_Comm* locality_comm;
-    MPIX_Comm_init(&locality_comm, MPI_COMM_WORLD);
-    int local_rank;
-    MPI_Comm_rank(locality_comm->local_comm, &local_rank);
-    gpuSetDevice(local_rank);
+    MPIX_Comm* xcomm;
+    MPIX_Comm_init(&xcomm, MPI_COMM_WORLD);
+    int local_rank, ppn;
+    MPI_Comm_rank(xcomm->local_comm, &local_rank);
+    MPI_Comm_size(xcomm->local_comm, &ppn);
+
+    int num_gpus, ranks_per_gpu, local_gpu;
+    gpuGetDeviceCount(&num_gpus);
+    ranks_per_gpu = ppn / num_gpus;
+    local_gpu = local_rank / ranks_per_gpu;
+    gpuSetDevice(local_gpu);
+
+    // Time GPU-Aware Ping-Pong
+    proc = 
+    time_function(
+        // Lambda Function
+        [&](){
+            if (local_rank == 0 && (node == 0 || node == 1)
+            {
+                MPI_Sendrecv(
+            }
+        }, MPI_COMM_WORLD);
+    
 
 /*
 // MPI_Alltoallv info

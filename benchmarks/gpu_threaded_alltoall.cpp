@@ -8,6 +8,39 @@
 #include <set>
 #include <omp.h>
 
+void alltoall(double* send_data, double* recv_data, int n, int start, int stop, int step)
+{
+    int rank, num_procs;
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
+
+    int src, dest;
+    for (int i = start; i < stop; i += step)
+    {
+        dest = rank - i; 
+        if (dest < 0) dest += num_procs;
+        src = rank + i;
+        if (src >= num_procs)
+            src -= num_procs;
+        int send_pos = dest*n;
+        int recv_pos = src*n;
+        
+        MPI_Sendrecv(send_data + send_pos, n, MPI_DOUBLE, dest, 0, recv_data + recv_pos, n, MPI_DOUBLE, src, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+    }
+}
+
+int compare(std::vector<double>& std_alltoall, std::vector<double>& new_alltoall, int size)
+{
+    for (int i = 0; i < size; i++)
+    {
+        if (fabs(std_alltoall[i] - new_alltoall[i]) > 1e-10)
+        {
+            return i;
+        }
+    }
+    return -1;
+}
+
 int main(int argc, char* argv[])
 {
     int provided;
@@ -17,27 +50,32 @@ int main(int argc, char* argv[])
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
 
-    omp_set_num_threads(10);
-
     int max_i = 20;
     int max_s = pow(2, max_i);
     int max_n_iter = 100;
     double t0, tfinal;
     srand(time(NULL));
     std::vector<double> send_data(max_s*num_procs);
-    std::vector<double> pmpi_alltoall(max_s*num_procs);
-    std::vector<double> mpix_alltoall(max_s*num_procs);
+    std::vector<double> std_alltoall(max_s*num_procs);
+    std::vector<double> new_alltoall(max_s*num_procs);
     for (int j = 0; j < max_s*num_procs; j++)
         send_data[j] = rand();
 
     double* send_data_d;
     double* recv_data_d;
-    cudaMalloc((void**)(&send_data_d), max_s*num_procs*sizeof(double));
-    cudaMalloc((void**)(&recv_data_d), max_s*num_procs*sizeof(double));
-    cudaMemcpy(send_data_d, send_data.data(), max_s*num_procs*sizeof(double), cudaMemcpyHostToDevice);
+    gpuMalloc((void**)(&send_data_d), max_s*num_procs*sizeof(double));
+    gpuMalloc((void**)(&recv_data_d), max_s*num_procs*sizeof(double));
+    gpuMemcpy(send_data_d, send_data.data(), max_s*num_procs*sizeof(double), gpuMemcpyHostToDevice);
+    double* send_data_h;
+    double* recv_data_h;
+    gpuMallocHost((void**)(&send_data_h), max_s*num_procs*sizeof(double));
+    gpuMallocHost((void**)(&recv_data_h), max_s*num_procs*sizeof(double));
 
-    MPIX_Comm* locality_comm;
-    MPIX_Comm_init(&locality_comm, MPI_COMM_WORLD);
+    MPIX_Comm* xcomm;
+    MPIX_Comm_init(&xcomm, MPI_COMM_WORLD);
+    int local_rank;
+    MPI_Comm_rank(xcomm->local_comm, &local_rank);
+    gpuSetDevice(local_rank);
 
     for (int i = 0; i < max_i; i++)
     {
@@ -47,141 +85,186 @@ int main(int argc, char* argv[])
         int n_iter = max_n_iter;
         if (s > 4096) n_iter /= 10;
 
-        // Standard MPI Implementation
-        PMPI_Alltoall(send_data_d,
-                s,
-                MPI_DOUBLE, 
-                recv_data_d,
-                s,
-                MPI_DOUBLE,
-                MPI_COMM_WORLD);
-        cudaMemcpy(pmpi_alltoall.data(), recv_data_d, s*num_procs*sizeof(double),
-                cudaMemcpyDeviceToHost);
-        cudaMemset(recv_data_d, 0, s*num_procs*sizeof(int));
+        // GPU-Aware PMPI Implementation
+        PMPI_Alltoall(send_data_d, s, MPI_DOUBLE, recv_data_d, s, MPI_DOUBLE, MPI_COMM_WORLD);
+        gpuMemcpy(std_alltoall.data(), recv_data_d, s*num_procs*sizeof(double), gpuMemcpyDeviceToHost);
+        gpuMemset(recv_data_d, 0, s*num_procs*sizeof(int));
 
-        // MPI Advance : Threaded Pairwise Exchange
-        threaded_alltoall_pairwise(send_data_d,
-                s,
-                MPI_DOUBLE, 
-                recv_data_d,
-                s,
-                MPI_DOUBLE,
-                locality_comm);
-        cudaMemcpy(mpix_alltoall.data(), recv_data_d, s*num_procs*sizeof(double),
-                cudaMemcpyDeviceToHost);
-        cudaMemset(recv_data_d, 0, s*num_procs*sizeof(int));
-        for (int j = 0; j < s; j++)
-	{
-            if (fabs(pmpi_alltoall[j] - mpix_alltoall[j]) > 1e-10)
+        // Copy-to-CPU PMPI Implementation
+        gpuMemcpy(send_data_h, send_data_d, s*num_procs*sizeof(double), gpuMemcpyDeviceToHost);
+        PMPI_Alltoall(send_data_h, s, MPI_DOUBLE, recv_data_h, s, MPI_DOUBLE, MPI_COMM_WORLD);
+        gpuMemcpy(recv_data_d, recv_data_h, s*num_procs*sizeof(double), gpuMemcpyHostToDevice);
+        gpuMemcpy(new_alltoall.data(), recv_data_d, s*num_procs*sizeof(double), gpuMemcpyDeviceToHost);
+        int err = compare(std_alltoall, new_alltoall, s);
+        if (err >= 0)
+        {
+            printf("C2C PMPI Error at IDX %d, rank %d\n", err, rank);
+            MPI_Abort(MPI_COMM_WORLD, 1);
+            return 1;
+        }
+        gpuMemset(recv_data_d, 0, s*num_procs*sizeof(int));
+
+        // Copy-to-CPU Alltoall
+        gpuMemcpy(send_data_h, send_data_d, s*num_procs*sizeof(double), gpuMemcpyDeviceToHost);
+        alltoall(send_data_h, recv_data_h, s, 1, num_procs, 1);
+        gpuMemcpy(recv_data_d, recv_data_h, s*num_procs*sizeof(double), gpuMemcpyHostToDevice);
+        gpuMemcpy(new_alltoall.data(), recv_data_d, s*num_procs*sizeof(double), gpuMemcpyDeviceToHost);
+        err = compare(std_alltoall, new_alltoall, s);
+        if (err >= 0)
+        {
+            printf("C2C MPIX Error at IDX %d, rank %d\n", err, rank);
+            MPI_Abort(MPI_COMM_WORLD, 1);
+            return 1;
+        }
+        gpuMemset(recv_data_d, 0, s*num_procs*sizeof(int));
+
+        // Copy-to-CPU 2Thread Alltoall
+        gpuMemcpy(send_data_h, send_data_d, s*num_procs*sizeof(double), gpuMemcpyDeviceToHost);
+        #pragma parallel num_threads(2)
+        {
+            int thread_id = omp_get_thread_num();
+            int num_threads = omp_get_num_threads();
+            alltoall(send_data_h, recv_data_h, s, thread_id+1, num_procs, num_threads);
+        }
+        gpuMemcpy(recv_data_d, recv_data_h, s*num_procs*sizeof(double), gpuMemcpyHostToDevice);
+        gpuMemcpy(new_alltoall.data(), recv_data_d, s*num_procs*sizeof(double), gpuMemcpyDeviceToHost);
+        err = compare(std_alltoall, new_alltoall, s);
+        if (err >= 0)
+        {   
+            printf("2Threads MPIX Error at IDX %d, rank %d\n", err, rank);
+            MPI_Abort(MPI_COMM_WORLD, 1);
+            return 1;
+        }
+        gpuMemset(recv_data_d, 0, s*num_procs*sizeof(int));
+   
+       // Copy-to-CPU 4Thread Alltoall
+        gpuMemcpy(send_data_h, send_data_d, s*num_procs*sizeof(double), gpuMemcpyDeviceToHost);
+        #pragma parallel num_threads(4)
+        {
+            int thread_id = omp_get_thread_num();
+            int num_threads = omp_get_num_threads();
+            alltoall(send_data_h, recv_data_h, s, thread_id+1, num_procs, num_threads);
+        }
+        gpuMemcpy(recv_data_d, recv_data_h, s*num_procs*sizeof(double), gpuMemcpyHostToDevice);
+        gpuMemcpy(new_alltoall.data(), recv_data_d, s*num_procs*sizeof(double), gpuMemcpyDeviceToHost);
+        err = compare(std_alltoall, new_alltoall, s);
+        if (err >= 0)
+        {   
+            printf("2Threads MPIX Error at IDX %d, rank %d\n", err, rank);
+            MPI_Abort(MPI_COMM_WORLD, 1);
+            return 1;
+        }
+        gpuMemset(recv_data_d, 0, s*num_procs*sizeof(int));
+   
+        // Time Methods!
+
+        // GPU-Aware PMPI Implementation
+        t0 = MPI_Wtime();
+        for (int i = 0; i < n_iter; i++)
+        {
+            PMPI_Alltoall(send_data_d, s, MPI_DOUBLE, recv_data_d, s, MPI_DOUBLE, MPI_COMM_WORLD);
+        }
+        tfinal = (MPI_Wtime() - t0) / n_iter;
+        MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
+        if (rank == 0) printf("GPU-Aware PMPI Time %e\n", t0);
+
+        // Copy-to-CPU PMPI Implementation
+        t0 = MPI_Wtime();
+        for (int i = 0; i < n_iter; i++)
+        {
+            gpuMemcpy(send_data_h, send_data_d, s*num_procs*sizeof(double), gpuMemcpyDeviceToHost);
+            PMPI_Alltoall(send_data_h, s, MPI_DOUBLE, recv_data_h, s, MPI_DOUBLE, MPI_COMM_WORLD);
+            gpuMemcpy(recv_data_d, recv_data_h, s*num_procs*sizeof(double), gpuMemcpyHostToDevice);
+        }
+        tfinal = (MPI_Wtime() - t0) / n_iter;
+        MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
+        if (rank == 0) printf("Copy-to-CPU PMPI Time %e\n", t0);
+  
+        // Copy-to-CPU Alltoall
+        t0 = MPI_Wtime();
+        for (int i = 0; i < n_iter; i++)
+        {
+            gpuMemcpy(send_data_h, send_data_d, s*num_procs*sizeof(double), gpuMemcpyDeviceToHost);
+            alltoall(send_data_h, recv_data_h, s, 1, num_procs, 1);
+            gpuMemcpy(recv_data_d, recv_data_h, s*num_procs*sizeof(double), gpuMemcpyHostToDevice);
+        }
+        tfinal = (MPI_Wtime() - t0) / n_iter;
+        MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
+        if (rank == 0) printf("Copy-to-CPU Pairwise Time %e\n", t0);
+  
+
+        // Copy-to-CPU 2Thread Alltoall
+        t0 = MPI_Wtime();
+        for (int i = 0; i < n_iter; i++)
+        {
+            gpuMemcpy(send_data_h, send_data_d, s*num_procs*sizeof(double), gpuMemcpyDeviceToHost);
+            #pragma parallel num_threads(2)
             {
-                fprintf(stderr, 
-                        "Rank %d, idx %d, pmpi %e, Thread-PE %e\n", 
-                         rank, j, pmpi_alltoall[j], mpix_alltoall[j]);
-                MPI_Abort(MPI_COMM_WORLD, 1);
-                return 1;
+                int thread_id = omp_get_thread_num();
+                int num_threads = omp_get_num_threads();
+                alltoall(send_data_h, recv_data_h, s, thread_id+1, num_procs, num_threads);
             }
+            gpuMemcpy(recv_data_d, recv_data_h, s*num_procs*sizeof(double), gpuMemcpyHostToDevice);
         }
-
-        // MPI Advance : Copy To CPU Nonblocking (P2P)
-        threaded_alltoall_nonblocking(send_data_d,
-                s,
-                MPI_DOUBLE, 
-                recv_data_d,
-                s,
-                MPI_DOUBLE,
-                locality_comm);
-        cudaMemcpy(mpix_alltoall.data(), recv_data_d, s*num_procs*sizeof(double),
-                cudaMemcpyDeviceToHost);
-        cudaMemset(recv_data_d, 0, s*num_procs*sizeof(int));
-        for (int j = 0; j < s; j++)
-	{
-            if (fabs(pmpi_alltoall[j] - mpix_alltoall[j]) > 1e-10)
+        tfinal = (MPI_Wtime() - t0) / n_iter;
+        MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
+        if (rank == 0) printf("2 Threads Pairwise Time %e\n", t0);
+   
+        // Copy-to-CPU 4Thread Alltoall
+        t0 = MPI_Wtime();
+        for (int i = 0; i < n_iter; i++)
+        {
+            gpuMemcpy(send_data_h, send_data_d, s*num_procs*sizeof(double), gpuMemcpyDeviceToHost);
+            #pragma parallel num_threads(4)
             {
-                fprintf(stderr, 
-                        "Rank %d, idx %d, pmpi %e, Thread-NB %e\n", 
-                         rank, j, pmpi_alltoall[j], mpix_alltoall[j]);
-                MPI_Abort(MPI_COMM_WORLD, 1);
-                return 1;
+                int thread_id = omp_get_thread_num();
+                int num_threads = omp_get_num_threads();
+                alltoall(send_data_h, recv_data_h, s, thread_id+1, num_procs, num_threads);
             }
-        }
-
-
-        // Time PMPI Alltoall
-        PMPI_Alltoall(send_data_d,
-                s,
-                MPI_DOUBLE, 
-                recv_data_d,
-                s,
-                MPI_DOUBLE,
-                MPI_COMM_WORLD);
-        MPI_Barrier(MPI_COMM_WORLD);
-        t0 = MPI_Wtime();
-        for (int k = 0; k < n_iter; k++)
-        {
-            PMPI_Alltoall(send_data_d,
-                    s,
-                    MPI_DOUBLE, 
-                    recv_data_d,
-                    s,
-                    MPI_DOUBLE,
-                    MPI_COMM_WORLD);
+            gpuMemcpy(recv_data_d, recv_data_h, s*num_procs*sizeof(double), gpuMemcpyHostToDevice);
         }
         tfinal = (MPI_Wtime() - t0) / n_iter;
         MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
-        if (rank == 0) printf("PMPI_Alltoall Time %e\n", t0);
+        if (rank == 0) printf("4 Threads Pairwise Time %e\n", t0);
 
-        // Time Threaded Pairwise Exchange
-        threaded_alltoall_pairwise(send_data_d,
-                s,
-                MPI_DOUBLE, 
-                recv_data_d,
-                s,
-                MPI_DOUBLE,
-                locality_comm);
-        MPI_Barrier(MPI_COMM_WORLD);
         t0 = MPI_Wtime();
-        for (int k = 0; k < n_iter; k++)
-        {
-            threaded_alltoall_pairwise(send_data_d,
-                    s,
-                    MPI_DOUBLE, 
-                    recv_data_d,
-                    s,
-                    MPI_DOUBLE,
-                    locality_comm);
+        for (int i = 0; i < n_iter; i++)
+        {   
+            gpuMemcpy(send_data_h, send_data_d, s*num_procs*sizeof(double), gpuMemcpyDeviceToHost);
+            #pragma parallel num_threads(8)
+            {
+                int thread_id = omp_get_thread_num();
+                int num_threads = omp_get_num_threads();
+                alltoall(send_data_h, recv_data_h, s, thread_id+1, num_procs, num_threads);
+            }
+            gpuMemcpy(recv_data_d, recv_data_h, s*num_procs*sizeof(double), gpuMemcpyHostToDevice);
         }
         tfinal = (MPI_Wtime() - t0) / n_iter;
         MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
-        if (rank == 0) printf("Threaded Pairwise Exchange Time %e\n", t0);
+        if (rank == 0) printf("8 Threads Pairwise Time %e\n", t0);
 
-        // Time Threaded Nonblocking
-        threaded_alltoall_nonblocking(send_data_d,
-                s,
-                MPI_DOUBLE, 
-                recv_data_d,
-                s,
-                MPI_DOUBLE,
-                locality_comm);
-        MPI_Barrier(MPI_COMM_WORLD);
         t0 = MPI_Wtime();
-        for (int k = 0; k < n_iter; k++)
-        {
-            threaded_alltoall_nonblocking(send_data_d,
-                    s,
-                    MPI_DOUBLE, 
-                    recv_data_d,
-                    s,
-                    MPI_DOUBLE,
-                    locality_comm);
+        for (int i = 0; i < n_iter; i++)
+        {   
+            gpuMemcpy(send_data_h, send_data_d, s*num_procs*sizeof(double), gpuMemcpyDeviceToHost);
+            #pragma parallel num_threads(10)
+            {
+                int thread_id = omp_get_thread_num();
+                int num_threads = omp_get_num_threads();
+                alltoall(send_data_h, recv_data_h, s, thread_id+1, num_procs, num_threads);
+            }
+            gpuMemcpy(recv_data_d, recv_data_h, s*num_procs*sizeof(double), gpuMemcpyHostToDevice);
         }
         tfinal = (MPI_Wtime() - t0) / n_iter;
         MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
-        if (rank == 0) printf("Threaded Nonblocking Time %e\n", t0);
+        if (rank == 0) printf("10 Threads Pairwise Time %e\n", t0);
     }
-    cudaFree(send_data_d);
-    cudaFree(recv_data_d);
+    MPIX_Comm_free(xcomm);
 
-    MPIX_Comm_free(locality_comm);
+    gpuFree(send_data_d);
+    gpuFree(recv_data_d);
+    gpuFreeHost(send_data_h);
+    gpuFreeHost(recv_data_h);
 
     MPI_Finalize();
     return 0;
