@@ -1,7 +1,7 @@
 #include "collective/alltoallv.h"
 #include "collective/collective.h"
 #include "gpu_alltoallv.h"
-
+#include "/g/g92/enamug/install/include/caliper/cali.h"
 // ASSUMES 1 CPU CORE PER GPU (Standard for applications)
 
 int gpu_aware_alltoallv(alltoallv_ftn f,
@@ -179,15 +179,24 @@ int copy_to_cpu_alltoallv_extra(alltoallv_ftn f,
     int total_bytes_r = recvcount * recv_bytes;
 
     // Copy from GPU to CPU
+    CALI_MARK_BEGIN("Copy from GPU to CPU"); 
     ierr += gpuMemcpy(cpu_sendbuf, sendbuf, total_bytes_s, gpuMemcpyDeviceToHost);
+    CALI_MARK_END("Copy from GPU to CPU");
 
+    CALI_MARK_BEGIN("Collective Among CPUs ");
     // Collective Among CPUs
     ierr += f(cpu_sendbuf, sendcounts, sdispls, sendtype,
             cpu_recvbuf, recvcounts, rdispls, recvtype, comm->global_comm);
 
+     CALI_MARK_END("Collective Among CPUs ");
+
+
     // Copy from CPU to GPU
+     CALI_MARK_BEGIN("Copy from CPU to GPU");  
     ierr += gpuMemcpy(recvbuf, cpu_recvbuf, total_bytes_r, gpuMemcpyHostToDevice);
     
+     CALI_MARK_END("Copy from CPU to GPU");
+
 return ierr;
 }
 
@@ -214,6 +223,30 @@ int copy_to_cpu_alltoallv_pairwise(const void* sendbuf,
         recvtype,
         comm);
 }
+
+int copy_to_cpu_alltoallv_nonblocking(const void* sendbuf,
+        const int sendcounts[],
+        const int sdispls[],
+        MPI_Datatype sendtype,
+        void* recvbuf,
+        const int recvcounts[],
+        const int rdispls[],
+        MPI_Datatype recvtype,
+        MPIX_Comm* comm)
+{
+    return copy_to_cpu_alltoallv(alltoallv_nonblocking,
+        sendbuf,
+        sendcounts,
+        sdispls,
+        sendtype,
+        recvbuf,
+        recvcounts,
+        rdispls,
+        recvtype,
+        comm);
+}
+
+
 int copy_to_cpu_alltoallv_pairwise_extra(const void* sendbuf, 
         const int sendcounts[],
         const int sdispls[],
@@ -237,7 +270,9 @@ int copy_to_cpu_alltoallv_pairwise_extra(const void* sendbuf,
 
 }
 
-int copy_to_cpu_alltoallv_nonblocking(const void* sendbuf, 
+
+
+int copy_to_cpu_alltoallv_MPI_Alltoallv_extra(const void* sendbuf,
         const int sendcounts[],
         const int sdispls[],
         MPI_Datatype sendtype,
@@ -245,20 +280,20 @@ int copy_to_cpu_alltoallv_nonblocking(const void* sendbuf,
         const int recvcounts[],
         const int rdispls[],
         MPI_Datatype recvtype,
-        MPIX_Comm* comm)
+        MPIX_Comm* comm,char* cpu_recvbuf,char* cpu_sendbuf)
 {
-    return copy_to_cpu_alltoallv(alltoallv_nonblocking,
-        sendbuf, 
+    return copy_to_cpu_alltoallv_extra(MPI_Alltoallv ,
+        sendbuf,
         sendcounts,
         sdispls,
         sendtype,
-        recvbuf, 
+        recvbuf,
         recvcounts,
         rdispls,
         recvtype,
-        comm);
-}
+        comm, cpu_recvbuf, cpu_sendbuf);
 
+}
 
 
 int copy_to_cpu_alltoallv_nonblocking_extra(const void* sendbuf,
@@ -283,7 +318,6 @@ int copy_to_cpu_alltoallv_nonblocking_extra(const void* sendbuf,
         comm, cpu_recvbuf, cpu_sendbuf);
 
 }
-
 
 int threaded_alltoallv_pairwise(const void* sendbuf,
         const int sendcounts[],
