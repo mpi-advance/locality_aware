@@ -37,7 +37,7 @@ void compare(int n_recvs, int s_recvs, int* src, int* counts, int* displs, long*
         {
             if (indices[displs[i] + j] != orig_indices[orig_proc_displs[src[i]] + j])
             {
-                printf("Rank %d, indices from proc %d at pos %d incorrect!  Got %d, should be %d\n",
+                printf("Rank %d, indices from proc %d at pos %d incorrect!  Got %lu, should be %lu\n",
                         rank, src[i], j, indices[displs[i]+j], orig_indices[orig_proc_displs[src[i]+j]]);
                 break;
             }
@@ -108,7 +108,7 @@ int main(int argc, char* argv[])
 
     MPIX_Comm_topo_init(xcomm);
 
-    int n_recvs, s_recvs, proc, idx;
+    int n_recvs, s_recvs, proc;
     std::vector<int> src(A.send_comm.n_msgs+1);
     std::vector<int> rdispls(A.send_comm.n_msgs+1);
     std::vector<int> recvcounts(A.send_comm.n_msgs+1);
@@ -182,9 +182,9 @@ n_iter=1;
     tfinal = MPI_Wtime() - t0;
     MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
     if (rank == 0) printf("MPI_Alltoall_crs Time (Personalized Locality VERSION): %e\n", t0/n_iter);
-//    compare(n_recvs, s_recvs, src.data(), recvcounts.data(), rdispls.data(), recvvals.data(),
-//            A.send_comm.n_msgs, A.send_comm.size_msgs, proc_count.data(), proc_displs.data(),
-//            orig_indices.data());
+    compare(n_recvs, s_recvs, src.data(), recvcounts.data(), rdispls.data(), recvvals.data(),
+            A.send_comm.n_msgs, A.send_comm.size_msgs, proc_count.data(), proc_displs.data(),
+            orig_indices.data());
 
 /*
     // Time Nonblocking Locality

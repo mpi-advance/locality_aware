@@ -80,12 +80,14 @@ int alltoall_crs_rma(int send_nnz, int* dest, int sendcount,
     send_bytes *= sendcount;
     recv_bytes *= recvcount;
 
+    MPI_Barrier(MPI_COMM_WORLD);
     MPI_Win_fence(MPI_MODE_NOSTORE|MPI_MODE_NOPRECEDE, comm->win);
     for (int i = 0; i < send_nnz; i++)
     {
          MPI_Put(&(send_buffer[i*send_bytes]), send_bytes, MPI_CHAR,
                  dest[i], rank*recv_bytes, recv_bytes, MPI_CHAR, comm->win);
     }
+    MPI_Barrier(MPI_COMM_WORLD);
     MPI_Win_fence(MPI_MODE_NOPUT|MPI_MODE_NOSUCCEED, comm->win);
 
     ctr = 0;

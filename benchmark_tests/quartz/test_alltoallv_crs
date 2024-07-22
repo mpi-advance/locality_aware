@@ -1,0 +1,25 @@
+#!/bin/bash
+
+#SBATCH --output=tmp_crs_n4.%j.out
+##SBATCH --output=alltoallv_crs_n4.%j.out
+#SBATCH --error=tmp_crs_n4.%j.err
+##SBATCH --error=alltoallv_crs_n4.%j.err
+#SBATCH --nodes=4
+#SBATCH --tasks-per-node=4
+#SBATCH --cores-per-socket=16
+#SBATCH --cpus-per-task=1
+#SBATCH --time=00:10:00
+##SBATCH --partition=pbatch
+#SBATCH --partition=pdebug
+
+cd /g/g14/bienz1/locality_aware/build/benchmarks
+
+folder="/g/g14/bienz1/locality_aware/test_data/may_mats"
+#for mat in delaunay_n22.pm dielFilterV2clx.pm germany_osm.pm human_gene1.pm NLR.pm
+#do
+mat="delaunay_n22.pm"
+    echo $mat
+#    srun -n 128 ./alltoallv_crs $folder/$mat
+srun -n 16 ./alltoallv_crs $folder/$mat
+#done
+

@@ -7,6 +7,9 @@ enable_language(CXX)
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+set(CMAKE_C_FLAGS "-Wall -Wextra -Wpedantic -Wshadow")
+set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wpedantic -Wshadow")
+#set(CMAKE_CXX_FLAGS "-fsanitize=address")
 
 
 option(ENABLE_UNIT_TESTS "Enable unit testing" ON)
