@@ -190,7 +190,6 @@ int main(int argc, char* argv[])
     
     MPIX_Info_free(&xinfo);
     MPIX_Comm_free(&xcomm);
-
     MPI_Finalize();
     return 0;
 }

@@ -56,7 +56,7 @@ int main(int argc, char* argv[])
 
     double t0, tfinal;
     
-    int n_iter = 1000;
+    int n_iter = 10;
     if(num_procs > 1000)
 	    n_iter = 100;
 
@@ -91,7 +91,6 @@ int main(int argc, char* argv[])
     tfinal = MPI_Wtime() - t0;
     MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
     if (rank == 0) printf("MPIX_Comm_init time %e\n", t0/n_iter);
-
     MPIX_Comm_init(&xcomm, MPI_COMM_WORLD);
 
 	// Split node communicator
@@ -107,6 +106,7 @@ int main(int argc, char* argv[])
     if (rank == 0) printf("MPIX_Comm_topo_init time %e\n", t0/n_iter);
 
     MPIX_Comm_topo_init(xcomm);
+    update_locality(xcomm, 4);
 
     int n_recvs, s_recvs, proc;
     std::vector<int> src(A.send_comm.n_msgs+1);
@@ -126,7 +126,6 @@ int main(int argc, char* argv[])
     for (int i = 0; i < A.send_comm.size_msgs; i++)
         orig_indices[i] = A.send_comm.idx[i] + A.first_col;
 
-/*
 	// Time Personalized
     MPI_Barrier(MPI_COMM_WORLD);
     t0 = MPI_Wtime();
@@ -164,9 +163,7 @@ int main(int argc, char* argv[])
     compare(n_recvs, s_recvs, src.data(), recvcounts.data(), rdispls.data(), recvvals.data(),
             A.send_comm.n_msgs, A.send_comm.size_msgs, proc_count.data(), proc_displs.data(),
             orig_indices.data());
-*/
 
-n_iter=1;
     // Time Personalized Locality
     MPI_Barrier(MPI_COMM_WORLD);
     t0 = MPI_Wtime();
@@ -186,7 +183,6 @@ n_iter=1;
             A.send_comm.n_msgs, A.send_comm.size_msgs, proc_count.data(), proc_displs.data(),
             orig_indices.data());
 
-/*
     // Time Nonblocking Locality
     MPI_Barrier(MPI_COMM_WORLD);
     t0 = MPI_Wtime();
@@ -205,7 +201,6 @@ n_iter=1;
     compare(n_recvs, s_recvs, src.data(), recvcounts.data(), rdispls.data(), recvvals.data(),
             A.send_comm.n_msgs, A.send_comm.size_msgs, proc_count.data(), proc_displs.data(),
             orig_indices.data());
-*/
     
     MPIX_Info_free(&xinfo);
     MPIX_Comm_free(&xcomm);

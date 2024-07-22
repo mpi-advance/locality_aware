@@ -21,6 +21,15 @@ int MPIX_Info_free(MPIX_Info** info_ptr)
     return MPI_SUCCESS;
 }
 
+int MPIX_Info_tag(MPIX_Info* xinfo, int* tag)
+{
+    *tag = xinfo->tag;
+
+    int max_tag, flag;
+    MPI_Comm_get_attr( MPI_COMM_WORLD, MPI_TAG_UB, &max_tag, &flag);
+    xinfo->tag = (xinfo->tag + 1 % max_tag);
+}
+
 void sort(int n_objects, int* object_indices, int* object_values)
 {
     std::sort(object_indices, object_indices+n_objects,

@@ -17,6 +17,7 @@ typedef struct _MPIX_Info
 
 int MPIX_Info_init(MPIX_Info** info);
 int MPIX_Info_free(MPIX_Info** info);
+int MPIX_Info_tag(MPIX_Info* info, int* tag);
 
 void sort(int n_objects, int* object_indices, int* object_values);
 void rotate(void* ref, int new_start_byte, int end_byte);

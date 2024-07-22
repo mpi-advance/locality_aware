@@ -43,7 +43,6 @@ int MPIX_Wait(MPIX_Request* request, MPI_Status* status);
 
 int MPIX_Request_free(MPIX_Request* request);
 
-
 #ifdef __cplusplus
 }
 #endif

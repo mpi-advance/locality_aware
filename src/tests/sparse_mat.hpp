@@ -96,7 +96,7 @@ void form_send_comm_standard(ParMat<U>& A)
 
     std::vector<long> recv_buf;
     std::vector<int> sizes(num_procs, 0);
-    int start, end, proc, count, ctr;
+    int proc, count, ctr;
     MPI_Status recv_status;
 
     // Allreduce to find size of data I will receive
