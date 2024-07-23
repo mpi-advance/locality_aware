@@ -1,0 +1,18 @@
+#!/bin/bash
+#BSUB -J gpu_alltoallv4
+#BSUB -e gpu_alltoallv4.%J.err
+#BSUB -o gpu_alltoallv4.%J.out
+#BSUB -nnodes 4
+#BSUB -q pdebug
+#BSUB -W 00:15
+
+# cd /g/g14/bienz1/locality_aware_gpu/build_gpu_lassen/benchmarks
+cd /g/g92/enamug/clean/GPU_locality_aware/locality_aware_B4_RMA/build/benchmarks
+# jsrun -n4 -r1 -a4 -c4 -g4 -M "-gpu" --latency_priority=gpu-cpu --launch_distribution=packed --print_placement=1 ./gpu_alltoallv
+
+jsrun -n4 -r1 -a4 -c4 -g4 -M "-gpu" --latency_priority=gpu-cpu --launch_distribution=packed --print_placement=1 ./gpu_alltoallv
+
+
+
+
+

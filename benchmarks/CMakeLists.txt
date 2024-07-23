@@ -3,11 +3,16 @@ include_directories(${mpi_advance_INCDIR})
 if(USE_CUDA)
     set_source_files_properties(
         gpu_alltoall.cpp
+        gpu_alltoallv.cpp
         gpu_threaded_alltoall.cpp
         PROPERTIES LANGUAGE CUDA)
 
     add_executable(gpu_alltoall gpu_alltoall.cpp)
+    
     target_link_libraries(gpu_alltoall mpi_advance ${MPI_LIBRARIES} OpenMP::OpenMP_CXX)
+
+    add_executable(gpu_alltoallv gpu_alltoallv.cpp)
+    target_link_libraries(gpu_alltoallv mpi_advance ${MPI_LIBRARIES} OpenMP::OpenMP_CXX)
 
     add_executable(gpu_threaded_alltoall gpu_threaded_alltoall.cpp)
     target_compile_options(gpu_threaded_alltoall PRIVATE
