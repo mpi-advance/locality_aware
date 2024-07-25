@@ -94,15 +94,25 @@ TEST(RandomCommTest, TestsInTests)
 
 
     // Standard MPI Implementation of Alltoallv
+    int* send_counts = send_data.counts.data();
+    int* recv_counts = recv_data.counts.data();
+    if (send_data.counts.data() == NULL)
+        send_counts = new int[1];
+    if (recv_data.counts.data() == NULL)
+        recv_counts = new int[1];
     MPI_Neighbor_alltoallv(alltoallv_send_vals.data(), 
-            send_data.counts.data(),
+            send_counts,
             send_data.indptr.data(), 
             MPI_INT,
             std_recv_vals.data(), 
-            recv_data.counts.data(),
+            recv_counts,
             recv_data.indptr.data(), 
             MPI_INT,
             std_comm);
+    if (send_data.counts.data() == NULL)
+        delete[] send_counts;
+    if (recv_data.counts.data() == NULL)
+        delete[] recv_counts;
 
 
     // Simple Persistent MPI Advance Implementation

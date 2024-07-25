@@ -18,6 +18,7 @@
 
 #include "tests/sparse_mat.hpp"
 #include "tests/par_binary_IO.hpp"
+#include "tests/compare.hpp"
 
 void test_matrix(const char* filename)
 {
@@ -48,84 +49,63 @@ void test_matrix(const char* filename)
         proc_displs[proc] = A.send_comm.ptr[i];
     }
 
-    int n_recvs, s_recvs, proc;
+    int n_recvs, s_recvs;
     std::vector<int> src(A.send_comm.n_msgs+1);
     std::vector<int> rdispls(A.send_comm.n_msgs+1);
     std::vector<int> recvcounts(A.send_comm.n_msgs+1);
     std::vector<long> recvvals(A.send_comm.size_msgs+1);
 
-    /* TEST PERSONALIZED VERSION */
+
+
+    // Personalized
     s_recvs = -1;
-    alltoallv_crs_personalized(A.recv_comm.n_msgs, A.recv_comm.size_msgs, A.recv_comm.procs.data(),
-            A.recv_comm.counts.data(), A.recv_comm.ptr.data(), MPI_LONG,
-            A.off_proc_columns.data(), 
+    alltoallv_crs_personalized(A.recv_comm.n_msgs, A.recv_comm.size_msgs, 
+            A.recv_comm.procs.data(), A.recv_comm.counts.data(), 
+            A.recv_comm.ptr.data(), MPI_LONG, A.off_proc_columns.data(), 
+            &n_recvs, &s_recvs, src.data(), recvcounts.data(), 
+            rdispls.data(), MPI_LONG, recvvals.data(), xinfo, xcomm); 
+    compare(n_recvs, A.send_comm.n_msgs, s_recvs, A.send_comm.size_msgs,
+        src, recvcounts, rdispls, recvvals, A.first_col, proc_counts, 
+        proc_displs, A.send_comm.idx);
+
+
+
+    // Nonblocking
+    s_recvs = -1;
+    alltoallv_crs_nonblocking(A.recv_comm.n_msgs, A.recv_comm.size_msgs, 
+            A.recv_comm.procs.data(), A.recv_comm.counts.data(), 
+            A.recv_comm.ptr.data(), MPI_LONG, A.off_proc_columns.data(), 
             &n_recvs, &s_recvs, src.data(), recvcounts.data(), 
            rdispls.data(), MPI_LONG, recvvals.data(), xinfo, xcomm); 
-    ASSERT_EQ(n_recvs, A.send_comm.n_msgs);
-    ASSERT_EQ(s_recvs, A.send_comm.size_msgs);
-    for (int i = 0; i < n_recvs; i++)
-    {
-        proc = src[i];
-        ASSERT_EQ(recvcounts[i], proc_counts[proc]);
-        for (int j = 0; j < recvcounts[i]; j++)
-            ASSERT_EQ(recvvals[rdispls[i] + j] - A.first_col, 
-                    A.send_comm.idx[proc_displs[proc] + j]);
-    }
+    compare(n_recvs, A.send_comm.n_msgs, s_recvs, A.send_comm.size_msgs,
+        src, recvcounts, rdispls, recvvals, A.first_col, proc_counts, 
+        proc_displs, A.send_comm.idx);
 
-    /* TEST NONBLOCKING VERSION */
+
+
+    // Locality-Aware Personalized
     s_recvs = -1;
-    alltoallv_crs_nonblocking(A.recv_comm.n_msgs, A.recv_comm.size_msgs, A.recv_comm.procs.data(),
-            A.recv_comm.counts.data(), A.recv_comm.ptr.data(), MPI_LONG,
-            A.off_proc_columns.data(), 
+    alltoallv_crs_personalized_loc(A.recv_comm.n_msgs, A.recv_comm.size_msgs, 
+            A.recv_comm.procs.data(), A.recv_comm.counts.data(), 
+            A.recv_comm.ptr.data(), MPI_LONG, A.off_proc_columns.data(), 
             &n_recvs, &s_recvs, src.data(), recvcounts.data(), 
            rdispls.data(), MPI_LONG, recvvals.data(), xinfo, xcomm); 
-    ASSERT_EQ(n_recvs, A.send_comm.n_msgs);
-    ASSERT_EQ(s_recvs, A.send_comm.size_msgs);
-    for (int i = 0; i < n_recvs; i++)
-    {
-        proc = src[i];
-        ASSERT_EQ(recvcounts[i], proc_counts[proc]);
-        for (int j = 0; j < recvcounts[i]; j++)
-            ASSERT_EQ(recvvals[rdispls[i] + j] - A.first_col, 
-                    A.send_comm.idx[proc_displs[proc] + j]);
-    }   
+    compare(n_recvs, A.send_comm.n_msgs, s_recvs, A.send_comm.size_msgs,
+        src, recvcounts, rdispls, recvvals, A.first_col, proc_counts, 
+        proc_displs, A.send_comm.idx);
 
-
-    /* TEST PERSONALIZED LOCALITY VERSION */
+ 
+ 
+    // Locality-Aware Personalized
     s_recvs = -1;
-    alltoallv_crs_personalized_loc(A.recv_comm.n_msgs, A.recv_comm.size_msgs, A.recv_comm.procs.data(),
-            A.recv_comm.counts.data(), A.recv_comm.ptr.data(), MPI_LONG,
-            A.off_proc_columns.data(), 
-            &n_recvs, &s_recvs, src.data(), recvcounts.data(), 
-           rdispls.data(), MPI_LONG, recvvals.data(), xinfo, xcomm); 
-    ASSERT_EQ(n_recvs, A.send_comm.n_msgs);
-    ASSERT_EQ(s_recvs, A.send_comm.size_msgs);
-    for (int i = 0; i < n_recvs; i++)
-    {
-        proc = src[i];
-        ASSERT_EQ(recvcounts[i], proc_counts[proc]);
-        for (int j = 0; j < recvcounts[i]; j++)
-            ASSERT_EQ(recvvals[rdispls[i] + j] - A.first_col, 
-                    A.send_comm.idx[proc_displs[proc] + j]);
-    }
-
-    /* TEST PERSONALIZED LOCALITY VERSION */
-    /*s_recvs = -1;
     alltoallv_crs_nonblocking_loc(A.recv_comm.n_msgs, A.recv_comm.size_msgs, A.recv_comm.procs.data(),
             A.recv_comm.counts.data(), A.recv_comm.ptr.data(), MPI_LONG,
             A.off_proc_columns.data(), 
             &n_recvs, &s_recvs, src.data(), recvcounts.data(), 
            rdispls.data(), MPI_LONG, recvvals.data(), xinfo, xcomm); 
-    ASSERT_EQ(n_recvs, A.send_comm.n_msgs);
-    ASSERT_EQ(s_recvs, A.send_comm.size_msgs);
-    for (int i = 0; i < n_recvs; i++)
-    {
-        proc = src[i];
-        ASSERT_EQ(recvcounts[i], proc_counts[proc]);
-        for (int j = 0; j < recvcounts[i]; j++)
-            ASSERT_EQ(recvvals[rdispls[i] + j] - A.first_col, 
-                    A.send_comm.idx[proc_displs[proc] + j]);
-    }*/
+    compare(n_recvs, A.send_comm.n_msgs, s_recvs, A.send_comm.size_msgs,
+        src, recvcounts, rdispls, recvvals, A.first_col, proc_counts, 
+        proc_displs, A.send_comm.idx);
     
     MPIX_Info_free(&xinfo);
     MPIX_Comm_free(&xcomm);

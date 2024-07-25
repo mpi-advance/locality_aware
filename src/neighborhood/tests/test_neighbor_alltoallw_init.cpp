@@ -78,16 +78,25 @@ TEST(RandomCommTest, TestsInTests)
             0, 
             &std_comm);
 
+    int* send_counts = send_data.counts.data();
+    int* recv_counts = recv_data.counts.data();
+    if (send_data.counts.data() == NULL)
+        send_counts = new int[1];
+    if (recv_data.counts.data() == NULL)
+        recv_counts = new int[1];
     MPI_Neighbor_alltoallw(alltoallv_send_vals.data(), 
-            send_data.counts.data(),
+            send_counts,
             send_data.indptr.data(), 
             sendtypes.data(),
             std_recv_vals.data(), 
-            recv_data.counts.data(),
+            recv_counts,
             recv_data.indptr.data(), 
             recvtypes.data(),
             std_comm);
-
+    if (send_data.counts.data() == NULL)
+        delete[] send_counts;
+    if (recv_data.counts.data() == NULL)
+        delete[] recv_counts;
 
     // 2. Node-Aware Communication
     MPIX_Dist_graph_create_adjacent(MPI_COMM_WORLD,

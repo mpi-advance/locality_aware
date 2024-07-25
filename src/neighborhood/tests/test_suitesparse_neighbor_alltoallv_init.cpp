@@ -36,27 +36,27 @@ void test_matrix(const char* filename)
     std::vector<int> send_vals, alltoallv_send_vals;
     std::vector<long> send_indices;
 
+    send_vals.resize(A.on_proc.n_cols + 1);
     if (A.on_proc.n_cols)
     {
-        send_vals.resize(A.on_proc.n_cols);
         std::iota(send_vals.begin(), send_vals.end(), 0);
         for (int i = 0; i < A.on_proc.n_cols; i++)
             send_vals[i] += (rank*1000);
     }
 
+    neigh_recv_vals.resize(A.recv_comm.size_msgs + 1);
     if (A.recv_comm.size_msgs)
     {
         std_recv_vals.resize(A.recv_comm.size_msgs);
-        neigh_recv_vals.resize(A.recv_comm.size_msgs);
         new_recv_vals.resize(A.recv_comm.size_msgs);
         locality_recv_vals.resize(A.recv_comm.size_msgs);
         part_locality_recv_vals.resize(A.recv_comm.size_msgs);
     }
 
+    alltoallv_send_vals.resize(A.send_comm.size_msgs + 1);
+    send_indices.resize(A.send_comm.size_msgs + 1);
     if (A.send_comm.size_msgs)
     {
-        alltoallv_send_vals.resize(A.send_comm.size_msgs);
-        send_indices.resize(A.send_comm.size_msgs);
         for (int i = 0; i < A.send_comm.size_msgs; i++)
         {
             idx = A.send_comm.idx[i];
@@ -90,15 +90,28 @@ void test_matrix(const char* filename)
             0, 
             &std_comm);
 
+    // Spectrum MPI cannot handle NULL counts
+    int* send_counts = A.send_comm.counts.data();
+    if (A.send_comm.counts.data() == NULL)
+        send_counts = new int[1];
+    int* recv_counts = A.recv_comm.counts.data();
+    if (A.recv_comm.counts.data() == NULL)
+        recv_counts = new int[1];
     PMPI_Neighbor_alltoallv(alltoallv_send_vals.data(),
-            A.send_comm.counts.data(),
+            //A.send_comm.counts.data(),
+            send_counts,
             A.send_comm.ptr.data(), 
             MPI_INT,
             neigh_recv_vals.data(),
-            A.recv_comm.counts.data(),
+            //A.recv_comm.counts.data(),
+            recv_counts,
             A.recv_comm.ptr.data(),
             MPI_INT,
             std_comm);
+    if (A.send_comm.counts.data() == NULL)
+        delete[] send_counts;
+    if (A.recv_comm.counts.data() == NULL)
+        delete[] recv_counts;
 
     MPIX_Dist_graph_create_adjacent(MPI_COMM_WORLD,
             A.recv_comm.n_msgs,

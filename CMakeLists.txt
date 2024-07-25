@@ -11,7 +11,7 @@ set(CMAKE_C_FLAGS "-Wall -Wextra -Wpedantic -Wshadow")
 set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wpedantic -Wshadow")
 #set(CMAKE_CXX_FLAGS "-fsanitize=address")
 
-
+set(MPIRUN "mpirun" CACHE STRING "MPI run command")
 option(ENABLE_UNIT_TESTS "Enable unit testing" ON)
 
 find_package(MPI REQUIRED)
@@ -46,6 +46,8 @@ if(ENABLE_UNIT_TESTS)
   # For Windows: Prevent overriding the parent project's compiler/linker settings
   set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
   FetchContent_MakeAvailable(googletest)
+
+  enable_testing()
 endif()
 #####################
 
