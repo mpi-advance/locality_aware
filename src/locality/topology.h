@@ -8,6 +8,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "utils/utils.h"
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -23,6 +25,13 @@ typedef struct _MPIX_Comm
     int num_nodes;
     int rank_node;
     int ppn;
+
+#ifdef GPU
+   int gpus_per_node;
+   int rank_gpu;
+   gpuStream_t proc_stream;
+#endif
+   
 } MPIX_Comm;
 
 int MPIX_Comm_init(MPIX_Comm** comm_dist_graph_ptr, MPI_Comm global_comm);

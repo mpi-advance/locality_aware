@@ -7,6 +7,7 @@ set(collective_HEADERS
     collective/allgather.h
     collective/gather.h
     collective/bcast.h
+    collective/alltoall_init.h
     PARENT_SCOPE
     )
 
@@ -16,6 +17,7 @@ set(collective_SOURCES
     collective/allgather.c
     collective/gather.c
     collective/bcast.c
+    collective/alltoall_init.c
     PARENT_SCOPE
     )
 

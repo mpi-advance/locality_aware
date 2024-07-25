@@ -1,11 +1,15 @@
 #ifndef MPI_ADVANCE_COLLECTIVES_H
 #define MPI_ADVANCE_COLLECTIVES_H
 
+#ifndef THREADS_PER_GPU
+#define THREADS_PER_GPU 10
+#endif 
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <mpi.h>
-//#include <mpt.h>
-#include "utils.h"
+#include "omp.h"
+#include "utils/utils.h"
 #include "allgather.h"
 #include "alltoall.h"
 #include "alltoallv.h"

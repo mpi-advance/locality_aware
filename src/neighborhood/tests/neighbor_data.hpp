@@ -30,8 +30,6 @@ void form_initial_communicator(int local_size, MPIX_Data<U>* send_data, MPIX_Dat
     // Declare Variables
     srand(49352034 + rank);
     int n_sends = (rand() % max_n) + 1; // Between 1 and max_n msgs sent
-    int first_idx = local_size * rank;
-    int last_idx = local_size * (rank + 1) - 1;
     int tag = 4935;
     int start, end, proc;
     int size, ctr;
