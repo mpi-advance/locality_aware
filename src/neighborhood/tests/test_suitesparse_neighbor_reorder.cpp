@@ -93,6 +93,7 @@ void test_matrix(const char* filename)
             0, 
             &std_comm);
 
+
     int* send_counts = A.send_comm.counts.data();
     if (A.send_comm.counts.data() == NULL)
         send_counts = new int[1];
@@ -127,22 +128,7 @@ void test_matrix(const char* filename)
     update_locality(neighbor_comm, 4);
     
 
-    MPIX_Neighbor_alltoallv(alltoallv_send_vals.data(), 
-            A.send_comm.counts.data(),
-            A.send_comm.ptr.data(), 
-            MPI_INT,
-            neigh_recv_vals.data(), 
-            A.recv_comm.counts.data(),
-            A.recv_comm.ptr.data(), 
-            MPI_INT,
-            neighbor_comm);
-
-    for (int i = 0; i < A.recv_comm.size_msgs; i++)
-    {
-        ASSERT_EQ(std_recv_vals[i], neigh_recv_vals[i]);
-    }
-
-    // 2. Node-Aware Communication
+    // 2. Node-Aware Communication - reorder during first send/recv
     MPIX_Neighbor_alltoallv_init(alltoallv_send_vals.data(), 
             A.send_comm.counts.data(),
             A.send_comm.ptr.data(), 
@@ -155,60 +141,23 @@ void test_matrix(const char* filename)
             xinfo,
             &neighbor_request);
 
+    neighbor_request->reorder = 1;
     MPIX_Start(neighbor_request);
     MPIX_Wait(neighbor_request, &status);
-    MPIX_Request_free(&neighbor_request);
 
-    // 3. Compare std_recv_vals and nap_recv_vals
     for (int i = 0; i < A.recv_comm.size_msgs; i++)
     {
         ASSERT_EQ(std_recv_vals[i], new_recv_vals[i]);
     }
 
-    // 3. MPI Advance - Optimized Communication
-    MPIX_Neighbor_part_locality_alltoallv_init(alltoallv_send_vals.data(), 
-            A.send_comm.counts.data(),
-            A.send_comm.ptr.data(), 
-            MPI_INT,
-            part_locality_recv_vals.data(), 
-            A.recv_comm.counts.data(),
-            A.recv_comm.ptr.data(), 
-            MPI_INT,
-            neighbor_comm, 
-            xinfo,
-            &neighbor_request);
-
+    // Standard send/recv with reordered recvs
     MPIX_Start(neighbor_request);
     MPIX_Wait(neighbor_request, &status);
     MPIX_Request_free(&neighbor_request);
 
     for (int i = 0; i < A.recv_comm.size_msgs; i++)
     {
-        ASSERT_EQ(std_recv_vals[i], part_locality_recv_vals[i]);
-    }
-
-    MPIX_Neighbor_locality_alltoallv_init(alltoallv_send_vals.data(), 
-            A.send_comm.counts.data(),
-            A.send_comm.ptr.data(), 
-            send_indices.data(),
-            MPI_INT,
-            locality_recv_vals.data(), 
-            A.recv_comm.counts.data(),
-            A.recv_comm.ptr.data(), 
-            A.off_proc_columns.data(),
-            MPI_INT,
-            neighbor_comm, 
-            xinfo,
-            &neighbor_request);
-
-    MPIX_Start(neighbor_request);
-    MPIX_Wait(neighbor_request, &status);
-    MPIX_Request_free(&neighbor_request);
-
-    // 3. Compare std_recv_vals and nap_recv_vals
-    for (int i = 0; i < A.recv_comm.size_msgs; i++)
-    {
-        ASSERT_EQ(std_recv_vals[i], locality_recv_vals[i]);
+        ASSERT_EQ(std_recv_vals[i], new_recv_vals[i]);
     }
 
     MPIX_Info_free(&xinfo);

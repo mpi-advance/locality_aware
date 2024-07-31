@@ -65,6 +65,9 @@ TEST(RandomCommTest, TestsInTests)
     MPIX_Comm* neighbor_comm;
     MPIX_Request* neighbor_request;
 
+    MPIX_Info* xinfo;
+    MPIX_Info_init(&xinfo);
+
     // Standard MPI Dist Graph Create
     MPI_Dist_graph_create_adjacent(MPI_COMM_WORLD,
             recv_data.num_msgs,
@@ -92,12 +95,11 @@ TEST(RandomCommTest, TestsInTests)
     // Update Locality : 4 PPN (for single-node tests)
     update_locality(neighbor_comm, 4);
 
-
     // Standard MPI Implementation of Alltoallv
     int* send_counts = send_data.counts.data();
-    int* recv_counts = recv_data.counts.data();
     if (send_data.counts.data() == NULL)
         send_counts = new int[1];
+    int* recv_counts = recv_data.counts.data();
     if (recv_data.counts.data() == NULL)
         recv_counts = new int[1];
     MPI_Neighbor_alltoallv(alltoallv_send_vals.data(), 
@@ -114,7 +116,6 @@ TEST(RandomCommTest, TestsInTests)
     if (recv_data.counts.data() == NULL)
         delete[] recv_counts;
 
-
     // Simple Persistent MPI Advance Implementation
     MPIX_Neighbor_alltoallv_init(alltoallv_send_vals.data(), 
             send_data.counts.data(),
@@ -124,16 +125,15 @@ TEST(RandomCommTest, TestsInTests)
             recv_data.counts.data(),
             recv_data.indptr.data(), 
             MPI_INT,
-            std_comm, 
-            MPI_INFO_NULL,
+            neighbor_comm, 
+            xinfo,
             &neighbor_request);
     MPIX_Start(neighbor_request);
     MPIX_Wait(neighbor_request, &status);
-    MPIX_Request_free(neighbor_request);
+    MPIX_Request_free(&neighbor_request);
     for (int i = 0; i < recv_data.size_msgs; i++)
     {
         ASSERT_EQ(std_recv_vals[i], persistent_recv_vals[i]);
-
     }
 
     // Locality-Aware MPI Advance Implementation
@@ -148,17 +148,16 @@ TEST(RandomCommTest, TestsInTests)
             global_recv_idx.data(),
             MPI_INT,
             neighbor_comm, 
-            MPI_INFO_NULL,
+            xinfo,
             &neighbor_request);
     MPIX_Start(neighbor_request);
     MPIX_Wait(neighbor_request, &status);
-    MPIX_Request_free(neighbor_request);
+    MPIX_Request_free(&neighbor_request);
     for (int i = 0; i < recv_data.size_msgs; i++)
     {
         ASSERT_EQ(std_recv_vals[i], loc_recv_vals[i]);
     }
 
-/*
     // Partial Locality-Aware MPI Advance Implementation
     MPIX_Neighbor_part_locality_alltoallv_init(alltoallv_send_vals.data(), 
             send_data.counts.data(),
@@ -169,18 +168,18 @@ TEST(RandomCommTest, TestsInTests)
             recv_data.indptr.data(), 
             MPI_INT,
             neighbor_comm, 
-            MPI_INFO_NULL,
+            xinfo,
             &neighbor_request);
     MPIX_Start(neighbor_request);
     MPIX_Wait(neighbor_request, &status);
-    MPIX_Request_free(neighbor_request);
+    MPIX_Request_free(&neighbor_request);
 
     for (int i = 0; i < recv_data.size_msgs; i++)
     {
         ASSERT_EQ(std_recv_vals[i], part_recv_vals[i]);
     }
-*/
 
+    MPIX_Info_free(&xinfo);
     MPIX_Comm_free(&neighbor_comm);
     MPI_Comm_free(&std_comm);
 

@@ -8,6 +8,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "utils/utils.h"
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -31,6 +33,12 @@ typedef struct _MPIX_Comm
 
     MPI_Request* requests;
     int n_requests;
+
+#ifdef GPU
+   int gpus_per_node;
+   int rank_gpu;
+   gpuStream_t proc_stream;
+#endif
 } MPIX_Comm;
 
 int MPIX_Comm_init(MPIX_Comm** xcomm_ptr, MPI_Comm global_comm);
@@ -41,6 +49,9 @@ int MPIX_Comm_topo_free(MPIX_Comm* xcomm);
 
 int MPIX_Comm_win_init(MPIX_Comm* xcomm, int bytes, int type_bytes);
 int MPIX_Comm_win_free(MPIX_Comm* xcomm);
+
+int MPIX_Comm_device_init(MPIX_Comm* xcomm);
+int MPIX_Comm_device_free(MPIX_Comm* xcomm);
 
 int MPIX_Comm_req_resize(MPIX_Comm* xcomm, int n);
 

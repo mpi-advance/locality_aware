@@ -1,4 +1,5 @@
 #include "neighbor.h"
+#include "neighbor_persistent.h"
 #include "persistent/persistent.h"
 #include <vector>
 #include <algorithm>
@@ -166,6 +167,7 @@ void init_locality(const int n_sends,
 
     // Copy to pointer for return
     request->locality = locality_comm;
+    request->tag = locality_comm->global_comm->tag;
 }
 
 // Destroy NAPComm* structure

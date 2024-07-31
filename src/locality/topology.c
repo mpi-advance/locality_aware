@@ -20,11 +20,14 @@ int MPIX_Comm_init(MPIX_Comm** xcomm_ptr, MPI_Comm global_comm)
 
     xcomm->requests = NULL;
     xcomm->n_requests = 0;
-    
+
+    xcomm->gpus_per_node = 0;
+
     *xcomm_ptr = xcomm;
 
     return MPI_SUCCESS;
 }
+
 
 int MPIX_Comm_topo_init(MPIX_Comm* xcomm)
 {
@@ -49,6 +52,25 @@ int MPIX_Comm_topo_init(MPIX_Comm* xcomm)
             local_rank,
             rank,
             &(xcomm->group_comm));
+
+    return MPI_SUCCESS;
+}
+
+int MPIX_Comm_device_init(MPIX_Comm* xcomm)
+{
+#ifdef GPU
+    if (xcomm->local_comm == MPI_COMM_NULL)
+        MPIX_Comm_topo_init(xcomm);
+
+    int local_rank;
+    MPI_Comm_rank(xcomm->local_comm, &local_rank);
+    gpuGetDeviceCount(&(xcomm->gpus_per_node));
+    if (xcomm->gpus_per_node)
+    {
+        xcomm->rank_gpu = local_rank;
+        gpuStreamCreate(&(xcomm->proc_stream));
+    }
+#endif
 
     return MPI_SUCCESS;
 }
@@ -92,6 +114,7 @@ int MPIX_Comm_free(MPIX_Comm** xcomm_ptr)
 
     MPIX_Comm_topo_free(xcomm);
     MPIX_Comm_win_free(xcomm);
+    MPIX_Comm_device_free(xcomm);
 
     free(xcomm);
 
@@ -124,6 +147,15 @@ int MPIX_Comm_win_free(MPIX_Comm* xcomm)
     return MPI_SUCCESS;
 }
 
+int MPIX_Comm_device_free(MPIX_Comm* xcomm)
+{
+#ifdef GPU
+    if (xcomm->gpus_per_node)
+        gpuStreamDestroy(xcomm->proc_stream);
+#endif
+
+    return MPI_SUCCESS;
+}
 
 
 

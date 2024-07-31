@@ -1,79 +1,20 @@
-#ifndef MPI_ADVANCE_ALLTOALLV_H
-#define MPI_ADVANCE_ALLTOALLV_H
+#ifndef MPI_ADVANCE_GPU_ALLTOALLV_H
+#define MPI_ADVANCE_GPU_ALLTOALLV_H
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <mpi.h>
-#include "collective.h"
-#include "locality/topology.h"
+#include "collective/alltoallv.h"
+#include "collective/collective.h"
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif
 
-// Helper Functions
-int alltoallv_pairwise(const void* sendbuf,
-        const int sendcounts[],
-        const int sdispls[],
-        MPI_Datatype sendtype,
-        void* recvbuf,
-        const int recvcounts[],
-        const int rdispls[],
-        MPI_Datatype recvtype,
-        MPI_Comm comm);
-int alltoallv_pairwise_log2(const void* sendbuf,
-        const int sendcounts[],
-        const int sdispls[],
-        MPI_Datatype sendtype,
-        void* recvbuf,
-        const int recvcounts[],
-        const int rdispls[],
-        MPI_Datatype recvtype,
-        MPI_Comm comm);
-int alltoallv_nonblocking(const void* sendbuf,
-        const int sendcounts[],
-        const int sdispls[],
-        MPI_Datatype sendtype,
-        void* recvbuf,
-        const int recvcounts[],
-        const int rdispls[],
-        MPI_Datatype recvtype,
-        MPI_Comm comm);
-int alltoallv_pairwise_nonblocking(const void* sendbuf,
-        const int sendcounts[],
-        const int sdispls[],
-        MPI_Datatype sendtype,
-        void* recvbuf,
-        const int recvcounts[],
-        const int rdispls[],
-        MPI_Datatype recvtype,
-        MPI_Comm comm);
-int alltoallv_waitany(const void* sendbuf,
-        const int sendcounts[],
-        const int sdispls[],
-        MPI_Datatype sendtype,
-        void* recvbuf,
-        const int recvcounts[],
-        const int rdispls[],
-        MPI_Datatype recvtype,
-        MPI_Comm comm);
-int alltoallv_pairwise_nonblocking_log2(const void* sendbuf,
-        const int sendcounts[],
-        const int sdispls[],
-        MPI_Datatype sendtype,
-        void* recvbuf,
-        const int recvcounts[],
-        const int rdispls[],
-        MPI_Datatype recvtype,
-        MPI_Comm comm);
+typedef int (*alltoallv_ftn)(const void*, const int*, const int*, MPI_Datatype, 
+void*, const int*, const int*, MPI_Datatype, MPI_Comm);
 
 
-
-
-
-
-int alltoallv_pairwise_loc(const void* sendbuf,
+int gpu_aware_alltoallv(alltoallv_ftn f,
+        const void* sendbuf,
         const int sendcounts[],
         const int sdispls[],
         MPI_Datatype sendtype,
@@ -82,7 +23,52 @@ int alltoallv_pairwise_loc(const void* sendbuf,
         const int rdispls[],
         MPI_Datatype recvtype,
         MPIX_Comm* comm);
-
+int copy_to_cpu_alltoallv(alltoallv_ftn f,
+        const void* sendbuf,
+        const int sendcounts[],
+        const int sdispls[],
+        MPI_Datatype sendtype,
+        void* recvbuf,
+        const int recvcounts[],
+        const int rdispls[],
+        MPI_Datatype recvtype,
+        MPIX_Comm* comm);
+int gpu_aware_alltoallv_pairwise(const void* sendbuf, 
+        const int sendcounts[],
+        const int sdispls[],
+        MPI_Datatype sendtype,
+        void* recvbuf,
+        const int recvcounts[],
+        const int rdispls[],
+        MPI_Datatype recvtype,
+        MPIX_Comm* comm);
+int gpu_aware_alltoallv_nonblocking(const void* sendbuf, 
+        const int sendcounts[],
+        const int sdispls[],
+        MPI_Datatype sendtype,
+        void* recvbuf,
+        const int recvcounts[],
+        const int rdispls[],
+        MPI_Datatype recvtype,
+        MPIX_Comm* comm);
+int copy_to_cpu_alltoallv_pairwise(const void* sendbuf, 
+        const int sendcounts[],
+        const int sdispls[],
+        MPI_Datatype sendtype,
+        void* recvbuf,
+        const int recvcounts[],
+        const int rdispls[],
+        MPI_Datatype recvtype,
+        MPIX_Comm* comm);
+int copy_to_cpu_alltoallv_nonblocking(const void* sendbuf, 
+        const int sendcounts[],
+        const int sdispls[],
+        MPI_Datatype sendtype,
+        void* recvbuf,
+        const int recvcounts[],
+        const int rdispls[],
+        MPI_Datatype recvtype,
+        MPIX_Comm* comm);
 
 #ifdef __cplusplus
 }

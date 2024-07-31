@@ -4,7 +4,7 @@
 #include "mpi.h"
 #include "locality/locality_comm.h"
 #include "locality/topology.h"
-#include "utils.h"
+#include "utils/utils.h"
 
 // Declarations of C++ methods
 #ifdef __cplusplus

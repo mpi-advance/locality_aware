@@ -18,7 +18,6 @@
 
 #include "tests/sparse_mat.hpp"
 #include "tests/par_binary_IO.hpp"
-#include "tests/compare.hpp"
 
 void test_matrix(const char* filename)
 {
@@ -49,62 +48,60 @@ void test_matrix(const char* filename)
     std::vector<int> src(A.send_comm.n_msgs+1);
     std::vector<int> recvvals(A.send_comm.n_msgs+1);
 
-
-
-    // RMA Alltoall_CRS
+    /* TEST RMA VERSION */
     n_recvs = -1;
     std::fill(src.begin(), src.end(), 0);
     std::fill(recvvals.begin(), recvvals.end(), 0);
-    alltoall_crs_rma(A.recv_comm.n_msgs, A.recv_comm.procs.data(), 
-            1, MPI_INT, A.recv_comm.counts.data(), &n_recvs, 
-            src.data(), 1, MPI_INT, recvvals.data(), xinfo, xcomm);
-    compare(n_recvs, A.send_comm.n_msgs, src, recvvals, proc_counts);
+    alltoall_crs_rma(A.recv_comm.n_msgs, A.recv_comm.procs.data(), 1, MPI_INT, 
+            A.recv_comm.counts.data(), &n_recvs, src.data(), 1, MPI_INT,
+            recvvals.data(), xinfo, xcomm);
+    ASSERT_EQ(n_recvs, A.send_comm.n_msgs);
+    for (int i = 0; i < n_recvs; i++)
+        ASSERT_EQ(recvvals[i], proc_counts[src[i]]);
 
-
-
-    // Personalized
+    /* TEST PERSONALIZED VERSION */
     n_recvs = -1;
     std::fill(src.begin(), src.end(), 0);
     std::fill(recvvals.begin(), recvvals.end(), 0);
-    alltoall_crs_personalized(A.recv_comm.n_msgs, A.recv_comm.procs.data(), 
-            1, MPI_INT, A.recv_comm.counts.data(), &n_recvs, src.data(), 
-            1, MPI_INT, recvvals.data(), xinfo, xcomm);
-    compare(n_recvs, A.send_comm.n_msgs, src, recvvals, proc_counts);
+    alltoall_crs_personalized(A.recv_comm.n_msgs, A.recv_comm.procs.data(), 1, MPI_INT,
+            A.recv_comm.counts.data(), &n_recvs, src.data(), 1, MPI_INT,
+            recvvals.data(), xinfo, xcomm);
+    ASSERT_EQ(n_recvs, A.send_comm.n_msgs);
+    for (int i = 0; i < n_recvs; i++)
+        ASSERT_EQ(recvvals[i], proc_counts[src[i]]);
 
-
-
-    // Locality-Aware Personalized
+    /* TEST PERSONALIZED LOCALITY VERSION */
     n_recvs = -1;
     std::fill(src.begin(), src.end(), 0);
     std::fill(recvvals.begin(), recvvals.end(), 0);
-    alltoall_crs_personalized_loc(A.recv_comm.n_msgs, A.recv_comm.procs.data(), 
-            1, MPI_INT, A.recv_comm.counts.data(), &n_recvs, src.data(), 
-            1, MPI_INT, recvvals.data(), xinfo, xcomm);
-    compare(n_recvs, A.send_comm.n_msgs, src, recvvals, proc_counts);
+    alltoall_crs_personalized_loc(A.recv_comm.n_msgs, A.recv_comm.procs.data(), 1, MPI_INT,
+            A.recv_comm.counts.data(), &n_recvs, src.data(), 1, MPI_INT,
+            recvvals.data(), xinfo, xcomm);
+    ASSERT_EQ(n_recvs, A.send_comm.n_msgs);
+    for (int i = 0; i < n_recvs; i++)
+        ASSERT_EQ(recvvals[i], proc_counts[src[i]]);
 
-
-
-    // Nonblocking
+    /* TEST NONBLOCKING VERSION */
     n_recvs = -1;
     std::fill(src.begin(), src.end(), 0);
     std::fill(recvvals.begin(), recvvals.end(), 0);
-    alltoall_crs_nonblocking(A.recv_comm.n_msgs, A.recv_comm.procs.data(), 
-            1, MPI_INT, A.recv_comm.counts.data(), &n_recvs, src.data(), 
-            1, MPI_INT, recvvals.data(), xinfo, xcomm);
-    compare(n_recvs, A.send_comm.n_msgs, src, recvvals, proc_counts);
+    alltoall_crs_nonblocking(A.recv_comm.n_msgs, A.recv_comm.procs.data(), 1, MPI_INT,
+            A.recv_comm.counts.data(), &n_recvs, src.data(), 1, MPI_INT,
+            recvvals.data(), xinfo, xcomm);
+    ASSERT_EQ(n_recvs, A.send_comm.n_msgs);
+    for (int i = 0; i < n_recvs; i++)
+        ASSERT_EQ(recvvals[i], proc_counts[src[i]]);
 
-
-
-    // Locality-aware Nonblocking
+    /* TEST NONBLOCKING LOCALITY VERSION */
     n_recvs = -1;
     std::fill(src.begin(), src.end(), 0);
     std::fill(recvvals.begin(), recvvals.end(), 0);
-    alltoall_crs_nonblocking_loc(A.recv_comm.n_msgs, A.recv_comm.procs.data(), 
-            1, MPI_INT, A.recv_comm.counts.data(), &n_recvs, src.data(), 
-            1, MPI_INT, recvvals.data(), xinfo, xcomm);
-    compare(n_recvs, A.send_comm.n_msgs, src, recvvals, proc_counts);
-
-
+    alltoall_crs_nonblocking_loc(A.recv_comm.n_msgs, A.recv_comm.procs.data(), 1, MPI_INT,
+            A.recv_comm.counts.data(), &n_recvs, src.data(), 1, MPI_INT,
+            recvvals.data(), xinfo, xcomm);
+    ASSERT_EQ(n_recvs, A.send_comm.n_msgs);
+    for (int i = 0; i < n_recvs; i++)
+        ASSERT_EQ(recvvals[i], proc_counts[src[i]]);
 
     MPIX_Info_free(&xinfo);
     MPIX_Comm_free(&xcomm);

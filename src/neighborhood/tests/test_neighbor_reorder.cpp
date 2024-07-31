@@ -17,7 +17,6 @@
 
 #include "neighbor_data.hpp"
 
-
 int main(int argc, char** argv)
 {
     MPI_Init(&argc, &argv);
@@ -37,18 +36,19 @@ TEST(RandomCommTest, TestsInTests)
 
     // Initial communication info (standard)
     int local_size = 10000; // Number of variables each rank stores
-    MPIX_Data<MPI_Aint> send_data;
-    MPIX_Data<MPI_Aint> recv_data;
+    MPIX_Data<int> send_data;
+    MPIX_Data<int> recv_data;
     form_initial_communicator(local_size, &send_data, &recv_data);
-    int int_size = sizeof(int);
-    for (int i = 0; i < send_data.num_msgs; i++)
-        send_data.indptr[i+1] *= int_size;
-    for (int i = 0; i < recv_data.num_msgs; i++)
-        recv_data.indptr[i+1] *= int_size;
+    std::vector<long> global_send_idx(send_data.size_msgs);
+    std::vector<long> global_recv_idx(recv_data.size_msgs);
+    form_global_indices(local_size, send_data, recv_data, global_send_idx, global_recv_idx);
 
     // Test correctness of communication
     std::vector<int> std_recv_vals(recv_data.size_msgs);
-    std::vector<int> new_recv_vals(recv_data.size_msgs);
+    std::vector<int> persistent_recv_vals(recv_data.size_msgs);
+    std::vector<int> part_recv_vals(recv_data.size_msgs);
+    std::vector<int> loc_recv_vals(recv_data.size_msgs);
+
     std::vector<int> send_vals(local_size);
     int val = local_size*rank;
     for (int i = 0; i < local_size; i++)
@@ -64,14 +64,13 @@ TEST(RandomCommTest, TestsInTests)
     MPI_Status status;
     MPIX_Comm* neighbor_comm;
     MPIX_Request* neighbor_request;
-    MPIX_Info* xinfo;
-    std::vector<MPI_Datatype> sendtypes(num_procs, MPI_INT);
-    std::vector<MPI_Datatype> recvtypes(num_procs, MPI_INT);
 
+    MPIX_Info* xinfo;
     MPIX_Info_init(&xinfo);
 
+    // Standard MPI Dist Graph Create
     MPI_Dist_graph_create_adjacent(MPI_COMM_WORLD,
-            recv_data.num_msgs, 
+            recv_data.num_msgs,
             recv_data.procs.data(), 
             recv_data.counts.data(),
             send_data.num_msgs, 
@@ -81,31 +80,7 @@ TEST(RandomCommTest, TestsInTests)
             0, 
             &std_comm);
 
-
-    int* send_counts = send_data.counts.data();
-    if (send_data.counts.data() == NULL)
-        send_counts = new int[1];
-    int* recv_counts = recv_data.counts.data();
-    if (recv_data.counts.data() == NULL)
-        recv_counts = new int[1];
-
-    MPI_Neighbor_alltoallw(alltoallv_send_vals.data(), 
-            send_counts,
-            send_data.indptr.data(), 
-            sendtypes.data(),
-            std_recv_vals.data(), 
-            recv_counts,
-            recv_data.indptr.data(), 
-            recvtypes.data(),
-            std_comm);
-
-    if (send_data.counts.data() == NULL)
-        delete[] send_counts;
-    if (recv_data.counts.data() == NULL)
-        delete[] recv_counts;
-
-
-    // 2. Node-Aware Communication
+    // MPI Advance Dist Graph Create
     MPIX_Dist_graph_create_adjacent(MPI_COMM_WORLD,
             recv_data.num_msgs, 
             recv_data.procs.data(), 
@@ -116,30 +91,65 @@ TEST(RandomCommTest, TestsInTests)
             MPI_INFO_NULL, 
             0, 
             &neighbor_comm);
+
+    // Update Locality : 4 PPN (for single-node tests)
     update_locality(neighbor_comm, 4);
-    MPIX_Neighbor_alltoallw_init(alltoallv_send_vals.data(), 
+
+
+    // Standard MPI Implementation of Alltoallv
+    int* send_counts = send_data.counts.data();
+    if (send_data.counts.data() == NULL)
+        send_counts = new int[1];
+    int* recv_counts = recv_data.counts.data();
+    if (recv_data.counts.data() == NULL)
+        recv_counts = new int[1];
+    MPI_Neighbor_alltoallv(alltoallv_send_vals.data(), 
+            send_counts,
+            send_data.indptr.data(), 
+            MPI_INT,
+            std_recv_vals.data(), 
+            recv_counts,
+            recv_data.indptr.data(), 
+            MPI_INT,
+            std_comm);
+    if (send_data.counts.data() == NULL)
+        delete[] send_counts;
+    if (recv_data.counts.data() == NULL)
+        delete[] recv_counts;
+
+
+    // Simple Persistent MPI Advance Implementation
+    MPIX_Neighbor_alltoallv_init(alltoallv_send_vals.data(), 
             send_data.counts.data(),
             send_data.indptr.data(), 
-            sendtypes.data(),
-            new_recv_vals.data(), 
+            MPI_INT,
+            persistent_recv_vals.data(), 
             recv_data.counts.data(),
             recv_data.indptr.data(), 
-            recvtypes.data(),
+            MPI_INT,
             neighbor_comm, 
             xinfo,
             &neighbor_request);
 
+    // Reorder during first send/recv
+    neighbor_request->reorder = 1;
     MPIX_Start(neighbor_request);
     MPIX_Wait(neighbor_request, &status);
-
-    // 3. Compare std_recv_vals and nap_recv_vals
     for (int i = 0; i < recv_data.size_msgs; i++)
     {
-        ASSERT_EQ(std_recv_vals[i], new_recv_vals[i]);
+        ASSERT_EQ(std_recv_vals[i], persistent_recv_vals[i]);
     }
 
-    MPIX_Info_free(&xinfo);
+    // Standard send/recv with reordered recvs
+    MPIX_Start(neighbor_request);
+    MPIX_Wait(neighbor_request, &status);
+    for (int i = 0; i < recv_data.size_msgs; i++)
+    {
+        ASSERT_EQ(std_recv_vals[i], persistent_recv_vals[i]);
+    }
     MPIX_Request_free(&neighbor_request);
+
+    MPIX_Info_free(&xinfo);
     MPIX_Comm_free(&neighbor_comm);
     MPI_Comm_free(&std_comm);
 
