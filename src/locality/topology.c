@@ -21,7 +21,9 @@ int MPIX_Comm_init(MPIX_Comm** xcomm_ptr, MPI_Comm global_comm)
     xcomm->requests = NULL;
     xcomm->n_requests = 0;
 
+#ifdef GPU
     xcomm->gpus_per_node = 0;
+#endif
 
     *xcomm_ptr = xcomm;
 
@@ -62,13 +64,15 @@ int MPIX_Comm_device_init(MPIX_Comm* xcomm)
     if (xcomm->local_comm == MPI_COMM_NULL)
         MPIX_Comm_topo_init(xcomm);
 
-    int local_rank;
+    int local_rank, ierr;
     MPI_Comm_rank(xcomm->local_comm, &local_rank);
-    gpuGetDeviceCount(&(xcomm->gpus_per_node));
+    ierr = gpuGetDeviceCount(&(xcomm->gpus_per_node));
+    gpu_check(ierr);
     if (xcomm->gpus_per_node)
     {
         xcomm->rank_gpu = local_rank;
-        gpuStreamCreate(&(xcomm->proc_stream));
+        ierr = gpuStreamCreate(&(xcomm->proc_stream));
+        gpu_check(ierr);
     }
 #endif
 
@@ -150,8 +154,10 @@ int MPIX_Comm_win_free(MPIX_Comm* xcomm)
 int MPIX_Comm_device_free(MPIX_Comm* xcomm)
 {
 #ifdef GPU
+    int ierr = gpuSuccess;
     if (xcomm->gpus_per_node)
-        gpuStreamDestroy(xcomm->proc_stream);
+        ierr = gpuStreamDestroy(xcomm->proc_stream);
+    gpu_check(ierr);
 #endif
 
     return MPI_SUCCESS;

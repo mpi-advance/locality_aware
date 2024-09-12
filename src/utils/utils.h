@@ -37,8 +37,11 @@ int MPIX_Info_tag(MPIX_Info* info, int* tag);
             int size_x, int size_y, int size_z);
     void get_mem_types(const void* sendbuf, const void* recvbuf, 
             gpuMemoryType* send_type, gpuMemoryType* recv_type);
+    void get_memcpy_kind(gpuMemoryType send_type, gpuMemoryType recv_type, 
+            gpuMemcpyKind* memcpy_kind);
     void gpu_repack(int size_i, int size_j, int size_k, char* sendbuf, 
             char* recvbuf);
+    void gpu_check(int ierr);
 #endif
 
 

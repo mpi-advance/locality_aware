@@ -33,7 +33,7 @@ int alltoall_crs_personalized_loc(int send_nnz, int* dest, int sendcount,
 
     MPI_Status recv_status;
     int proc, ctr, start, end;
-    int first, last, count, n_msgs, n_sends, n_recvs, idx, new_idx;
+    int count, n_msgs, n_sends, n_recvs, idx, new_idx;
     int tag;
     MPIX_Info_tag(xinfo, &tag);
 
@@ -255,7 +255,7 @@ int alltoall_crs_nonblocking_loc(int send_nnz, int* dest, int sendcount,
     MPI_Status recv_status;
     MPI_Request bar_req;
     int proc, ctr, flag, ibar, start, end;
-    int first, last, count, n_msgs, n_sends, n_recvs, idx, new_idx;
+    int count, n_msgs, n_sends, n_recvs, idx, new_idx;
     int tag;
     MPIX_Info_tag(xinfo, &tag);
 
@@ -496,10 +496,8 @@ int alltoallv_crs_personalized_loc(int send_nnz, int send_size, int* dest, int* 
 
     std::vector<char> node_send_buffer(send_size*send_bytes + 2*send_nnz*int_bytes);
     std::vector<int> sizes(PPN, 0);
-    int proc, count, ctr, flag, start, end;
-    int ibar = 0;
+    int proc, count, ctr, start, end;
     MPI_Status recv_status;
-    MPI_Request bar_req;
 
     int group_procs, group_rank;;
     MPI_Comm_size(comm->group_comm, &group_procs);

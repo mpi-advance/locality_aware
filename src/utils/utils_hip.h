@@ -5,14 +5,15 @@
 #define __HIP_PLATFORM_AMD__ 1
 #endif
 
-#include "hip/hip_runtime_api.h"
+//#include "hip/hip_runtime_api.h"
+#include "hip/hip_runtime.h"
 
 // Devices
 #define gpuGetDeviceCount hipGetDeviceCount
 #define gpuSetDevice hipSetDevice
 
 // Data allocation
-#define gpuMallocHost hipMallocHost
+#define gpuMallocHost hipHostMalloc
 #define gpuMalloc hipMalloc
 #define gpuFree hipFree
 #define gpuFreeHost hipHostFree
@@ -29,6 +30,7 @@
 #define gpuMemcpyDeviceToHost hipMemcpyDeviceToHost
 #define gpuMemcpyHostToDevice hipMemcpyHostToDevice
 #define gpuMemcpyDeviceToDevice hipMemcpyDeviceToDevice
+#define gpuMemcpyHostToHost hipMemcpyHostToHost
 
 // Streams
 #define gpuStream_t hipStream_t

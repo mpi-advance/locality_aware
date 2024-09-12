@@ -19,8 +19,10 @@ void init_request(MPIX_Request** request_ptr)
     request->recv_size = 0;
     request->block_size = 1;
 
+#ifdef GPU
     request->cpu_sendbuf = NULL;
     request->cpu_recvbuf = NULL;
+#endif
     
     *request_ptr = request;
 }
@@ -99,10 +101,17 @@ int MPIX_Request_free(MPIX_Request** request_ptr)
 
 // TODO : for safety, may want to check if allocated with malloc?
 #ifdef GPU // Assuming cpu buffers allocated in pinned memory
+    int ierr;
     if (request->cpu_sendbuf)
-        gpuFreeHost(request->cpu_sendbuf);
+    {
+        ierr = gpuFreeHost(request->cpu_sendbuf);
+        gpu_check(ierr);
+    }
     if (request->cpu_recvbuf)
-        gpuFreeHost(request->cpu_recvbuf);
+    {
+        ierr = gpuFreeHost(request->cpu_recvbuf);
+        gpu_check(ierr);
+    }
 #endif
 
     free(request);

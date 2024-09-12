@@ -52,8 +52,7 @@ int alltoall_crs_rma(int send_nnz, int* dest, int sendcount,
     MPI_Comm_rank(comm->global_comm, &rank);
     MPI_Comm_size(comm->global_comm, &num_procs);
 
-    int start, end, proc, count, ctr, flag;
-    MPI_Status recv_status;
+    int ctr, flag;
 
     // Get bytes per datatype, total bytes to be recvd (size of win_array)
     char* send_buffer;

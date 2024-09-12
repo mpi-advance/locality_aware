@@ -10,7 +10,8 @@ int neighbor_start(MPIX_Request* request)
     if (request == NULL)
         return 0;
 
-    int ierr, idx;
+    int ierr = 0;
+    int idx;
 
     char* send_buffer = NULL;
     int recv_size = 0;
@@ -29,7 +30,7 @@ int neighbor_start(MPIX_Request* request)
             for (int j = 0; j < recv_size; j++)
                 request->locality->local_L_comm->send_data->buffer[i*recv_size+j] = send_buffer[idx*recv_size+j];
         }
-        ierr = MPI_Startall(request->local_L_n_msgs, request->local_L_requests);
+        ierr += MPI_Startall(request->local_L_n_msgs, request->local_L_requests);
     }
 
 
@@ -45,8 +46,8 @@ int neighbor_start(MPIX_Request* request)
                 request->locality->local_S_comm->send_data->buffer[i*recv_size+j] = send_buffer[idx*recv_size+j];
         }
 
-        ierr = MPI_Startall(request->local_S_n_msgs, request->local_S_requests);
-        ierr = MPI_Waitall(request->local_S_n_msgs, request->local_S_requests, MPI_STATUSES_IGNORE);
+        ierr += MPI_Startall(request->local_S_n_msgs, request->local_S_requests);
+        ierr += MPI_Waitall(request->local_S_n_msgs, request->local_S_requests, MPI_STATUSES_IGNORE);
 
 
         // Copy into global->send_data->buffer
@@ -60,7 +61,7 @@ int neighbor_start(MPIX_Request* request)
 
     // Global sends buffer in locality, sendbuf in standard
     if (request->global_n_msgs)
-        ierr = MPI_Startall(request->global_n_msgs, request->global_requests);
+        ierr += MPI_Startall(request->global_n_msgs, request->global_requests);
 
     return ierr;
 }
@@ -76,7 +77,8 @@ int neighbor_wait(MPIX_Request* request, MPI_Status* status)
     if (request == NULL)
         return 0;
 
-    int ierr, idx;
+    int ierr = 0;
+    int idx;
 
     char* recv_buffer = NULL;
     int recv_size = 0;
@@ -90,7 +92,7 @@ int neighbor_wait(MPIX_Request* request, MPI_Status* status)
     // Global waits for recvs
     if (request->global_n_msgs)
     {
-        ierr = MPI_Waitall(request->global_n_msgs, request->global_requests, MPI_STATUSES_IGNORE);
+        ierr += MPI_Waitall(request->global_n_msgs, request->global_requests, MPI_STATUSES_IGNORE);
 
         if (request->local_R_n_msgs)
         {
@@ -106,8 +108,8 @@ int neighbor_wait(MPIX_Request* request, MPI_Status* status)
     // Wait for local_R recvs
     if (request->local_R_n_msgs)
     {
-        ierr = MPI_Startall(request->local_R_n_msgs, request->local_R_requests);
-        ierr = MPI_Waitall(request->local_R_n_msgs, request->local_R_requests, MPI_STATUSES_IGNORE);
+        ierr += MPI_Startall(request->local_R_n_msgs, request->local_R_requests);
+        ierr += MPI_Waitall(request->local_R_n_msgs, request->local_R_requests, MPI_STATUSES_IGNORE);
 
         for (int i = 0; i < request->locality->local_R_comm->recv_data->size_msgs; i++)
         {
@@ -120,7 +122,7 @@ int neighbor_wait(MPIX_Request* request, MPI_Status* status)
     // Wait for local_L recvs
     if (request->local_L_n_msgs)
     {
-        ierr = MPI_Waitall(request->local_L_n_msgs, request->local_L_requests, MPI_STATUSES_IGNORE);
+        ierr += MPI_Waitall(request->local_L_n_msgs, request->local_L_requests, MPI_STATUSES_IGNORE);
 
         for (int i = 0; i < request->locality->local_L_comm->recv_data->size_msgs; i++)
         {
@@ -159,7 +161,8 @@ int init_communication(const void* sendbuffer,
         int* n_request_ptr,
         MPI_Request** request_ptr)
 {
-    int ierr, start, size;
+    int ierr = 0;
+    int start, size;
     int send_size, recv_size;
 
     char* send_buffer = (char*) sendbuffer;
@@ -234,10 +237,11 @@ int MPIX_Neighbor_alltoallv_init(
             &outdegree, 
             &weighted);
 
-    int sources[indegree];
-    int sourceweights[indegree];
-    int destinations[outdegree];
-    int destweights[outdegree];
+    int* sources = (int*)malloc(indegree*sizeof(int));
+    int* sourceweights = (int*)malloc(indegree*sizeof(int));
+    int* destinations = (int*)malloc(outdegree*sizeof(int));
+    int* destweights = (int*)malloc(outdegree*sizeof(int));
+
     ierr += MPI_Dist_graph_neighbors(
             comm->neighbor_comm, 
             indegree, 
@@ -278,6 +282,11 @@ int MPIX_Neighbor_alltoallv_init(
                 &(request->global_requests[indegree+i]));
     }
 
+    free(sources);
+    free(sourceweights);
+    free(destinations);
+    free(destweights);
+
     *request_ptr = request;
 
     return ierr;
@@ -309,10 +318,10 @@ int MPIX_Neighbor_alltoallw_init(
             &outdegree, 
             &weighted);
 
-    int sources[indegree];
-    int sourceweights[indegree];
-    int destinations[outdegree];
-    int destweights[outdegree];
+    int* sources = (int*)malloc(indegree*sizeof(int));
+    int* sourceweights = (int*)malloc(indegree*sizeof(int));
+    int* destinations = (int*)malloc(outdegree*sizeof(int));
+    int* destweights = (int*)malloc(outdegree*sizeof(int));
     ierr += MPI_Dist_graph_neighbors(
             comm->neighbor_comm, 
             indegree, 
@@ -353,6 +362,11 @@ int MPIX_Neighbor_alltoallw_init(
                 &(request->global_requests[i]));
 
     }
+
+    free(sources);
+    free(sourceweights);
+    free(destinations);
+    free(destweights);
 
     *request_ptr = request;
 

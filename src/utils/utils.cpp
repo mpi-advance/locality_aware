@@ -2,7 +2,11 @@
 #include <algorithm>
 #include <cstring>
 #include "mpi.h"
+#include "stdio.h"
 
+#ifdef HIP
+#include "hip/hip_runtime.h"
+#endif
 
 // MPIX Info Object Routines
 int MPIX_Info_init(MPIX_Info** info_ptr)
@@ -81,6 +85,22 @@ __global__ void device_repack(char* __restrict__ sendbuf, char* __restrict__ rec
     recvbuf[(tid_y*size_x+tid_x)*size_z+tid_z] =
             sendbuf[(tid_x*size_y+tid_y)*size_z+tid_z];
 }
+
+void gpu_repack(int size_i, int size_j, int size_k, char* sendbuf, char* recvbuf)
+{
+    dim3 dimBlock(8, 8, 8);
+    int grid_x = ((size_i - 1) / 8) + 1;
+    int grid_y = ((size_j - 1) / 8) + 1;
+    int grid_z = ((size_k - 1) / 8) + 1;
+    dim3 dimGrid(grid_x, grid_y, grid_z);
+    device_repack<<<dimGrid, dimBlock>>>(sendbuf, recvbuf, size_i, size_j, size_k);
+}
+
+void gpu_check(int ierr)
+{
+    if (ierr != gpuSuccess)
+        printf("Error in Device Function!\n");
+}
 #endif
 
 // Repack Method (calls device if on GPU)
@@ -150,5 +170,19 @@ void get_mem_types(const void* sendbuf, const void* recvbuf,
 
     *send_ptr = send_type;
     *recv_ptr = recv_type;
+}
+
+void get_memcpy_kind(gpuMemoryType send_type, gpuMemoryType recv_type, 
+        gpuMemcpyKind* memcpy_kind)
+{
+    if (send_type == gpuMemoryTypeDevice &&
+            recv_type == gpuMemoryTypeDevice)
+        *memcpy_kind = gpuMemcpyDeviceToDevice;
+    else if (send_type == gpuMemoryTypeDevice)
+        *memcpy_kind = gpuMemcpyDeviceToHost;
+    else if (recv_type == gpuMemoryTypeDevice)
+        *memcpy_kind = gpuMemcpyHostToDevice;
+    else
+        *memcpy_kind = gpuMemcpyHostToHost;
 }
 #endif

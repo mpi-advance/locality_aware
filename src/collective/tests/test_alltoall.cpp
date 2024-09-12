@@ -51,9 +51,9 @@ TEST(RandomCommTest, TestsInTests)
         int s = pow(2, i);
 
         // Will only be clean for up to double digit process counts
-        for (int i = 0; i < num_procs; i++)
-            for (int j = 0; j < s; j++)
-                local_data[i*s + j] = rank*10000 + i*100 + j;
+        for (int j = 0; j < num_procs; j++)
+            for (int k = 0; k < s; k++)
+                local_data[j*s + k] = rank*10000 + j*100 + k;
 
         // Standard Alltoall
         PMPI_Alltoall(local_data.data(), 

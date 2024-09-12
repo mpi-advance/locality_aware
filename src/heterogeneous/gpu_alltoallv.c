@@ -74,7 +74,8 @@ int copy_to_cpu_alltoallv(alltoallv_ftn f,
         MPI_Datatype recvtype,
         MPIX_Comm* comm)
 {
-    int ierr = 0;
+    int ierr;
+    int mpi_err = 0;
 
     int num_procs;
     MPI_Comm_size(comm->global_comm, &num_procs);
@@ -96,23 +97,27 @@ int copy_to_cpu_alltoallv(alltoallv_ftn f,
 
     char* cpu_sendbuf;
     char* cpu_recvbuf;
-    gpuMallocHost((void**)&cpu_sendbuf, total_bytes_s);
-    gpuMallocHost((void**)&cpu_recvbuf, total_bytes_r);
+    ierr = gpuMallocHost((void**)&cpu_sendbuf, total_bytes_s);
+    gpu_check(ierr);
+    ierr = gpuMallocHost((void**)&cpu_recvbuf, total_bytes_r);
+    gpu_check(ierr);
 
     // Copy from GPU to CPU
-    ierr += gpuMemcpy(cpu_sendbuf, sendbuf, total_bytes_s, gpuMemcpyDeviceToHost);
+    mpi_err += gpuMemcpy(cpu_sendbuf, sendbuf, total_bytes_s, gpuMemcpyDeviceToHost);
 
     // Collective Among CPUs
-    ierr += f(cpu_sendbuf, sendcounts, sdispls, sendtype, 
+    mpi_err += f(cpu_sendbuf, sendcounts, sdispls, sendtype, 
             cpu_recvbuf, recvcounts, rdispls, recvtype, comm->global_comm);
 
     // Copy from CPU to GPU
-    ierr += gpuMemcpy(recvbuf, cpu_recvbuf, total_bytes_r, gpuMemcpyHostToDevice);
+    mpi_err += gpuMemcpy(recvbuf, cpu_recvbuf, total_bytes_r, gpuMemcpyHostToDevice);
 
-    gpuFreeHost(cpu_sendbuf);
-    gpuFreeHost(cpu_recvbuf);
+    ierr = gpuFreeHost(cpu_sendbuf);
+    gpu_check(ierr);
+    ierr = gpuFreeHost(cpu_recvbuf);
+    gpu_check(ierr);
     
-    return ierr;
+    return mpi_err;
 }
 
 int copy_to_cpu_alltoallv_pairwise(const void* sendbuf, 

@@ -90,36 +90,19 @@ int alltoall_pairwise(const void* sendbuf,
 
 #ifdef GPU
     gpuMemoryType send_type, recv_type;
-    gpuPointerAttributes mem;
-    gpuPointerGetAttributes(&mem, sendbuf);
-    int ierr = gpuGetLastError();
-    if (ierr == gpuErrorInvalidValue)
-        send_type = gpuMemoryTypeHost;
-    else
-        send_type = mem.type;
-    gpuPointerGetAttributes(&mem, recvbuf);
-    ierr = gpuGetLastError();
-    if (ierr == gpuErrorInvalidValue)
-        recv_type = gpuMemoryTypeHost;
-    else
-        recv_type = mem.type;
-
-    if (send_type == gpuMemoryTypeDevice &&
+    gpuMemcpyKind memcpy_kind;
+    get_mem_types(sendbuf, recvbuf, &send_type, &recv_type);
+   
+    if (send_type == gpuMemoryTypeDevice ||
             recv_type == gpuMemoryTypeDevice)
-        gpuMemcpy(recv_buffer + (rank * recvcount * recv_size),
+    {
+        get_memcpy_kind(send_type, recv_type, &memcpy_kind);
+        int ierr = gpuMemcpy(recv_buffer + (rank * recvcount * recv_size),
                 send_buffer + (rank * sendcount * send_size),
                 sendcount * send_size,
-                gpuMemcpyDeviceToDevice);
-    else if (send_type == gpuMemoryTypeDevice)
-        gpuMemcpy(recv_buffer + (rank * recvcount * recv_size),
-                send_buffer + (rank * sendcount * send_size),
-                sendcount * send_size,
-                gpuMemcpyDeviceToHost);
-    else if (recv_type == gpuMemoryTypeDevice)
-        gpuMemcpy(recv_buffer + (rank * recvcount * recv_size),
-                send_buffer + (rank * sendcount * send_size), 
-                sendcount * send_size,
-                gpuMemcpyHostToDevice);
+                memcpy_kind);
+        gpu_check(ierr);
+    }
     else
 #endif
     memcpy(recv_buffer + (rank * recvcount * recv_size),
@@ -183,36 +166,19 @@ int alltoall_nonblocking(const void* sendbuf,
 
 #ifdef GPU
     gpuMemoryType send_type, recv_type;
-    gpuPointerAttributes mem;
-    gpuPointerGetAttributes(&mem, sendbuf);
-    int ierr = gpuGetLastError();
-    if (ierr == gpuErrorInvalidValue)
-        send_type = gpuMemoryTypeHost;
-    else
-        send_type = mem.type;
-    gpuPointerGetAttributes(&mem, recvbuf);
-    ierr = gpuGetLastError();
-    if (ierr == gpuErrorInvalidValue)
-        recv_type = gpuMemoryTypeHost;
-    else
-        recv_type = mem.type;
+    gpuMemcpyKind memcpy_kind;
+    get_mem_types(sendbuf, recvbuf, &send_type, &recv_type);
 
-    if (send_type == gpuMemoryTypeDevice &&
+    if (send_type == gpuMemoryTypeDevice ||
             recv_type == gpuMemoryTypeDevice)
-        gpuMemcpy(recv_buffer + (rank * recvcount * recv_size),
+    {
+        get_memcpy_kind(send_type, recv_type, &memcpy_kind);
+        int ierr = gpuMemcpy(recv_buffer + (rank * recvcount * recv_size),
                 send_buffer + (rank * sendcount * send_size),
                 sendcount * send_size,
-                gpuMemcpyDeviceToDevice);
-    else if (send_type == gpuMemoryTypeDevice)
-        gpuMemcpy(recv_buffer + (rank * recvcount * recv_size),
-                send_buffer + (rank * sendcount * send_size),
-                sendcount * send_size,
-                gpuMemcpyDeviceToHost);
-    else if (recv_type == gpuMemoryTypeDevice)
-        gpuMemcpy(recv_buffer + (rank * recvcount * recv_size),
-                send_buffer + (rank * sendcount * send_size),
-                sendcount * send_size,
-                gpuMemcpyHostToDevice);
+                memcpy_kind);
+        gpu_check(ierr);
+    }
     else
 #endif
     memcpy(recv_buffer + (rank * recvcount * recv_size),
