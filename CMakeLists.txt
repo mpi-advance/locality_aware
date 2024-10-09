@@ -4,22 +4,17 @@ include(FeatureSummary)
 
 enable_language(C)
 enable_language(CXX)
-set(CMAKE_C_STANDARD 99)
+#set(CMAKE_C_STANDARD 99)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
-set(CMAKE_C_FLAGS "-Wall -Wextra -Wpedantic -Wshadow")
-set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wpedantic -Wshadow")
 
 find_package(MPI REQUIRED)
 include_directories(${MPI_INCLUDE_PATH})
 
 find_package(OpenMP)
-if (OPENMP_FOUND)
-    set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
-    set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
-endif()
+
+
 
 # Options for Heterogeneous Architectures
 option(GPU_AWARE "Use GPU-Aware MPI" ON)
@@ -34,7 +29,6 @@ add_feature_info(use_hip USE_HIP "Compile with HIP Support")
 add_feature_info(use_cuda USE_CUDA "Compile with CUDA Support")
 add_feature_info(using_amd USING_AMD "Compile on machine with AMD GPUs")
 
-
 set(MPIRUN "mpirun" CACHE STRING "MPIRUN command")
 set(MPICXX "mpicxx" CACHE STRING "MPICXX command")
 set(GPURunCommand "mpirun -n4 -N2 -gpu" CACHE STRING "Command to run MPIRun with GPU-Aware MPI")
@@ -47,7 +41,18 @@ elseif (USE_HIP)
 else()
     project(mpi_advance)
 endif()
+
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
+
+set(CMAKE_C_FLAGS "-Wall -Wextra -Wpedantic -Wshadow")
+set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wpedantic -Wshadow")
+message(STATUS ${CMAKE_C_FLAGS})
+if (OPENMP_FOUND)
+    message(STATUS ${OPENMP_C_FLAGS})
+    #set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+    #set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+    #set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
+endif()
 
 
 find_package(MPI REQUIRED)
@@ -58,6 +63,7 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
 cmake_policy(SET CMP0104 OLD)
 
 if (USING_AMD)
+    set(rocm-version "6.1.2" CACHE STRING "Version of ROCM, default 6.1.2")
     if (GPU_AWARE)
         add_definitions(-DGPU_AWARE)
     endif()
@@ -65,9 +71,16 @@ if (USING_AMD)
     set(USE_CUDA OFF)
     set(USE_GPU ON)
     set(MPICH_GPU_SUPPORT_ENABLED 1)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -I/opt/rocm-${rocm-version}/include -O3 -g --offload-arch=gfx90a --rocm-path=/opt/rocm-${rocm-version} -x hip -mllvm -amdgpu-early-inline-all=true -mllvm -amdgpu-function-calls=false -fhip-new-launch-api --driver-mode=g++")
+    message(STATUS ${CMAKE_C_FLAGS})
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -I/opt/rocm-${rocm-version}/include -O3 -g -std=c++11 --offload-arch=gfx90a --rocm-path=/opt/rocm-${rocm-version} -x hip -mllvm -amdgpu-early-inline-all=true -mllvm -amdgpu-function-calls=false -fhip-new-launch-api --driver-mode=g++")
     set(CMAKE_EXE_LINKER_FLAGS "-L/opt/cray/pe/mpich/8.1.26/gtl/lib -Wl,-rpath=/opt/cray/pe/mpich/8.1.26/gtl/lib -lmpi_gtl_hsa")
+    add_definitions(-DCOMPILERID=rocm-${rocm-version})
     add_definitions(-D__HIP_PLATFORM_AMD__)
 endif(USING_AMD)
+
+set(C_FLAGS ${CMAKE_C_FLAGS})
+message(STATUS $C_FLAGS)
 
 if (USE_CUDA)
     if (GPU_AWARE)

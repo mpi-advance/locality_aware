@@ -1,0 +1,14 @@
+#!/bin/bash
+  
+#SBATCH --output=microbench.out
+#SBATCH --error=microbench.err
+#SBATCH --nodes=2
+#SBATCH --ntasks=224
+#SBATCH --cpus-per-task=1
+#SBATCH --time=01:00:00
+#SBATCH --partition=pdebug
+
+cd /g/g14/bienz1/locality_aware/build_dane/benchmarks
+
+srun -n 224 ./microbenchmarks
+

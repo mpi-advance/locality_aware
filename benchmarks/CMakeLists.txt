@@ -20,3 +20,5 @@ target_link_libraries(alltoall_crs mpi_advance ${MPI_LIBRARIES} OpenMP::OpenMP_C
 add_executable(alltoallv_crs alltoallv_crs.cpp)
 target_link_libraries(alltoallv_crs mpi_advance ${MPI_LIBRARIES} OpenMP::OpenMP_CXX)
 
+add_executable(microbenchmarks microbenchmarks.cpp)
+target_link_libraries(microbenchmarks mpi_advance ${MPI_LIBRARIES} OpenMP::OpenMP_CXX)
