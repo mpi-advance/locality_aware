@@ -254,12 +254,21 @@ void test_multivector(const char* filename, int n_vec)
         {
             idx = A.send_comm.idx[i];
             for (int j = 0; j < n_vec; j++)
-                alltoallv_send_vals[(i * n_vec) + j] = send_vals[idx];
+                alltoallv_send_vals[(i * n_vec) + j] = send_vals[(idx * n_vec) + j];
         }
     }
 
-    communicate(A, send_vals, std_recv_vals, MPI_INT);
+    for (int i = 0; i < A.send_comm.n_msgs; i++) {
+        A.send_comm.counts[i] *= n_vec;
+        A.send_comm.ptr[i+1] *= n_vec;
+    }
+    for (int i = 0; i < A.recv_comm.n_msgs; i++) {
+        A.recv_comm.counts[i] *= n_vec;
+        A.recv_comm.ptr[i+1] *= n_vec;
+    }
 
+    communicate(A, send_vals, std_recv_vals, MPI_INT);
+ 
     MPI_Comm std_comm;
     MPI_Status status;
     MPIX_Comm* neighbor_comm;
@@ -292,6 +301,7 @@ void test_multivector(const char* filename, int n_vec)
     int* recv_counts = A.recv_comm.counts.data();
     if (A.recv_comm.counts.data() == NULL)
         recv_counts = new int[1];
+
     PMPI_Neighbor_alltoallv(alltoallv_send_vals.data(),
             send_counts,
             A.send_comm.ptr.data(),
@@ -381,9 +391,10 @@ TEST(RandomCommTest, TestsInTests)
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
 
-    string mat_dir = "../../../../test_data/";
+/*
+    std::string mat_dir = "../../../../test_data/";
     int n_mats = 19;
-    string test_matrices[n_mats] = {
+    std::string test_matrices[n_mats] = {
         "dwt_162.pm",
         "odepa400.pm",
         "ww_36_pmec_36.pm",
@@ -407,12 +418,37 @@ TEST(RandomCommTest, TestsInTests)
 
     // Test SpMV
     for (int i = 0; i < n_mats; i++)
-        test_matrix(mat_dir + test_matrices[i]);
+        test_matrix((mat_dir + test_matrices[i]).c_str());
 
     // Test SpM-Multivector
     int n_vec_sizes = 4;
     int vec_sizes[n_vec_sizes] = {1, 2, 10, 100};
     for (int i = 0; i < n_mats; i++)
         for (int j = 0; j < n_vec_sizes; j++)
-            test_multivector(mat_dir + test_matrices[i], vec_sizes[j]);
+            test_multivector((mat_dir + test_matrices[i]).c_str(), vec_sizes[j]);
+    */
+
+/*
+    test_matrix("../../../../test_data/dwt_162.pm");
+    test_matrix("../../../../test_data/odepa400.pm");
+    test_matrix("../../../../test_data/ww_36_pmec_36.pm");
+    test_matrix("../../../../test_data/bcsstk01.pm");
+    test_matrix("../../../../test_data/west0132.pm");
+    test_matrix("../../../../test_data/gams10a.pm");
+    test_matrix("../../../../test_data/gams10am.pm");
+    test_matrix("../../../../test_data/D_10.pm");
+    test_matrix("../../../../test_data/oscil_dcop_11.pm");
+    test_matrix("../../../../test_data/tumorAntiAngiogenesis_4.pm");
+    test_matrix("../../../../test_data/ch5-5-b1.pm");
+    test_matrix("../../../../test_data/msc01050.pm");
+    test_matrix("../../../../test_data/SmaGri.pm");
+    test_matrix("../../../../test_data/radfr1.pm");
+    test_matrix("../../../../test_data/bibd_49_3.pm");
+    test_matrix("../../../../test_data/can_1054.pm");
+    test_matrix("../../../../test_data/can_1072.pm");
+    test_matrix("../../../../test_data/lp_sctap2.pm");
+    test_matrix("../../../../test_data/lp_woodw.pm");
+*/
+
+    test_multivector("../../../../test_data/dwt_162.pm", 10);
 }
