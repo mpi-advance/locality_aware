@@ -453,7 +453,7 @@ void communicate2(ParMat<T>& A, std::vector<U>& sendbuf, std::vector<U>& recvbuf
 }
 
 template <typename U, typename T>
-void communicate(ParMat<T>& A, std::vector<U>& data, std::vector<U>& recvbuf, MPI_Datatype type)
+void communicate(ParMat<T>& A, std::vector<U>& data, std::vector<U>& recvbuf, MPI_Datatype type, int n_vectors = 1)
 {
     int proc;
     T start, end;
@@ -464,13 +464,13 @@ void communicate(ParMat<T>& A, std::vector<U>& data, std::vector<U>& recvbuf, MP
         proc = A.recv_comm.procs[i];
         start = A.recv_comm.ptr[i];
         end = A.recv_comm.ptr[i+1];
-        MPI_Irecv(&(recvbuf[start]), (int)(end - start), type, proc, tag,
+        MPI_Irecv(&(recvbuf[start * n_vectors]), (int)(end - start) * n_vectors, type, proc, tag,
                 MPI_COMM_WORLD, &(A.recv_comm.req[i]));
     }
     
     std::vector<U> sendbuf;
     if (A.send_comm.size_msgs)
-        sendbuf.resize(A.send_comm.size_msgs);
+        sendbuf.resize(A.send_comm.size_msgs * n_vectors);
     for (int i = 0; i < A.send_comm.n_msgs; i++)
     {
         proc = A.send_comm.procs[i];
@@ -478,9 +478,10 @@ void communicate(ParMat<T>& A, std::vector<U>& data, std::vector<U>& recvbuf, MP
         end = A.send_comm.ptr[i+1];
         for (T j = start; j < end; j++)
         {
-            sendbuf[j] = data[A.send_comm.idx[j]];
+            for (T k = 0; k < n_vectors; k++)
+                sendbuf[(j * n_vectors) + k] = data[(A.send_comm.idx[j] * n_vectors) + k];
         }
-        MPI_Isend(&(sendbuf[start]), (int)(end - start), type, proc, tag, 
+        MPI_Isend(&(sendbuf[start * n_vectors]), (int)(end - start) * n_vectors, type, proc, tag,
                 MPI_COMM_WORLD, &(A.send_comm.req[i]));
     }
 
