@@ -8,7 +8,8 @@
 #include <set>
 
 #define NODES 2 //number of nodes
-#define SPN 2   //number of sockets per node (or NUMA regions)
+#define SPN 2   //number of sockets per node
+#define PPNUMA 14 // number of processes per NUMA region
 #define PPS 56  //number of processes per socket
 #define PPN 112 //number of processes per node
 
@@ -137,6 +138,11 @@ void standard_ping_pong(int max_p, char* sendbuf, char* recvbuf)
     int rank, rank0, rank1;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
+    if (rank == 0) printf("On-NUMA Ping-Pong:\n");
+    rank0 = 0;
+    rank1 = PPNUMA/2;
+    print_ping_pong(ping, pong, max_p, rank0, rank1, sendbuf, recvbuf, MPI_COMM_WORLD, NULL);
+
     if (rank == 0) printf("On-Socket Ping-Pong:\n");
     rank0 = 0;
     rank1 = PPS/2;
@@ -144,7 +150,7 @@ void standard_ping_pong(int max_p, char* sendbuf, char* recvbuf)
 
     if (rank == 0) printf("On-Node, Off-Socket Ping-Pong:\n");
     rank0 = 0;
-    rank1 = PPS;
+    rank1 = PPN/2;
     print_ping_pong(ping, pong, max_p, rank0, rank1, sendbuf, recvbuf, MPI_COMM_WORLD, NULL);
 
     if (rank == 0) printf("Off-Node Ping-Pong:\n");
@@ -195,6 +201,14 @@ void multiproc_ping_pong(int max_p, char* sendbuf, char* recvbuf)
     bool cond0, cond1;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
+
+    // On-NUMA, MultiProc (Standard)
+    if (rank == 0) printf("On-NUMA MultiProc Ping-Pong:\n");
+    size = PPNUMA/2;
+    cond0 = rank < size;
+    cond1 = rank < 2*size;
+    multiproc_ping_pong_step(max_p, sendbuf, recvbuf, size, size, cond0, cond1);
+
     // On-Socket, MultiProc (Standard)
     if (rank == 0) printf("On-Socket MultiProc Ping-Pong:\n");
     size = PPS/2;
@@ -204,7 +218,7 @@ void multiproc_ping_pong(int max_p, char* sendbuf, char* recvbuf)
  
     // On-Node, Off-Socket, MultiProc (Standard)
     if (rank == 0) printf("On-Node, Off-Socket MultiProc Ping-Pong:\n");
-    size = PPS;
+    size = PPN/2;
     cond0 = rank < size;
     cond1 = rank < 2*size;
     multiproc_ping_pong_step(max_p, sendbuf, recvbuf, size, size, cond0, cond1);
@@ -216,12 +230,26 @@ void multiproc_ping_pong(int max_p, char* sendbuf, char* recvbuf)
     cond1 = rank < 2*size;
     multiproc_ping_pong_step(max_p, sendbuf, recvbuf, size, size, cond0, cond1);
 
+    // On-NUMA, MultiProc (All NUMAs active on 1 Node)
+    if (rank == 0) printf("On-NUMA MultiProc Ping-Pong, All NUMAs Active:\n");
+    size = PPNUMA/2;
+    cond0 = rank < PPN && (rank % PPNUMA) < size;
+    cond1 = rank < PPN;
+    multiproc_ping_pong_step(max_p, sendbuf, recvbuf, size, size, cond0, cond1);
+
     // On-Socket, MultiProc (All Sockets active on 1 Node) 
     if  (rank == 0) printf("On-Socket MultiProc Ping-Pong, All Sockets Active:\n");
     size = PPS/2;
     cond0 = rank < PPN && (rank % PPS) < size;
     cond1 = rank < PPN;
     multiproc_ping_pong_step(max_p, sendbuf, recvbuf, size, size, cond0, cond1);
+
+    // Off-Node, MultiProc, Even NUMA Regions
+    if (rank == 0) printf("Off-Node MultiProc Ping-Pong, Even NUMA Regions:\n");
+    size = PPNUMA;
+    cond0 = rank < PPN;
+    cond1 = rank < 2*PPN;
+    multiproc_ping_pong_step(max_p, sendbuf, recvbuf, size, PPN, cond0, cond1);
 
     // Off-Node, MultiProc, Even Sockets
     if (rank == 0) printf("Off-Node MultiProc Ping-Pong, Even Sockets:\n");
@@ -236,6 +264,11 @@ void multi_ping_pong(int max_p, char* sendbuf, char* recvbuf, MPI_Request* req)
     int rank, rank0, rank1;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     
+    if (rank == 0) printf("On-NUMA Multi Ping-Pong:\n");
+    rank0 = 0;
+    rank1 = PPNUMA/2;
+    print_ping_pong(multi_ping, multi_pong, max_p, rank0, rank1, sendbuf, recvbuf, MPI_COMM_WORLD, req);
+    
     if (rank == 0) printf("On-Socket Multi Ping-Pong:\n");
     rank0 = 0;
     rank1 = PPS/2;
@@ -243,7 +276,7 @@ void multi_ping_pong(int max_p, char* sendbuf, char* recvbuf, MPI_Request* req)
     
     if (rank == 0) printf("On-Node, Off-Socket Multi Ping-Pong:\n");
     rank0 = 0;
-    rank1 = PPS;
+    rank1 = PPN/2;
     print_ping_pong(multi_ping, multi_pong, max_p, rank0, rank1, sendbuf, recvbuf, MPI_COMM_WORLD, req);
     
     if (rank == 0) printf("Off-Node Multi Ping-Pong:\n");
@@ -257,6 +290,12 @@ void matching_ping_pong(int max_p, char* sendbuf, char* recvbuf, MPI_Request* re
 {   
     int rank, rank0, rank1;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+
+    
+    if (rank == 0) printf("On-NUMA Matching Ping-Pong:\n");
+    rank0 = 0;
+    rank1 = PPNUMA/2;
+    print_ping_pong(matching_ping, matching_pong, max_p, rank0, rank1, sendbuf, recvbuf, MPI_COMM_WORLD, req);
     
     if (rank == 0) printf("On-Socket Matching Ping-Pong:\n");
     rank0 = 0;
@@ -265,7 +304,7 @@ void matching_ping_pong(int max_p, char* sendbuf, char* recvbuf, MPI_Request* re
     
     if (rank == 0) printf("On-Node, Off-Socket Matching Ping-Pong:\n");
     rank0 = 0;
-    rank1 = PPS;
+    rank1 = PPN/2;
     print_ping_pong(matching_ping, matching_pong, max_p, rank0, rank1, sendbuf, recvbuf, MPI_COMM_WORLD, req);
     
     if (rank == 0) printf("Off-Node Matching Ping-Pong:\n");

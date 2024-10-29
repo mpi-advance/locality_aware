@@ -10,5 +10,6 @@
 
 cd /g/g14/bienz1/locality_aware/build_dane/benchmarks
 
+#srun -n 224 --auto-affinity=verbose ./microbenchmarks
 srun -n 224 ./microbenchmarks
 
