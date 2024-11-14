@@ -6,7 +6,7 @@
 #include "locality/comm_data.h"
 #include "locality/comm_pkg.h"
 #include "locality/locality_comm.h"
-#include "locality/topology.h"
+#include "locality/topology.hpp"
 
 #include "persistent/persistent.h"
 

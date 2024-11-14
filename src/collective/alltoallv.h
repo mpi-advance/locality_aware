@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <mpi.h>
 #include "collective.h"
-#include "locality/topology.h"
+#include "locality/topology.hpp"
 
 #ifdef __cplusplus
 extern "C"

@@ -1,7 +1,16 @@
-#include "topology.h"
+#include "topology.hpp"
+#include <map>
+
+std::map<MPI_Comm, MPIX_Comm*> xcomm_map = {};
 
 int MPIX_Comm_init(MPIX_Comm** xcomm_ptr, MPI_Comm global_comm)
 {
+    if (xcomm_map.count(global_comm) > 0) {
+        xcomm_map[global_comm]->nrefs += 1;
+        *xcomm_ptr = xcomm_map[global_comm];
+        return MPI_SUCCESS;
+    }
+
     int rank, num_procs;
     MPI_Comm_rank(global_comm, &rank);
     MPI_Comm_size(global_comm, &num_procs);
@@ -24,6 +33,9 @@ int MPIX_Comm_init(MPIX_Comm** xcomm_ptr, MPI_Comm global_comm)
 #ifdef GPU
     xcomm->gpus_per_node = 0;
 #endif
+
+    xcomm->nrefs = 1;
+    xcomm_map.insert({global_comm, xcomm});
 
     *xcomm_ptr = xcomm;
 
@@ -109,7 +121,14 @@ int MPIX_Comm_req_resize(MPIX_Comm* xcomm, int n)
 int MPIX_Comm_free(MPIX_Comm** xcomm_ptr)
 {
     MPIX_Comm* xcomm = *xcomm_ptr;
+    if (xcomm->nrefs > 1) {
+        xcomm->nrefs -= 1;
+        return MPI_SUCCESS;
+    }
 
+    xcomm_map.erase(xcomm->global_comm);
+
+    // TODO with xcomm sharing now, sharing requests?
     if (xcomm->n_requests > 0)
         free(xcomm->requests);
 

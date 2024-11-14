@@ -34,6 +34,8 @@ typedef struct _MPIX_Comm
     MPI_Request* requests;
     int n_requests;
 
+    int nrefs;
+
 #ifdef GPU
    int gpus_per_node;
    int rank_gpu;

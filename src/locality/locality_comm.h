@@ -2,7 +2,7 @@
 #define MPI_ADVANCE_LOCALITY_COMM_H
 
 #include "comm_pkg.h"
-#include "topology.h"
+#include "topology.hpp"
 
 #include <mpi.h>
 

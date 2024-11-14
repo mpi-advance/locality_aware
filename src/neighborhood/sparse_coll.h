@@ -3,7 +3,7 @@
 
 #include "mpi.h"
 #include "locality/locality_comm.h"
-#include "locality/topology.h"
+#include "locality/topology.hpp"
 #include "utils/utils.h"
 
 // Declarations of C++ methods

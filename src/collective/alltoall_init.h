@@ -6,7 +6,7 @@
 #include <mpi.h>
 #include "utils/utils.h"
 #include "collective.h"
-#include "locality/topology.h"
+#include "locality/topology.hpp"
 #include "persistent/persistent.h"
 #include "neighborhood/neighbor_persistent.h"
 
