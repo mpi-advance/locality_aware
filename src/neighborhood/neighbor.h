@@ -73,6 +73,20 @@ int MPIX_Neighbor_part_locality_alltoallv(
         MPIX_Comm* comm);
 
 
+// Topology object based neighbor alltoallv
+int MPIX_Neighbor_topo_alltoallv(
+        const void* sendbuf,
+        const int sendcounts[],
+        const int sdispls[],
+        MPI_Datatype sendtype,
+        void* recvbuf,
+        const int recvcounts[],
+        const int rdispls[],
+        MPI_Datatype recvtype,
+        MPIX_Topo* topo,
+        MPI_Comm comm);
+
+
 #ifdef __cplusplus
 }
 #endif

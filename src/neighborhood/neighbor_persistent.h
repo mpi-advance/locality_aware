@@ -91,6 +91,51 @@ int MPIX_Neighbor_part_locality_alltoallv_init(
         MPIX_Request** request_ptr);
 
 
+// Topology object based neighbor alltoallv
+int MPIX_Neighbor_topo_alltoallv_init(
+        const void* sendbuf,
+        const int sendcounts[],
+        const int sdispls[],
+        MPI_Datatype sendtype,
+        void* recvbuf,
+        const int recvcounts[],
+        const int rdispls[],
+        MPI_Datatype recvtype,
+        MPIX_Topo* topo,
+        MPI_Comm comm,
+        MPI_Info info,
+        MPIX_Request** request_ptr);
+
+int MPIX_Neighbor_locality_topo_alltoallv_init(
+        const void* sendbuf,
+        const int sendcounts[],
+        const int sdispls[],
+        const long global_sindices[],
+        MPI_Datatype sendtype,
+        void* recvbuf,
+        const int recvcounts[],
+        const int rdispls[],
+        const long global_rindices[],
+        MPI_Datatype recvtype,
+        MPIX_Topo* topo,
+        MPIX_Comm* comm,
+        MPI_Info info,
+        MPIX_Request** request_ptr);
+
+int MPIX_Neighbor_part_locality_topo_alltoallv_init(
+        const void* sendbuf,
+        const int sendcounts[],
+        const int sdispls[],
+        MPI_Datatype sendtype,
+        void* recvbuf,
+        const int recvcounts[],
+        const int rdispls[],
+        MPI_Datatype recvtype,
+        MPIX_Topo* topo,
+        MPIX_Comm* comm,
+        MPI_Info info,
+        MPIX_Request** request_ptr);
+
 
 void init_locality(const int n_sends,
         const int* send_procs,

@@ -32,7 +32,9 @@ void test_matrix(const char* filename)
     form_comm(A);
 
     std::vector<int> std_recv_vals, neigh_recv_vals, new_recv_vals,
-            locality_recv_vals, part_locality_recv_vals;
+            locality_recv_vals, part_locality_recv_vals,
+            topo_recv_vals,
+            topo_locality_recv_vals, topo_part_locality_recv_vals;
     std::vector<int> send_vals, alltoallv_send_vals;
     std::vector<long> send_indices;
 
@@ -51,6 +53,9 @@ void test_matrix(const char* filename)
         new_recv_vals.resize(A.recv_comm.size_msgs);
         locality_recv_vals.resize(A.recv_comm.size_msgs);
         part_locality_recv_vals.resize(A.recv_comm.size_msgs);
+        topo_recv_vals.resize(A.recv_comm.size_msgs);
+        topo_locality_recv_vals.resize(A.recv_comm.size_msgs);
+        topo_part_locality_recv_vals.resize(A.recv_comm.size_msgs);
     }
 
     if (A.send_comm.size_msgs)
@@ -210,6 +215,91 @@ void test_matrix(const char* filename)
     {
         ASSERT_EQ(std_recv_vals[i], locality_recv_vals[i]);
     }
+
+    // 4. Topology-object methods
+    MPIX_Topo* topo;
+    MPIX_Comm* topo_comm;
+    MPIX_Comm_init(&topo_comm, MPI_COMM_WORLD);
+    MPIX_Comm_topo_init(topo_comm);
+
+    MPIX_Topo_dist_graph_create_adjacent(
+            A.recv_comm.n_msgs,
+            A.recv_comm.procs.data(), 
+            A.recv_comm.counts.data(),
+            A.send_comm.n_msgs, 
+            A.send_comm.procs.data(),
+            A.send_comm.counts.data(),
+            MPI_INFO_NULL, 
+            0, 
+            &topo);
+
+    MPIX_Neighbor_topo_alltoallv(alltoallv_send_vals.data(),
+            A.send_comm.counts.data(),
+            A.send_comm.ptr.data(),
+            MPI_INT,
+            topo_recv_vals.data(),
+            A.recv_comm.counts.data(),
+            A.recv_comm.ptr.data(),
+            MPI_INT,
+            topo,
+            MPI_COMM_WORLD);
+
+    // 4. Compare std_recv_vals and topo_locality_recv_vals
+    for (int i = 0; i < A.recv_comm.size_msgs; i++)
+    {
+        ASSERT_EQ(std_recv_vals[i], topo_recv_vals[i]);
+    }
+
+    MPIX_Neighbor_locality_topo_alltoallv_init(alltoallv_send_vals.data(),
+            A.send_comm.counts.data(),
+            A.send_comm.ptr.data(),
+            send_indices.data(),
+            MPI_INT,
+            topo_locality_recv_vals.data(),
+            A.recv_comm.counts.data(),
+            A.recv_comm.ptr.data(),
+            A.off_proc_columns.data(),
+            MPI_INT,
+            topo,
+            topo_comm,
+            MPI_INFO_NULL,
+            &neighbor_request);
+
+    MPIX_Start(neighbor_request);
+    MPIX_Wait(neighbor_request, &status);
+    MPIX_Request_free(&neighbor_request);
+
+    // 4. Compare std_recv_vals and topo_locality_recv_vals
+    for (int i = 0; i < A.recv_comm.size_msgs; i++)
+    {
+        ASSERT_EQ(std_recv_vals[i], topo_locality_recv_vals[i]);
+    }
+
+    MPIX_Neighbor_part_locality_topo_alltoallv_init(alltoallv_send_vals.data(),
+            A.send_comm.counts.data(),
+            A.send_comm.ptr.data(),
+            MPI_INT,
+            topo_part_locality_recv_vals.data(),
+            A.recv_comm.counts.data(),
+            A.recv_comm.ptr.data(),
+            MPI_INT,
+            topo,
+            topo_comm,
+            MPI_INFO_NULL,
+            &neighbor_request);
+
+    MPIX_Start(neighbor_request);
+    MPIX_Wait(neighbor_request, &status);
+    MPIX_Request_free(&neighbor_request);
+
+    // 4. Compare std_recv_vals and topo_part_locality_recv_vals
+    for (int i = 0; i < A.recv_comm.size_msgs; i++)
+    {
+        ASSERT_EQ(std_recv_vals[i], topo_part_locality_recv_vals[i]);
+    }
+
+    MPIX_Topo_free(topo);
+    MPIX_Comm_free(&topo_comm);
 
     MPIX_Info_free(&xinfo);
     MPIX_Comm_free(&neighbor_comm);
