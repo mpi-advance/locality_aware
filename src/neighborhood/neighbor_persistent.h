@@ -60,6 +60,20 @@ int MPIX_Neighbor_alltoallw_init(
         MPIX_Info* info,
         MPIX_Request** request_ptr);
 
+// Standard Partitioned Neighbor Alltoallv
+int MPIX_Neighbor_partitioned_alltoallv_init(
+        const void* sendbuf,
+        const int sendcounts[],
+        const int sdispls[],
+        MPI_Datatype sendtype,
+        void* recvbuf,
+        const int recvcounts[],
+        const int rdispls[],
+        MPI_Datatype recvtype,
+        MPIX_Comm* comm,
+        MPIX_Info* info,
+        MPIX_Request** request_ptr);
+
 // Locality-Aware Extension to Persistent Neighbor Alltoallv
 // Needs global indices for each send and receive
 int MPIX_Neighbor_locality_alltoallv_init(

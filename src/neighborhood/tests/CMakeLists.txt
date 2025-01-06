@@ -25,6 +25,11 @@ target_link_libraries(test_suitesparse_neighbor_alltoallv_init mpi_advance gtest
 add_test(PersistentNeighAlltoallvSuitesparseTest 
     ${MPIRUN} -n 16 ./test_suitesparse_neighbor_alltoallv_init)
 
+add_executable(test_partitioned_neighbor_alltoallv_init 
+    test_partitioned_neighbor_alltoallv_init.cpp)
+target_link_libraries(test_partitioned_neighbor_alltoallv_init mpi_advance gtest pthread )
+
+
 add_executable(test_suitesparse_neighbor_alltoallw_init 
     test_suitesparse_neighbor_alltoallw_init.cpp)
 target_link_libraries(test_suitesparse_neighbor_alltoallw_init mpi_advance gtest pthread )

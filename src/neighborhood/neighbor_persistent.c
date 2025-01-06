@@ -1,5 +1,7 @@
 #include "neighbor.h"
 #include "neighbor_persistent.h"
+#include "omp.h"
+#include "mpipcl.h"
 
 // Starting locality-aware requests
 // 1. Start Local_L
@@ -136,6 +138,41 @@ int neighbor_wait(MPIX_Request* request, MPI_Status* status)
     return ierr;
 }
 
+int partitioned_neighbor_start(MPIX_Request* request)
+    if (request == NULL)
+        return 0;
+
+    int ierr = 0;
+    int idx;
+
+    char* send_buffer = NULL;
+    int recv_size = 0;
+    if (request->recv_size)
+    {
+        send_buffer = (char*)(request->sendbuf);
+        recv_size = request->recv_size;
+    }
+
+    // Local L sends sendbuf
+    if (request->local_L_n_msgs || request->local_S_n_msgs)
+    {
+        // not implemented
+        return 1;
+    }
+
+    // Global sends buffer in locality, sendbuf in standard
+    if (request->global_n_msgs) {
+        for (int i = 0; i < global_n_msgs; i++) {
+            MPIX_Start(request->global_requests[i]); // TODO method name conflict
+            #pragma omp parallel {
+                MPIX_Pready(omp_get_thread_num(), request->global_requests[i]);
+            }
+        }
+    }
+
+    return ierr;
+}
+
 
 void init_neighbor_request(MPIX_Request** request_ptr)
 {
@@ -143,6 +180,15 @@ void init_neighbor_request(MPIX_Request** request_ptr)
     MPIX_Request* request = *request_ptr;
 
     request->start_function = (void*) neighbor_start;
+    request->wait_function = (void*) neighbor_wait;
+}
+
+void init_partitioned_neighbor_request(MPIX_Request** request_ptr)
+{
+    init_request(request_ptr);
+    MPIX_Request* request = *request_ptr;
+
+    request->start_function = (void*) partitioned_neighbor_start;
     request->wait_function = (void*) neighbor_wait;
 }
 
@@ -206,6 +252,68 @@ int init_communication(const void* sendbuffer,
 
     return ierr;
 }
+
+int init_partitioned_communication(const void* sendbuffer,
+        int n_sends,
+        const int* send_procs,
+        const int* send_ptr, 
+        MPI_Datatype sendtype,
+        void* recvbuffer, 
+        int n_recvs,
+        const int* recv_procs,
+        const int* recv_ptr,
+        MPI_Datatype recvtype,
+        int tag,
+        MPI_Comm comm,
+        int* n_request_ptr,
+        MPI_Request** request_ptr)
+{
+    int ierr = 0;
+    int start, size;
+    int send_size, recv_size;
+
+    char* send_buffer = (char*) sendbuffer;
+    char* recv_buffer = (char*) recvbuffer;
+    MPI_Type_size(sendtype, &send_size);
+    MPI_Type_size(recvtype, &recv_size);
+
+    MPI_Request* requests;
+    *n_request_ptr = n_recvs+n_sends;
+    allocate_requests(*n_request_ptr, &requests);
+
+    for (int i = 0; i < n_recvs; i++)
+    {
+        start = recv_ptr[i];
+        size = recv_ptr[i+1] - start;
+
+        ierr += MPI_Recv_init(&(recv_buffer[start*recv_size]), 
+                size, 
+                recvtype, 
+                recv_procs[i],
+                tag,
+                comm, 
+                &(requests[i]));
+    }
+
+    for (int i = 0; i < n_sends; i++)
+    {
+        start = send_ptr[i];
+        size = send_ptr[i+1] - start;
+
+        ierr += MPI_Send_init(&(send_buffer[start*send_size]),
+                size,
+                sendtype,
+                send_procs[i],
+                tag,
+                comm,
+                &(requests[n_recvs+i]));
+    }
+
+    *request_ptr = requests;
+
+    return ierr;
+}
+
 
 
 // Standard Persistent Neighbor Alltoallv
@@ -372,6 +480,92 @@ int MPIX_Neighbor_alltoallw_init(
 
     return ierr;
 }
+
+// Standard Partitioned Neighbor Alltoallv
+int MPIX_Neighbor_partitioned_alltoallv_init(
+        const void* sendbuffer,
+        const int sendcounts[],
+        const int sdispls[],
+        MPI_Datatype sendtype,
+        void* recvbuffer,
+        const int recvcounts[],
+        const int rdispls[],
+        MPI_Datatype recvtype,
+        MPIX_Comm* comm,
+        MPIX_Info* info,
+        MPIX_Request** request_ptr)
+{
+    MPIX_Request* request;
+    init_partitioned_neighbor_request(&request);
+
+    int ierr = 0;
+    int tag = 349526;
+
+    int indegree, outdegree, weighted;
+    ierr += MPI_Dist_graph_neighbors_count(
+            comm->neighbor_comm, 
+            &indegree, 
+            &outdegree, 
+            &weighted);
+
+    int* sources = (int*)malloc(indegree*sizeof(int));
+    int* sourceweights = (int*)malloc(indegree*sizeof(int));
+    int* destinations = (int*)malloc(outdegree*sizeof(int));
+    int* destweights = (int*)malloc(outdegree*sizeof(int));
+
+    ierr += MPI_Dist_graph_neighbors(
+            comm->neighbor_comm, 
+            indegree, 
+            sources, 
+            sourceweights,
+            outdegree, 
+            destinations, 
+            destweights);
+
+    request->global_n_msgs = indegree+outdegree;
+    allocate_requests(request->global_n_msgs, &(request->global_requests));
+
+    const char* send_buffer = (const char*)(sendbuffer);
+    char* recv_buffer = (char*)(recvbuffer);
+    int send_size, recv_size;
+    MPI_Type_size(sendtype, &send_size);
+    MPI_Type_size(recvtype, &recv_size);
+
+    int nparts = omp_get_num_threads();
+    for (int i = 0; i < indegree; i++)
+    {
+        ierr += MPIX_Precv_init(&(recv_buffer[rdispls[i]*recv_size]),
+                nparts,
+                recvcounts[i], 
+                recvtype, 
+                sources[i],
+                tag,
+                comm->neighbor_comm, 
+                &(request->global_requests[i]));
+    }
+
+    for (int i = 0; i < outdegree; i++)
+    {
+        ierr += MPIX_Psend_init(&(send_buffer[sdispls[i]*send_size]),
+                nparts,
+                sendcounts[i],
+                sendtype,
+                destinations[i],
+                tag,
+                comm->neighbor_comm,
+                &(request->global_requests[indegree+i]));
+    }
+
+    free(sources);
+    free(sourceweights);
+    free(destinations);
+    free(destweights);
+
+    *request_ptr = request;
+
+    return ierr;
+}
+
 
 
 // Locality-Aware Extension to Persistent Neighbor Alltoallv
