@@ -288,6 +288,17 @@ int rma_wait(MPIX_Request* request, MPI_Status* status)
     }
     MPI_Win_fence(MPI_MODE_NOPUT|MPI_MODE_NOSUCCEED, request->xcomm->win);
 
+    // Instead of fence:
+    //   - lockall at the beginning (passive target)
+    //   1. MPI_Flush (completes all outstanding puts)
+    //   2. MPI_Accumulate to everyone (essentially an asynchronous allreduce)
+    //   3. Spin on local sum variable, wait for it to = num_procs (once num_procs, all processses have accumulated my variable)
+    //   - unlockall at the end (passive target)
+
+    // Longterm goal:
+    // - could get rid of initial fence with a flush algorithm as well
+
+
     // Need to memcpy because win_array is created with window
     // TODO : could explore just attaching recv_buffer to existing dynamic window 
     //        with persistent collectives
