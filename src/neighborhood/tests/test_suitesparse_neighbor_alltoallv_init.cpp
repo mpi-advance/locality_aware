@@ -351,7 +351,7 @@ void test_multivector(const char* filename, int n_vec)
         ASSERT_EQ(std_recv_vals[i], neigh_recv_vals[i]);
     }
 
-    // 2. MPIX Communication
+    // MPIX Communication
     MPIX_Neighbor_alltoallv_init(alltoallv_send_vals.data(),
             A.send_comm.counts.data(),
             A.send_comm.ptr.data(),
@@ -366,9 +366,7 @@ void test_multivector(const char* filename, int n_vec)
 
     MPIX_Start(neighbor_request);
     MPIX_Wait(neighbor_request, &status);
-    MPIX_Request_free(&neighbor_request);
 
-    // 3. Compare std_recv_vals and nap_recv_vals
     for (int i = 0; i < A.recv_comm.size_msgs; i++)
     {
         ASSERT_EQ(std_recv_vals[i], new_recv_vals[i]);
@@ -384,6 +382,7 @@ void test_multivector(const char* filename, int n_vec)
         A.recv_comm.ptr[i] /= n_vec;
     }
 
+    MPIX_Request_free(&neighbor_request);
     MPIX_Info_free(&xinfo);
     MPIX_Comm_free(&neighbor_comm);
     PMPI_Comm_free(&std_comm);
