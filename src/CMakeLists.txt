@@ -35,7 +35,7 @@ add_library(mpi_advance
 )
 
 #target_link_libraries(mpi_advance ${MPI_LIBRARIES} ${EXTERNAL_LIBS} OpenMP::OpenMP_CXX OpenMP::OpenMP_C)
-target_link_libraries(mpi_advance ${MPI_LIBRARIES})
+target_link_libraries(mpi_advance ${MPI_LIBRARIES} ${MPIPCL_LIBRARY})
 message(STATUS ${MPI_LIBRARIES} ${EXTERNAL_LIBS})
 if (USE_CUDA)
     target_link_libraries(mpi_advance CUDA::cudart)
