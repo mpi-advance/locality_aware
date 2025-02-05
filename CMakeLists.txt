@@ -14,8 +14,7 @@ include_directories(${MPI_INCLUDE_PATH})
 
 find_package(OpenMP)
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/cmake)
-find_package(MPIPCL)
+find_package(MPIPCL 1.4.0 REQUIRED)
 
 
 

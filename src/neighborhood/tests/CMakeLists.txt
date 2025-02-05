@@ -33,7 +33,7 @@ add_test(PersistentNeighAlltoallwSuitesparseTest
 
 add_executable(test_partitioned_alltoallv 
     test_partitioned_alltoallv.cpp)
-target_link_libraries(test_partitioned_alltoallv mpi_advance gtest pthread ${MPIPCL_LIBRARY})
+target_link_libraries(test_partitioned_alltoallv mpi_advance gtest pthread MPIPCL::MPIPCL)
 add_test(PartitionedAlltoallvTest 
     ${MPIRUN} -n 16 ./test_partitioned_alltoallv)
 

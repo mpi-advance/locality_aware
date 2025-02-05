@@ -19,7 +19,7 @@
 
 #include "tests/sparse_mat.hpp"
 #include "tests/par_binary_IO.hpp"
-#include "mpipcl/mpipcl.h"
+#include "mpipcl.h"
 
 void test_partitioned(const char* filename, int n_vec)
 {
@@ -68,8 +68,8 @@ void test_partitioned(const char* filename, int n_vec)
     int n_parts = 10;
     // Single exchange test
     // Precv/Psend inits
-    std::vector<MPIX_Prequest> sreqs;
-    std::vector<MPIX_Prequest> rreqs;
+    std::vector<MPIP_Request> sreqs;
+    std::vector<MPIP_Request> rreqs;
     if (A.send_comm.n_msgs)
         sreqs.resize(A.send_comm.n_msgs);
     if (A.recv_comm.n_msgs)
@@ -83,7 +83,7 @@ void test_partitioned(const char* filename, int n_vec)
         proc = A.recv_comm.procs[i];
         start = A.recv_comm.ptr[i] * n_vec;
         end = A.recv_comm.ptr[i+1] * n_vec;
-        MPIX_Precv_init(&(partd_recv_vals[start]), n_parts, (int)(end - start), MPI_INT, proc, tag,
+        MPIP_Precv_init(&(partd_recv_vals[start]), n_parts, (int)(end - start), MPI_INT, proc, tag,
                 MPI_COMM_WORLD, MPI_INFO_NULL, &(rreqs[i]));
     }
 
@@ -92,25 +92,25 @@ void test_partitioned(const char* filename, int n_vec)
         proc = A.send_comm.procs[i];
         start = A.send_comm.ptr[i];
         end = A.send_comm.ptr[i+1];
-        MPIX_Psend_init(&(alltoallv_send_vals[start * n_vec]), n_parts, (int)(end - start) * n_vec, MPI_INT, proc, tag,
+        MPIP_Psend_init(&(alltoallv_send_vals[start * n_vec]), n_parts, (int)(end - start) * n_vec, MPI_INT, proc, tag,
                 MPI_COMM_WORLD, MPI_INFO_NULL, &(sreqs[i]));
     }
 
     if (A.send_comm.n_msgs)
-        MPIX_Startall(A.send_comm.n_msgs, sreqs.data());
+        MPIP_Startall(A.send_comm.n_msgs, sreqs.data());
     if (A.recv_comm.n_msgs)
-        MPIX_Startall(A.recv_comm.n_msgs, rreqs.data());
+        MPIP_Startall(A.recv_comm.n_msgs, rreqs.data());
 
     for (int i = 0; i < A.recv_comm.n_msgs; i++) {
         for (int j = 0; j < n_parts; j++) {
-            MPIX_Pready(j, &sreqs[i]);
+            MPIP_Pready(j, &sreqs[i]);
         }
     }
 
     if (A.send_comm.n_msgs)
-        MPIX_Waitall(A.send_comm.n_msgs, rreqs.data(), MPI_STATUSES_IGNORE);
+        MPIP_Waitall(A.send_comm.n_msgs, rreqs.data(), MPI_STATUSES_IGNORE);
     if (A.recv_comm.n_msgs)
-    	MPIX_Waitall(A.recv_comm.n_msgs, sreqs.data(), MPI_STATUSES_IGNORE);
+    	MPIP_Waitall(A.recv_comm.n_msgs, sreqs.data(), MPI_STATUSES_IGNORE);
 
     for (int i = 0; i < A.recv_comm.size_msgs; i++)
     {
