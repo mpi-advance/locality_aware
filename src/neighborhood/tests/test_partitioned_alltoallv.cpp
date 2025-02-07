@@ -68,10 +68,8 @@ void test_partitioned(const char* filename, int n_vec)
     int n_parts = 1;
     // Single exchange test
     // Precv/Psend inits
-    // std::vector<MPIP_Request> sreqs;
-    // std::vector<MPIP_Request> rreqs;
-    std::vector<MPI_Request> sreqs;
-    std::vector<MPI_Request> rreqs;
+    std::vector<MPIP_Request> sreqs;
+    std::vector<MPIP_Request> rreqs;
     if (A.send_comm.n_msgs)
         sreqs.resize(A.send_comm.n_msgs);
     if (A.recv_comm.n_msgs)
@@ -85,10 +83,8 @@ void test_partitioned(const char* filename, int n_vec)
         proc = A.recv_comm.procs[i];
         start = A.recv_comm.ptr[i] * n_vec;
         end = A.recv_comm.ptr[i+1] * n_vec;
-        // MPIP_Precv_init(&(partd_recv_vals[start]), n_parts, (int)(end - start), MPI_INT, proc, tag,
-        //         MPI_COMM_WORLD, MPI_INFO_NULL, &(rreqs[i]));
-        MPI_Recv_init(&(partd_recv_vals[start]), (int)(end - start), MPI_INT, proc, tag,
-                MPI_COMM_WORLD, &(rreqs[i]));
+        MPIP_Precv_init(&(partd_recv_vals[start]), n_parts, (int)(end - start), MPI_INT, proc, tag,
+                MPI_COMM_WORLD, MPI_INFO_NULL, &(rreqs[i]));
     }
 
     for (int i = 0; i < A.send_comm.n_msgs; i++)
@@ -96,29 +92,25 @@ void test_partitioned(const char* filename, int n_vec)
         proc = A.send_comm.procs[i];
         start = A.send_comm.ptr[i] * n_vec;
         end = A.send_comm.ptr[i+1] * n_vec;
-        // MPIP_Psend_init(&(alltoallv_send_vals[start * n_vec]), n_parts, (int)(end - start) * n_vec, MPI_INT, proc, tag,
-        //         MPI_COMM_WORLD, MPI_INFO_NULL, &(sreqs[i]));
-        MPI_Send_init(&(alltoallv_send_vals[start]), (int)(end - start), MPI_INT, proc, tag,
-                MPI_COMM_WORLD, &(sreqs[i]));
+        MPIP_Psend_init(&(alltoallv_send_vals[start]), n_parts, (int)(end - start), MPI_INT, proc, tag,
+                MPI_COMM_WORLD, MPI_INFO_NULL, &(sreqs[i]));
     }
 
     if (A.send_comm.n_msgs)
-        // MPIP_Startall(A.send_comm.n_msgs, sreqs.data());
-        MPI_Startall(A.send_comm.n_msgs, sreqs.data());
+        MPIP_Startall(A.send_comm.n_msgs, sreqs.data());
     if (A.recv_comm.n_msgs)
-        // MPIP_Startall(A.recv_comm.n_msgs, rreqs.data());
-        MPI_Startall(A.recv_comm.n_msgs, rreqs.data());
+        MPIP_Startall(A.recv_comm.n_msgs, rreqs.data());
 
-    // for (int i = 0; i < A.recv_comm.n_msgs; i++) {
-    //     for (int j = 0; j < n_parts; j++) {
-    //         MPIP_Pready(j, &sreqs[i]);
-    //     }
-    // }
+    for (int i = 0; i < A.send_comm.n_msgs; i++) {
+        for (int j = 0; j < n_parts; j++) {
+            MPIP_Pready(j, &sreqs[i]);
+        }
+    }
 
     if (A.send_comm.n_msgs)
-        MPI_Waitall(A.send_comm.n_msgs, sreqs.data(), MPI_STATUSES_IGNORE);
+        MPIP_Waitall(A.send_comm.n_msgs, sreqs.data(), MPI_STATUSES_IGNORE);
     if (A.recv_comm.n_msgs)
-    	MPI_Waitall(A.recv_comm.n_msgs, rreqs.data(), MPI_STATUSES_IGNORE);
+        MPIP_Waitall(A.recv_comm.n_msgs, rreqs.data(), MPI_STATUSES_IGNORE);
 
     for (int i = 0; i < A.recv_comm.size_msgs; i++)
     {
@@ -136,10 +128,10 @@ void test_partitioned(const char* filename, int n_vec)
         // Compute
 
     for (int i = 0; i < A.recv_comm.n_msgs; i++) {
-        MPI_Request_free(&rreqs[i]);
+        MPIP_Request_free(&rreqs[i]);
     }
     for (int i = 0; i < A.send_comm.n_msgs; i++) {
-        MPI_Request_free(&sreqs[i]);
+        MPIP_Request_free(&sreqs[i]);
     }
 }
 
