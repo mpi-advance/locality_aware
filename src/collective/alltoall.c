@@ -212,6 +212,10 @@ int alltoall_rma_init(const void* sendbuf,
 
 }
 
+
+
+
+
 int alltoall_init(const void* sendbuf,
         const int sendcount,
         MPI_Datatype sendtype,
