@@ -12,3 +12,7 @@ target_link_libraries(alltoall_crs mpi_advance ${MPI_LIBRARIES})
 add_executable(alltoallv_crs alltoallv_crs.cpp)
 target_link_libraries(alltoallv_crs mpi_advance ${MPI_LIBRARIES})
 
+add_executable(alltoallv_rma alltoallv_rma.cpp)
+target_link_libraries(alltoallv_rma mpi_advance ${MPI_LIBRARIES})
+
+
