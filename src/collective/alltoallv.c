@@ -173,17 +173,18 @@ int alltoallv_nonblocking(const void* sendbuf,
     return 0;
 }
 
-/*alltoallv_rma*/
+
+
 
 int alltoallv_rma(const void* sendbuf,
-        const int sendcounts[],
-        const int sdispls[],
-        MPI_Datatype sendtype,
-        void* recvbuf,
-        const int recvcounts[],
-        const int rdispls[],
-        MPI_Datatype recvtype,
-        MPIX_Comm* xcomm)
+                  const int sendcounts[],
+                  const int sdispls[],
+                  MPI_Datatype sendtype,
+                  void* recvbuf,
+                  const int recvcounts[],
+                  const int rdispls[],
+                  MPI_Datatype recvtype,
+                  MPIX_Comm* xcomm)
 {
     int rank, num_procs;
     MPI_Comm_rank(xcomm->global_comm, &rank);
@@ -192,146 +193,80 @@ int alltoallv_rma(const void* sendbuf,
     char* send_buffer = (char*)(sendbuf);
     char* recv_buffer = (char*)(recvbuf);
 
-    int send_bytes, recv_bytes;
-    MPI_Type_size(sendtype, &send_bytes);
-    MPI_Type_size(recvtype, &recv_bytes);
+    int send_type_size, recv_type_size;
+    MPI_Type_size(sendtype, &send_type_size);
+    MPI_Type_size(recvtype, &recv_type_size);
 
     // Calculating the total bytes for the receive buffer
     int total_recv_bytes = 0;
     for (int i = 0; i < num_procs; i++) {
-        total_recv_bytes += recvcounts[i] * recv_bytes;
+        total_recv_bytes += recvcounts[i] * recv_type_size;
     }
-    
-     /*Checking if the window size changed, the freeing it */
+
+    // Check if the window size changed, then free it
     if (xcomm->win_bytes != total_recv_bytes || xcomm->win_type_bytes != 1) {
         MPIX_Comm_win_free(xcomm);
     }
 
-    /*Initialize the window, size= total_recv_bytes, if its empty and win_type_bytes=1
-    the window is byte-addressable, with each element being 1 byte in size*/
-
+    // Initialize the window, size = total_recv_bytes, type =1
     if (xcomm->win == MPI_WIN_NULL) {
         MPIX_Comm_win_init(xcomm, total_recv_bytes, 1);
     }
-    
-    MPI_Win_fence(MPI_MODE_NOSTORE | MPI_MODE_NOPRECEDE, xcomm->win);
+
+    MPI_Win_fence(MPI_MODE_NOSTORE | MPI_MODE_NOPRECEDE, xcomm->win);//epoch starts
+
+    //  MPI_Put 
     for (int i = 0; i < num_procs; i++) {
-        MPI_Put(&(send_buffer[sdispls[i] * send_bytes]), sendcounts[i] * send_bytes, MPI_CHAR,
-                i, rdispls[rank] * recv_bytes, recvcounts[rank] * recv_bytes, MPI_CHAR, xcomm->win);
-    }
-    MPI_Win_fence(MPI_MODE_NOPUT | MPI_MODE_NOSUCCEED, xcomm->win);
-
-    memcpy(recv_buffer, xcomm->win_array, total_recv_bytes);
-
-    return MPI_SUCCESS;
-}
-
-
-/*New RMA*/
-
-//alltoallv_rma_init
-int alltoallv_rma_init(const void* sendbuf,
-        const int* sendcounts,
-        const int* sdispls,
-        MPI_Datatype sendtype,
-        void* recvbuf,
-        const int* recvcounts,
-        const int*  rdispls,
-        MPI_Datatype recvtype,
-        MPIX_Comm* xcomm,
-        MPIX_Info* xinfo,
-        MPIX_Request** request_ptr)
-{
-
-    int rank, num_procs;
-    MPI_Comm_rank(xcomm->global_comm, &rank);
-    MPI_Comm_size(xcomm->global_comm, &num_procs);
-
-    MPIX_Request* request;
-    MPIX_Request_init(&request);
-
-    request->start_function = rma_start;
-    request->wait_function = rma_wait;
-
-    request->sendbuf = sendbuf;
-    request->recvbuf = recvbuf;
-
-    int sendtype_size, recvtype_size;
-    MPI_Type_size(sendtype, &sendtype_size);
-    MPI_Type_size(recvtype, &recvtype_size);
-
-    int total_send_bytes = 0;
-    int total_recv_bytes = 0;
-    for (int i = 0; i < num_procs; i++) {
-        total_send_bytes += sendcounts[i] * sendtype_size;
-        total_recv_bytes += recvcounts[i] * recvtype_size;
+       // if (sendcounts[i] > 0) {
+            MPI_Put(&(send_buffer[sdispls[i] * send_type_size]),
+                    sendcounts[i] * send_type_size,
+                    MPI_CHAR,
+                    i,
+                    rdispls[rank] * recv_type_size,
+                    recvcounts[rank] * recv_type_size,
+                    MPI_CHAR,
+                    xcomm->win);
+        //}
     }
 
-    if (xcomm->win_bytes != total_recv_bytes
-            || xcomm->win_type_bytes != 1)
-        MPIX_Comm_win_free(xcomm);
+    MPI_Win_fence(MPI_MODE_NOPUT | MPI_MODE_NOSUCCEED, xcomm->win);//ends
 
-    if (xcomm->win == MPI_WIN_NULL)
-    {
-        MPIX_Comm_win_init(xcomm, total_recv_bytes, 1);
+    // Copy data from window array to receive buffer
+    if (total_recv_bytes > 0) {
+        memcpy(recv_buffer, xcomm->win_array, total_recv_bytes);
     }
-
-    request->n_puts = num_procs;
-
-    request->xcomm = xcomm;
-    request->sdispls = (int*)malloc(num_procs * sizeof(int));
-    request->put_displs = (int*)malloc(num_procs * sizeof(int));
-    request->send_sizes = (int*)malloc(num_procs * sizeof(int));
-    request->recv_sizes = (int*)malloc(num_procs * sizeof(int));
-    request->recv_size = total_recv_bytes;
-
-    for (int i = 0; i < num_procs; i++)
-    {
-        request->sdispls[i] = sdispls[i];
-        request->put_displs[i] = rank * recvtype_size + rdispls[i];
-        request->send_sizes[i] = sendcounts[i] * sendtype_size;
-        request->recv_sizes[i] = recvcounts[i] * recvtype_size;
-    }
-
-    *request_ptr = request;
 
     return MPI_SUCCESS;
 }
 
 
 
-
-
-/*
- * alltoallv_init 
- * 
-*
-*/
-    
 int alltoallv_init(const void* sendbuf,
        const int sendcounts[],
-        const int sdispls[],
-        MPI_Datatype sendtype,
-        void* recvbuf,
+       const int sdispls[],
+       MPI_Datatype sendtype,
+       void* recvbuf,
        const int recvcounts[],
        const int rdispls[],
-        MPI_Datatype recvtype,
-        MPIX_Comm* xcomm,
-        MPIX_Info* xinfo,
-        MPIX_Request** request_ptr)
-
+       MPI_Datatype recvtype,
+       MPIX_Comm* xcomm,
+       MPIX_Info* xinfo,
+       MPIX_Request** request_ptr)
 {
-int rank, num_procs;
-    MPI_Comm_rank(xcomm->global_comm, &rank);
-    MPI_Comm_size(xcomm->global_comm, &num_procs);
+    int rank, num_procs;
+    int err;
 
+    err = MPI_Comm_rank(xcomm->global_comm, &rank);
+    
+    err = MPI_Comm_size(xcomm->global_comm, &num_procs);
+    
     MPIX_Request* request;
-    MPIX_Request_init(&request);
-    request->global_n_msgs = 2*num_procs;
-    allocate_requests(request->global_n_msgs, &(request->global_requests));
+    err = MPIX_Request_init(&request);
+    
 
-    request->start_function = batch_start;
-    request->wait_function = batch_wait;
+    request->global_n_msgs = 2 * num_procs;
+    err = allocate_requests(request->global_n_msgs, &(request->global_requests));
+    
 
     int tag = 102944;
     int send_proc, recv_proc;
@@ -339,33 +274,51 @@ int rank, num_procs;
     MPI_Status status;
 
     int send_size, recv_size;
-    MPI_Type_size(sendtype, &send_size);
-    MPI_Type_size(recvtype, &recv_size);
+    err = MPI_Type_size(sendtype, &send_size);
+    
 
+    err = MPI_Type_size(recvtype, &recv_size);
+    
     char* send_buffer = (char*)(sendbuf);
-    char* recv_buffer = (char*)(recvbuf);    
+    char* recv_buffer = (char*)(recvbuf);
 
+  
     // Initialize persistent send and receive requests
     for (int i = 0; i < num_procs; i++) {
-        send_proc = (rank + i) % num_procs;  
-        recv_proc = (rank - i + num_procs) % num_procs;  
+        send_proc = (rank + i) % num_procs;
+        recv_proc = (rank - i + num_procs) % num_procs;
 
         send_pos = sdispls[send_proc] * send_size;
         recv_pos = rdispls[recv_proc] * recv_size;
 
-
-MPI_Send_init(send_buffer + send_pos, sendcounts[send_proc], sendtype, send_proc, tag,
-                xcomm->global_comm, &(request->global_requests[2*i]));
-        // Initialize persistent receive request 
-        MPI_Recv_init(recvbuf + recv_pos, recvcounts[recv_proc], recvtype, recv_proc, tag,
-                xcomm->global_comm, &(request->global_requests[2*i + 1]));
+       
+        // Initialize persistent send request
+        err = MPI_Send_init(send_buffer + send_pos, sendcounts[send_proc], sendtype, send_proc, tag,
+                            xcomm->global_comm, &(request->global_requests[2 * i]));
+       
+        // Initialize persistent receive request
+        err = MPI_Recv_init(recv_buffer + recv_pos, recvcounts[recv_proc], recvtype, recv_proc, tag,
+                            xcomm->global_comm, &(request->global_requests[2 * i + 1]));
+       
     }
+
+    // Start the communication
+    err = MPI_Startall(request->global_n_msgs, request->global_requests);
+    
+
+    // Wait for all communications to finish
+    err = MPI_Waitall(request->global_n_msgs, request->global_requests, MPI_STATUSES_IGNORE);
+   
 
     // Set the request pointer to the newly created request array
     *request_ptr = request;
 
-    return 0;  // Return success
+    return MPI_SUCCESS; 
 }
+
+
+
+
 
 
 
