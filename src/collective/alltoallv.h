@@ -76,6 +76,7 @@ int alltoallv_rma(const void* sendbuf,
         const int rdispls[],
         MPI_Datatype recvtype,
         MPIX_Comm* xcomm);
+        /*
 int alltoallv_rma_init(const void* sendbuf,
         const int* sendcounts,
         const int* sdispls,
@@ -87,6 +88,24 @@ int alltoallv_rma_init(const void* sendbuf,
         MPIX_Comm* xcomm,
         MPIX_Info* xinfo,
         MPIX_Request** request_ptr);
+
+        */
+
+
+int alltoallv_rma_init(const void* sendbuf,
+        const int* sendcounts,
+        const int* sdispls,
+        MPI_Datatype sendtype,
+        void* recvbuf,
+        const int* recvcounts,
+        const int* rdispls,
+        MPI_Datatype recvtype,
+        MPIX_Comm* xcomm,
+        MPIX_Info* xinfo,
+        MPIX_Request** request_ptr);
+
+
+
 
 int alltoallv_pairwise_init(const void* sendbuf,
        const int sendcounts[],
