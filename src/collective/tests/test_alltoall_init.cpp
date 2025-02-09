@@ -1,10 +1,3 @@
-// EXPECT_EQ and ASSERT_EQ are macros
-// EXPECT_EQ test execution and continues even if there is a failure
-// ASSERT_EQ test execution and aborts if there is a failure
-// The ASSERT_* variants abort the program execution if an assertion fails
-// while EXPECT_* variants continue with the run.
-
-
 #include "gtest/gtest.h"
 #include "mpi_advance.h"
 #include <mpi.h>
@@ -17,14 +10,12 @@
 
 int main(int argc, char** argv)
 {
-#define LOCAL_COMM_PPN4
     MPI_Init(&argc, &argv);
     ::testing::InitGoogleTest(&argc, argv);
-    int temp=RUN_ALL_TESTS();
+    int temp = RUN_ALL_TESTS();
     MPI_Finalize();
     return temp;
-} // end of main() //
-
+}
 
 TEST(RandomCommTest, TestsInTests)
 {
@@ -36,12 +27,11 @@ TEST(RandomCommTest, TestsInTests)
     int max_i = 10;
     int max_s = pow(2, max_i);
     srand(time(NULL));
-    std::vector<int> local_data(max_s*num_procs);
-
-    std::vector<int> std_alltoall(max_s*num_procs);
+    std::vector<int> local_data(max_s * num_procs);
+    std::vector<int> std_alltoall(max_s * num_procs);
+    std::vector<int> rma_alltoall(max_s * num_procs);
     std::vector<int> pairwise_alltoall(max_s*num_procs);
     std::vector<int> nonblocking_alltoall(max_s*num_procs);
-    std::vector<int> rma_alltoall(max_s*num_procs);
 
     MPIX_Comm* xcomm;
     MPIX_Comm_init(&xcomm, MPI_COMM_WORLD);
@@ -60,38 +50,39 @@ TEST(RandomCommTest, TestsInTests)
         // Will only be clean for up to double digit process counts
         for (int j = 0; j < num_procs; j++)
             for (int k = 0; k < s; k++)
-                local_data[j*s + k] = rank*10000 + j*100 + k;
+                local_data[j * s + k] = rank * 10000 + j * 100 + k;
 
-        // with out edit
-      /*  PMPI_Alltoall_init(local_data.data(), 
-                s,
-                MPI_INT, 
-                std_alltoall.data(), 
-                s, 
-                MPI_INT,
-                MPI_COMM_WORLD, 
-                MPI_INFO_NULL,
-                &request);
-*/
+        // Barrier to synchronize processes before communication
+        MPI_Barrier(MPI_COMM_WORLD);
 
+        // Standard Alltoall
+        PMPI_Alltoall(local_data.data(),
+                      s,
+                      MPI_INT,
+                      std_alltoall.data(),
+                      s,
+                      MPI_INT,
+                      MPI_COMM_WORLD);
 
-//(const void *sendbuf, int sendcount, MPI_Datatype sendtype,
-  //                               void *recvbuf, int recvcount,
-        //                         MPI_Datatype recvtype, MPI_Comm comm);
+        // RMA Alltoall
+        alltoall_rma_init(local_data.data(),
+                          s,
+                          MPI_INT,
+                          rma_alltoall.data(),
+                          s,
+                          MPI_INT,
+                          xcomm,
+                          xinfo,
+                          &xrequest);
 
-//edited version 
-        PMPI_Alltoall(local_data.data(), 
-                s,
-                MPI_INT, 
-                std_alltoall.data(), 
-                s, 
-                MPI_INT,
-                MPI_COMM_WORLD 
-                );
+        MPIX_Start(xrequest);
+        MPIX_Wait(xrequest, MPI_STATUS_IGNORE);
 
-        MPI_Start(&request);
-        MPI_Wait(&request, MPI_STATUS_IGNORE);
-        MPI_Request_free(&request);
+        // Validate results
+        for (int j = 0; j < s * num_procs; j++)
+            ASSERT_EQ(std_alltoall[j], rma_alltoall[j]);
+
+        MPIX_Request_free(xrequest);
 
         alltoall_pairwise_init(local_data.data(), 
                 s,
@@ -123,26 +114,10 @@ TEST(RandomCommTest, TestsInTests)
             ASSERT_EQ(std_alltoall[j], nonblocking_alltoall[j]);
         MPIX_Request_free(xrequest);
 
-        alltoall_rma_init(local_data.data(), 
-                s,
-                MPI_INT, 
-                rma_alltoall.data(), 
-                s, 
-                MPI_INT,
-                xcomm, 
-                xinfo,
-                &xrequest);
-        MPIX_Start(xrequest);
-        MPIX_Wait(xrequest, MPI_STATUS_IGNORE);
-        for (int j = 0; j < s*num_procs; j++)
-            ASSERT_EQ(std_alltoall[j], rma_alltoall[j]);
-        MPIX_Request_free(xrequest);
-    }
 
+
+    }
 
     MPIX_Info_free(&xinfo);
     MPIX_Comm_free(&xcomm);
 }
-
-
-
