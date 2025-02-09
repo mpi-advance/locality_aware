@@ -270,15 +270,31 @@ int batch_wait(MPIX_Request* request, MPI_Status* status)
     return MPI_SUCCESS;
 }
 
-// RMA Persistent Alltoall Operation
+
+
 int rma_start(MPIX_Request* request)
 {
+    int rank;
+
+    MPI_Comm_rank(request->xcomm->global_comm, &rank);  // Get the rank of the process
+
+        // printf("Process %d entering rma_start\n", rank);
+
+    MPI_Barrier(request->xcomm->global_comm);  // synchronized before proceeding.
+
+       //
+        printf("Process %d leaving rma_start\n", rank);  
+
     return MPI_SUCCESS;
 }
+
+
 int rma_wait(MPIX_Request* request, MPI_Status* status)
 {
     char* send_buffer = (char*)(request->sendbuf);
     char* recv_buffer = (char*)(request->recvbuf);
+
+ MPI_Barrier(request->xcomm->global_comm); //synchronizing
 
     MPI_Win_fence(MPI_MODE_NOSTORE|MPI_MODE_NOPRECEDE, request->xcomm->win);
     for (int i = 0; i < request->n_puts; i++)
@@ -299,15 +315,19 @@ int rma_wait(MPIX_Request* request, MPI_Status* status)
     // - could get rid of initial fence with a flush algorithm as well
 
 
+MPI_Barrier(request->xcomm->global_comm);   //more synchronization
+
+
     // Need to memcpy because win_array is created with window
     // TODO : could explore just attaching recv_buffer to existing dynamic window 
     //        with persistent collectives
     memcpy(recv_buffer, request->xcomm->win_array, request->recv_size);
 
     return MPI_SUCCESS;
-
 }
 
 
+
+  
 
 
