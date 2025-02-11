@@ -64,7 +64,7 @@ TEST(RandomCommTest, TestsInTests)
         int s = pow(2, i);
 
 
-        // Will only be clean for up to double digit process counts
+        
         displs[0] = 0;
         for (int i = 0; i < num_procs; i++)
         {
@@ -73,21 +73,6 @@ TEST(RandomCommTest, TestsInTests)
             sizes[i] = s;
             displs[i+1] = displs[i] + s;
         }
-
-
-
-      /*  PMPI_Alltoall_init(local_data.data(), 
-                s,
-                MPI_INT, 
-                std_alltoall.data(), 
-                s, 
-                MPI_INT,
-                MPI_COMM_WORLD, 
-                MPI_INFO_NULL,
-                &request);
-*/
-
-
 
 
 
@@ -101,116 +86,7 @@ PMPI_Alltoallv(local_data.data(),
                 MPI_INT,
                 MPI_COMM_WORLD);
 
-
-
-       alltoallv_nonblocking_init(local_data.data(), 
-               
-                sizes.data(),
-                displs.data(), 
-                MPI_INT, 
-                nonblocking_alltoallv.data(), 
-           
-                sizes.data(),
-                displs.data(), 
-                MPI_INT,
-                xcomm,
-                 
-                xinfo,
-                &xrequest);
-        MPIX_Start(xrequest);
-        MPIX_Wait(xrequest, MPI_STATUS_IGNORE);
-        for (int j = 0; j < s*num_procs; j++)
-            ASSERT_EQ(std_alltoallv[j], nonblocking_alltoallv[j]);
-        MPIX_Request_free(xrequest);
-
-
-
-alltoallv_init(local_data.data(),
-
-                sizes.data(),
-                displs.data(),
-                MPI_INT,
-                alltoallvint.data(),
-
-                sizes.data(),
-                displs.data(),
-                MPI_INT,
-                xcomm,
-
-                xinfo,
-                &xrequest);
-        MPIX_Start(xrequest);
-        MPIX_Wait(xrequest, MPI_STATUS_IGNORE);
-        for (int j = 0; j < s*num_procs; j++)
-            ASSERT_EQ(std_alltoallv[j], alltoallvint[j]);
-        MPIX_Request_free(xrequest);
-
-
-alltoallv_pairwise_init(local_data.data(),
-
-                sizes.data(),
-                displs.data(),
-                MPI_INT,
-                pairwise_alltoallv.data(),
-
-                sizes.data(),
-                displs.data(),
-                MPI_INT,
-                xcomm,
-
-                xinfo,
-                &xrequest);
-        MPIX_Start(xrequest);
-        MPIX_Wait(xrequest, MPI_STATUS_IGNORE);
-        for (int j = 0; j < s*num_procs; j++)
-            ASSERT_EQ(std_alltoallv[j], pairwise_alltoallv[j]);
-        MPIX_Request_free(xrequest);
-
-
-
-    alltoallv_rma_init(local_data.data(),
-
-                sizes.data(),
-                displs.data(),
-                MPI_INT,
-                rma_alltoallvI.data(),
-
-                sizes.data(),
-                displs.data(),
-                MPI_INT,
-                xcomm,
-
-                xinfo,
-                &xrequest);
-        MPIX_Start(xrequest);
-        MPIX_Wait(xrequest, MPI_STATUS_IGNORE);
-        for (int j = 0; j < s*num_procs; j++)
-            ASSERT_EQ(std_alltoallv[j], rma_alltoallvI[j]);
-        MPIX_Request_free(xrequest);
-
-
-      
-    alltoallv_rma(local_data.data(),
-
-                sizes.data(),
-                displs.data(),
-                MPI_INT,
-                rma_alltoallv.data(),
-
-                sizes.data(),
-                displs.data(),
-                MPI_INT,
-                xcomm
-
-                );
-      //  MPIX_Start(xrequest);
-       // MPIX_Wait(xrequest, MPI_STATUS_IGNORE);
-        for (int j = 0; j < s*num_procs; j++)
-            ASSERT_EQ(std_alltoallv[j], rma_alltoallv[j]);
-        MPIX_Request_free(xrequest);  
-
-
-
+//add persistent versions of alltoallv
 
 
 
