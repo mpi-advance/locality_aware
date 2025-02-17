@@ -23,6 +23,9 @@
 
 void test_partitioned(const char* filename, int n_vec)
 {
+    // msg counts must be divisible by n_parts. simplest method is to have n_parts divide n_vec
+    int n_parts = 2; 
+
     int rank, num_procs;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
@@ -65,7 +68,6 @@ void test_partitioned(const char* filename, int n_vec)
     communicate(A, send_vals, std_recv_vals, MPI_INT, n_vec);
 
     // Partitioned communication
-    int n_parts = 1;
     // Single exchange test
     // Precv/Psend inits
     std::vector<MPIP_Request> sreqs;
@@ -75,6 +77,7 @@ void test_partitioned(const char* filename, int n_vec)
     if (A.recv_comm.n_msgs)
         rreqs.resize(A.recv_comm.n_msgs);
 
+    //printf("rank %d initializing...\n", rank);
     int proc;
     int start, end;
     int tag = 2949;
@@ -83,7 +86,7 @@ void test_partitioned(const char* filename, int n_vec)
         proc = A.recv_comm.procs[i];
         start = A.recv_comm.ptr[i] * n_vec;
         end = A.recv_comm.ptr[i+1] * n_vec;
-        MPIP_Precv_init(&(partd_recv_vals[start]), n_parts, (int)(end - start), MPI_INT, proc, tag,
+        MPIP_Precv_init(&(partd_recv_vals[start]), n_parts, (int)(end - start)/n_parts, MPI_INT, proc, tag,
                 MPI_COMM_WORLD, MPI_INFO_NULL, &(rreqs[i]));
     }
 
@@ -92,26 +95,30 @@ void test_partitioned(const char* filename, int n_vec)
         proc = A.send_comm.procs[i];
         start = A.send_comm.ptr[i] * n_vec;
         end = A.send_comm.ptr[i+1] * n_vec;
-        MPIP_Psend_init(&(alltoallv_send_vals[start]), n_parts, (int)(end - start), MPI_INT, proc, tag,
+        MPIP_Psend_init(&(alltoallv_send_vals[start]), n_parts, (int)(end - start)/n_parts, MPI_INT, proc, tag,
                 MPI_COMM_WORLD, MPI_INFO_NULL, &(sreqs[i]));
     }
 
+    //printf("rank %d starting...\n", rank);
     if (A.send_comm.n_msgs)
         MPIP_Startall(A.send_comm.n_msgs, sreqs.data());
     if (A.recv_comm.n_msgs)
         MPIP_Startall(A.recv_comm.n_msgs, rreqs.data());
 
+    //printf("rank %d marking ready...\n", rank);
     for (int i = 0; i < A.send_comm.n_msgs; i++) {
         for (int j = 0; j < n_parts; j++) {
             MPIP_Pready(j, &sreqs[i]);
         }
     }
 
+    //printf("rank %d waiting...\n", rank);
     if (A.send_comm.n_msgs)
         MPIP_Waitall(A.send_comm.n_msgs, sreqs.data(), MPI_STATUSES_IGNORE);
     if (A.recv_comm.n_msgs)
         MPIP_Waitall(A.recv_comm.n_msgs, rreqs.data(), MPI_STATUSES_IGNORE);
 
+    //printf("rank %d verifying...\n", rank);
     for (int i = 0; i < A.recv_comm.size_msgs; i++)
     {
         ASSERT_EQ(std_recv_vals[i], partd_recv_vals[i]);
@@ -127,12 +134,14 @@ void test_partitioned(const char* filename, int n_vec)
             // unpack
         // Compute
 
+    //printf("rank %d freeing...\n", rank);
     for (int i = 0; i < A.recv_comm.n_msgs; i++) {
         MPIP_Request_free(&rreqs[i]);
     }
     for (int i = 0; i < A.send_comm.n_msgs; i++) {
         MPIP_Request_free(&sreqs[i]);
     }
+    //printf("rank %d complete\n", rank);
 }
 
 int main(int argc, char** argv)
@@ -176,7 +185,7 @@ TEST(RandomCommTest, TestsInTests)
     };
 
     // Test SpM-Multivector
-    std::vector<int> vec_sizes = {1, 2, 10, 100};
+    std::vector<int> vec_sizes = {2, 16, 128};
     for (size_t i = 0; i < test_matrices.size(); i++) {
         // if (rank == 0) 
         //     printf("Matrix %d...\n", i);
