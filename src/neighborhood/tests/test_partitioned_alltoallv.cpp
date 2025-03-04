@@ -35,16 +35,26 @@ void test_partitioned(const char* filename, int n_vec)
     int idx;
     readParMatrix(filename, A);
     form_comm(A);
+    //printf("rank %d read matrix\n", rank);
+    if (rank == 0 && A.global_rows != A.global_cols)
+        printf("NOT SQUARE~~~~~~~~~~~~~~~~~~~~\n");
 
     std::vector<int> std_recv_vals, partd_recv_vals;
     std::vector<int> send_vals, alltoallv_send_vals;
+    std::vector<int> x, b, vals;
+    vals.resize(n_vec);
 
     if (A.on_proc.n_cols)
     {
+        b.resize(A.on_proc.n_rows * n_vec);
+        x.resize(A.on_proc.n_cols * n_vec);
         send_vals.resize(A.on_proc.n_cols * n_vec);
         std::iota(send_vals.begin(), send_vals.end(), 0);
         for (int i = 0; i < A.on_proc.n_cols * n_vec; i++)
+        {
             send_vals[i] += (rank*1000);
+            x[i] = send_vals[i];
+        }
     }
 
     if (A.recv_comm.size_msgs)
@@ -56,20 +66,23 @@ void test_partitioned(const char* filename, int n_vec)
     if (A.send_comm.size_msgs)
     {
         alltoallv_send_vals.resize(A.send_comm.size_msgs * n_vec);
-        for (int i = 0; i < A.send_comm.size_msgs; i++)
-        {
-            idx = A.send_comm.idx[i];
-            for (int j = 0; j < n_vec; j++)
-                alltoallv_send_vals[(i * n_vec) + j] = send_vals[(idx * n_vec) + j];
-        }
     }
 
-    // Point-to-point communication
-    communicate(A, send_vals, std_recv_vals, MPI_INT, n_vec);
-
-    // Partitioned communication
-    // Single exchange test
     // Precv/Psend inits
+    // Launch threads?
+    // set x to be send_vals
+    // Iterations: use x instead of send_vals
+        // Communicate: For each message:
+            // Start
+            // Pack
+            // Pready's
+            // Wait/parrives?
+            // unpack
+        // Compute b
+        // set x to b
+
+    // Initialization
+    //printf("rank %d initializing...\n", rank);
     std::vector<MPIP_Request> sreqs;
     std::vector<MPIP_Request> rreqs;
     if (A.send_comm.n_msgs)
@@ -77,7 +90,6 @@ void test_partitioned(const char* filename, int n_vec)
     if (A.recv_comm.n_msgs)
         rreqs.resize(A.recv_comm.n_msgs);
 
-    //printf("rank %d initializing...\n", rank);
     int proc;
     int start, end;
     int tag = 2949;
@@ -98,42 +110,102 @@ void test_partitioned(const char* filename, int n_vec)
         MPIP_Psend_init(&(alltoallv_send_vals[start]), n_parts, (int)(end - start)/n_parts, MPI_INT, proc, tag,
                 MPI_COMM_WORLD, MPI_INFO_NULL, &(sreqs[i]));
     }
+    //printf("rank %d initialized\n", rank);
 
-    //printf("rank %d starting...\n", rank);
-    if (A.send_comm.n_msgs)
-        MPIP_Startall(A.send_comm.n_msgs, sreqs.data());
-    if (A.recv_comm.n_msgs)
-        MPIP_Startall(A.recv_comm.n_msgs, rreqs.data());
+    // Iterations
+    int iters = 10;
+    for (int iter = 0; iter < iters; iter++) {
 
-    //printf("rank %d marking ready...\n", rank);
-    for (int i = 0; i < A.send_comm.n_msgs; i++) {
-        for (int j = 0; j < n_parts; j++) {
-            MPIP_Pready(j, &sreqs[i]);
+        // Point-to-point communication
+        communicate(A, x, std_recv_vals, MPI_INT, n_vec);
+
+        // Partitioned communication
+        //printf("rank %d starting...\n", rank);
+        if (A.send_comm.n_msgs)
+            MPIP_Startall(A.send_comm.n_msgs, sreqs.data());
+        if (A.recv_comm.n_msgs)
+            MPIP_Startall(A.recv_comm.n_msgs, rreqs.data());
+    
+        // Packing
+        //printf("rank %d packing...\n", rank);
+        if (A.send_comm.size_msgs)
+        {
+            for (int i = 0; i < A.send_comm.size_msgs; i++)
+            {
+                idx = A.send_comm.idx[i];
+                for (int j = 0; j < n_vec; j++)
+                    alltoallv_send_vals[(i * n_vec) + j] = x[(idx * n_vec) + j];
+            }
+        }
+
+        //printf("rank %d marking ready...\n", rank);
+        for (int i = 0; i < A.send_comm.n_msgs; i++) {
+            for (int j = 0; j < n_parts; j++) {
+                MPIP_Pready(j, &sreqs[i]);
+            }
+        }
+
+        //printf("rank %d waiting...\n", rank);
+        if (A.send_comm.n_msgs)
+            MPIP_Waitall(A.send_comm.n_msgs, sreqs.data(), MPI_STATUSES_IGNORE);
+        if (A.recv_comm.n_msgs)
+            MPIP_Waitall(A.recv_comm.n_msgs, rreqs.data(), MPI_STATUSES_IGNORE);
+
+        //printf("rank %d verifying...\n", rank);
+        for (int i = 0; i < A.recv_comm.size_msgs; i++)
+        {
+            ASSERT_EQ(std_recv_vals[i], partd_recv_vals[i]);
+        }
+        
+        // SPMV
+        // Local multiplication
+        int data, col_idx;
+        //printf("rank %d local spmv...\n", rank);
+        for (int i = 0; i < A.on_proc.n_rows; i++)
+        {
+            start = A.on_proc.rowptr[i];
+            end = A.on_proc.rowptr[i+1];
+            for (int vec = 0; vec < n_vec; vec++) {
+                vals[vec] = 0;
+            }
+            for (int j = start; j < end; j++)
+            {
+                data = A.on_proc.data[j];
+                col_idx = A.on_proc.col_idx[j];
+                for (int vec = 0; vec < n_vec; vec++) {
+                    vals[vec] += data * x[col_idx * n_vec + vec];
+                }
+            }
+            for (int vec = 0; vec < n_vec; vec++) {
+                b[i * n_vec + vec] = vals[vec];
+            }
+        }
+
+        //printf("rank %d off-proc spmv...\n", rank);
+        // Add product of off-proc columns and non-local values of x
+        for (int i = 0; i < A.off_proc.n_rows; i++) // Should be the same loop size as local
+        {
+            start = A.off_proc.rowptr[i];
+            end = A.off_proc.rowptr[i+1];
+            for (int vec = 0; vec < n_vec; vec++) {
+                vals[vec] = 0;
+            }
+            for (int j = start; j < end; j++)
+            {
+                data = A.off_proc.data[j];
+                col_idx = A.off_proc.col_idx[j];
+                for (int vec = 0; vec < n_vec; vec++) {
+                    vals[vec] += data * partd_recv_vals[col_idx * n_vec + vec];
+                }
+            }
+            for (int vec = 0; vec < n_vec; vec++) {
+                b[i * n_vec + vec] += vals[vec];
+                x[i * n_vec + vec] = b[i * n_vec + vec];
+            }
         }
     }
 
-    //printf("rank %d waiting...\n", rank);
-    if (A.send_comm.n_msgs)
-        MPIP_Waitall(A.send_comm.n_msgs, sreqs.data(), MPI_STATUSES_IGNORE);
-    if (A.recv_comm.n_msgs)
-        MPIP_Waitall(A.recv_comm.n_msgs, rreqs.data(), MPI_STATUSES_IGNORE);
-
-    //printf("rank %d verifying...\n", rank);
-    for (int i = 0; i < A.recv_comm.size_msgs; i++)
-    {
-        ASSERT_EQ(std_recv_vals[i], partd_recv_vals[i]);
-    }
-    // Precv/Psend inits
-    // Launch threads?
-    // Iterations:
-        // Communicate: For each message:
-            // Start
-            // Pack
-            // Pready's
-            // Wait/parrives?
-            // unpack
-        // Compute
-
+    // Cleanup
     //printf("rank %d freeing...\n", rank);
     for (int i = 0; i < A.recv_comm.n_msgs; i++) {
         MPIP_Request_free(&rreqs[i]);
@@ -141,6 +213,7 @@ void test_partitioned(const char* filename, int n_vec)
     for (int i = 0; i < A.send_comm.n_msgs; i++) {
         MPIP_Request_free(&sreqs[i]);
     }
+
     //printf("rank %d complete\n", rank);
 }
 
@@ -168,27 +241,27 @@ TEST(RandomCommTest, TestsInTests)
         "ww_36_pmec_36.pm",
         "bcsstk01.pm",
         "west0132.pm",
-        "gams10a.pm",
-        "gams10am.pm",
-        "D_10.pm",
+        //"gams10a.pm",
+        //"gams10am.pm",
+        //"D_10.pm",
         "oscil_dcop_11.pm",
         "tumorAntiAngiogenesis_4.pm",
-        "ch5-5-b1.pm",
+        //"ch5-5-b1.pm",
         "msc01050.pm",
         "SmaGri.pm",
         "radfr1.pm",
-        "bibd_49_3.pm",
+        //"bibd_49_3.pm",
         "can_1054.pm",
         "can_1072.pm",
-        "lp_sctap2.pm",
-        "lp_woodw.pm",
+        //"lp_sctap2.pm",
+        //"lp_woodw.pm",
     };
 
     // Test SpM-Multivector
     std::vector<int> vec_sizes = {2, 16, 128};
     for (size_t i = 0; i < test_matrices.size(); i++) {
-        // if (rank == 0) 
-        //     printf("Matrix %d...\n", i);
+        if (rank == 0) 
+            printf("Matrix %d...\n", i);
         for (size_t j = 0; j < vec_sizes.size(); j++) {
             test_partitioned((mat_dir + test_matrices[i]).c_str(), vec_sizes[j]);
         }
