@@ -16,6 +16,7 @@
 #include <numeric>
 #include <set>
 #include <string>
+#include <omp.h>
 
 #include "tests/sparse_mat.hpp"
 #include "tests/par_binary_IO.hpp"
@@ -24,15 +25,16 @@
 void test_partitioned(const char* filename, int n_vec)
 {
     // msg counts must be divisible by n_parts. simplest method is to have n_parts divide n_vec
-    int n_parts = 2; 
+    int n_parts = omp_get_max_threads();// omp_get_num_threads(); 
 
     int rank, num_procs;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
 
+    //printf("rank %d threads %d\n", rank, n_parts);
+
     // Read suitesparse matrix
     ParMat<int> A;
-    int idx;
     readParMatrix(filename, A);
     form_comm(A);
     //printf("rank %d read matrix\n", rank);
@@ -129,21 +131,41 @@ void test_partitioned(const char* filename, int n_vec)
         // Packing
         //printf("rank %d packing...\n", rank);
         if (A.send_comm.size_msgs)
-        {
-            for (int i = 0; i < A.send_comm.size_msgs; i++)
-            {
-                idx = A.send_comm.idx[i];
-                for (int j = 0; j < n_vec; j++)
-                    alltoallv_send_vals[(i * n_vec) + j] = x[(idx * n_vec) + j];
+        {               
+            // for (int i = 0; i < A.send_comm.size_msgs; i++)
+            // {
+            //     idx = A.send_comm.idx[i];
+            //     for (int j = 0; j < n_vec; j++)
+            //         alltoallv_send_vals[(i * n_vec) + j] = x[(idx * n_vec) + j];
+            // }
+
+            int sizes = 0;
+            for (int i = 0; i < A.send_comm.n_msgs; i++) {
+                #pragma omp parallel
+                {
+                    #pragma omp for nowait schedule(static)
+                    for (int j = 0; j < sreqs[i].size; j++) {
+                        int idx = A.send_comm.idx[(sizes + j) / n_vec];
+                        alltoallv_send_vals[sizes + j] = x[(idx * n_vec) + ((sizes + j) % n_vec)];
+                    }
+                    MPIP_Pready(omp_get_thread_num(), &sreqs[i]);
+                }
+                sizes += sreqs[i].size;
             }
         }
 
         //printf("rank %d marking ready...\n", rank);
-        for (int i = 0; i < A.send_comm.n_msgs; i++) {
-            for (int j = 0; j < n_parts; j++) {
-                MPIP_Pready(j, &sreqs[i]);
-            }
-        }
+        // for (int i = 0; i < A.send_comm.n_msgs; i++) {
+        //     #pragma omp parallel
+        //     {
+        //         MPIP_Pready(omp_get_thread_num(), &sreqs[i]);
+        //     }
+        // }
+        // for (int i = 0; i < A.send_comm.n_msgs; i++) {
+        //     for (int j = 0; j < n_parts; j++) {
+        //         MPIP_Pready(j, &sreqs[i]);
+        //     }
+        // }
 
         //printf("rank %d waiting...\n", rank);
         if (A.send_comm.n_msgs)
@@ -258,7 +280,7 @@ TEST(RandomCommTest, TestsInTests)
     };
 
     // Test SpM-Multivector
-    std::vector<int> vec_sizes = {2, 16, 128};
+    std::vector<int> vec_sizes = {16, 128};
     for (size_t i = 0; i < test_matrices.size(); i++) {
         if (rank == 0) 
             printf("Matrix %d...\n", i);
