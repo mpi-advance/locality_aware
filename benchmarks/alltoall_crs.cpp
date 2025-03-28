@@ -106,8 +106,8 @@ int main(int argc, char* argv[])
     MPIX_Comm_win_init(xcomm, bytes, sizeof(int));
 
     int n_recvs;
-    std::vector<int> src(A.send_comm.n_msgs+1);
-    std::vector<int> recvvals(A.send_comm.n_msgs+1);
+    int *src, *recvvals;
+
     std::vector<int> proc_count(num_procs, -1);
     for (int i = 0; i < A.send_comm.n_msgs; i++)
         proc_count[A.send_comm.procs[i]] = A.send_comm.counts[i];
@@ -120,13 +120,15 @@ int main(int argc, char* argv[])
     {
         n_recvs = -1;
         alltoall_crs_rma(A.recv_comm.n_msgs, A.recv_comm.procs.data(), 1, MPI_INT,
-                A.recv_comm.counts.data(), &n_recvs, src.data(), 1, MPI_INT,
-                recvvals.data(), xinfo, xcomm);
+                A.recv_comm.counts.data(), &n_recvs, &src, 1, MPI_INT,
+                (void**)&recvvals, xinfo, xcomm);
     }
     tfinal = MPI_Wtime() - t0;
     MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
     if (rank == 0) printf("MPI_Alltoall_crs Time (RMA VERSION): %e\n", t0/n_iter);
-    compare(n_recvs, src.data(), recvvals.data(), A.send_comm.n_msgs, proc_count.data());
+    compare(n_recvs, src, recvvals, A.send_comm.n_msgs, proc_count.data());
+    MPIFree(src);
+    MPIFree(recvvals);
 
 	// Time Personalized
     MPI_Barrier(MPI_COMM_WORLD);
@@ -135,13 +137,15 @@ int main(int argc, char* argv[])
     {
         n_recvs = -1;
         alltoall_crs_personalized(A.recv_comm.n_msgs, A.recv_comm.procs.data(), 1, MPI_INT,
-                A.recv_comm.counts.data(), &n_recvs, src.data(), 1, MPI_INT,
-                recvvals.data(), xinfo, xcomm);
+                A.recv_comm.counts.data(), &n_recvs, &src, 1, MPI_INT,
+                (void**)&recvvals, xinfo, xcomm);
     }
     tfinal = MPI_Wtime() - t0;
     MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
-    if (rank == 0) printf("MPI_Alltoall_crs Time (Personalized VERSION): %e\n", t0/n_iter);
-    compare(n_recvs, src.data(), recvvals.data(), A.send_comm.n_msgs, proc_count.data());
+    if (rank == 0) printf("MPI_Alltoall_crs Time (RMA VERSION): %e\n", t0/n_iter);
+    compare(n_recvs, src, recvvals, A.send_comm.n_msgs, proc_count.data());
+    MPIFree(src);
+    MPIFree(recvvals);
 
 	// Time Nonblocking
     MPI_Barrier(MPI_COMM_WORLD);
@@ -150,13 +154,16 @@ int main(int argc, char* argv[])
     {
         n_recvs = -1;
         alltoall_crs_nonblocking(A.recv_comm.n_msgs, A.recv_comm.procs.data(), 1, MPI_INT,
-                A.recv_comm.counts.data(), &n_recvs, src.data(), 1, MPI_INT,
-                recvvals.data(), xinfo, xcomm);
+                A.recv_comm.counts.data(), &n_recvs, &src, 1, MPI_INT,
+                (void**)&recvvals, xinfo, xcomm);
     }
     tfinal = MPI_Wtime() - t0;
     MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
-    if (rank == 0) printf("MPI_Alltoall_crs Time (Nonblocking VERSION): %e\n", t0/n_iter);
-    compare(n_recvs, src.data(), recvvals.data(), A.send_comm.n_msgs, proc_count.data());
+    if (rank == 0) printf("MPI_Alltoall_crs Time (RMA VERSION): %e\n", t0/n_iter);
+    compare(n_recvs, src, recvvals, A.send_comm.n_msgs, proc_count.data());
+    MPIFree(src);
+    MPIFree(recvvals);
+
 
 	// Time Personalized Locality
     MPI_Barrier(MPI_COMM_WORLD);
@@ -165,13 +172,15 @@ int main(int argc, char* argv[])
     {
         n_recvs = -1;
         alltoall_crs_personalized_loc(A.recv_comm.n_msgs, A.recv_comm.procs.data(), 1, MPI_INT,
-                A.recv_comm.counts.data(), &n_recvs, src.data(), 1, MPI_INT,
-                recvvals.data(), xinfo, xcomm);
+                A.recv_comm.counts.data(), &n_recvs, &src, 1, MPI_INT,
+                (void**)&recvvals, xinfo, xcomm);
     }
     tfinal = MPI_Wtime() - t0;
     MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
-    if (rank == 0) printf("MPI_Alltoall_crs Time (Personalized Locality VERSION): %e\n", t0/n_iter);
-    compare(n_recvs, src.data(), recvvals.data(), A.send_comm.n_msgs, proc_count.data());
+    if (rank == 0) printf("MPI_Alltoall_crs Time (RMA VERSION): %e\n", t0/n_iter);
+    compare(n_recvs, src, recvvals, A.send_comm.n_msgs, proc_count.data());
+    MPIFree(src);
+    MPIFree(recvvals);
 
 	// Time Nonblocking Locality
     MPI_Barrier(MPI_COMM_WORLD);
@@ -180,14 +189,16 @@ int main(int argc, char* argv[])
     {
         n_recvs = -1;
         alltoall_crs_nonblocking_loc(A.recv_comm.n_msgs, A.recv_comm.procs.data(), 1, MPI_INT,
-                A.recv_comm.counts.data(), &n_recvs, src.data(), 1, MPI_INT,
-                recvvals.data(), xinfo, xcomm);
+                A.recv_comm.counts.data(), &n_recvs, &src, 1, MPI_INT,
+                (void**)&recvvals, xinfo, xcomm);
     }
     tfinal = MPI_Wtime() - t0;
     MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
-    if (rank == 0) printf("MPI_Alltoall_crs Time (Nonblocking Locality VERSION): %e\n", t0/n_iter);
-    compare(n_recvs, src.data(), recvvals.data(), A.send_comm.n_msgs, proc_count.data());
-    
+    if (rank == 0) printf("MPI_Alltoall_crs Time (RMA VERSION): %e\n", t0/n_iter);
+    compare(n_recvs, src, recvvals, A.send_comm.n_msgs, proc_count.data());
+    MPIFree(src);
+    MPIFree(recvvals);
+
     MPIX_Info_free(&xinfo);
     MPIX_Comm_free(&xcomm);
     MPI_Finalize();

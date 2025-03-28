@@ -49,50 +49,54 @@ int MPIX_Alltoallv_crs(
 
 int alltoall_crs_rma(int send_nnz, int* dest, int sendcount,
         MPI_Datatype sendtype, void* sendvals,
-        int* recv_nnz, int* src, int recvcount, MPI_Datatype recvtype,
-        void* recvvals, MPIX_Info* xinfo, MPIX_Comm* comm);
+        int* recv_nnz, int** src, int recvcount, MPI_Datatype recvtype,
+        void** recvvals, MPIX_Info* xinfo, MPIX_Comm* comm);
 
 int alltoall_crs_personalized(int send_nnz, int* dest, int sendcount,
         MPI_Datatype sendtype, void* sendvals,
-        int* recv_nnz, int* src, int recvcount, MPI_Datatype recvtype,
-        void* recvvals, MPIX_Info* xinfo, MPIX_Comm* comm);
+        int* recv_nnz, int** src, int recvcount, MPI_Datatype recvtype,
+        void** recvvals, MPIX_Info* xinfo, MPIX_Comm* comm);
 
 int alltoall_crs_personalized_loc(int send_nnz, int* dest, int sendcount,
         MPI_Datatype sendtype, void* sendvals,
-        int* recv_nnz, int* src, int recvcount, MPI_Datatype recvtype,
-        void* recvvals, MPIX_Info* xinfo, MPIX_Comm* comm);
+        int* recv_nnz, int** src, int recvcount, MPI_Datatype recvtype,
+        void** recvvals, MPIX_Info* xinfo, MPIX_Comm* comm);
 
 int alltoall_crs_nonblocking(int send_nnz, int* dest, int sendcount,
         MPI_Datatype sendtype, void* sendvals,
-        int* recv_nnz, int* src, int recvcount, MPI_Datatype recvtype,
-        void* recvvals, MPIX_Info* xinfo,  MPIX_Comm* comm);
+        int* recv_nnz, int** src, int recvcount, MPI_Datatype recvtype,
+        void** recvvals, MPIX_Info* xinfo, MPIX_Comm* comm);
 
 int alltoall_crs_nonblocking_loc(int send_nnz, int* dest, int sendcount,
         MPI_Datatype sendtype, void* sendvals,
-        int* recv_nnz, int* src, int recvcount, MPI_Datatype recvtype,
-        void* recvvals, MPIX_Info* xinfo, MPIX_Comm* comm);
+        int* recv_nnz, int** src, int recvcount, MPI_Datatype recvtype,
+        void** recvvals, MPIX_Info* xinfo, MPIX_Comm* comm);
 
 
 
 int alltoallv_crs_personalized(int send_nnz, int send_size, int* dest, int* sendcounts,
         int* sdispls, MPI_Datatype sendtype, void* sendvals,
-        int* recv_nnz, int* recv_size, int* src, int* recvcounts, 
-        int* rdispls, MPI_Datatype recvtype, void* recvvals, MPIX_Info* xinfo, MPIX_Comm* comm);
+        int* recv_nnz, int* recv_size, int** src_ptr, int** recvcounts_ptr, 
+        int** rdispls_ptr, MPI_Datatype recvtype, void** recvvals_ptr, MPIX_Info* xinfo, 
+        MPIX_Comm* comm);
 
 int alltoallv_crs_personalized_loc(int send_nnz, int send_size, int* dest, int* sendcounts,
         int* sdispls, MPI_Datatype sendtype, void* sendvals,
-        int* recv_nnz, int* recv_size, int* src, int* recvcounts, 
-        int* rdispls, MPI_Datatype recvtype, void* recvvals, MPIX_Info* xinfo, MPIX_Comm* comm);
+        int* recv_nnz, int* recv_size, int** src_ptr, int** recvcounts_ptr, 
+        int** rdispls_ptr, MPI_Datatype recvtype, void** recvvals_ptr, MPIX_Info* xinfo, 
+        MPIX_Comm* comm);
 
 int alltoallv_crs_nonblocking(int send_nnz, int send_size, int* dest, int* sendcounts,
         int* sdispls, MPI_Datatype sendtype, void* sendvals,
-        int* recv_nnz, int* recv_size, int* src, int* recvcounts, 
-        int* rdispls, MPI_Datatype recvtype, void* recvvals, MPIX_Info* xinfo, MPIX_Comm* comm);
+        int* recv_nnz, int* recv_size, int** src_ptr, int** recvcounts_ptr, 
+        int** rdispls_ptr, MPI_Datatype recvtype, void** recvvals_ptr, MPIX_Info* xinfo, 
+        MPIX_Comm* comm);
 
 int alltoallv_crs_nonblocking_loc(int send_nnz, int send_size, int* dest, int* sendcounts,
         int* sdispls, MPI_Datatype sendtype, void* sendvals,
-        int* recv_nnz, int* recv_size, int* src, int* recvcounts, 
-        int* rdispls, MPI_Datatype recvtype, void* recvvals, MPIX_Info* xinfo, MPIX_Comm* comm);
+        int* recv_nnz, int* recv_size, int** src_ptr, int** recvcounts_ptr, 
+        int** rdispls_ptr, MPI_Datatype recvtype, void** recvvals_ptr, MPIX_Info* xinfo, 
+        MPIX_Comm* comm);
 
 
 

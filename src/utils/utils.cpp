@@ -186,3 +186,22 @@ void get_memcpy_kind(gpuMemoryType send_type, gpuMemoryType recv_type,
         *memcpy_kind = gpuMemcpyHostToHost;
 }
 #endif
+
+
+
+
+void* MPIalloc(const int bytes)
+{
+    if (bytes == 0)
+        return NULL;
+
+    return new char[bytes];
+}
+void MPIFree(void* pointer)
+{
+    if (pointer == NULL)
+        return;
+
+    char* char_ptr = (char*)pointer;
+    delete[] char_ptr;
+}

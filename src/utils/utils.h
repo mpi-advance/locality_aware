@@ -51,6 +51,11 @@ void rotate(void* ref, int new_start_byte, int end_byte);
 void reverse(void* recvbuf, int n_bytes, int var_bytes);
 void repack(int size_i, int size_j, int size_k, char* sendbuf, char* recvbuf);
 
+
+// Allocate Vector in MPI
+void* MPIalloc(const int bytes);
+void MPIFree(void* pointer);
+
 #ifdef __cplusplus
 }
 #endif

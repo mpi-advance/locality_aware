@@ -45,63 +45,68 @@ void test_matrix(const char* filename)
         proc_counts[A.send_comm.procs[i]] = A.send_comm.counts[i];
 
     int n_recvs;
-    std::vector<int> src(A.send_comm.n_msgs+1);
-    std::vector<int> recvvals(A.send_comm.n_msgs+1);
+//    std::vector<int> src(A.send_comm.n_msgs+1);
+//    std::vector<int> recvvals(A.send_comm.n_msgs+1);
+
+    int* src;
+    int* recvvals;
 
     /* TEST RMA VERSION */
     n_recvs = -1;
-    std::fill(src.begin(), src.end(), 0);
-    std::fill(recvvals.begin(), recvvals.end(), 0);
     alltoall_crs_rma(A.recv_comm.n_msgs, A.recv_comm.procs.data(), 1, MPI_INT, 
-            A.recv_comm.counts.data(), &n_recvs, src.data(), 1, MPI_INT,
-            recvvals.data(), xinfo, xcomm);
+            A.recv_comm.counts.data(), &n_recvs, &src, 1, MPI_INT,
+            (void**)&recvvals, xinfo, xcomm);
     ASSERT_EQ(n_recvs, A.send_comm.n_msgs);
     for (int i = 0; i < n_recvs; i++)
         ASSERT_EQ(recvvals[i], proc_counts[src[i]]);
+    MPIFree(src);
+    MPIFree(recvvals);
+
 
     /* TEST PERSONALIZED VERSION */
     n_recvs = -1;
-    std::fill(src.begin(), src.end(), 0);
-    std::fill(recvvals.begin(), recvvals.end(), 0);
     alltoall_crs_personalized(A.recv_comm.n_msgs, A.recv_comm.procs.data(), 1, MPI_INT,
-            A.recv_comm.counts.data(), &n_recvs, src.data(), 1, MPI_INT,
-            recvvals.data(), xinfo, xcomm);
+            A.recv_comm.counts.data(), &n_recvs, &src, 1, MPI_INT,
+            (void**)&recvvals, xinfo, xcomm);
     ASSERT_EQ(n_recvs, A.send_comm.n_msgs);
     for (int i = 0; i < n_recvs; i++)
         ASSERT_EQ(recvvals[i], proc_counts[src[i]]);
+    MPIFree(src);
+    MPIFree(recvvals);
+
 
     /* TEST PERSONALIZED LOCALITY VERSION */
     n_recvs = -1;
-    std::fill(src.begin(), src.end(), 0);
-    std::fill(recvvals.begin(), recvvals.end(), 0);
     alltoall_crs_personalized_loc(A.recv_comm.n_msgs, A.recv_comm.procs.data(), 1, MPI_INT,
-            A.recv_comm.counts.data(), &n_recvs, src.data(), 1, MPI_INT,
-            recvvals.data(), xinfo, xcomm);
+            A.recv_comm.counts.data(), &n_recvs, &src, 1, MPI_INT,
+            (void**)&recvvals, xinfo, xcomm);
     ASSERT_EQ(n_recvs, A.send_comm.n_msgs);
     for (int i = 0; i < n_recvs; i++)
         ASSERT_EQ(recvvals[i], proc_counts[src[i]]);
+    MPIFree(src);
+    MPIFree(recvvals);
 
     /* TEST NONBLOCKING VERSION */
     n_recvs = -1;
-    std::fill(src.begin(), src.end(), 0);
-    std::fill(recvvals.begin(), recvvals.end(), 0);
     alltoall_crs_nonblocking(A.recv_comm.n_msgs, A.recv_comm.procs.data(), 1, MPI_INT,
-            A.recv_comm.counts.data(), &n_recvs, src.data(), 1, MPI_INT,
-            recvvals.data(), xinfo, xcomm);
+            A.recv_comm.counts.data(), &n_recvs, &src, 1, MPI_INT,
+            (void**)&recvvals, xinfo, xcomm);
     ASSERT_EQ(n_recvs, A.send_comm.n_msgs);
     for (int i = 0; i < n_recvs; i++)
         ASSERT_EQ(recvvals[i], proc_counts[src[i]]);
+    MPIFree(src);
+    MPIFree(recvvals);
 
     /* TEST NONBLOCKING LOCALITY VERSION */
     n_recvs = -1;
-    std::fill(src.begin(), src.end(), 0);
-    std::fill(recvvals.begin(), recvvals.end(), 0);
     alltoall_crs_nonblocking_loc(A.recv_comm.n_msgs, A.recv_comm.procs.data(), 1, MPI_INT,
-            A.recv_comm.counts.data(), &n_recvs, src.data(), 1, MPI_INT,
-            recvvals.data(), xinfo, xcomm);
+            A.recv_comm.counts.data(), &n_recvs, &src, 1, MPI_INT,
+            (void**)&recvvals, xinfo, xcomm);
     ASSERT_EQ(n_recvs, A.send_comm.n_msgs);
     for (int i = 0; i < n_recvs; i++)
         ASSERT_EQ(recvvals[i], proc_counts[src[i]]);
+    MPIFree(src);
+    MPIFree(recvvals);
 
     MPIX_Info_free(&xinfo);
     MPIX_Comm_free(&xcomm);
