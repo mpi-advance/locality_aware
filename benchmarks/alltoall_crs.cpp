@@ -127,8 +127,8 @@ int main(int argc, char* argv[])
     MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
     if (rank == 0) printf("MPI_Alltoall_crs Time (RMA VERSION): %e\n", t0/n_iter);
     compare(n_recvs, src, recvvals, A.send_comm.n_msgs, proc_count.data());
-    MPIFree(src);
-    MPIFree(recvvals);
+    MPIX_Free(src);
+    MPIX_Free(recvvals);
 
 	// Time Personalized
     MPI_Barrier(MPI_COMM_WORLD);
@@ -144,8 +144,8 @@ int main(int argc, char* argv[])
     MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
     if (rank == 0) printf("MPI_Alltoall_crs Time (RMA VERSION): %e\n", t0/n_iter);
     compare(n_recvs, src, recvvals, A.send_comm.n_msgs, proc_count.data());
-    MPIFree(src);
-    MPIFree(recvvals);
+    MPIX_Free(src);
+    MPIX_Free(recvvals);
 
 	// Time Nonblocking
     MPI_Barrier(MPI_COMM_WORLD);
@@ -161,8 +161,8 @@ int main(int argc, char* argv[])
     MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
     if (rank == 0) printf("MPI_Alltoall_crs Time (RMA VERSION): %e\n", t0/n_iter);
     compare(n_recvs, src, recvvals, A.send_comm.n_msgs, proc_count.data());
-    MPIFree(src);
-    MPIFree(recvvals);
+    MPIX_Free(src);
+    MPIX_Free(recvvals);
 
 
 	// Time Personalized Locality
@@ -179,8 +179,8 @@ int main(int argc, char* argv[])
     MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
     if (rank == 0) printf("MPI_Alltoall_crs Time (RMA VERSION): %e\n", t0/n_iter);
     compare(n_recvs, src, recvvals, A.send_comm.n_msgs, proc_count.data());
-    MPIFree(src);
-    MPIFree(recvvals);
+    MPIX_Free(src);
+    MPIX_Free(recvvals);
 
 	// Time Nonblocking Locality
     MPI_Barrier(MPI_COMM_WORLD);
@@ -196,8 +196,8 @@ int main(int argc, char* argv[])
     MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
     if (rank == 0) printf("MPI_Alltoall_crs Time (RMA VERSION): %e\n", t0/n_iter);
     compare(n_recvs, src, recvvals, A.send_comm.n_msgs, proc_count.data());
-    MPIFree(src);
-    MPIFree(recvvals);
+    MPIX_Free(src);
+    MPIX_Free(recvvals);
 
     MPIX_Info_free(&xinfo);
     MPIX_Comm_free(&xcomm);

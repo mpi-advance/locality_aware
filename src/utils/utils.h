@@ -53,8 +53,8 @@ void repack(int size_i, int size_j, int size_k, char* sendbuf, char* recvbuf);
 
 
 // Allocate Vector in MPI
-void* MPIalloc(const int bytes);
-void MPIFree(void* pointer);
+int MPIX_Alloc(void** pointer, const int bytes);
+int MPIX_Free(void* pointer);
 
 #ifdef __cplusplus
 }

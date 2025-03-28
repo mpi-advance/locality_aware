@@ -68,10 +68,10 @@ void test_matrix(const char* filename)
             ASSERT_EQ(recvvals[rdispls[i] + j] - A.first_col, 
                     A.send_comm.idx[proc_displs[proc] + j]);
     }
-    MPIFree(src);
-    MPIFree(recvcounts);
-    MPIFree(rdispls);
-    MPIFree(recvvals);
+    MPIX_Free(src);
+    MPIX_Free(recvcounts);
+    MPIX_Free(rdispls);
+    MPIX_Free(recvvals);
 
     /* TEST NONBLOCKING VERSION */
     s_recvs = -1;
@@ -89,10 +89,10 @@ void test_matrix(const char* filename)
             ASSERT_EQ(recvvals[rdispls[i] + j] - A.first_col, 
                     A.send_comm.idx[proc_displs[proc] + j]);
     }
-    MPIFree(src);
-    MPIFree(recvcounts);
-    MPIFree(rdispls);
-    MPIFree(recvvals);
+    MPIX_Free(src);
+    MPIX_Free(recvcounts);
+    MPIX_Free(rdispls);
+    MPIX_Free(recvvals);
 
     /* TEST PERSONALIZED LOCALITY VERSION */
     s_recvs = -1;
@@ -110,10 +110,10 @@ void test_matrix(const char* filename)
             ASSERT_EQ(recvvals[rdispls[i] + j] - A.first_col, 
                     A.send_comm.idx[proc_displs[proc] + j]);
     }
-    MPIFree(src);
-    MPIFree(recvcounts);
-    MPIFree(rdispls);
-    MPIFree(recvvals);
+    MPIX_Free(src);
+    MPIX_Free(recvcounts);
+    MPIX_Free(rdispls);
+    MPIX_Free(recvvals);
 
     /* TEST PERSONALIZED LOCALITY VERSION */
     s_recvs = -1;
@@ -131,10 +131,10 @@ void test_matrix(const char* filename)
             ASSERT_EQ(recvvals[rdispls[i] + j] - A.first_col, 
                     A.send_comm.idx[proc_displs[proc] + j]);
     }
-    MPIFree(src);
-    MPIFree(recvcounts);
-    MPIFree(rdispls);
-    MPIFree(recvvals);
+    MPIX_Free(src);
+    MPIX_Free(recvcounts);
+    MPIX_Free(rdispls);
+    MPIX_Free(recvvals);
     
     MPIX_Info_free(&xinfo);
     MPIX_Comm_free(&xcomm);

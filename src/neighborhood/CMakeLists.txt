@@ -17,7 +17,6 @@ set(neighborhood_SOURCES
     neighborhood/neighbor.c
     neighborhood/neighbor_persistent.c
     neighborhood/neighbor_locality.cpp
-    neighborhood/sparse_coll.c
     neighborhood/alltoall_crs.cpp
     neighborhood/alltoallv_crs.cpp
     PARENT_SCOPE

@@ -141,10 +141,10 @@ int main(int argc, char* argv[])
     compare(n_recvs, s_recvs, src, recvcounts, rdispls, recvvals,
             A.send_comm.n_msgs, A.send_comm.size_msgs, proc_count.data(), proc_displs.data(),
             orig_indices.data());
-    MPIFree(src);
-    MPIFree(recvcounts);
-    MPIFree(rdispls);
-    MPIFree(recvvals);
+    MPIX_Free(src);
+    MPIX_Free(recvcounts);
+    MPIX_Free(rdispls);
+    MPIX_Free(recvvals);
 
     // Time Nonblocking
     MPI_Barrier(MPI_COMM_WORLD);
@@ -163,10 +163,10 @@ int main(int argc, char* argv[])
     compare(n_recvs, s_recvs, src, recvcounts, rdispls, recvvals,
             A.send_comm.n_msgs, A.send_comm.size_msgs, proc_count.data(), proc_displs.data(),
             orig_indices.data());
-    MPIFree(src);
-    MPIFree(recvcounts);
-    MPIFree(rdispls);
-    MPIFree(recvvals);
+    MPIX_Free(src);
+    MPIX_Free(recvcounts);
+    MPIX_Free(rdispls);
+    MPIX_Free(recvvals);
 
     // Time Personalized Locality
     MPI_Barrier(MPI_COMM_WORLD);
@@ -185,10 +185,10 @@ int main(int argc, char* argv[])
     compare(n_recvs, s_recvs, src, recvcounts, rdispls, recvvals,
             A.send_comm.n_msgs, A.send_comm.size_msgs, proc_count.data(), proc_displs.data(),
             orig_indices.data());
-    MPIFree(src);
-    MPIFree(recvcounts);
-    MPIFree(rdispls);
-    MPIFree(recvvals);
+    MPIX_Free(src);
+    MPIX_Free(recvcounts);
+    MPIX_Free(rdispls);
+    MPIX_Free(recvvals);
 
     // Time Nonblocking Locality
     MPI_Barrier(MPI_COMM_WORLD);
@@ -207,10 +207,10 @@ int main(int argc, char* argv[])
     compare(n_recvs, s_recvs, src, recvcounts, rdispls, recvvals,
             A.send_comm.n_msgs, A.send_comm.size_msgs, proc_count.data(), proc_displs.data(),
             orig_indices.data());
-    MPIFree(src);
-    MPIFree(recvcounts);
-    MPIFree(rdispls);
-    MPIFree(recvvals);
+    MPIX_Free(src);
+    MPIX_Free(recvcounts);
+    MPIX_Free(rdispls);
+    MPIX_Free(recvvals);
 
     
     MPIX_Info_free(&xinfo);

@@ -59,8 +59,8 @@ void test_matrix(const char* filename)
     ASSERT_EQ(n_recvs, A.send_comm.n_msgs);
     for (int i = 0; i < n_recvs; i++)
         ASSERT_EQ(recvvals[i], proc_counts[src[i]]);
-    MPIFree(src);
-    MPIFree(recvvals);
+    MPIX_Free(src);
+    MPIX_Free(recvvals);
 
 
     /* TEST PERSONALIZED VERSION */
@@ -71,8 +71,8 @@ void test_matrix(const char* filename)
     ASSERT_EQ(n_recvs, A.send_comm.n_msgs);
     for (int i = 0; i < n_recvs; i++)
         ASSERT_EQ(recvvals[i], proc_counts[src[i]]);
-    MPIFree(src);
-    MPIFree(recvvals);
+    MPIX_Free(src);
+    MPIX_Free(recvvals);
 
 
     /* TEST PERSONALIZED LOCALITY VERSION */
@@ -83,8 +83,8 @@ void test_matrix(const char* filename)
     ASSERT_EQ(n_recvs, A.send_comm.n_msgs);
     for (int i = 0; i < n_recvs; i++)
         ASSERT_EQ(recvvals[i], proc_counts[src[i]]);
-    MPIFree(src);
-    MPIFree(recvvals);
+    MPIX_Free(src);
+    MPIX_Free(recvvals);
 
     /* TEST NONBLOCKING VERSION */
     n_recvs = -1;
@@ -94,8 +94,8 @@ void test_matrix(const char* filename)
     ASSERT_EQ(n_recvs, A.send_comm.n_msgs);
     for (int i = 0; i < n_recvs; i++)
         ASSERT_EQ(recvvals[i], proc_counts[src[i]]);
-    MPIFree(src);
-    MPIFree(recvvals);
+    MPIX_Free(src);
+    MPIX_Free(recvvals);
 
     /* TEST NONBLOCKING LOCALITY VERSION */
     n_recvs = -1;
@@ -105,8 +105,8 @@ void test_matrix(const char* filename)
     ASSERT_EQ(n_recvs, A.send_comm.n_msgs);
     for (int i = 0; i < n_recvs; i++)
         ASSERT_EQ(recvvals[i], proc_counts[src[i]]);
-    MPIFree(src);
-    MPIFree(recvvals);
+    MPIX_Free(src);
+    MPIX_Free(recvvals);
 
     MPIX_Info_free(&xinfo);
     MPIX_Comm_free(&xcomm);

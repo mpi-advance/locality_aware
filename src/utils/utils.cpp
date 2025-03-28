@@ -190,18 +190,22 @@ void get_memcpy_kind(gpuMemoryType send_type, gpuMemoryType recv_type,
 
 
 
-void* MPIalloc(const int bytes)
+int MPIX_Alloc(void** pointer, const int bytes)
 {
     if (bytes == 0)
-        return NULL;
+        *pointer = NULL;
+    else
+        *pointer = new char[bytes];
 
-    return new char[bytes];
+	return MPI_SUCCESS;
 }
-void MPIFree(void* pointer)
+int MPIX_Free(void* pointer)
 {
-    if (pointer == NULL)
-        return;
-
-    char* char_ptr = (char*)pointer;
-    delete[] char_ptr;
+    if (pointer != NULL)
+	{
+		char* char_ptr = (char*)pointer;
+        delete[] char_ptr;
+	}
+    
+    return MPI_SUCCESS;
 }

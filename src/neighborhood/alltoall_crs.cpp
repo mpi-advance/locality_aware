@@ -71,8 +71,10 @@ int alltoall_crs_rma(int send_nnz, int* dest, int sendcount,
     }
 
     *recv_nnz_ptr = src.size();
-    (*src_ptr) = (int*)MPIalloc(src.size()*sizeof(int));
-    (*recvvals_ptr) = MPIalloc(recv_buffer.size());
+    MPIX_Alloc((void**)src_ptr, src.size()*sizeof(int));
+    MPIX_Alloc(recvvals_ptr, recv_buffer.size());
+    //(*src_ptr) = (int*)MPIalloc(src.size()*sizeof(int));
+    //(*recvvals_ptr) = MPIalloc(recv_buffer.size());
     memcpy((*src_ptr), src.data(), src.size()*sizeof(int));
     memcpy((*recvvals_ptr), recv_buffer.data(), recv_buffer.size());
     
@@ -115,8 +117,12 @@ int alltoall_crs_personalized(int send_nnz, int* dest, int sendcount,
         free(msg_counts);
     }
 
-    int* src = (int*)MPIalloc(*recv_nnz*sizeof(int));
-    void* recvvals = MPIalloc(*recv_nnz*recv_bytes);
+    int* src;
+    char* recvvals;
+    MPIX_Alloc((void**)&src, *recv_nnz*sizeof(int));
+    MPIX_Alloc((void**)&recvvals, *recv_nnz*recv_bytes);
+//    int* src = (int*)MPIalloc(*recv_nnz*sizeof(int));
+//    void* recvvals = MPIalloc(*recv_nnz*recv_bytes);
 
     if (comm->n_requests < send_nnz)
         MPIX_Comm_req_resize(comm, send_nnz);
@@ -220,8 +226,10 @@ int alltoall_crs_nonblocking(int send_nnz, int* dest, int sendcount,
     }
 
     *recv_nnz = src.size();
-    (*src_ptr) = (int*)MPIalloc(src.size()*sizeof(int));
-    (*recvvals_ptr) = MPIalloc(recv_buffer.size());
+    MPIX_Alloc((void**)src_ptr, src.size()*sizeof(int));
+    MPIX_Alloc(recvvals_ptr, recv_buffer.size());
+    //(*src_ptr) = (int*)MPIalloc(src.size()*sizeof(int));
+    //(*recvvals_ptr) = MPIalloc(recv_buffer.size());
     memcpy((*src_ptr), src.data(), src.size()*sizeof(int));
     memcpy((*recvvals_ptr), recv_buffer.data(), recv_buffer.size());
 
@@ -347,8 +355,10 @@ void local_redistribute(int node_recv_size, std::vector<char>& recv_buf, std::ve
     }
     *recv_nnz = src.size();
 
-    (*src_ptr) = (int*)MPIalloc(src.size()*sizeof(int));
-    (*recvvals_ptr) = MPIalloc(recv_buffer.size());
+    MPIX_Alloc((void**)src_ptr, src.size()*sizeof(int));
+    MPIX_Alloc(recvvals_ptr, recv_buffer.size());
+//    (*src_ptr) = (int*)MPIalloc(src.size()*sizeof(int));
+//    (*recvvals_ptr) = MPIalloc(recv_buffer.size());
     memcpy((*src_ptr), src.data(), src.size()*sizeof(int));
     memcpy((*recvvals_ptr), recv_buffer.data(), recv_buffer.size());
 }

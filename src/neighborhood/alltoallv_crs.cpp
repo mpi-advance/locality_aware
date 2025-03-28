@@ -32,7 +32,9 @@ int alltoallv_crs_personalized(int send_nnz, int send_size, int* dest, int* send
     *recv_size = msg_counts[rank] / recv_bytes;
 
     // Allocate recvvals to size determined in allreduce
-    char* recvvals = (char*)MPIalloc(*recv_size * recv_bytes);
+    char* recvvals;
+    MPIX_Alloc((void**)&recvvals, *recv_size*recv_bytes);
+//    char* recvvals = (char*)MPIalloc(*recv_size * recv_bytes);
 
     if (comm->n_requests < send_nnz)
         MPIX_Comm_req_resize(comm, send_nnz);
@@ -73,9 +75,12 @@ int alltoallv_crs_personalized(int send_nnz, int send_size, int* dest, int* send
     *recv_nnz = src.size();
     *recvvals_ptr = recvvals;
 
-    (*src_ptr) = (int*)MPIalloc(src.size()*sizeof(int));
-    (*recvcounts_ptr) = (int*)MPIalloc(recvcounts.size()*sizeof(int));
-    (*rdispls_ptr) = (int*)MPIalloc(rdispls.size()*sizeof(int));
+    MPIX_Alloc((void**)src_ptr, src.size()*sizeof(int));
+	MPIX_Alloc((void**)recvcounts_ptr, recvcounts.size()*sizeof(int));
+    MPIX_Alloc((void**)rdispls_ptr, rdispls.size()*sizeof(int));
+//    (*src_ptr) = (int*)MPIalloc(src.size()*sizeof(int));
+//    (*recvcounts_ptr) = (int*)MPIalloc(recvcounts.size()*sizeof(int));
+//    (*rdispls_ptr) = (int*)MPIalloc(rdispls.size()*sizeof(int));
     memcpy((*src_ptr), src.data(), src.size()*sizeof(int));
     memcpy((*recvcounts_ptr), recvcounts.data(), recvcounts.size()*sizeof(int));
     memcpy((*rdispls_ptr), rdispls.data(), rdispls.size()*sizeof(int));
@@ -167,10 +172,15 @@ int alltoallv_crs_nonblocking(int send_nnz, int send_size, int* dest, int* sendc
     *recv_nnz = src.size();
     *recv_size = ctr;
 
-    (*src_ptr) = (int*)MPIalloc(src.size()*sizeof(int));
-    (*recvcounts_ptr) = (int*)MPIalloc(recvcounts.size()*sizeof(int));
-    (*rdispls_ptr) = (int*)MPIalloc(rdispls.size()*sizeof(int));
-    (*recvvals_ptr) = MPIalloc(recvvals.size());
+
+    MPIX_Alloc((void**)src_ptr, src.size()*sizeof(int));
+	MPIX_Alloc((void**)recvcounts_ptr, recvcounts.size()*sizeof(int));
+    MPIX_Alloc((void**)rdispls_ptr, rdispls.size()*sizeof(int));
+	MPIX_Alloc((void**)recvvals_ptr, recvvals.size());
+    //(*src_ptr) = (int*)MPIalloc(src.size()*sizeof(int));
+    //(*recvcounts_ptr) = (int*)MPIalloc(recvcounts.size()*sizeof(int));
+    //(*rdispls_ptr) = (int*)MPIalloc(rdispls.size()*sizeof(int));
+    //(*recvvals_ptr) = MPIalloc(recvvals.size());
 
     memcpy((*src_ptr), src.data(), src.size()*sizeof(int));
     memcpy((*recvcounts_ptr), recvcounts.data(), recvcounts.size()*sizeof(int));
@@ -323,10 +333,14 @@ void local_redistribute(int n_recvs, std::vector<int>& origins, std::vector<int>
     *recv_nnz = src.size();
     *recv_size = ctr;
 
-    (*src_ptr) = (int*)MPIalloc(src.size()*sizeof(int));
-    (*recvcounts_ptr) = (int*)MPIalloc(recvcounts.size()*sizeof(int));
-    (*rdispls_ptr) = (int*)MPIalloc(rdispls.size()*sizeof(int));
-    (*recvvals_ptr) = MPIalloc(recvvals.size());
+    MPIX_Alloc((void**)src_ptr, src.size()*sizeof(int));
+	MPIX_Alloc((void**)recvcounts_ptr, recvcounts.size()*sizeof(int));
+    MPIX_Alloc((void**)rdispls_ptr, rdispls.size()*sizeof(int));
+	MPIX_Alloc(recvvals_ptr, recvvals.size());
+    //(*src_ptr) = (int*)MPIalloc(src.size()*sizeof(int));
+    //(*recvcounts_ptr) = (int*)MPIalloc(recvcounts.size()*sizeof(int));
+    //(*rdispls_ptr) = (int*)MPIalloc(rdispls.size()*sizeof(int));
+    //(*recvvals_ptr) = MPIalloc(recvvals.size());
 
     memcpy((*src_ptr), src.data(), src.size()*sizeof(int));
     memcpy((*recvcounts_ptr), recvcounts.data(), recvcounts.size()*sizeof(int));
@@ -606,122 +620,5 @@ int alltoallv_crs_nonblocking_loc(int send_nnz, int send_size, int* dest, int* s
 
     return MPI_SUCCESS;
 
-/*
-    std::vector<int> recv_sizes(PPN, 0);
-    std::vector<int> recv_displs(PPN+1);
-
-    std::vector<char> local_buf;
-    if (origin_displs[n_recvs])
-        local_buf.resize(origin_displs[n_recvs]);
-
-    int idx = 0;
-    std::vector<char> recv_byte_buf;
-    if (recv_buf.size())
-    {
-        recv_byte_buf.resize(recv_buf.size());
-        MPI_Pack(recv_buf.data(), recv_buf.size(), MPI_BYTE, recv_byte_buf.data(), recv_byte_buf.size(), &idx, comm->local_comm);
-    }
-
-    idx = 0;
-    while (idx < origin_displs[n_recvs])
-    {
-        MPI_Unpack(recv_byte_buf.data(), recv_byte_buf.size(), &idx, &proc, 1, MPI_INT, comm->local_comm);
-        MPI_Unpack(recv_byte_buf.data(), recv_byte_buf.size(), &idx, &count, 1, MPI_INT, comm->local_comm);
-        proc -= (comm->rank_node*PPN);
-        idx += count;
-
-        recv_sizes[proc] += count + 2*int_bytes;
-    } 
-
-    recv_displs[0] = 0;
-    for (int i = 0; i < PPN; i++)
-        recv_displs[i+1] = recv_displs[i] + recv_sizes[i];
-
-    idx = 0;
-    for (int i = 0; i < n_recvs; i++)
-    {
-        int origin = origins[i];
-        while (idx < origin_displs[i+1])
-        {
-            MPI_Unpack(recv_byte_buf.data(), recv_byte_buf.size(), &idx, &proc, 1, MPI_INT, comm->local_comm);
-            MPI_Unpack(recv_byte_buf.data(), recv_byte_buf.size(), &idx, &count, 1, MPI_INT, comm->local_comm);
-            proc -= (comm->rank_node*PPN);
-
-            MPI_Pack(&origin, 1, MPI_INT, local_buf.data(), local_buf.size(), &(recv_displs[proc]), comm->local_comm);
-            MPI_Pack(&count, 1, MPI_INT, local_buf.data(), local_buf.size(), &(recv_displs[proc]), comm->local_comm);
-            
-            MPI_Pack(&(recv_byte_buf[idx]), count, MPI_PACKED, local_buf.data(), local_buf.size(), &(recv_displs[proc]), comm->local_comm);
-            idx += count;
-        }
-    }
-
-    recv_displs[0] = 0;
-    for (int i = 0; i < PPN; i++)
-        recv_displs[i+1] = recv_displs[i] + recv_sizes[i];
-
-    // STEP 2 : Local Communication
-    MPI_Allreduce(MPI_IN_PLACE, recv_sizes.data(), PPN, MPI_INT, MPI_SUM, comm->local_comm);
-    int local_size_msgs = recv_sizes[local_rank];
-
-    // Send a message to every process that I will need data from
-    // Tell them which global indices I need from them
-    std::vector<MPI_Request> local_req(PPN);
-
-    MPIX_Info_tag(xinfo, &tag);
-
-    n_sends = 0;
-    for (int i = 0; i < PPN; i++)
-    {
-        int s = recv_displs[i+1] - recv_displs[i];
-        if (s)
-        {
-            MPI_Isend(&(local_buf[recv_displs[i]]), s, MPI_PACKED, i, tag,
-                    comm->local_comm, &(local_req[n_sends++]));
-        }
-    }
-
-    // Wait to receive values
-    // until I have received fewer than the number of global indices I am waiting on
-    std::vector<char> local_recv_buffer(local_size_msgs);
-
-    ctr = 0;
-    while (ctr < local_size_msgs)
-    {
-        // Wait for a message
-        MPI_Probe(MPI_ANY_SOURCE, tag, comm->local_comm, &recv_status);
-
-        // Get the source process and message size
-        proc = recv_status.MPI_SOURCE;
-        MPI_Get_count(&recv_status, MPI_PACKED, &count);
-
-        // Receive the message, and add local indices to send_comm
-        MPI_Recv(&(local_recv_buffer[ctr]), count, MPI_PACKED, proc, tag, comm->local_comm, &recv_status);
-        ctr += count;
-    }
-    if (n_sends) MPI_Waitall(n_sends, local_req.data(), MPI_STATUSES_IGNORE);
-
-
-// Last Step : Step through recvbuf to find proc of origin, size, and indices
-    rdispls[0] = 0;
-    n_recvs = 0;
-    int byte_ctr = 0;
-    while (byte_ctr < local_size_msgs)
-    {
-        MPI_Unpack(local_recv_buffer.data(), local_recv_buffer.size(), &byte_ctr, &(src[n_recvs]), 1, MPI_INT, comm->local_comm);
-        MPI_Unpack(local_recv_buffer.data(), local_recv_buffer.size(), &byte_ctr, &count, 1, MPI_INT, comm->local_comm);
-        count = count / recv_bytes;
-
-        MPI_Unpack(local_recv_buffer.data(), local_recv_buffer.size(), &byte_ctr, &(recv_buffer[rdispls[n_recvs]*recv_bytes]), count, recvtype, comm->local_comm);
-
-        recvcounts[n_recvs] = count;
-        rdispls[n_recvs+1] = rdispls[n_recvs] + count;
-        n_recvs++;
-    }
-    // Set send sizes
-    *recv_nnz = n_recvs;
-    *recv_size = rdispls[n_recvs];
-
-    return MPI_SUCCESS;  
-*/
 }
 
