@@ -20,10 +20,10 @@ int MPIX_Alltoall_crs(
         MPI_Datatype sendtype,
         void* sendvals,
         int* recv_nnz,
-        int* src,
+        int** src_ptr,
         int recvcount,
         MPI_Datatype recvtype,
-        void* recvvals,
+        void** recvvals_ptr,
         MPIX_Info* xinfo,
         MPIX_Comm* xcomm
         );
@@ -38,11 +38,11 @@ int MPIX_Alltoallv_crs(
         void* sendvals,
         int* recv_nnz,
         int* recv_size,
-        int* src,
-        int* recvcounts,
-        int* rdispls,
+        int** src_ptr,
+        int** recvcounts_ptr,
+        int** rdispls_ptr,
         MPI_Datatype recvtype,
-        void* recvvals,
+        void** recvvals_ptr,
         MPIX_Info* xinfo,
         MPIX_Comm* comm);
 
