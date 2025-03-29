@@ -252,7 +252,7 @@ CALI_MARK_END("Final_rma_Win_fence_region");
 }
 
 
-/****Win Flush */
+/**Win Flush similar implemetation to alltoallv_rma_winlock but I used MPI_Put(blocking)  */
 
 int alltoallv_rma_winflush(const void* sendbuf,
                            const int sendcounts[],
@@ -321,21 +321,23 @@ int alltoallv_rma_winflush(const void* sendbuf,
     MPI_Win_unlock_all(xcomm->win);
     CALI_MARK_END("Final_Win_unlock_all_region_rma_winflush");
 
+    MPI_Barrier(xcomm->global_comm);
+
     return MPI_SUCCESS;
 }
 
 
 
-
+//uses non-blocking MPI_Rput 
 int alltoallv_rma_winlock(const void* sendbuf,
-                  const int sendcounts[],
-                  const int sdispls[],
-                  MPI_Datatype sendtype,
-                  void* recvbuf,
-                  const int recvcounts[],
-                  const int rdispls[],
-                  MPI_Datatype recvtype,
-                  MPIX_Comm* xcomm)
+                          const int sendcounts[],
+                          const int sdispls[],
+                          MPI_Datatype sendtype,
+                          void* recvbuf,
+                          const int recvcounts[],
+                          const int rdispls[],
+                          MPI_Datatype recvtype,
+                          MPIX_Comm* xcomm)
 {
     int rank, num_procs;
     MPI_Comm_rank(xcomm->global_comm, &rank);
@@ -353,46 +355,180 @@ int alltoallv_rma_winlock(const void* sendbuf,
         total_recv_bytes += recvcounts[i] * recv_type_size;
     }
 
-    if (xcomm->win_bytes != total_recv_bytes || xcomm->win_type_bytes != 1) {
-        MPIX_Comm_win_free(xcomm);
-    }
-
-    if (xcomm->win == MPI_WIN_NULL) {
+    
+    if (xcomm->win == MPI_WIN_NULL || xcomm->win_bytes != total_recv_bytes || xcomm->win_type_bytes != 1) {
+        if (xcomm->win != MPI_WIN_NULL) {
+            MPI_Win_free(&xcomm->win);
+        }
         MPI_Win_create(recv_buffer, total_recv_bytes, 1, MPI_INFO_NULL, xcomm->global_comm, &xcomm->win);
+        xcomm->win_bytes = total_recv_bytes;
+        xcomm->win_type_bytes = 1;
     }
 
     CALI_MARK_BEGIN("start_Win_lock__used_in_rma_winlock");
 
+    // Lock the window for all processes
     MPI_Win_lock_all(0, xcomm->win);
+    //local window-> each acceses the target exclusively
 
     CALI_MARK_END("start_Win_lock__used_in_rma_winlock");
 
     CALI_MARK_BEGIN("Put_region__used_in_rma_winlock");
 
+    
+    MPI_Request* requests = (MPI_Request*)malloc(num_procs * sizeof(MPI_Request));
+    int request_count = 0;
+
+    //  non-blocking MPI_Rput 
     for (int i = 0; i < num_procs; i++) {
         if (sendcounts[i] > 0) {
-            MPI_Put(&(send_buffer[sdispls[i] * send_type_size]),
-                    sendcounts[i] * send_type_size,
-                    MPI_CHAR,
-                    i,
-                    rdispls[rank] * recv_type_size,
-                    recvcounts[rank] * recv_type_size,
-                    MPI_CHAR,
-                    xcomm->win);
+            MPI_Rput(&(send_buffer[sdispls[i] * send_type_size]),
+                     sendcounts[i] * send_type_size,
+                     MPI_CHAR,
+                     i,
+                     rdispls[rank] * recv_type_size,
+                     recvcounts[rank] * recv_type_size,
+                     MPI_CHAR,
+                     xcomm->win,
+                     &requests[request_count++]);
         }
     }
 
+    /* Waiting for all non-blocking operations to complete */
+    MPI_Waitall(request_count, requests, MPI_STATUSES_IGNORE);
+
+    
+    free(requests);
+
     CALI_MARK_END("Put_region__used_in_rma_winlock");
 
+    CALI_MARK_BEGIN("Final_Win_flush_region__used_in_rma_winlock");
 
-    CALI_MARK_BEGIN("Final_Win_lock_region__used_in_rma_winlock");
-    
+    // to complete RMA operations 
+    MPI_Win_flush_all(xcomm->win);
+
+   
+    CALI_MARK_END("Final_Win_flush_region__used_in_rma_winlock");
+   
+    CALI_MARK_BEGIN("Final_Win_unlock_region__used_in_rma_winlock");
+
+    //unlocking
     MPI_Win_unlock_all(xcomm->win);
 
-    CALI_MARK_END("Final_Win_lock_region__used_in_rma_winlock");
+    CALI_MARK_END("Final_Win_unlock_region__used_in_rma_winlock");
+    
+    MPI_Barrier(xcomm->global_comm);
 
     return MPI_SUCCESS;
 }
+
+
+//winlock newly optimized version following the intructions below instructions;
+/*
+can you add lockall flags
+
+For i in all processes
+
+    MpiAccumulate +1 flags rank i
+
+end for
+
+unlock flags 
+
+while myflag != numprocs //spin check
+*/
+////New New
+
+
+
+int alltoallv_rma_newly_winlock(const void* sendbuf,
+    const int sendcounts[],
+    const int sdispls[],
+    MPI_Datatype sendtype,
+    void* recvbuf,
+    const int recvcounts[],
+    const int rdispls[],
+    MPI_Datatype recvtype,
+    MPIX_Comm* xcomm)
+{
+int rank, num_procs;
+MPI_Comm_rank(xcomm->global_comm, &rank);
+MPI_Comm_size(xcomm->global_comm, &num_procs);
+
+char* send_buffer = (char*)(sendbuf);
+char* recv_buffer = (char*)(recvbuf);
+
+int send_type_size, recv_type_size;
+MPI_Type_size(sendtype, &send_type_size);
+MPI_Type_size(recvtype, &recv_type_size);
+
+int total_recv_bytes = 0;
+for (int i = 0; i < num_procs; i++) {
+total_recv_bytes += recvcounts[i] * recv_type_size;
+}
+
+if (xcomm->win_bytes != total_recv_bytes || xcomm->win_type_bytes != 1) {
+MPIX_Comm_win_free(xcomm);
+}
+
+if (xcomm->win == MPI_WIN_NULL) {
+MPI_Win_create(recv_buffer, total_recv_bytes, 1, MPI_INFO_NULL, xcomm->global_comm, &xcomm->win);
+}
+
+
+int my_flag = 0;
+int* flag_array;
+MPI_Win flag_win;
+MPI_Alloc_mem(num_procs * sizeof(int), MPI_INFO_NULL, &flag_array);
+memset(flag_array, 0, num_procs * sizeof(int)); 
+MPI_Win_create(flag_array, num_procs * sizeof(int), sizeof(int), MPI_INFO_NULL, xcomm->global_comm, &flag_win);
+
+int one = 1;
+
+//  MPI_Put
+for (int i = 0; i < num_procs; i++) {
+if (sendcounts[i] > 0) {
+MPI_Win_lock(MPI_LOCK_EXCLUSIVE, i, 0, xcomm->win);
+MPI_Put(&(send_buffer[sdispls[i] * send_type_size]),
+      sendcounts[i] * send_type_size,
+      MPI_CHAR,
+      i,
+      rdispls[rank] * recv_type_size,
+      recvcounts[rank] * recv_type_size,
+      MPI_CHAR,
+      xcomm->win);
+MPI_Win_flush(i, xcomm->win);
+MPI_Win_unlock(i, xcomm->win);
+}
+}
+
+// Locking for accumulation
+MPI_Win_lock_all(0, flag_win);
+for (int i = 0; i < num_procs; i++) {
+MPI_Accumulate(&one, 1, MPI_INT, i, rank, 1, MPI_INT, MPI_SUM, flag_win);
+}
+MPI_Win_flush_all(flag_win);
+MPI_Win_unlock_all(flag_win);
+
+//waits 4 all processes to complete their gets
+MPI_Barrier(xcomm->global_comm);
+
+
+
+// Spining 
+ /* do {
+MPI_Win_lock(MPI_LOCK_SHARED, rank, 0, flag_win);
+MPI_Get(&my_flag, 1, MPI_INT, rank, rank, 1, MPI_INT, flag_win);
+MPI_Win_flush(rank, flag_win);
+MPI_Win_unlock(rank, flag_win);
+} while (my_flag < num_procs);
+
+MPI_Win_free(&flag_win);
+MPI_Free_mem(flag_array);
+*/
+return MPI_SUCCESS;
+}
+
 
 
 
