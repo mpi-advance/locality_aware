@@ -143,9 +143,9 @@ void test_partitioned(const char* filename, int n_vec)
         if (A.send_comm.size_msgs)
         {
             int sizes = 0;
-            for (int i = 0; i < A.send_comm.n_msgs; i++) {
-                #pragma omp parallel
-                {
+            #pragma omp parallel
+            {
+                for (int i = 0; i < A.send_comm.n_msgs; i++) {
                     #pragma omp for nowait schedule(static)
                     for (int j = 0; j < sreqs[i].size; j++) {
                         int idx = A.send_comm.idx[(sizes + j) / n_vec];
@@ -154,12 +154,15 @@ void test_partitioned(const char* filename, int n_vec)
 
                     MPIP_Pready(omp_get_thread_num(), &sreqs[i]);
 
-                    // #pragma omp master
-                    // {
-                    //     sizes += sreqs[i].size;
-                    // }
+                    #pragma omp barrier
+
+                    #pragma omp master
+                    {
+                        sizes += sreqs[i].size;
+                    }
+
+                    #pragma omp barrier
                 }
-                sizes += sreqs[i].size;
             }
         }
 
