@@ -128,17 +128,20 @@ void test_partitioned(const char* filename, int n_vec)
         if (A.recv_comm.n_msgs)
             MPIP_Startall(A.recv_comm.n_msgs, rreqs.data());
     
-        // Packing
-        //printf("rank %d packing...\n", rank);
-        if (A.send_comm.size_msgs)
-        {               
+        // if (A.send_comm.size_msgs)
+        // {
             // for (int i = 0; i < A.send_comm.size_msgs; i++)
             // {
             //     idx = A.send_comm.idx[i];
             //     for (int j = 0; j < n_vec; j++)
             //         alltoallv_send_vals[(i * n_vec) + j] = x[(idx * n_vec) + j];
             // }
+        // }
 
+        // Packing
+        //printf("rank %d packing...\n", rank);
+        if (A.send_comm.size_msgs)
+        {
             int sizes = 0;
             for (int i = 0; i < A.send_comm.n_msgs; i++) {
                 #pragma omp parallel
@@ -148,19 +151,19 @@ void test_partitioned(const char* filename, int n_vec)
                         int idx = A.send_comm.idx[(sizes + j) / n_vec];
                         alltoallv_send_vals[sizes + j] = x[(idx * n_vec) + ((sizes + j) % n_vec)];
                     }
+
                     MPIP_Pready(omp_get_thread_num(), &sreqs[i]);
+
+                    // #pragma omp master
+                    // {
+                    //     sizes += sreqs[i].size;
+                    // }
                 }
                 sizes += sreqs[i].size;
             }
         }
 
         //printf("rank %d marking ready...\n", rank);
-        // for (int i = 0; i < A.send_comm.n_msgs; i++) {
-        //     #pragma omp parallel
-        //     {
-        //         MPIP_Pready(omp_get_thread_num(), &sreqs[i]);
-        //     }
-        // }
         // for (int i = 0; i < A.send_comm.n_msgs; i++) {
         //     for (int j = 0; j < n_parts; j++) {
         //         MPIP_Pready(j, &sreqs[i]);
