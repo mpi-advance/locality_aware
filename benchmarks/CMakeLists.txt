@@ -10,15 +10,15 @@ if(USE_GPU)
     endif()
 
     add_executable(gpu_alltoall gpu_alltoall.cpp)
-    target_link_libraries(gpu_alltoall mpi_advance ${MPI_LIBRARIES} OpenMP::OpenMP_CXX)
+    target_link_libraries(gpu_alltoall mpi_advance ${MPI_LIBRARIES} )
 
 endif()
 
 add_executable(alltoall_crs alltoall_crs.cpp)
-target_link_libraries(alltoall_crs mpi_advance ${MPI_LIBRARIES} OpenMP::OpenMP_CXX)
+target_link_libraries(alltoall_crs mpi_advance ${MPI_LIBRARIES} )
 
 add_executable(alltoallv_crs alltoallv_crs.cpp)
-target_link_libraries(alltoallv_crs mpi_advance ${MPI_LIBRARIES} OpenMP::OpenMP_CXX)
+target_link_libraries(alltoallv_crs mpi_advance ${MPI_LIBRARIES} )
 
 add_executable(microbenchmarks microbenchmarks.cpp)
-target_link_libraries(microbenchmarks mpi_advance ${MPI_LIBRARIES} OpenMP::OpenMP_CXX)
+target_link_libraries(microbenchmarks mpi_advance ${MPI_LIBRARIES} )
