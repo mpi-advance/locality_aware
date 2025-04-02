@@ -22,6 +22,129 @@
 #include "tests/par_binary_IO.hpp"
 #include "mpipcl.h"
 
+
+void partitioned_communicate(
+    int n_vec,
+    int n_recvs,
+    int n_sends,
+    int size_sends,
+    std::vector<int>& idxs,
+    std::vector<int>& x,
+    std::vector<MPIP_Request>& sreqs,
+    std::vector<MPIP_Request>& rreqs,
+    std::vector<int>& send_vals
+) {
+    // Partitioned communication
+    //printf("rank %d starting...\n", rank);
+    if (n_sends)
+        MPIP_Startall(n_sends, sreqs.data());
+    if (n_recvs)
+        MPIP_Startall(n_recvs, rreqs.data());
+
+    // Packing
+    //printf("rank %d packing...\n", rank);
+    if (size_sends)
+    {
+        int sizes = 0;
+        #pragma omp parallel
+        {
+            for (int i = 0; i < n_sends; i++) {
+                #pragma omp for nowait schedule(static)
+                for (int j = 0; j < sreqs[i].size; j++) {
+                    int idx = idxs[(sizes + j) / n_vec];
+                    send_vals[sizes + j] = x[(idx * n_vec) + ((sizes + j) % n_vec)];
+                }
+
+                MPIP_Pready(omp_get_thread_num(), &sreqs[i]);
+
+                #pragma omp barrier
+
+                #pragma omp master
+                {
+                    sizes += sreqs[i].size;
+                }
+
+                #pragma omp barrier
+            }
+        }
+    }
+
+    //printf("rank %d waiting...\n", rank);
+    if (n_sends)
+        MPIP_Waitall(n_sends, sreqs.data(), MPI_STATUSES_IGNORE);
+    if (n_recvs)
+        MPIP_Waitall(n_recvs, rreqs.data(), MPI_STATUSES_IGNORE);
+
+    // Serial packing code for reference
+    // if (A.send_comm.size_msgs)
+    // {
+        // for (int i = 0; i < A.send_comm.size_msgs; i++)
+        // {
+        //     idx = A.send_comm.idx[i];
+        //     for (int j = 0; j < n_vec; j++)
+        //         alltoallv_send_vals[(i * n_vec) + j] = x[(idx * n_vec) + j];
+        // }
+    // }
+}
+
+void SpMV(
+    int n_vec,
+    Mat& on_proc,
+    Mat& off_proc,
+    std::vector<int>& x,
+    std::vector<int>& off_proc_x,
+    std::vector<int>& b
+) {
+    std::vector<int> vals;
+    vals.resize(n_vec);
+    // Local multiplication
+    int start, end;
+    int data, col_idx;
+    //printf("rank %d local spmv...\n", rank);
+    for (int i = 0; i < on_proc.n_rows; i++)
+    {
+        start = on_proc.rowptr[i];
+        end = on_proc.rowptr[i+1];
+        for (int vec = 0; vec < n_vec; vec++) {
+            vals[vec] = 0;
+        }
+        for (int j = start; j < end; j  ++)
+        {
+            data = on_proc.data[j];
+            col_idx = on_proc.col_idx[j];
+            for (int vec = 0; vec < n_vec; vec++) {
+                vals[vec] += data * x[col_idx * n_vec + vec];
+            }
+        }
+        for (int vec = 0; vec < n_vec; vec++) {
+            b[i * n_vec + vec] = vals[vec];
+        }
+    }
+
+    //printf("rank %d off-proc spmv...\n", rank);
+    // Add product of off-proc columns and non-local values of x
+    for (int i = 0; i < off_proc.n_rows; i++) // Should be the same loop size as local
+    {
+        start = off_proc.rowptr[i];
+        end = off_proc.rowptr[i+1];
+        for (int vec = 0; vec < n_vec; vec++) {
+            vals[vec] = 0;
+        }
+        for (int j = start; j < end; j++)
+        {
+            data = off_proc.data[j];
+            col_idx = off_proc.col_idx[j];
+            for (int vec = 0; vec < n_vec; vec++) {
+                vals[vec] += data * off_proc_x[col_idx * n_vec + vec];
+            }
+        }
+        for (int vec = 0; vec < n_vec; vec++) {
+            b[i * n_vec + vec] += vals[vec];
+            x[i * n_vec + vec] = b[i * n_vec + vec];
+        }
+    }
+}
+
 void test_partitioned(const char* filename, int n_vec)
 {
     // msg counts must be divisible by n_parts. simplest method is to have n_parts divide n_vec
@@ -43,8 +166,7 @@ void test_partitioned(const char* filename, int n_vec)
 
     std::vector<int> std_recv_vals, partd_recv_vals;
     std::vector<int> send_vals, alltoallv_send_vals;
-    std::vector<int> x, b, vals;
-    vals.resize(n_vec);
+    std::vector<int> x, b;
 
     if (A.on_proc.n_cols)
     {
@@ -115,69 +237,14 @@ void test_partitioned(const char* filename, int n_vec)
     //printf("rank %d initialized\n", rank);
 
     // Iterations
-    int iters = 10;
+    int iters = 5;
     for (int iter = 0; iter < iters; iter++) {
 
         // Point-to-point communication
         communicate(A, x, std_recv_vals, MPI_INT, n_vec);
 
-        // Partitioned communication
-        //printf("rank %d starting...\n", rank);
-        if (A.send_comm.n_msgs)
-            MPIP_Startall(A.send_comm.n_msgs, sreqs.data());
-        if (A.recv_comm.n_msgs)
-            MPIP_Startall(A.recv_comm.n_msgs, rreqs.data());
-    
-        // if (A.send_comm.size_msgs)
-        // {
-            // for (int i = 0; i < A.send_comm.size_msgs; i++)
-            // {
-            //     idx = A.send_comm.idx[i];
-            //     for (int j = 0; j < n_vec; j++)
-            //         alltoallv_send_vals[(i * n_vec) + j] = x[(idx * n_vec) + j];
-            // }
-        // }
-
-        // Packing
-        //printf("rank %d packing...\n", rank);
-        if (A.send_comm.size_msgs)
-        {
-            int sizes = 0;
-            #pragma omp parallel
-            {
-                for (int i = 0; i < A.send_comm.n_msgs; i++) {
-                    #pragma omp for nowait schedule(static)
-                    for (int j = 0; j < sreqs[i].size; j++) {
-                        int idx = A.send_comm.idx[(sizes + j) / n_vec];
-                        alltoallv_send_vals[sizes + j] = x[(idx * n_vec) + ((sizes + j) % n_vec)];
-                    }
-
-                    MPIP_Pready(omp_get_thread_num(), &sreqs[i]);
-
-                    #pragma omp barrier
-
-                    #pragma omp master
-                    {
-                        sizes += sreqs[i].size;
-                    }
-
-                    #pragma omp barrier
-                }
-            }
-        }
-
-        //printf("rank %d marking ready...\n", rank);
-        // for (int i = 0; i < A.send_comm.n_msgs; i++) {
-        //     for (int j = 0; j < n_parts; j++) {
-        //         MPIP_Pready(j, &sreqs[i]);
-        //     }
-        // }
-
-        //printf("rank %d waiting...\n", rank);
-        if (A.send_comm.n_msgs)
-            MPIP_Waitall(A.send_comm.n_msgs, sreqs.data(), MPI_STATUSES_IGNORE);
-        if (A.recv_comm.n_msgs)
-            MPIP_Waitall(A.recv_comm.n_msgs, rreqs.data(), MPI_STATUSES_IGNORE);
+        partitioned_communicate(n_vec, A.recv_comm.n_msgs, A.send_comm.n_msgs, 
+            A.send_comm.size_msgs, A.send_comm.idx, x, sreqs, rreqs, alltoallv_send_vals);
 
         //printf("rank %d verifying...\n", rank);
         for (int i = 0; i < A.recv_comm.size_msgs; i++)
@@ -185,52 +252,7 @@ void test_partitioned(const char* filename, int n_vec)
             ASSERT_EQ(std_recv_vals[i], partd_recv_vals[i]);
         }
         
-        // SPMV
-        // Local multiplication
-        int data, col_idx;
-        //printf("rank %d local spmv...\n", rank);
-        for (int i = 0; i < A.on_proc.n_rows; i++)
-        {
-            start = A.on_proc.rowptr[i];
-            end = A.on_proc.rowptr[i+1];
-            for (int vec = 0; vec < n_vec; vec++) {
-                vals[vec] = 0;
-            }
-            for (int j = start; j < end; j++)
-            {
-                data = A.on_proc.data[j];
-                col_idx = A.on_proc.col_idx[j];
-                for (int vec = 0; vec < n_vec; vec++) {
-                    vals[vec] += data * x[col_idx * n_vec + vec];
-                }
-            }
-            for (int vec = 0; vec < n_vec; vec++) {
-                b[i * n_vec + vec] = vals[vec];
-            }
-        }
-
-        //printf("rank %d off-proc spmv...\n", rank);
-        // Add product of off-proc columns and non-local values of x
-        for (int i = 0; i < A.off_proc.n_rows; i++) // Should be the same loop size as local
-        {
-            start = A.off_proc.rowptr[i];
-            end = A.off_proc.rowptr[i+1];
-            for (int vec = 0; vec < n_vec; vec++) {
-                vals[vec] = 0;
-            }
-            for (int j = start; j < end; j++)
-            {
-                data = A.off_proc.data[j];
-                col_idx = A.off_proc.col_idx[j];
-                for (int vec = 0; vec < n_vec; vec++) {
-                    vals[vec] += data * partd_recv_vals[col_idx * n_vec + vec];
-                }
-            }
-            for (int vec = 0; vec < n_vec; vec++) {
-                b[i * n_vec + vec] += vals[vec];
-                x[i * n_vec + vec] = b[i * n_vec + vec];
-            }
-        }
+        SpMV(n_vec, A.on_proc, A.off_proc, x, partd_recv_vals, b);
     }
 
     // Cleanup
