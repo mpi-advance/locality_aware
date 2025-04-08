@@ -18,9 +18,18 @@ extern "C"
 typedef struct _MPIX_Comm
 {
     MPI_Comm global_comm;
-    MPI_Comm local_comm;
+
+    // For persistent neighborhood collectives
     MPI_Comm neighbor_comm;
+
+    // For hierarchical collectives
+    MPI_Comm local_comm;
     MPI_Comm group_comm;
+
+    // For multileader hierarchical collectives
+    MPI_Comm leader_comm;
+    MPI_Comm leader_group_comm;
+    MPI_Comm leader_local_comm;
 
     int num_nodes;
     int rank_node;
@@ -46,6 +55,9 @@ int MPIX_Comm_free(MPIX_Comm** xcomm_ptr);
 
 int MPIX_Comm_topo_init(MPIX_Comm* xcomm);
 int MPIX_Comm_topo_free(MPIX_Comm* xcomm);
+
+int MPIX_Comm_leader_init(MPIX_Comm* xcomm, int procs_per_leader);
+int MPIX_Comm_leader_free(MPIX_Comm* xcomm);
 
 int MPIX_Comm_win_init(MPIX_Comm* xcomm, int bytes, int type_bytes);
 int MPIX_Comm_win_free(MPIX_Comm* xcomm);
