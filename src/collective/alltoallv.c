@@ -2,7 +2,8 @@
 #include <string.h>
 #include <math.h>
 #include "utils.h"
-#include "/g/g92/enamug/install/include/caliper/cali.h"
+//#include "/g/g92/enamug/install/include/caliper/cali.h"
+#include "/g/g92/enamug/my_caliper_install/include/caliper/cali.h"
 /**************************************************
  * Locality-Aware Point-to-Point Alltoallv
  * Same as PMPI_Alltoall (no load balancing)
@@ -479,16 +480,18 @@ MPI_Win_create(recv_buffer, total_recv_bytes, 1, MPI_INFO_NULL, xcomm->global_co
 int my_flag = 0;
 int* flag_array;
 MPI_Win flag_win;
-MPI_Alloc_mem(num_procs * sizeof(int), MPI_INFO_NULL, &flag_array);
-memset(flag_array, 0, num_procs * sizeof(int)); 
-MPI_Win_create(flag_array, num_procs * sizeof(int), sizeof(int), MPI_INFO_NULL, xcomm->global_comm, &flag_win);
+MPI_Alloc_mem(1 * sizeof(int), MPI_INFO_NULL, &flag_array);
+memset(flag_array, 0, 1 * sizeof(int)); 
+MPI_Win_create(flag_array, 1 * sizeof(int), sizeof(int), MPI_INFO_NULL, xcomm->global_comm, &flag_win);
 
 int one = 1;
 
+//printf("This is alltoallv.c3");
 //  MPI_Put
+MPI_Win_lock_all(0, xcomm->win);
 for (int i = 0; i < num_procs; i++) {
 if (sendcounts[i] > 0) {
-MPI_Win_lock(MPI_LOCK_EXCLUSIVE, i, 0, xcomm->win);
+
 MPI_Put(&(send_buffer[sdispls[i] * send_type_size]),
       sendcounts[i] * send_type_size,
       MPI_CHAR,
@@ -497,35 +500,32 @@ MPI_Put(&(send_buffer[sdispls[i] * send_type_size]),
       recvcounts[rank] * recv_type_size,
       MPI_CHAR,
       xcomm->win);
-MPI_Win_flush(i, xcomm->win);
-MPI_Win_unlock(i, xcomm->win);
-}
-}
 
+}
+}
+MPI_Win_flush_all( xcomm->win);
+MPI_Win_unlock_all( xcomm->win);
+
+//printf("This is alltoallv.c4");
 // Locking for accumulation
 MPI_Win_lock_all(0, flag_win);
 for (int i = 0; i < num_procs; i++) {
-MPI_Accumulate(&one, 1, MPI_INT, i, rank, 1, MPI_INT, MPI_SUM, flag_win);
+MPI_Accumulate(&one, 1, MPI_INT, i, 0, 1, MPI_INT, MPI_SUM, flag_win);
 }
 MPI_Win_flush_all(flag_win);
 MPI_Win_unlock_all(flag_win);
 
-//waits 4 all processes to complete their gets
-MPI_Barrier(xcomm->global_comm);
-
-
-
-// Spining 
- /* do {
-MPI_Win_lock(MPI_LOCK_SHARED, rank, 0, flag_win);
-MPI_Get(&my_flag, 1, MPI_INT, rank, rank, 1, MPI_INT, flag_win);
-MPI_Win_flush(rank, flag_win);
-MPI_Win_unlock(rank, flag_win);
-} while (my_flag < num_procs);
-
-MPI_Win_free(&flag_win);
-MPI_Free_mem(flag_array);
-*/
+//waits 4 all processes to complete
+//MPI_Barrier(xcomm->global_comm);//currently doesnt work without this
+printf("This is alltoallv.c5");
+  
+ while(flag_array[0] < num_procs);
+    
+    MPI_Win_free(&flag_win);
+    MPI_Free_mem(flag_array);   
+    
+ printf("This is the end");
+ 
 return MPI_SUCCESS;
 }
 
