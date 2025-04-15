@@ -41,6 +41,8 @@ void partitioned_communicate(
     if (n_recvs)
         MPIP_Startall(n_recvs, rreqs.data());
 
+    // TODO create displacements vector for running total size sreqs.size 
+
     // Packing
     //printf("rank %d packing...\n", rank);
     if (size_sends)
@@ -166,18 +168,21 @@ void test_partitioned(const char* filename, int n_vec)
 
     std::vector<int> std_recv_vals, partd_recv_vals;
     std::vector<int> send_vals, alltoallv_send_vals;
-    std::vector<int> x, b;
+    std::vector<int> x1, b1, x2, b2;
 
     if (A.on_proc.n_cols)
     {
-        b.resize(A.on_proc.n_rows * n_vec);
-        x.resize(A.on_proc.n_cols * n_vec);
+        x1.resize(A.on_proc.n_rows * n_vec);
+        x2.resize(A.on_proc.n_cols * n_vec);
+        b1.resize(A.on_proc.n_rows * n_vec);
+        b2.resize(A.on_proc.n_rows * n_vec);
         send_vals.resize(A.on_proc.n_cols * n_vec);
         std::iota(send_vals.begin(), send_vals.end(), 0);
         for (int i = 0; i < A.on_proc.n_cols * n_vec; i++)
         {
             send_vals[i] += (rank*1000);
-            x[i] = send_vals[i];
+            x1[i] = send_vals[i];
+            x2[i] = send_vals[i];
         }
     }
 
@@ -191,6 +196,17 @@ void test_partitioned(const char* filename, int n_vec)
     {
         alltoallv_send_vals.resize(A.send_comm.size_msgs * n_vec);
     }
+
+    // Form message displacements
+    // std::vector<int> displacements;
+    // if (A.send_comm.size_msgs)
+    // {
+    //     displacements.resize(A.send_comm.n_msgs + 1);
+    //     displacements[0] = 0;
+    //     for (int i = 1; i < A.send_comm.n_msgs + 1; i++) {
+    //         displacements[i] = displacements[i - 1] + A.send_comm.
+    //     }
+    // }
 
     // Precv/Psend inits
     // Launch threads?
@@ -236,15 +252,15 @@ void test_partitioned(const char* filename, int n_vec)
     }
     //printf("rank %d initialized\n", rank);
 
-    // Iterations
-    int iters = 5;
-    for (int iter = 0; iter < iters; iter++) {
+    // Test Iterations
+    int test_iters = 5;
+    for (int iter = 0; iter < test_iters; iter++) {
 
         // Point-to-point communication
-        communicate(A, x, std_recv_vals, MPI_INT, n_vec);
+        communicate(A, x1, std_recv_vals, MPI_INT, n_vec);
 
         partitioned_communicate(n_vec, A.recv_comm.n_msgs, A.send_comm.n_msgs, 
-            A.send_comm.size_msgs, A.send_comm.idx, x, sreqs, rreqs, alltoallv_send_vals);
+            A.send_comm.size_msgs, A.send_comm.idx, x2, sreqs, rreqs, alltoallv_send_vals);
 
         //printf("rank %d verifying...\n", rank);
         for (int i = 0; i < A.recv_comm.size_msgs; i++)
@@ -252,8 +268,51 @@ void test_partitioned(const char* filename, int n_vec)
             ASSERT_EQ(std_recv_vals[i], partd_recv_vals[i]);
         }
         
-        SpMV(n_vec, A.on_proc, A.off_proc, x, partd_recv_vals, b);
+        SpMV(n_vec, A.on_proc, A.off_proc, x1, partd_recv_vals, b1);
+        SpMV(n_vec, A.on_proc, A.off_proc, x2, partd_recv_vals, b2);
     }
+
+    // Reset x after test iters
+    if (A.on_proc.n_cols)
+    {
+        for (int i = 0; i < A.on_proc.n_cols * n_vec; i++)
+        {
+            x1[i] = send_vals[i];
+            x2[i] = send_vals[i];
+        }
+    }
+
+    // Timing Iterations
+    int iters = 1000;
+
+    // Point to point baseline
+    MPI_Barrier(MPI_COMM_WORLD);
+    double t0, tf;
+    t0 = MPI_Wtime();
+    for (int iter = 0; iter < iters; iter++) {
+        communicate(A, x1, std_recv_vals, MPI_INT, n_vec);
+
+        SpMV(n_vec, A.on_proc, A.off_proc, x1, std_recv_vals, b1);
+    }
+    tf = MPI_Wtime() - t0;
+    MPI_Reduce(&tf, &t0, 1, MPI_DOUBLE, MPI_MAX, 0,
+        MPI_COMM_WORLD);
+    if (rank == 0) printf("Point-to-point baseline Time for %d vectors: %e\n", n_vec, t0);
+
+
+    // Partitioned
+    MPI_Barrier(MPI_COMM_WORLD);
+    t0 = MPI_Wtime();
+    for (int iter = 0; iter < iters; iter++) {
+        communicate(A, x2, std_recv_vals, MPI_INT, n_vec);
+
+        SpMV(n_vec, A.on_proc, A.off_proc, x2, std_recv_vals, b2);
+    }
+    tf = MPI_Wtime() - t0;
+    MPI_Reduce(&tf, &t0, 1, MPI_DOUBLE, MPI_MAX, 0,
+        MPI_COMM_WORLD);
+    if (rank == 0) printf("Partitioned Time for %d vectors: %e\n", n_vec, t0);
+
 
     // Cleanup
     //printf("rank %d freeing...\n", rank);
@@ -269,7 +328,8 @@ void test_partitioned(const char* filename, int n_vec)
 
 int main(int argc, char** argv)
 {
-    MPI_Init(&argc, &argv);
+    int provided;
+    MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
     ::testing::InitGoogleTest(&argc, argv);
     int temp=RUN_ALL_TESTS();
     MPI_Finalize();
