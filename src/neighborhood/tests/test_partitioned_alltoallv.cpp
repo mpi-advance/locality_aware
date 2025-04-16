@@ -4,6 +4,19 @@
 // The ASSERT_* variants abort the program execution if an assertion fails
 // while EXPECT_* variants continue with the run.
 
+// OUTLINE:
+// Precv/Psend inits
+// Launch threads?
+// set x to be send_vals
+// Iterations: use x as send_vals
+    // Communicate: For each message:
+        // Start
+        // Pack
+        // Pready's
+        // Wait/parrives?
+        // unpack
+    // Compute b
+    // set x to b
 
 #include "gtest/gtest.h"
 #include "mpi_advance.h"
@@ -32,7 +45,8 @@ void partitioned_communicate(
     std::vector<int>& x,
     std::vector<MPIP_Request>& sreqs,
     std::vector<MPIP_Request>& rreqs,
-    std::vector<int>& send_vals
+    std::vector<int>& send_vals,
+    std::vector<int>& displs
 ) {
     // Partitioned communication
     //printf("rank %d starting...\n", rank);
@@ -41,37 +55,26 @@ void partitioned_communicate(
     if (n_recvs)
         MPIP_Startall(n_recvs, rreqs.data());
 
-    // TODO create displacements vector for running total size sreqs.size 
 
     // Packing
-    //printf("rank %d packing...\n", rank);
+    // printf("rank %d packing...\n", rank);
     if (size_sends)
     {
-        int sizes = 0;
         #pragma omp parallel
         {
             for (int i = 0; i < n_sends; i++) {
                 #pragma omp for nowait schedule(static)
-                for (int j = 0; j < sreqs[i].size; j++) {
-                    int idx = idxs[(sizes + j) / n_vec];
-                    send_vals[sizes + j] = x[(idx * n_vec) + ((sizes + j) % n_vec)];
+                for (int j = displs[i] * n_vec; j < displs[i+1] * n_vec; j++) {
+                    int idx = idxs[j / n_vec];
+                    send_vals[j] = x[(idx * n_vec) + (j % n_vec)];
                 }
 
                 MPIP_Pready(omp_get_thread_num(), &sreqs[i]);
-
-                #pragma omp barrier
-
-                #pragma omp master
-                {
-                    sizes += sreqs[i].size;
-                }
-
-                #pragma omp barrier
             }
         }
     }
 
-    //printf("rank %d waiting...\n", rank);
+    // printf("rank %d waiting...\n", rank);
     if (n_sends)
         MPIP_Waitall(n_sends, sreqs.data(), MPI_STATUSES_IGNORE);
     if (n_recvs)
@@ -197,29 +200,6 @@ void test_partitioned(const char* filename, int n_vec)
         alltoallv_send_vals.resize(A.send_comm.size_msgs * n_vec);
     }
 
-    // Form message displacements
-    // std::vector<int> displacements;
-    // if (A.send_comm.size_msgs)
-    // {
-    //     displacements.resize(A.send_comm.n_msgs + 1);
-    //     displacements[0] = 0;
-    //     for (int i = 1; i < A.send_comm.n_msgs + 1; i++) {
-    //         displacements[i] = displacements[i - 1] + A.send_comm.
-    //     }
-    // }
-
-    // Precv/Psend inits
-    // Launch threads?
-    // set x to be send_vals
-    // Iterations: use x instead of send_vals
-        // Communicate: For each message:
-            // Start
-            // Pack
-            // Pready's
-            // Wait/parrives?
-            // unpack
-        // Compute b
-        // set x to b
 
     // Initialization
     //printf("rank %d initializing...\n", rank);
@@ -252,6 +232,7 @@ void test_partitioned(const char* filename, int n_vec)
     }
     //printf("rank %d initialized\n", rank);
 
+
     // Test Iterations
     int test_iters = 5;
     for (int iter = 0; iter < test_iters; iter++) {
@@ -260,7 +241,7 @@ void test_partitioned(const char* filename, int n_vec)
         communicate(A, x1, std_recv_vals, MPI_INT, n_vec);
 
         partitioned_communicate(n_vec, A.recv_comm.n_msgs, A.send_comm.n_msgs, 
-            A.send_comm.size_msgs, A.send_comm.idx, x2, sreqs, rreqs, alltoallv_send_vals);
+            A.send_comm.size_msgs, A.send_comm.idx, x2, sreqs, rreqs, alltoallv_send_vals, A.send_comm.ptr);
 
         //printf("rank %d verifying...\n", rank);
         for (int i = 0; i < A.recv_comm.size_msgs; i++)
@@ -304,8 +285,8 @@ void test_partitioned(const char* filename, int n_vec)
     MPI_Barrier(MPI_COMM_WORLD);
     t0 = MPI_Wtime();
     for (int iter = 0; iter < iters; iter++) {
-        partitioned_communicate(n_vec, A.recv_comm.n_msgs, A.send_comm.n_msgs, 
-            A.send_comm.size_msgs, A.send_comm.idx, x2, sreqs, rreqs, alltoallv_send_vals);
+        partitioned_communicate(n_vec, A.recv_comm.n_msgs, A.send_comm.n_msgs,
+            A.send_comm.size_msgs, A.send_comm.idx, x2, sreqs, rreqs, alltoallv_send_vals, A.send_comm.ptr);
 
         SpMV(n_vec, A.on_proc, A.off_proc, x2, std_recv_vals, b2);
     }
