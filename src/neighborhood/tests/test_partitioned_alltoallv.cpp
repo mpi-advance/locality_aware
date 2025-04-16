@@ -283,7 +283,7 @@ void test_partitioned(const char* filename, int n_vec)
     }
 
     // Timing Iterations
-    int iters = 1000;
+    int iters = 10;
 
     // Point to point baseline
     MPI_Barrier(MPI_COMM_WORLD);
@@ -304,7 +304,8 @@ void test_partitioned(const char* filename, int n_vec)
     MPI_Barrier(MPI_COMM_WORLD);
     t0 = MPI_Wtime();
     for (int iter = 0; iter < iters; iter++) {
-        communicate(A, x2, std_recv_vals, MPI_INT, n_vec);
+        partitioned_communicate(n_vec, A.recv_comm.n_msgs, A.send_comm.n_msgs, 
+            A.send_comm.size_msgs, A.send_comm.idx, x2, sreqs, rreqs, alltoallv_send_vals);
 
         SpMV(n_vec, A.on_proc, A.off_proc, x2, std_recv_vals, b2);
     }
