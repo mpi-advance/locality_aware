@@ -3,7 +3,6 @@
 #include <math.h>
 #include <mpi.h>
 #include "mpi_advance.h"
-#include ""
 
 template <void (*T)(void*, int, MPI_Datatype, void*, int, MPI_Datatype, MPIX_Comm*)>
 int estimate_iters(const void* sendbuf, 
@@ -21,7 +20,7 @@ int estimate_iters(const void* sendbuf,
     {
         T(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm);
     }
-    double tFinal = MPI_WTime() - t0 / testIterations;
+    double tFinal = MPI_Wtime() - t0 / testIterations;
     MPI_Allreduce(&tFinal, &t0, MPI_DOUBLE, MPI_MAX, 0, comm);
 
     int n_iters = (5.0 / tFinal) + 1;
@@ -47,7 +46,7 @@ int main(int argc, char* argv[])
     double t0, tFinal;
 
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-    MPI_Comm_size(MPI_COMM_WORD, &numProcs);
+    MPI_Comm_size(MPI_COMM_WORLD, &numProcs);
 
     MPIX_Comm* xcomm;
     MPIX_Comm_init(&xcomm, MPI_COMM_WORLD);
@@ -66,7 +65,7 @@ int main(int argc, char* argv[])
         }
     }
 
-    int standardIters = estimate_iters<PMP_Alltoall>(localData.data(), size, MPI_INT, stdAlltoall.data(), size, MPI_INT, xcomm);
+    int standardIters = estimate_iters<PMPI_Alltoall>(localData.data(), size, MPI_INT, stdAlltoall.data(), size, MPI_INT, xcomm);
 
     MPI_Barrier(MPI_COMM_WORLD);
     t0 = MPI_Wtime();
