@@ -6,6 +6,7 @@ if(USE_GPU)
             gpu_alltoall.cpp
             alltoall_crs.cpp
             alltoallv_crs.cpp
+            alltoall_topology.cpp
             PROPERTIES LANGUAGE CUDA)
     endif()
 
