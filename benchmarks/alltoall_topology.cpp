@@ -4,24 +4,51 @@
 #include <mpi.h>
 #include "mpi_advance.h"
 
-template <void (*T)(void*, int, MPI_Datatype, void*, int, MPI_Datatype, MPIX_Comm*)>
-int estimate_iters(const void* sendbuf, 
-        const int sendcount,
-        MPI_Datatype sendtype,
-        void* recvbuf,
-        const int recvcount,
-        MPI_Datatype recvtype,
-        MPIX_Comm* comm)
+int estimate_iters(const void* sendbuf,
+		   const int sendcount,
+		   MPI_Datatype sendtype,
+		   void* recvbuf,
+		   const int recvcount,
+		   MPI_Datatype recvtype)
 {
     MPI_Barrier(MPI_COMM_WORLD);
     double t0 = MPI_Wtime();
     int testIterations = 5;
     for (int i = 0; i < testIterations; i++)
     {
-        T(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm);
+      PMPI_Alltoall(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, MPI_COMM_WORLD);
     }
-    double tFinal = MPI_Wtime() - t0 / testIterations;
-    MPI_Allreduce(&tFinal, &t0, MPI_DOUBLE, MPI_MAX, 0, comm);
+
+    double tFinal = (MPI_Wtime() - t0) / testIterations; 
+    MPI_Allreduce(&tFinal, &t0, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
+    
+    int n_iters = (5.0 / t0) + 1;
+    if (t0 > 1.0)
+    {
+      n_iters = 1;
+    }
+
+    return n_iters;
+}
+
+template <int (*T)(const void*, int, MPI_Datatype, void*, int, MPI_Datatype, MPIX_Comm*)>
+int estimate_iters(const void* sendbuf, 
+        const int sendcount,
+        MPI_Datatype sendtype,
+        void* recvbuf,
+        const int recvcount,
+        MPI_Datatype recvtype,
+        MPIX_Comm *comm)
+{
+    MPI_Barrier(MPI_COMM_WORLD);
+    double t0 = MPI_Wtime();
+    int testIterations = 5;
+    for (int i = 0; i < testIterations; i++)
+    {
+      T(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm);
+    }
+    double tFinal = (MPI_Wtime() - t0) / testIterations;
+    MPI_Allreduce(&tFinal, &t0, 1,  MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
 
     int n_iters = (5.0 / tFinal) + 1;
     if (tFinal > 1.0)
@@ -65,7 +92,7 @@ int main(int argc, char* argv[])
         }
     }
 
-    int standardIters = estimate_iters<PMPI_Alltoall>(localData.data(), size, MPI_INT, stdAlltoall.data(), size, MPI_INT, xcomm);
+    int standardIters = estimate_iters(localData.data(), size, MPI_INT, stdAlltoall.data(), size, MPI_INT);
 
     MPI_Barrier(MPI_COMM_WORLD);
     t0 = MPI_Wtime();
@@ -80,17 +107,17 @@ int main(int argc, char* argv[])
             }
         }
 
-        PMPI_Alltoall(local_data.data(),
+        PMPI_Alltoall(localData.data(),
                       size,
                       MPI_INT,
                       stdAlltoall.data(),
                       size,
                       MPI_INT,
-                      xcomm);
+                      MPI_COMM_WORLD);
     }
 
     tFinal = MPI_Wtime() - t0;
-    MPI_Reduce(&tFinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, xcomm);
+    MPI_Reduce(&tFinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
 
     if (rank ==0)
     {
@@ -106,7 +133,7 @@ int main(int argc, char* argv[])
       }
     }
 
-    int pairwiseIters = estimateIters<alltoall_pairwise>(local_data.data(), 
+    int pairwiseIters = estimate_iters<alltoall_pairwise>(localData.data(), 
       size,
       MPI_INT,
       pairwiseAlltoall.data(),
@@ -118,7 +145,7 @@ int main(int argc, char* argv[])
     t0 = MPI_Wtime();
     for (int i = 0; i < pairwiseIters; i++)
     {
-      int size = pow(2, i);
+      size = pow(2, i);
       for (int j = 0; j < numProcs; j++)
       {
         for (int k = 0; k < size; k++)
@@ -127,7 +154,7 @@ int main(int argc, char* argv[])
         }
       }
 
-      alltoall_pairwise(local_data.data(),
+      alltoall_pairwise(localData.data(),
   			size,
 	  		MPI_INT,
 		  	pairwiseAlltoall.data(),
@@ -137,7 +164,7 @@ int main(int argc, char* argv[])
     }     
 
     tFinal = MPI_Wtime() - t0;
-    MPI_Reduce(&tFinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, xcomm);
+    MPI_Reduce(&tFinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
 
     if (rank == 0)
     {
@@ -153,10 +180,10 @@ int main(int argc, char* argv[])
       }
     }
 
-    int nonblockingIters = estimateIters<alltoall_nonblocking>(localData.data(),
+    int nonblockingIters = estimate_iters<alltoall_nonblocking>(localData.data(),
       size,
       MPI_INT,
-      nonblockingData.data(),
+      nonblockingAlltoall.data(),
       size,
       MPI_INT,
       xcomm);
@@ -165,7 +192,7 @@ int main(int argc, char* argv[])
     t0 = MPI_Wtime();
     for (int i = 0; i < nonblockingIters; i++)
     {
-      int size = pow(2, i);
+      size = pow(2, i);
       for (int j = 0; j < numProcs; j++)
       {
         for (int k = 0; k < size; k++)
@@ -177,14 +204,14 @@ int main(int argc, char* argv[])
       alltoall_nonblocking(localData.data(),
         size,
         MPI_INT,
-        nonblockingData.data(),
+        nonblockingAlltoall.data(),
         size,
         MPI_INT,
         xcomm);
     }
 
     tFinal = MPI_Wtime() - t0;
-    MPI_Reduce(&tFinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, xcomm);
+    MPI_Reduce(&tFinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
     
     if (rank == 0)
     {
