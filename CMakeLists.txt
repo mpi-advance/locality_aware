@@ -130,3 +130,31 @@ add_subdirectory(benchmarks)
 
 enable_testing()
 
+include(CMakePackageConfigHelpers)
+
+# Install the actual target(s) and register them for export
+install(TARGETS mpi_advance
+        EXPORT mpi-advanceTargets
+        DESTINATION lib)
+
+# Export the targets into a CMake package
+install(EXPORT mpi-advanceTargets
+        NAMESPACE mpi-advance::
+        DESTINATION lib/cmake/mpi-advance)
+
+# Generate the Config and Version files
+write_basic_package_version_file(
+  "${CMAKE_CURRENT_BINARY_DIR}/mpi-advanceConfigVersion.cmake"
+  VERSION 1.0.0
+  COMPATIBILITY SameMajorVersion)
+
+configure_package_config_file(
+  "${CMAKE_CURRENT_SOURCE_DIR}/cmake/mpi-advanceConfig.cmake.in"
+  "${CMAKE_CURRENT_BINARY_DIR}/mpi-advanceConfig.cmake"
+  INSTALL_DESTINATION lib/cmake/mpi-advance)
+
+install(FILES
+  "${CMAKE_CURRENT_BINARY_DIR}/mpi-advanceConfig.cmake"
+  "${CMAKE_CURRENT_BINARY_DIR}/mpi-advanceConfigVersion.cmake"
+  DESTINATION lib/cmake/mpi-advance)
+
