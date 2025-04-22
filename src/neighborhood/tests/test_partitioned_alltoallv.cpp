@@ -253,6 +253,37 @@ void test_partitioned(const char* filename, int n_vec)
         SpMV(n_vec, A.on_proc, A.off_proc, x2, partd_recv_vals, b2);
     }
 
+    // Estimate test iterations needed
+    double t0, tf;
+    int iters1, iters2;
+
+    MPI_Barrier(MPI_COMM_WORLD);
+    t0 = MPI_Wtime();
+    communicate(A, x1, std_recv_vals, MPI_INT, n_vec);
+    SpMV(n_vec, A.on_proc, A.off_proc, x1, std_recv_vals, b1);
+    tf = MPI_Wtime() - t0;
+    MPI_Allreduce(&tf, &t0, 1, MPI_DOUBLE, MPI_MAX,
+        MPI_COMM_WORLD);
+    iters1 = (1.0 / t0) + 1;
+    if (t0 > 1.0)
+        iters1 = 1;
+
+    MPI_Barrier(MPI_COMM_WORLD);
+    t0 = MPI_Wtime();
+    partitioned_communicate(n_vec, A.recv_comm.n_msgs, A.send_comm.n_msgs,
+        A.send_comm.size_msgs, A.send_comm.idx, x2, sreqs, rreqs, alltoallv_send_vals, A.send_comm.ptr);
+    SpMV(n_vec, A.on_proc, A.off_proc, x2, partd_recv_vals, b2);
+    tf = MPI_Wtime() - t0;
+    MPI_Allreduce(&tf, &t0, 1, MPI_DOUBLE, MPI_MAX,
+        MPI_COMM_WORLD);
+    iters2 = (1.0 / t0) + 1;
+    if (t0 > 1.0)
+        iters2 = 1;
+
+    if (rank == 0) {
+        printf("time: %e, iters1 %d, iters2 %d\n", t0, iters1, iters2);
+    }
+
     // Reset x after test iters
     if (A.on_proc.n_cols)
     {
@@ -264,13 +295,10 @@ void test_partitioned(const char* filename, int n_vec)
     }
 
     // Timing Iterations
-    int iters = 10;
-
     // Point to point baseline
     MPI_Barrier(MPI_COMM_WORLD);
-    double t0, tf;
     t0 = MPI_Wtime();
-    for (int iter = 0; iter < iters; iter++) {
+    for (int iter = 0; iter < iters1; iter++) {
         communicate(A, x1, std_recv_vals, MPI_INT, n_vec);
 
         SpMV(n_vec, A.on_proc, A.off_proc, x1, std_recv_vals, b1);
@@ -278,22 +306,22 @@ void test_partitioned(const char* filename, int n_vec)
     tf = MPI_Wtime() - t0;
     MPI_Reduce(&tf, &t0, 1, MPI_DOUBLE, MPI_MAX, 0,
         MPI_COMM_WORLD);
-    if (rank == 0) printf("Point-to-point baseline Time for %d vectors: %e\n", n_vec, t0);
+    if (rank == 0) printf("Point-to-point baseline Time for %d vectors: %e\n", n_vec, t0/iters1);
 
 
     // Partitioned
     MPI_Barrier(MPI_COMM_WORLD);
     t0 = MPI_Wtime();
-    for (int iter = 0; iter < iters; iter++) {
+    for (int iter = 0; iter < iters2; iter++) {
         partitioned_communicate(n_vec, A.recv_comm.n_msgs, A.send_comm.n_msgs,
             A.send_comm.size_msgs, A.send_comm.idx, x2, sreqs, rreqs, alltoallv_send_vals, A.send_comm.ptr);
 
-        SpMV(n_vec, A.on_proc, A.off_proc, x2, std_recv_vals, b2);
+        SpMV(n_vec, A.on_proc, A.off_proc, x2, partd_recv_vals, b2);
     }
     tf = MPI_Wtime() - t0;
     MPI_Reduce(&tf, &t0, 1, MPI_DOUBLE, MPI_MAX, 0,
         MPI_COMM_WORLD);
-    if (rank == 0) printf("Partitioned Time for %d vectors: %e\n", n_vec, t0);
+    if (rank == 0) printf("Partitioned Time for %d vectors: %e\n", n_vec, t0/iters2);
 
 
     // Cleanup
