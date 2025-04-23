@@ -149,7 +149,7 @@ write_basic_package_version_file(
   COMPATIBILITY SameMajorVersion)
 
 configure_package_config_file(
-  "${CMAKE_CURRENT_SOURCE_DIR}/cmake/mpi-advanceConfig.cmake.in"
+  "${CMAKE_CURRENT_SOURCE_DIR}/cmake/mpi-advanceConfig.cmake"
   "${CMAKE_CURRENT_BINARY_DIR}/mpi-advanceConfig.cmake"
   INSTALL_DESTINATION lib/cmake/mpi-advance)
 
