@@ -164,7 +164,7 @@ void form_send_comm_torsten(ParMat<U>& A)
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
 
     std::vector<long> recv_buf;
-    int start, end, proc, count, ctr, flag;
+    int proc, count, ctr, flag;
     int ibar = 0;
     MPI_Status recv_status;
     MPI_Request bar_req;
@@ -196,7 +196,7 @@ void form_send_comm_torsten(ParMat<U>& A)
             A.send_comm.procs.push_back(proc);
             MPI_Get_count(&recv_status, MPI_LONG, &count);
             A.send_comm.counts.push_back(count);
-            if (count > recv_buf.size()) recv_buf.resize(count);
+            if (count > ((int)(recv_buf.size()))) recv_buf.resize(count);
 
             // Receive the message, and add local indices to send_comm
             MPI_Recv(recv_buf.data(), count, MPI_LONG, proc, msg_tag, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
@@ -246,9 +246,7 @@ void form_send_comm_rma(ParMat<U>& A)
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
 
     std::vector<long> recv_buf;
-    int start, end, proc, count, ctr;
-    MPI_Status recv_status;
-    int bytes;
+    int ctr;
 
     // RMA puts to find sizes recvd from each process
     MPI_Win win;

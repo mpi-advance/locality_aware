@@ -104,7 +104,7 @@ void init_locality(const int n_sends,
         const long* global_recv_indices,
         const MPI_Datatype sendtype,
         const MPI_Datatype recvtype,
-        const MPIX_Comm* mpix_comm,
+        MPIX_Comm* mpix_comm,
         MPIX_Request* request);
 
 #ifdef __cplusplus

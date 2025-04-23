@@ -24,7 +24,6 @@ if(USE_CUDA)
         PROPERTIES LANGUAGE CUDA)
 endif()
 
-message(STATUS ${CMAKE_C_FLAGS})
 add_library(mpi_advance
     ${utils_SOURCES} ${utils_HEADERS}
     ${locality_SOURCES} ${locality_HEADERS}
@@ -34,9 +33,8 @@ add_library(mpi_advance
     ${heterogeneous_SOURCES} ${heterogeneous_HEADERS}
 )
 
-#target_link_libraries(mpi_advance ${MPI_LIBRARIES} ${EXTERNAL_LIBS} OpenMP::OpenMP_CXX OpenMP::OpenMP_C)
 target_link_libraries(mpi_advance ${MPI_LIBRARIES})
-message(STATUS ${MPI_LIBRARIES} ${EXTERNAL_LIBS})
+message(STATUS "SRC:" ${MPI_LIBRARIES} ${EXTERNAL_LIBS})
 if (USE_CUDA)
     target_link_libraries(mpi_advance CUDA::cudart)
 endif()

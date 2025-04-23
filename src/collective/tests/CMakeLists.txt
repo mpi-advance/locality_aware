@@ -18,5 +18,8 @@ add_executable(test_suitesparse_alltoallv test_suitesparse_alltoallv.cpp)
 target_link_libraries(test_suitesparse_alltoallv mpi_advance gtest pthread )
 add_test(LocalitySuitesparseAlltoallvTest ${MPIRUN} -n 16 ./test_suitesparse_alltoallv)
 
+#add_executable(allreduce_cpu allreduce_cpu.cpp)
+#target_link_libraries(allreduce_cpu mpi_advance gtest pthread)
+
 
 

@@ -25,6 +25,8 @@ int MPIX_Comm_init(MPIX_Comm** xcomm_ptr, MPI_Comm global_comm)
     xcomm->gpus_per_node = 0;
 #endif
 
+    xcomm->tag = 152;
+    
     *xcomm_ptr = xcomm;
 
     return MPI_SUCCESS;
@@ -109,6 +111,8 @@ int MPIX_Comm_req_resize(MPIX_Comm* xcomm, int n)
 int MPIX_Comm_free(MPIX_Comm** xcomm_ptr)
 {
     MPIX_Comm* xcomm = *xcomm_ptr;
+    if (xcomm == NULL) 
+        return MPI_SUCCESS;
 
     if (xcomm->n_requests > 0)
         free(xcomm->requests);

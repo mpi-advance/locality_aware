@@ -39,6 +39,7 @@ typedef struct _MPIX_Comm
    int rank_gpu;
    gpuStream_t proc_stream;
 #endif
+    int tag;
 } MPIX_Comm;
 
 int MPIX_Comm_init(MPIX_Comm** xcomm_ptr, MPI_Comm global_comm);
