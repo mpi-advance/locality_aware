@@ -38,8 +38,8 @@ double allreduce(int size, float* sendbuf, float* recvbuf, ncclComm_t nccl_comm,
     {
         NCCLCHECK(ncclAllReduce((const void*) sendbuf, (void*)recvbuf, size, ncclFloat,
                 ncclSum, nccl_comm, stream));
+        CUDACHECK(cudaStreamSynchronize(stream));
     }
-    CUDACHECK(cudaStreamSynchronize(stream));
     double tfinal = (MPI_Wtime() - t0) / n_iters;
     return tfinal;
 }

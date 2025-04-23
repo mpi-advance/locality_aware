@@ -38,8 +38,8 @@ double allreduce(int size, float* sendbuf, float* recvbuf, ncclComm_t nccl_comm,
     {
         NCCLCHECK(ncclAllReduce((const void*) sendbuf, (void*)recvbuf, size, ncclFloat,
                 ncclSum, nccl_comm, stream));
+        CUDACHECK(cudaStreamSynchronize(stream));
     }
-    CUDACHECK(cudaStreamSynchronize(stream));
     double tfinal = (MPI_Wtime() - t0) / n_iters;
     return tfinal;
 }
@@ -72,6 +72,7 @@ void print_allreduce(int max_p, float* sendbuf, float* recvbuf,
         // Warm-Up
         allreduce(s, &(sendbuf[s*gpu_rank]), &(recvbuf[s*gpu_rank]), nccl_comm, stream, comm, 1);
         cudaMemcpy(recvbuf_ipc, &(recvbuf[s*gpu_rank]), s*sizeof(float), cudaMemcpyDeviceToHost);
+        CUDACHECK(cudaDeviceSynchronize());
         MPI_Barrier(comm);
 
         for (int i = 0; i < s; i++)
@@ -83,11 +84,15 @@ void print_allreduce(int max_p, float* sendbuf, float* recvbuf,
 
         // Estimate Iterations
         double time = allreduce(s, &(sendbuf[s*gpu_rank]), &(recvbuf[s*gpu_rank]), nccl_comm, stream, comm, 2);
+        CUDACHECK(cudaDeviceSynchronize());
+        MPI_Barrier(comm);
         MPI_Allreduce(MPI_IN_PLACE, &time, 1, MPI_DOUBLE, MPI_MAX, comm);
         int n_iters = (2.0/time) + 1;
 
         // Time Allreduce
         time = allreduce(s, &(sendbuf[s*gpu_rank]), &(recvbuf[s*gpu_rank]), nccl_comm, stream, comm, n_iters);
+        CUDACHECK(cudaDeviceSynchronize());
+        MPI_Barrier(comm);
         MPI_Allreduce(MPI_IN_PLACE, &time, 1, MPI_DOUBLE, MPI_MAX, comm);
         if (rank == 0) printf("%e\n", time);
     }
