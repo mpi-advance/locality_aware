@@ -1,0 +1,124 @@
+#include <vector>
+#include <cstring>
+
+#include <math.h>
+#include <mpi.h>
+#include "mpi_advance.h"
+
+template <typename F, typename C>
+double time_alltoall(F alltoall_func, const void* sendbuf, const int sendcount,
+        MPI_Datatype sendtype, void* recvbuf, const int recvcount, MPI_Datatype recvtype,
+        C comm, int n_iters)
+{
+    MPI_Barrier(MPI_COMM_WORLD);
+    double t0 = MPI_Wtime();
+    for (int i = 0; i < n_iters; i++)
+    {
+        alltoall_func(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm);
+    }
+    double tfinal = (MPI_Wtime() - t0) / n_iters;
+    MPI_Allreduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
+    return t0;
+}
+
+template <typename F, typename C>
+double test_alltoall(F alltoall_func, const void* sendbuf, const int sendcount,
+        MPI_Datatype sendtype, void* recvbuf, const int recvcount, MPI_Datatype recvtype,
+        C comm)
+{
+    double time;
+    int n_iters;
+
+    // Warm-Up
+    time_alltoall(alltoall_func, sendbuf, sendcount, sendtype, 
+            recvbuf, recvcount, recvtype, comm, 1);
+
+    // Estimate Iterations
+    time = time_alltoall(alltoall_func, sendbuf, sendcount, sendtype,
+            recvbuf, recvcount, recvtype, comm, 2);
+    MPI_Allreduce(MPI_IN_PLACE, &time, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
+    n_iters = (1.0 / time) + 1;
+
+    // Time Alltoall
+    time = time_alltoall(alltoall_func, sendbuf, sendcount, sendtype,
+            recvbuf, recvcount, recvtype, comm, n_iters);
+    MPI_Allreduce(MPI_IN_PLACE, &time, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
+    return time;
+}
+
+template <typename T>
+void print_alltoalls(int max_p, const T* sendbuf,  
+        MPI_Datatype sendtype, T* recvbuf, MPI_Datatype recvtype,
+        MPIX_Comm* comm, T* recvbuf_std)
+{
+    int rank;
+    MPI_Comm_rank(comm->global_comm, &rank);
+
+    double time;
+
+    using F = int (*)(const void*, int, int, void*, int, int, _MPIX_Comm*);
+    std::vector<F> alltoall_funcs = {alltoall_pairwise, alltoall_nonblocking, alltoall_hierarchical, alltoall_multileader, alltoall_node_aware, alltoall_locality_aware, alltoall_multileader_locality};
+    std::vector<const char*> names = {"Pairwise", "NonBlocking", "Hierarchical", "Multileader", "Node Aware", "Locality Aware", "Multileader Locality"};
+
+    for (int i = 0; i < max_p; i++)
+    {
+        int s = pow(2, i);
+
+        if (rank == 0) printf("Size %d\n", s);
+        
+        // Standard PMPI Alltoall (system MPI)
+        PMPI_Alltoall(sendbuf, s, sendtype, recvbuf, s, recvtype, comm->global_comm);
+        std::memcpy(recvbuf_std, recvbuf, s*sizeof(T));
+        time = test_alltoall(PMPI_Alltoall, sendbuf, s, sendtype,
+                recvbuf, s, recvtype, comm->global_comm);
+        if (rank == 0) printf("PMPI: %e\n", time);
+
+        // MPI Advance Alltoall Pairwise
+        for (int idx = 0; idx < alltoall_funcs.size(); idx++)
+        {
+            alltoall_funcs[idx](sendbuf, s, sendtype, recvbuf, s, recvtype, comm); 
+            for (int j = 0; j < s; j++)
+                if (fabs(recvbuf_std[j] - recvbuf[j]) > 1e-06)
+                {
+                    printf("DIFF RESULTS %e vs %e\n", recvbuf_std[j], recvbuf[j]);
+                    MPI_Abort(comm->global_comm, -1);
+                }
+            time = test_alltoall(alltoall_pairwise, sendbuf, s, sendtype,
+                    recvbuf, s, recvtype, comm);
+            if (rank == 0) printf("%s: %e\n", names[idx], time);
+        }
+    }
+
+}
+
+
+int main(int argc, char* argv[])
+{
+    MPI_Init(&argc, &argv);
+
+    int max_p = 15;
+    int max_size = pow(2, max_p);
+
+    int rank, num_procs;
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
+
+    MPIX_Comm* xcomm;
+    MPIX_Comm_init(&xcomm, MPI_COMM_WORLD);
+
+    std::vector<float> sendbuf(max_size * num_procs);
+    std::vector<float> recvbuf(max_size * num_procs);
+    std::vector<float> recvbuf_std(max_size * num_procs);
+
+    for (int j = 0; j < num_procs; j++)
+    {
+        for (int k = 0; k < max_size; k++)
+        {
+            sendbuf[j * max_size + k] = rank * 10000 + j * 100 + k;
+        }
+    }
+
+    print_alltoalls(max_p, sendbuf.data(), MPI_FLOAT, recvbuf.data(), MPI_FLOAT, 
+            xcomm, recvbuf_std.data()); 
+
+}
