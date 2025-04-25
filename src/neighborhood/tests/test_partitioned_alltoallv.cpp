@@ -48,7 +48,8 @@ void partitioned_communicate(
     std::vector<int>& send_vals,
     std::vector<int>& displs
 ) {
-    // Partitioned communication
+    // int rank;
+    // MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     //printf("rank %d starting...\n", rank);
     if (n_sends)
         MPIP_Startall(n_sends, sreqs.data());
@@ -57,9 +58,9 @@ void partitioned_communicate(
 
 
     // Packing
-    // printf("rank %d packing...\n", rank);
     if (size_sends)
     {
+        //printf("rank %d packing...\n", rank);
         #pragma omp parallel
         {
             for (int i = 0; i < n_sends; i++) {
@@ -74,9 +75,22 @@ void partitioned_communicate(
         }
     }
 
-    // printf("rank %d waiting...\n", rank);
-    if (n_sends)
+    //MPI_Barrier(MPI_COMM_WORLD);
+    // if (n_sends || n_recvs) {
+    //     printf("rank %d waiting...\n", rank);
+    // }
+    if (n_sends) {
+        //MPI_Status statuses[n_sends];
+        //statuses.resize(n_sends);
         MPIP_Waitall(n_sends, sreqs.data(), MPI_STATUSES_IGNORE);
+        // if (ret != MPI_SUCCESS) {
+        //     printf("ret\n");
+        // }
+        //for (int i = 0; i < n_sends; i++) {
+        //    printf("%d, ", statuses[i]);
+        //}
+        //printf("\n");
+    }
     if (n_recvs)
         MPIP_Waitall(n_recvs, rreqs.data(), MPI_STATUSES_IGNORE);
 
@@ -90,6 +104,9 @@ void partitioned_communicate(
         //         alltoallv_send_vals[(i * n_vec) + j] = x[(idx * n_vec) + j];
         // }
     // }
+
+    //printf("rank %d comm done\n", rank);
+    //MPI_Barrier(MPI_COMM_WORLD);
 }
 
 void SpMV(
@@ -280,9 +297,7 @@ void test_partitioned(const char* filename, int n_vec)
     if (t0 > 1.0)
         iters2 = 1;
 
-    if (rank == 0) {
-        printf("time: %e, iters1 %d, iters2 %d\n", t0, iters1, iters2);
-    }
+    //printf("rank %d: iters1 %d, iters2 %d\n", rank, iters1, iters2);
 
     // Reset x after test iters
     if (A.on_proc.n_cols)
@@ -313,12 +328,22 @@ void test_partitioned(const char* filename, int n_vec)
     MPI_Barrier(MPI_COMM_WORLD);
     t0 = MPI_Wtime();
     for (int iter = 0; iter < iters2; iter++) {
+        //MPI_Barrier(MPI_COMM_WORLD);
+        //printf("Rank %d Comming %d\n", rank, iter);
         partitioned_communicate(n_vec, A.recv_comm.n_msgs, A.send_comm.n_msgs,
             A.send_comm.size_msgs, A.send_comm.idx, x2, sreqs, rreqs, alltoallv_send_vals, A.send_comm.ptr);
-
+        if (rank == 0) {
+            //printf("commed\n");
+        }
+        //MPI_Barrier(MPI_COMM_WORLD);
+        //printf("Rank %d Spmving %d\n", rank, iter);
         SpMV(n_vec, A.on_proc, A.off_proc, x2, partd_recv_vals, b2);
+        if (rank == 0) {
+            //printf("comped\n");
+        }
     }
     tf = MPI_Wtime() - t0;
+    //printf("rank %d reducing\n", rank);
     MPI_Reduce(&tf, &t0, 1, MPI_DOUBLE, MPI_MAX, 0,
         MPI_COMM_WORLD);
     if (rank == 0) printf("Partitioned Time for %d vectors: %e\n", n_vec, t0/iters2);
@@ -378,7 +403,7 @@ TEST(RandomCommTest, TestsInTests)
     };
 
     // Test SpM-Multivector
-    std::vector<int> vec_sizes = {16, 128};
+    std::vector<int> vec_sizes = {4096};
     for (size_t i = 0; i < test_matrices.size(); i++) {
         if (rank == 0) 
             printf("Matrix %d...\n", i);
