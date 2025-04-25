@@ -22,3 +22,6 @@ target_link_libraries(alltoallv_crs mpi_advance ${MPI_LIBRARIES} )
 
 add_executable(microbenchmarks microbenchmarks.cpp)
 target_link_libraries(microbenchmarks mpi_advance ${MPI_LIBRARIES} )
+
+add_executable(alltoall_topology alltoall_topology.cpp)
+target_link_libraries(alltoall_topology mpi_advance ${MPI_LIBRARIES} )
