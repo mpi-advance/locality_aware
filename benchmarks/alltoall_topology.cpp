@@ -57,10 +57,8 @@ void print_alltoalls(int max_p, const T* sendbuf,
     double time;
 
     using F = int (*)(const void*, int, MPI_Datatype, void*, int, MPI_Datatype, _MPIX_Comm*);
-    //std::vector<F> alltoall_funcs = {alltoall_pairwise, alltoall_nonblocking, alltoall_hierarchical, alltoall_multileader, alltoall_node_aware, alltoall_locality_aware, alltoall_multileader_locality};
-    //std::vector<const char*> names = {"Pairwise", "NonBlocking", "Hierarchical", "Multileader", "Node Aware", "Locality Aware", "Multileader Locality"};
-    std::vector<F> alltoall_funcs = {alltoall_pairwise, alltoall_nonblocking, alltoall_hierarchical, alltoall_multileader, alltoall_node_aware, alltoall_locality_aware};
-    std::vector<const char*> names = {"Pairwise", "NonBlocking", "Hierarchical", "Multileader", "Node Aware", "Locality Aware"};
+    std::vector<F> alltoall_funcs = {alltoall_pairwise, alltoall_nonblocking, alltoall_hierarchical, alltoall_multileader, alltoall_node_aware, alltoall_locality_aware, alltoall_multileader_locality};
+    std::vector<const char*> names = {"Pairwise", "NonBlocking", "Hierarchical", "Multileader", "Node Aware", "Locality Aware", "Multileader Locality"};
 
     for (int i = 0; i < max_p; i++)
     {
