@@ -154,6 +154,62 @@ TEST(RandomCommTest, TestsInTests)
         for (int j = 0; j < s*num_procs; j++)
             ASSERT_EQ(std_alltoall[j], mpix_alltoall[j]);
 
+    alltoall_hierarchical_nb(local_data.data(), 
+                s, 
+                MPI_INT,
+                mpix_alltoall.data(), 
+                s, 
+                MPI_INT,
+                xcomm);
+        for (int j = 0; j < s*num_procs; j++)
+            ASSERT_EQ(std_alltoall[j], mpix_alltoall[j]);
+
+        std::fill(mpix_alltoall.begin(), mpix_alltoall.end(), 0);
+        alltoall_multileader_nb(local_data.data(), 
+                s, 
+                MPI_INT,
+                mpix_alltoall.data(), 
+                s, 
+                MPI_INT,
+                xcomm);
+        for (int j = 0; j < s*num_procs; j++)
+            ASSERT_EQ(std_alltoall[j], mpix_alltoall[j]);
+
+
+        std::fill(mpix_alltoall.begin(), mpix_alltoall.end(), 0);
+        alltoall_node_aware_nb(local_data.data(), 
+                s, 
+                MPI_INT,
+                mpix_alltoall.data(), 
+                s, 
+                MPI_INT,
+                xcomm);
+        for (int j = 0; j < s*num_procs; j++)
+            ASSERT_EQ(std_alltoall[j], mpix_alltoall[j]);
+
+
+        std::fill(mpix_alltoall.begin(), mpix_alltoall.end(), 0);
+        alltoall_locality_aware_nb(local_data.data(), 
+                s, 
+                MPI_INT,
+                mpix_alltoall.data(), 
+                s, 
+                MPI_INT,
+                xcomm);
+        for (int j = 0; j < s*num_procs; j++)
+            ASSERT_EQ(std_alltoall[j], mpix_alltoall[j]);
+
+
+        std::fill(mpix_alltoall.begin(), mpix_alltoall.end(), 0);
+        alltoall_multileader_locality_nb(local_data.data(), 
+                s, 
+                MPI_INT,
+                mpix_alltoall.data(), 
+                s, 
+                MPI_INT,
+                xcomm);
+        for (int j = 0; j < s*num_procs; j++)
+            ASSERT_EQ(std_alltoall[j], mpix_alltoall[j]);
     }
 
     MPIX_Comm_free(&xcomm);

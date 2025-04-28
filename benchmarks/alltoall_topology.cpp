@@ -57,8 +57,8 @@ void print_alltoalls(int max_p, const T* sendbuf,
     double time;
 
     using F = int (*)(const void*, int, MPI_Datatype, void*, int, MPI_Datatype, _MPIX_Comm*);
-    std::vector<F> alltoall_funcs = {alltoall_pairwise, alltoall_nonblocking, alltoall_hierarchical, alltoall_multileader, alltoall_node_aware, alltoall_locality_aware, alltoall_multileader_locality};
-    std::vector<const char*> names = {"Pairwise", "NonBlocking", "Hierarchical", "Multileader", "Node Aware", "Locality Aware", "Multileader Locality"};
+    std::vector<F> alltoall_funcs = {alltoall_pairwise, alltoall_nonblocking, alltoall_hierarchical, alltoall_multileader, alltoall_node_aware, alltoall_locality_aware, alltoall_multileader_locality, alltoall_hierarchical_nb, alltoall_multileader_nb, alltoall_node_aware_nb, alltoall_locality_aware_nb, alltoall_multileader_locality_nb};
+    std::vector<const char*> names = {"Pairwise", "NonBlocking", "Pairwise Hierarchical", "Pairwise Multileader", "Pairwise Node Aware", "Pairwise Locality Aware", "Pairwise Multileader Locality", "Nonblocking Hierarchical", "Nonblocking Multileader", "Nonblocking Node Aware", "Nonblocking Locality Aware", "Nonblocking Multileader Locality"};
 
     for (int i = 0; i < max_p; i++)
     {
@@ -106,6 +106,9 @@ int main(int argc, char* argv[])
     MPIX_Comm* xcomm;
     MPIX_Comm_init(&xcomm, MPI_COMM_WORLD);
     MPIX_Comm_topo_init(xcomm);
+
+    // To test a different number of leaders, change here: 
+    MPIX_Comm_leader_init(xcomm, 4);
 
     std::vector<int> sendbuf(max_size * num_procs);
     std::vector<int> recvbuf(max_size * num_procs);
