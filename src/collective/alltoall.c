@@ -557,7 +557,6 @@ int alltoall_locality_aware(const void* sendbuf,
     return MPI_SUCCESS;
 }
 
-
 int alltoall_multileader_locality(const void* sendbuf,
         const int sendcount,
         MPI_Datatype sendtype,
@@ -616,6 +615,7 @@ int alltoall_multileader_locality(const void* sendbuf,
     int leaders_per_node;
     MPI_Comm_size(comm->leader_local_comm, &leaders_per_node);
 
+
     char* local_send_buffer = NULL;
     char* local_recv_buffer = NULL;
     if (leader_rank == 0)
@@ -640,8 +640,6 @@ int alltoall_multileader_locality(const void* sendbuf,
 
     if (leader_rank == 0)
     {
-
-
         ctr = 0;
         for (int dest_node = 0; dest_node < n_leaders; dest_node++)
         {
@@ -655,10 +653,9 @@ int alltoall_multileader_locality(const void* sendbuf,
             }
         }
 
-        // 3. MPI_Alltoall between nodes 
-        PMPI_Alltoall(local_send_buffer, procs_per_leader*procs_per_leader*sendcount, sendtype, 
-                local_recv_buffer, procs_per_leader*procs_per_leader*recvcount, recvtype, comm->leader_group_comm);
 
+
+        // 3. MPI_Alltoall between nodes 
         PMPI_Alltoall(local_send_buffer, ppn*procs_per_leader*sendcount, sendtype, 
                 local_recv_buffer, ppn*procs_per_leader*recvcount, recvtype, comm->group_comm);
 
@@ -675,24 +672,34 @@ int alltoall_multileader_locality(const void* sendbuf,
                 ctr += procs_per_leader*procs_per_leader*sendcount*send_size;
             }
         }
-        PMPI_Alltoall(local_send_buffer, procs_per_leader*procs_per_leader*sendcount, sendtype, 
-                local_recv_buffer, procs_per_leader*procs_per_leader*recvcount, recvtype, comm->leader_local_comm);
 
-        // 4. Re-pack for local scatter
+        PMPI_Alltoall(local_send_buffer, n_nodes*procs_per_leader*procs_per_leader*sendcount, sendtype, 
+                local_recv_buffer, n_nodes*procs_per_leader*procs_per_leader*recvcount, recvtype, comm->leader_local_comm);
+
         ctr = 0;
         for (int dest_proc = 0; dest_proc < procs_per_leader; dest_proc++)
         {
             int dest_proc_start = dest_proc * recvcount * recv_size;
-            for (int orig_proc = 0; orig_proc < num_procs; orig_proc++)
+            
+            for (int orig_node = 0; orig_node < n_nodes; orig_node++)
             {
-                int orig_proc_start = orig_proc * procs_per_leader * recvcount * recv_size;
-                memcpy(&(local_send_buffer[ctr]), &(local_recv_buffer[orig_proc_start + dest_proc_start]),
-                        recvcount * recv_size);
-                ctr += recvcount * recv_size;
+                int orig_node_start = orig_node*procs_per_leader*procs_per_leader*recvcount*recv_size;
 
+                for (int orig_leader = 0; orig_leader < leaders_per_node; orig_leader++)
+                {
+                    int orig_leader_start = orig_leader*num_procs*leaders_per_node*recvcount*recv_size;
+                    for (int orig_proc = 0; orig_proc < procs_per_leader; orig_proc++)
+                    {
+                        int orig_proc_start = orig_proc*procs_per_leader*recvcount*recv_size;
+                        int idx = orig_node_start + orig_leader_start + orig_proc_start + dest_proc_start;
+                        memcpy(&(local_send_buffer[ctr]), &(local_recv_buffer[idx]), recvcount*recv_size);
+                        ctr += recvcount * recv_size;
+                    } 
+                }
             }
         }
     }
+
 
     // 5. Scatter 
     MPI_Scatter(local_send_buffer, recvcount * num_procs, recvtype, recv_buffer, recvcount*num_procs, recvtype,
