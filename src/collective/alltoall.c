@@ -557,8 +557,6 @@ int alltoall_locality_aware(const void* sendbuf,
     return MPI_SUCCESS;
 }
 
-
-
 int alltoall_helper(const void* sendbuf,
         const int sendcount,
         MPI_Datatype sendtype,
@@ -635,6 +633,8 @@ int alltoall_helper(const void* sendbuf,
     return MPI_SUCCESS;
 }
 
+
+
 int alltoall_multileader_locality(const void* sendbuf,
         const int sendcount,
         MPI_Datatype sendtype,
@@ -688,7 +688,8 @@ int alltoall_multileader_locality(const void* sendbuf,
     //    this is common, so fair assumption for now
     //    likely need to fix before using in something like Trilinos
     int n_nodes = num_procs / ppn;
-    int n_leaders = num_procs / procs_per_leader;
+    int n_leaders;
+    MPI_Comm_size(comm->leader_group_comm, &n_leaders);
 
     char* local_send_buffer = (char*)malloc(procs_per_leader*num_procs*sendcount*send_size);
     char* local_recv_buffer = (char*)malloc(procs_per_leader*num_procs*recvcount*recv_size);
@@ -719,8 +720,8 @@ int alltoall_multileader_locality(const void* sendbuf,
         }
 
         // 3. MPI_Alltoall between leaders
-        alltoall_helper(local_send_buffer, procs_per_leader * procs_per_leader * sendcount, sendtype,
-                local_recv_buffer, procs_per_leader * procs_per_leader * recvcount, recvtype, comm);
+        alltoall_helper(local_send_buffer, procs_per_leader * sendcount, sendtype,
+                local_recv_buffer, procs_per_leader * recvcount, recvtype, comm);
 
         // 4. Re-pack for local scatter
         ctr = 0;

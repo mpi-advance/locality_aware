@@ -43,7 +43,7 @@ TEST(RandomCommTest, TestsInTests)
 
     MPIX_Comm* xcomm;
     MPIX_Comm_init(&xcomm, MPI_COMM_WORLD);
-    update_locality(xcomm, 4);
+    //update_locality(xcomm, 4);
 
     for (int i = 0; i < max_i; i++)
     {
