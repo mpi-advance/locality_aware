@@ -56,9 +56,11 @@ void print_alltoalls(int max_p, const T* sendbuf,
 
     double time;
 
-    using F = int (*)(const void*, int, int, void*, int, int, _MPIX_Comm*);
-    std::vector<F> alltoall_funcs = {alltoall_pairwise, alltoall_nonblocking, alltoall_hierarchical, alltoall_multileader, alltoall_node_aware, alltoall_locality_aware, alltoall_multileader_locality};
-    std::vector<const char*> names = {"Pairwise", "NonBlocking", "Hierarchical", "Multileader", "Node Aware", "Locality Aware", "Multileader Locality"};
+    using F = int (*)(const void*, int, MPI_Datatype, void*, int, MPI_Datatype, _MPIX_Comm*);
+    //std::vector<F> alltoall_funcs = {alltoall_pairwise, alltoall_nonblocking, alltoall_hierarchical, alltoall_multileader, alltoall_node_aware, alltoall_locality_aware, alltoall_multileader_locality};
+    //std::vector<const char*> names = {"Pairwise", "NonBlocking", "Hierarchical", "Multileader", "Node Aware", "Locality Aware", "Multileader Locality"};
+    std::vector<F> alltoall_funcs = {alltoall_pairwise, alltoall_nonblocking, alltoall_hierarchical, alltoall_multileader, alltoall_node_aware, alltoall_locality_aware};
+    std::vector<const char*> names = {"Pairwise", "NonBlocking", "Hierarchical", "Multileader", "Node Aware", "Locality Aware"};
 
     for (int i = 0; i < max_p; i++)
     {
@@ -80,7 +82,7 @@ void print_alltoalls(int max_p, const T* sendbuf,
             for (int j = 0; j < s; j++)
                 if (fabs(recvbuf_std[j] - recvbuf[j]) > 1e-06)
                 {
-                    printf("DIFF RESULTS %e vs %e\n", recvbuf_std[j], recvbuf[j]);
+                    printf("DIFF RESULTS %d vs %d\n", recvbuf_std[j], recvbuf[j]);
                     MPI_Abort(comm->global_comm, -1);
                 }
             time = test_alltoall(alltoall_pairwise, sendbuf, s, sendtype,
@@ -105,10 +107,11 @@ int main(int argc, char* argv[])
 
     MPIX_Comm* xcomm;
     MPIX_Comm_init(&xcomm, MPI_COMM_WORLD);
+    MPIX_Comm_topo_init(xcomm);
 
-    std::vector<float> sendbuf(max_size * num_procs);
-    std::vector<float> recvbuf(max_size * num_procs);
-    std::vector<float> recvbuf_std(max_size * num_procs);
+    std::vector<int> sendbuf(max_size * num_procs);
+    std::vector<int> recvbuf(max_size * num_procs);
+    std::vector<int> recvbuf_std(max_size * num_procs);
 
     for (int j = 0; j < num_procs; j++)
     {

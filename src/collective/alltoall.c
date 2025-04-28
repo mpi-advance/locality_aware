@@ -556,7 +556,6 @@ int alltoall_locality_aware(const void* sendbuf,
     free(tmpbuf);
     return MPI_SUCCESS;
 }
-
 int alltoall_multileader_locality(const void* sendbuf,
         const int sendcount,
         MPI_Datatype sendtype,
@@ -652,8 +651,6 @@ int alltoall_multileader_locality(const void* sendbuf,
                 ctr += procs_per_leader * sendcount * send_size;
             }
         }
-
-
 
         // 3. MPI_Alltoall between nodes 
         PMPI_Alltoall(local_send_buffer, ppn*procs_per_leader*sendcount, sendtype, 
