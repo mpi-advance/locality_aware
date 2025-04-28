@@ -83,7 +83,7 @@ void print_alltoalls(int max_p, const T* sendbuf,
                     printf("DIFF RESULTS %d vs %d\n", recvbuf_std[j], recvbuf[j]);
                     MPI_Abort(comm->global_comm, -1);
                 }
-            time = test_alltoall(alltoall_pairwise, sendbuf, s, sendtype,
+            time = test_alltoall(alltoall_funcs[idx], sendbuf, s, sendtype,
                     recvbuf, s, recvtype, comm);
             if (rank == 0) printf("%s: %e\n", names[idx], time);
         }
