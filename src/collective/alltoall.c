@@ -615,7 +615,7 @@ int alltoall_multileader_locality(const void* sendbuf,
         MPI_Datatype recvtype,
         MPIX_Comm* comm)
 {
-   int rank, num_procs;
+    int rank, num_procs;
     MPI_Comm_rank(comm->global_comm, &rank);
     MPI_Comm_size(comm->global_comm, &num_procs);
 
@@ -624,15 +624,21 @@ int alltoall_multileader_locality(const void* sendbuf,
     if (comm->local_comm == MPI_COMM_NULL)
         MPIX_Comm_topo_init(comm);
 
-    int num_leaders_per_node = 4;
-    int procs_per_node;
-    MPI_Comm_size(comm->local_comm, &procs_per_node);
-    int procs_per_leader = procs_per_node / num_leaders_per_node;
-    if (procs_per_node < num_leaders_per_node)
+    int local_rank, ppn;
+    MPI_Comm_rank(comm->local_comm, &local_rank);
+    MPI_Comm_size(comm->local_comm, &ppn);
+
+    if (comm->leader_comm == MPI_COMM_NULL)
     {
-        num_leaders_per_node = procs_per_node;
-        procs_per_leader = 1;
+        int num_leaders_per_node = 4;
+        if (ppn < num_leaders_per_node)
+            num_leaders_per_node = ppn;
+        MPIX_Comm_leader_init(comm, ppn / num_leaders_per_node);
     }
+    
+    int procs_per_leader, leader_rank;
+    MPI_Comm_rank(comm->leader_comm, &leader_rank);
+    MPI_Comm_size(comm->leader_comm, &procs_per_leader);
 
     int send_proc, recv_proc;
     int send_pos, recv_pos;
@@ -644,17 +650,6 @@ int alltoall_multileader_locality(const void* sendbuf,
     int send_size, recv_size;
     MPI_Type_size(sendtype, &send_size);
     MPI_Type_size(recvtype, &recv_size);
-
-    if (comm->leader_comm == MPI_COMM_NULL)
-        MPIX_Comm_leader_init(comm, procs_per_leader);
-
-    int leader_rank;
-    MPI_Comm_rank(comm->leader_comm, &leader_rank);
-    MPI_Comm_size(comm->leader_comm, &procs_per_leader);
-
-    int local_rank, ppn;
-    MPI_Comm_rank(comm->local_comm, &local_rank);
-    MPI_Comm_size(comm->local_comm, &ppn);
 
     // TODO: currently assuming full nodes, even procs_per_leader per node
     //    this is common, so fair assumption for now
