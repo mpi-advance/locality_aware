@@ -558,83 +558,6 @@ int alltoall_locality_aware(const void* sendbuf,
 }
 
 
-
-int alltoall_helper(const void* sendbuf,
-        const int sendcount,
-        MPI_Datatype sendtype,
-        void* recvbuf,
-        const int recvcount,
-        MPI_Datatype recvtype,
-        MPIX_Comm* comm)
-{
-    int rank, num_procs;
-    MPI_Comm_rank(comm->global_comm, &rank);
-    MPI_Comm_size(comm->global_comm, &num_procs);
-
-    int tag = 10242;
-
-    if (comm->local_comm == MPI_COMM_NULL)
-        MPIX_Comm_topo_init(comm);
-
-    int local_rank, ppn;
-    MPI_Comm_rank(comm->leader_local_comm, &local_rank);
-    MPI_Comm_size(comm->leader_local_comm, &ppn);
-
-    int n_nodes = num_procs / ppn;
-
-    int send_proc, recv_proc;
-    int send_pos, recv_pos;
-    MPI_Status status;
-
-    char* recv_buffer = (char*)recvbuf;
-    char* send_buffer = (char*)sendbuf;
-
-    int send_size, recv_size;
-    MPI_Type_size(sendtype, &send_size);
-    MPI_Type_size(recvtype, &recv_size);
-
-
-    // 1. Alltoall between group_comms (all data for any process on node)
-    MPI_Alltoall(sendbuf, ppn*sendcount, sendtype, recvbuf, ppn*recvcount, recvtype,
-            comm->group_comm);
-
-    // 2. Re-pack
-    int ctr = 0;
-    for (int dest_proc = 0; dest_proc < ppn; dest_proc++)
-    {
-        int offset = dest_proc * recvcount * recv_size;
-        for (int origin = 0; origin < n_nodes; origin++)
-        {
-            int node_offset = origin * ppn * recvcount * recv_size;
-            memcpy(&(sendbuf[ctr]), &(recvbuf[node_offset + offset]), recvcount*recv_size);
-            ctr += recvcount * recv_size;
-        }
-    }
-
-
-    // 3. Local alltoall
-    MPI_Alltoall(sendbuf, n_nodes*recvcount, recvtype, 
-            recvbuf, n_nodes*recvcount, recvtype, comm->leader_local_comm);
-
-    // 4. Re-order
-    ctr = 0;
-    for (int node = 0; node < n_nodes; node++)
-    {
-        int node_offset = node * recvcount * recv_size;
-        for (int dest = 0; dest < ppn; dest++)
-        {
-            int dest_offset = dest * n_nodes * recvcount * recv_size;
-            memcpy(&(sendbuf[ctr]), &(recvbuf[node_offset + dest_offset]), 
-                    recvcount * recv_size);
-            ctr += recvcount * recv_size;
-        }
-    }
-
-    memcpy(recvbuf, sendbuf, num_procs*recvcount*recv_size);
-
-    return MPI_SUCCESS;
-}
-
 int alltoall_multileader_locality(const void* sendbuf,
         const int sendcount,
         MPI_Datatype sendtype,
@@ -689,10 +612,22 @@ int alltoall_multileader_locality(const void* sendbuf,
     //    likely need to fix before using in something like Trilinos
     int n_nodes = num_procs / ppn;
     int n_leaders = num_procs / procs_per_leader;
+ 
+    int leaders_per_node;
+    MPI_Comm_size(comm->leader_local_comm, &leaders_per_node);
 
-    char* local_send_buffer = (char*)malloc(procs_per_leader*num_procs*sendcount*send_size);
-    char* local_recv_buffer = (char*)malloc(procs_per_leader*num_procs*recvcount*recv_size);
-
+    char* local_send_buffer = NULL;
+    char* local_recv_buffer = NULL;
+    if (leader_rank == 0)
+    {
+        local_send_buffer = (char*)malloc(procs_per_leader*num_procs*sendcount*send_size);
+        local_recv_buffer = (char*)malloc(procs_per_leader*num_procs*recvcount*recv_size);
+    }
+    else
+    {
+        local_send_buffer = (char*)malloc(sizeof(char));
+        local_recv_buffer = (char*)malloc(sizeof(char));
+    }
     // 1. Gather locally
     MPI_Gather(send_buffer, sendcount*num_procs, sendtype, local_recv_buffer, sendcount*num_procs, sendtype,
             0, comm->leader_comm);
@@ -705,6 +640,8 @@ int alltoall_multileader_locality(const void* sendbuf,
 
     if (leader_rank == 0)
     {
+
+
         ctr = 0;
         for (int dest_node = 0; dest_node < n_leaders; dest_node++)
         {
@@ -718,9 +655,28 @@ int alltoall_multileader_locality(const void* sendbuf,
             }
         }
 
-        // 3. MPI_Alltoall between leaders
-        alltoall_helper(local_send_buffer, procs_per_leader * procs_per_leader * sendcount, sendtype,
-                local_recv_buffer, procs_per_leader * procs_per_leader * recvcount, recvtype, comm);
+        // 3. MPI_Alltoall between nodes 
+        PMPI_Alltoall(local_send_buffer, procs_per_leader*procs_per_leader*sendcount, sendtype, 
+                local_recv_buffer, procs_per_leader*procs_per_leader*recvcount, recvtype, comm->leader_group_comm);
+
+        PMPI_Alltoall(local_send_buffer, ppn*procs_per_leader*sendcount, sendtype, 
+                local_recv_buffer, ppn*procs_per_leader*recvcount, recvtype, comm->group_comm);
+
+        // Re-Pack for exchange between local leaders
+        ctr = 0;
+        for (int local_leader = 0; local_leader < leaders_per_node; local_leader++)
+        {
+            int leader_start = local_leader*procs_per_leader*procs_per_leader*sendcount*send_size;
+            for (int dest_node = 0; dest_node < n_nodes; dest_node++)
+            {
+                int dest_node_start = dest_node*ppn*procs_per_leader*sendcount*send_size;
+                memcpy(&(local_send_buffer[ctr]), &(local_recv_buffer[dest_node_start+leader_start]),
+                        procs_per_leader*procs_per_leader*sendcount*send_size);
+                ctr += procs_per_leader*procs_per_leader*sendcount*send_size;
+            }
+        }
+        PMPI_Alltoall(local_send_buffer, procs_per_leader*procs_per_leader*sendcount, sendtype, 
+                local_recv_buffer, procs_per_leader*procs_per_leader*recvcount, recvtype, comm->leader_local_comm);
 
         // 4. Re-pack for local scatter
         ctr = 0;

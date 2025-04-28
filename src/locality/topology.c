@@ -82,7 +82,7 @@ int MPIX_Comm_leader_init(MPIX_Comm* xcomm, int procs_per_leader)
         &(xcomm->leader_group_comm));
 
     if (xcomm->local_comm == MPI_COMM_NULL)
-        MPIX_Comm_topo_init(&xcomm);
+        MPIX_Comm_topo_init(xcomm);
 
     MPI_Comm_split(xcomm->local_comm,
         leader_rank,
