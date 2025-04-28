@@ -424,7 +424,7 @@ int alltoall_node_aware(const void* sendbuf,
     char* tmpbuf = (char*)malloc(num_procs*sendcount*send_size);
 
     // 1. Alltoall between group_comms (all data for any process on node)
-    MPI_Alltoall(sendbuf, ppn*sendcount, sendtype, recvbuf, ppn*recvcount, recvtype,
+    MPI_Alltoall(sendbuf, ppn*sendcount, sendtype, tmpbuf, ppn*recvcount, recvtype,
             comm->group_comm);
 
     // 2. Re-pack
@@ -435,15 +435,15 @@ int alltoall_node_aware(const void* sendbuf,
         for (int origin = 0; origin < n_nodes; origin++)
         {
             int node_offset = origin * ppn * recvcount * recv_size;
-            memcpy(&(tmpbuf[ctr]), &(recvbuf[node_offset + offset]), recvcount*recv_size);
+            memcpy(&(recvbuf[ctr]), &(tmpbuf[node_offset + offset]), recvcount*recv_size);
             ctr += recvcount * recv_size;
         }
     }
 
 
     // 3. Local alltoall
-    MPI_Alltoall(tmpbuf, n_nodes*recvcount, recvtype, 
-            recvbuf, n_nodes*recvcount, recvtype, comm->local_comm);
+    MPI_Alltoall(recvbuf, n_nodes*recvcount, recvtype, 
+            tmpbuf, n_nodes*recvcount, recvtype, comm->local_comm);
 
     // 4. Re-order
     ctr = 0;
@@ -453,14 +453,12 @@ int alltoall_node_aware(const void* sendbuf,
         for (int dest = 0; dest < ppn; dest++)
         {
             int dest_offset = dest * n_nodes * recvcount * recv_size;
-            memcpy(&(tmpbuf[ctr]), &(recvbuf[node_offset + dest_offset]), 
+            memcpy(&(recvbuf[ctr]), &(tmpbuf[node_offset + dest_offset]), 
                     recvcount * recv_size);
             ctr += recvcount * recv_size;
         }
     }
 
-
-    memcpy(recvbuf, tmpbuf, num_procs*recvcount*recv_size);
 
     free(tmpbuf);
 
@@ -517,7 +515,7 @@ int alltoall_locality_aware(const void* sendbuf,
     char* tmpbuf = (char*)malloc(num_procs*sendcount*send_size);
 
     // 1. Alltoall between group_comms (all data for any process on node)
-    MPI_Alltoall(sendbuf, ppn*sendcount, sendtype, recvbuf, ppn*recvcount, recvtype,
+    MPI_Alltoall(sendbuf, ppn*sendcount, sendtype, tmpbuf, ppn*recvcount, recvtype,
             comm->leader_group_comm);
 
     // 2. Re-pack
@@ -528,14 +526,14 @@ int alltoall_locality_aware(const void* sendbuf,
         for (int origin = 0; origin < n_nodes; origin++)
         {
             int node_offset = origin * ppn * recvcount * recv_size;
-            memcpy(&(tmpbuf[ctr]), &(recvbuf[node_offset + offset]), recvcount*recv_size);
+            memcpy(&(recvbuf[ctr]), &(tmpbuf[node_offset + offset]), recvcount*recv_size);
             ctr += recvcount * recv_size;
         }
     }
 
     // 3. Local alltoall
-    MPI_Alltoall(tmpbuf, n_nodes*recvcount, recvtype, 
-            recvbuf, n_nodes*recvcount, recvtype, comm->leader_comm);
+    MPI_Alltoall(recvbuf, n_nodes*recvcount, recvtype, 
+            tmpbuf, n_nodes*recvcount, recvtype, comm->leader_comm);
 
     // 4. Re-order
     ctr = 0;
@@ -545,13 +543,11 @@ int alltoall_locality_aware(const void* sendbuf,
         for (int dest = 0; dest < ppn; dest++)
         {
             int dest_offset = dest * n_nodes * recvcount * recv_size;
-            memcpy(&(tmpbuf[ctr]), &(recvbuf[node_offset + dest_offset]), 
+            memcpy(&(recvbuf[ctr]), &(tmpbuf[node_offset + dest_offset]), 
                     recvcount * recv_size);
             ctr += recvcount * recv_size;
         }
     }
-
-    memcpy(recvbuf, tmpbuf, num_procs*recvcount*recv_size);
 
     free(tmpbuf);
     return MPI_SUCCESS;
