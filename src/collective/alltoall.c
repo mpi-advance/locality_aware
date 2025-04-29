@@ -190,7 +190,7 @@ int alltoall_pairwise(const void* sendbuf,
         void* recvbuf,
         const int recvcount,
         MPI_Datatype recvtype,
-        MPIX_Comm* comm)
+        MPI_Comm comm)
 {
     return pairwise_helper(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm->global_comm);
 }
