@@ -5,7 +5,7 @@ include(FeatureSummary)
 enable_language(C)
 enable_language(CXX)
 #set(CMAKE_C_STANDARD 99)
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 
@@ -105,17 +105,8 @@ endif(USE_HIP)
 ##################### 
 ## GOOGLETEST      ##
 #####################
-include(FetchContent)
-
-FetchContent_Declare(
-  googletest
-  GIT_REPOSITORY https://github.com/google/googletest.git
-  # Specify the commit you depend on and update it regularly.
-  GIT_TAG 58d77fa8070e8cec2dc1ed015d66b454c8d78850
-)
-# For Windows: Prevent overriding the parent project's compiler/linker settings
-set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-FetchContent_MakeAvailable(googletest)
+# Try to find an existing GoogleTest installation
+find_package(GTest REQUIRED)
 #####################
 
 include_directories(.)
@@ -139,3 +130,31 @@ add_subdirectory(benchmarks)
 
 enable_testing()
 
+include(CMakePackageConfigHelpers)
+
+# Install the actual target(s) and register them for export
+install(TARGETS mpi_advance
+        EXPORT mpiadvanceTargets
+        DESTINATION lib)
+
+# Export the targets into a CMake package
+install(EXPORT mpiadvanceTargets
+        NAMESPACE mpiadvance::
+        DESTINATION lib/cmake/mpiadvance)
+
+# Generate the Config and Version files
+write_basic_package_version_file(
+  "${CMAKE_CURRENT_BINARY_DIR}/mpiadvanceConfigVersion.cmake"
+  VERSION 1.0.0
+  COMPATIBILITY SameMajorVersion)
+
+configure_package_config_file(
+  "${CMAKE_CURRENT_SOURCE_DIR}/cmake/mpiadvanceConfig.cmake"
+  "${CMAKE_CURRENT_BINARY_DIR}/mpiadvanceConfig.cmake"
+  INSTALL_DESTINATION lib/cmake/mpiadvance)
+
+install(FILES
+  "${CMAKE_CURRENT_BINARY_DIR}/mpiadvanceConfig.cmake"
+  "${CMAKE_CURRENT_BINARY_DIR}/mpiadvanceConfigVersion.cmake"
+  DESTINATION lib/cmake/mpiadvance)
+  
