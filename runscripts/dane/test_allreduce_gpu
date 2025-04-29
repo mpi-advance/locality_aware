@@ -1,0 +1,26 @@
+#!/bin/bash
+#SBATCH --nodes=16
+#SBATCH --ntasks-per-node=4
+#SBATCH --time=00:10:00
+#SBATCH --job-name=dscg_gpu
+#SBATCH --account=bdys-dtai-gh
+#SBATCH --gpus-per-node=4
+#SBATCH --exclusive
+#SBATCH --partition=ghx4
+#SBATCH --output=loc_gpu_N16_%J.out
+#SBATCH --error=loc_gpu_N16_%J.err
+
+module list
+
+module load craype-accel-nvidia90
+module unload gcc-native
+module load gcc-native/12
+export MPICH_GPU_SUPPORT_ENABLED=1
+
+cd $HOME/locality_aware/build/src/heterogeneous/tests
+
+echo "GPUDIRECT TESTS:\n\n"
+
+srun -n 64 ./allreduce_gpu
+
+

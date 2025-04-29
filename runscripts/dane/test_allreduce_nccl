@@ -1,0 +1,20 @@
+#!/bin/bash
+#SBATCH --nodes=16
+#SBATCH --ntasks-per-node=4
+#SBATCH --job-name=dscg_gpu
+#SBATCH --account=bdys-dtai-gh
+#SBATCH --gpus-per-node=4
+#SBATCH --exclusive
+#SBATCH --partition=ghx4
+#SBATCH --output=loc_nccl_N16_%J.out
+#SBATCH --error=loc_nccl_N16_%J.err
+
+module list
+
+cd $HOME/locality_aware/build/src/heterogeneous/tests
+
+echo "GPUDIRECT NCCL TESTS:\n\n"
+
+srun -n 64 ./allreduce_nccl
+
+

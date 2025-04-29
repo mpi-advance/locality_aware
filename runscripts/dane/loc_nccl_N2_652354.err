@@ -1,0 +1,20 @@
+
+Currently Loaded Modules:
+  1) craype-arm-grace                                9) cudatoolkit/24.3_12.3
+  2) libfabric/1.20.1                               10) default
+  3) craype-network-ofi                             11) craype-accel-nvidia90
+  4) perftools-base/24.07.0                         12) gcc-native/12.3
+  5) xpmem/2.9.6-1.1_20240511212657__g087dc11fc19d  13) cray-mpich/8.1.30
+  6) craype/2.7.32                                  14) cray-libsci/24.07.0
+  7) cray-dsmml/0.3.0                               15) nccl/2.19.1.awsplugin
+  8) PrgEnv-gnu/8.5.0
+
+ 
+
+slurmstepd: error: Prolog hung on node gh144
+srun: error: slurm_receive_msgs: [[gh144.hsn.cm.delta.internal.ncsa.edu]:6818] failed: Socket timed out on send/recv operation
+srun: error: Task launch for StepId=652354.0 failed on node gh144: Socket timed out on send/recv operation
+srun: error: Application launch failed: Socket timed out on send/recv operation
+srun: Job step aborted: Waiting up to 32 seconds for job step to finish.
+slurmstepd: error: *** STEP 652354.0 ON gh135 CANCELLED AT 2025-04-24T12:34:32 ***
+srun: error: gh135: tasks 0-3: Killed

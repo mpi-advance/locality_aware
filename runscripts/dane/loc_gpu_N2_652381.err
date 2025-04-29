@@ -1,0 +1,81 @@
+
+Currently Loaded Modules:
+  1) craype-arm-grace                                9) cudatoolkit/24.3_12.3
+  2) libfabric/1.20.1                               10) default
+  3) craype-network-ofi                             11) craype-accel-nvidia90
+  4) perftools-base/24.07.0                         12) gcc-native/12.3
+  5) xpmem/2.9.6-1.1_20240511212657__g087dc11fc19d  13) cray-mpich/8.1.30
+  6) craype/2.7.32                                  14) cray-libsci/24.07.0
+  7) cray-dsmml/0.3.0                               15) nccl/2.19.1.awsplugin
+  8) PrgEnv-gnu/8.5.0
+
+ 
+
+
+Inactive Modules:
+  1) cray-libsci     2) cray-mpich
+
+
+Activating Modules:
+  1) cray-libsci/24.07.0     2) cray-mpich/8.1.30
+
+PE 7: Host gh144.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7840]
+PE 2: Host gh135.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7000]
+PE 6: Host gh144.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7880]
+PE 0: Launcher/PMI did not supply NIC data (node_idx=0, rc=0, num_pmi_nics=0)
+PE 0: MPICH_OFI_NIC_POLICY = BLOCK
+PE 0: MPICH CH4 OFI detected 4 NICs/node on host gh135.hsn.cm.delta.internal.ncsa.edu
+PE 0: ======================== Display NIC Addrs  ========================
+PE 0: Hostname: gh135.hsn.cm.delta.internal.ncsa.edu
+PE 0:   MPICH_OFI_NIC_POLICY: BLOCK
+PE 0:   Number of NICs: 4
+PE 0:     nic_index 0: domain_name=cxi0, numa_domain=0, addr=0x70c1
+PE 0:     nic_index 1: domain_name=cxi1, numa_domain=1, addr=0x7001
+PE 0:     nic_index 2: domain_name=cxi2, numa_domain=2, addr=0x7000
+PE 0:     nic_index 3: domain_name=cxi3, numa_domain=3, addr=0x70c0
+PE 0:   Number of NUMA domains: 36
+PE 0:     numa_domain 0: cpu_list=[0-71]
+PE 0:     numa_domain 1: cpu_list=[72-143]
+PE 0:     numa_domain 2: cpu_list=[144-215]
+PE 0:     numa_domain 3: cpu_list=[216-287]
+PE 0:     numa_domain 4: cpu_list=[]
+PE 0:     numa_domain 5: cpu_list=[]
+PE 0:     numa_domain 6: cpu_list=[]
+PE 0:     numa_domain 7: cpu_list=[]
+PE 0:     numa_domain 8: cpu_list=[]
+PE 0:     numa_domain 9: cpu_list=[]
+PE 0:     numa_domain 10: cpu_list=[]
+PE 0:     numa_domain 11: cpu_list=[]
+PE 0:     numa_domain 12: cpu_list=[]
+PE 0:     numa_domain 13: cpu_list=[]
+PE 0:     numa_domain 14: cpu_list=[]
+PE 0:     numa_domain 15: cpu_list=[]
+PE 0:     numa_domain 16: cpu_list=[]
+PE 0:     numa_domain 17: cpu_list=[]
+PE 0:     numa_domain 18: cpu_list=[]
+PE 0:     numa_domain 19: cpu_list=[]
+PE 0:     numa_domain 20: cpu_list=[]
+PE 0:     numa_domain 21: cpu_list=[]
+PE 0:     numa_domain 22: cpu_list=[]
+PE 0:     numa_domain 23: cpu_list=[]
+PE 0:     numa_domain 24: cpu_list=[]
+PE 0:     numa_domain 25: cpu_list=[]
+PE 0:     numa_domain 26: cpu_list=[]
+PE 0:     numa_domain 27: cpu_list=[]
+PE 0:     numa_domain 28: cpu_list=[]
+PE 0:     numa_domain 29: cpu_list=[]
+PE 0:     numa_domain 30: cpu_list=[]
+PE 0:     numa_domain 31: cpu_list=[]
+PE 0:     numa_domain 32: cpu_list=[]
+PE 0:     numa_domain 33: cpu_list=[]
+PE 0:     numa_domain 34: cpu_list=[]
+PE 0:     numa_domain 35: cpu_list=[]
+PE 0: ====================================================================
+PE 0: Host gh135.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x70c1]
+PE 0: MPICH CH4 OFI netmod using cxi provider (domain_name=cxi0, src_addr=0x70c1)
+PE 0: Selected traffic class: [TC_BEST_EFFORT, 512]
+PE 4: Host gh144.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7841]
+PE 3: Host gh135.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x70c0]
+PE 5: Host gh144.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7881]
+PE 1: Host gh135.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7001]
+PE 0: MPICH CH4 OFI CXI counters initialized
