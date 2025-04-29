@@ -154,8 +154,6 @@ TEST(RandomCommTest, TestsInTests)
         for (int j = 0; j < s*num_procs; j++)
             ASSERT_EQ(std_alltoall[j], mpix_alltoall[j]);
 
-break;
-/*
     alltoall_hierarchical_nb(local_data.data(), 
                 s, 
                 MPI_INT,
@@ -213,7 +211,6 @@ break;
         for (int j = 0; j < s*num_procs; j++)
             ASSERT_EQ(std_alltoall[j], mpix_alltoall[j]);
 
-*/
     }
 
     MPIX_Comm_free(&xcomm);
