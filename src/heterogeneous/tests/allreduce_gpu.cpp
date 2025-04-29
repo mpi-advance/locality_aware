@@ -7,57 +7,156 @@
 #include <vector>
 #include <set>
 
-double allreduce(int size, float* sendbuf, float* recvbuf, MPI_Comm comm, int n_iters)
+void allreduce_std(int size, float* sendbuf, float* recvbuf, float* tmpbuf,
+        int* recvcounts, MPI_Comm comm, MPI_Comm intra_comm, MPI_Comm inter_comm)
 {
-    MPI_Request gpu_req;
+    MPI_Allreduce(sendbuf, recvbuf, size, MPI_FLOAT, MPI_SUM, comm);
+}
+
+void allreduce_loc(int size, float* sendbuf, float* recvbuf, float* tmpbuf,
+        int* recvcounts, MPI_Comm comm, MPI_Comm intra_comm, MPI_Comm inter_comm)
+{   
+    MPI_Reduce_scatter(sendbuf, recvbuf, recvcounts, MPI_FLOAT,
+            MPI_SUM, intra_comm);
+    MPI_Allreduce(recvbuf, tmpbuf, recvcounts[0], MPI_FLOAT,
+            MPI_SUM, inter_comm);
+    MPI_Allgather(tmpbuf, recvcounts[0], MPI_FLOAT, recvbuf, 
+            recvcounts[0], MPI_FLOAT, intra_comm);
+}
+
+void allreduce_lane(int size, float* sendbuf, float* recvbuf, float* tmpbuf,
+        int* recvcounts, MPI_Comm comm, MPI_Comm intra_comm, MPI_Comm inter_comm)
+{   
+    MPI_Allreduce(sendbuf, tmpbuf, recvcounts[0], MPI_FLOAT,
+            MPI_SUM, inter_comm);
+    MPI_Allreduce(tmpbuf, recvbuf, recvcounts[0], MPI_FLOAT,
+            MPI_SUM, intra_comm);
+}
+
+template <typename F>
+double allreduce_timer(F allreduce, int size, float* sendbuf, float* recvbuf, 
+        float* tmpbuf, int* recvcounts, MPI_Comm comm, MPI_Comm intra_comm, 
+        MPI_Comm inter_comm, int n_iters)
+{
     gpuDeviceSynchronize();
     MPI_Barrier(comm);
     double t0 = MPI_Wtime();
     for (int i = 0; i < n_iters; i++)
     {
-        MPI_Allreduce(sendbuf, recvbuf, size, MPI_FLOAT, MPI_SUM, comm);
+        allreduce(size, sendbuf, recvbuf, tmpbuf, recvcounts,
+                comm, intra_comm, inter_comm);
     }
     double tfinal = (MPI_Wtime() - t0) / n_iters;
     return tfinal;
 }
 
-int estimate_iters(int size, float* sendbuf, float* recvbuf, MPI_Comm comm)
+template <typename F>
+int estimate_iters(F allreduce, int size, float* sendbuf, float* recvbuf,
+        float* tmpbuf, int* recvcounts, MPI_Comm comm, MPI_Comm intra_comm,
+        MPI_Comm inter_comm)
 {
     // Warm-Up
-    allreduce(size, sendbuf, recvbuf, comm, 1);
+    allreduce_timer(allreduce, size, sendbuf, recvbuf, tmpbuf, recvcounts,
+            comm, intra_comm, inter_comm, 1);
 
-    // Time 2 Iterations
-    double time = allreduce(size, sendbuf, recvbuf, comm, 2);
+    // Time 2 iterations
+    double time = allreduce_timer(allreduce, size, sendbuf, recvbuf, tmpbuf, recvcounts,
+            comm, intra_comm, inter_comm, 2);
     
-    // Get Max Time Across All Procs
-    MPI_Allreduce(MPI_IN_PLACE, &time, 1, MPI_DOUBLE, MPI_MAX, comm);    
-
-    // Set NIters so Timing ~ 1 Second
-    int n_iters = (2.0 / time) + 1;
-    return n_iters;
+    MPI_Allreduce(MPI_IN_PLACE, &time, 1, MPI_DOUBLE, MPI_MAX, comm);
+    return (1.0 / time) + 1;
 }
 
-double time_allreduce(int size, float* sendbuf, float* recvbuf, MPI_Comm comm)
+template <typename F>
+double allreduce_test(F allreduce, int size, float* sendbuf, float* recvbuf,
+        float* tmpbuf, int* recvcounts, MPI_Comm comm, MPI_Comm intra_comm,
+        MPI_Comm inter_comm)
 {
-    int n_iters = estimate_iters(size, sendbuf, recvbuf, comm);
-    double time = allreduce(size, sendbuf, recvbuf, comm, n_iters);
-    return time;
+    int n_iters = estimate_iters(allreduce, size, sendbuf, recvbuf, tmpbuf,
+            recvcounts, comm, intra_comm, inter_comm);
+
+    return allreduce_timer(allreduce, size, sendbuf, recvbuf, tmpbuf,
+            recvcounts, comm, intra_comm, inter_comm, n_iters);
 }
 
-void print_allreduce(int max_p, float* sendbuf, float* recvbuf, MPI_Comm comm)
+void print_allreduce(int max_p, float* sendbuf, float* recvbuf, float* tmpbuf,
+        float* recvbuf_std, float* recvbuf_new,
+        MPI_Comm comm, MPI_Comm intra_comm, MPI_Comm inter_comm)
 {
-    int rank;
+    int rank, num_procs;
     MPI_Comm_rank(comm, &rank);
+    MPI_Comm_size(comm, &num_procs);
+
+    double time; 
+    int* recvcounts = new int[num_procs];
+
+    int num_gpus;
+    cudaGetDeviceCount(&num_gpus);
 
     for (int i = 0; i < max_p; i++)
     { 
         int s = pow(2, i);
-        if (rank == 0) printf("Size %d: ", s);
-        double time = time_allreduce(s, sendbuf, recvbuf, comm);
-        MPI_Allreduce(MPI_IN_PLACE, &time, 1, MPI_DOUBLE, MPI_MAX, comm);
-        if (rank == 0) printf("%e\n", time);
+        if (rank == 0) printf("Size %d\n", s);
+
+        for (int i = 0; i < num_procs; i++)
+            recvcounts[i] = s / num_gpus;
+
+        /*************************
+        *** Test for Correctness
+        *************************/
+        // Copy standard recvbuf to recvbuf_std
+        cudaMemset(recvbuf, 0, s*sizeof(float));
+        allreduce_std(s, sendbuf, recvbuf, tmpbuf, recvcounts, comm, 
+                intra_comm, inter_comm);
+        cudaMemcpy(recvbuf_std, recvbuf, s*sizeof(float), cudaMemcpyDeviceToHost);
+
+        // Copy loc results to recvbuf_new
+        cudaMemset(recvbuf, 0, s*sizeof(float));
+        allreduce_loc(s, sendbuf, recvbuf, tmpbuf, recvcounts, comm, 
+                intra_comm, inter_comm);
+        cudaMemcpy(recvbuf_new, recvbuf, s*sizeof(float), cudaMemcpyDeviceToHost);
+
+        // Compare recvbuf std and recvbuf new
+        for (int i = 0; i < s; i++)
+            if (fabs(recvbuf_new[i] - recvbuf_std[i]) > 1e-6)
+            {
+                printf("DIFFERENCE IN RESULTS! %e vs %e\n", recvbuf_new[i], recvbuf_std[i]);
+                MPI_Abort(MPI_COMM_WORLD, 1);
+            }
+
+        // Copy lane results to recvbuf_new
+        cudaMemset(recvbuf, 0, s*sizeof(float));
+        allreduce_lane(s, sendbuf, recvbuf, tmpbuf, recvcounts, comm,
+                intra_comm, inter_comm);
+        cudaMemcpy(recvbuf_new, recvbuf, s*sizeof(float), cudaMemcpyDeviceToHost);
+
+        // Compare recvbuf std and recvbuf new
+        for (int i = 0; i < s; i++)
+            if (fabs(recvbuf_new[i] - recvbuf_std[i]) > 1e-6)
+            {
+                printf("DIFFERENCE IN RESULTS! %e vs %e\n", recvbuf_new[i], recvbuf_std[i]);
+                MPI_Abort(MPI_COMM_WORLD, 1);
+            }
+
+        /*************************
+        *** Time Methods
+        *************************/
+        time = allreduce_test(allreduce_std, s, sendbuf, recvbuf, tmpbuf,
+                recvcounts, comm, intra_comm, inter_comm);
+        if (rank == 0) printf("STD: %e\n", time);
+
+        time = allreduce_test(allreduce_loc, s, sendbuf, recvbuf, tmpbuf,
+                recvcounts, comm, intra_comm, inter_comm);
+        if (rank == 0) printf("LOC: %e\n", time);
+        
+        time = allreduce_test(allreduce_lane, s, sendbuf, recvbuf, tmpbuf,
+                recvcounts, comm, intra_comm, inter_comm);
+        if (rank == 0) printf("LANE: %e\n", time);
+
     }
     if (rank == 0) printf("\n");
+
+    delete[] recvcounts;
 }
 
 int main(int argc, char* argv[])
@@ -78,27 +177,43 @@ int main(int argc, char* argv[])
     int local_rank, ppn;
     MPI_Comm_rank(local_comm, &local_rank);
     MPI_Comm_size(local_comm, &ppn);
-    MPI_Comm_free(&local_comm);
+
+    MPI_Comm inter_comm;
+    MPI_Comm_split(MPI_COMM_WORLD, local_rank, rank, &inter_comm);
 
     int gpn;
     gpuGetDeviceCount(&gpn);
 
     int ppg = ppn / gpn;
     int local_gpu = local_rank / ppg;
-    int gpu_rank = local_rank % ppg;
-
     gpuSetDevice(local_gpu);
 
     float* sendbuf;
     float* recvbuf;
+    float* tmpbuf;
+
+    float* recvbuf_std;
+    float* recvbuf_new;
 
     gpuMalloc((void**)&sendbuf, max_s*sizeof(float));
     gpuMalloc((void**)&recvbuf, max_s*sizeof(float));
+    gpuMalloc((void**)&tmpbuf, max_s*sizeof(float));
 
-    print_allreduce(max_p, sendbuf, recvbuf, MPI_COMM_WORLD);
+    gpuMallocHost((void**)&recvbuf_std, max_s*sizeof(float));
+    gpuMallocHost((void**)&recvbuf_new, max_s*sizeof(float));
+
+    print_allreduce(max_p, sendbuf, recvbuf, tmpbuf, recvbuf_std,
+             recvbuf_new, MPI_COMM_WORLD, local_comm, inter_comm);
+
+    gpuFreeHost(recvbuf_std);
+    gpuFreeHost(recvbuf_new);
 
     gpuFree(sendbuf);
     gpuFree(recvbuf);
+    gpuFree(tmpbuf);
+
+    MPI_Comm_free(&local_comm);
+    MPI_Comm_free(&inter_comm);
 
     MPI_Finalize();
     return 0;

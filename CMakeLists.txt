@@ -14,9 +14,6 @@ set(mpi_advance_INCDIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
 
 find_package(MPI REQUIRED)
-include_directories(${MPI_INCLUDE_PATH})
-include_directories("/opt/nvidia/hpc_sdk/Linux_aarch64/24.3/comm_libs/12.3/nccl/include")
-message(STATUS "MPI INCLUDE: " ${MPI_INCLUDE_PATH})
 
 find_package(OpenMP)
 
