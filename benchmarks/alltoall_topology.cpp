@@ -83,7 +83,7 @@ void print_alltoalls(int max_p, const T* sendbuf,
                     printf("DIFF RESULTS %d vs %d\n", recvbuf_std[j], recvbuf[j]);
                     MPI_Abort(comm->global_comm, -1);
                 }
-            time = test_alltoall(alltoall_pairwise, sendbuf, s, sendtype,
+            time = test_alltoall(alltoall_funcs[idx], sendbuf, s, sendtype,
                     recvbuf, s, recvtype, comm);
             if (rank == 0) printf("%s: %e\n", names[idx], time);
         }
@@ -99,16 +99,25 @@ int main(int argc, char* argv[])
     int max_p = 15;
     int max_size = pow(2, max_p);
 
+    MPIX_Comm* xcomm;
+    MPIX_Comm_init(&xcomm, MPI_COMM_WORLD);
+
     int rank, num_procs;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
 
-    MPIX_Comm* xcomm;
-    MPIX_Comm_init(&xcomm, MPI_COMM_WORLD);
     MPIX_Comm_topo_init(xcomm);
 
+    int local_rank, ppn;
+    MPI_Comm_rank(xcomm->local_comm, &local_rank);
+    MPI_Comm_size(xcomm->local_comm, &ppn);
+
     // To test a different number of leaders, change here: 
-    MPIX_Comm_leader_init(xcomm, 4);
+    // TODO : currently need num_leaders_per_node to evenly divide ppn
+    int num_leaders_per_node = 4;
+    if (ppn < num_leaders_per_node)
+            num_leaders_per_node = ppn;
+    MPIX_Comm_leader_init(xcomm, ppn / num_leaders_per_node);
 
     std::vector<int> sendbuf(max_size * num_procs);
     std::vector<int> recvbuf(max_size * num_procs);

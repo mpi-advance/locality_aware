@@ -1,0 +1,633 @@
+Test 1 Running Alltoall Benchmark on 2 nodes and 200 tasks
+Size 1
+PMPI: 4.375190e-05
+Pairwise: 3.791252e-04
+NonBlocking: 3.823517e-04
+Pairwise Hierarchical: 3.953741e-04
+Pairwise Multileader: 3.878461e-04
+Pairwise Node Aware: 3.746982e-04
+Pairwise Locality Aware: 3.854166e-04
+Pairwise Multileader Locality: 4.064942e-04
+Nonblocking Hierarchical: 3.766102e-04
+Nonblocking Multileader: 3.740545e-04
+Nonblocking Node Aware: 4.007346e-04
+Nonblocking Locality Aware: 3.837829e-04
+Nonblocking Multileader Locality: 3.742000e-04
+Size 2
+PMPI: 4.646209e-05
+Pairwise: 4.056553e-04
+NonBlocking: 3.769293e-04
+Pairwise Hierarchical: 3.779658e-04
+Pairwise Multileader: 4.022200e-04
+Pairwise Node Aware: 3.792628e-04
+Pairwise Locality Aware: 3.756040e-04
+Pairwise Multileader Locality: 3.893414e-04
+Nonblocking Hierarchical: 3.945317e-04
+Nonblocking Multileader: 3.746383e-04
+Nonblocking Node Aware: 3.816412e-04
+Nonblocking Locality Aware: 4.052135e-04
+Nonblocking Multileader Locality: 3.744594e-04
+Size 4
+PMPI: 5.686919e-05
+Pairwise: 8.301264e-04
+NonBlocking: 7.848931e-04
+Pairwise Hierarchical: 7.793687e-04
+Pairwise Multileader: 8.239857e-04
+Pairwise Node Aware: 8.006758e-04
+Pairwise Locality Aware: 7.745720e-04
+Pairwise Multileader Locality: 8.006273e-04
+Nonblocking Hierarchical: 8.151440e-04
+Nonblocking Multileader: 7.829813e-04
+Nonblocking Node Aware: 7.914475e-04
+Nonblocking Locality Aware: 8.310563e-04
+Nonblocking Multileader Locality: 7.816976e-04
+Size 8
+PMPI: 7.811394e-05
+Pairwise: 8.304180e-04
+NonBlocking: 8.232448e-04
+Pairwise Hierarchical: 8.037649e-04
+Pairwise Multileader: 8.172116e-04
+Pairwise Node Aware: 8.258725e-04
+Pairwise Locality Aware: 7.899264e-04
+Pairwise Multileader Locality: 7.942722e-04
+Nonblocking Hierarchical: 8.337596e-04
+Nonblocking Multileader: 8.186268e-04
+Nonblocking Node Aware: 7.881949e-04
+Nonblocking Locality Aware: 8.064784e-04
+Nonblocking Multileader Locality: 8.325940e-04
+Size 16
+PMPI: 1.344187e-04
+Pairwise: 7.954180e-04
+NonBlocking: 8.353857e-04
+Pairwise Hierarchical: 7.928681e-04
+Pairwise Multileader: 7.885140e-04
+Pairwise Node Aware: 8.404886e-04
+Pairwise Locality Aware: 8.015752e-04
+Pairwise Multileader Locality: 7.878448e-04
+Nonblocking Hierarchical: 8.054773e-04
+Nonblocking Multileader: 8.221236e-04
+Nonblocking Node Aware: 7.864296e-04
+Nonblocking Locality Aware: 8.000147e-04
+Nonblocking Multileader Locality: 8.555585e-04
+Size 32
+PMPI: 2.542539e-04
+Pairwise: 8.079384e-04
+NonBlocking: 8.574642e-04
+Pairwise Hierarchical: 8.076315e-04
+Pairwise Multileader: 8.057548e-04
+Pairwise Node Aware: 8.358106e-04
+Pairwise Locality Aware: 8.281310e-04
+Pairwise Multileader Locality: 8.029516e-04
+Nonblocking Hierarchical: 8.135216e-04
+Nonblocking Multileader: 8.447716e-04
+Nonblocking Node Aware: 8.153054e-04
+Nonblocking Locality Aware: 8.043948e-04
+Nonblocking Multileader Locality: 8.109230e-04
+Size 64
+PMPI: 4.558662e-04
+Pairwise: 8.342231e-04
+NonBlocking: 8.331828e-04
+Pairwise Hierarchical: 8.956085e-04
+Pairwise Multileader: 8.587593e-04
+Pairwise Node Aware: 8.243141e-04
+Pairwise Locality Aware: 8.429368e-04
+Pairwise Multileader Locality: 8.896761e-04
+Nonblocking Hierarchical: 8.350675e-04
+Nonblocking Multileader: 8.334505e-04
+Nonblocking Node Aware: 8.930946e-04
+Nonblocking Locality Aware: 8.396948e-04
+Nonblocking Multileader Locality: 8.318674e-04
+Size 128
+PMPI: 8.471267e-04
+Pairwise: 9.920896e-04
+NonBlocking: 9.542519e-04
+Pairwise Hierarchical: 9.819939e-04
+Pairwise Multileader: 1.001686e-03
+Pairwise Node Aware: 9.498385e-04
+Pairwise Locality Aware: 9.666463e-04
+Pairwise Multileader Locality: 1.041538e-03
+Nonblocking Hierarchical: 9.390610e-04
+Nonblocking Multileader: 9.583893e-04
+Nonblocking Node Aware: 1.032676e-03
+Nonblocking Locality Aware: 9.687636e-04
+Nonblocking Multileader Locality: 9.527534e-04
+Size 256
+PMPI: 1.601665e-03
+Pairwise: 1.443825e-03
+NonBlocking: 1.339274e-03
+Pairwise Hierarchical: 1.423694e-03
+Pairwise Multileader: 1.401379e-03
+Pairwise Node Aware: 1.341340e-03
+Pairwise Locality Aware: 1.404428e-03
+Pairwise Multileader Locality: 1.490970e-03
+Nonblocking Hierarchical: 1.352504e-03
+Nonblocking Multileader: 1.347402e-03
+Nonblocking Node Aware: 1.538948e-03
+Nonblocking Locality Aware: 1.614461e-03
+Nonblocking Multileader Locality: 1.486282e-03
+Size 512
+PMPI: 2.686080e-03
+Pairwise: 2.474082e-03
+NonBlocking: 2.281911e-03
+Pairwise Hierarchical: 2.327600e-03
+Pairwise Multileader: 2.454053e-03
+Pairwise Node Aware: 2.766713e-03
+Pairwise Locality Aware: 2.528074e-03
+Pairwise Multileader Locality: 2.270366e-03
+Nonblocking Hierarchical: 2.368435e-03
+Nonblocking Multileader: 2.370493e-03
+Nonblocking Node Aware: 2.356873e-03
+Nonblocking Locality Aware: 2.387340e-03
+Nonblocking Multileader Locality: 2.289798e-03
+Size 1024
+PMPI: 4.221197e-03
+Pairwise: 4.295177e-03
+NonBlocking: 4.325228e-03
+Pairwise Hierarchical: 4.298184e-03
+Pairwise Multileader: 4.301855e-03
+Pairwise Node Aware: 4.267055e-03
+Pairwise Locality Aware: 4.310926e-03
+Pairwise Multileader Locality: 4.179933e-03
+Nonblocking Hierarchical: 4.202171e-03
+Nonblocking Multileader: 4.424244e-03
+Nonblocking Node Aware: 4.144592e-03
+Nonblocking Locality Aware: 4.161625e-03
+Nonblocking Multileader Locality: 4.455994e-03
+Size 2048
+PMPI: 8.403349e-03
+Pairwise: 8.353347e-03
+NonBlocking: 8.637343e-03
+Pairwise Hierarchical: 8.445725e-03
+Pairwise Multileader: 8.447505e-03
+Pairwise Node Aware: 8.632120e-03
+Pairwise Locality Aware: 8.509862e-03
+Pairwise Multileader Locality: 8.386331e-03
+Nonblocking Hierarchical: 8.658713e-03
+Nonblocking Multileader: 8.628360e-03
+Nonblocking Node Aware: 8.404870e-03
+Nonblocking Locality Aware: 8.495575e-03
+Nonblocking Multileader Locality: 8.635070e-03
+Size 4096
+PMPI: 1.894216e-02
+Pairwise: 1.657053e-02
+NonBlocking: 1.660719e-02
+Pairwise Hierarchical: 1.642342e-02
+Pairwise Multileader: 1.706162e-02
+Pairwise Node Aware: 1.646036e-02
+Pairwise Locality Aware: 1.619797e-02
+Pairwise Multileader Locality: 1.678214e-02
+Nonblocking Hierarchical: 1.629255e-02
+Nonblocking Multileader: 1.616031e-02
+Nonblocking Node Aware: 1.633373e-02
+Nonblocking Locality Aware: 1.697505e-02
+Nonblocking Multileader Locality: 1.703308e-02
+Size 8192
+PMPI: 3.127351e-02
+Pairwise: 3.228295e-02
+NonBlocking: 3.106412e-02
+Pairwise Hierarchical: 3.330392e-02
+Pairwise Multileader: 3.094077e-02
+Pairwise Node Aware: 3.113744e-02
+Pairwise Locality Aware: 3.185280e-02
+Pairwise Multileader Locality: 3.144159e-02
+Nonblocking Hierarchical: 3.179958e-02
+Nonblocking Multileader: 3.104315e-02
+Nonblocking Node Aware: 3.167366e-02
+Nonblocking Locality Aware: 3.137687e-02
+Nonblocking Multileader Locality: 3.119654e-02
+Size 16384
+PMPI: 5.938262e-02
+Pairwise: 5.786373e-02
+NonBlocking: 5.709907e-02
+Pairwise Hierarchical: 5.707014e-02
+Pairwise Multileader: 5.691409e-02
+Pairwise Node Aware: 5.710144e-02
+Pairwise Locality Aware: 5.760841e-02
+Pairwise Multileader Locality: 5.627723e-02
+Nonblocking Hierarchical: 5.672671e-02
+Nonblocking Multileader: 5.786441e-02
+Nonblocking Node Aware: 5.711738e-02
+Nonblocking Locality Aware: 5.735809e-02
+Nonblocking Multileader Locality: 5.703309e-02
+Test 2 Running Alltoall Benchmark on 2 nodes and 200 tasks
+Size 1
+PMPI: 4.617489e-05
+Pairwise: 3.804211e-04
+NonBlocking: 3.782116e-04
+Pairwise Hierarchical: 4.047290e-04
+Pairwise Multileader: 3.892233e-04
+Pairwise Node Aware: 3.763856e-04
+Pairwise Locality Aware: 3.926461e-04
+Pairwise Multileader Locality: 3.863712e-04
+Nonblocking Hierarchical: 3.749300e-04
+Nonblocking Multileader: 3.822418e-04
+Nonblocking Node Aware: 4.025392e-04
+Nonblocking Locality Aware: 3.886400e-04
+Nonblocking Multileader Locality: 3.734271e-04
+Size 2
+PMPI: 4.679073e-05
+Pairwise: 4.039936e-04
+NonBlocking: 3.802093e-04
+Pairwise Hierarchical: 3.757949e-04
+Pairwise Multileader: 3.850415e-04
+Pairwise Node Aware: 3.959241e-04
+Pairwise Locality Aware: 3.846931e-04
+Pairwise Multileader Locality: 3.841124e-04
+Nonblocking Hierarchical: 3.821503e-04
+Nonblocking Multileader: 4.037121e-04
+Nonblocking Node Aware: 3.786177e-04
+Nonblocking Locality Aware: 3.755805e-04
+Nonblocking Multileader Locality: 4.005719e-04
+Size 4
+PMPI: 5.870472e-05
+Pairwise: 7.920544e-04
+NonBlocking: 8.115575e-04
+Pairwise Hierarchical: 8.220765e-04
+Pairwise Multileader: 7.768446e-04
+Pairwise Node Aware: 7.957869e-04
+Pairwise Locality Aware: 8.383811e-04
+Pairwise Multileader Locality: 7.841813e-04
+Nonblocking Hierarchical: 7.880482e-04
+Nonblocking Multileader: 8.403349e-04
+Nonblocking Node Aware: 7.893869e-04
+Nonblocking Locality Aware: 7.812866e-04
+Nonblocking Multileader Locality: 8.231084e-04
+Size 8
+PMPI: 7.894930e-05
+Pairwise: 7.984547e-04
+NonBlocking: 7.972724e-04
+Pairwise Hierarchical: 8.452495e-04
+Pairwise Multileader: 8.024248e-04
+Pairwise Node Aware: 7.915727e-04
+Pairwise Locality Aware: 8.366676e-04
+Pairwise Multileader Locality: 8.225056e-04
+Nonblocking Hierarchical: 7.836817e-04
+Nonblocking Multileader: 8.081886e-04
+Nonblocking Node Aware: 8.385668e-04
+Nonblocking Locality Aware: 7.903625e-04
+Nonblocking Multileader Locality: 7.979083e-04
+Size 16
+PMPI: 1.345806e-04
+Pairwise: 8.498046e-04
+NonBlocking: 8.032090e-04
+Pairwise Hierarchical: 7.886380e-04
+Pairwise Multileader: 8.317855e-04
+Pairwise Node Aware: 8.170806e-04
+Pairwise Locality Aware: 7.909076e-04
+Pairwise Multileader Locality: 8.090947e-04
+Nonblocking Hierarchical: 8.250497e-04
+Nonblocking Multileader: 7.858911e-04
+Nonblocking Node Aware: 7.925108e-04
+Nonblocking Locality Aware: 8.421875e-04
+Nonblocking Multileader Locality: 7.923886e-04
+Size 32
+PMPI: 2.498746e-04
+Pairwise: 8.191827e-04
+NonBlocking: 8.253652e-04
+Pairwise Hierarchical: 8.038026e-04
+Pairwise Multileader: 7.969913e-04
+Pairwise Node Aware: 7.961780e-04
+Pairwise Locality Aware: 8.171458e-04
+Pairwise Multileader Locality: 8.381294e-04
+Nonblocking Hierarchical: 7.898103e-04
+Nonblocking Multileader: 8.019882e-04
+Nonblocking Node Aware: 8.098128e-04
+Nonblocking Locality Aware: 8.060311e-04
+Nonblocking Multileader Locality: 8.049464e-04
+Size 64
+PMPI: 4.411608e-04
+Pairwise: 8.286488e-04
+NonBlocking: 8.525215e-04
+Pairwise Hierarchical: 8.816801e-04
+Pairwise Multileader: 8.290771e-04
+Pairwise Node Aware: 8.453146e-04
+Pairwise Locality Aware: 8.971647e-04
+Pairwise Multileader Locality: 8.454055e-04
+Nonblocking Hierarchical: 8.458743e-04
+Nonblocking Multileader: 8.842754e-04
+Nonblocking Node Aware: 8.480715e-04
+Nonblocking Locality Aware: 8.316867e-04
+Nonblocking Multileader Locality: 8.967481e-04
+Size 128
+PMPI: 8.902493e-04
+Pairwise: 9.507955e-04
+NonBlocking: 1.004420e-03
+Pairwise Hierarchical: 9.717751e-04
+Pairwise Multileader: 9.536572e-04
+Pairwise Node Aware: 9.919046e-04
+Pairwise Locality Aware: 9.757056e-04
+Pairwise Multileader Locality: 9.463416e-04
+Nonblocking Hierarchical: 9.602915e-04
+Nonblocking Multileader: 1.023107e-03
+Nonblocking Node Aware: 9.630026e-04
+Nonblocking Locality Aware: 9.500454e-04
+Nonblocking Multileader Locality: 9.933569e-04
+Size 256
+PMPI: 1.564945e-03
+Pairwise: 1.370042e-03
+NonBlocking: 1.402235e-03
+Pairwise Hierarchical: 1.481408e-03
+Pairwise Multileader: 1.407836e-03
+Pairwise Node Aware: 1.374258e-03
+Pairwise Locality Aware: 1.428022e-03
+Pairwise Multileader Locality: 1.338836e-03
+Nonblocking Hierarchical: 1.345687e-03
+Nonblocking Multileader: 1.402626e-03
+Nonblocking Node Aware: 1.384921e-03
+Nonblocking Locality Aware: 1.333430e-03
+Nonblocking Multileader Locality: 1.399249e-03
+Size 512
+PMPI: 2.278229e-03
+Pairwise: 2.299717e-03
+NonBlocking: 2.296912e-03
+Pairwise Hierarchical: 2.394694e-03
+Pairwise Multileader: 2.299704e-03
+Pairwise Node Aware: 2.312146e-03
+Pairwise Locality Aware: 2.340300e-03
+Pairwise Multileader Locality: 2.223334e-03
+Nonblocking Hierarchical: 2.268950e-03
+Nonblocking Multileader: 2.349343e-03
+Nonblocking Node Aware: 2.296302e-03
+Nonblocking Locality Aware: 2.292782e-03
+Nonblocking Multileader Locality: 2.336923e-03
+Size 1024
+PMPI: 4.357719e-03
+Pairwise: 4.235799e-03
+NonBlocking: 4.203937e-03
+Pairwise Hierarchical: 4.408462e-03
+Pairwise Multileader: 4.229369e-03
+Pairwise Node Aware: 4.210784e-03
+Pairwise Locality Aware: 4.365078e-03
+Pairwise Multileader Locality: 4.222913e-03
+Nonblocking Hierarchical: 4.159067e-03
+Nonblocking Multileader: 4.367919e-03
+Nonblocking Node Aware: 4.150328e-03
+Nonblocking Locality Aware: 4.178796e-03
+Nonblocking Multileader Locality: 4.387831e-03
+Size 2048
+PMPI: 8.430596e-03
+Pairwise: 8.368658e-03
+NonBlocking: 8.647557e-03
+Pairwise Hierarchical: 8.450467e-03
+Pairwise Multileader: 8.529207e-03
+Pairwise Node Aware: 8.501245e-03
+Pairwise Locality Aware: 8.908654e-03
+Pairwise Multileader Locality: 8.805890e-03
+Nonblocking Hierarchical: 8.570748e-03
+Nonblocking Multileader: 8.711566e-03
+Nonblocking Node Aware: 8.396669e-03
+Nonblocking Locality Aware: 8.859035e-03
+Nonblocking Multileader Locality: 8.908452e-03
+Size 4096
+PMPI: 1.843275e-02
+Pairwise: 1.668106e-02
+NonBlocking: 1.673347e-02
+Pairwise Hierarchical: 1.660560e-02
+Pairwise Multileader: 1.683593e-02
+Pairwise Node Aware: 1.648660e-02
+Pairwise Locality Aware: 1.612049e-02
+Pairwise Multileader Locality: 1.675979e-02
+Nonblocking Hierarchical: 1.613843e-02
+Nonblocking Multileader: 1.620685e-02
+Nonblocking Node Aware: 1.656585e-02
+Nonblocking Locality Aware: 1.644569e-02
+Nonblocking Multileader Locality: 1.728191e-02
+Size 8192
+PMPI: 3.366433e-02
+Pairwise: 3.073489e-02
+NonBlocking: 3.107276e-02
+Pairwise Hierarchical: 3.102353e-02
+Pairwise Multileader: 3.222303e-02
+Pairwise Node Aware: 3.335506e-02
+Pairwise Locality Aware: 3.199834e-02
+Pairwise Multileader Locality: 3.355747e-02
+Nonblocking Hierarchical: 3.270901e-02
+Nonblocking Multileader: 3.248227e-02
+Nonblocking Node Aware: 3.275482e-02
+Nonblocking Locality Aware: 3.297478e-02
+Nonblocking Multileader Locality: 4.113317e-02
+Size 16384
+PMPI: 6.428466e-02
+Pairwise: 6.934079e-02
+NonBlocking: 5.991636e-02
+Pairwise Hierarchical: 6.144461e-02
+Pairwise Multileader: 6.149068e-02
+Pairwise Node Aware: 6.083653e-02
+Pairwise Locality Aware: 6.045046e-02
+Pairwise Multileader Locality: 6.139229e-02
+Nonblocking Hierarchical: 6.207703e-02
+Nonblocking Multileader: 5.880504e-02
+Nonblocking Node Aware: 5.994270e-02
+Nonblocking Locality Aware: 5.999796e-02
+Nonblocking Multileader Locality: 5.641694e-02
+Test 3 Running Alltoall Benchmark on 2 nodes and 200 tasks
+Size 1
+PMPI: 4.368923e-05
+Pairwise: 3.843156e-04
+NonBlocking: 4.091784e-04
+Pairwise Hierarchical: 3.811914e-04
+Pairwise Multileader: 3.789696e-04
+Pairwise Node Aware: 4.252757e-04
+Pairwise Locality Aware: 3.970160e-04
+Pairwise Multileader Locality: 3.781378e-04
+Nonblocking Hierarchical: 3.801430e-04
+Nonblocking Multileader: 3.986520e-04
+Nonblocking Node Aware: 3.769976e-04
+Nonblocking Locality Aware: 3.755801e-04
+Nonblocking Multileader Locality: 4.020314e-04
+Size 2
+PMPI: 4.690340e-05
+Pairwise: 3.768738e-04
+NonBlocking: 3.821663e-04
+Pairwise Hierarchical: 3.935429e-04
+Pairwise Multileader: 3.764448e-04
+Pairwise Node Aware: 3.754817e-04
+Pairwise Locality Aware: 4.055381e-04
+Pairwise Multileader Locality: 3.784541e-04
+Nonblocking Hierarchical: 3.767713e-04
+Nonblocking Multileader: 3.847225e-04
+Nonblocking Node Aware: 3.853688e-04
+Nonblocking Locality Aware: 3.908583e-04
+Nonblocking Multileader Locality: 3.774453e-04
+Size 4
+PMPI: 5.647905e-05
+Pairwise: 8.302303e-04
+NonBlocking: 7.829389e-04
+Pairwise Hierarchical: 7.841978e-04
+Pairwise Multileader: 8.176069e-04
+Pairwise Node Aware: 8.080877e-04
+Pairwise Locality Aware: 7.879549e-04
+Pairwise Multileader Locality: 8.254959e-04
+Nonblocking Hierarchical: 8.228730e-04
+Nonblocking Multileader: 7.825126e-04
+Nonblocking Node Aware: 7.871059e-04
+Nonblocking Locality Aware: 8.408596e-04
+Nonblocking Multileader Locality: 7.802278e-04
+Size 8
+PMPI: 7.677941e-05
+Pairwise: 8.325433e-04
+NonBlocking: 8.075719e-04
+Pairwise Hierarchical: 7.939578e-04
+Pairwise Multileader: 7.878292e-04
+Pairwise Node Aware: 8.322084e-04
+Pairwise Locality Aware: 8.126265e-04
+Pairwise Multileader Locality: 7.869397e-04
+Nonblocking Hierarchical: 8.269556e-04
+Nonblocking Multileader: 8.136487e-04
+Nonblocking Node Aware: 7.860005e-04
+Nonblocking Locality Aware: 8.117148e-04
+Nonblocking Multileader Locality: 8.479409e-04
+Size 16
+PMPI: 1.335167e-04
+Pairwise: 7.886359e-04
+NonBlocking: 8.397101e-04
+Pairwise Hierarchical: 7.984694e-04
+Pairwise Multileader: 7.889319e-04
+Pairwise Node Aware: 8.268161e-04
+Pairwise Locality Aware: 8.146394e-04
+Pairwise Multileader Locality: 7.938608e-04
+Nonblocking Hierarchical: 8.061265e-04
+Nonblocking Multileader: 8.421650e-04
+Nonblocking Node Aware: 7.888775e-04
+Nonblocking Locality Aware: 8.007522e-04
+Nonblocking Multileader Locality: 8.314140e-04
+Size 32
+PMPI: 2.480043e-04
+Pairwise: 8.065699e-04
+NonBlocking: 8.760280e-04
+Pairwise Hierarchical: 8.335987e-04
+Pairwise Multileader: 8.028058e-04
+Pairwise Node Aware: 8.285661e-04
+Pairwise Locality Aware: 8.614183e-04
+Pairwise Multileader Locality: 8.025583e-04
+Nonblocking Hierarchical: 8.028796e-04
+Nonblocking Multileader: 8.523092e-04
+Nonblocking Node Aware: 8.179500e-04
+Nonblocking Locality Aware: 8.069161e-04
+Nonblocking Multileader Locality: 8.284887e-04
+Size 64
+PMPI: 4.581206e-04
+Pairwise: 8.341368e-04
+NonBlocking: 8.580486e-04
+Pairwise Hierarchical: 8.718912e-04
+Pairwise Multileader: 8.360447e-04
+Pairwise Node Aware: 8.551332e-04
+Pairwise Locality Aware: 9.022327e-04
+Pairwise Multileader Locality: 8.552804e-04
+Nonblocking Hierarchical: 8.343292e-04
+Nonblocking Multileader: 8.741779e-04
+Nonblocking Node Aware: 8.688276e-04
+Nonblocking Locality Aware: 8.356230e-04
+Nonblocking Multileader Locality: 8.646986e-04
+Size 128
+PMPI: 8.616838e-04
+Pairwise: 9.567471e-04
+NonBlocking: 9.765074e-04
+Pairwise Hierarchical: 1.019692e-03
+Pairwise Multileader: 9.539580e-04
+Pairwise Node Aware: 9.384807e-04
+Pairwise Locality Aware: 1.030775e-03
+Pairwise Multileader Locality: 9.804279e-04
+Nonblocking Hierarchical: 9.524498e-04
+Nonblocking Multileader: 9.829334e-04
+Nonblocking Node Aware: 1.012554e-03
+Nonblocking Locality Aware: 9.541409e-04
+Nonblocking Multileader Locality: 9.582342e-04
+Size 256
+PMPI: 1.566533e-03
+Pairwise: 1.364744e-03
+NonBlocking: 1.355045e-03
+Pairwise Hierarchical: 1.434963e-03
+Pairwise Multileader: 1.384403e-03
+Pairwise Node Aware: 1.346539e-03
+Pairwise Locality Aware: 1.414587e-03
+Pairwise Multileader Locality: 1.400138e-03
+Nonblocking Hierarchical: 1.339569e-03
+Nonblocking Multileader: 1.355988e-03
+Nonblocking Node Aware: 1.409037e-03
+Nonblocking Locality Aware: 1.368606e-03
+Nonblocking Multileader Locality: 1.398254e-03
+Size 512
+PMPI: 2.299895e-03
+Pairwise: 2.313026e-03
+NonBlocking: 2.327277e-03
+Pairwise Hierarchical: 2.402696e-03
+Pairwise Multileader: 2.284182e-03
+Pairwise Node Aware: 2.328215e-03
+Pairwise Locality Aware: 2.357838e-03
+Pairwise Multileader Locality: 2.277479e-03
+Nonblocking Hierarchical: 2.299336e-03
+Nonblocking Multileader: 2.392406e-03
+Nonblocking Node Aware: 2.440418e-03
+Nonblocking Locality Aware: 2.324581e-03
+Nonblocking Multileader Locality: 2.349349e-03
+Size 1024
+PMPI: 4.432388e-03
+Pairwise: 4.298112e-03
+NonBlocking: 4.515521e-03
+Pairwise Hierarchical: 4.535741e-03
+Pairwise Multileader: 4.282647e-03
+Pairwise Node Aware: 4.216723e-03
+Pairwise Locality Aware: 4.334202e-03
+Pairwise Multileader Locality: 4.218851e-03
+Nonblocking Hierarchical: 4.220456e-03
+Nonblocking Multileader: 4.412715e-03
+Nonblocking Node Aware: 4.287016e-03
+Nonblocking Locality Aware: 4.338693e-03
+Nonblocking Multileader Locality: 4.406090e-03
+Size 2048
+PMPI: 8.731089e-03
+Pairwise: 8.669969e-03
+NonBlocking: 8.785984e-03
+Pairwise Hierarchical: 8.647612e-03
+Pairwise Multileader: 8.988245e-03
+Pairwise Node Aware: 9.039261e-03
+Pairwise Locality Aware: 8.743904e-03
+Pairwise Multileader Locality: 8.673610e-03
+Nonblocking Hierarchical: 8.800583e-03
+Nonblocking Multileader: 8.925056e-03
+Nonblocking Node Aware: 8.637178e-03
+Nonblocking Locality Aware: 8.887661e-03
+Nonblocking Multileader Locality: 8.860491e-03
+Size 4096
+PMPI: 1.858440e-02
+Pairwise: 1.687651e-02
+NonBlocking: 1.730575e-02
+Pairwise Hierarchical: 1.730055e-02
+Pairwise Multileader: 1.745685e-02
+Pairwise Node Aware: 1.675935e-02
+Pairwise Locality Aware: 1.658179e-02
+Pairwise Multileader Locality: 1.689124e-02
+Nonblocking Hierarchical: 1.670812e-02
+Nonblocking Multileader: 1.683216e-02
+Nonblocking Node Aware: 1.677003e-02
+Nonblocking Locality Aware: 1.714275e-02
+Nonblocking Multileader Locality: 1.709610e-02
+Size 8192
+PMPI: 3.294048e-02
+Pairwise: 3.090418e-02
+NonBlocking: 3.230991e-02
+Pairwise Hierarchical: 3.224829e-02
+Pairwise Multileader: 3.327129e-02
+Pairwise Node Aware: 3.288746e-02
+Pairwise Locality Aware: 3.215076e-02
+Pairwise Multileader Locality: 3.231077e-02
+Nonblocking Hierarchical: 3.184305e-02
+Nonblocking Multileader: 3.348588e-02
+Nonblocking Node Aware: 3.258574e-02
+Nonblocking Locality Aware: 3.419963e-02
+Nonblocking Multileader Locality: 3.531614e-02
+Size 16384
+PMPI: 5.798288e-02
+Pairwise: 5.895465e-02
+NonBlocking: 6.071834e-02
+Pairwise Hierarchical: 5.794330e-02
+Pairwise Multileader: 5.690736e-02
+Pairwise Node Aware: 5.766690e-02
+Pairwise Locality Aware: 5.745253e-02
+Pairwise Multileader Locality: 5.749800e-02
+Nonblocking Hierarchical: 5.705705e-02
+Nonblocking Multileader: 5.764507e-02
+Nonblocking Node Aware: 5.736653e-02
+Nonblocking Locality Aware: 5.716124e-02
+Nonblocking Multileader Locality: 5.760747e-02
