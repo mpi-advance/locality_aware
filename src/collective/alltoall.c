@@ -730,7 +730,7 @@ int alltoall_multileader_locality(const void* sendbuf,
 
                 for (int orig_leader = 0; orig_leader < leaders_per_node; orig_leader++)
                 {
-                    int orig_leader_start = orig_leader*num_procs*leaders_per_node*recvcount*recv_size;
+                    int orig_leader_start = orig_leader*n_nodes*procs_per_leader*procs_per_leader*recvcount*recv_size;
                     for (int orig_proc = 0; orig_proc < procs_per_leader; orig_proc++)
                     {
                         int orig_proc_start = orig_proc*procs_per_leader*recvcount*recv_size;
@@ -742,7 +742,6 @@ int alltoall_multileader_locality(const void* sendbuf,
             }
         }
     }
-
 
     // 5. Scatter 
     MPI_Scatter(local_send_buffer, recvcount * num_procs, recvtype, recv_buffer, recvcount*num_procs, recvtype,
