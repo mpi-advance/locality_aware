@@ -125,7 +125,7 @@ int nonblocking_helper(const void* sendbuf,
         void* recvbuf,
         const int recvcount,
         MPI_Datatype recvtype,
-        MPIX_Comm* comm)
+        MPI_Comm comm)
 {
     int rank, num_procs;
     MPI_Comm_rank(comm, &rank);
