@@ -129,7 +129,7 @@ int main(int argc, char* argv[])
 {
     MPI_Init(&argc, &argv);
 
-    int max_p = 10;
+    int max_p = 15
     int max_size = pow(2, max_p);
 
     MPIX_Comm* xcomm;
