@@ -1,9 +1,9 @@
 #!/bin/bash
 
-#SBATCH --nodes=128
+#SBATCH --nodes=64
 #SBATCH --ntasks-per-node=100
-#SBATCH --output=alltoall_N128.%j.out
-#SBATCH --error=alltoall_N128.%j.err
+#SBATCH --output=alltoall_N64.%j.out
+#SBATCH --error=alltoall_N64.%j.err
 #SBATCH --account=UNM
 #SBATCH --time=00:30:00
 ##SBATCH --partition=pdebug
@@ -11,7 +11,7 @@
 #SBATCH --exclusive
 
 cd $HOME/AdvanceAlltoall/build/benchmarks
-nnodes=128
+nnodes=64
 ppn=100
 ntasks=$(( ${nnodes} * ${ppn} ))
 

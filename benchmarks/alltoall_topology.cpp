@@ -54,11 +54,18 @@ void print_alltoalls(int max_p, const T* sendbuf,
     int rank;
     MPI_Comm_rank(comm->global_comm, &rank);
 
+    int local_rank, ppn;
+    MPI_Comm_rank(comm->local_comm, &local_rank);
+    MPI_Comm_size(comm->local_comm, &ppn);
+
     double time;
 
     using F = int (*)(const void*, int, MPI_Datatype, void*, int, MPI_Datatype, _MPIX_Comm*);
-    std::vector<F> alltoall_funcs = {alltoall_pairwise, alltoall_nonblocking, alltoall_hierarchical, alltoall_multileader, alltoall_node_aware, alltoall_locality_aware, alltoall_multileader_locality, alltoall_hierarchical_nb, alltoall_multileader_nb, alltoall_node_aware_nb, alltoall_locality_aware_nb, alltoall_multileader_locality_nb};
-    std::vector<const char*> names = {"Pairwise", "NonBlocking", "Pairwise Hierarchical", "Pairwise Multileader", "Pairwise Node Aware", "Pairwise Locality Aware", "Pairwise Multileader Locality", "Nonblocking Hierarchical", "Nonblocking Multileader", "Nonblocking Node Aware", "Nonblocking Locality Aware", "Nonblocking Multileader Locality"};
+    std::vector<F> alltoall_funcs = {alltoall_pairwise, alltoall_nonblocking, alltoall_hierarchical, alltoall_node_aware, alltoall_hierarchical_nb, alltoall_node_aware_nb};
+    std::vector<const char*> names = {"Pairwise", "NonBlocking", "Pairwise Hierarchical", "Pairwise Node Aware", "Nonblocking Hierarchical", "Nonblocking Node Aware"};
+
+    std::vector<F> multileader_funcs = { alltoall_multileader, alltoall_locality_aware, alltoall_multileader_locality, alltoall_multileader_nb, alltoall_locality_aware_nb, alltoall_multileader_locality_nb};
+    std::vector<const char*> multileader_names = {"Pairwise Multileader", "Pairwise Locality Aware", "Pairwise Multileader Locality", "Nonblocking Multileader", "Nonblocking Locality Aware", "Nonblocking Multileader Locality"};
 
     for (int i = 0; i < max_p; i++)
     {
@@ -73,7 +80,7 @@ void print_alltoalls(int max_p, const T* sendbuf,
                 recvbuf, s, recvtype, comm->global_comm);
         if (rank == 0) printf("PMPI: %e\n", time);
 
-        // MPI Advance Alltoall Pairwise
+        // MPI Advance Alltoall Functions (not multileader)
         for (int idx = 0; idx < alltoall_funcs.size(); idx++)
         {
             alltoall_funcs[idx](sendbuf, s, sendtype, recvbuf, s, recvtype, comm); 
@@ -87,6 +94,32 @@ void print_alltoalls(int max_p, const T* sendbuf,
                     recvbuf, s, recvtype, comm);
             if (rank == 0) printf("%s: %e\n", names[idx], time);
         }
+
+        // MPI Advance Multileader Alltoall Functions
+        std::vector<int> n_leaders_list = {4, 10, 20};
+        for (int ctr = 0; ctr < n_leaders_list.size(); ctr++)
+        {
+            int n_leaders = n_leaders_list[ctr];
+            if (ppn < n_leaders)
+                break;
+            MPIX_Comm_leader_init(comm, ppn / n_leaders);
+
+            for (int idx = 0; idx < multileader_funcs.size(); idx++)
+            {   
+                multileader_funcs[idx](sendbuf, s, sendtype, recvbuf, s, recvtype, comm);
+                for (int j = 0; j < s; j++) 
+                    if (fabs(recvbuf_std[j] - recvbuf[j]) > 1e-06)
+                    {   
+                        printf("DIFF RESULTS %d vs %d\n", recvbuf_std[j], recvbuf[j]);
+                        MPI_Abort(comm->global_comm, -1);
+                    }
+                time = test_alltoall(multileader_funcs[idx], sendbuf, s, sendtype,
+                        recvbuf, s, recvtype, comm);
+                if (rank == 0) printf("%s, %d leaders: %e\n", multileader_names[idx], n_leaders, time);
+            }
+
+            MPIX_Comm_leader_free(comm);
+        }
     }
 
 }
@@ -96,7 +129,7 @@ int main(int argc, char* argv[])
 {
     MPI_Init(&argc, &argv);
 
-    int max_p = 15;
+    int max_p = 10;
     int max_size = pow(2, max_p);
 
     MPIX_Comm* xcomm;
@@ -114,11 +147,6 @@ int main(int argc, char* argv[])
 
     // To test a different number of leaders, change here: 
     // TODO : currently need num_leaders_per_node to evenly divide ppn
-    int num_leaders_per_node = 4;
-    if (ppn < num_leaders_per_node)
-            num_leaders_per_node = ppn;
-    MPIX_Comm_leader_init(xcomm, ppn / num_leaders_per_node);
-
     std::vector<int> sendbuf(max_size * num_procs);
     std::vector<int> recvbuf(max_size * num_procs);
     std::vector<int> recvbuf_std(max_size * num_procs);
