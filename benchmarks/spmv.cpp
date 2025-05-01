@@ -3,13 +3,14 @@
 #include "tests/par_binary_IO.hpp"
 #include <numeric>
 
+// Allows for Neighbor Alltoallv having different parameters
+// than the locality version
 using Nstd = int (*) (const void*, const int*, const int*, MPI_Datatype, 
         void*, const int*, const int*, MPI_Datatype, MPIX_Comm*,
         MPIX_Info*, MPIX_Request**);
 using Nloc = int (*) (const void*, const int*, const int*, const long*, MPI_Datatype, 
         void*, const int*, const int*, const long*, MPI_Datatype, MPIX_Comm*,
         MPIX_Info*, MPIX_Request**);
-
 void neighbor_init(ParMat<int>& A, Nstd func, const void* sendbuf, const int* sendcounts, 
         const int* sdispls, MPI_Datatype sendtype, void* recvbuf, const int* recvcounts, 
         const int* rdispls, MPI_Datatype recvtype, MPIX_Comm* xcomm, 
@@ -18,7 +19,6 @@ void neighbor_init(ParMat<int>& A, Nstd func, const void* sendbuf, const int* se
     func(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype,
             xcomm, xinfo, xrequest_ptr);
 }
-
 void neighbor_init(ParMat<int>& A, Nloc func, const void* sendbuf, const int* sendcounts, 
         const int* sdispls, MPI_Datatype sendtype, void* recvbuf, const int* recvcounts, 
         const int* rdispls, MPI_Datatype recvtype, MPIX_Comm* xcomm, 
@@ -31,6 +31,7 @@ void neighbor_init(ParMat<int>& A, Nloc func, const void* sendbuf, const int* se
             A.off_proc_columns.data(), recvtype, xcomm, xinfo, xrequest_ptr);
 }
 
+// Local SpMV
 void spmv(double alpha, Mat& A, std::vector<double>& x, double beta, std::vector<double>& b)
 {
     int start, end;
@@ -48,6 +49,8 @@ void spmv(double alpha, Mat& A, std::vector<double>& x, double beta, std::vector
     }
 }
 
+// Perform a single setup + n_spmvs iterations of SpMVs
+// Times multiple iterations
 template <typename F, typename N>
 double time_spmvs(F discovery_func, N neighbor_func, ParMat<int>& A, std::vector<double>&x, std::vector<double>& x_dist, 
         std::vector<double>& b, MPIX_Comm* xcomm, int n_spmvs, int iterations)
@@ -129,6 +132,9 @@ double time_spmvs(F discovery_func, N neighbor_func, ParMat<int>& A, std::vector
     return t0;
 } 
 
+
+// Times the cost of SpMVs
+// Calculates n_iterations for timer to take ~1sec
 template <typename F, typename N>
 double test_spmvs(F discovery_func, N neighbor_func, ParMat<int>& A, std::vector<double>& x, std::vector<double>& x_dist, 
         std::vector<double>& b, MPIX_Comm* xcomm, int n_spmvs)
@@ -145,6 +151,9 @@ double test_spmvs(F discovery_func, N neighbor_func, ParMat<int>& A, std::vector
     return time;
 }
 
+
+// Benchmarks the different topology discovery methods 
+// Along with variety of neighbor collectives
 void benchmark_spmvs(ParMat<int>& A, std::vector<double>& x, std::vector<double>& x_dist, 
         std::vector<double>& b, MPIX_Comm* xcomm, int n_spmvs)
 {
@@ -199,6 +208,7 @@ void benchmark_spmvs(ParMat<int>& A, std::vector<double>& x, std::vector<double>
 }
     
 
+// Must pass a suitesparse matrix as command line arg
 int main(int argc, char* argv[])
 {
     MPI_Init(&argc, &argv);
