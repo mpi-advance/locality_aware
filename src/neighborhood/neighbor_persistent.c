@@ -282,6 +282,7 @@ int MPIX_Neighbor_alltoallv_init(
                 &(request->global_requests[indegree+i]));
     }
 
+
     free(sources);
     free(sourceweights);
     free(destinations);
@@ -391,6 +392,8 @@ int MPIX_Neighbor_locality_alltoallv_init(
         MPIX_Info* info,
         MPIX_Request** request_ptr)
 {
+    if (comm->local_comm == MPI_COMM_NULL)
+        MPIX_Comm_topo_init(comm);
 
     int indegree, outdegree, weighted;
     MPI_Dist_graph_neighbors_count(
@@ -399,10 +402,23 @@ int MPIX_Neighbor_locality_alltoallv_init(
             &outdegree, 
             &weighted);
 
-    int* sources = (int*)malloc(indegree*sizeof(int));
-    int* sourceweights = (int*)malloc(indegree*sizeof(int));
-    int* destinations = (int*)malloc(outdegree*sizeof(int));
-    int* destweights = (int*)malloc(outdegree*sizeof(int));
+    int* sources = NULL;
+    int* sourceweights = NULL;
+    int* destinations = NULL;
+    int* destweights = NULL;
+
+    if (indegree)
+    {
+        sources = (int*)malloc(indegree*sizeof(int));
+        sourceweights = (int*)malloc(indegree*sizeof(int));
+    }
+
+    if (outdegree)
+    {
+        destinations = (int*)malloc(outdegree*sizeof(int));
+        destweights = (int*)malloc(outdegree*sizeof(int));
+    }
+
     MPI_Dist_graph_neighbors(
             comm->neighbor_comm, 
             indegree, 
@@ -435,8 +451,6 @@ int MPIX_Neighbor_locality_alltoallv_init(
             request);
 
 
-
-
     request->sendbuf = sendbuffer;
     request->recvbuf = recvbuffer;
     MPI_Type_size(recvtype, &(request->recv_size));
@@ -460,7 +474,6 @@ int MPIX_Neighbor_locality_alltoallv_init(
 
     // Local S Communication
     init_communication(request->locality->local_S_comm->send_data->buffer,
-            //sendbuffer,
             request->locality->local_S_comm->send_data->num_msgs,
             request->locality->local_S_comm->send_data->procs,
             request->locality->local_S_comm->send_data->indptr,
@@ -514,8 +527,8 @@ int MPIX_Neighbor_locality_alltoallv_init(
 
     *request_ptr = request;
 
-    return 0;
 
+    return MPI_SUCCESS;
 }
 
 int MPIX_Neighbor_part_locality_alltoallv_init(
@@ -534,6 +547,9 @@ int MPIX_Neighbor_part_locality_alltoallv_init(
     int rank; 
     MPI_Comm_rank(comm->global_comm, &rank);
 
+    if (comm->local_comm == MPI_COMM_NULL)
+        MPIX_Comm_topo_init(comm);
+
     int indegree, outdegree, weighted;
     MPI_Dist_graph_neighbors_count(
             comm->neighbor_comm, 
@@ -541,10 +557,43 @@ int MPIX_Neighbor_part_locality_alltoallv_init(
             &outdegree,
             &weighted);
 
-    int* sources = (int*)malloc(indegree*sizeof(int));
-    int* sourceweights = (int*)malloc(indegree*sizeof(int));
-    int* destinations = (int*)malloc(outdegree*sizeof(int));
-    int* destweights = (int*)malloc(outdegree*sizeof(int));
+    int* sources = NULL;
+    int* sourceweights = NULL;
+    int* destinations = NULL;
+    int* destweights = NULL;
+
+    int* global_sdispls = NULL;
+    int* global_rdispls = NULL;
+
+    int ctr;
+
+    if (indegree)
+    {
+        sources = (int*)malloc(indegree*sizeof(int));
+        sourceweights = (int*)malloc(indegree*sizeof(int));
+        global_rdispls = (int*)malloc(indegree*sizeof(int));
+        ctr = 0;
+        for (int i = 0; i < indegree; i++)
+        {
+            global_rdispls[i] = ctr;
+            ctr += recvcounts[i];
+        }
+    }
+
+    if (outdegree)
+    {
+        destinations = (int*)malloc(outdegree*sizeof(int));
+        destweights = (int*)malloc(outdegree*sizeof(int));
+        global_sdispls = (int*)malloc(outdegree*sizeof(int));
+        ctr = 0;
+        for (int i = 0; i < outdegree; i++)
+        {
+            global_sdispls[i] = ctr;
+            ctr += sendcounts[i];
+        }
+
+    }
+
     MPI_Dist_graph_neighbors(
             comm->neighbor_comm, 
             indegree, 
@@ -554,23 +603,29 @@ int MPIX_Neighbor_part_locality_alltoallv_init(
             destinations, 
             destweights);
 
-    long send_size = sdispls[outdegree];
+    long send_size = 0;
+    long recv_size = 0;
+    for (int i = 0; i < indegree; i++)
+        recv_size += recvcounts[i];
+    for (int i = 0; i < outdegree; i++)
+        send_size += sendcounts[i];
+
     long first_send;
     MPI_Exscan(&send_size, &first_send, 1, MPI_LONG, MPI_SUM, MPI_COMM_WORLD);
     if (rank == 0) first_send = 0;
 
-    long* global_send_indices = (long*)malloc(sdispls[outdegree]*sizeof(long));
-    long* global_recv_indices = (long*)malloc(rdispls[indegree]*sizeof(long));
+    long* global_send_indices = NULL;
+    long* global_recv_indices = NULL;
+
+    if (recv_size)
+        global_recv_indices = (long*)malloc(recv_size*sizeof(long));
+    if (send_size)
+        global_send_indices = (long*)malloc(send_size*sizeof(long));
     for (int i = 0; i < send_size; i++)
         global_send_indices[i] = first_send + i;
 
-    MPIX_Neighbor_alltoallv(global_send_indices, sendcounts, sdispls, MPI_LONG, 
-            global_recv_indices, recvcounts, rdispls, MPI_LONG, comm);
-
-    free(sources);
-    free(sourceweights);
-    free(destinations);
-    free(destweights);
+    MPIX_Neighbor_alltoallv(global_send_indices, sendcounts, global_sdispls, MPI_LONG, 
+            global_recv_indices, recvcounts, global_rdispls, MPI_LONG, comm);
 
     int err = MPIX_Neighbor_locality_alltoallv_init(sendbuffer, sendcounts, sdispls, 
             global_send_indices, sendtype, recvbuffer, recvcounts, rdispls, 
@@ -579,5 +634,14 @@ int MPIX_Neighbor_part_locality_alltoallv_init(
     free(global_send_indices);
     free(global_recv_indices);
 
-    return err;
+    free(global_sdispls);
+    free(global_rdispls);
+
+    free(sources);
+    free(sourceweights);
+    free(destinations);
+    free(destweights);
+
+
+    return MPI_SUCCESS;
 }

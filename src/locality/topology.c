@@ -132,6 +132,9 @@ int MPIX_Comm_topo_free(MPIX_Comm* xcomm)
    if (xcomm->group_comm != MPI_COMM_NULL)
        MPI_Comm_free(&(xcomm->group_comm));
 
+    xcomm->local_comm = MPI_COMM_NULL;
+    xcomm->group_comm = MPI_COMM_NULL;
+
     return MPI_SUCCESS;
 }
 
