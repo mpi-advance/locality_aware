@@ -14,6 +14,7 @@ if(USE_CUDA)
         allreduce_opt.cpp
         allreduce_nodeaware.cpp
         allreduce_mps.cpp
+        allreduce_mps_copy.cpp
         allreduce_no_mps.cpp
         PROPERTIES LANGUAGE CUDA)
 endif()
@@ -52,6 +53,9 @@ target_link_libraries(allreduce_nodeaware mpi_advance gtest pthread)
 
 add_executable(allreduce_mps allreduce_mps.cpp)
 target_link_libraries(allreduce_mps mpi_advance gtest pthread)
+
+add_executable(allreduce_mps_copy allreduce_mps_copy.cpp)
+target_link_libraries(allreduce_mps_copy mpi_advance gtest pthread)
 
 add_executable(allreduce_no_mps allreduce_no_mps.cpp)
 target_link_libraries(allreduce_no_mps mpi_advance gtest pthread)

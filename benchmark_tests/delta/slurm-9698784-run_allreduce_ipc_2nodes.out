@@ -1,0 +1,275 @@
+
+======================   ALLOCATED NODES   ======================
+    gpua003: slots=64 max_slots=0 slots_inuse=0 state=UP
+	Flags: DAEMON_LAUNCHED:LOCATION_VERIFIED:SLOTS_GIVEN
+	aliases: gpua003.delta.ncsa.illinois.edu,gpua003
+    gpua044: slots=64 max_slots=0 slots_inuse=0 state=UP
+	Flags: SLOTS_GIVEN
+	aliases: NONE
+=================================================================
+Size 1
+STD: 4.228344e-05
+LOC: 2.600562e-08
+LANE: 1.577803e-08
+Size 2
+STD: 4.490014e-05
+LOC: 2.600581e-08
+LANE: 1.577700e-08
+Size 4
+STD: 4.559137e-05
+LOC: 1.179051e-04
+LANE: 7.182514e-05
+Size 8
+STD: 4.541325e-05
+LOC: 1.184592e-04
+LANE: 7.159321e-05
+Size 16
+STD: 4.474558e-05
+LOC: 1.193688e-04
+LANE: 7.310478e-05
+Size 32
+STD: 4.985933e-05
+LOC: 1.195999e-04
+LANE: 7.299263e-05
+Size 64
+STD: 5.021094e-05
+LOC: 1.191788e-04
+LANE: 7.288244e-05
+Size 128
+STD: 5.076426e-05
+LOC: 1.207445e-04
+LANE: 7.313875e-05
+Size 256
+STD: 5.083262e-05
+LOC: 1.227681e-04
+LANE: 7.626556e-05
+Size 512
+STD: 5.325825e-05
+LOC: 1.235857e-04
+LANE: 7.671478e-05
+Size 1024
+STD: 5.595676e-05
+LOC: 1.246830e-04
+LANE: 7.684592e-05
+Size 2048
+STD: 7.653791e-05
+LOC: 1.254609e-04
+LANE: 7.578602e-05
+Size 4096
+STD: 8.591404e-05
+LOC: 1.406513e-04
+LANE: 8.217780e-05
+Size 8192
+STD: 1.113516e-04
+LOC: 1.562687e-04
+LANE: 9.525059e-05
+Size 16384
+STD: 1.782951e-04
+LOC: 1.974750e-04
+LANE: 1.248929e-04
+Size 32768
+STD: 3.003363e-04
+LOC: 2.820220e-04
+LANE: 1.690572e-04
+Size 65536
+STD: 5.406022e-04
+LOC: 4.677846e-04
+LANE: 2.515273e-04
+Size 131072
+STD: 1.028110e-03
+LOC: 8.459686e-04
+LANE: 4.292744e-04
+Size 262144
+STD: 2.011917e-03
+LOC: 1.621729e-03
+LANE: 7.954117e-04
+Size 524288
+STD: 7.362812e-03
+LOC: 3.207175e-03
+LANE: 1.547093e-03
+Size 1048576
+STD: 1.219217e-02
+LOC: 6.438526e-03
+LANE: 3.157176e-03
+Size 2097152
+STD: 2.382717e-02
+LOC: 1.279973e-02
+LANE: 6.223901e-03
+Size 4194304
+STD: 4.588792e-02
+LOC: 2.703667e-02
+LANE: 1.348792e-02
+Size 8388608
+STD: 8.976421e-02
+LOC: 6.805017e-02
+LANE: 2.736646e-02
+Size 16777216
+STD: 1.758103e-01
+LOC: 1.501194e-01
+LANE: 7.215858e-02
+Size 33554432
+STD: 3.301222e-01
+LOC: 2.987208e-01
+LANE: 1.302548e-01
+Size 67108864
+STD: 6.492539e-01
+LOC: 5.960331e-01
+LANE: 2.583259e-01
+Size 134217728
+STD: 1.282345e+00
+LOC: 1.184465e+00
+LANE: 5.105532e-01
+Size 268435456
+STD: 2.565003e+00
+LOC: 2.401015e+00
+LANE: 1.008217e+00
+Size 536870912
+STD: 5.477813e+00
+LOC: 4.734586e+00
+LANE: 1.946106e+00
+
+
+======================   ALLOCATED NODES   ======================
+    gpua003: slots=64 max_slots=0 slots_inuse=0 state=UP
+	Flags: DAEMON_LAUNCHED:LOCATION_VERIFIED:SLOTS_GIVEN
+	aliases: gpua003.delta.ncsa.illinois.edu,gpua003
+    gpua044: slots=64 max_slots=0 slots_inuse=0 state=UP
+	Flags: SLOTS_GIVEN
+	aliases: NONE
+=================================================================
+Starting Allreduce Timings, PPG 2:
+Size 2 (Per Proc 1): 3.002154e-04
+Size 4 (Per Proc 2): 3.004035e-04
+Size 8 (Per Proc 4): 3.004048e-04
+Size 16 (Per Proc 8): 3.002852e-04
+Size 32 (Per Proc 16): 3.000741e-04
+Size 64 (Per Proc 32): 3.003576e-04
+Size 128 (Per Proc 64): 3.003446e-04
+Size 256 (Per Proc 128): 2.995106e-04
+Size 512 (Per Proc 256): 3.001157e-04
+Size 1024 (Per Proc 512): 3.002624e-04
+Size 2048 (Per Proc 1024): 3.002324e-04
+Size 4096 (Per Proc 2048): 3.012411e-04
+Size 8192 (Per Proc 4096): 3.024268e-04
+Size 16384 (Per Proc 8192): 3.047627e-04
+Size 32768 (Per Proc 16384): 3.481303e-04
+Size 65536 (Per Proc 32768): 4.389006e-04
+Size 131072 (Per Proc 65536): 8.383734e-04
+Size 262144 (Per Proc 131072): 1.629333e-03
+Size 524288 (Per Proc 262144): 3.231193e-03
+Size 1048576 (Per Proc 524288): 8.972558e-03
+Size 2097152 (Per Proc 1048576): 1.592049e-02
+Size 4194304 (Per Proc 2097152): 3.097129e-02
+Size 8388608 (Per Proc 4194304): 6.620693e-02
+Size 16777216 (Per Proc 8388608): 1.517503e-01
+Size 33554432 (Per Proc 16777216): 2.894100e-01
+Size 67108864 (Per Proc 33554432): 5.612919e-01
+Size 134217728 (Per Proc 67108864): 1.157935e+00
+Size 268435456 (Per Proc 134217728): 2.378671e+00
+
+======================   ALLOCATED NODES   ======================
+    gpua003: slots=64 max_slots=0 slots_inuse=0 state=UP
+	Flags: DAEMON_LAUNCHED:LOCATION_VERIFIED:SLOTS_GIVEN
+	aliases: gpua003.delta.ncsa.illinois.edu,gpua003
+    gpua044: slots=64 max_slots=0 slots_inuse=0 state=UP
+	Flags: SLOTS_GIVEN
+	aliases: NONE
+=================================================================
+Starting Allreduce Timings, PPG 4:
+Size 4 (Per Proc 1): 6.007535e-04
+Size 8 (Per Proc 2): 6.011906e-04
+Size 16 (Per Proc 4): 6.011244e-04
+Size 32 (Per Proc 8): 6.011281e-04
+Size 64 (Per Proc 16): 6.011027e-04
+Size 128 (Per Proc 32): 6.011190e-04
+Size 256 (Per Proc 64): 6.010965e-04
+Size 512 (Per Proc 128): 6.010820e-04
+Size 1024 (Per Proc 256): 6.012632e-04
+Size 2048 (Per Proc 512): 6.012357e-04
+Size 4096 (Per Proc 1024): 6.017356e-04
+Size 8192 (Per Proc 2048): 6.030652e-04
+Size 16384 (Per Proc 4096): 6.042324e-04
+Size 32768 (Per Proc 8192): 6.095778e-04
+Size 65536 (Per Proc 16384): 6.209733e-04
+Size 131072 (Per Proc 32768): 7.595272e-04
+Size 262144 (Per Proc 65536): 1.516430e-03
+Size 524288 (Per Proc 131072): 3.032253e-03
+Size 1048576 (Per Proc 262144): 6.065754e-03
+Size 2097152 (Per Proc 524288): 1.459186e-02
+Size 4194304 (Per Proc 1048576): 2.854562e-02
+Size 8388608 (Per Proc 2097152): 6.027493e-02
+Size 16777216 (Per Proc 4194304): 1.273673e-01
+Size 33554432 (Per Proc 8388608): 2.671457e-01
+Size 67108864 (Per Proc 16777216): 5.577492e-01
+Size 134217728 (Per Proc 33554432): 1.124902e+00
+Size 268435456 (Per Proc 67108864): 2.270738e+00
+
+======================   ALLOCATED NODES   ======================
+    gpua003: slots=64 max_slots=0 slots_inuse=0 state=UP
+	Flags: DAEMON_LAUNCHED:LOCATION_VERIFIED:SLOTS_GIVEN
+	aliases: gpua003.delta.ncsa.illinois.edu,gpua003
+    gpua044: slots=64 max_slots=0 slots_inuse=0 state=UP
+	Flags: SLOTS_GIVEN
+	aliases: NONE
+=================================================================
+Starting Allreduce Timings, PPG 8:
+Size 8 (Per Proc 1): 1.210723e-03
+Size 16 (Per Proc 2): 1.201004e-03
+Size 32 (Per Proc 4): 1.200977e-03
+Size 64 (Per Proc 8): 1.201072e-03
+Size 128 (Per Proc 16): 1.201043e-03
+Size 256 (Per Proc 32): 1.201036e-03
+Size 512 (Per Proc 64): 1.200896e-03
+Size 1024 (Per Proc 128): 1.201242e-03
+Size 2048 (Per Proc 256): 1.201484e-03
+Size 4096 (Per Proc 512): 1.201488e-03
+Size 8192 (Per Proc 1024): 1.202410e-03
+Size 16384 (Per Proc 2048): 1.205102e-03
+Size 32768 (Per Proc 4096): 1.208014e-03
+Size 65536 (Per Proc 8192): 1.218594e-03
+Size 131072 (Per Proc 16384): 1.234250e-03
+Size 262144 (Per Proc 32768): 8.656703e-04
+Size 524288 (Per Proc 65536): 1.727856e-03
+Size 1048576 (Per Proc 131072): 3.381316e-03
+Size 2097152 (Per Proc 262144): 6.703569e-03
+Size 4194304 (Per Proc 524288): 1.694404e-02
+Size 8388608 (Per Proc 1048576): 3.634882e-02
+Size 16777216 (Per Proc 2097152): 7.353932e-02
+Size 33554432 (Per Proc 4194304): 1.540838e-01
+Size 67108864 (Per Proc 8388608): 3.489256e-01
+Size 134217728 (Per Proc 16777216): 7.723363e-01
+Size 268435456 (Per Proc 33554432): 1.544190e+00
+
+======================   ALLOCATED NODES   ======================
+    gpua003: slots=64 max_slots=0 slots_inuse=0 state=UP
+	Flags: DAEMON_LAUNCHED:LOCATION_VERIFIED:SLOTS_GIVEN
+	aliases: gpua003.delta.ncsa.illinois.edu,gpua003
+    gpua044: slots=64 max_slots=0 slots_inuse=0 state=UP
+	Flags: SLOTS_GIVEN
+	aliases: NONE
+=================================================================
+Starting Allreduce Timings, PPG 16:
+Size 16 (Per Proc 1): 2.416101e-03
+Size 32 (Per Proc 2): 2.403361e-03
+Size 64 (Per Proc 4): 2.402556e-03
+Size 128 (Per Proc 8): 2.403007e-03
+Size 256 (Per Proc 16): 2.402867e-03
+Size 512 (Per Proc 32): 2.402867e-03
+Size 1024 (Per Proc 64): 2.402928e-03
+Size 2048 (Per Proc 128): 2.402751e-03
+Size 4096 (Per Proc 256): 2.402904e-03
+Size 8192 (Per Proc 512): 2.403265e-03
+Size 16384 (Per Proc 1024): 2.405224e-03
+Size 32768 (Per Proc 2048): 2.408430e-03
+Size 65536 (Per Proc 4096): 2.418841e-03
+Size 131072 (Per Proc 8192): 2.440511e-03
+Size 262144 (Per Proc 16384): 2.484120e-03
+Size 524288 (Per Proc 32768): 1.314283e-03
+Size 1048576 (Per Proc 65536): 2.511019e-03
+Size 2097152 (Per Proc 131072): 4.867612e-03
+Size 4194304 (Per Proc 262144): 9.730316e-03
+Size 8388608 (Per Proc 524288): 2.521785e-02
+Size 16777216 (Per Proc 1048576): 5.793216e-02
+Size 33554432 (Per Proc 2097152): 1.248393e-01
+Size 67108864 (Per Proc 4194304): 2.513064e-01
+Size 134217728 (Per Proc 8388608): 5.498497e-01

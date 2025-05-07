@@ -25,7 +25,9 @@ double allreduce(int size, float* sendbuf, float* sendbuf_loc,
     double t0 = MPI_Wtime();
     for (int i = 0; i < n_iters; i++)
     {
-        MPI_Allreduce(sendbuf, recvbuf, size, MPI_FLOAT, MPI_SUM, comm);
+        cudaMemcpy(sendbuf_loc, sendbuf, size*sizeof(float), cudaMemcpyDeviceToDevice);
+        MPI_Allreduce(sendbuf_loc, recvbuf_loc, size, MPI_FLOAT, MPI_SUM, comm);
+        cudaMemcpy(recvbuf, recvbuf_loc, size*sizeof(float), cudaMemcpyDeviceToDevice);
     }
     double tfinal = (MPI_Wtime() - t0) / n_iters;
     return tfinal;
