@@ -1,0 +1,27 @@
+#!/bin/bash
+
+#SBATCH --nodes=2
+#SBATCH --ntasks-per-node=100
+#SBATCH --output=alltoall_N2.%j.out
+#SBATCH --error=alltoall_N2.%j.err
+#SBATCH --account=UNM
+#SBATCH --time=00:30:00
+##SBATCH --partition=pdebug
+#SBATCH --cpus-per-task=1
+#SBATCH --exclusive
+
+cd $HOME/AdvanceAlltoall/build/benchmarks
+nnodes=2
+ppn=100
+ntasks=$(( ${nnodes} * ${ppn} ))
+
+echo "Test 1 Running Alltoall Benchmark on ${nnodes} nodes and ${ntasks} tasks"
+srun -n ${ntasks} -N ${nnodes} ./alltoall_topology
+
+echo "Test 2 Running Alltoall Benchmark on ${nnodes} nodes and ${ntasks} tasks"
+srun -n ${ntasks} -N ${nnodes} ./alltoall_topology
+
+echo "Test 3 Running Alltoall Benchmark on ${nnodes} nodes and ${ntasks} tasks"
+srun -n ${ntasks} -N ${nnodes} ./alltoall_topology
+
+
