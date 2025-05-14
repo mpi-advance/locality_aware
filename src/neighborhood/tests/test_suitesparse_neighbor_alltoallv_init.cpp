@@ -407,8 +407,7 @@ TEST(RandomCommTest, TestsInTests)
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
 
     std::string mat_dir = "../../../../test_data/";
-    int n_mats = 19;
-    std::string test_matrices[n_mats] = {
+    std::vector<std::string> test_matrices = {
         "dwt_162.pm",
         "odepa400.pm",
         "ww_36_pmec_36.pm",
@@ -431,13 +430,12 @@ TEST(RandomCommTest, TestsInTests)
     };
 
     // Test SpMV
-    for (int i = 0; i < n_mats; i++)
+    for (size_t i = 0; i < test_matrices.size(); i++)
         test_matrix((mat_dir + test_matrices[i]).c_str());
 
     // Test SpM-Multivector
-    int n_vec_sizes = 4;
-    int vec_sizes[n_vec_sizes] = {1, 2, 10, 100};
-    for (int i = 0; i < n_mats; i++)
-        for (int j = 0; j < n_vec_sizes; j++)
+    std::vector<int> vec_sizes = {1, 2, 32, 128};
+    for (size_t i = 0; i < test_matrices.size(); i++)
+        for (size_t j = 0; j < vec_sizes.size(); j++)
             test_multivector((mat_dir + test_matrices[i]).c_str(), vec_sizes[j]);
 }
