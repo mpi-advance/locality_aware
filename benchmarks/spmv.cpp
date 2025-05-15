@@ -2,6 +2,9 @@
 #include "tests/sparse_mat.hpp"
 #include "tests/par_binary_IO.hpp"
 #include <numeric>
+#include <cstring>
+#include <cmath>
+#include <ctime>
 
 // Allows for Neighbor Alltoallv having different parameters
 // than the locality version
@@ -164,47 +167,22 @@ void benchmark_spmvs(ParMat<int>& A, std::vector<double>& x, std::vector<double>
 
     std::vector<double> b_std(b.size());
 
-    // Loop through all topology discovery methods
-    using F = int (*)(int, int, int*, int*, int*, MPI_Datatype, 
-            void*, int*, int*, int**, int**, int**, MPI_Datatype,
-            void**, MPIX_Info*, MPIX_Comm*);
-    std::vector<F> topology_discovery_funcs = {alltoallv_crs_personalized,
-            alltoallv_crs_nonblocking,
-            alltoallv_crs_personalized_loc,
-            alltoallv_crs_nonblocking_loc};
-    std::vector<const char*> discovery_names = {"Personalized", "Nonblocking", "Personalized + Locality", 
-            "Nonblocking + Locality"};
-
-    for (int idx = 0; idx < topology_discovery_funcs.size(); idx++)
-    {
-        // Time Standard Neighbor Collective SpMV
-        time = test_spmvs(topology_discovery_funcs[idx], MPIX_Neighbor_alltoallv_init, 
-                A, x, x_dist, b, xcomm, n_spmvs);
-        if (rank == 0) printf("%s, Standard Neighbor: %e\n", discovery_names[idx], time);
-        std::memcpy(b_std.data(), b.data(), b.size()*sizeof(double));
-
-        // Test Full Locality-Aware SpMV
-        time = test_spmvs(topology_discovery_funcs[idx], MPIX_Neighbor_locality_alltoallv_init, 
-                A, x, x_dist, b, xcomm, n_spmvs);
-        if (rank == 0) printf("%s, Locality-Aware Neighbor: %e\n", discovery_names[idx], time);
-        for (int i = 0; i < b.size(); i++)
-            if (fabs(b_std[i] - b[i]) > 1e-06)
-            {
-                printf("DIFFERENCE IN RESULTS!\n");
-                MPI_Abort(xcomm->global_comm, 1);
-            }
-
-        // Test Partial Locality-Aware SpMV (doesn't remove duplicates)
-        time = test_spmvs(topology_discovery_funcs[idx], MPIX_Neighbor_part_locality_alltoallv_init, 
-                A, x, x_dist, b, xcomm, n_spmvs);
-        if (rank == 0) printf("%s, Part Locality Neighbor: %e\n", discovery_names[idx], time);
-        for (int i = 0; i < b.size(); i++)
-            if (fabs(b_std[i] - b[i]) > 1e-06)
-            {
-                printf("DIFFERENCE IN RESULTS!\n");
-                MPI_Abort(xcomm->global_comm, 2);
-            }
-    }
+    // Test Personalized + Neighbor
+    time = test_spmvs(alltoallv_crs_personalized, MPIX_Neighbor_alltoallv_init,
+            A, x, x_dist, b, xcomm, n_spmvs);
+    if (rank == 0) printf("Personalized Standard Neighbor: %e\n", time);
+    std::memcpy(b_std.data(), b.data(), b.size()*sizeof(double));
+    
+    // Test Nonblocking + Neighbor
+    time = test_spmvs(alltoallv_crs_nonblocking, MPIX_Neighbor_alltoallv_init,
+            A, x, x_dist, b, xcomm, n_spmvs);
+    if (rank == 0) printf("Nonblocking Standard Neighbor: %e\n", time);
+    for (int i = 0; i < b.size(); i++)
+        if (fabs(b_std[i] - b[i]) > 1e-06)
+        {
+            printf("LOC: DIFFERENCE IN RESULTS! rank %d, i %d, %e vs %e\n", rank, i, b_std[i], b[i]);
+            MPI_Abort(xcomm->global_comm, 1);
+        }
 }
     
 
@@ -234,6 +212,8 @@ int main(int argc, char* argv[])
     // Read suitesparse matrix
     ParMat<int> A;
     readParMatrix(filename, A);
+
+    form_recv_comm(A);
 
     std::vector<double> x(A.on_proc.n_cols);
     std::vector<double> x_dist(A.off_proc.n_cols);
