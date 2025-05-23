@@ -18,7 +18,6 @@
     // Compute b
     // set x to b
 
-#include "gtest/gtest.h"
 #include "mpi_advance.h"
 #include <mpi.h>
 #include <math.h>
@@ -263,7 +262,7 @@ void test_partitioned(const char* filename, int n_vec)
         //printf("rank %d verifying...\n", rank);
         for (int i = 0; i < A.recv_comm.size_msgs; i++)
         {
-            ASSERT_EQ(std_recv_vals[i], partd_recv_vals[i]);
+            assert(std_recv_vals[i] == partd_recv_vals[i]);
         }
         
         SpMV(n_vec, A.on_proc, A.off_proc, x1, partd_recv_vals, b1);
@@ -365,15 +364,7 @@ int main(int argc, char** argv)
 {
     int provided;
     MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
-    ::testing::InitGoogleTest(&argc, argv);
-    int temp=RUN_ALL_TESTS();
-    MPI_Finalize();
-    return temp;
-}
-
-
-TEST(RandomCommTest, TestsInTests)
-{
+    
     // Get MPI Information
     int rank, num_procs;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -411,4 +402,6 @@ TEST(RandomCommTest, TestsInTests)
             test_partitioned((mat_dir + test_matrices[i]).c_str(), vec_sizes[j]);
         }
     }
+
+    MPI_Finalize();
 }
