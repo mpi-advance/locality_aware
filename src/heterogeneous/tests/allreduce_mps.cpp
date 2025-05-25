@@ -2,6 +2,7 @@
 #include <mpi.h>
 #include <math.h>
 #include <stdlib.h>
+#include <string.h>
 #include <iostream>
 #include <assert.h>
 #include <vector>
@@ -354,7 +355,16 @@ int main(int argc, char* argv[])
     int max_s = pow(2, max_p);
     int max_s_proc = max_s / ppg;
 
-    cudaCheck(cudaSetDevice(local_gpu));
+    if (argc < 2 || (strcmp(argv[1], "r") != 0))
+    {
+        cudaCheck(cudaSetDevice(local_gpu));
+    }
+    else
+    {
+        cudaSetDevice((gpn - local_gpu) - 1);
+        printf("rank %d reversed\n", rank);
+        fflush(stdout);
+    }
     
     MPI_Comm gpu_comm;
     MPI_Comm_split(MPI_COMM_WORLD, gpu_rank, rank, &gpu_comm);

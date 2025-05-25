@@ -2,6 +2,7 @@
 #include <mpi.h>
 #include <math.h>
 #include <stdlib.h>
+#include <string.h>
 #include <iostream>
 #include <assert.h>
 #include <vector>
@@ -186,7 +187,16 @@ int main(int argc, char* argv[])
 
     int ppg = ppn / gpn;
     int local_gpu = local_rank / ppg;
-    gpuSetDevice(local_gpu);
+    if (argc < 2 || (strcmp(argv[1], "r") != 0))
+    {
+        gpuSetDevice(local_gpu);
+    }
+    else
+    {
+        gpuSetDevice((gpn - local_gpu) - 1);
+        printf("rank %d reversed\n", rank);
+        fflush(stdout);
+    }
 
     float* sendbuf;
     float* recvbuf;
