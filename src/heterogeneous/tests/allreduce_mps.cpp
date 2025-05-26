@@ -235,7 +235,7 @@ void print_allreduce(int max_p, float* sendbuf_d, float* sendbuf_d_local,
         MPI_Allreduce(&time, &max_time, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);    
 
         // Set NIters so Timing ~ 1 Second
-        int n_iters = (2.0 / max_time) + 1;
+        n_iters = (2.0 / max_time) + 1;
 
         // Time Allreduce
         time = allreduce_loc(s_g, &(sendbuf_d[socket_rank*s]), &(recvbuf_d[(socket_rank*s) + (local_gpu*s_pergpu)]),
@@ -259,7 +259,7 @@ void print_allreduce(int max_p, float* sendbuf_d, float* sendbuf_d_local,
         MPI_Allreduce(&time, &max_time, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);    
 
         // Set NIters so Timing ~ 1 Second
-        int n_iters = (2.0 / max_time) + 1;
+        n_iters = (2.0 / max_time) + 1;
 
         // Time Allreduce
         time = allreduce_loc(s_g, sendbuf_d, &(recvbuf_d[local_gpu*pergpu]),
@@ -285,7 +285,7 @@ void print_allreduce(int max_p, float* sendbuf_d, float* sendbuf_d_local,
         MPI_Allreduce(&time, &max_time, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);    
 
         // Set NIters so Timing ~ 1 Second
-        int n_iters = (2.0 / max_time) + 1;
+        n_iters = (2.0 / max_time) + 1;
 
         // Time Allreduce
         time = allreduce_lane(s_g, &(sendbuf_d[(socket_rank*s) + (local_gpu*s_pergpu)]), 
@@ -312,7 +312,7 @@ void print_allreduce(int max_p, float* sendbuf_d, float* sendbuf_d_local,
         MPI_Allreduce(&time, &max_time, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);    
 
         // Set NIters so Timing ~ 1 Second
-        int n_iters = (2.0 / max_time) + 1;
+        n_iters = (2.0 / max_time) + 1;
 
         // Time Allreduce
         time = allreduce_lane(s_g, &(sendbuf_d[(socket_rank*s) + (local_gpu*s_pergpu)]), 
