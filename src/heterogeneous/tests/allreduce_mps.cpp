@@ -95,7 +95,7 @@ double allreduce_lane(int size, float* sendbuf, float* recvbuf, float* tmpbuf_1,
 
 void print_allreduce(int max_p, float* sendbuf_d, float* sendbuf_d_local, 
         float* recvbuf_d, float* tmpbuf, float* recvbuf_d_local, float* recvbuf, float* recvbuf_std,
-        MPI_Comm comm, MPI_Comm intra_comm, MPI_Comm inter_comm, MPI_Comm socket_comm, int ppg, int socket_rank)
+        MPI_Comm comm, MPI_Comm intra_comm, MPI_Comm inter_comm, MPI_Comm socket_comm, int ppg, int socket_rank, int local_gpu)
 {
     int rank, num_procs;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -103,9 +103,8 @@ void print_allreduce(int max_p, float* sendbuf_d, float* sendbuf_d_local,
     
     double max_time;
 
-    int num_gpus, local_gpu;
+    int num_gpus;
     cudaGetDeviceCount(&num_gpus);
-    cudaGetDevice(&local_gpu);
     int* recvcounts_pergpu = new int[num_gpus];
     int* recvcounts_s = new int[num_gpus];
     int* recvcounts_s_pergpu = new int[num_gpus];
@@ -142,7 +141,7 @@ void print_allreduce(int max_p, float* sendbuf_d, float* sendbuf_d_local,
         for (int i = 0; i < s; i++)
             if (fabs(recvbuf[i] - recvbuf_std[i]) > 1e-6) 
             {
-                printf("DIFFERENCE IN RESULTS! %e vs %e\n", recvbuf[i], recvbuf_std[i]);
+                printf("DIFFERENCE IN RESULTS in STD MPS! %e vs %e\n", recvbuf[i], recvbuf_std[i]);
                 MPI_Abort(MPI_COMM_WORLD, 1);
             }
             
@@ -155,7 +154,7 @@ void print_allreduce(int max_p, float* sendbuf_d, float* sendbuf_d_local,
         for (int i = 0; i < s; i++)
             if (fabs(recvbuf[i] - recvbuf_std[i]) > 1e-6) 
             {
-                printf("DIFFERENCE IN RESULTS! %e vs %e\n", recvbuf[i], recvbuf_std[i]);
+                printf("DIFFERENCE IN RESULTS in LOC MPS FULL! %e vs %e\n", recvbuf[i], recvbuf_std[i]);
                 MPI_Abort(MPI_COMM_WORLD, 1);
             }
      
@@ -168,7 +167,7 @@ void print_allreduce(int max_p, float* sendbuf_d, float* sendbuf_d_local,
         for (int i = 0; i < s; i++)
             if (fabs(recvbuf[i] - recvbuf_std[i]) > 1e-6) 
             {
-                printf("DIFFERENCE IN RESULTS! %e vs %e\n", recvbuf[i], recvbuf_std[i]);
+                printf("DIFFERENCE IN RESULTS in LOC MPS! %e vs %e\n", recvbuf[i], recvbuf_std[i]);
                 MPI_Abort(MPI_COMM_WORLD, 1);
             }
             
@@ -182,7 +181,7 @@ void print_allreduce(int max_p, float* sendbuf_d, float* sendbuf_d_local,
         for (int i = 0; i < s; i++)
             if (fabs(recvbuf[i] - recvbuf_std[i]) > 1e-6) 
             {
-                printf("DIFFERENCE IN RESULTS! %e vs %e\n", recvbuf[i], recvbuf_std[i]);
+                printf("DIFFERENCE IN RESULTS in LANE MPS FULL! %e vs %e\n", recvbuf[i], recvbuf_std[i]);
                 MPI_Abort(MPI_COMM_WORLD, 1);
             }
      
@@ -196,7 +195,7 @@ void print_allreduce(int max_p, float* sendbuf_d, float* sendbuf_d_local,
         for (int i = 0; i < s; i++)
             if (fabs(recvbuf[i] - recvbuf_std[i]) > 1e-6) 
             {
-                printf("DIFFERENCE IN RESULTS! %e vs %e\n", recvbuf[i], recvbuf_std[i]);
+                printf("DIFFERENCE IN RESULTS in LANE MPS! %e vs %e\n", recvbuf[i], recvbuf_std[i]);
                 MPI_Abort(MPI_COMM_WORLD, 1);
             }
             
@@ -424,7 +423,7 @@ int main(int argc, char* argv[])
 
     if (rank == 0) printf("Starting Allreduce Timings, PPG %d:\n", ppg);
     print_allreduce(max_p, sendbuf_d, sendbuf_d_local, recvbuf_d, tmpbuf_d, recvbuf_d_local, 
-            recvbuf, recvbuf_std, gpu_comm, intra_comm, lane_comm, socket_comm, ppg, gpu_rank);
+            recvbuf, recvbuf_std, gpu_comm, intra_comm, lane_comm, socket_comm, ppg, gpu_rank, local_gpu);
     MPI_Barrier(MPI_COMM_WORLD);
 
     if (gpu_rank == 0)
