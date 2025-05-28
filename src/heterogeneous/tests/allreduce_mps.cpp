@@ -145,6 +145,7 @@ void print_allreduce(int max_p, float* sendbuf_d, float* sendbuf_d_local,
                 MPI_Abort(MPI_COMM_WORLD, 1);
             }
             
+/*
         cudaMemset(&(recvbuf_d[socket_rank*s]), 0, s*sizeof(float));
         MPI_Barrier(MPI_COMM_WORLD);
         allreduce_loc(s_g, &(sendbuf_d[socket_rank*s]), &(recvbuf_d[(socket_rank*s) + (local_gpu*s_pergpu)]),
@@ -170,13 +171,14 @@ void print_allreduce(int max_p, float* sendbuf_d, float* sendbuf_d_local,
                 printf("DIFFERENCE IN RESULTS in LOC MPS! %e vs %e\n", recvbuf[i], recvbuf_std[i]);
                 MPI_Abort(MPI_COMM_WORLD, 1);
             }
+*/
             
         cudaMemset(&(recvbuf_d[socket_rank*s]), 0, s*sizeof(float));
         MPI_Barrier(MPI_COMM_WORLD);
-        allreduce_lane(s_g, &(sendbuf_d[(socket_rank*s) + (local_gpu*s_pergpu)]), 
-                            &(recvbuf_d[(socket_rank*s) + (local_gpu*s_pergpu)]), 
-                            &(tmpbuf[(socket_rank*s) + (local_gpu*s_pergpu)]), 
-                            &(tmpbuf[(socket_rank*s) + (local_gpu*s_pergpu)]), recvcounts_s_pergpu, comm, intra_comm, inter_comm, socket_comm, 1, false, recvcounts_s_pergpu[0]);
+        allreduce_lane(s_g, &(sendbuf_d[socket_rank*s]), 
+                            &(recvbuf_d[socket_rank*s]), 
+                            &(tmpbuf[socket_rank*s]), 
+                            &(tmpbuf[socket_rank*s]), recvcounts_s, comm, intra_comm, inter_comm, socket_comm, 1, false, recvcounts_s[0]);
         gpuMemcpy(recvbuf_std, &(recvbuf_d[socket_rank*s]), s*sizeof(float), gpuMemcpyDeviceToHost);
         for (int i = 0; i < s; i++)
             if (fabs(recvbuf[i] - recvbuf_std[i]) > 1e-6) 
@@ -187,10 +189,10 @@ void print_allreduce(int max_p, float* sendbuf_d, float* sendbuf_d_local,
      
         cudaMemset(&(recvbuf_d[socket_rank*s]), 0, s*sizeof(float));
         MPI_Barrier(MPI_COMM_WORLD);
-        allreduce_lane(s_g, &(sendbuf_d[(socket_rank*s) + (local_gpu*s_pergpu)]), 
-                            &(recvbuf_d[local_gpu*pergpu]), 
-                            &(tmpbuf[(socket_rank*s) + (local_gpu*s_pergpu)]), 
-                            &(tmpbuf[local_gpu*pergpu]), recvcounts_pergpu, comm, (socket_rank == 0) ? intra_comm : MPI_COMM_NULL, inter_comm, socket_comm, 1, true, recvcounts_s_pergpu[0]);
+        allreduce_lane(s_g, &(sendbuf_d[socket_rank*s]), 
+                            recvbuf_d, 
+                            &(tmpbuf[socket_rank*s]), 
+                            tmpbuf, &s_g, comm, (socket_rank == 0) ? intra_comm : MPI_COMM_NULL, inter_comm, socket_comm, 1, true, recvcounts_s[0]);
         gpuMemcpy(recvbuf_std, &(recvbuf_d[socket_rank*s]), s*sizeof(float), gpuMemcpyDeviceToHost);
         for (int i = 0; i < s; i++)
             if (fabs(recvbuf[i] - recvbuf_std[i]) > 1e-6) 
@@ -220,6 +222,7 @@ void print_allreduce(int max_p, float* sendbuf_d, float* sendbuf_d_local,
         MPI_Allreduce(&time, &max_time, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);    
         if (rank == 0) printf("STD MPS: %e\n", max_time);
         
+/*
         // Warm-Up
         allreduce_loc(s_g, &(sendbuf_d[socket_rank*s]), &(recvbuf_d[(socket_rank*s) + (local_gpu*s_pergpu)]),
                 &(tmpbuf[(socket_rank*s) + (local_gpu*s_pergpu)]), &(recvbuf_d[(socket_rank*s) + (local_gpu*s_pergpu)]),
@@ -267,18 +270,19 @@ void print_allreduce(int max_p, float* sendbuf_d, float* sendbuf_d_local,
 
         MPI_Allreduce(&time, &max_time, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);    
         if (rank == 0) printf("LOC MPS: %e\n", max_time);
+*/
         
         // Warm-Up
-        allreduce_lane(s_g, &(sendbuf_d[(socket_rank*s) + (local_gpu*s_pergpu)]), 
-                    &(recvbuf_d[(socket_rank*s) + (local_gpu*s_pergpu)]), 
-                    &(tmpbuf[(socket_rank*s) + (local_gpu*s_pergpu)]), 
-                    &(tmpbuf[(socket_rank*s) + (local_gpu*s_pergpu)]), recvcounts_s_pergpu, comm, intra_comm, inter_comm, socket_comm, 1, false, recvcounts_s_pergpu[0]);
+        allreduce_lane(s_g, &(sendbuf_d[socket_rank*s]), 
+                            &(recvbuf_d[socket_rank*s]), 
+                            &(tmpbuf[socket_rank*s]), 
+                            &(tmpbuf[socket_rank*s]), recvcounts_s, comm, intra_comm, inter_comm, socket_comm, 1, false, recvcounts_s[0]);
 
         // Time 2 iterations
-        time = allreduce_lane(s_g, &(sendbuf_d[(socket_rank*s) + (local_gpu*s_pergpu)]), 
-                    &(recvbuf_d[(socket_rank*s) + (local_gpu*s_pergpu)]), 
-                    &(tmpbuf[(socket_rank*s) + (local_gpu*s_pergpu)]), 
-                    &(tmpbuf[(socket_rank*s) + (local_gpu*s_pergpu)]), recvcounts_s_pergpu, comm, intra_comm, inter_comm, socket_comm, 2, false, recvcounts_s_pergpu[0]);
+        time = allreduce_lane(s_g, &(sendbuf_d[socket_rank*s]), 
+                            &(recvbuf_d[socket_rank*s]), 
+                            &(tmpbuf[socket_rank*s]), 
+                            &(tmpbuf[socket_rank*s]), recvcounts_s, comm, intra_comm, inter_comm, socket_comm, 2, false, recvcounts_s[0]);
 
         // Get Max Time
         MPI_Allreduce(&time, &max_time, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);    
@@ -287,25 +291,25 @@ void print_allreduce(int max_p, float* sendbuf_d, float* sendbuf_d_local,
         n_iters = (2.0 / max_time) + 1;
 
         // Time Allreduce
-        time = allreduce_lane(s_g, &(sendbuf_d[(socket_rank*s) + (local_gpu*s_pergpu)]), 
-                    &(recvbuf_d[(socket_rank*s) + (local_gpu*s_pergpu)]), 
-                    &(tmpbuf[(socket_rank*s) + (local_gpu*s_pergpu)]), 
-                    &(tmpbuf[(socket_rank*s) + (local_gpu*s_pergpu)]), recvcounts_s_pergpu, comm, intra_comm, inter_comm, socket_comm, n_iters, false, recvcounts_s_pergpu[0]);
+        time = allreduce_lane(s_g, &(sendbuf_d[socket_rank*s]), 
+                            &(recvbuf_d[socket_rank*s]), 
+                            &(tmpbuf[socket_rank*s]), 
+                            &(tmpbuf[socket_rank*s]), recvcounts_s, comm, intra_comm, inter_comm, socket_comm, n_iters, false, recvcounts_s[0]);
 
         MPI_Allreduce(&time, &max_time, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);    
         if (rank == 0) printf("LANE MPS FULL: %e\n", max_time);
         
         // Warm-Up
-        allreduce_lane(s_g, &(sendbuf_d[(socket_rank*s) + (local_gpu*s_pergpu)]), 
-                            &(recvbuf_d[local_gpu*pergpu]), 
-                            &(tmpbuf[(socket_rank*s) + (local_gpu*s_pergpu)]), 
-                            &(tmpbuf[local_gpu*pergpu]), recvcounts_pergpu, comm, (socket_rank == 0) ? intra_comm : MPI_COMM_NULL, inter_comm, socket_comm, 1, true, recvcounts_s_pergpu[0]);
+        allreduce_lane(s_g, &(sendbuf_d[socket_rank*s]), 
+                            recvbuf_d, 
+                            &(tmpbuf[socket_rank*s]), 
+                            tmpbuf, &s_g, comm, (socket_rank == 0) ? intra_comm : MPI_COMM_NULL, inter_comm, socket_comm, 1, true, recvcounts_s[0]);
 
         // Time 2 iterations
-        time = allreduce_lane(s_g, &(sendbuf_d[(socket_rank*s) + (local_gpu*s_pergpu)]), 
-                            &(recvbuf_d[local_gpu*pergpu]), 
-                            &(tmpbuf[(socket_rank*s) + (local_gpu*s_pergpu)]), 
-                            &(tmpbuf[local_gpu*pergpu]), recvcounts_pergpu, comm, (socket_rank == 0) ? intra_comm : MPI_COMM_NULL, inter_comm, socket_comm, 2, true, recvcounts_s_pergpu[0]);
+        time =allreduce_lane(s_g, &(sendbuf_d[socket_rank*s]), 
+                            recvbuf_d, 
+                            &(tmpbuf[socket_rank*s]), 
+                            tmpbuf, &s_g, comm, (socket_rank == 0) ? intra_comm : MPI_COMM_NULL, inter_comm, socket_comm, 2, true, recvcounts_s[0]);
 
         // Get Max Time
         MPI_Allreduce(&time, &max_time, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);    
@@ -314,14 +318,15 @@ void print_allreduce(int max_p, float* sendbuf_d, float* sendbuf_d_local,
         n_iters = (2.0 / max_time) + 1;
 
         // Time Allreduce
-        time = allreduce_lane(s_g, &(sendbuf_d[(socket_rank*s) + (local_gpu*s_pergpu)]), 
-                            &(recvbuf_d[local_gpu*pergpu]), 
-                            &(tmpbuf[(socket_rank*s) + (local_gpu*s_pergpu)]), 
-                            &(tmpbuf[local_gpu*pergpu]), recvcounts_pergpu, comm, (socket_rank == 0) ? intra_comm : MPI_COMM_NULL, inter_comm, socket_comm, n_iters, true, recvcounts_s_pergpu[0]);
+        allreduce_lane(s_g, &(sendbuf_d[socket_rank*s]), 
+                            recvbuf_d, 
+                            &(tmpbuf[socket_rank*s]), 
+                            tmpbuf, &s_g, comm, (socket_rank == 0) ? intra_comm : MPI_COMM_NULL, inter_comm, socket_comm, n_iters, true, recvcounts_s[0]);
 
         MPI_Allreduce(&time, &max_time, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);    
         if (rank == 0) printf("LANE MPS: %e\n", max_time);
         
+
         fflush(stdout);
     }
     if (rank == 0) printf("\n");
@@ -350,7 +355,7 @@ int main(int argc, char* argv[])
     int local_gpu = local_rank / ppg;
     int gpu_rank = local_rank % ppg;
 
-    int max_p = 30;
+    int max_p = 28;
     int max_s = pow(2, max_p);
     int max_s_proc = max_s / ppg;
 
