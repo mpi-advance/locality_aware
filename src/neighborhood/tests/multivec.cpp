@@ -163,7 +163,7 @@ void par_SpMV(
         SpMV_threaded(n_vec, A.on_proc, x, b);
         #pragma omp single
         {
-            communicate(A, x, recv_buff, MPI_INT, n_vec);
+            communicate(A, x, recv_buff, MPI_DOUBLE, n_vec);
         } // implicit barrier
         SpMV_threaded(n_vec, A.off_proc, recv_buff, b);
     }
@@ -184,7 +184,7 @@ void par_SpMV_CSC(
         SpMV_threaded(n_vec, A.on_proc, x, b);
         #pragma omp single
         {
-            communicate(A, x, recv_buff, MPI_INT, n_vec);
+            communicate(A, x, recv_buff, MPI_DOUBLE, n_vec);
         } // implicit barrier
         SpMV_off_proc_CSC(n_vec, A_csc, recv_buff, b);
     }
@@ -205,7 +205,7 @@ void par_SpMV_CSC_part(
         SpMV_threaded(n_vec, A.on_proc, x, b);
         #pragma omp single
         {
-            communicate(A, x, recv_buff, MPI_INT, n_vec);
+            communicate(A, x, recv_buff, MPI_DOUBLE, n_vec);
         } // implicit barrier
         #pragma omp for
         for (int col = 0; col < A_csc.n_cols; col++)
