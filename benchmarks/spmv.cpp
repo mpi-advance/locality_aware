@@ -8,6 +8,8 @@
 
 // Allows for Neighbor Alltoallv having different parameters
 // than the locality version
+
+/*
 using Nstd = int (*) (const void*, const int*, const int*, MPI_Datatype, 
         void*, const int*, const int*, MPI_Datatype, MPIX_Comm*,
         MPIX_Info*, MPIX_Request**);
@@ -32,7 +34,7 @@ void neighbor_init(ParMat<int>& A, Nloc func, const void* sendbuf, const int* se
 
     func(sendbuf, sendcounts, sdispls, global_rows.data(), sendtype, recvbuf, recvcounts, rdispls, 
             A.off_proc_columns.data(), recvtype, xcomm, xinfo, xrequest_ptr);
-}
+}*/
 
 // Local SpMV
 void spmv(double alpha, Mat& A, std::vector<double>& x, double beta, std::vector<double>& b)
@@ -58,9 +60,12 @@ template <typename F, typename N>
 double time_spmvs(F discovery_func, N neighbor_func, ParMat<int>& A, std::vector<double>&x, std::vector<double>& x_dist, 
         std::vector<double>& b, MPIX_Comm* xcomm, int n_spmvs, int iterations)
 {
-    int n_recvs, s_recvs, proc;
-    int *src, *recvcounts, *rdispls;
-    long *recvvals;
+    int n_sends, s_sends, proc;
+    int *dest, *sendcounts, *sdispls;
+    long *send_idx;
+
+    std::vector<int> neigh_sdispls;
+    std::vector<double> sendbuf;
     
     MPI_Barrier(xcomm->global_comm);
     double t0 = MPI_Wtime();
@@ -72,13 +77,19 @@ double time_spmvs(F discovery_func, N neighbor_func, ParMat<int>& A, std::vector
         MPIX_Comm* neighbor_comm;
 
         // Topology Discover
-        s_recvs = -1;
+        s_sends = -1;
         discovery_func(A.recv_comm.n_msgs, A.recv_comm.size_msgs, A.recv_comm.procs.data(),
                     A.recv_comm.counts.data(), A.recv_comm.ptr.data(), MPI_LONG,
                 A.off_proc_columns.data(),
-                &n_recvs, &s_recvs, &src, &recvcounts, &rdispls, MPI_LONG, (void**)&recvvals, xinfo, xcomm);
-        for (int i = 0; i < s_recvs; i++)
-            recvvals[i] -= A.first_col;
+                &n_sends, &s_sends, &dest, &sendcounts, &sdispls, MPI_LONG, (void**)&send_idx, xinfo, xcomm);
+        for (int i = 0; i < s_sends; i++)
+            send_idx[i] -= A.first_col;
+
+        sendbuf.resize(s_sends);
+        neigh_sdispls.resize(n_sends+1);
+        neigh_sdispls[0] = 0;
+        for (int i = 0; i < n_sends; i++)
+            neigh_sdispls[i+1] = neigh_sdispls[i] + sendcounts[i];
 
         // Create neighbor communicator
         // TODO: Can replace with topology object version
@@ -86,8 +97,8 @@ double time_spmvs(F discovery_func, N neighbor_func, ParMat<int>& A, std::vector
                 A.recv_comm.n_msgs,
                 A.recv_comm.procs.data(),
                 MPI_UNWEIGHTED,
-                n_recvs,
-                src, 
+                n_sends,
+                dest, 
                 MPI_UNWEIGHTED,
                 MPI_INFO_NULL,
                 0,
@@ -96,14 +107,18 @@ double time_spmvs(F discovery_func, N neighbor_func, ParMat<int>& A, std::vector
         // Initialize neighbor alltoallv
         // TODO: Can replace with locality or part locality versions
         MPIX_Request* neighbor_request;
-        neighbor_init(A, neighbor_func, x.data(), recvcounts, rdispls, MPI_INT, 
-            x_dist.data(), A.recv_comm.counts.data(), A.recv_comm.ptr.data(), MPI_INT, neighbor_comm, 
+        neighbor_func(sendbuf.data(), sendcounts, sdispls, MPI_DOUBLE, 
+            x_dist.data(), A.recv_comm.counts.data(), A.recv_comm.ptr.data(), MPI_DOUBLE, neighbor_comm, 
             xinfo, &neighbor_request);
 
         // Perform n_spmvs iterations of SpMVs
         MPI_Status status;
         for (int i = 0; i < n_spmvs; i++)
         {
+            // Pack Data
+            for (int i = 0; i < s_sends; i++)
+                sendbuf[i] = x[send_idx[i]];
+
             // Start Communication
             MPIX_Start(neighbor_request);
 
@@ -125,10 +140,10 @@ double time_spmvs(F discovery_func, N neighbor_func, ParMat<int>& A, std::vector
         
         MPIX_Info_free(&xinfo);
 
-        MPIX_Free(src);
-        MPIX_Free(recvcounts);
-        MPIX_Free(rdispls);
-        MPIX_Free(recvvals);
+        MPIX_Free(dest);
+        MPIX_Free(sendcounts);
+        MPIX_Free(sdispls);
+        MPIX_Free(send_idx);
     }
     double tfinal = (MPI_Wtime() - t0) / iterations;
     MPI_Allreduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, xcomm->global_comm);
@@ -183,6 +198,20 @@ void benchmark_spmvs(ParMat<int>& A, std::vector<double>& x, std::vector<double>
             printf("LOC: DIFFERENCE IN RESULTS! rank %d, i %d, %e vs %e\n", rank, i, b_std[i], b[i]);
             MPI_Abort(xcomm->global_comm, 1);
         }
+
+    // Test Personalized Loc + Neighbor
+    time = test_spmvs(alltoallv_crs_personalized_loc, MPIX_Neighbor_alltoallv_init,
+            A, x, x_dist, b, xcomm, n_spmvs);
+    if (rank == 0) printf("Personalized+Locality Standard Neighbor: %e\n", time);
+    std::memcpy(b_std.data(), b.data(), b.size()*sizeof(double));
+
+    // Test Nonblocking Loc + Neighbor
+    time = test_spmvs(alltoallv_crs_nonblocking_loc, MPIX_Neighbor_alltoallv_init,
+            A, x, x_dist, b, xcomm, n_spmvs);
+    if (rank == 0) printf("Nonblocking+Locality Standard Neighbor: %e\n", time);
+    std::memcpy(b_std.data(), b.data(), b.size()*sizeof(double));
+
+
 }
     
 
