@@ -38,6 +38,10 @@ add_test(PartitionedAlltoallvTest
     ${MPIRUN} -n 16 ./test_partitioned_alltoallv)
 
 
+add_executable(multivec multivec.cpp)
+target_link_libraries(multivec mpi_advance gtest pthread MPIPCL::MPIPCL)
+add_test(MultiVecTest ${MPIRUN} -n 16 ./multivec)
+
 add_executable(test_suitesparse_alltoall_crs test_suitesparse_alltoall_crs.cpp) 
 target_link_libraries(test_suitesparse_alltoall_crs mpi_advance gtest pthread )
 add_test(SuitesparseAlltoallCRS ${MPIRUN} -n 16 ./test_suitesparse_alltoall_crs)

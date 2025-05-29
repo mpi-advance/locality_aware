@@ -1,6 +1,18 @@
 cmake_minimum_required(VERSION 3.17 FATAL_ERROR) 
 
 include(FeatureSummary)
+option(USE_HIP "Compile with HIP Support" OFF)
+option(USE_CUDA "Compile with CUDA Support" OFF)
+add_feature_info(use_hip USE_HIP "Compile with HIP Support")
+add_feature_info(use_cuda USE_CUDA "Compile with CUDA Support")
+if (USE_CUDA)
+    project(mpi_advance LANGUAGES CUDA CXX VERSION 0.1.0)
+elseif (USE_HIP)
+    project(mpi_advance LANGUAGES HIP CXX VERSION 0.1.0)
+else()
+    message(STATUS "Called project here")
+    project(mpi_advance)
+endif()
 
 enable_language(C)
 enable_language(CXX)
@@ -21,14 +33,10 @@ find_package(MPIPCL 1.4.0 REQUIRED)
 # Options for Heterogeneous Architectures
 option(GPU_AWARE "Use GPU-Aware MPI" ON)
 option(USE_GPU "Compile heterogeneous folder" OFF)
-option(USE_HIP "Compile with HIP Support" OFF)
-option(USE_CUDA "Compile with CUDA Support" OFF)
 option(ENABLE_UNIT_TESTS "Enable unit testing" ON)
 option(USING_AMD "Compile on AMD GPU machine" OFF)
 
 add_feature_info(gpu_aware GPU_AWARE "Use GPU-Aware MPI")
-add_feature_info(use_hip USE_HIP "Compile with HIP Support")
-add_feature_info(use_cuda USE_CUDA "Compile with CUDA Support")
 add_feature_info(using_amd USING_AMD "Compile on machine with AMD GPUs")
 
 set(MPIRUN "mpirun" CACHE STRING "MPIRUN command")
@@ -36,13 +44,6 @@ set(MPICXX "mpicxx" CACHE STRING "MPICXX command")
 set(GPURunCommand "mpirun -n4 -N2 -gpu" CACHE STRING "Command to run MPIRun with GPU-Aware MPI")
 separate_arguments(GPUAwareMPIRUN NATIVE_COMMAND ${GPURunCommand})
 
-if (USE_CUDA)
-    project(mpi_advance LANGUAGES CUDA CXX VERSION 0.1.0)
-elseif (USE_HIP)
-    project(mpi_advance LANGUAGES HIP CXX VERSION 0.1.0)
-else()
-    project(mpi_advance)
-endif()
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
@@ -58,6 +59,7 @@ endif()
 
 
 find_package(MPI REQUIRED)
+find_package(OpenMP REQUIRED)
 include_directories(${MPI_INCLUDE_PATH})
 set(mpi_advance_INCDIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
