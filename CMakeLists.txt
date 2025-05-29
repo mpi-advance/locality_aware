@@ -46,8 +46,8 @@ endif()
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
-set(CMAKE_C_FLAGS "-Wall -Wextra -Wpedantic -Wshadow")
-set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wpedantic -Wshadow")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -Wpedantic -Wshadow")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic -Wshadow")
 message(STATUS ${CMAKE_C_FLAGS})
 if (OPENMP_FOUND)
     message(STATUS ${OPENMP_C_FLAGS})

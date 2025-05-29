@@ -35,64 +35,63 @@
 #include "mpipcl.h"
 
 
-void partitioned_communicate(
-    int n_vec,
-    int n_recvs,
-    int n_sends,
-    int size_sends,
-    std::vector<int>& idxs,
-    std::vector<int>& x,
-    std::vector<MPIP_Request>& sreqs,
-    std::vector<MPIP_Request>& rreqs,
-    std::vector<int>& send_vals,
-    std::vector<int>& displs
-) {
-    // int rank;
-    // MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-    //printf("rank %d starting...\n", rank);
-    if (n_sends)
-        MPIP_Startall(n_sends, sreqs.data());
-    if (n_recvs)
-        MPIP_Startall(n_recvs, rreqs.data());
+void CSR_to_CSC(Mat& A, Mat& B)
+{
+    B.n_rows = A.n_rows;
+    B.n_cols = A.n_cols;
+    B.nnz = A.nnz;
 
+    // Resize vectors to appropriate dimensions
+    B.rowptr.resize(B.n_cols+1, 0);
+    B.col_idx.resize(B.nnz);
+    B.data.resize(B.nnz);
 
-    // Packing
-    if (size_sends)
+    // Create indptr, summing number times row appears in CSC
+    for (int i = 0; i < A.nnz; i++)
     {
-        //printf("rank %d packing...\n", rank);
-        #pragma omp parallel
-        {
-            for (int i = 0; i < n_sends; i++) {
-                #pragma omp for nowait schedule(static)
-                for (int j = displs[i] * n_vec; j < displs[i+1] * n_vec; j++) {
-                    int idx = idxs[j / n_vec];
-                    send_vals[j] = x[(idx * n_vec) + (j % n_vec)];
-                }
+        B.rowptr[A.col_idx[i] + 1]++;
+    }
+    for (int i = 1; i <= A.n_cols; i++)
+    {
+        B.rowptr[i] += B.rowptr[i-1];
+    }
 
-                MPIP_Pready(omp_get_thread_num(), &sreqs[i]);
-            }
+    // Add values to indices and data
+    std::vector<int> ctr(B.n_cols, 0);
+    for (int i = 0; i < A.n_rows; i++)
+    {
+        int row_start = A.rowptr[i];
+        int row_end = A.rowptr[i+1];
+        for (int j = row_start; j < row_end; j++)
+        {
+            int col = A.col_idx[j];
+            int idx = B.rowptr[col] + ctr[col]++;
+            B.col_idx[idx] = i;
+            B.data[idx] = A.data[j];
         }
     }
+}
 
-    //MPI_Barrier(MPI_COMM_WORLD);
-    // if (n_sends || n_recvs) {
-    //     printf("rank %d waiting...\n", rank);
-    // }
-    if (n_sends) {
-        //MPI_Status statuses[n_sends];
-        //statuses.resize(n_sends);
-        MPIP_Waitall(n_sends, sreqs.data(), MPI_STATUSES_IGNORE);
-        // if (ret != MPI_SUCCESS) {
-        //     printf("ret\n");
-        // }
-        //for (int i = 0; i < n_sends; i++) {
-        //    printf("%d, ", statuses[i]);
-        //}
-        //printf("\n");
+void pack_partd(
+    int n_vec,
+    int n_sends,
+    std::vector<int>& idxs,
+    std::vector<int>& x,
+    std::vector<int>& displs,
+    std::vector<int>& send_buffer,
+    std::vector<MPIP_Request>& sreqs
+) {
+    for (int i = 0; i < n_sends; i++) {
+        #pragma omp for nowait schedule(static)
+        for (int j = displs[i] * n_vec; j < displs[i+1] * n_vec; j++) {
+            int idx = idxs[j / n_vec];
+            send_buffer[j] = x[(idx * n_vec) + (j % n_vec)];
+        }
+
+        MPIP_Pready(omp_get_thread_num(), &sreqs[i]);
     }
-    if (n_recvs)
-        MPIP_Waitall(n_recvs, rreqs.data(), MPI_STATUSES_IGNORE);
 
+    {
     // Serial packing code for reference
     // if (A.send_comm.size_msgs)
     // {
@@ -100,76 +99,212 @@ void partitioned_communicate(
         // {
         //     idx = A.send_comm.idx[i];
         //     for (int j = 0; j < n_vec; j++)
-        //         alltoallv_send_vals[(i * n_vec) + j] = x[(idx * n_vec) + j];
+        //         partd_send_vals[(i * n_vec) + j] = x[(idx * n_vec) + j];
         // }
     // }
-
-    //printf("rank %d comm done\n", rank);
-    //MPI_Barrier(MPI_COMM_WORLD);
+    }
 }
 
-void SpMV(
+void SpMV_threaded(
     int n_vec,
-    Mat& on_proc,
-    Mat& off_proc,
+    Mat& A,
     std::vector<int>& x,
-    std::vector<int>& off_proc_x,
-    std::vector<int>& b
+    std::vector<int>& b,
+    double beta
 ) {
-    std::vector<int> vals;
-    vals.resize(n_vec);
-    // Local multiplication
     int start, end;
     int data, col_idx;
-    //printf("rank %d local spmv...\n", rank);
-    for (int i = 0; i < on_proc.n_rows; i++)
+    int vals[n_vec];
+
+    #pragma omp for private(start, end, data, col_idx, vals)
+    for (int i = 0; i < A.n_rows; i++)
     {
-        start = on_proc.rowptr[i];
-        end = on_proc.rowptr[i+1];
-        for (int vec = 0; vec < n_vec; vec++) {
-            vals[vec] = 0;
-        }
+        start = A.rowptr[i];
+        end = A.rowptr[i+1];
+        memset(vals, 0, sizeof(vals));
         for (int j = start; j < end; j  ++)
         {
-            data = on_proc.data[j];
-            col_idx = on_proc.col_idx[j];
+            data = A.data[j];
+            col_idx = A.col_idx[j];
             for (int vec = 0; vec < n_vec; vec++) {
                 vals[vec] += data * x[col_idx * n_vec + vec];
             }
         }
         for (int vec = 0; vec < n_vec; vec++) {
-            b[i * n_vec + vec] = vals[vec];
-        }
-    }
-
-    //printf("rank %d off-proc spmv...\n", rank);
-    // Add product of off-proc columns and non-local values of x
-    for (int i = 0; i < off_proc.n_rows; i++) // Should be the same loop size as local
-    {
-        start = off_proc.rowptr[i];
-        end = off_proc.rowptr[i+1];
-        for (int vec = 0; vec < n_vec; vec++) {
-            vals[vec] = 0;
-        }
-        for (int j = start; j < end; j++)
-        {
-            data = off_proc.data[j];
-            col_idx = off_proc.col_idx[j];
-            for (int vec = 0; vec < n_vec; vec++) {
-                vals[vec] += data * off_proc_x[col_idx * n_vec + vec];
-            }
-        }
-        for (int vec = 0; vec < n_vec; vec++) {
-            b[i * n_vec + vec] += vals[vec];
-            x[i * n_vec + vec] = b[i * n_vec + vec];
+            b[i * n_vec + vec] = vals[vec] + beta * b[i * n_vec + vec];
         }
     }
 }
 
+void SpMV_off_proc_CSC( // single column
+    int n_vec,
+    int vec_row_start,
+    int vec_row_end,
+    int col,
+    Mat& A,
+    std::vector<int>& x,
+    std::vector<int>& b
+) {
+    int start, end;
+    int data, row_idx;
+
+    start = A.rowptr[col]; // rowptr is Column ptr for CSC
+    end = A.rowptr[col+1];
+    for (int i = start; i < end; i++)
+    {
+        data = A.data[i];
+        row_idx = A.col_idx[i]; // col_idx is Row idx for CSC
+        for (int vec = vec_row_start; vec < vec_row_end; vec++) {
+            #pragma omp atomic
+            b[row_idx * n_vec + vec] += data * x[col * n_vec + vec];
+        }
+    }
+}
+
+void par_SpMV(
+    int n_vec,
+    ParMat<int>& A,
+    std::vector<int>& x,
+    std::vector<int>& b,
+    std::vector<int>& recv_buff
+) {
+    #pragma omp parallel
+    {
+        SpMV_threaded(n_vec, A.on_proc, x, b, 0.0);
+        #pragma omp single
+        {
+            communicate(A, x, recv_buff, MPI_INT, n_vec);
+        } // implicit barrier
+        SpMV_threaded(n_vec, A.off_proc, recv_buff, b, 1.0);
+    }
+}
+
+void par_SpMV_partd(
+    int n_vec,
+    ParMat<int>& A,
+    std::vector<int>& x,
+    std::vector<int>& b,
+    std::vector<int>& send_buff,
+    std::vector<int>& x_off_proc,
+    std::vector<MPIP_Request>& sreqs,
+    std::vector<MPIP_Request>& rreqs
+) {
+    int n_sends = A.send_comm.n_msgs;
+    int n_recvs = A.recv_comm.n_msgs;
+
+    MPIP_Startall(n_sends, sreqs.data());
+    MPIP_Startall(n_recvs, rreqs.data());
+
+    #pragma omp parallel // TODO possibly move outside iterations
+    {
+        // Local compute
+        SpMV_threaded(n_vec, A.on_proc, x, b, 0.0);
+
+        // Pack and early send
+        if (A.send_comm.size_msgs)
+            pack_partd(n_vec, n_sends, A.send_comm.idx, x,
+                        A.send_comm.ptr, send_buff, sreqs);
+
+        // Receive
+        #pragma omp single
+        {
+            MPIP_Waitall(n_recvs, rreqs.data(), MPI_STATUSES_IGNORE);
+        } // implicit barrier
+
+        // Non-local compute
+        SpMV_threaded(n_vec, A.off_proc, x_off_proc, b, 1.0);
+    }
+
+    MPIP_Waitall(n_sends, sreqs.data(), MPI_STATUSES_IGNORE);
+}
+
+void par_SpMV_partd_csc(
+    int n_vec,
+    ParMat<int>& A,
+    Mat& A_csc,
+    std::vector<int>& x,
+    std::vector<int>& b,
+    std::vector<int>& send_buff,
+    std::vector<int>& x_off_proc,
+    std::vector<MPIP_Request>& sreqs,
+    std::vector<MPIP_Request>& rreqs
+) {
+    int n_sends = A.send_comm.n_msgs;
+    int n_recvs = A.recv_comm.n_msgs;
+
+    MPIP_Startall(n_sends, sreqs.data());
+    MPIP_Startall(n_recvs, rreqs.data());
+
+    int n_threads = omp_get_max_threads();
+    int *b_ptr = b.data();
+    #pragma omp parallel num_threads(n_threads) reduction(+:b_ptr[:b.size()]) // TODO possibly move outside iterations
+    {
+        // Local compute
+        SpMV_threaded(n_vec, A.on_proc, x, b, 0.0);
+
+        // Pack and early send
+        if (A.send_comm.size_msgs)
+            pack_partd(n_vec, n_sends, A.send_comm.idx, x,
+                        A.send_comm.ptr, send_buff, sreqs);
+
+        // Receive and early compute
+        int n_req = n_recvs;
+        int next_n_req = 0;
+        int flag;
+        int part = omp_get_thread_num();
+        int n_parts = omp_get_num_threads();
+        int start, end, part_size, start_idx, start_row;
+        int vec_row_start, vec_row_end, end_idx, end_row;
+        std::vector<int> req_idx(n_recvs);
+        std::iota(req_idx.begin(), req_idx.end(), 0);
+        while (n_req)
+        {
+            next_n_req = 0;
+            for (int i = 0; i < n_req; i++)
+            {
+                int idx = req_idx[i];
+                MPIP_Parrived(&rreqs[idx], part, &flag);
+                if (flag) {
+                    start = A.recv_comm.ptr[idx];
+                    end   = A.recv_comm.ptr[idx+1];
+                    part_size = (end - start) * n_vec / n_parts;
+                    start_idx = (start * n_vec) + (part_size * part);
+                    start_row = start_idx / n_vec;
+                    vec_row_start = start_idx % n_vec; // first column received in first row
+                    end_idx = (start * n_vec) + (part_size * (part + 1));
+                    end_row = end_idx / n_vec;
+                    vec_row_end = end_idx % n_vec;
+
+                    // possible race condition on b, see pragma above
+                    for (int j = start_row; j < end_row; j++) {
+                        int end_pos = n_vec;
+                        if (j == end_row - 1) // only use vec_row_end for last vec row
+                            end_pos = vec_row_end;
+                        SpMV_off_proc_CSC(n_vec, vec_row_start, end_pos, j, A_csc, x_off_proc, b);
+                        if (j == 0) // only use vec_row_start for first vec row
+                            vec_row_start = 0;
+                    }
+                } else {
+                    req_idx[next_n_req++] = idx;
+                }
+            }
+            n_req = next_n_req;
+        }
+    }
+
+    MPIP_Waitall(n_sends, sreqs.data(), MPI_STATUSES_IGNORE);
+    MPIP_Waitall(n_recvs, rreqs.data(), MPI_STATUSES_IGNORE); // TODO try deleting
+}
+
+// Test compares 3 methods:
+// 1. Baseline non-partitioned approach (std_recv_vals, x1, b1...)
+// 2. Partitioned approach              (partd_send_vals, partd_recv_vals, x2, b2...)
+// 3. Partitioned approach using CSC    (partd_csc_send_vals, partd_csc_recv_vals, x3, b3...)
 void test_partitioned(const char* filename, int n_vec)
 {
     // msg counts must be divisible by n_parts. simplest method is to have n_parts divide n_vec
-    int n_parts = omp_get_max_threads();// omp_get_num_threads(); 
+    // TODO assert this ^
+    int n_parts = omp_get_max_threads(); // TODO check this if things break
 
     int rank, num_procs;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -182,26 +317,32 @@ void test_partitioned(const char* filename, int n_vec)
     readParMatrix(filename, A);
     form_comm(A);
     //printf("rank %d read matrix\n", rank);
-    if (rank == 0 && A.global_rows != A.global_cols)
+    if (rank == 0 && A.global_rows != A.global_cols) {
         printf("NOT SQUARE~~~~~~~~~~~~~~~~~~~~\n");
+        return;
+    }
 
-    std::vector<int> std_recv_vals, partd_recv_vals;
-    std::vector<int> send_vals, alltoallv_send_vals;
-    std::vector<int> x1, b1, x2, b2;
+    std::vector<int> std_recv_vals, partd_recv_vals, partd_csc_recv_vals;
+    std::vector<int> send_vals, partd_send_vals, partd_csc_send_vals;
+    std::vector<int> x1, b1, x2, b2, x3, b3;
 
     if (A.on_proc.n_cols)
     {
-        x1.resize(A.on_proc.n_rows * n_vec);
-        x2.resize(A.on_proc.n_cols * n_vec);
-        b1.resize(A.on_proc.n_rows * n_vec);
-        b2.resize(A.on_proc.n_rows * n_vec);
         send_vals.resize(A.on_proc.n_cols * n_vec);
         std::iota(send_vals.begin(), send_vals.end(), 0);
+
+        x1.resize(A.on_proc.n_rows * n_vec);
+        x2.resize(A.on_proc.n_cols * n_vec);
+        x3.resize(A.on_proc.n_cols * n_vec);
+        b1.resize(A.on_proc.n_rows * n_vec);
+        b2.resize(A.on_proc.n_rows * n_vec);
+        b3.resize(A.on_proc.n_rows * n_vec);
         for (int i = 0; i < A.on_proc.n_cols * n_vec; i++)
         {
             send_vals[i] += (rank*1000);
             x1[i] = send_vals[i];
             x2[i] = send_vals[i];
+            x3[i] = send_vals[i];
         }
     }
 
@@ -209,22 +350,34 @@ void test_partitioned(const char* filename, int n_vec)
     {
         std_recv_vals.resize(A.recv_comm.size_msgs * n_vec);
         partd_recv_vals.resize(A.recv_comm.size_msgs * n_vec);
+        partd_csc_recv_vals.resize(A.recv_comm.size_msgs * n_vec);
     }
 
     if (A.send_comm.size_msgs)
     {
-        alltoallv_send_vals.resize(A.send_comm.size_msgs * n_vec);
+        partd_send_vals.resize(A.send_comm.size_msgs * n_vec);
+        partd_csc_send_vals.resize(A.send_comm.size_msgs * n_vec);
     }
 
+    // Convert off_proc to CSC
+    // TODO should be ParMat? Need to malloc?
+    Mat A_off_proc_CSC;
+    CSR_to_CSC(A.off_proc, A_off_proc_CSC);
 
     // Initialization
     //printf("rank %d initializing...\n", rank);
     std::vector<MPIP_Request> sreqs;
     std::vector<MPIP_Request> rreqs;
-    if (A.send_comm.n_msgs)
+    std::vector<MPIP_Request> sreqs_csc;
+    std::vector<MPIP_Request> rreqs_csc;
+    if (A.send_comm.n_msgs) {
         sreqs.resize(A.send_comm.n_msgs);
-    if (A.recv_comm.n_msgs)
+        sreqs_csc.resize(A.send_comm.n_msgs);
+    }
+    if (A.recv_comm.n_msgs) {
         rreqs.resize(A.recv_comm.n_msgs);
+        rreqs_csc.resize(A.recv_comm.n_msgs);
+    }
 
     int proc;
     int start, end;
@@ -236,6 +389,8 @@ void test_partitioned(const char* filename, int n_vec)
         end = A.recv_comm.ptr[i+1] * n_vec;
         MPIP_Precv_init(&(partd_recv_vals[start]), n_parts, (int)(end - start)/n_parts, MPI_INT, proc, tag,
                 MPI_COMM_WORLD, MPI_INFO_NULL, &(rreqs[i]));
+        MPIP_Precv_init(&(partd_csc_recv_vals[start]), n_parts, (int)(end - start)/n_parts, MPI_INT, proc, tag,
+                MPI_COMM_WORLD, MPI_INFO_NULL, &(rreqs_csc[i]));
     }
 
     for (int i = 0; i < A.send_comm.n_msgs; i++)
@@ -243,40 +398,55 @@ void test_partitioned(const char* filename, int n_vec)
         proc = A.send_comm.procs[i];
         start = A.send_comm.ptr[i] * n_vec;
         end = A.send_comm.ptr[i+1] * n_vec;
-        MPIP_Psend_init(&(alltoallv_send_vals[start]), n_parts, (int)(end - start)/n_parts, MPI_INT, proc, tag,
+        MPIP_Psend_init(&(partd_send_vals[start]), n_parts, (int)(end - start)/n_parts, MPI_INT, proc, tag,
                 MPI_COMM_WORLD, MPI_INFO_NULL, &(sreqs[i]));
+        MPIP_Psend_init(&(partd_csc_send_vals[start]), n_parts, (int)(end - start)/n_parts, MPI_INT, proc, tag,
+                MPI_COMM_WORLD, MPI_INFO_NULL, &(sreqs_csc[i]));
     }
     //printf("rank %d initialized\n", rank);
 
-
     // Test Iterations
-    int test_iters = 5;
+    int test_iters = 5; // TODO add updating and resetting of x after tests
     for (int iter = 0; iter < test_iters; iter++) {
+        par_SpMV(n_vec, A, x1, b1, std_recv_vals);
 
-        // Point-to-point communication
-        communicate(A, x1, std_recv_vals, MPI_INT, n_vec);
+        par_SpMV_partd(n_vec, A, x2, b2, partd_send_vals, partd_recv_vals, sreqs, rreqs);
 
-        partitioned_communicate(n_vec, A.recv_comm.n_msgs, A.send_comm.n_msgs, 
-            A.send_comm.size_msgs, A.send_comm.idx, x2, sreqs, rreqs, alltoallv_send_vals, A.send_comm.ptr);
+        par_SpMV_partd_csc(n_vec, A, A_off_proc_CSC, x3, b3, partd_csc_send_vals,
+                            partd_csc_recv_vals, sreqs_csc, rreqs_csc);
 
         //printf("rank %d verifying...\n", rank);
         for (int i = 0; i < A.recv_comm.size_msgs; i++)
         {
             assert(std_recv_vals[i] == partd_recv_vals[i]);
         }
-        
-        SpMV(n_vec, A.on_proc, A.off_proc, x1, partd_recv_vals, b1);
-        SpMV(n_vec, A.on_proc, A.off_proc, x2, partd_recv_vals, b2);
+        for (size_t i = 0; i < b1.size(); i++)
+        {
+            assert(b1[i] == b2[i]);
+        }
+        for (int i = 0; i < A.recv_comm.size_msgs; i++)
+        {
+            assert(std_recv_vals[i] == partd_csc_recv_vals[i]);
+        }
+        for (size_t i = 0; i < b1.size(); i++)
+        {
+            assert(b1[i] == b3[i]);
+        }
+
+        std::swap(x1, b1);
+        std::swap(x2, b2);
+        std::swap(x3, b3);
     }
+
+    // TODO remove
+    return;
 
     // Estimate test iterations needed
     double t0, tf;
-    int iters1, iters2;
-
+    int iters1, iters2, iters3;
     MPI_Barrier(MPI_COMM_WORLD);
     t0 = MPI_Wtime();
-    communicate(A, x1, std_recv_vals, MPI_INT, n_vec);
-    SpMV(n_vec, A.on_proc, A.off_proc, x1, std_recv_vals, b1);
+    par_SpMV(n_vec, A, x1, b1, std_recv_vals);
     tf = MPI_Wtime() - t0;
     MPI_Allreduce(&tf, &t0, 1, MPI_DOUBLE, MPI_MAX,
         MPI_COMM_WORLD);
@@ -286,9 +456,7 @@ void test_partitioned(const char* filename, int n_vec)
 
     MPI_Barrier(MPI_COMM_WORLD);
     t0 = MPI_Wtime();
-    partitioned_communicate(n_vec, A.recv_comm.n_msgs, A.send_comm.n_msgs,
-        A.send_comm.size_msgs, A.send_comm.idx, x2, sreqs, rreqs, alltoallv_send_vals, A.send_comm.ptr);
-    SpMV(n_vec, A.on_proc, A.off_proc, x2, partd_recv_vals, b2);
+    par_SpMV_partd(n_vec, A, x2, b2, partd_send_vals, partd_recv_vals, sreqs, rreqs);
     tf = MPI_Wtime() - t0;
     MPI_Allreduce(&tf, &t0, 1, MPI_DOUBLE, MPI_MAX,
         MPI_COMM_WORLD);
@@ -296,68 +464,71 @@ void test_partitioned(const char* filename, int n_vec)
     if (t0 > 1.0)
         iters2 = 1;
 
-    //printf("rank %d: iters1 %d, iters2 %d\n", rank, iters1, iters2);
+    MPI_Barrier(MPI_COMM_WORLD);
+    t0 = MPI_Wtime();
+    par_SpMV_partd_csc(n_vec, A, A_off_proc_CSC, x3, b3, partd_csc_send_vals,
+                        partd_csc_recv_vals, sreqs_csc, rreqs_csc);
+    tf = MPI_Wtime() - t0;
+    MPI_Allreduce(&tf, &t0, 1, MPI_DOUBLE, MPI_MAX,
+        MPI_COMM_WORLD);
+    iters3 = (1.0 / t0) + 1;
+    if (t0 > 1.0)
+        iters3 = 1;
 
-    // Reset x after test iters
-    if (A.on_proc.n_cols)
-    {
-        for (int i = 0; i < A.on_proc.n_cols * n_vec; i++)
-        {
-            x1[i] = send_vals[i];
-            x2[i] = send_vals[i];
-        }
-    }
+    if (rank == 0)
+        printf("iters1 %d, iters2 %d, iters3 %d\n", iters1, iters2, iters3);
+
 
     // Timing Iterations
-    // Point to point baseline
+    // Baseline
     MPI_Barrier(MPI_COMM_WORLD);
     t0 = MPI_Wtime();
     for (int iter = 0; iter < iters1; iter++) {
-        communicate(A, x1, std_recv_vals, MPI_INT, n_vec);
-
-        SpMV(n_vec, A.on_proc, A.off_proc, x1, std_recv_vals, b1);
+        par_SpMV(n_vec, A, x1, b1, std_recv_vals);
+        std::swap(x1, b1); // update x
     }
     tf = MPI_Wtime() - t0;
     MPI_Reduce(&tf, &t0, 1, MPI_DOUBLE, MPI_MAX, 0,
         MPI_COMM_WORLD);
-    if (rank == 0) printf("Point-to-point baseline Time for %d vectors: %e\n", n_vec, t0/iters1);
+    if (rank == 0) printf("Baseline Time for %d vectors: %e\n", n_vec, t0/iters1);
 
 
     // Partitioned
     MPI_Barrier(MPI_COMM_WORLD);
     t0 = MPI_Wtime();
     for (int iter = 0; iter < iters2; iter++) {
-        //MPI_Barrier(MPI_COMM_WORLD);
-        //printf("Rank %d Comming %d\n", rank, iter);
-        partitioned_communicate(n_vec, A.recv_comm.n_msgs, A.send_comm.n_msgs,
-            A.send_comm.size_msgs, A.send_comm.idx, x2, sreqs, rreqs, alltoallv_send_vals, A.send_comm.ptr);
-        if (rank == 0) {
-            //printf("commed\n");
-        }
-        //MPI_Barrier(MPI_COMM_WORLD);
-        //printf("Rank %d Spmving %d\n", rank, iter);
-        SpMV(n_vec, A.on_proc, A.off_proc, x2, partd_recv_vals, b2);
-        if (rank == 0) {
-            //printf("comped\n");
-        }
+        par_SpMV_partd(n_vec, A, x2, b2, partd_send_vals, partd_recv_vals, sreqs, rreqs);
+        std::swap(x2, b2); // update x
     }
     tf = MPI_Wtime() - t0;
-    //printf("rank %d reducing\n", rank);
     MPI_Reduce(&tf, &t0, 1, MPI_DOUBLE, MPI_MAX, 0,
         MPI_COMM_WORLD);
     if (rank == 0) printf("Partitioned Time for %d vectors: %e\n", n_vec, t0/iters2);
 
 
+    // Partitioned CSC
+    MPI_Barrier(MPI_COMM_WORLD);
+    t0 = MPI_Wtime();
+    for (int iter = 0; iter < iters3; iter++) {
+        par_SpMV_partd_csc(n_vec, A, A_off_proc_CSC, x3, b3, partd_csc_send_vals,
+                            partd_csc_recv_vals, sreqs_csc, rreqs_csc);
+        std::swap(x3, b3); // update x
+    }
+    tf = MPI_Wtime() - t0;
+    MPI_Reduce(&tf, &t0, 1, MPI_DOUBLE, MPI_MAX, 0,
+        MPI_COMM_WORLD);
+    if (rank == 0) printf("Partitioned CSC Time for %d vectors: %e\n", n_vec, t0/iters3);
+
+
     // Cleanup
-    //printf("rank %d freeing...\n", rank);
     for (int i = 0; i < A.recv_comm.n_msgs; i++) {
         MPIP_Request_free(&rreqs[i]);
+        MPIP_Request_free(&rreqs_csc[i]);
     }
     for (int i = 0; i < A.send_comm.n_msgs; i++) {
         MPIP_Request_free(&sreqs[i]);
+        MPIP_Request_free(&sreqs_csc[i]);
     }
-
-    //printf("rank %d complete\n", rank);
 }
 
 int main(int argc, char** argv)
@@ -377,24 +548,17 @@ int main(int argc, char** argv)
         "ww_36_pmec_36.pm",
         "bcsstk01.pm",
         "west0132.pm",
-        //"gams10a.pm",
-        //"gams10am.pm",
-        //"D_10.pm",
         "oscil_dcop_11.pm",
         "tumorAntiAngiogenesis_4.pm",
-        //"ch5-5-b1.pm",
         "msc01050.pm",
         "SmaGri.pm",
         "radfr1.pm",
-        //"bibd_49_3.pm",
         "can_1054.pm",
         "can_1072.pm",
-        //"lp_sctap2.pm",
-        //"lp_woodw.pm",
     };
 
     // Test SpM-Multivector
-    std::vector<int> vec_sizes = {4096};
+    std::vector<int> vec_sizes = {64};
     for (size_t i = 0; i < test_matrices.size(); i++) {
         if (rank == 0) 
             printf("Matrix %d...\n", i);
