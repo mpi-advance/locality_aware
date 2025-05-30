@@ -76,9 +76,9 @@ void pack_partd(
     int n_vec,
     int n_sends,
     std::vector<int>& idxs,
-    std::vector<int>& x,
     std::vector<int>& displs,
-    std::vector<int>& send_buffer,
+    std::vector<double>& x,
+    std::vector<double>& send_buffer,
     std::vector<MPIP_Request>& sreqs
 ) {
     for (int i = 0; i < n_sends; i++) {
@@ -106,32 +106,28 @@ void pack_partd(
 }
 
 void SpMV_threaded(
-    int n_vec,
     Mat& A,
-    std::vector<int>& x,
-    std::vector<int>& b,
-    double beta
+    std::vector<double>& x,
+    std::vector<double>& b,
+    int beta,
+    int n_vec
 ) {
     int start, end;
     int data, col_idx;
-    int vals[n_vec];
 
-    #pragma omp for private(start, end, data, col_idx, vals)
+    #pragma omp for private(start, end, data, col_idx)
     for (int i = 0; i < A.n_rows; i++)
     {
         start = A.rowptr[i];
         end = A.rowptr[i+1];
-        memset(vals, 0, sizeof(vals));
         for (int j = start; j < end; j  ++)
         {
             data = A.data[j];
             col_idx = A.col_idx[j];
             for (int vec = 0; vec < n_vec; vec++) {
-                vals[vec] += data * x[col_idx * n_vec + vec];
+                b[i * n_vec + vec] = (data * x[col_idx * n_vec + vec]) + \
+                                        (beta * b[i * n_vec + vec]);
             }
-        }
-        for (int vec = 0; vec < n_vec; vec++) {
-            b[i * n_vec + vec] = vals[vec] + beta * b[i * n_vec + vec];
         }
     }
 }
@@ -142,8 +138,8 @@ void SpMV_off_proc_CSC( // single column
     int vec_row_end,
     int col,
     Mat& A,
-    std::vector<int>& x,
-    std::vector<int>& b
+    std::vector<double>& x,
+    std::vector<double>& b
 ) {
     int start, end;
     int data, row_idx;
@@ -155,7 +151,7 @@ void SpMV_off_proc_CSC( // single column
         data = A.data[i];
         row_idx = A.col_idx[i]; // col_idx is Row idx for CSC
         for (int vec = vec_row_start; vec < vec_row_end; vec++) {
-            #pragma omp atomic
+            #pragma omp atomic // TODO this makes the operation serial without considering which element of b is being accessed?
             b[row_idx * n_vec + vec] += data * x[col * n_vec + vec];
         }
     }
@@ -164,28 +160,28 @@ void SpMV_off_proc_CSC( // single column
 void par_SpMV(
     int n_vec,
     ParMat<int>& A,
-    std::vector<int>& x,
-    std::vector<int>& b,
-    std::vector<int>& recv_buff
+    std::vector<double>& x,
+    std::vector<double>& b,
+    std::vector<double>& recv_buff
 ) {
     #pragma omp parallel
     {
-        SpMV_threaded(n_vec, A.on_proc, x, b, 0.0);
+        SpMV_threaded(A.on_proc, x, b, 0, n_vec);
         #pragma omp single
         {
-            communicate(A, x, recv_buff, MPI_INT, n_vec);
+            communicate(A, x, recv_buff, MPI_DOUBLE, n_vec);
         } // implicit barrier
-        SpMV_threaded(n_vec, A.off_proc, recv_buff, b, 1.0);
+        SpMV_threaded(A.off_proc, recv_buff, b, 1, n_vec);
     }
 }
 
 void par_SpMV_partd(
     int n_vec,
     ParMat<int>& A,
-    std::vector<int>& x,
-    std::vector<int>& b,
-    std::vector<int>& send_buff,
-    std::vector<int>& x_off_proc,
+    std::vector<double>& x,
+    std::vector<double>& b,
+    std::vector<double>& send_buff,
+    std::vector<double>& x_off_proc,
     std::vector<MPIP_Request>& sreqs,
     std::vector<MPIP_Request>& rreqs
 ) {
@@ -198,12 +194,12 @@ void par_SpMV_partd(
     #pragma omp parallel // TODO possibly move outside iterations
     {
         // Local compute
-        SpMV_threaded(n_vec, A.on_proc, x, b, 0.0);
+        SpMV_threaded(A.on_proc, x, b, 0, n_vec);
 
         // Pack and early send
         if (A.send_comm.size_msgs)
-            pack_partd(n_vec, n_sends, A.send_comm.idx, x,
-                        A.send_comm.ptr, send_buff, sreqs);
+            pack_partd(n_vec, n_sends, A.send_comm.idx, A.send_comm.ptr, x,
+                        send_buff, sreqs);
 
         // Receive
         #pragma omp single
@@ -212,7 +208,7 @@ void par_SpMV_partd(
         } // implicit barrier
 
         // Non-local compute
-        SpMV_threaded(n_vec, A.off_proc, x_off_proc, b, 1.0);
+        SpMV_threaded(A.off_proc, x_off_proc, b, 1, n_vec);
     }
 
     MPIP_Waitall(n_sends, sreqs.data(), MPI_STATUSES_IGNORE);
@@ -222,10 +218,10 @@ void par_SpMV_partd_csc(
     int n_vec,
     ParMat<int>& A,
     Mat& A_csc,
-    std::vector<int>& x,
-    std::vector<int>& b,
-    std::vector<int>& send_buff,
-    std::vector<int>& x_off_proc,
+    std::vector<double>& x,
+    std::vector<double>& b,
+    std::vector<double>& send_buff,
+    std::vector<double>& x_off_proc,
     std::vector<MPIP_Request>& sreqs,
     std::vector<MPIP_Request>& rreqs
 ) {
@@ -236,18 +232,19 @@ void par_SpMV_partd_csc(
     MPIP_Startall(n_recvs, rreqs.data());
 
     int n_threads = omp_get_max_threads();
-    int *b_ptr = b.data();
-    #pragma omp parallel num_threads(n_threads) reduction(+:b_ptr[:b.size()]) // TODO possibly move outside iterations
+    #pragma omp parallel num_threads(n_threads) // TODO possibly move outside iterations
     {
         // Local compute
-        SpMV_threaded(n_vec, A.on_proc, x, b, 0.0);
+        SpMV_threaded(A.on_proc, x, b, 0, n_vec);
 
         // Pack and early send
         if (A.send_comm.size_msgs)
-            pack_partd(n_vec, n_sends, A.send_comm.idx, x,
-                        A.send_comm.ptr, send_buff, sreqs);
+            pack_partd(n_vec, n_sends, A.send_comm.idx, A.send_comm.ptr, x,
+                        send_buff, sreqs);
 
         // Receive and early compute
+        // int rank;
+        // MPI_Comm_rank(MPI_COMM_WORLD, &rank);
         int n_req = n_recvs;
         int next_n_req = 0;
         int flag;
@@ -255,37 +252,53 @@ void par_SpMV_partd_csc(
         int n_parts = omp_get_num_threads();
         int start, end, part_size, start_idx, start_row;
         int vec_row_start, vec_row_end, end_idx, end_row;
-        std::vector<int> req_idx(n_recvs);
-        std::iota(req_idx.begin(), req_idx.end(), 0);
+        int req_idxs[n_recvs];
+        for (int i = 0; i < n_recvs; i++) {
+            req_idxs[i] = i;
+        }
+        //printf("rank %d %d recving %d msgs\n", rank, part, A.recv_comm.n_msgs);
+
         while (n_req)
         {
             next_n_req = 0;
             for (int i = 0; i < n_req; i++)
             {
-                int idx = req_idx[i];
-                MPIP_Parrived(&rreqs[idx], part, &flag);
+                int req_idx = req_idxs[i];
+                MPIP_Parrived(&rreqs[req_idx], part, &flag);
                 if (flag) {
-                    start = A.recv_comm.ptr[idx];
-                    end   = A.recv_comm.ptr[idx+1];
-                    part_size = (end - start) * n_vec / n_parts;
+                    start = A.recv_comm.ptr[req_idx];
+                    end   = A.recv_comm.ptr[req_idx+1];
+                    part_size = (end - start) * n_vec / n_parts; // assumes n_parts divides n_vec
                     start_idx = (start * n_vec) + (part_size * part);
                     start_row = start_idx / n_vec;
                     vec_row_start = start_idx % n_vec; // first column received in first row
                     end_idx = (start * n_vec) + (part_size * (part + 1));
                     end_row = end_idx / n_vec;
                     vec_row_end = end_idx % n_vec;
+                    if (vec_row_end == 0) { // TODO check this if/else
+                        vec_row_end = n_vec;
+                    } else {
+                        end_row++;
+                    }
+
+                    // printf("rank %d %d msg %d, %d parts\n", rank, part, A.recv_comm.procs[req_idx], n_parts);
+                    // printf("rank %d %d part_size %d, start_idx %d, start_row %d, end_idx %d, end_row %d\n",
+                    //         rank, part, part_size, start_idx, start_row, end_idx, end_row);
+                    // printf("rank %d %d start %d, end %d\n", rank, part, start, end);
+                    // printf("rank %d %d ncols: %d/%d\n", rank, part, (end_row - start_row), A_csc.n_cols);
 
                     // possible race condition on b, see pragma above
                     for (int j = start_row; j < end_row; j++) {
                         int end_pos = n_vec;
                         if (j == end_row - 1) // only use vec_row_end for last vec row
                             end_pos = vec_row_end;
+                        // printf("rank %d %d j: %d, vec_start %d, vec_end: %d\n", rank, part, j, vec_row_start, end_pos);
                         SpMV_off_proc_CSC(n_vec, vec_row_start, end_pos, j, A_csc, x_off_proc, b);
-                        if (j == 0) // only use vec_row_start for first vec row
+                        if (j == start_row) // only use vec_row_start for first vec row
                             vec_row_start = 0;
                     }
                 } else {
-                    req_idx[next_n_req++] = idx;
+                    req_idxs[next_n_req++] = req_idx;
                 }
             }
             n_req = next_n_req;
@@ -310,21 +323,18 @@ void test_partitioned(const char* filename, int n_vec)
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
 
-    //printf("rank %d threads %d\n", rank, n_parts);
-
     // Read suitesparse matrix
     ParMat<int> A;
     readParMatrix(filename, A);
     form_comm(A);
-    //printf("rank %d read matrix\n", rank);
     if (rank == 0 && A.global_rows != A.global_cols) {
         printf("NOT SQUARE~~~~~~~~~~~~~~~~~~~~\n");
         return;
     }
 
-    std::vector<int> std_recv_vals, partd_recv_vals, partd_csc_recv_vals;
-    std::vector<int> send_vals, partd_send_vals, partd_csc_send_vals;
-    std::vector<int> x1, b1, x2, b2, x3, b3;
+    std::vector<double> std_recv_vals, partd_recv_vals, partd_csc_recv_vals;
+    std::vector<double> send_vals, partd_send_vals, partd_csc_send_vals;
+    std::vector<double> x1, x2, x3, b1, b2, b3;
 
     if (A.on_proc.n_cols)
     {
@@ -359,13 +369,11 @@ void test_partitioned(const char* filename, int n_vec)
         partd_csc_send_vals.resize(A.send_comm.size_msgs * n_vec);
     }
 
-    // Convert off_proc to CSC
-    // TODO should be ParMat? Need to malloc?
     Mat A_off_proc_CSC;
     CSR_to_CSC(A.off_proc, A_off_proc_CSC);
 
+
     // Initialization
-    //printf("rank %d initializing...\n", rank);
     std::vector<MPIP_Request> sreqs;
     std::vector<MPIP_Request> rreqs;
     std::vector<MPIP_Request> sreqs_csc;
@@ -387,9 +395,9 @@ void test_partitioned(const char* filename, int n_vec)
         proc = A.recv_comm.procs[i];
         start = A.recv_comm.ptr[i] * n_vec;
         end = A.recv_comm.ptr[i+1] * n_vec;
-        MPIP_Precv_init(&(partd_recv_vals[start]), n_parts, (int)(end - start)/n_parts, MPI_INT, proc, tag,
+        MPIP_Precv_init(&(partd_recv_vals[start]), n_parts, (int)(end - start)/n_parts, MPI_DOUBLE, proc, tag,
                 MPI_COMM_WORLD, MPI_INFO_NULL, &(rreqs[i]));
-        MPIP_Precv_init(&(partd_csc_recv_vals[start]), n_parts, (int)(end - start)/n_parts, MPI_INT, proc, tag,
+        MPIP_Precv_init(&(partd_csc_recv_vals[start]), n_parts, (int)(end - start)/n_parts, MPI_DOUBLE, proc, tag,
                 MPI_COMM_WORLD, MPI_INFO_NULL, &(rreqs_csc[i]));
     }
 
@@ -398,15 +406,15 @@ void test_partitioned(const char* filename, int n_vec)
         proc = A.send_comm.procs[i];
         start = A.send_comm.ptr[i] * n_vec;
         end = A.send_comm.ptr[i+1] * n_vec;
-        MPIP_Psend_init(&(partd_send_vals[start]), n_parts, (int)(end - start)/n_parts, MPI_INT, proc, tag,
+        MPIP_Psend_init(&(partd_send_vals[start]), n_parts, (int)(end - start)/n_parts, MPI_DOUBLE, proc, tag,
                 MPI_COMM_WORLD, MPI_INFO_NULL, &(sreqs[i]));
-        MPIP_Psend_init(&(partd_csc_send_vals[start]), n_parts, (int)(end - start)/n_parts, MPI_INT, proc, tag,
+        MPIP_Psend_init(&(partd_csc_send_vals[start]), n_parts, (int)(end - start)/n_parts, MPI_DOUBLE, proc, tag,
                 MPI_COMM_WORLD, MPI_INFO_NULL, &(sreqs_csc[i]));
     }
-    //printf("rank %d initialized\n", rank);
+
 
     // Test Iterations
-    int test_iters = 5; // TODO add updating and resetting of x after tests
+    int test_iters = 10; // TODO add updating and resetting of x after tests
     for (int iter = 0; iter < test_iters; iter++) {
         par_SpMV(n_vec, A, x1, b1, std_recv_vals);
 
@@ -426,11 +434,19 @@ void test_partitioned(const char* filename, int n_vec)
         }
         for (int i = 0; i < A.recv_comm.size_msgs; i++)
         {
-            assert(std_recv_vals[i] == partd_csc_recv_vals[i]);
+            if (fabs(std_recv_vals[i] - partd_csc_recv_vals[i]) / std_recv_vals[i] > 1e-10) {
+                printf("DIFF in recv vals at pos %d, std %e, csc %e, diff: %e\n",
+                        i, std_recv_vals[i], partd_csc_recv_vals[i],
+                        fabs(std_recv_vals[i] - partd_csc_recv_vals[i]));
+                assert(1 == 0);
+            }
         }
         for (size_t i = 0; i < b1.size(); i++)
         {
-            assert(b1[i] == b3[i]);
+            if (fabs(b1[i] - b3[i]) / b1[i] > 1e-9) {
+                printf("DIFF in b at pos %d, std %e, csc %e, diff: %e\n", i, b1[i], b3[i], fabs(b1[i] - b3[i]));
+                assert(1 == 0);
+            }
         }
 
         std::swap(x1, b1);
@@ -438,46 +454,63 @@ void test_partitioned(const char* filename, int n_vec)
         std::swap(x3, b3);
     }
 
-    // TODO remove
-    return;
 
     // Estimate test iterations needed
     double t0, tf;
     int iters1, iters2, iters3;
     MPI_Barrier(MPI_COMM_WORLD);
     t0 = MPI_Wtime();
-    par_SpMV(n_vec, A, x1, b1, std_recv_vals);
+    for (int i = 0; i < test_iters; i++) {
+        par_SpMV(n_vec, A, x1, b1, std_recv_vals);
+        std::swap(x1, b1);
+    }
     tf = MPI_Wtime() - t0;
     MPI_Allreduce(&tf, &t0, 1, MPI_DOUBLE, MPI_MAX,
         MPI_COMM_WORLD);
-    iters1 = (1.0 / t0) + 1;
-    if (t0 > 1.0)
+    iters1 = (1.0 / (t0/test_iters)) + 1;
+    if ((t0/test_iters) > 1.0)
         iters1 = 1;
 
     MPI_Barrier(MPI_COMM_WORLD);
     t0 = MPI_Wtime();
-    par_SpMV_partd(n_vec, A, x2, b2, partd_send_vals, partd_recv_vals, sreqs, rreqs);
+    for (int i = 0; i < test_iters; i++) {
+        par_SpMV_partd(n_vec, A, x2, b2, partd_send_vals, partd_recv_vals, sreqs, rreqs);
+        std::swap(x2, b2);
+    }
     tf = MPI_Wtime() - t0;
     MPI_Allreduce(&tf, &t0, 1, MPI_DOUBLE, MPI_MAX,
         MPI_COMM_WORLD);
-    iters2 = (1.0 / t0) + 1;
-    if (t0 > 1.0)
+    iters2 = (1.0 / (t0/test_iters)) + 1;
+    if ((t0/test_iters) > 1.0)
         iters2 = 1;
 
     MPI_Barrier(MPI_COMM_WORLD);
     t0 = MPI_Wtime();
-    par_SpMV_partd_csc(n_vec, A, A_off_proc_CSC, x3, b3, partd_csc_send_vals,
-                        partd_csc_recv_vals, sreqs_csc, rreqs_csc);
+    for (int i = 0; i < test_iters; i++) {
+        par_SpMV_partd_csc(n_vec, A, A_off_proc_CSC, x3, b3, partd_csc_send_vals,
+                            partd_csc_recv_vals, sreqs_csc, rreqs_csc);
+        std::swap(x3, b3);
+    }
     tf = MPI_Wtime() - t0;
     MPI_Allreduce(&tf, &t0, 1, MPI_DOUBLE, MPI_MAX,
         MPI_COMM_WORLD);
-    iters3 = (1.0 / t0) + 1;
-    if (t0 > 1.0)
+    iters3 = (1.0 / (t0/test_iters)) + 1;
+    if ((t0/test_iters) > 1.0)
         iters3 = 1;
 
     if (rank == 0)
         printf("iters1 %d, iters2 %d, iters3 %d\n", iters1, iters2, iters3);
 
+
+    // Reset x's from tests
+    for (int i = 0; i < A.on_proc.n_cols * n_vec; i++)
+    {
+        x1[i] = send_vals[i];
+        x2[i] = send_vals[i];
+        x3[i] = send_vals[i];
+    }
+
+    //return;
 
     // Timing Iterations
     // Baseline
