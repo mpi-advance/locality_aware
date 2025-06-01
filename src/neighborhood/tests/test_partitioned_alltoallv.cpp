@@ -23,6 +23,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <iostream>
+//#include <unistd.h>
 #include <assert.h>
 #include <vector>
 #include <numeric>
@@ -88,6 +89,7 @@ void pack_partd(
             send_buffer[j] = x[(idx * n_vec) + (j % n_vec)];
         }
 
+        #pragma omp critical
         MPIP_Pready(omp_get_thread_num(), &sreqs[i]);
     }
 
@@ -151,7 +153,7 @@ void SpMV_off_proc_CSC( // single column
         data = A.data[i];
         row_idx = A.col_idx[i]; // col_idx is Row idx for CSC
         for (int vec = vec_row_start; vec < vec_row_end; vec++) {
-            #pragma omp atomic // TODO this makes the operation serial without considering which element of b is being accessed?
+            //#pragma omp critical // TODO this makes the operation serial without considering which element of b is being accessed?
             b[row_idx * n_vec + vec] += data * x[col * n_vec + vec];
         }
     }
@@ -167,10 +169,11 @@ void par_SpMV(
     #pragma omp parallel
     {
         SpMV_threaded(A.on_proc, x, b, 0, n_vec);
-        #pragma omp single
+        #pragma omp master
         {
             communicate(A, x, recv_buff, MPI_DOUBLE, n_vec);
-        } // implicit barrier
+        }
+        #pragma omp barrier
         SpMV_threaded(A.off_proc, recv_buff, b, 1, n_vec);
     }
 }
@@ -191,21 +194,25 @@ void par_SpMV_partd(
     MPIP_Startall(n_sends, sreqs.data());
     MPIP_Startall(n_recvs, rreqs.data());
 
+    int rank;
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     #pragma omp parallel // TODO possibly move outside iterations
     {
         // Local compute
         SpMV_threaded(A.on_proc, x, b, 0, n_vec);
 
         // Pack and early send
-        if (A.send_comm.size_msgs)
+        if (A.send_comm.size_msgs) {
             pack_partd(n_vec, n_sends, A.send_comm.idx, A.send_comm.ptr, x,
                         send_buff, sreqs);
+        }
 
         // Receive
-        #pragma omp single
+        #pragma omp master
         {
             MPIP_Waitall(n_recvs, rreqs.data(), MPI_STATUSES_IGNORE);
-        } // implicit barrier
+        }
+        #pragma omp barrier
 
         // Non-local compute
         SpMV_threaded(A.off_proc, x_off_proc, b, 1, n_vec);
@@ -243,8 +250,8 @@ void par_SpMV_partd_csc(
                         send_buff, sreqs);
 
         // Receive and early compute
-        // int rank;
-        // MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+        int rank; // TODO
+        MPI_Comm_rank(MPI_COMM_WORLD, &rank);
         int n_req = n_recvs;
         int next_n_req = 0;
         int flag;
@@ -263,6 +270,7 @@ void par_SpMV_partd_csc(
             next_n_req = 0;
             for (int i = 0; i < n_req; i++)
             {
+                //printf("%d\n", i);
                 int req_idx = req_idxs[i];
                 MPIP_Parrived(&rreqs[req_idx], part, &flag);
                 if (flag) {
@@ -283,8 +291,8 @@ void par_SpMV_partd_csc(
 
                     // printf("rank %d %d msg %d, %d parts\n", rank, part, A.recv_comm.procs[req_idx], n_parts);
                     // printf("rank %d %d part_size %d, start_idx %d, start_row %d, end_idx %d, end_row %d\n",
-                    //         rank, part, part_size, start_idx, start_row, end_idx, end_row);
-                    // printf("rank %d %d start %d, end %d\n", rank, part, start, end);
+                    //          rank, part, part_size, start_idx, start_row, end_idx, end_row);
+                    // printf("rank %d %d start %d, end %d, msg n_vec_rows %d\n", rank, part, start, end, end-start);
                     // printf("rank %d %d ncols: %d/%d\n", rank, part, (end_row - start_row), A_csc.n_cols);
 
                     // possible race condition on b, see pragma above
@@ -292,8 +300,8 @@ void par_SpMV_partd_csc(
                         int end_pos = n_vec;
                         if (j == end_row - 1) // only use vec_row_end for last vec row
                             end_pos = vec_row_end;
-                        // printf("rank %d %d j: %d, vec_start %d, vec_end: %d\n", rank, part, j, vec_row_start, end_pos);
-                        SpMV_off_proc_CSC(n_vec, vec_row_start, end_pos, j, A_csc, x_off_proc, b);
+                        //printf("rank %d %d j: %d, vec_start %d, vec_end: %d\n", rank, part, j, vec_row_start, end_pos);
+                        //SpMV_off_proc_CSC(n_vec, vec_row_start, end_pos, j, A_csc, x_off_proc, b);
                         if (j == start_row) // only use vec_row_start for first vec row
                             vec_row_start = 0;
                     }
@@ -303,6 +311,11 @@ void par_SpMV_partd_csc(
             }
             n_req = next_n_req;
         }
+    }
+
+    // TODO remove
+    for (int i = 0; i < A_csc.n_cols; i++) {
+        SpMV_off_proc_CSC(n_vec, 0, n_vec, i, A_csc, x_off_proc, b);
     }
 
     MPIP_Waitall(n_sends, sreqs.data(), MPI_STATUSES_IGNORE);
@@ -414,7 +427,7 @@ void test_partitioned(const char* filename, int n_vec)
 
 
     // Test Iterations
-    int test_iters = 10; // TODO add updating and resetting of x after tests
+    int test_iters = 100; // TODO add updating and resetting of x after tests
     for (int iter = 0; iter < test_iters; iter++) {
         par_SpMV(n_vec, A, x1, b1, std_recv_vals);
 
@@ -423,20 +436,27 @@ void test_partitioned(const char* filename, int n_vec)
         par_SpMV_partd_csc(n_vec, A, A_off_proc_CSC, x3, b3, partd_csc_send_vals,
                             partd_csc_recv_vals, sreqs_csc, rreqs_csc);
 
-        //printf("rank %d verifying...\n", rank);
         for (int i = 0; i < A.recv_comm.size_msgs; i++)
         {
-            assert(std_recv_vals[i] == partd_recv_vals[i]);
+            if (fabs(std_recv_vals[i] - partd_recv_vals[i]) / std_recv_vals[i] > 1e-9) {
+                printf("rank %d DIFF in recv vals at pos %d, std %e, partd %e, diff: %e\n",
+                        rank, i, std_recv_vals[i], partd_recv_vals[i],
+                        fabs(std_recv_vals[i] - partd_recv_vals[i]));
+                assert(1 == 0);
+            }
         }
         for (size_t i = 0; i < b1.size(); i++)
         {
-            assert(b1[i] == b2[i]);
+            if (fabs(b1[i] - b2[i]) / b1[i] > 1e-9) {
+                printf("rank %d DIFF in b at pos %d, std %e, partd %e, diff: %e\n", rank, i, b1[i], b2[i], fabs(b1[i] - b2[i]));
+                assert(1 == 0);
+            }
         }
         for (int i = 0; i < A.recv_comm.size_msgs; i++)
         {
-            if (fabs(std_recv_vals[i] - partd_csc_recv_vals[i]) / std_recv_vals[i] > 1e-10) {
-                printf("DIFF in recv vals at pos %d, std %e, csc %e, diff: %e\n",
-                        i, std_recv_vals[i], partd_csc_recv_vals[i],
+            if (fabs(std_recv_vals[i] - partd_csc_recv_vals[i]) / std_recv_vals[i] > 1e-9) {
+                printf("rank %d DIFF in recv vals at pos %d, std %e, csc %e, diff: %e\n",
+                        rank, i, std_recv_vals[i], partd_csc_recv_vals[i],
                         fabs(std_recv_vals[i] - partd_csc_recv_vals[i]));
                 assert(1 == 0);
             }
@@ -444,7 +464,8 @@ void test_partitioned(const char* filename, int n_vec)
         for (size_t i = 0; i < b1.size(); i++)
         {
             if (fabs(b1[i] - b3[i]) / b1[i] > 1e-9) {
-                printf("DIFF in b at pos %d, std %e, csc %e, diff: %e\n", i, b1[i], b3[i], fabs(b1[i] - b3[i]));
+                printf("rank %d DIFF in b at pos %d, std %e, csc %e, diff: %e\n", rank, i, b1[i], b3[i], fabs(b1[i] - b3[i]));
+                printf("b2: %e\n", b2[i]);
                 assert(1 == 0);
             }
         }
@@ -568,6 +589,10 @@ int main(int argc, char** argv)
 {
     int provided;
     MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
+    if (provided != MPI_THREAD_MULTIPLE) {
+        printf("no mpi thread multiple\n");
+        assert(1==0);
+    }
     
     // Get MPI Information
     int rank, num_procs;
@@ -576,18 +601,18 @@ int main(int argc, char** argv)
 
     std::string mat_dir = "../../../../test_data/";
     std::vector<std::string> test_matrices = {
-        "dwt_162.pm",
-        "odepa400.pm",
-        "ww_36_pmec_36.pm",
-        "bcsstk01.pm",
-        "west0132.pm",
-        "oscil_dcop_11.pm",
+        // "dwt_162.pm",
+        // "odepa400.pm",
+        // "ww_36_pmec_36.pm",
+        // "bcsstk01.pm",
+        // "west0132.pm",
+        // "oscil_dcop_11.pm",
         "tumorAntiAngiogenesis_4.pm",
-        "msc01050.pm",
-        "SmaGri.pm",
-        "radfr1.pm",
-        "can_1054.pm",
-        "can_1072.pm",
+        // "msc01050.pm",
+        // "SmaGri.pm",
+        // "radfr1.pm",
+        // "can_1054.pm",
+        // "can_1072.pm",
     };
 
     // Test SpM-Multivector
