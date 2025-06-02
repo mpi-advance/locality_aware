@@ -153,7 +153,7 @@ void SpMV_off_proc_CSC( // single column
         data = A.data[i];
         row_idx = A.col_idx[i]; // col_idx is Row idx for CSC
         for (int vec = vec_row_start; vec < vec_row_end; vec++) {
-            //#pragma omp critical // TODO this makes the operation serial without considering which element of b is being accessed?
+            #pragma omp atomic // TODO this makes the operation serial without considering which element of b is being accessed?
             b[row_idx * n_vec + vec] += data * x[col * n_vec + vec];
         }
     }
@@ -208,15 +208,22 @@ void par_SpMV_partd(
         }
 
         // Receive
+        //#pragma omp barrier
+
         #pragma omp master
         {
-            MPIP_Waitall(n_recvs, rreqs.data(), MPI_STATUSES_IGNORE);
+            if (n_recvs) {
+                MPIP_Waitall(n_recvs, rreqs.data(), MPI_STATUSES_IGNORE);
+            }
         }
         #pragma omp barrier
 
         // Non-local compute
+    //#pragma omp parallel
+    //{
         SpMV_threaded(A.off_proc, x_off_proc, b, 1, n_vec);
-    }
+    //}
+    } // implicit barrier
 
     MPIP_Waitall(n_sends, sreqs.data(), MPI_STATUSES_IGNORE);
 }
@@ -232,12 +239,15 @@ void par_SpMV_partd_csc(
     std::vector<MPIP_Request>& sreqs,
     std::vector<MPIP_Request>& rreqs
 ) {
+    int rank; // TODO
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     int n_sends = A.send_comm.n_msgs;
     int n_recvs = A.recv_comm.n_msgs;
 
     MPIP_Startall(n_sends, sreqs.data());
     MPIP_Startall(n_recvs, rreqs.data());
 
+    int elems_done = 0;
     int n_threads = omp_get_max_threads();
     #pragma omp parallel num_threads(n_threads) // TODO possibly move outside iterations
     {
@@ -250,8 +260,6 @@ void par_SpMV_partd_csc(
                         send_buff, sreqs);
 
         // Receive and early compute
-        int rank; // TODO
-        MPI_Comm_rank(MPI_COMM_WORLD, &rank);
         int n_req = n_recvs;
         int next_n_req = 0;
         int flag;
@@ -301,10 +309,15 @@ void par_SpMV_partd_csc(
                         if (j == end_row - 1) // only use vec_row_end for last vec row
                             end_pos = vec_row_end;
                         //printf("rank %d %d j: %d, vec_start %d, vec_end: %d\n", rank, part, j, vec_row_start, end_pos);
-                        //SpMV_off_proc_CSC(n_vec, vec_row_start, end_pos, j, A_csc, x_off_proc, b);
+                        // #pragma omp critical
+                        // {
+                        SpMV_off_proc_CSC(n_vec, vec_row_start, end_pos, j, A_csc, x_off_proc, b);
+                        // }
                         if (j == start_row) // only use vec_row_start for first vec row
                             vec_row_start = 0;
                     }
+                    #pragma omp atomic
+                    elems_done += part_size;
                 } else {
                     req_idxs[next_n_req++] = req_idx;
                 }
@@ -313,10 +326,16 @@ void par_SpMV_partd_csc(
         }
     }
 
-    // TODO remove
-    for (int i = 0; i < A_csc.n_cols; i++) {
-        SpMV_off_proc_CSC(n_vec, 0, n_vec, i, A_csc, x_off_proc, b);
+    // TODO remove. Checking no missed elements
+    if (elems_done != A_csc.n_cols * n_vec) {
+        printf("rank %d missed elems: %d. %d/%d\n", rank, A_csc.n_cols * n_vec - elems_done, elems_done, A_csc.n_cols * n_vec);
+        assert(1==0);
     }
+
+    // // TODO remove
+    // for (int i = 0; i < A_csc.n_cols; i++) {
+    //     SpMV_off_proc_CSC(n_vec, 0, n_vec, i, A_csc, x_off_proc, b);
+    // }
 
     MPIP_Waitall(n_sends, sreqs.data(), MPI_STATUSES_IGNORE);
     MPIP_Waitall(n_recvs, rreqs.data(), MPI_STATUSES_IGNORE); // TODO try deleting
@@ -427,7 +446,7 @@ void test_partitioned(const char* filename, int n_vec)
 
 
     // Test Iterations
-    int test_iters = 100; // TODO add updating and resetting of x after tests
+    int test_iters = 10; // TODO add updating and resetting of x after tests
     for (int iter = 0; iter < test_iters; iter++) {
         par_SpMV(n_vec, A, x1, b1, std_recv_vals);
 
@@ -601,18 +620,18 @@ int main(int argc, char** argv)
 
     std::string mat_dir = "../../../../test_data/";
     std::vector<std::string> test_matrices = {
-        // "dwt_162.pm",
-        // "odepa400.pm",
-        // "ww_36_pmec_36.pm",
-        // "bcsstk01.pm",
-        // "west0132.pm",
-        // "oscil_dcop_11.pm",
+        "dwt_162.pm",
+        "odepa400.pm",
+        "ww_36_pmec_36.pm",
+        "bcsstk01.pm",
+        "west0132.pm",
+        "oscil_dcop_11.pm",
         "tumorAntiAngiogenesis_4.pm",
-        // "msc01050.pm",
-        // "SmaGri.pm",
-        // "radfr1.pm",
-        // "can_1054.pm",
-        // "can_1072.pm",
+        "msc01050.pm",
+        "SmaGri.pm",
+        "radfr1.pm",
+        "can_1054.pm",
+        "can_1072.pm",
     };
 
     // Test SpM-Multivector
