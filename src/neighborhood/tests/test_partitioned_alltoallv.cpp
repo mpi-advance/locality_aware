@@ -208,21 +208,14 @@ void par_SpMV_partd(
         }
 
         // Receive
-        //#pragma omp barrier
-
         #pragma omp master
         {
-            if (n_recvs) {
-                MPIP_Waitall(n_recvs, rreqs.data(), MPI_STATUSES_IGNORE);
-            }
+            MPIP_Waitall(n_recvs, rreqs.data(), MPI_STATUSES_IGNORE);
         }
         #pragma omp barrier
 
         // Non-local compute
-    //#pragma omp parallel
-    //{
         SpMV_threaded(A.off_proc, x_off_proc, b, 1, n_vec);
-    //}
     } // implicit barrier
 
     MPIP_Waitall(n_sends, sreqs.data(), MPI_STATUSES_IGNORE);
@@ -239,7 +232,7 @@ void par_SpMV_partd_csc(
     std::vector<MPIP_Request>& sreqs,
     std::vector<MPIP_Request>& rreqs
 ) {
-    int rank; // TODO
+    int rank; // TODO remove
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     int n_sends = A.send_comm.n_msgs;
     int n_recvs = A.recv_comm.n_msgs;
@@ -247,7 +240,7 @@ void par_SpMV_partd_csc(
     MPIP_Startall(n_sends, sreqs.data());
     MPIP_Startall(n_recvs, rreqs.data());
 
-    int elems_done = 0;
+    // int elems_done = 0;
     int n_threads = omp_get_max_threads();
     #pragma omp parallel num_threads(n_threads) // TODO possibly move outside iterations
     {
@@ -316,8 +309,8 @@ void par_SpMV_partd_csc(
                         if (j == start_row) // only use vec_row_start for first vec row
                             vec_row_start = 0;
                     }
-                    #pragma omp atomic
-                    elems_done += part_size;
+                    // #pragma omp atomic
+                    // elems_done += part_size;
                 } else {
                     req_idxs[next_n_req++] = req_idx;
                 }
@@ -327,10 +320,10 @@ void par_SpMV_partd_csc(
     }
 
     // TODO remove. Checking no missed elements
-    if (elems_done != A_csc.n_cols * n_vec) {
-        printf("rank %d missed elems: %d. %d/%d\n", rank, A_csc.n_cols * n_vec - elems_done, elems_done, A_csc.n_cols * n_vec);
-        assert(1==0);
-    }
+    // if (elems_done != A_csc.n_cols * n_vec) {
+    //     printf("rank %d missed elems: %d. %d/%d\n", rank, A_csc.n_cols * n_vec - elems_done, elems_done, A_csc.n_cols * n_vec);
+    //     assert(1==0);
+    // }
 
     // // TODO remove
     // for (int i = 0; i < A_csc.n_cols; i++) {
