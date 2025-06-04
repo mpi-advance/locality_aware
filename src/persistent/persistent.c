@@ -277,13 +277,20 @@ int rma_start(MPIX_Request* request)
     int rank;
 
     MPI_Comm_rank(request->xcomm->global_comm, &rank);  // Get the rank of the process
-
+    
+    char* send_buffer = (char*)(request->sendbuf);
+    char* recv_buffer = (char*)(request->recvbuf);
         // printf("Process %d entering rma_start\n", rank);
 
-    MPI_Barrier(request->xcomm->global_comm);  // synchronized before proceeding.
+    //MPI_Barrier(request->xcomm->global_comm);  // synchronized before proceeding.
 
-       //
-        printf("Process %d leaving rma_start\n", rank);  
+    MPI_Win_fence(MPI_MODE_NOSTORE|MPI_MODE_NOPRECEDE, request->xcomm->win);
+    for (int i = 0; i < request->n_puts; i++)
+    {
+         MPI_Put(&(send_buffer[request->sdispls[i]]), request->send_sizes[i], MPI_CHAR,
+                 i, request->put_displs[i], request->recv_sizes[i], MPI_CHAR, request->xcomm->win);
+    }   
+        //printf("Process %d leaving rma_start\n", rank);  
 
     return MPI_SUCCESS;
 }
@@ -291,17 +298,11 @@ int rma_start(MPIX_Request* request)
 
 int rma_wait(MPIX_Request* request, MPI_Status* status)
 {
-    char* send_buffer = (char*)(request->sendbuf);
-    char* recv_buffer = (char*)(request->recvbuf);
+    
 
- MPI_Barrier(request->xcomm->global_comm); //synchronizing
+ //MPI_Barrier(request->xcomm->global_comm); //synchronizing
 
-    MPI_Win_fence(MPI_MODE_NOSTORE|MPI_MODE_NOPRECEDE, request->xcomm->win);
-    for (int i = 0; i < request->n_puts; i++)
-    {
-         MPI_Put(&(send_buffer[request->sdispls[i]]), request->send_sizes[i], MPI_CHAR,
-                 i, request->put_displs[i], request->recv_sizes[i], MPI_CHAR, request->xcomm->win);
-    }
+   
     MPI_Win_fence(MPI_MODE_NOPUT|MPI_MODE_NOSUCCEED, request->xcomm->win);
 
     // Instead of fence:
@@ -315,17 +316,75 @@ int rma_wait(MPIX_Request* request, MPI_Status* status)
     // - could get rid of initial fence with a flush algorithm as well
 
 
-MPI_Barrier(request->xcomm->global_comm);   //more synchronization
+//MPI_Barrier(request->xcomm->global_comm);   //more synchronization
 
 
     // Need to memcpy because win_array is created with window
     // TODO : could explore just attaching recv_buffer to existing dynamic window 
     //        with persistent collectives
-    memcpy(recv_buffer, request->xcomm->win_array, request->recv_size);
+    //memcpy(recv_buffer, request->xcomm->win_array, request->recv_size);
 
     return MPI_SUCCESS;
 }
 
+
+int rma_lock_start(MPIX_Request* request)
+{
+    int rank;
+
+    MPI_Comm_rank(request->xcomm->global_comm, &rank);  // Get the rank of the process
+
+    char* send_buffer = (char*)(request->sendbuf);
+    char* recv_buffer = (char*)(request->recvbuf); 
+    
+       // Lock the window for all processes
+    MPI_Win_lock_all(0, request->xcomm->win);
+    //local window-> each acceses the target exclusively
+
+        
+    int request_count = 0;
+
+    //  non-blocking MPI_Rput 
+    for (int i = 0; i < request->n_puts; i++) {
+        if (request->send_sizes[i] > 0) {
+            MPI_Rput(&request->sendbuf[request->sdispls[i]],
+                request->send_sizes[i], 
+                MPI_CHAR,
+                i,
+                request->put_displs[i], 
+                request->send_sizes[i],
+                MPI_CHAR,
+                request->xcomm->win,
+                &(request->global_requests[request_count++]));
+        }
+    }
+
+    // Waiting for all non-blocking operations to complete 
+    //MPI_Waitall(request_count, requests, MPI_STATUSES_IGNORE);
+        
+    
+    return MPI_SUCCESS;
+}
+
+
+   
+int rma_lock_wait(MPIX_Request* request, MPI_Status* status)
+{
+    
+    MPI_Win_flush_all(request->xcomm->win);
+
+   
+    
+    MPI_Win_unlock_all(request->xcomm->win);
+
+        
+    MPI_Barrier(request->xcomm->global_comm);
+
+    
+    //memcpy(recv_buffer, request->xcomm->win_array, request->recv_size);
+
+    return MPI_SUCCESS;
+}
 
 
   

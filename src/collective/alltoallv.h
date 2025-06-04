@@ -87,6 +87,31 @@ int alltoallv_rma_winfence(const void* sendbuf,
         MPI_Datatype recvtype,
         MPIX_Comm* xcomm);
 
+int alltoallv_rma_winfence_init(const void* sendbuf,
+                const int sendcounts[],
+                const int sdispls[],
+                MPI_Datatype sendtype,
+                void* recvbuf,
+                const int recvcounts[],
+                const int rdispls[],
+                MPI_Datatype recvtype,
+                MPIX_Comm* xcomm,
+                MPIX_Info* xinfo,
+                MPIX_Request** request_ptr);
+
+int alltoallv_rma_lock_init(const void* sendbuf,
+                        const int sendcounts[],
+                        const int sdispls[],
+                        MPI_Datatype sendtype,
+                        void* recvbuf,
+                        const int recvcounts[],
+                        const int rdispls[],
+                        MPI_Datatype recvtype,
+                        MPIX_Comm* xcomm,
+                        MPIX_Info* xinfo,
+                        MPIX_Request** request_ptr);
+                  
+
 int alltoallv_rma_winlock(const void* sendbuf,
         const int sendcounts[],
         const int sdispls[],

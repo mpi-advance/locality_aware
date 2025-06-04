@@ -54,6 +54,9 @@ int batch_start(MPIX_Request* request);
 int batch_wait(MPIX_Request* request, MPI_Status* status);
 int rma_start(MPIX_Request* request);
 int rma_wait(MPIX_Request* request, MPI_Status* status);
+int rma_lock_start(MPIX_Request* request);
+int rma_lock_wait(MPIX_Request* request, MPI_Status* status);
+
 
 
 int MPIX_Request_init(MPIX_Request** request);
