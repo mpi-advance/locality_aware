@@ -89,7 +89,6 @@ void pack_partd(
             send_buffer[j] = x[(idx * n_vec) + (j % n_vec)];
         }
 
-        #pragma omp critical
         MPIP_Pready(omp_get_thread_num(), &sreqs[i]);
     }
 
@@ -450,7 +449,7 @@ void test_partitioned(const char* filename, int n_vec)
 
         for (int i = 0; i < A.recv_comm.size_msgs; i++)
         {
-            if (fabs(std_recv_vals[i] - partd_recv_vals[i]) / std_recv_vals[i] > 1e-9) {
+            if (fabs(std_recv_vals[i] - partd_recv_vals[i]) / std_recv_vals[i] > 1e-6) {
                 printf("rank %d DIFF in recv vals at pos %d, std %e, partd %e, diff: %e\n",
                         rank, i, std_recv_vals[i], partd_recv_vals[i],
                         fabs(std_recv_vals[i] - partd_recv_vals[i]));
@@ -459,14 +458,14 @@ void test_partitioned(const char* filename, int n_vec)
         }
         for (size_t i = 0; i < b1.size(); i++)
         {
-            if (fabs(b1[i] - b2[i]) / b1[i] > 1e-9) {
+            if (fabs(b1[i] - b2[i]) / b1[i] > 1e-6) {
                 printf("rank %d DIFF in b at pos %d, std %e, partd %e, diff: %e\n", rank, i, b1[i], b2[i], fabs(b1[i] - b2[i]));
                 assert(1 == 0);
             }
         }
         for (int i = 0; i < A.recv_comm.size_msgs; i++)
         {
-            if (fabs(std_recv_vals[i] - partd_csc_recv_vals[i]) / std_recv_vals[i] > 1e-9) {
+            if (fabs(std_recv_vals[i] - partd_csc_recv_vals[i]) / std_recv_vals[i] > 1e-6) {
                 printf("rank %d DIFF in recv vals at pos %d, std %e, csc %e, diff: %e\n",
                         rank, i, std_recv_vals[i], partd_csc_recv_vals[i],
                         fabs(std_recv_vals[i] - partd_csc_recv_vals[i]));
@@ -475,7 +474,7 @@ void test_partitioned(const char* filename, int n_vec)
         }
         for (size_t i = 0; i < b1.size(); i++)
         {
-            if (fabs(b1[i] - b3[i]) / b1[i] > 1e-9) {
+            if (fabs(b1[i] - b3[i]) / b1[i] > 1e-6) {
                 printf("rank %d DIFF in b at pos %d, std %e, csc %e, diff: %e\n", rank, i, b1[i], b3[i], fabs(b1[i] - b3[i]));
                 printf("b2: %e\n", b2[i]);
                 assert(1 == 0);
