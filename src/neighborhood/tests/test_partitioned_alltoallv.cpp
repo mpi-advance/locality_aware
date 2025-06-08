@@ -110,24 +110,16 @@ void SpMV_threaded(
     Mat& A,
     std::vector<double>& x,
     std::vector<double>& b,
-    int beta,
+    double beta,
     int n_vec
 ) {
-    int start, end;
-    int data, col_idx;
-
-    #pragma omp for private(start, end, data, col_idx)
+    #pragma omp for
     for (int i = 0; i < A.n_rows; i++)
     {
-        start = A.rowptr[i];
-        end = A.rowptr[i+1];
-        for (int j = start; j < end; j  ++)
+        for (int j = A.rowptr[i]; j < A.rowptr[i+1]; j++)
         {
-            data = A.data[j];
-            col_idx = A.col_idx[j];
             for (int vec = 0; vec < n_vec; vec++) {
-                b[i * n_vec + vec] = (data * x[col_idx * n_vec + vec]) + \
-                                        (beta * b[i * n_vec + vec]);
+                b[i * n_vec + vec] = (A.data[j] * x[A.col_idx[j] * n_vec + vec]) + (beta * b[i * n_vec + vec]);
             }
         }
     }
@@ -142,18 +134,12 @@ void SpMV_off_proc_CSC( // single column
     std::vector<double>& x,
     std::vector<double>& b
 ) {
-    int start, end;
-    int data, row_idx;
-
-    start = A.rowptr[col]; // rowptr is Column ptr for CSC
-    end = A.rowptr[col+1];
-    for (int i = start; i < end; i++)
+    for (int i = A.rowptr[col]; i < A.rowptr[col+1]; i++)// rowptr is Column ptr for CSC
     {
-        data = A.data[i];
-        row_idx = A.col_idx[i]; // col_idx is Row idx for CSC
         for (int vec = vec_row_start; vec < vec_row_end; vec++) {
-            #pragma omp atomic // TODO this makes the operation serial without considering which element of b is being accessed?
-            b[row_idx * n_vec + vec] += data * x[col * n_vec + vec];
+            // col_idx is Row idx for CSC
+            #pragma omp atomic
+            b[A.col_idx[i]  * n_vec + vec] += A.data[i] * x[col * n_vec + vec];
         }
     }
 }
@@ -239,7 +225,10 @@ void par_SpMV_partd_csc(
     MPIP_Startall(n_sends, sreqs.data());
     MPIP_Startall(n_recvs, rreqs.data());
 
-    // int elems_done = 0;
+    int elems_done[A_csc.n_cols * n_vec];
+    for (int i = 0; i < A_csc.n_cols * n_vec; i++) {
+        elems_done[i] = 0;
+    }
     int n_threads = omp_get_max_threads();
     #pragma omp parallel num_threads(n_threads) // TODO possibly move outside iterations
     {
@@ -304,12 +293,17 @@ void par_SpMV_partd_csc(
                         // #pragma omp critical
                         // {
                         SpMV_off_proc_CSC(n_vec, vec_row_start, end_pos, j, A_csc, x_off_proc, b);
+                        for (int k = vec_row_start; k < end_pos; k++) {
+                            //if (j*n_vec + k > b.size()) {
+                            //    printf("ncols*nvec %d, bsize %d, xsize %d\n", A_csc.n_cols * n_vec, b.size(), x.size());
+                            //    assert(1==0);
+                            //}
+                            elems_done[j*n_vec + k]++;
+                        }
                         // }
                         if (j == start_row) // only use vec_row_start for first vec row
                             vec_row_start = 0;
                     }
-                    // #pragma omp atomic
-                    // elems_done += part_size;
                 } else {
                     req_idxs[next_n_req++] = req_idx;
                 }
@@ -319,12 +313,15 @@ void par_SpMV_partd_csc(
     }
 
     // TODO remove. Checking no missed elements
-    // if (elems_done != A_csc.n_cols * n_vec) {
-    //     printf("rank %d missed elems: %d. %d/%d\n", rank, A_csc.n_cols * n_vec - elems_done, elems_done, A_csc.n_cols * n_vec);
-    //     assert(1==0);
-    // }
+    for (int i = 0; i < A_csc.n_cols * n_vec; i++) {
+        if (elems_done[i] != 1) {
+            printf("rank %d elems_done val %d\n", rank, elems_done[i]);
+            printf("rank %d missed elem: %d/%d\n", rank, i, A_csc.n_cols*n_vec);
+            assert(1==0);
+        }
+    }
 
-    // // TODO remove
+    // TODO remove
     // for (int i = 0; i < A_csc.n_cols; i++) {
     //     SpMV_off_proc_CSC(n_vec, 0, n_vec, i, A_csc, x_off_proc, b);
     // }
@@ -612,13 +609,13 @@ int main(int argc, char** argv)
 
     std::string mat_dir = "../../../../test_data/";
     std::vector<std::string> test_matrices = {
+        "tumorAntiAngiogenesis_4.pm",
         "dwt_162.pm",
         "odepa400.pm",
         "ww_36_pmec_36.pm",
         "bcsstk01.pm",
         "west0132.pm",
         "oscil_dcop_11.pm",
-        "tumorAntiAngiogenesis_4.pm",
         "msc01050.pm",
         "SmaGri.pm",
         "radfr1.pm",
