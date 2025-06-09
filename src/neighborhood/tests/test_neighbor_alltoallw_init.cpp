@@ -1,11 +1,3 @@
-// EXPECT_EQ and ASSERT_EQ are macros
-// EXPECT_EQ test execution and continues even if there is a failure
-// ASSERT_EQ test execution and aborts if there is a failure
-// The ASSERT_* variants abort the program execution if an assertion fails
-// while EXPECT_* variants continue with the run.
-
-
-#include "gtest/gtest.h"
 #include "mpi_advance.h"
 #include <mpi.h>
 #include <math.h>
@@ -18,19 +10,24 @@
 #include "neighbor_data.hpp"
 
 
+void compare_neighbor_alltoallw_results(std::vector<int>& pmpi_recv_vals, std::vector<int>& mpix_recv_vals, int s)
+{
+    for (int i = 0; i < s; i++)
+    {
+        if (pmpi_recv_vals[i] != mpix_recv_vals[i])
+        {
+            fprintf(stderr, "PMPI recv != MPIX: position %d, pmpi %d, mpix %d\n", i, 
+                    pmpi_recv_vals[i], mpix_recv_vals[i]);
+            MPI_Abort(MPI_COMM_WORLD, -1);
+        }
+    }
+}
+
 int main(int argc, char** argv)
 {
     MPI_Init(&argc, &argv);
-    ::testing::InitGoogleTest(&argc, argv);
-    int temp=RUN_ALL_TESTS();
-    MPI_Finalize();
-    return temp;
-} // end of main() //
 
-
-TEST(RandomCommTest, TestsInTests)
-{
-    // Get MPI Information
+ // Get MPI Information
     int rank, num_procs;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
@@ -47,30 +44,39 @@ TEST(RandomCommTest, TestsInTests)
         recv_data.indptr[i+1] *= int_size;
 
     // Test correctness of communication
-    std::vector<int> std_recv_vals(recv_data.size_msgs);
-    std::vector<int> new_recv_vals(recv_data.size_msgs);
     std::vector<int> send_vals(local_size);
     int val = local_size*rank;
     for (int i = 0; i < local_size; i++)
     {
         send_vals[i] = val++;
     }
-
     std::vector<int> alltoallv_send_vals(send_data.size_msgs);
     for (int i = 0; i < send_data.size_msgs; i++)
         alltoallv_send_vals[i] = send_vals[send_data.indices[i]];
+    
+    // Required to be non-NULL for some version of MPI
+    int* send_counts = send_data.counts.data();
+    if (send_data.counts.data() == NULL)
+        send_counts = new int[1];
+    int* recv_counts = recv_data.counts.data();
+    if (recv_data.counts.data() == NULL)
+        recv_counts = new int[1];
+
+
+    std::vector<int> pmpi_recv_vals(recv_data.size_msgs);
+    std::vector<int> mpix_recv_vals(recv_data.size_msgs);
+
 
     MPI_Comm std_comm;
     MPI_Status status;
-    MPIX_Comm* neighbor_comm;
-    MPIX_Request* neighbor_request;
+    MPIX_Comm* xcomm;
+    MPIX_Request* xrequest;
     MPIX_Info* xinfo;
     std::vector<MPI_Datatype> sendtypes(num_procs, MPI_INT);
     std::vector<MPI_Datatype> recvtypes(num_procs, MPI_INT);
 
-    MPIX_Info_init(&xinfo);
 
-    MPI_Dist_graph_create_adjacent(MPI_COMM_WORLD,
+    PMPI_Dist_graph_create_adjacent(MPI_COMM_WORLD,
             recv_data.num_msgs, 
             recv_data.procs.data(), 
             recv_data.counts.data(),
@@ -81,28 +87,15 @@ TEST(RandomCommTest, TestsInTests)
             0, 
             &std_comm);
 
-
-    int* send_counts = send_data.counts.data();
-    if (send_data.counts.data() == NULL)
-        send_counts = new int[1];
-    int* recv_counts = recv_data.counts.data();
-    if (recv_data.counts.data() == NULL)
-        recv_counts = new int[1];
-
     MPI_Neighbor_alltoallw(alltoallv_send_vals.data(), 
             send_counts,
             send_data.indptr.data(), 
             sendtypes.data(),
-            std_recv_vals.data(), 
+            pmpi_recv_vals.data(), 
             recv_counts,
             recv_data.indptr.data(), 
             recvtypes.data(),
             std_comm);
-
-    if (send_data.counts.data() == NULL)
-        delete[] send_counts;
-    if (recv_data.counts.data() == NULL)
-        delete[] recv_counts;
 
 
     // 2. Node-Aware Communication
@@ -115,33 +108,42 @@ TEST(RandomCommTest, TestsInTests)
             send_data.counts.data(),
             MPI_INFO_NULL, 
             0, 
-            &neighbor_comm);
-    update_locality(neighbor_comm, 4);
+            &xcomm);
+
+    MPIX_Info_init(&xinfo);
     MPIX_Neighbor_alltoallw_init(alltoallv_send_vals.data(), 
             send_data.counts.data(),
             send_data.indptr.data(), 
             sendtypes.data(),
-            new_recv_vals.data(), 
+            mpix_recv_vals.data(), 
             recv_data.counts.data(),
             recv_data.indptr.data(), 
             recvtypes.data(),
-            neighbor_comm, 
+            xcomm, 
             xinfo,
-            &neighbor_request);
+            &xrequest);
 
-    MPIX_Start(neighbor_request);
-    MPIX_Wait(neighbor_request, &status);
+    MPIX_Start(xrequest);
+    MPIX_Wait(xrequest, &status);
+    compare_neighbor_alltoallw_results(pmpi_recv_vals, mpix_recv_vals, recv_data.size_msgs);
 
-    // 3. Compare std_recv_vals and nap_recv_vals
-    for (int i = 0; i < recv_data.size_msgs; i++)
-    {
-        ASSERT_EQ(std_recv_vals[i], new_recv_vals[i]);
-    }
+    // Delete temp send/recv counts variables
+    // That were needed because some versions of 
+    // MPI require non-NULL counts array
+    if (send_data.counts.data() == NULL)
+        delete[] send_counts;
+    if (recv_data.counts.data() == NULL)
+        delete[] recv_counts;
+
 
     MPIX_Info_free(&xinfo);
-    MPIX_Request_free(&neighbor_request);
-    MPIX_Comm_free(&neighbor_comm);
+    MPIX_Request_free(&xrequest);
+    MPIX_Comm_free(&xcomm);
     MPI_Comm_free(&std_comm);
 
-}
+
+    MPI_Finalize();
+    return 0;
+} // end of main() //
+
 

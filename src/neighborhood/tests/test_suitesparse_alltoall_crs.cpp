@@ -1,11 +1,3 @@
-// EXPECT_EQ and ASSERT_EQ are macros
-// EXPECT_EQ test execution and continues even if there is a failure
-// ASSERT_EQ test execution and aborts if there is a failure
-// The ASSERT_* variants abort the program execution if an assertion fails
-// while EXPECT_* variants continue with the run.
-
-
-#include "gtest/gtest.h"
 #include "mpi_advance.h"
 #include <mpi.h>
 #include <math.h>
@@ -18,6 +10,25 @@
 
 #include "tests/sparse_mat.hpp"
 #include "tests/par_binary_IO.hpp"
+
+void compare_alltoall_crs_results(int n_recvs, int send_msgs, int* recvvals, int* src, 
+        std::vector<int>& proc_counts)
+{
+    if (n_recvs != send_msgs)
+    {
+        fprintf(stderr, "NRecvs incorrect (%d), should be %d\n", n_recvs, send_msgs);
+        MPI_Abort(MPI_COMM_WORLD, -1);
+    }
+    for (int i = 0; i < n_recvs; i++)
+    {
+        if (recvvals[i] != proc_counts[src[i]])
+        {
+            fprintf(stderr, "RecvVals incorrect: position %d from %d, recvvals %d, should be %d\n", 
+                    i, src[i], recvvals[i], proc_counts[src[i]]);
+            MPI_Abort(MPI_COMM_WORLD, -1);
+        }
+    }
+}
 
 void test_matrix(const char* filename)
 {
@@ -45,9 +56,6 @@ void test_matrix(const char* filename)
         proc_counts[A.send_comm.procs[i]] = A.send_comm.counts[i];
 
     int n_recvs;
-//    std::vector<int> src(A.send_comm.n_msgs+1);
-//    std::vector<int> recvvals(A.send_comm.n_msgs+1);
-
     int* src;
     int* recvvals;
 
@@ -56,9 +64,7 @@ void test_matrix(const char* filename)
     alltoall_crs_rma(A.recv_comm.n_msgs, A.recv_comm.procs.data(), 1, MPI_INT, 
             A.recv_comm.counts.data(), &n_recvs, &src, 1, MPI_INT,
             (void**)&recvvals, xinfo, xcomm);
-    ASSERT_EQ(n_recvs, A.send_comm.n_msgs);
-    for (int i = 0; i < n_recvs; i++)
-        ASSERT_EQ(recvvals[i], proc_counts[src[i]]);
+    compare_alltoall_crs_results(n_recvs, A.send_comm.n_msgs, recvvals, src, proc_counts);
     MPIX_Free(src);
     MPIX_Free(recvvals);
 
@@ -68,9 +74,7 @@ void test_matrix(const char* filename)
     alltoall_crs_personalized(A.recv_comm.n_msgs, A.recv_comm.procs.data(), 1, MPI_INT,
             A.recv_comm.counts.data(), &n_recvs, &src, 1, MPI_INT,
             (void**)&recvvals, xinfo, xcomm);
-    ASSERT_EQ(n_recvs, A.send_comm.n_msgs);
-    for (int i = 0; i < n_recvs; i++)
-        ASSERT_EQ(recvvals[i], proc_counts[src[i]]);
+    compare_alltoall_crs_results(n_recvs, A.send_comm.n_msgs, recvvals, src, proc_counts);
     MPIX_Free(src);
     MPIX_Free(recvvals);
 
@@ -80,9 +84,7 @@ void test_matrix(const char* filename)
     alltoall_crs_personalized_loc(A.recv_comm.n_msgs, A.recv_comm.procs.data(), 1, MPI_INT,
             A.recv_comm.counts.data(), &n_recvs, &src, 1, MPI_INT,
             (void**)&recvvals, xinfo, xcomm);
-    ASSERT_EQ(n_recvs, A.send_comm.n_msgs);
-    for (int i = 0; i < n_recvs; i++)
-        ASSERT_EQ(recvvals[i], proc_counts[src[i]]);
+    compare_alltoall_crs_results(n_recvs, A.send_comm.n_msgs, recvvals, src, proc_counts);
     MPIX_Free(src);
     MPIX_Free(recvvals);
 
@@ -91,9 +93,7 @@ void test_matrix(const char* filename)
     alltoall_crs_nonblocking(A.recv_comm.n_msgs, A.recv_comm.procs.data(), 1, MPI_INT,
             A.recv_comm.counts.data(), &n_recvs, &src, 1, MPI_INT,
             (void**)&recvvals, xinfo, xcomm);
-    ASSERT_EQ(n_recvs, A.send_comm.n_msgs);
-    for (int i = 0; i < n_recvs; i++)
-        ASSERT_EQ(recvvals[i], proc_counts[src[i]]);
+    compare_alltoall_crs_results(n_recvs, A.send_comm.n_msgs, recvvals, src, proc_counts);
     MPIX_Free(src);
     MPIX_Free(recvvals);
 
@@ -102,9 +102,7 @@ void test_matrix(const char* filename)
     alltoall_crs_nonblocking_loc(A.recv_comm.n_msgs, A.recv_comm.procs.data(), 1, MPI_INT,
             A.recv_comm.counts.data(), &n_recvs, &src, 1, MPI_INT,
             (void**)&recvvals, xinfo, xcomm);
-    ASSERT_EQ(n_recvs, A.send_comm.n_msgs);
-    for (int i = 0; i < n_recvs; i++)
-        ASSERT_EQ(recvvals[i], proc_counts[src[i]]);
+    compare_alltoall_crs_results(n_recvs, A.send_comm.n_msgs, recvvals, src, proc_counts);
     MPIX_Free(src);
     MPIX_Free(recvvals);
 
@@ -116,20 +114,6 @@ void test_matrix(const char* filename)
 int main(int argc, char** argv)
 {
     MPI_Init(&argc, &argv);
-    ::testing::InitGoogleTest(&argc, argv);
-    int temp=RUN_ALL_TESTS();
-    MPI_Finalize();
-    return temp;
-} // end of main() //
-
-
-TEST(RandomCommTest, TestsInTests)
-{
-    // Get MPI Information
-    int rank, num_procs;
-    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-    MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
-
     test_matrix("../../../../test_data/dwt_162.pm");
     test_matrix("../../../../test_data/odepa400.pm");
     test_matrix("../../../../test_data/ww_36_pmec_36.pm");
@@ -149,5 +133,9 @@ TEST(RandomCommTest, TestsInTests)
     test_matrix("../../../../test_data/can_1072.pm");
     test_matrix("../../../../test_data/lp_woodw.pm");
     test_matrix("../../../../test_data/lp_sctap2.pm");
-}
+    MPI_Finalize();
+    return 0;
+} // end of main() //
+
+
 

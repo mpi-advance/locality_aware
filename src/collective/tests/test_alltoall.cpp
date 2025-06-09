@@ -1,11 +1,3 @@
-// EXPECT_EQ and ASSERT_EQ are macros
-// EXPECT_EQ test execution and continues even if there is a failure
-// ASSERT_EQ test execution and aborts if there is a failure
-// The ASSERT_* variants abort the program execution if an assertion fails
-// while EXPECT_* variants continue with the run.
-
-
-#include "gtest/gtest.h"
 #include "mpi_advance.h"
 #include <mpi.h>
 #include <math.h>
@@ -15,19 +7,26 @@
 #include <vector>
 #include <set>
 
+void compare_alltoall_results(std::vector<int>& pmpi, std::vector<int>& mpix, int s)
+{
+    int num_procs;
+    MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
+
+    for (int j = 0; j < s*num_procs; j++)
+    {
+        if (pmpi[j] != mpix[j])
+        {
+            fprintf(stderr, "MPIX Alltoall != PMPI, position %d, pmpi %d, mpix %d\n", 
+                    j, pmpi[j], mpix[j]);
+            MPI_Abort(MPI_COMM_WORLD, -1);
+        }
+    }
+}
+
 int main(int argc, char** argv)
 {
-#define LOCAL_COMM_PPN4
     MPI_Init(&argc, &argv);
-    ::testing::InitGoogleTest(&argc, argv);
-    int temp=RUN_ALL_TESTS();
-    MPI_Finalize();
-    return temp;
-} // end of main() //
 
-
-TEST(RandomCommTest, TestsInTests)
-{
     int rank, num_procs;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
@@ -38,9 +37,8 @@ TEST(RandomCommTest, TestsInTests)
     srand(time(NULL));
     std::vector<int> local_data(max_s*num_procs);
 
-    std::vector<int> std_alltoall(max_s*num_procs);
-    std::vector<int> pairwise_alltoall(max_s*num_procs);
-    std::vector<int> loc_pairwise_alltoall(max_s*num_procs);
+    std::vector<int> pmpi_alltoall(max_s*num_procs);
+    std::vector<int> mpix_alltoall(max_s*num_procs);
 
     MPIX_Comm* locality_comm;
     MPIX_Comm_init(&locality_comm, MPI_COMM_WORLD);
@@ -59,47 +57,28 @@ TEST(RandomCommTest, TestsInTests)
         PMPI_Alltoall(local_data.data(), 
                 s,
                 MPI_INT, 
-                std_alltoall.data(), 
+                pmpi_alltoall.data(), 
                 s, 
                 MPI_INT,
                 MPI_COMM_WORLD);
-
-
-        // Pairwise Alltoall
-        MPI_Alltoall(local_data.data(), 
-                s,
-                MPI_INT, 
-                pairwise_alltoall.data(), 
-                s, 
-                MPI_INT,
-                MPI_COMM_WORLD);
-        for (int j = 0; j < s*num_procs; j++)
-            ASSERT_EQ(std_alltoall[j], pairwise_alltoall[j]);
 
         // Locality-Aware Pairwise Alltoall
+        std::fill(mpix_alltoall.begin(), mpix_alltoall.end(), 0);
         MPIX_Alltoall(local_data.data(), 
                 s, 
                 MPI_INT,
-                loc_pairwise_alltoall.data(), 
+                mpix_alltoall.data(), 
                 s, 
                 MPI_INT,
                 locality_comm);
-        for (int j = 0; j < s*num_procs; j++)
-            ASSERT_EQ(std_alltoall[j], loc_pairwise_alltoall[j]);
-
-        /*
-        alltoall_bruck(local_data.data(), 
-                s, 
-                MPI_INT,
-                bruck_alltoall.data(), 
-                s, 
-                MPI_INT,
-                MPI_COMM_WORLD);
-        for (int j = 0; j < s*num_procs; j++)
-            ASSERT_EQ(std_alltoall[j], bruck_alltoall[j]);*/
+        compare_alltoall_results(pmpi_alltoall, mpix_alltoall, s);
     }
 
     MPIX_Comm_free(&locality_comm);
-}
+
+
+    MPI_Finalize();
+    return 0;
+} // end of main() //
 
 

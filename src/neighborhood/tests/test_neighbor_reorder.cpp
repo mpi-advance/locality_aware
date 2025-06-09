@@ -1,11 +1,3 @@
-// EXPECT_EQ and ASSERT_EQ are macros
-// EXPECT_EQ test execution and continues even if there is a failure
-// ASSERT_EQ test execution and aborts if there is a failure
-// The ASSERT_* variants abort the program execution if an assertion fails
-// while EXPECT_* variants continue with the run.
-
-
-#include "gtest/gtest.h"
 #include "mpi_advance.h"
 #include <mpi.h>
 #include <math.h>
@@ -17,18 +9,22 @@
 
 #include "neighbor_data.hpp"
 
+void compare_neighbor_alltoallv_results(std::vector<int>& pmpi_recv_vals, std::vector<int>& mpix_recv_vals, int s)
+{
+    for (int i = 0; i < s; i++)
+    {
+        if (pmpi_recv_vals[i] != mpix_recv_vals[i])
+        {
+            fprintf(stderr, "PMPI recv != MPIX: position %d, pmpi %d, mpix %d\n", i, 
+                    pmpi_recv_vals[i], mpix_recv_vals[i]);
+            MPI_Abort(MPI_COMM_WORLD, -1);
+        }
+    }
+}
+
 int main(int argc, char** argv)
 {
     MPI_Init(&argc, &argv);
-    ::testing::InitGoogleTest(&argc, argv);
-    int temp=RUN_ALL_TESTS();
-    MPI_Finalize();
-    return temp;
-} // end of main() //
-
-
-TEST(RandomCommTest, TestsInTests)
-{
     // Get MPI Information
     int rank, num_procs;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -44,10 +40,8 @@ TEST(RandomCommTest, TestsInTests)
     form_global_indices(local_size, send_data, recv_data, global_send_idx, global_recv_idx);
 
     // Test correctness of communication
-    std::vector<int> std_recv_vals(recv_data.size_msgs);
-    std::vector<int> persistent_recv_vals(recv_data.size_msgs);
-    std::vector<int> part_recv_vals(recv_data.size_msgs);
-    std::vector<int> loc_recv_vals(recv_data.size_msgs);
+    std::vector<int> mpix_recv_vals(recv_data.size_msgs);
+    std::vector<int> pmpi_recv_vals(recv_data.size_msgs);
 
     std::vector<int> send_vals(local_size);
     int val = local_size*rank;
@@ -62,8 +56,8 @@ TEST(RandomCommTest, TestsInTests)
 
     MPI_Comm std_comm;
     MPI_Status status;
-    MPIX_Comm* neighbor_comm;
-    MPIX_Request* neighbor_request;
+    MPIX_Comm* xcomm;
+    MPIX_Request* xrequest;
 
     MPIX_Info* xinfo;
     MPIX_Info_init(&xinfo);
@@ -90,10 +84,10 @@ TEST(RandomCommTest, TestsInTests)
             send_data.counts.data(),
             MPI_INFO_NULL, 
             0, 
-            &neighbor_comm);
+            &xcomm);
 
     // Update Locality : 4 PPN (for single-node tests)
-    update_locality(neighbor_comm, 4);
+    update_locality(xcomm, 4);
 
 
     // Standard MPI Implementation of Alltoallv
@@ -107,7 +101,7 @@ TEST(RandomCommTest, TestsInTests)
             send_counts,
             send_data.indptr.data(), 
             MPI_INT,
-            std_recv_vals.data(), 
+            pmpi_recv_vals.data(), 
             recv_counts,
             recv_data.indptr.data(), 
             MPI_INT,
@@ -123,35 +117,33 @@ TEST(RandomCommTest, TestsInTests)
             send_data.counts.data(),
             send_data.indptr.data(), 
             MPI_INT,
-            persistent_recv_vals.data(), 
+            mpix_recv_vals.data(), 
             recv_data.counts.data(),
             recv_data.indptr.data(), 
             MPI_INT,
-            neighbor_comm, 
+            xcomm, 
             xinfo,
-            &neighbor_request);
+            &xrequest);
 
     // Reorder during first send/recv
-    neighbor_request->reorder = 1;
-    MPIX_Start(neighbor_request);
-    MPIX_Wait(neighbor_request, &status);
-    for (int i = 0; i < recv_data.size_msgs; i++)
-    {
-        ASSERT_EQ(std_recv_vals[i], persistent_recv_vals[i]);
-    }
+    std::fill(mpix_recv_vals.begin(), mpix_recv_vals.end(), 0);
+    xrequest->reorder = 1;
+    MPIX_Start(xrequest);
+    MPIX_Wait(xrequest, &status);
+    compare_neighbor_alltoallv_results(pmpi_recv_vals, mpix_recv_vals, recv_data.size_msgs);
 
     // Standard send/recv with reordered recvs
-    MPIX_Start(neighbor_request);
-    MPIX_Wait(neighbor_request, &status);
-    for (int i = 0; i < recv_data.size_msgs; i++)
-    {
-        ASSERT_EQ(std_recv_vals[i], persistent_recv_vals[i]);
-    }
-    MPIX_Request_free(&neighbor_request);
+    std::fill(mpix_recv_vals.begin(), mpix_recv_vals.end(), 0);
+    MPIX_Start(xrequest);
+    MPIX_Wait(xrequest, &status);
+    compare_neighbor_alltoallv_results(pmpi_recv_vals, mpix_recv_vals, recv_data.size_msgs);
 
+    MPIX_Request_free(&xrequest);
     MPIX_Info_free(&xinfo);
-    MPIX_Comm_free(&neighbor_comm);
+    MPIX_Comm_free(&xcomm);
     MPI_Comm_free(&std_comm);
 
-}
+    MPI_Finalize();
+    return 0;
+} // end of main() //
 
