@@ -1,16 +1,3 @@
-if(USE_CUDA)
-    set_source_files_properties(
-        test_neighbor_alltoallv_init.cpp
-        test_neighbor_alltoallw_init.cpp
-        test_suitesparse_neighbor_alltoallv_init.cpp
-        test_suitesparse_neighbor_alltoallw_init.cpp
-        test_suitesparse_alltoall_crs.cpp
-        test_suitesparse_alltoallv_crs.cpp
-        test_suitesparse_neighbor_reorder.cpp
-        test_neighbor_reorder.cpp
-        PROPERTIES LANGUAGE CUDA)
-endif()
-
 add_executable(test_neighbor_alltoallv_init test_neighbor_alltoallv_init.cpp)
 target_link_libraries(test_neighbor_alltoallv_init mpi_advance)
 add_test(PersistentNeighAlltoallvTest ${MPIRUN} -n 16 ./test_neighbor_alltoallv_init)
