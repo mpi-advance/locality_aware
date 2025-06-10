@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.21 FATAL_ERROR)
 cmake_policy(VERSION 3.21.3...3.27)
 
 # Create project
-project(locality_aware LANGUAGES C CXX)
+project(locality_aware LANGUAGES C CXX CUDA)
 
 # Set C,CXX standards
 set(CMAKE_CXX_STANDARD 11)
@@ -21,6 +21,10 @@ option(ENABLE_UNIT_TESTS "Enable unit testing" ON)
 # Set default language of .cpp files
 set(locality_aware_LANG CXX)
 
+include_directories(.)
+include_directories(src)
+add_subdirectory(src)
+
 if (ENABLE_UNIT_TESTS)
     enable_testing()
 endif()
@@ -35,7 +39,6 @@ set(CUDA_ARCH "sm_70" CACHE STRING "CUDA Architecture")
 
 # Find GPU Compiler
 if (USE_CUDA OR USE_HIP)
-
   if (GPU_AWARE)
       add_definitions(-DGPU_AWARE)
       message(STATUS "Code will be compiled assuming GPU-Aware support.  If your compiler doesn't not support this, set GPU_AWARE to OFF")
@@ -48,7 +51,7 @@ if (USE_CUDA OR USE_HIP)
     enable_language(CUDA)
     set(CMAKE_CUDA_FLAGS "-ccbin=${MPICXX} -arch=${CUDA_ARCH}")
     set(locality_aware_LANG CUDA)
-    message(STATUS "CUDA support enabled")
+    message(STATUS "CUDA support enabled: ${CMAKE_CUDA_FLAGS}")
 
   elseif (USE_HIP)
     enable_language(HIP)
@@ -71,9 +74,6 @@ set_source_files_properties(
     ${CPP_SOURCES} 
     PROPERTIES LANGUAGE ${locality_aware_LANG})
 
-include_directories(.)
-include_directories(src)
-add_subdirectory(src)
 
 
 
