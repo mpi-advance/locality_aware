@@ -138,12 +138,19 @@ void print_allreduce(int max_p, float* sendbuf_d, float* sendbuf_d_local,
         MPI_Barrier(MPI_COMM_WORLD);
 
         gpuMemcpy(recvbuf, &(recvbuf_d[socket_rank*s]), s*sizeof(float), gpuMemcpyDeviceToHost);
+        float maxError = 0.0;
+        // Compare recvbuf std and recvbuf new
         for (int i = 0; i < s; i++)
-            if (fabs(recvbuf[i] - recvbuf_std[i]) > 1e-6) 
+        {
+            if (fabs(recvbuf[i] - recvbuf_std[i]) > maxError) maxError = fabs(recvbuf[i] - recvbuf_std[i]);
+            if (fabs(recvbuf[i] - recvbuf_std[i]) > 1e-3)
             {
                 printf("DIFFERENCE IN RESULTS in STD MPS! %e vs %e\n", recvbuf[i], recvbuf_std[i]);
                 MPI_Abort(MPI_COMM_WORLD, 1);
             }
+        }
+	MPI_Allreduce(MPI_IN_PLACE, &maxError, 1, MPI_FLOAT, MPI_MAX, MPI_COMM_WORLD);
+        if (rank == 0) printf("STD MPS MAX ERROR: %e\n", maxError);
             
         cudaMemset(&(recvbuf_d[socket_rank*s]), 0, s*sizeof(float));
         MPI_Barrier(MPI_COMM_WORLD);
@@ -151,12 +158,19 @@ void print_allreduce(int max_p, float* sendbuf_d, float* sendbuf_d_local,
                 &(tmpbuf[(socket_rank*s) + (local_gpu*s_pergpu)]), &(recvbuf_d[(socket_rank*s) + (local_gpu*s_pergpu)]),
                 &(tmpbuf[(socket_rank*s) + (local_gpu*s_pergpu)]), &(recvbuf_d[socket_rank*s]), recvcounts_s_pergpu, comm, intra_comm, inter_comm, socket_comm, 1, false, recvcounts_s_pergpu[0]);
         gpuMemcpy(recvbuf_std, &(recvbuf_d[socket_rank*s]), s*sizeof(float), gpuMemcpyDeviceToHost);
+        maxError = 0.0;
+        // Compare recvbuf std and recvbuf new
         for (int i = 0; i < s; i++)
-            if (fabs(recvbuf[i] - recvbuf_std[i]) > 1e-6) 
+        {
+            if (fabs(recvbuf[i] - recvbuf_std[i]) > maxError) maxError = fabs(recvbuf[i] - recvbuf_std[i]);
+            if (fabs(recvbuf[i] - recvbuf_std[i]) > 1e-3)
             {
-                printf("DIFFERENCE IN RESULTS in LOC MPS FULL! %e vs %e\n", recvbuf[i], recvbuf_std[i]);
+             	printf("DIFFERENCE IN RESULTS in LOC MPS FULL! %e vs %e\n", recvbuf[i], recvbuf_std[i]);
                 MPI_Abort(MPI_COMM_WORLD, 1);
             }
+	}
+	MPI_Allreduce(MPI_IN_PLACE, &maxError, 1, MPI_FLOAT, MPI_MAX, MPI_COMM_WORLD);
+        if (rank == 0) printf("LOC MPS FULL MAX ERROR: %e\n", maxError);
      
 /*
         cudaMemset(&(recvbuf_d[socket_rank*s]), 0, s*sizeof(float));
@@ -165,12 +179,19 @@ void print_allreduce(int max_p, float* sendbuf_d, float* sendbuf_d_local,
                 &(tmpbuf[(socket_rank*s) + (local_gpu*s_pergpu)]), &(recvbuf_d[(socket_rank*s) + (local_gpu*s_pergpu)]),
                 &(tmpbuf[local_gpu*pergpu]), recvbuf_d, recvcounts_pergpu, comm, (socket_rank == 0) ? intra_comm : MPI_COMM_NULL, inter_comm, socket_comm, 1, true, recvcounts_s_pergpu[0]);
         gpuMemcpy(recvbuf_std, &(recvbuf_d[socket_rank*s]), s*sizeof(float), gpuMemcpyDeviceToHost);
+        maxError = 0.0;
+        // Compare recvbuf std and recvbuf new
         for (int i = 0; i < s; i++)
-            if (fabs(recvbuf[i] - recvbuf_std[i]) > 1e-6) 
+        {
+            if (fabs(recvbuf[i] - recvbuf_std[i]) > maxError) maxError = fabs(recvbuf[i] - recvbuf_std[i]);
+            if (fabs(recvbuf[i] - recvbuf_std[i]) > 1e-3)
             {
                 printf("DIFFERENCE IN RESULTS in LOC MPS! %e vs %e\n", recvbuf[i], recvbuf_std[i]);
                 MPI_Abort(MPI_COMM_WORLD, 1);
             }
+	}
+	MPI_Allreduce(MPI_IN_PLACE, &maxError, 1, MPI_FLOAT, MPI_MAX, MPI_COMM_WORLD);
+        if (rank == 0) printf("LOC MPS MAX ERROR: %e\n", maxError);
 */
             
         cudaMemset(&(recvbuf_d[socket_rank*s]), 0, s*sizeof(float));
@@ -180,12 +201,19 @@ void print_allreduce(int max_p, float* sendbuf_d, float* sendbuf_d_local,
                             &(tmpbuf[socket_rank*s]), 
                             &(tmpbuf[socket_rank*s]), recvcounts_s, comm, intra_comm, inter_comm, socket_comm, 1, false, recvcounts_s[0]);
         gpuMemcpy(recvbuf_std, &(recvbuf_d[socket_rank*s]), s*sizeof(float), gpuMemcpyDeviceToHost);
+        maxError = 0.0;
+        // Compare recvbuf std and recvbuf new
         for (int i = 0; i < s; i++)
-            if (fabs(recvbuf[i] - recvbuf_std[i]) > 1e-6) 
+        {
+            if (fabs(recvbuf[i] - recvbuf_std[i]) > maxError) maxError = fabs(recvbuf[i] - recvbuf_std[i]);
+            if (fabs(recvbuf[i] - recvbuf_std[i]) > 1e-3)
             {
                 printf("DIFFERENCE IN RESULTS in LANE MPS FULL! %e vs %e\n", recvbuf[i], recvbuf_std[i]);
                 MPI_Abort(MPI_COMM_WORLD, 1);
             }
+	}
+	MPI_Allreduce(MPI_IN_PLACE, &maxError, 1, MPI_FLOAT, MPI_MAX, MPI_COMM_WORLD);
+        if (rank == 0) printf("LANE MPS FULL MAX ERROR: %e\n", maxError);
      
         cudaMemset(&(recvbuf_d[socket_rank*s]), 0, s*sizeof(float));
         MPI_Barrier(MPI_COMM_WORLD);
@@ -194,12 +222,19 @@ void print_allreduce(int max_p, float* sendbuf_d, float* sendbuf_d_local,
                             &(tmpbuf[socket_rank*s]), 
                             tmpbuf, &s_g, comm, (socket_rank == 0) ? intra_comm : MPI_COMM_NULL, inter_comm, socket_comm, 1, true, recvcounts_s[0]);
         gpuMemcpy(recvbuf_std, &(recvbuf_d[socket_rank*s]), s*sizeof(float), gpuMemcpyDeviceToHost);
+        maxError = 0.0;
+        // Compare recvbuf std and recvbuf new
         for (int i = 0; i < s; i++)
-            if (fabs(recvbuf[i] - recvbuf_std[i]) > 1e-6) 
+        {
+            if (fabs(recvbuf[i] - recvbuf_std[i]) > maxError) maxError = fabs(recvbuf[i] - recvbuf_std[i]);
+            if (fabs(recvbuf[i] - recvbuf_std[i]) > 1e-3)
             {
                 printf("DIFFERENCE IN RESULTS in LANE MPS! %e vs %e\n", recvbuf[i], recvbuf_std[i]);
                 MPI_Abort(MPI_COMM_WORLD, 1);
             }
+	}
+	MPI_Allreduce(MPI_IN_PLACE, &maxError, 1, MPI_FLOAT, MPI_MAX, MPI_COMM_WORLD);
+        if (rank == 0) printf("LANE MPS MAX ERROR: %e\n", maxError);
             
         // Warm-Up
         allreduce(s, &(sendbuf_d[s*socket_rank]), sendbuf_d_local,

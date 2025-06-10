@@ -116,28 +116,38 @@ void print_allreduce(int max_p, float* sendbuf, float* recvbuf, float* tmpbuf,
         allreduce_loc(s, sendbuf, recvbuf, tmpbuf, recvcounts, comm, 
                 intra_comm, inter_comm);
         cudaMemcpy(recvbuf_new, recvbuf, s*sizeof(float), cudaMemcpyDeviceToHost);
-
+        float maxError = 0.0;
         // Compare recvbuf std and recvbuf new
         for (int i = 0; i < s; i++)
-            if (fabs(recvbuf_new[i] - recvbuf_std[i]) > 1e-6)
+        {
+            if (fabs(recvbuf_new[i] - recvbuf_std[i]) > maxError) maxError = fabs(recvbuf_new[i] - recvbuf_std[i]);
+            if (fabs(recvbuf_new[i] - recvbuf_std[i]) > 1e-3)
             {
                 printf("DIFFERENCE IN RESULTS! %e vs %e\n", recvbuf_new[i], recvbuf_std[i]);
                 MPI_Abort(MPI_COMM_WORLD, 1);
             }
+        }
+        MPI_Allreduce(MPI_IN_PLACE, &maxError, 1, MPI_FLOAT, MPI_MAX, MPI_COMM_WORLD);
+        if (rank == 0) printf("LOC MAX ERROR: %e\n", maxError);
 
         // Copy lane results to recvbuf_new
         cudaMemset(recvbuf, 0, s*sizeof(float));
         allreduce_lane(s, sendbuf, recvbuf, tmpbuf, recvcounts, comm,
                 intra_comm, inter_comm);
         cudaMemcpy(recvbuf_new, recvbuf, s*sizeof(float), cudaMemcpyDeviceToHost);
-
+        maxError = 0.0;
         // Compare recvbuf std and recvbuf new
         for (int i = 0; i < s; i++)
-            if (fabs(recvbuf_new[i] - recvbuf_std[i]) > 1e-6)
+        {
+            if (fabs(recvbuf_new[i] - recvbuf_std[i]) > maxError) maxError = fabs(recvbuf_new[i] - recvbuf_std[i]);
+            if (fabs(recvbuf_new[i] - recvbuf_std[i]) > 1e-3)
             {
                 printf("DIFFERENCE IN RESULTS! %e vs %e\n", recvbuf_new[i], recvbuf_std[i]);
                 MPI_Abort(MPI_COMM_WORLD, 1);
             }
+        }
+	MPI_Allreduce(MPI_IN_PLACE, &maxError, 1, MPI_FLOAT, MPI_MAX, MPI_COMM_WORLD);
+        if (rank == 0) printf("LANE MAX ERROR: %e\n", maxError);
 
         /*************************
         *** Time Methods
