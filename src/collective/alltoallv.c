@@ -153,7 +153,7 @@ int alltoallv_nonblocking(const void* sendbuf,
     MPI_Type_size(sendtype, &send_size);
     MPI_Type_size(recvtype, &recv_size);
 
-    MPI_Request* requests = (MPI_Request*)malloc(2*(num_procs-1)*sizeof(MPI_Request));
+    MPI_Request* requests = (MPI_Request*)malloc(2*num_procs*sizeof(MPI_Request));
 
     char* send_buffer = (char*)sendbuf;
     char* recv_buffer = (char*)recvbuf;
@@ -173,12 +173,12 @@ int alltoallv_nonblocking(const void* sendbuf,
         recv_pos = rdispls[recv_proc] * recv_size;
 
         MPI_Isend(send_buffer + send_pos, sendcounts[send_proc], sendtype, send_proc, tag,
-                comm, &(requests[i-1]));
+                comm, &(requests[i]));
         MPI_Irecv(recv_buffer + recv_pos, recvcounts[recv_proc], recvtype, recv_proc, tag,
-                comm, &(requests[num_procs+i-2]));
+                comm, &(requests[num_procs+i]));
     }
 
-    MPI_Waitall(2*(num_procs-1), requests, MPI_STATUSES_IGNORE);
+    MPI_Waitall(2*num_procs, requests, MPI_STATUSES_IGNORE);
 
     free(requests);
 
@@ -239,7 +239,7 @@ int alltoallv_batch(const void* sendbuf,
         MPI_Irecv(recv_buffer + recv_pos, recvcounts[recv_proc], recvtype, recv_proc, tag,
                 comm, &(requests[ctr++]));
 
-        if (i % nb_stride == 0)
+        if ((i+1) % nb_stride == 0)
         {
             MPI_Waitall(2*nb_stride, requests, MPI_STATUSES_IGNORE);
             ctr = 0;
@@ -271,7 +271,7 @@ int alltoallv_batch_async(const void* sendbuf,
     // Tuning Parameter : number of non-blocking messages between waits 
     int nb_stride = 5;
     if (nb_stride >= num_procs)
-        alltoallv_nonblocking(sendbuf, sendcounts, sdispls, sendtype, 
+        return alltoallv_nonblocking(sendbuf, sendcounts, sdispls, sendtype, 
                 recvbuf, recvcounts, rdispls, recvtype, comm);
 
     int tag = 103044;
@@ -309,12 +309,14 @@ int alltoallv_batch_async(const void* sendbuf,
         MPI_Irecv(recv_buffer + recv_pos, recvcounts[recv_proc], recvtype, recv_proc, tag,
                 comm, &(requests[nb_stride + recv_idx++]));
 
-        if (i >= nb_stride)
+        if ((i+1) >= nb_stride)
         {
             MPI_Waitany(nb_stride, requests, &send_idx, MPI_STATUSES_IGNORE);
             MPI_Waitany(nb_stride, &(requests[nb_stride]), &recv_idx, MPI_STATUSES_IGNORE);
         }
     }
+
+    MPI_Waitall(2*nb_stride, requests, MPI_STATUSES_IGNORE);
 
     free(requests);
 

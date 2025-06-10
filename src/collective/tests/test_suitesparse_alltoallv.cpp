@@ -161,7 +161,6 @@ void test_matrix(const char* filename)
             locality_comm->global_comm);
     compare_alltoallv_results(pmpi_recv_vals, mpix_recv_vals, A.recv_comm.size_msgs);
 
-
     MPIX_Comm_free(&locality_comm);
 }
 
