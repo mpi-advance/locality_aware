@@ -88,31 +88,10 @@ int alltoall_pairwise(const void* sendbuf,
     MPI_Type_size(sendtype, &send_size);
     MPI_Type_size(recvtype, &recv_size);
 
-#ifdef GPU
-    gpuMemoryType send_type, recv_type;
-    gpuMemcpyKind memcpy_kind;
-    get_mem_types(sendbuf, recvbuf, &send_type, &recv_type);
-   
-    if (send_type == gpuMemoryTypeDevice ||
-            recv_type == gpuMemoryTypeDevice)
-    {
-        get_memcpy_kind(send_type, recv_type, &memcpy_kind);
-        int ierr = gpuMemcpy(recv_buffer + (rank * recvcount * recv_size),
-                send_buffer + (rank * sendcount * send_size),
-                sendcount * send_size,
-                memcpy_kind);
-        gpu_check(ierr);
-    }
-    else
-#endif
-    memcpy(recv_buffer + (rank * recvcount * recv_size),
-        send_buffer + (rank * sendcount * send_size),
-        sendcount * send_size);
-
 
     // Send to rank + i
     // Recv from rank - i
-    for (int i = 1; i < num_procs; i++)
+    for (int i = 0; i < num_procs; i++)
     {
         send_proc = rank + i;
         if (send_proc >= num_procs)
@@ -151,6 +130,10 @@ int alltoall_nonblocking(const void* sendbuf,
     MPI_Comm_rank(comm->global_comm, &rank);
     MPI_Comm_size(comm->global_comm, &num_procs);
 
+    if (num_procs <= 1)
+        return alltoall_pairwise(sendbuf, sendcount, sendtype, recvbuf, 
+                recvcount, recvtype, comm);
+
     int tag = 102944;
     int send_proc, recv_proc;
     int send_pos, recv_pos;
@@ -164,30 +147,9 @@ int alltoall_nonblocking(const void* sendbuf,
 
     MPI_Request* requests = (MPI_Request*)malloc(2*(num_procs-1)*sizeof(MPI_Request));
 
-#ifdef GPU
-    gpuMemoryType send_type, recv_type;
-    gpuMemcpyKind memcpy_kind;
-    get_mem_types(sendbuf, recvbuf, &send_type, &recv_type);
-
-    if (send_type == gpuMemoryTypeDevice ||
-            recv_type == gpuMemoryTypeDevice)
-    {
-        get_memcpy_kind(send_type, recv_type, &memcpy_kind);
-        int ierr = gpuMemcpy(recv_buffer + (rank * recvcount * recv_size),
-                send_buffer + (rank * sendcount * send_size),
-                sendcount * send_size,
-                memcpy_kind);
-        gpu_check(ierr);
-    }
-    else
-#endif
-    memcpy(recv_buffer + (rank * recvcount * recv_size),
-        send_buffer + (rank * sendcount * send_size),
-        sendcount * send_size);
-
     // Send to rank + i
     // Recv from rank - i
-    for (int i = 1; i < num_procs; i++)
+    for (int i = 0; i < num_procs; i++)
     {
         send_proc = rank + i;
         if (send_proc >= num_procs)

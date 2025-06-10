@@ -1,38 +1,23 @@
-add_executable(test_neighbor_alltoallv_init test_neighbor_alltoallv_init.cpp)
-target_link_libraries(test_neighbor_alltoallv_init mpi_advance)
-add_test(PersistentNeighAlltoallvTest ${MPIRUN} -n 16 ./test_neighbor_alltoallv_init)
+## Grab all .cpp files in test directory
+file(GLOB CPP_SOURCES CONFIGURE_DEPENDS "*.cpp")
 
-add_executable(test_neighbor_alltoallw_init test_neighbor_alltoallw_init.cpp)
-target_link_libraries(test_neighbor_alltoallw_init mpi_advance)
-add_test(PersistentNeighAlltoallwTest ${MPIRUN} -n 16 ./test_neighbor_alltoallw_init)
+## All should be compiled appropriately (cxx vs nvcc vs hipcc)
+set_source_files_properties(${CPP_SOURCES} PROPERTIES LANGUAGE ${locality_aware_LANG})
 
+## Go through each CPP file
+foreach(src ${CPP_SOURCES})
+    
+    ## Grab the name without full path or extension
+    get_filename_component(exec_name ${src} NAME_WE)
 
-add_executable(test_suitesparse_neighbor_alltoallv_init 
-    test_suitesparse_neighbor_alltoallv_init.cpp)
-target_link_libraries(test_suitesparse_neighbor_alltoallv_init mpi_advance)
-add_test(PersistentNeighAlltoallvSuitesparseTest 
-    ${MPIRUN} -n 16 ./test_suitesparse_neighbor_alltoallv_init)
+    ## Create executable
+    add_executable(${exec_name} ${src})
 
-add_executable(test_suitesparse_neighbor_alltoallw_init 
-    test_suitesparse_neighbor_alltoallw_init.cpp)
-target_link_libraries(test_suitesparse_neighbor_alltoallw_init mpi_advance)
-add_test(PersistentNeighAlltoallwSuitesparseTest 
-    ${MPIRUN} -n 16 ./test_suitesparse_neighbor_alltoallw_init)
+    # Link with MPI 
+    target_link_libraries(${exec_name} mpi_advance ${MPI_LIBRARIES})
 
-
-add_executable(test_suitesparse_alltoall_crs test_suitesparse_alltoall_crs.cpp) 
-target_link_libraries(test_suitesparse_alltoall_crs mpi_advance)
-add_test(SuitesparseAlltoallCRS ${MPIRUN} -n 16 ./test_suitesparse_alltoall_crs)
-
-add_executable(test_suitesparse_alltoallv_crs test_suitesparse_alltoallv_crs.cpp) 
-target_link_libraries(test_suitesparse_alltoallv_crs mpi_advance)
-add_test(SuitesparseAlltoallvCRS ${MPIRUN} -n 16 ./test_suitesparse_alltoallv_crs)
+    # Add to CTEST
+    add_test(NAME ${exec_name}_Test COMMAND ${MPIRUN} -n 16 ./${exec_name})
+endforeach()
 
 
-add_executable(test_neighbor_reorder test_neighbor_reorder.cpp)
-target_link_libraries(test_neighbor_reorder mpi_advance)
-add_test(PersistentNeighReorderTest ${MPIRUN} -n 16 ./test_neighbor_reorder)
-
-add_executable(test_suitesparse_neighbor_reorder test_suitesparse_neighbor_reorder.cpp)
-target_link_libraries(test_suitesparse_neighbor_reorder mpi_advance)
-add_test(SuitesparseReorderTest ${MPIRUN} -n 16 ./test_suitesparse_neighbor_reorder)

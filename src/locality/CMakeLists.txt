@@ -1,18 +1,8 @@
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-set(locality_HEADERS
-    locality/comm_data.h
-    locality/comm_pkg.h
-    locality/locality_comm.h
-    locality/topology.h
-    PARENT_SCOPE
-    )
+file(GLOB locality_HEADERS CONFIGURE_DEPENDS "*.h")
+file(GLOB locality_SOURCES CONFIGURE_DEPENDS "*.c")
 
-set(locality_SOURCES
-    locality/comm_data.c
-    locality/comm_pkg.c
-    locality/locality_comm.c
-    locality/topology.c
-    PARENT_SCOPE
-    )
+set(locality_HEADERS ${locality_HEADERS} PARENT_SCOPE)
+set(locality_SOURCES ${locality_SOURCES} PARENT_SCOPE)
 

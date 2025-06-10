@@ -1,8 +1,23 @@
-add_executable(test_gpu_alltoall test_gpu_alltoall.cpp)
-target_link_libraries(test_gpu_alltoall mpi_advance)
-add_test(GPUAlltoallTest ${GPUAwareMPIRUN} ./test_gpu_alltoall)
+## Grab all .cpp files in test directory
+file(GLOB CPP_SOURCES CONFIGURE_DEPENDS "*.cpp")
 
-add_executable(test_gpu_alltoallv test_gpu_alltoallv.cpp)
-target_link_libraries(test_gpu_alltoallv mpi_advance)
-add_test(GPUAlltoallvTest ${GPUAwareMPIRUN} ./test_gpu_alltoallv)
+## All should be compiled appropriately (cxx vs nvcc vs hipcc)
+set_source_files_properties(${CPP_SOURCES} PROPERTIES LANGUAGE ${locality_aware_LANG})
+
+## Go through each CPP file
+foreach(src ${CPP_SOURCES})
+    
+    ## Grab the name without full path or extension
+    get_filename_component(exec_name ${src} NAME_WE)
+
+    ## Create executable
+    add_executable(${exec_name} ${src})
+
+    # Link with MPI 
+    target_link_libraries(${exec_name} mpi_advance ${MPI_LIBRARIES})
+
+    # Add to CTEST
+    add_test(NAME ${exec_name}_Test COMMAND ${MPIRUN} -n 16 ./${exec_name})
+endforeach()
+
 

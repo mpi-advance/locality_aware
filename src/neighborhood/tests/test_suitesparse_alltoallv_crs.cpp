@@ -75,7 +75,7 @@ void test_matrix(const char* filename)
         proc_displs[proc] = A.send_comm.ptr[i];
     }
 
-    int n_recvs, s_recvs, proc;
+    int n_recvs, s_recvs;
     int *src, *recvcounts, *rdispls;
     long *recvvals;
 

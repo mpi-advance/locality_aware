@@ -5,9 +5,18 @@ add_subdirectory(locality)
 add_subdirectory(persistent)
 add_subdirectory(collective)
 add_subdirectory(neighborhood)
-if(USE_GPU)
+if(USE_CUDA OR USE_HIP)
     add_subdirectory(heterogeneous)
 endif()
+
+set_source_files_properties(
+    ${utils_SOURCES}
+    ${locality_SOURCES}
+    ${collective_SOURCES}
+    ${persistent_SOURCES}
+    ${neighborhood_SOURCES}
+    ${heterogeneous_SOURCES}
+    PROPERTIES LANGUAGE ${locality_aware_LANG})
 
 add_library(mpi_advance
     ${utils_SOURCES} ${utils_HEADERS}

@@ -138,7 +138,7 @@ void test_matrix(const char* filename)
     compare_alltoallv_results(pmpi_recv_vals, mpix_recv_vals, A.recv_comm.size_msgs);
 
     std::fill(mpix_recv_vals.begin(), mpix_recv_vals.end(), 0);
-    alltoallv_pairwise_nonblocking(alltoallv_send_vals.data(), 
+    alltoallv_batch(alltoallv_send_vals.data(), 
             sendcounts.data(),
             sdispls.data(),
             MPI_INT,
@@ -150,7 +150,7 @@ void test_matrix(const char* filename)
     compare_alltoallv_results(pmpi_recv_vals, mpix_recv_vals, A.recv_comm.size_msgs);
 
     std::fill(mpix_recv_vals.begin(), mpix_recv_vals.end(), 0);
-    alltoallv_waitany(alltoallv_send_vals.data(), 
+    alltoallv_batch_async(alltoallv_send_vals.data(), 
             sendcounts.data(),
             sdispls.data(),
             MPI_INT,

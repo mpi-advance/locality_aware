@@ -13,7 +13,7 @@ int alltoallv_crs_personalized(int send_nnz, int send_size, int* dest, int* send
     MPI_Comm_size(comm->global_comm, &num_procs);
 
     MPI_Status recv_status;
-    int proc, ctr, idx, count;
+    int proc, ctr, count;
     int tag;
     MPIX_Info_tag(xinfo, &tag);
 

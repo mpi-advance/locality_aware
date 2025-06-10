@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.21 FATAL_ERROR)
 cmake_policy(VERSION 3.21.3...3.27)
 
 # Create project
-project(locality_aware LANGUAGES C CXX CUDA)
+project(locality_aware LANGUAGES C CXX)
 
 # Set C,CXX standards
 set(CMAKE_CXX_STANDARD 11)
@@ -18,62 +18,81 @@ option(USE_HIP "Enable AMD HIP support" OFF)
 option(GPU_AWARE "Use GPU-Aware MPI, if GPU support is enabled" ON)
 option(ENABLE_UNIT_TESTS "Enable unit testing" ON)
 
-# Set default language of .cpp files
-set(locality_aware_LANG CXX)
+set(MPICXX "mpicxx" CACHE STRING "MPICXX command")
+set(CUDA_ARCH "75" CACHE STRING "CUDA Architecture")
 
-include_directories(.)
-include_directories(src)
-add_subdirectory(src)
-
-if (ENABLE_UNIT_TESTS)
-    enable_testing()
-endif()
+include_directories("${CMAKE_SOURCE_DIR}")
+include_directories("${CMAKE_SOURCE_DIR}/src")
 
 # Find MPI
 find_package(MPI REQUIRED)
 if (MPI_COMPILER_FLAGS)
   add_compile_options(${MPI_COMPILER_FLAGS})
 endif()
-set(MPICXX "mpicxx" CACHE STRING "MPICXX command")
-set(CUDA_ARCH "sm_70" CACHE STRING "CUDA Architecture")
 
-# Find GPU Compiler
+# Find OpenMP (not required)
+find_package(OpenMP)
+
+# Set default language of .cpp files
+set(locality_aware_LANG CXX)
+
 if (USE_CUDA OR USE_HIP)
   if (GPU_AWARE)
       add_definitions(-DGPU_AWARE)
       message(STATUS "Code will be compiled assuming GPU-Aware support.  If your compiler doesn't not support this, set GPU_AWARE to OFF")
   endif()
-  set(USE_GPU ON)  
+  set(USE_GPU ON)
   add_definitions(-DCUDA)
   add_definitions(-DGPU)
+if (USE_CUDA)
+  set(CMAKE_CUDA_HOST_COMPILER "${MPICXX}")
+  set(CMAKE_CUDA_ARCHITECTURES ${CUDA_ARCH})
+  enable_language(CUDA)
+  set(locality_aware_LANG CUDA)
+  message(STATUS "CUDA support enabled: ${CMAKE_CUDA_FLAGS}")
 
-  if (USE_CUDA)
-    enable_language(CUDA)
-    set(CMAKE_CUDA_FLAGS "-ccbin=${MPICXX} -arch=${CUDA_ARCH}")
-    set(locality_aware_LANG CUDA)
-    message(STATUS "CUDA support enabled: ${CMAKE_CUDA_FLAGS}")
-
-  elseif (USE_HIP)
-    enable_language(HIP)
-    set(locality_aware_LANG HIP)
-    message(STATUS "HIP support enabled")
-
-  endif()
-  
+elseif (USE_HIP)
+  enable_language(HIP)
+  set(locality_aware_LANG HIP)
+  message(STATUS "HIP support enabled")
+endif()
 endif()
 
-# Find OpenMP (not required)
-find_package(OpenMP)
+add_subdirectory(src/utils)
+add_subdirectory(src/locality)
+add_subdirectory(src/persistent)
+add_subdirectory(src/collective)
+add_subdirectory(src/neighborhood)
+if(USE_CUDA OR USE_HIP)
+    add_subdirectory(src/heterogeneous)
+endif()
 
-set(mpi_advance_INCDIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
-set(MPIRUN "mpirun" CACHE STRING "MPIRUN command")
-
-file(GLOB_RECURSE CPP_SOURCES CONFIGURE_DEPENDS *.cpp)
 set_source_files_properties(
-    ${CPP_SOURCES} 
+    ${utils_SOURCES}
+    ${locality_SOURCES}
+    ${collective_SOURCES}
+    ${persistent_SOURCES}
+    ${neighborhood_SOURCES}
+    ${heterogeneous_SOURCES}
     PROPERTIES LANGUAGE ${locality_aware_LANG})
 
+add_library(mpi_advance
+    ${utils_SOURCES} ${utils_HEADERS}
+    ${locality_SOURCES} ${locality_HEADERS}
+    ${collective_SOURCES} ${collective_HEADERS}
+    ${persistent_SOURCES} ${persistent_HEADERS}
+    ${neighborhood_SOURCES} ${neighborhood_HEADERS}
+    ${heterogeneous_SOURCES} ${heterogeneous_HEADERS}
+)
+target_link_libraries(mpi_advance PUBLIC ${MPI_LIBRARIES})
+
+if (ENABLE_UNIT_TESTS)
+    add_subdirectory(src/collective/tests)
+    add_subdirectory(src/neighborhood/tests)
+    if (USE_GPU)
+        add_subdirectory(src/heterogeneous/tests)
+    endif(USE_GPU)
+endif()
 
 
 

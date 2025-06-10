@@ -177,7 +177,7 @@ int main(int argc, char** argv)
     MPIX_Comm_free(&xcomm);
 
     MPI_Finalize();
-    return temp;
+    return 0;
 } // end of main() //
 
 

@@ -197,7 +197,7 @@ int MPIX_Alloc(void** pointer, const int bytes)
     else
         *pointer = new char[bytes];
 
-	return MPI_SUCCESS;
+    return MPI_SUCCESS;
 }
 int MPIX_Free(void* pointer)
 {

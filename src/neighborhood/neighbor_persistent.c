@@ -142,8 +142,8 @@ void init_neighbor_request(MPIX_Request** request_ptr)
     init_request(request_ptr);
     MPIX_Request* request = *request_ptr;
 
-    request->start_function = (void*) neighbor_start;
-    request->wait_function = (void*) neighbor_wait;
+    request->start_function = neighbor_start;
+    request->wait_function = neighbor_wait;
 }
 
 int init_communication(const void* sendbuffer,
