@@ -1,6 +1,6 @@
 #include "neighbor.h"
-#include "neighbor_persistent.h"
-#include "persistent/persistent.h"
+#include "neighbor_init.h"
+#include "persistent/neighbor_persistent.h"
 #include <vector>
 #include <algorithm>
 #include <map>

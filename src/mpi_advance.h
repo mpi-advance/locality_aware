@@ -9,6 +9,7 @@
 #include "communicator/mpix_comm.h"
 
 #include "persistent/persistent.h"
+#include "persistent/neighbor_persistent.h"
 
 #include "collective/collective.h"
 #include "collective/alltoall.h"
@@ -17,7 +18,7 @@
 #include "neighborhood/dist_graph.h"
 #include "neighborhood/dist_topo.h"
 #include "neighborhood/neighbor.h"
-#include "neighborhood/neighbor_persistent.h"
+#include "neighborhood/neighbor_init.h"
 #include "neighborhood/sparse_coll.h"
 
 #ifdef GPU

@@ -1,5 +1,4 @@
 #include "neighbor.h"
-#include "neighbor_persistent.h"
 
 // Topology object based neighbor alltoallv
 int MPIX_Neighbor_topo_alltoallv(
