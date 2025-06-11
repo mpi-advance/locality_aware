@@ -10,8 +10,6 @@ extern "C"
 {
 #endif
 
-typedef int (*alltoall_ftn)(const void*, const int, MPI_Datatype, void*, const int, MPI_Datatype, MPIX_Comm*);
-
 int gpu_aware_alltoall(alltoall_ftn f,
         const void* sendbuf,
         const int sendcount,

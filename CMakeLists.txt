@@ -30,6 +30,7 @@ find_package(MPI REQUIRED)
 if (MPI_COMPILER_FLAGS)
   add_compile_options(${MPI_COMPILER_FLAGS})
 endif()
+include_directories(${MPI_INCLUDE_PATH})
 
 # Find OpenMP (not required)
 find_package(OpenMP)

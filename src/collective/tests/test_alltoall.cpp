@@ -72,6 +72,140 @@ int main(int argc, char** argv)
                 MPI_INT,
                 locality_comm);
         compare_alltoall_results(pmpi_alltoall, mpix_alltoall, s);
+
+
+        // Test Standard Pairwise
+        std::fill(mpix_alltoall.begin(), mpix_alltoall.end(), 0);
+        alltoall_pairwise(local_data.data(), 
+                s, 
+                MPI_INT,
+                mpix_alltoall.data(), 
+                s, 
+                MPI_INT,
+                locality_comm);
+        compare_alltoall_results(pmpi_alltoall, mpix_alltoall, s);
+
+        // Test Standard Nonblocking
+        alltoall_nonblocking(local_data.data(), 
+                s, 
+                MPI_INT,
+                mpix_alltoall.data(), 
+                s, 
+                MPI_INT,
+                locality_comm);
+        compare_alltoall_results(pmpi_alltoall, mpix_alltoall, s);
+
+
+        // Test Hierarchical + Pairwise
+        std::fill(mpix_alltoall.begin(), mpix_alltoall.end(), 0);
+        alltoall_hierarchical_pairwise(local_data.data(), 
+                s, 
+                MPI_INT,
+                mpix_alltoall.data(), 
+                s, 
+                MPI_INT,
+                locality_comm);
+        compare_alltoall_results(pmpi_alltoall, mpix_alltoall, s);
+
+        // Test Hierarchical + Nonblocking 
+        alltoall_hierarchical_nonblocking(local_data.data(), 
+                s, 
+                MPI_INT,
+                mpix_alltoall.data(), 
+                s, 
+                MPI_INT,
+                locality_comm);
+        compare_alltoall_results(pmpi_alltoall, mpix_alltoall, s);
+
+
+        // Test Multileader + Pairwise
+        std::fill(mpix_alltoall.begin(), mpix_alltoall.end(), 0);
+        alltoall_multileader_pairwise(local_data.data(), 
+                s, 
+                MPI_INT,
+                mpix_alltoall.data(), 
+                s, 
+                MPI_INT,
+                locality_comm);
+        compare_alltoall_results(pmpi_alltoall, mpix_alltoall, s);
+
+        // Test Multileader + Nonblocking 
+        alltoall_multileader_nonblocking(local_data.data(), 
+                s, 
+                MPI_INT,
+                mpix_alltoall.data(), 
+                s, 
+                MPI_INT,
+                locality_comm);
+        compare_alltoall_results(pmpi_alltoall, mpix_alltoall, s);
+
+
+        // Test Node Aware + Pairwise
+        std::fill(mpix_alltoall.begin(), mpix_alltoall.end(), 0);
+        alltoall_node_aware_pairwise(local_data.data(), 
+                s, 
+                MPI_INT,
+                mpix_alltoall.data(), 
+                s, 
+                MPI_INT,
+                locality_comm);
+        compare_alltoall_results(pmpi_alltoall, mpix_alltoall, s);
+
+        // Test Node Aware + Nonblocking 
+        alltoall_node_aware_nonblocking(local_data.data(), 
+                s, 
+                MPI_INT,
+                mpix_alltoall.data(), 
+                s, 
+                MPI_INT,
+                locality_comm);
+        compare_alltoall_results(pmpi_alltoall, mpix_alltoall, s);
+
+        // Test Locality Aware + Pairwise
+        std::fill(mpix_alltoall.begin(), mpix_alltoall.end(), 0);
+        alltoall_locality_aware_pairwise(local_data.data(), 
+                s, 
+                MPI_INT,
+                mpix_alltoall.data(), 
+                s, 
+                MPI_INT,
+                locality_comm);
+        compare_alltoall_results(pmpi_alltoall, mpix_alltoall, s);
+
+        // Test Locality Aware + Nonblocking 
+        alltoall_locality_aware_nonblocking(local_data.data(), 
+                s, 
+                MPI_INT,
+                mpix_alltoall.data(), 
+                s, 
+                MPI_INT,
+                locality_comm);
+        compare_alltoall_results(pmpi_alltoall, mpix_alltoall, s);
+
+
+        // Test Multileader + Locality Aware + Pairwise
+        std::fill(mpix_alltoall.begin(), mpix_alltoall.end(), 0);
+        alltoall_multileader_locality_pairwise(local_data.data(), 
+                s, 
+                MPI_INT,
+                mpix_alltoall.data(), 
+                s, 
+                MPI_INT,
+                locality_comm);
+        compare_alltoall_results(pmpi_alltoall, mpix_alltoall, s);
+
+        // Test Multileader + Locality Aware + Nonblocking 
+        alltoall_multileader_locality_nonblocking(local_data.data(), 
+                s, 
+                MPI_INT,
+                mpix_alltoall.data(), 
+                s, 
+                MPI_INT,
+                locality_comm);
+        compare_alltoall_results(pmpi_alltoall, mpix_alltoall, s);
+
+
+
     }
 
     MPIX_Comm_free(&locality_comm);

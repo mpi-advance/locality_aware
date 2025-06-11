@@ -12,6 +12,10 @@ int MPIX_Comm_init(MPIX_Comm** xcomm_ptr, MPI_Comm global_comm)
     xcomm->local_comm = MPI_COMM_NULL;
     xcomm->group_comm = MPI_COMM_NULL;
 
+    xcomm->leader_comm = MPI_COMM_NULL;
+    xcomm->leader_group_comm = MPI_COMM_NULL;
+    xcomm->leader_local_comm = MPI_COMM_NULL;
+
     xcomm->neighbor_comm = MPI_COMM_NULL;
 
     xcomm->win = MPI_WIN_NULL;
@@ -54,6 +58,36 @@ int MPIX_Comm_topo_init(MPIX_Comm* xcomm)
             local_rank,
             rank,
             &(xcomm->group_comm));
+
+    return MPI_SUCCESS;
+}
+
+int MPIX_Comm_leader_init(MPIX_Comm* xcomm, int procs_per_leader)
+{
+    int rank, num_procs;
+    MPI_Comm_rank(xcomm->global_comm, &rank);
+    MPI_Comm_size(xcomm->global_comm, &num_procs);
+
+    MPI_Comm_split(xcomm->global_comm,
+        rank / procs_per_leader,
+        rank,
+        &(xcomm->leader_comm));
+
+    int leader_rank;
+    MPI_Comm_rank(xcomm->leader_comm, &leader_rank);
+
+    MPI_Comm_split(xcomm->global_comm,
+        leader_rank,
+        rank,
+        &(xcomm->leader_group_comm));
+
+    if (xcomm->local_comm == MPI_COMM_NULL)
+        MPIX_Comm_topo_init(xcomm);
+
+    MPI_Comm_split(xcomm->local_comm,
+        leader_rank,
+        rank,
+        &(xcomm->leader_local_comm));
 
     return MPI_SUCCESS;
 }
@@ -117,6 +151,7 @@ int MPIX_Comm_free(MPIX_Comm** xcomm_ptr)
         MPI_Comm_free(&(xcomm->neighbor_comm));
 
     MPIX_Comm_topo_free(xcomm);
+    MPIX_Comm_leader_free(xcomm);
     MPIX_Comm_win_free(xcomm);
     MPIX_Comm_device_free(xcomm);
 
@@ -127,13 +162,22 @@ int MPIX_Comm_free(MPIX_Comm** xcomm_ptr)
 
 int MPIX_Comm_topo_free(MPIX_Comm* xcomm)
 {
-   if (xcomm->local_comm != MPI_COMM_NULL)
-      MPI_Comm_free(&(xcomm->local_comm));
-   if (xcomm->group_comm != MPI_COMM_NULL)
+    if (xcomm->local_comm != MPI_COMM_NULL)
+       MPI_Comm_free(&(xcomm->local_comm));
+    if (xcomm->group_comm != MPI_COMM_NULL)
        MPI_Comm_free(&(xcomm->group_comm));
 
-    xcomm->local_comm = MPI_COMM_NULL;
-    xcomm->group_comm = MPI_COMM_NULL;
+    return MPI_SUCCESS;
+}
+
+int MPIX_Comm_leader_free(MPIX_Comm* xcomm)
+{
+    if (xcomm->leader_comm != MPI_COMM_NULL)
+      MPI_Comm_free(&(xcomm->leader_comm));
+    if (xcomm->leader_group_comm != MPI_COMM_NULL)
+       MPI_Comm_free(&(xcomm->leader_group_comm));
+    if (xcomm->leader_local_comm != MPI_COMM_NULL)
+        MPI_Comm_free(&(xcomm->leader_local_comm));
 
     return MPI_SUCCESS;
 }
