@@ -30,6 +30,19 @@ void init_neighbor_request(MPIX_Request** request_ptr);
 // Standard Persistent Neighbor Alltoallv
 // Extension takes array of requests instead of single request
 // 'requests' must be of size indegree+outdegree!
+int MPIX_Neighbor_topo_alltoallv_init(
+        const void* sendbuf,
+        const int sendcounts[],
+        const int sdispls[],
+        MPI_Datatype sendtype,
+        void* recvbuf,
+        const int recvcounts[],
+        const int rdispls[],
+        MPI_Datatype recvtype,
+        MPIX_Topo* topo,
+        MPIX_Comm* comm,
+        MPIX_Info* info,
+        MPIX_Request** request_ptr);
 int MPIX_Neighbor_alltoallv_init(
         const void* sendbuf,
         const int sendcounts[],
@@ -44,24 +57,23 @@ int MPIX_Neighbor_alltoallv_init(
         MPIX_Request** request_ptr);
 
 
-// Standard Persistent Neighbor Alltoallv
-// Extension takes array of requests instead of single request
-// 'requests' must be of size indegree+outdegree!
-int MPIX_Neighbor_alltoallw_init(
-        const void* sendbuf,
+// Locality-Aware Extension to Persistent Neighbor Alltoallv
+// Needs global indices for each send and receive
+int MPIX_Neighbor_locality_topo_alltoallv_init(
+        const void* sendbuffer,
         const int sendcounts[],
-        const MPI_Aint sdispls[],
-        MPI_Datatype* sendtypes,
-        void* recvbuf,
+        const int sdispls[],
+        const long global_sindices[],
+        MPI_Datatype sendtype,
+        void* recvbuffer,
         const int recvcounts[],
-        const MPI_Aint rdispls[],
-        MPI_Datatype* recvtypes,
+        const int rdispls[],
+        const long global_rindices[],
+        MPI_Datatype recvtype,
+        MPIX_Topo* topo,
         MPIX_Comm* comm,
         MPIX_Info* info,
         MPIX_Request** request_ptr);
-
-// Locality-Aware Extension to Persistent Neighbor Alltoallv
-// Needs global indices for each send and receive
 int MPIX_Neighbor_locality_alltoallv_init(
         const void* sendbuf,
         const int sendcounts[],
@@ -77,6 +89,20 @@ int MPIX_Neighbor_locality_alltoallv_init(
         MPIX_Info* info,
         MPIX_Request** request_ptr);
 
+
+int MPIX_Neighbor_part_locality_topo_alltoallv_init(
+        const void* sendbuffer,
+        const int sendcounts[],
+        const int sdispls[],
+        MPI_Datatype sendtype,
+        void* recvbuffer,
+        const int recvcounts[],
+        const int rdispls[],
+        MPI_Datatype recvtype,
+        MPIX_Topo* topo,
+        MPIX_Comm* comm,
+        MPIX_Info* info,
+        MPIX_Request** request_ptr);
 int MPIX_Neighbor_part_locality_alltoallv_init(
         const void* sendbuf,
         const int sendcounts[],

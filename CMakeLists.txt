@@ -19,6 +19,7 @@ option(GPU_AWARE "Use GPU-Aware MPI, if GPU support is enabled" ON)
 option(ENABLE_UNIT_TESTS "Enable unit testing" ON)
 
 set(MPICXX "mpicxx" CACHE STRING "MPICXX command")
+set(MPIRUN "mpirun" CACHE STRING "MPIRUN command")
 set(CUDA_ARCH "75" CACHE STRING "CUDA Architecture")
 
 include_directories("${CMAKE_SOURCE_DIR}")
@@ -91,6 +92,7 @@ add_library(mpi_advance
 target_link_libraries(mpi_advance PUBLIC ${MPI_LIBRARIES})
 
 if (ENABLE_UNIT_TESTS)
+    enable_testing()
     add_subdirectory(src/collective/tests)
     add_subdirectory(src/neighborhood/tests)
     if (USE_GPU)

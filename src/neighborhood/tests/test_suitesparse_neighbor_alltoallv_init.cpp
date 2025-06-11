@@ -122,7 +122,7 @@ void test_matrix(const char* filename)
             A.send_comm.n_msgs, 
             A.send_comm.procs.data(),
             MPI_UNWEIGHTED,
-            MPI_INFO_NULL, 
+            xinfo, 
             0, 
             &xcomm);
 

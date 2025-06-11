@@ -82,7 +82,7 @@ int main(int argc, char** argv)
             send_data.num_msgs, 
             send_data.procs.data(),
             send_data.counts.data(),
-            MPI_INFO_NULL, 
+            xinfo, 
             0, 
             &xcomm);
 

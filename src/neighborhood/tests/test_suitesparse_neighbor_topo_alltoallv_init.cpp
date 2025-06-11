@@ -70,11 +70,23 @@ void test_matrix(const char* filename)
 
     MPI_Comm std_comm;
     MPI_Status status;
-    MPIX_Comm* neighbor_comm;
-    MPIX_Request* neighbor_request;
-    MPIX_Info* xinfo;
 
+    MPIX_Request* xrequest;
+    MPIX_Comm* xcomm;
+    MPIX_Comm_init(&xcomm, MPI_COMM_WORLD);
+    update_locality(xcomm, 4);
+    MPIX_Info* xinfo;
     MPIX_Info_init(&xinfo);
+
+    MPIX_Topo* topo;
+    MPIX_Topo_init(A.recv_comm.n_msgs,
+            A.recv_comm.procs.data(), 
+            A.recv_comm.counts.data(),
+            A.send_comm.n_msgs, 
+            A.send_comm.procs.data(),
+            A.send_comm.counts.data(),
+            xinfo, 
+            &topo);
 
     int* s = A.recv_comm.procs.data();
     if (A.recv_comm.n_msgs == 0)
@@ -93,7 +105,6 @@ void test_matrix(const char* filename)
             MPI_INFO_NULL, 
             0, 
             &std_comm);
-
 
     int* send_counts = A.send_comm.counts.data();
     if (A.send_comm.counts.data() == NULL)
@@ -116,23 +127,10 @@ void test_matrix(const char* filename)
         delete[] recv_counts;
     compare_neighbor_alltoallv_results(pmpi_recv_vals, mpix_recv_vals, A.recv_comm.size_msgs);
 
+       
 
-    MPIX_Dist_graph_create_adjacent(MPI_COMM_WORLD,
-            A.recv_comm.n_msgs,
-            A.recv_comm.procs.data(), 
-            MPI_UNWEIGHTED,
-            A.send_comm.n_msgs, 
-            A.send_comm.procs.data(),
-            MPI_UNWEIGHTED,
-            xinfo,
-            0, 
-            &neighbor_comm);
-
-    update_locality(neighbor_comm, 4);
-    
-
-    // 2. Node-Aware Communication - reorder during first send/recv
-    MPIX_Neighbor_alltoallv_init(alltoallv_send_vals.data(), 
+    std::fill(mpix_recv_vals.begin(), mpix_recv_vals.end(), 0);
+    MPIX_Neighbor_topo_alltoallv(alltoallv_send_vals.data(), 
             A.send_comm.counts.data(),
             A.send_comm.ptr.data(), 
             MPI_INT,
@@ -140,26 +138,76 @@ void test_matrix(const char* filename)
             A.recv_comm.counts.data(),
             A.recv_comm.ptr.data(), 
             MPI_INT,
-            neighbor_comm, 
+            topo,
+            xcomm);
+    compare_neighbor_alltoallv_results(pmpi_recv_vals, mpix_recv_vals, A.recv_comm.size_msgs);
+
+
+    // 2. Node-Aware Communication
+    std::fill(mpix_recv_vals.begin(), mpix_recv_vals.end(), 0);
+    MPIX_Neighbor_topo_alltoallv_init(alltoallv_send_vals.data(), 
+            A.send_comm.counts.data(),
+            A.send_comm.ptr.data(), 
+            MPI_INT,
+            mpix_recv_vals.data(), 
+            A.recv_comm.counts.data(),
+            A.recv_comm.ptr.data(), 
+            MPI_INT,
+            topo,
+            xcomm, 
             xinfo,
-            &neighbor_request);
+            &xrequest);
 
-    std::fill(mpix_recv_vals.begin(), mpix_recv_vals.end(), 0);
-    neighbor_request->reorder = 1;
-    MPIX_Start(neighbor_request);
-    MPIX_Wait(neighbor_request, &status);
-    compare_neighbor_alltoallv_results(pmpi_recv_vals, mpix_recv_vals, A.recv_comm.size_msgs);
-
-    // Standard send/recv with reordered recvs
-    std::fill(mpix_recv_vals.begin(), mpix_recv_vals.end(), 0);
-    MPIX_Start(neighbor_request);
-    MPIX_Wait(neighbor_request, &status);
-    MPIX_Request_free(&neighbor_request);
+    MPIX_Start(xrequest);
+    MPIX_Wait(xrequest, &status);
+    MPIX_Request_free(&xrequest);
     compare_neighbor_alltoallv_results(pmpi_recv_vals, mpix_recv_vals, A.recv_comm.size_msgs);
 
 
+    // 3. MPI Advance - Optimized Communication
+    std::fill(mpix_recv_vals.begin(), mpix_recv_vals.end(), 0);
+    MPIX_Neighbor_part_locality_topo_alltoallv_init(alltoallv_send_vals.data(), 
+            A.send_comm.counts.data(),
+            A.send_comm.ptr.data(), 
+            MPI_INT,
+            mpix_recv_vals.data(), 
+            A.recv_comm.counts.data(),
+            A.recv_comm.ptr.data(), 
+            MPI_INT,
+            topo,
+            xcomm, 
+            xinfo,
+            &xrequest);
+
+    MPIX_Start(xrequest);
+    MPIX_Wait(xrequest, &status);
+    MPIX_Request_free(&xrequest);
+    compare_neighbor_alltoallv_results(pmpi_recv_vals, mpix_recv_vals, A.recv_comm.size_msgs);
+
+    std::fill(mpix_recv_vals.begin(), mpix_recv_vals.end(), 0);
+    MPIX_Neighbor_locality_topo_alltoallv_init(alltoallv_send_vals.data(), 
+            A.send_comm.counts.data(),
+            A.send_comm.ptr.data(), 
+            send_indices.data(),
+            MPI_INT,
+            mpix_recv_vals.data(), 
+            A.recv_comm.counts.data(),
+            A.recv_comm.ptr.data(), 
+            A.off_proc_columns.data(),
+            MPI_INT,
+            topo,
+            xcomm, 
+            xinfo,
+            &xrequest);
+
+    MPIX_Start(xrequest);
+    MPIX_Wait(xrequest, &status);
+    MPIX_Request_free(&xrequest);
+    compare_neighbor_alltoallv_results(pmpi_recv_vals, mpix_recv_vals, A.recv_comm.size_msgs);
+
+    MPIX_Topo_free(&topo);
     MPIX_Info_free(&xinfo);
-    MPIX_Comm_free(&neighbor_comm);
+    MPIX_Comm_free(&xcomm);
     PMPI_Comm_free(&std_comm);
 }
 
@@ -188,5 +236,6 @@ int main(int argc, char** argv)
     MPI_Finalize();
     return 0;
 } // end of main() //
+
 
 
