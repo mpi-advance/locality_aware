@@ -64,7 +64,7 @@ endif()
 endif()
 
 add_subdirectory(src/utils)
-add_subdirectory(src/locality)
+add_subdirectory(src/communicator)
 add_subdirectory(src/persistent)
 add_subdirectory(src/collective)
 add_subdirectory(src/neighborhood)
@@ -74,7 +74,7 @@ endif()
 
 set_source_files_properties(
     ${utils_SOURCES}
-    ${locality_SOURCES}
+    ${communicator_SOURCES}
     ${collective_SOURCES}
     ${persistent_SOURCES}
     ${neighborhood_SOURCES}
@@ -83,7 +83,7 @@ set_source_files_properties(
 
 add_library(mpi_advance
     ${utils_SOURCES} ${utils_HEADERS}
-    ${locality_SOURCES} ${locality_HEADERS}
+    ${communicator_SOURCES} ${communicator_HEADERS}
     ${collective_SOURCES} ${collective_HEADERS}
     ${persistent_SOURCES} ${persistent_HEADERS}
     ${neighborhood_SOURCES} ${neighborhood_HEADERS}

@@ -1,4 +1,4 @@
-#include "topology.h"
+#include "mpix_comm.h"
 
 int MPIX_Comm_init(MPIX_Comm** xcomm_ptr, MPI_Comm global_comm)
 {
@@ -24,6 +24,10 @@ int MPIX_Comm_init(MPIX_Comm** xcomm_ptr, MPI_Comm global_comm)
 
     xcomm->requests = NULL;
     xcomm->n_requests = 0;
+
+    int flag;
+    MPI_Comm_get_attr(MPI_COMM_WORLD, MPI_TAG_UB, &(xcomm->max_tag), &flag);
+    xcomm->tag = 126 % xcomm->max_tag;
 
 #ifdef GPU
     xcomm->gpus_per_node = 0;
@@ -136,6 +140,14 @@ int MPIX_Comm_req_resize(MPIX_Comm* xcomm, int n)
 
     xcomm->n_requests = n;
     xcomm->requests = (MPI_Request*)realloc(xcomm->requests, n*sizeof(MPI_Request));
+
+    return MPI_SUCCESS;
+}
+
+int MPIX_Comm_tag(MPIX_Comm* xcomm, int* tag)
+{
+    *tag = xcomm->tag;
+    xcomm->tag = ((xcomm->tag + 1 ) % xcomm->max_tag);
 
     return MPI_SUCCESS;
 }

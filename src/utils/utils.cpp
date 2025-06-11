@@ -12,9 +12,6 @@
 int MPIX_Info_init(MPIX_Info** info_ptr)
 {
     MPIX_Info* xinfo = (MPIX_Info*)malloc(sizeof(MPIX_Info));
-    int flag;
-    MPI_Comm_get_attr( MPI_COMM_WORLD, MPI_TAG_UB, &(xinfo->max_tag), &flag);
-    xinfo->tag = 159 % xinfo->max_tag;
     xinfo->crs_num_initialized = 0;
     xinfo->crs_size_initialized = 0;
 
@@ -30,16 +27,6 @@ int MPIX_Info_free(MPIX_Info** info_ptr)
 
     return MPI_SUCCESS;
 }
-
-int MPIX_Info_tag(MPIX_Info* xinfo, int* tag)
-{
-    *tag = xinfo->tag;
-    xinfo->tag = ((xinfo->tag + 1 )% xinfo->max_tag);
-
-    return MPI_SUCCESS;
-}
-
-
 
 
 void sort(int n_objects, int* object_indices, int* object_values)

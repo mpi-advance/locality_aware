@@ -1,8 +1,0 @@
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
-
-file(GLOB locality_HEADERS CONFIGURE_DEPENDS "*.h")
-file(GLOB locality_SOURCES CONFIGURE_DEPENDS "*.c")
-
-set(locality_HEADERS ${locality_HEADERS} PARENT_SCOPE)
-set(locality_SOURCES ${locality_SOURCES} PARENT_SCOPE)
-

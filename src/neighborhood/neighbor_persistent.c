@@ -221,7 +221,8 @@ int MPIX_Neighbor_topo_alltoallv_init(
     MPIX_Request* request;
     init_neighbor_request(&request);
 
-    int tag = 349526;
+    int tag;
+    MPIX_Comm_tag(comm, &tag);
 
     request->global_n_msgs = topo->indegree+topo->outdegree;
     allocate_requests(request->global_n_msgs, &(request->global_requests));

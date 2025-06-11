@@ -2,8 +2,8 @@
 #define MPI_ADVANCE_DIST_TOPO_H
 
 #include "mpi.h"
-#include "locality/locality_comm.h"
-#include "locality/topology.h"
+#include "communicator/locality_comm.h"
+#include "communicator/mpix_comm.h"
 
 // Declarations of C++ methods
 #ifdef __cplusplus

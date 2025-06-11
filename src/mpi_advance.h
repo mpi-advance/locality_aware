@@ -3,10 +3,10 @@
 
 #include "utils/utils.h"
 
-#include "locality/comm_data.h"
-#include "locality/comm_pkg.h"
-#include "locality/locality_comm.h"
-#include "locality/topology.h"
+#include "communicator/comm_data.h"
+#include "communicator/comm_pkg.h"
+#include "communicator/locality_comm.h"
+#include "communicator/mpix_comm.h"
 
 #include "persistent/persistent.h"
 

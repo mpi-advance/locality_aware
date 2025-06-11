@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <mpi.h>
 #include "collective.h"
-#include "locality/topology.h"
+#include "communicator/mpix_comm.h"
 
 #ifdef __cplusplus
 extern "C"
@@ -21,7 +21,7 @@ int alltoallv_pairwise(const void* sendbuf,
         const int recvcounts[],
         const int rdispls[],
         MPI_Datatype recvtype,
-        MPI_Comm comm);
+        MPIX_Comm* comm);
 int alltoallv_nonblocking(const void* sendbuf,
         const int sendcounts[],
         const int sdispls[],
@@ -30,7 +30,7 @@ int alltoallv_nonblocking(const void* sendbuf,
         const int recvcounts[],
         const int rdispls[],
         MPI_Datatype recvtype,
-        MPI_Comm comm);
+        MPIX_Comm* comm);
 int alltoallv_batch(const void* sendbuf,
         const int sendcounts[],
         const int sdispls[],
@@ -39,7 +39,7 @@ int alltoallv_batch(const void* sendbuf,
         const int recvcounts[],
         const int rdispls[],
         MPI_Datatype recvtype,
-        MPI_Comm comm);
+        MPIX_Comm* comm);
 int alltoallv_batch_async(const void* sendbuf,
         const int sendcounts[],
         const int sdispls[],
@@ -48,9 +48,7 @@ int alltoallv_batch_async(const void* sendbuf,
         const int recvcounts[],
         const int rdispls[],
         MPI_Datatype recvtype,
-        MPI_Comm comm);
-
-
+        MPIX_Comm* comm);
 
 #ifdef __cplusplus
 }

@@ -43,6 +43,9 @@ typedef struct _MPIX_Comm
     MPI_Request* requests;
     int n_requests;
 
+    int tag;
+    int max_tag;
+
 #ifdef GPU
    int gpus_per_node;
    int rank_gpu;
@@ -66,6 +69,8 @@ int MPIX_Comm_device_init(MPIX_Comm* xcomm);
 int MPIX_Comm_device_free(MPIX_Comm* xcomm);
 
 int MPIX_Comm_req_resize(MPIX_Comm* xcomm, int n);
+
+int MPIX_Comm_tag(MPIX_Comm* comm, int* tag);
 
 int get_node(const MPIX_Comm* data, const int proc);
 int get_local_proc(const MPIX_Comm* data, const int proc);

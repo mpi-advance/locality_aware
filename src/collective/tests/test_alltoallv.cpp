@@ -43,9 +43,9 @@ int main(int argc, char** argv)
     std::vector<int> sizes(num_procs);
     std::vector<int> displs(num_procs+1);
 
-    MPIX_Comm* locality_comm;
-    MPIX_Comm_init(&locality_comm, MPI_COMM_WORLD);
-    update_locality(locality_comm, 4);
+    MPIX_Comm* xcomm;
+    MPIX_Comm_init(&xcomm, MPI_COMM_WORLD);
+    update_locality(xcomm, 4);
 
     for (int i = 0; i < max_i; i++)
     {
@@ -80,11 +80,56 @@ int main(int argc, char** argv)
                 sizes.data(),
                 displs.data(),
                 MPI_INT,
-                locality_comm);
+                xcomm);
         compare_alltoallv_results(pmpi_alltoallv, mpix_alltoallv, s);
+
+        alltoallv_pairwise(local_data.data(), 
+                sizes.data(),
+                displs.data(),
+                MPI_INT, 
+                mpix_alltoallv.data(), 
+                sizes.data(),
+                displs.data(),
+                MPI_INT,
+                xcomm);
+        compare_alltoallv_results(pmpi_alltoallv, mpix_alltoallv, s);
+
+        alltoallv_nonblocking(local_data.data(), 
+                sizes.data(),
+                displs.data(),
+                MPI_INT, 
+                mpix_alltoallv.data(), 
+                sizes.data(),
+                displs.data(),
+                MPI_INT,
+                xcomm);
+        compare_alltoallv_results(pmpi_alltoallv, mpix_alltoallv, s);
+
+        alltoallv_batch(local_data.data(), 
+                sizes.data(),
+                displs.data(),
+                MPI_INT, 
+                mpix_alltoallv.data(), 
+                sizes.data(),
+                displs.data(),
+                MPI_INT,
+                xcomm);
+        compare_alltoallv_results(pmpi_alltoallv, mpix_alltoallv, s);
+
+        alltoallv_batch_async(local_data.data(), 
+                sizes.data(),
+                displs.data(),
+                MPI_INT, 
+                mpix_alltoallv.data(), 
+                sizes.data(),
+                displs.data(),
+                MPI_INT,
+                xcomm);
+        compare_alltoallv_results(pmpi_alltoallv, mpix_alltoallv, s);
+
     }
 
-    MPIX_Comm_free(&locality_comm);
+    MPIX_Comm_free(&xcomm);
 
 
     MPI_Finalize();

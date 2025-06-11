@@ -60,13 +60,12 @@ int pairwise_helper(const void* sendbuf,
         void* recvbuf,
         const int recvcount,
         MPI_Datatype recvtype,
-        MPI_Comm comm)
+        MPI_Comm comm,
+        int tag)
 {
     int rank, num_procs;
     MPI_Comm_rank(comm, &rank);
     MPI_Comm_size(comm, &num_procs);
-
-    int tag = 10238;
 
     int send_proc, recv_proc;
     int send_pos, recv_pos;
@@ -116,8 +115,11 @@ int alltoall_pairwise(const void* sendbuf,
         MPI_Datatype recvtype,
         MPIX_Comm* comm)
 {
+    int tag;
+    MPIX_Comm_tag(comm, &tag);
+
     return pairwise_helper(sendbuf, sendcount, sendtype, 
-            recvbuf, recvcount, recvtype, comm->global_comm);
+            recvbuf, recvcount, recvtype, comm->global_comm, tag);
 }
 
 int nonblocking_helper(const void* sendbuf,
@@ -126,13 +128,13 @@ int nonblocking_helper(const void* sendbuf,
         void* recvbuf,
         const int recvcount,
         MPI_Datatype recvtype,
-        MPI_Comm comm)
+        MPI_Comm comm,
+        int tag)
 {
     int rank, num_procs;
     MPI_Comm_rank(comm, &rank);
     MPI_Comm_size(comm, &num_procs);
 
-    int tag = 10239;
     int send_proc, recv_proc;
     int send_pos, recv_pos;
     MPI_Status status;
@@ -190,8 +192,11 @@ int alltoall_nonblocking(const void* sendbuf,
         MPI_Datatype recvtype,
         MPIX_Comm* comm)
 {
+    int tag;
+    MPIX_Comm_tag(comm, &tag);
+
     return nonblocking_helper(sendbuf, sendcount, sendtype,
-            recvbuf, recvcount, recvtype, comm->global_comm);
+            recvbuf, recvcount, recvtype, comm->global_comm, tag);
 }
 
 
@@ -210,7 +215,8 @@ int alltoall_multileader(
     MPI_Comm_rank(comm->global_comm, &rank);
     MPI_Comm_size(comm->global_comm, &num_procs);
 
-    int tag = 10241;
+    int tag;
+    MPIX_Comm_tag(comm, &tag);
 
     if (comm->local_comm == MPI_COMM_NULL)
         MPIX_Comm_topo_init(comm);
@@ -309,7 +315,7 @@ int alltoall_multileader(
 
         // 3. MPI_Alltoall between leaders
         f(local_send_buffer, ppl * ppl * sendcount, sendtype,
-                local_recv_buffer, ppl * ppl * recvcount, recvtype, group_comm);
+                local_recv_buffer, ppl * ppl * recvcount, recvtype, group_comm, tag);
 
         // 4. Re-pack for local scatter
         ctr = 0;
@@ -417,7 +423,8 @@ int alltoall_locality_aware_helper(
         MPIX_Comm* comm,
         int groups_per_node,
         MPI_Comm local_comm,
-        MPI_Comm group_comm)
+        MPI_Comm group_comm,
+        int tag)
 { 
     int rank, num_procs;
     MPI_Comm_rank(comm->global_comm, &rank);
@@ -443,7 +450,7 @@ int alltoall_locality_aware_helper(
 
     // 1. Alltoall between group_comms (all data for any process on node)
     f(sendbuf, ppg*sendcount, sendtype, tmpbuf, ppg*recvcount, recvtype,
-            group_comm);
+            group_comm, tag);
 
     // 2. Re-pack
     int ctr = 0;
@@ -460,7 +467,7 @@ int alltoall_locality_aware_helper(
 
     // 3. Local alltoall
     f(recvbuf, n_groups*recvcount, recvtype, 
-            tmpbuf, n_groups*recvcount, recvtype, local_comm);
+            tmpbuf, n_groups*recvcount, recvtype, local_comm, tag);
 
     // 4. Re-order
     ctr = 0;
@@ -495,7 +502,8 @@ int alltoall_locality_aware(
     MPI_Comm_rank(comm->global_comm, &rank);
     MPI_Comm_size(comm->global_comm, &num_procs);
 
-    int tag = 10243;
+    int tag;
+    MPIX_Comm_tag(comm, &tag);
 
     if (comm->local_comm == MPI_COMM_NULL)
         MPIX_Comm_topo_init(comm);
@@ -530,7 +538,7 @@ int alltoall_locality_aware(
     }
 
     return alltoall_locality_aware_helper(f, sendbuf, sendcount, sendtype,
-            recvbuf, recvcount, recvtype, comm, groups_per_node, local_comm, group_comm);
+            recvbuf, recvcount, recvtype, comm, groups_per_node, local_comm, group_comm, tag);
 }
 
 int alltoall_node_aware(
@@ -616,7 +624,8 @@ int alltoall_multileader_locality(
     MPI_Comm_rank(comm->global_comm, &rank);
     MPI_Comm_size(comm->global_comm, &num_procs);
 
-    int tag = 10241;
+    int tag;
+    MPIX_Comm_tag(comm, &tag);
 
     if (comm->local_comm == MPI_COMM_NULL)
         MPIX_Comm_topo_init(comm);
@@ -703,7 +712,7 @@ int alltoall_multileader_locality(
 
         // 3. MPI_Alltoall between nodes 
         f(local_send_buffer, ppn*procs_per_leader*sendcount, sendtype, 
-                local_recv_buffer, ppn*procs_per_leader*recvcount, recvtype, comm->group_comm);
+                local_recv_buffer, ppn*procs_per_leader*recvcount, recvtype, comm->group_comm, tag);
 
         // Re-Pack for exchange between local leaders
         ctr = 0;
@@ -720,7 +729,8 @@ int alltoall_multileader_locality(
         }
 
         f(local_send_buffer, n_nodes*procs_per_leader*procs_per_leader*sendcount, sendtype, 
-                local_recv_buffer, n_nodes*procs_per_leader*procs_per_leader*recvcount, recvtype, comm->leader_local_comm);
+                local_recv_buffer, n_nodes*procs_per_leader*procs_per_leader*recvcount, recvtype, 
+                comm->leader_local_comm, tag);
 
         ctr = 0;
         for (int dest_proc = 0; dest_proc < procs_per_leader; dest_proc++)

@@ -15,7 +15,7 @@ int alltoallv_crs_personalized(int send_nnz, int send_size, int* dest, int* send
     MPI_Status recv_status;
     int proc, ctr, count;
     int tag;
-    MPIX_Info_tag(xinfo, &tag);
+    MPIX_Comm_tag(comm, &tag);
 
     char* send_buffer = (char*)sendvals;
     int send_bytes, recv_bytes;
@@ -112,7 +112,7 @@ int alltoallv_crs_nonblocking(int send_nnz, int send_size, int* dest, int* sendc
     MPI_Status recv_status;
     MPI_Request bar_req;
     int tag;
-    MPIX_Info_tag(xinfo, &tag);
+    MPIX_Comm_tag(comm, &tag);
 
     if (comm->n_requests < send_nnz)
         MPIX_Comm_req_resize(comm, send_nnz);
@@ -268,7 +268,7 @@ void local_redistribute(int n_recvs, std::vector<int>& origins, std::vector<int>
     // Tell them which global indices I need from them
     std::vector<MPI_Request> local_req(PPN);
 
-    MPIX_Info_tag(xinfo, &tag);
+    MPIX_Comm_tag(comm, &tag);
 
     n_sends = 0;
     for (int i = 0; i < PPN; i++)
@@ -368,7 +368,7 @@ int alltoallv_crs_personalized_loc(int send_nnz, int send_size, int* dest, int* 
         MPIX_Comm_req_resize(comm, send_nnz);
 
     int tag;
-    MPIX_Info_tag(xinfo, &tag);
+    MPIX_Comm_tag(comm, &tag);
 
     char* send_buffer = (char*)sendvals;
     int send_bytes, recv_bytes, int_bytes;
@@ -494,7 +494,7 @@ int alltoallv_crs_nonblocking_loc(int send_nnz, int send_size, int* dest, int* s
         MPIX_Comm_req_resize(comm, send_nnz);
 
     int tag;
-    MPIX_Info_tag(xinfo, &tag);
+    MPIX_Comm_tag(comm, &tag);
 
     char* send_buffer = (char*)sendvals;
     int send_bytes, recv_bytes, int_bytes;

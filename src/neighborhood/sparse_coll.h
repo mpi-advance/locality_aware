@@ -2,8 +2,8 @@
 #define MPI_ADVANCE_SPARSE_COLL_H
 
 #include "mpi.h"
-#include "locality/locality_comm.h"
-#include "locality/topology.h"
+#include "communicator/locality_comm.h"
+#include "communicator/mpix_comm.h"
 #include "utils/utils.h"
 
 // Declarations of C++ methods

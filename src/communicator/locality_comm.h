@@ -2,7 +2,7 @@
 #define MPI_ADVANCE_LOCALITY_COMM_H
 
 #include "comm_pkg.h"
-#include "topology.h"
+#include "mpix_comm.h"
 
 #include <mpi.h>
 
@@ -20,10 +20,10 @@ typedef struct _LocalityComm
     CommPkg* local_R_comm;
     CommPkg* global_comm;
     
-    const MPIX_Comm* communicators;
+    MPIX_Comm* communicators;
 } LocalityComm;
 
-void init_locality_comm(LocalityComm** locality_ptr, const MPIX_Comm* comm,
+void init_locality_comm(LocalityComm** locality_ptr, MPIX_Comm* comm,
         MPI_Datatype sendtype, MPI_Datatype recvtype);
 void finalize_locality_comm(LocalityComm* locality);
 void destroy_locality_comm(LocalityComm* locality);

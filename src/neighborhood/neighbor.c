@@ -14,7 +14,8 @@ int MPIX_Neighbor_topo_alltoallv(
         MPIX_Topo* topo,
         MPIX_Comm* comm)
 {
-    int tag = 349529;
+    int tag;
+    MPIX_Comm_tag(comm, &tag);
 
     MPI_Request* send_requests = (MPI_Request*)malloc((*topo).outdegree*sizeof(MPI_Request));
     MPI_Request* recv_requests = (MPI_Request*)malloc((*topo).indegree*sizeof(MPI_Request));

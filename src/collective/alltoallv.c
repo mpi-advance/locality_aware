@@ -75,7 +75,7 @@ int MPIX_Alltoallv(const void* sendbuf,
         recvcounts,
         rdispls,
         recvtype,
-        mpi_comm->global_comm);
+        mpi_comm);
 }
 
 
@@ -87,13 +87,15 @@ int alltoallv_pairwise(const void* sendbuf,
         const int recvcounts[],
         const int rdispls[],
         MPI_Datatype recvtype,
-        MPI_Comm comm)
+        MPIX_Comm* comm)
 {
     int rank, num_procs;
-    MPI_Comm_rank(comm, &rank);
-    MPI_Comm_size(comm, &num_procs);
+    MPI_Comm_rank(comm->global_comm, &rank);
+    MPI_Comm_size(comm->global_comm, &num_procs);
 
-    int tag = 103044;
+    int tag;
+    MPIX_Comm_tag(comm, &tag);
+
     int send_proc, recv_proc;
     int send_pos, recv_pos;
     MPI_Status status;
@@ -121,7 +123,7 @@ int alltoallv_pairwise(const void* sendbuf,
 
         MPI_Sendrecv(send_buffer + send_pos, sendcounts[send_proc], sendtype, send_proc, tag,
                 recv_buffer + recv_pos, recvcounts[recv_proc], recvtype, recv_proc, tag,
-                comm, &status);
+                comm->global_comm, &status);
     }
 
     return 0;
@@ -135,17 +137,19 @@ int alltoallv_nonblocking(const void* sendbuf,
         const int recvcounts[],
         const int rdispls[],
         MPI_Datatype recvtype,
-        MPI_Comm comm)
+        MPIX_Comm* comm)
 {
     int rank, num_procs;
-    MPI_Comm_rank(comm, &rank);
-    MPI_Comm_size(comm, &num_procs);
+    MPI_Comm_rank(comm->global_comm, &rank);
+    MPI_Comm_size(comm->global_comm, &num_procs);
 
     if (num_procs <= 1)
         alltoallv_pairwise(sendbuf, sendcounts, sdispls, sendtype,
                 recvbuf, recvcounts, rdispls, recvtype, comm);
 
-    int tag = 103044;
+    int tag;
+    MPIX_Comm_tag(comm, &tag);
+
     int send_proc, recv_proc;
     int send_pos, recv_pos;
 
@@ -173,9 +177,9 @@ int alltoallv_nonblocking(const void* sendbuf,
         recv_pos = rdispls[recv_proc] * recv_size;
 
         MPI_Isend(send_buffer + send_pos, sendcounts[send_proc], sendtype, send_proc, tag,
-                comm, &(requests[i]));
+                comm->global_comm, &(requests[i]));
         MPI_Irecv(recv_buffer + recv_pos, recvcounts[recv_proc], recvtype, recv_proc, tag,
-                comm, &(requests[num_procs+i]));
+                comm->global_comm, &(requests[num_procs+i]));
     }
 
     MPI_Waitall(2*num_procs, requests, MPI_STATUSES_IGNORE);
@@ -193,11 +197,11 @@ int alltoallv_batch(const void* sendbuf,
         const int recvcounts[],
         const int rdispls[],
         MPI_Datatype recvtype,
-        MPI_Comm comm)
+        MPIX_Comm* comm)
 {
     int rank, num_procs;
-    MPI_Comm_rank(comm, &rank);
-    MPI_Comm_size(comm, &num_procs);
+    MPI_Comm_rank(comm->global_comm, &rank);
+    MPI_Comm_size(comm->global_comm, &num_procs);
 
     // Tuning Parameter : number of non-blocking messages between waits 
     int nb_stride = 5;
@@ -205,7 +209,9 @@ int alltoallv_batch(const void* sendbuf,
         alltoallv_nonblocking(sendbuf, sendcounts, sdispls, sendtype,
                 recvbuf, recvcounts, rdispls, recvtype, comm);
 
-    int tag = 103044;
+    int tag;
+    MPIX_Comm_tag(comm, &tag);
+
     int ctr;
     int send_proc, recv_proc;
     int send_pos, recv_pos;
@@ -235,9 +241,9 @@ int alltoallv_batch(const void* sendbuf,
         recv_pos = rdispls[recv_proc] * recv_size;
 
         MPI_Isend(send_buffer + send_pos, sendcounts[send_proc], sendtype, send_proc, tag,
-                comm, &(requests[ctr++]));
+                comm->global_comm, &(requests[ctr++]));
         MPI_Irecv(recv_buffer + recv_pos, recvcounts[recv_proc], recvtype, recv_proc, tag,
-                comm, &(requests[ctr++]));
+                comm->global_comm, &(requests[ctr++]));
 
         if ((i+1) % nb_stride == 0)
         {
@@ -262,11 +268,11 @@ int alltoallv_batch_async(const void* sendbuf,
         const int recvcounts[],
         const int rdispls[],
         MPI_Datatype recvtype,
-        MPI_Comm comm)
+        MPIX_Comm* comm)
 {
     int rank, num_procs;
-    MPI_Comm_rank(comm, &rank);
-    MPI_Comm_size(comm, &num_procs);
+    MPI_Comm_rank(comm->global_comm, &rank);
+    MPI_Comm_size(comm->global_comm, &num_procs);
 
     // Tuning Parameter : number of non-blocking messages between waits 
     int nb_stride = 5;
@@ -274,7 +280,9 @@ int alltoallv_batch_async(const void* sendbuf,
         return alltoallv_nonblocking(sendbuf, sendcounts, sdispls, sendtype, 
                 recvbuf, recvcounts, rdispls, recvtype, comm);
 
-    int tag = 103044;
+    int tag;
+    MPIX_Comm_tag(comm, &tag);
+
     int ctr;
     int send_proc, recv_proc;
     int send_pos, recv_pos;
@@ -305,9 +313,9 @@ int alltoallv_batch_async(const void* sendbuf,
         recv_pos = rdispls[recv_proc] * recv_size;
 
         MPI_Isend(send_buffer + send_pos, sendcounts[send_proc], sendtype, send_proc, tag,
-                comm, &(requests[send_idx++]));
+                comm->global_comm, &(requests[send_idx++]));
         MPI_Irecv(recv_buffer + recv_pos, recvcounts[recv_proc], recvtype, recv_proc, tag,
-                comm, &(requests[nb_stride + recv_idx++]));
+                comm->global_comm, &(requests[nb_stride + recv_idx++]));
 
         if ((i+1) >= nb_stride)
         {

@@ -6,7 +6,7 @@
 #include <mpi.h>
 #include "utils/utils.h"
 #include "collective.h"
-#include "locality/topology.h"
+#include "communicator/mpix_comm.h"
 
 #ifdef __cplusplus
 extern "C"
@@ -14,7 +14,7 @@ extern "C"
 #endif
 
 typedef int (*alltoall_ftn)(const void*, const int, MPI_Datatype, void*, const int, MPI_Datatype, MPIX_Comm*);
-typedef int (*alltoall_helper_ftn)(const void*, const int, MPI_Datatype, void*, const int, MPI_Datatype, MPI_Comm);
+typedef int (*alltoall_helper_ftn)(const void*, const int, MPI_Datatype, void*, const int, MPI_Datatype, MPI_Comm, int tag);
 
 int alltoall_pairwise(const void* sendbuf,
         const int sendcount,

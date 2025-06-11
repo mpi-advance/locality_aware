@@ -1,7 +1,7 @@
 include_directories(".")
 
 add_subdirectory(utils)
-add_subdirectory(locality)
+add_subdirectory(communicator)
 add_subdirectory(persistent)
 add_subdirectory(collective)
 add_subdirectory(neighborhood)
@@ -11,7 +11,7 @@ endif()
 
 set_source_files_properties(
     ${utils_SOURCES}
-    ${locality_SOURCES}
+    ${communicator_SOURCES}
     ${collective_SOURCES}
     ${persistent_SOURCES}
     ${neighborhood_SOURCES}
@@ -20,7 +20,7 @@ set_source_files_properties(
 
 add_library(mpi_advance
     ${utils_SOURCES} ${utils_HEADERS}
-    ${locality_SOURCES} ${locality_HEADERS}
+    ${communicator_SOURCES} ${communicator_HEADERS}
     ${collective_SOURCES} ${collective_HEADERS}
     ${persistent_SOURCES} ${persistent_HEADERS}
     ${neighborhood_SOURCES} ${neighborhood_HEADERS}

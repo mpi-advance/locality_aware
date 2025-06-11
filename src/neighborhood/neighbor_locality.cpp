@@ -55,7 +55,7 @@ void init_locality(const int n_sends,
         const long* global_recv_indices,
         const MPI_Datatype sendtype, 
         const MPI_Datatype recvtype,
-        const MPIX_Comm* mpix_comm,
+        MPIX_Comm* mpix_comm,
         MPIX_Request* request)
 {
     // Get MPI Information
@@ -533,8 +533,9 @@ void update_global_comm(LocalityComm* locality)
     int n_msgs = n_sends + n_recvs;
     MPI_Request* requests = NULL;
     int* send_buffer = NULL;
-    int send_tag = 32148532;
-    int recv_tag = 52395234;
+    int send_tag, recv_tag;
+    MPIX_Comm_tag(locality->communicators, &send_tag);
+    MPIX_Comm_tag(locality->communicators, &recv_tag);
     int node, global_proc;
     int num_to_recv;
     MPI_Status recv_status;

@@ -6,7 +6,7 @@
 #include "dist_graph.h"
 #include "dist_topo.h"
 #include "persistent/persistent.h"
-#include "locality/locality_comm.h"
+#include "communicator/locality_comm.h"
 #include "utils/utils.h"
 
 // Declarations of C++ methods

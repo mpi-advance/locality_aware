@@ -94,7 +94,7 @@ int alltoall_crs_personalized(int send_nnz, int* dest, int sendcount,
     MPI_Status recv_status;
     int proc, ctr;
     int tag;
-    MPIX_Info_tag(xinfo, &tag);
+    MPIX_Comm_tag(comm, &tag);
 
     char* send_buffer;
     if (send_nnz)
@@ -178,7 +178,7 @@ int alltoall_crs_nonblocking(int send_nnz, int* dest, int sendcount,
     MPI_Status recv_status;
     MPI_Request bar_req;
     int tag;
-    MPIX_Info_tag(xinfo, &tag);
+    MPIX_Comm_tag(comm, &tag);
 
     std::vector<int> src;
     std::vector<char> recv_buffer;
@@ -295,7 +295,7 @@ void local_redistribute(int node_recv_size, std::vector<char>& recv_buf, std::ve
         displs[i+1] = displs[i] + msg_counts[i];
 
     int tag;
-    MPIX_Info_tag(xinfo, &tag);
+    MPIX_Comm_tag(comm, &tag);
 
     MPI_Allreduce(MPI_IN_PLACE, msg_counts.data(), PPN, MPI_INT, MPI_SUM, comm->local_comm);
     int recv_count = msg_counts[local_rank];
@@ -395,7 +395,7 @@ int alltoall_crs_personalized_loc(int send_nnz, int* dest, int sendcount,
     int proc, ctr, start, end;
     int count, n_msgs, n_sends, n_recvs, idx, new_idx;
     int tag;
-    MPIX_Info_tag(xinfo, &tag);
+    MPIX_Comm_tag(comm, &tag);
 
     std::vector<char> node_send_buffer;
     std::vector<char> local_send_buffer;
@@ -526,7 +526,7 @@ int alltoall_crs_nonblocking_loc(int send_nnz, int* dest, int sendcount,
     int proc, ctr, flag, ibar, start, end;
     int count, n_msgs, n_sends, n_recvs, idx, new_idx;
     int tag;
-    MPIX_Info_tag(xinfo, &tag);
+    MPIX_Comm_tag(comm, &tag);
 
     std::vector<char> node_send_buffer;
     std::vector<char> local_send_buffer;
