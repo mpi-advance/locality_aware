@@ -39,12 +39,12 @@ int main(int argc, char* argv[])
         int s = pow(2, i);
         if (rank == 0) printf("Testing Size %d\n", s);
 
-        for (int i = 0; i < num_procs; i++)
+        for (int j = 0; j < num_procs; j++)
         {
-            send_sizes[i] = s;
-            send_displs[i+1] = send_displs[i] + s;
-            recv_sizes[i] = s;
-            recv_displs[i+1] = recv_displs[i] + s;
+            send_sizes[j] = s;
+            send_displs[j+1] = send_displs[j] + s;
+            recv_sizes[j] = s;
+            recv_displs[j+1] = recv_displs[j] + s;
         }
 
         for (int j = 0; j < s*num_procs; j++)
@@ -75,7 +75,7 @@ int main(int argc, char* argv[])
             if (fabs(std_alltoallv[j] - loc_alltoallv[j]) > 1e-10)
             {
                 fprintf(stderr, 
-                        "Rank %d, idx %d, std %d, loc %d\n", 
+                        "Rank %d, idx %d, std %f, loc %f\n", 
                          rank, j, std_alltoallv[j], loc_alltoallv[j]);
                 MPI_Abort(MPI_COMM_WORLD, 1);
                 return 1;
