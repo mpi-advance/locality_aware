@@ -27,7 +27,7 @@ int gpu_aware_alltoall(alltoall_ftn f,
     cudaMallocHost((void**)&cpu_sendbuf, total_bytes_s);
     cudaMallocHost((void**)&cpu_recvbuf, total_bytes_r);
 
-    int ierr = f(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm->global_comm);
+    int ierr = f(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm);
 
     cudaFreeHost(cpu_sendbuf);
     cudaFreeHost(cpu_recvbuf);
@@ -101,7 +101,7 @@ int copy_to_cpu_alltoall(alltoall_ftn f,
     ierr += gpuMemcpy(cpu_sendbuf, sendbuf, total_bytes_s, gpuMemcpyDeviceToHost);
 
     // Collective Among CPUs
-    ierr += f(cpu_sendbuf, sendcount, sendtype, cpu_recvbuf, recvcount, recvtype, comm->global_comm);
+    ierr += f(cpu_sendbuf, sendcount, sendtype, cpu_recvbuf, recvcount, recvtype, comm);
 
     // Copy from CPU to GPU
     ierr += gpuMemcpy(recvbuf, cpu_recvbuf, total_bytes_r, gpuMemcpyHostToDevice);
@@ -150,6 +150,7 @@ int copy_to_cpu_alltoall_nonblocking(const void* sendbuf,
 }
 
 
+#ifdef OPENMP
 int threaded_alltoall_pairwise(const void* sendbuf,
         const int sendcount,
         MPI_Datatype sendtype,
@@ -334,3 +335,5 @@ int threaded_alltoall_nonblocking(const void* sendbuf,
 
     return ierr;
 }
+
+#endif

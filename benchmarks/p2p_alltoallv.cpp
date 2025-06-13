@@ -31,8 +31,8 @@ int main(int argc, char* argv[])
     send_displs[0] = 0;
     recv_displs[0] = 0;
 
-    MPIX_Comm* locality_comm;
-    MPIX_Comm_init(&locality_comm, MPI_COMM_WORLD);
+    MPIX_Comm* xcomm;
+    MPIX_Comm_init(&xcomm, MPI_COMM_WORLD);
 
     for (int i = 0; i < max_i; i++)
     {
@@ -68,7 +68,7 @@ int main(int argc, char* argv[])
                 recv_sizes.data(),
                 recv_displs.data(),
                 MPI_DOUBLE,
-                locality_comm);
+                xcomm);
 
         for (int j = 0; j < s; j++)
 	{
@@ -122,7 +122,7 @@ int main(int argc, char* argv[])
                 recv_sizes.data(),
                 recv_displs.data(),
                 MPI_DOUBLE,
-                locality_comm);
+                xcomm);
         MPI_Barrier(MPI_COMM_WORLD);
         t0 = MPI_Wtime();
         for (int k = 0; k < n_iter; k++)
@@ -135,7 +135,7 @@ int main(int argc, char* argv[])
                     recv_sizes.data(),
                     recv_displs.data(),
                     MPI_DOUBLE,
-                    locality_comm);
+                    xcomm);
         }
         tfinal = (MPI_Wtime() - t0) / n_iter;
         MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
@@ -143,7 +143,7 @@ int main(int argc, char* argv[])
 
     }
 
-    MPIX_Comm_free(locality_comm);
+    MPIX_Comm_free(&xcomm);
 
     MPI_Finalize();
     return 0;

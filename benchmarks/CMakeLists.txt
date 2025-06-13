@@ -1,27 +1,21 @@
-include_directories(${mpi_advance_INCDIR})
+## Grab all .cpp files in test directory
+file(GLOB CPP_SOURCES CONFIGURE_DEPENDS "*.cpp")
 
-if(USE_GPU)
-    if(USE_CUDA)
-        set_source_files_properties(
-            gpu_alltoall.cpp
-            alltoall_crs.cpp
-            alltoallv_crs.cpp
-            PROPERTIES LANGUAGE CUDA)
-    endif()
+## All should be compiled appropriately (cxx vs nvcc vs hipcc)
+set_source_files_properties(${CPP_SOURCES} PROPERTIES LANGUAGE ${locality_aware_LANG})
 
-    add_executable(gpu_alltoall gpu_alltoall.cpp)
-    target_link_libraries(gpu_alltoall mpi_advance ${MPI_LIBRARIES} )
+## Go through each CPP file
+foreach(src ${CPP_SOURCES})
 
-endif()
+    ## Grab the name without full path or extension
+    get_filename_component(exec_name ${src} NAME_WE)
 
-add_executable(alltoall_crs alltoall_crs.cpp)
-target_link_libraries(alltoall_crs mpi_advance ${MPI_LIBRARIES} )
+    ## Create executable
+    add_executable(${exec_name} ${src})
 
-add_executable(alltoallv_crs alltoallv_crs.cpp)
-target_link_libraries(alltoallv_crs mpi_advance ${MPI_LIBRARIES} )
+    # Link with MPI 
+    target_link_libraries(${exec_name} mpi_advance ${MPI_LIBRARIES})
 
-add_executable(microbenchmarks microbenchmarks.cpp)
-target_link_libraries(microbenchmarks mpi_advance ${MPI_LIBRARIES} )
-
-add_executable(spmv spmv.cpp)
-target_link_libraries(spmv mpi_advance ${MPI_LIBRARIES})
+    # Add to CTEST
+    add_test(NAME ${exec_name}_Test COMMAND ${MPIRUN} -n 16 ./${exec_name})
+endforeach()

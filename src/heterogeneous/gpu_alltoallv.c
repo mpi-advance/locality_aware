@@ -15,31 +15,10 @@ int gpu_aware_alltoallv(alltoallv_ftn f,
         MPIX_Comm* comm)
 {
     return f(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype,
-            comm->global_comm);
+            comm);
 }
 
 
-int gpu_aware_alltoallv_waitany(const void* sendbuf,
-        const int sendcounts[],
-        const int sdispls[],
-        MPI_Datatype sendtype,
-        void* recvbuf,
-        const int recvcounts[],
-        const int rdispls[],
-        MPI_Datatype recvtype,
-        MPIX_Comm* comm)
-{
-    return gpu_aware_alltoallv(alltoallv_waitany,
-        sendbuf,
-        sendcounts,
-        sdispls,
-        sendtype,
-        recvbuf,
-        recvcounts,
-        rdispls,
-        recvtype,
-        comm);
-}
 
 
 int gpu_aware_alltoallv_pairwise(const void* sendbuf, 
@@ -86,6 +65,52 @@ int gpu_aware_alltoallv_nonblocking(const void* sendbuf,
         comm);
 }
 
+int gpu_aware_alltoallv_batch(const void* sendbuf,
+        const int sendcounts[],
+        const int sdispls[],
+        MPI_Datatype sendtype,
+        void* recvbuf,
+        const int recvcounts[],
+        const int rdispls[],
+        MPI_Datatype recvtype,
+        MPIX_Comm* comm)
+{
+    return gpu_aware_alltoallv(alltoallv_batch,
+        sendbuf,
+        sendcounts,
+        sdispls,
+        sendtype,
+        recvbuf,
+        recvcounts,
+        rdispls,
+        recvtype,
+        comm);
+}
+
+int gpu_aware_alltoallv_batch_async(const void* sendbuf,
+        const int sendcounts[],
+        const int sdispls[],
+        MPI_Datatype sendtype,
+        void* recvbuf,
+        const int recvcounts[],
+        const int rdispls[],
+        MPI_Datatype recvtype,
+        MPIX_Comm* comm)
+{
+    return gpu_aware_alltoallv(alltoallv_batch_async,
+        sendbuf,
+        sendcounts,
+        sdispls,
+        sendtype,
+        recvbuf,
+        recvcounts,
+        rdispls,
+        recvtype,
+        comm);
+}
+
+
+
 int copy_to_cpu_alltoallv(alltoallv_ftn f,
         const void* sendbuf, 
         const int sendcounts[],
@@ -127,7 +152,7 @@ int copy_to_cpu_alltoallv(alltoallv_ftn f,
 
     // Collective Among CPUs
     ierr += f(cpu_sendbuf, sendcounts, sdispls, sendtype, 
-            cpu_recvbuf, recvcounts, rdispls, recvtype, comm->global_comm);
+            cpu_recvbuf, recvcounts, rdispls, recvtype, comm);
 
     // Copy from CPU to GPU
     ierr += gpuMemcpy(recvbuf, cpu_recvbuf, total_bytes_r, gpuMemcpyHostToDevice);
@@ -182,8 +207,52 @@ int copy_to_cpu_alltoallv_nonblocking(const void* sendbuf,
         comm);
 }
 
+int copy_to_cpu_alltoallv_batch(const void* sendbuf,
+        const int sendcounts[],
+        const int sdispls[],
+        MPI_Datatype sendtype,
+        void* recvbuf,
+        const int recvcounts[],
+        const int rdispls[],
+        MPI_Datatype recvtype,
+        MPIX_Comm* comm)
+{
+    return copy_to_cpu_alltoallv(alltoallv_batch,
+        sendbuf,
+        sendcounts,
+        sdispls,
+        sendtype,
+        recvbuf,
+        recvcounts,
+        rdispls,
+        recvtype,
+        comm);
+}
+
+int copy_to_cpu_alltoallv_batch_async(const void* sendbuf,
+        const int sendcounts[],
+        const int sdispls[],
+        MPI_Datatype sendtype,
+        void* recvbuf,
+        const int recvcounts[],
+        const int rdispls[],
+        MPI_Datatype recvtype,
+        MPIX_Comm* comm)
+{
+    return copy_to_cpu_alltoallv(alltoallv_batch_async,
+        sendbuf,
+        sendcounts,
+        sdispls,
+        sendtype,
+        recvbuf,
+        recvcounts,
+        rdispls,
+        recvtype,
+        comm);
+}
 
 
+#ifdef OPENMP
 int threaded_alltoallv_pairwise(const void* sendbuf,
         const int sendcounts[],
         const int sdispls[],
@@ -391,5 +460,7 @@ int threaded_alltoallv_nonblocking(const void* sendbuf,
 
     return ierr;
 }
+
+#endif
 
 

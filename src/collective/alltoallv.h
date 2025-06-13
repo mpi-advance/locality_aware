@@ -12,6 +12,9 @@ extern "C"
 {
 #endif
 
+typedef int (*alltoallv_ftn)(const void*, const int*, const int*, MPI_Datatype,
+void*, const int*, const int*, MPI_Datatype, MPIX_Comm*);
+
 // Helper Functions
 int alltoallv_pairwise(const void* sendbuf,
         const int sendcounts[],

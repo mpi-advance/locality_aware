@@ -32,9 +32,18 @@ if (MPI_COMPILER_FLAGS)
   add_compile_options(${MPI_COMPILER_FLAGS})
 endif()
 include_directories(${MPI_INCLUDE_PATH})
+set(EXTERNAL_LIBS ${MPI_LIBRARIES})
 
 # Find OpenMP (not required)
 find_package(OpenMP)
+if (${OpenMP_CXX_FOUND})
+  # Add OpenMP flags to compile options
+  add_compile_options(${OpenMP_CXX_FLAGS})
+
+  set(EXTERNAL_LIBS ${EXTERNAL_LIBS} ${OpenMP_CXX_LIBRARIES})
+  add_definitions(-DOPENMP)
+  message(STATUS "Found OpenMP ${OpenMP_CXX_LIBRARIES}")
+endif()
 
 # Set default language of .cpp files
 set(locality_aware_LANG CXX)
@@ -89,7 +98,7 @@ add_library(mpi_advance
     ${neighborhood_SOURCES} ${neighborhood_HEADERS}
     ${heterogeneous_SOURCES} ${heterogeneous_HEADERS}
 )
-target_link_libraries(mpi_advance PUBLIC ${MPI_LIBRARIES})
+target_link_libraries(mpi_advance PUBLIC ${EXTERNAL_LIBS})
 
 if (ENABLE_UNIT_TESTS)
     enable_testing()
@@ -100,5 +109,6 @@ if (ENABLE_UNIT_TESTS)
     endif(USE_GPU)
 endif()
 
+add_subdirectory(benchmarks)
 
 
