@@ -137,7 +137,6 @@ int nonblocking_helper(const void* sendbuf,
 
     int send_proc, recv_proc;
     int send_pos, recv_pos;
-    MPI_Status status;
 
     char* recv_buffer = (char*)recvbuf;
     char* send_buffer = (char*)sendbuf;
@@ -253,11 +252,6 @@ int alltoall_multileader(
         local_comm = comm->leader_comm;
         group_comm = comm->leader_group_comm;
     }
-
-
-    int send_proc, recv_proc;
-    int send_pos, recv_pos;
-    MPI_Status status;
 
     char* recv_buffer = (char*)recvbuf;
     char* send_buffer = (char*)sendbuf;
@@ -433,12 +427,7 @@ int alltoall_locality_aware_helper(
     int ppg;
     MPI_Comm_size(local_comm, &ppg);
 
-    int send_proc, recv_proc;
-    int send_pos, recv_pos;
-    MPI_Status status;
-
     char* recv_buffer = (char*)recvbuf;
-    char* send_buffer = (char*)sendbuf;
 
     int send_size, recv_size;
     MPI_Type_size(sendtype, &send_size);
@@ -645,10 +634,6 @@ int alltoall_multileader_locality(
     int procs_per_leader, leader_rank;
     MPI_Comm_rank(comm->leader_comm, &leader_rank);
     MPI_Comm_size(comm->leader_comm, &procs_per_leader);
-
-    int send_proc, recv_proc;
-    int send_pos, recv_pos;
-    MPI_Status status;
 
     char* recv_buffer = (char*)recvbuf;
     char* send_buffer = (char*)sendbuf;

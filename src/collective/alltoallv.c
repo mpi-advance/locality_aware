@@ -283,7 +283,6 @@ int alltoallv_batch_async(const void* sendbuf,
     int tag;
     MPIX_Comm_tag(comm, &tag);
 
-    int ctr;
     int send_proc, recv_proc;
     int send_pos, recv_pos;
 

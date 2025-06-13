@@ -1,5 +1,17 @@
-## Grab all .cpp files in test directory
-file(GLOB CPP_SOURCES CONFIGURE_DEPENDS "*.cpp")
+## Make a list for all the benchmarks to compile
+set(CPP_SOURCES "")
+
+## Most benchmarks will go in just fine
+list(APPEND CPP_SOURCES "alltoall_crs.cpp")
+list(APPEND CPP_SOURCES "alltoallv_crs.cpp")
+list(APPEND CPP_SOURCES "microbenchmarks.cpp")
+list(APPEND CPP_SOURCES "p2p_alltoall.cpp")
+list(APPEND CPP_SOURCES "p2p_alltoallv.cpp")
+
+## But some need special requirements
+if(USE_GPU)
+    list(APPEND CPP_SOURCES "gpu_alltoall.cpp")
+endif()
 
 ## All should be compiled appropriately (cxx vs nvcc vs hipcc)
 set_source_files_properties(${CPP_SOURCES} PROPERTIES LANGUAGE ${locality_aware_LANG})
