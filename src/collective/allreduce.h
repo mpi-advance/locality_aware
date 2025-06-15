@@ -13,7 +13,8 @@ int allreduce_multileader(const void *sendbuf,
         const int count,
         MPI_Datatype datatype,
         MPI_Op op,
-        MPIX_Comm comm);
+        MPIX_Comm comm,
+        int n_leaders);
 
 int allreduce_hierarchical(const void *sendbuf,
         void *recvbuf,
