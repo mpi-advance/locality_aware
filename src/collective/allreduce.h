@@ -8,6 +8,13 @@ extern "C"
 {
 #endif 
 
+int allreduce_multileader(const void *sendbuf, 
+        void *recvbuf,
+        const int count,
+        MPI_Datatype datatype,
+        MPI_Op op,
+        MPIX_Comm comm);
+
 int allreduce_hierarchical(const void *sendbuf,
         void *recvbuf,
         const int count,
