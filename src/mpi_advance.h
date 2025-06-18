@@ -14,6 +14,7 @@
 #include "collective/collective.h"
 #include "collective/alltoall.h"
 #include "collective/alltoallv.h"
+#include "collective/allreduce.h"
 
 #include "neighborhood/dist_graph.h"
 #include "neighborhood/dist_topo.h"
@@ -24,6 +25,7 @@
 #ifdef GPU
     #include "heterogeneous/gpu_alltoall.h"
     #include "heterogeneous/gpu_alltoallv.h"
+    #include "heterogeneous/gpu_allreduce.h"
 #endif
 
 #endif

@@ -40,9 +40,9 @@ int main(int argc, char** argv)
     std::vector<int> pmpi_alltoall(max_s*num_procs);
     std::vector<int> mpix_alltoall(max_s*num_procs);
 
-    MPIX_Comm* locality_comm;
-    MPIX_Comm_init(&locality_comm, MPI_COMM_WORLD);
-    update_locality(locality_comm, 4);
+    MPIX_Comm* xcomm;
+    MPIX_Comm_init(&xcomm, MPI_COMM_WORLD);
+    update_locality(xcomm, 4);
 
     for (int i = 0; i < max_i; i++)
     {
@@ -70,7 +70,7 @@ int main(int argc, char** argv)
                 mpix_alltoall.data(), 
                 s, 
                 MPI_INT,
-                locality_comm);
+                xcomm);
         compare_alltoall_results(pmpi_alltoall, mpix_alltoall, s);
 
 
@@ -82,7 +82,7 @@ int main(int argc, char** argv)
                 mpix_alltoall.data(), 
                 s, 
                 MPI_INT,
-                locality_comm);
+                xcomm);
         compare_alltoall_results(pmpi_alltoall, mpix_alltoall, s);
 
         // Test Standard Nonblocking
@@ -92,7 +92,7 @@ int main(int argc, char** argv)
                 mpix_alltoall.data(), 
                 s, 
                 MPI_INT,
-                locality_comm);
+                xcomm);
         compare_alltoall_results(pmpi_alltoall, mpix_alltoall, s);
 
 
@@ -104,7 +104,7 @@ int main(int argc, char** argv)
                 mpix_alltoall.data(), 
                 s, 
                 MPI_INT,
-                locality_comm);
+                xcomm);
         compare_alltoall_results(pmpi_alltoall, mpix_alltoall, s);
 
         // Test Hierarchical + Nonblocking 
@@ -114,7 +114,7 @@ int main(int argc, char** argv)
                 mpix_alltoall.data(), 
                 s, 
                 MPI_INT,
-                locality_comm);
+                xcomm);
         compare_alltoall_results(pmpi_alltoall, mpix_alltoall, s);
 
 
@@ -126,7 +126,7 @@ int main(int argc, char** argv)
                 mpix_alltoall.data(), 
                 s, 
                 MPI_INT,
-                locality_comm);
+                xcomm);
         compare_alltoall_results(pmpi_alltoall, mpix_alltoall, s);
 
         // Test Multileader + Nonblocking 
@@ -136,7 +136,7 @@ int main(int argc, char** argv)
                 mpix_alltoall.data(), 
                 s, 
                 MPI_INT,
-                locality_comm);
+                xcomm);
         compare_alltoall_results(pmpi_alltoall, mpix_alltoall, s);
 
 
@@ -148,7 +148,7 @@ int main(int argc, char** argv)
                 mpix_alltoall.data(), 
                 s, 
                 MPI_INT,
-                locality_comm);
+                xcomm);
         compare_alltoall_results(pmpi_alltoall, mpix_alltoall, s);
 
         // Test Node Aware + Nonblocking 
@@ -158,7 +158,7 @@ int main(int argc, char** argv)
                 mpix_alltoall.data(), 
                 s, 
                 MPI_INT,
-                locality_comm);
+                xcomm);
         compare_alltoall_results(pmpi_alltoall, mpix_alltoall, s);
 
         // Test Locality Aware + Pairwise
@@ -169,7 +169,7 @@ int main(int argc, char** argv)
                 mpix_alltoall.data(), 
                 s, 
                 MPI_INT,
-                locality_comm);
+                xcomm);
         compare_alltoall_results(pmpi_alltoall, mpix_alltoall, s);
 
         // Test Locality Aware + Nonblocking 
@@ -179,7 +179,7 @@ int main(int argc, char** argv)
                 mpix_alltoall.data(), 
                 s, 
                 MPI_INT,
-                locality_comm);
+                xcomm);
         compare_alltoall_results(pmpi_alltoall, mpix_alltoall, s);
 
 
@@ -191,7 +191,7 @@ int main(int argc, char** argv)
                 mpix_alltoall.data(), 
                 s, 
                 MPI_INT,
-                locality_comm);
+                xcomm);
         compare_alltoall_results(pmpi_alltoall, mpix_alltoall, s);
 
         // Test Multileader + Locality Aware + Nonblocking 
@@ -201,14 +201,14 @@ int main(int argc, char** argv)
                 mpix_alltoall.data(), 
                 s, 
                 MPI_INT,
-                locality_comm);
+                xcomm);
         compare_alltoall_results(pmpi_alltoall, mpix_alltoall, s);
 
 
 
     }
 
-    MPIX_Comm_free(&locality_comm);
+    MPIX_Comm_free(&xcomm);
 
 
     MPI_Finalize();
