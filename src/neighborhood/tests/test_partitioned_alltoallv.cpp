@@ -225,10 +225,10 @@ void par_SpMV_partd_csc(
     MPIP_Startall(n_sends, sreqs.data());
     MPIP_Startall(n_recvs, rreqs.data());
 
-    int elems_done[A_csc.n_cols * n_vec];
-    for (int i = 0; i < A_csc.n_cols * n_vec; i++) {
-        elems_done[i] = 0;
-    }
+    // int elems_done[A_csc.n_cols * n_vec];
+    // for (int i = 0; i < A_csc.n_cols * n_vec; i++) {
+    //     elems_done[i] = 0;
+    // }
     int n_threads = omp_get_max_threads();
     #pragma omp parallel num_threads(n_threads) // TODO possibly move outside iterations
     {
@@ -293,13 +293,13 @@ void par_SpMV_partd_csc(
                         // #pragma omp critical
                         // {
                         SpMV_off_proc_CSC(n_vec, vec_row_start, end_pos, j, A_csc, x_off_proc, b);
-                        for (int k = vec_row_start; k < end_pos; k++) {
+                        // for (int k = vec_row_start; k < end_pos; k++) {
                             //if (j*n_vec + k > b.size()) {
                             //    printf("ncols*nvec %d, bsize %d, xsize %d\n", A_csc.n_cols * n_vec, b.size(), x.size());
                             //    assert(1==0);
                             //}
-                            elems_done[j*n_vec + k]++;
-                        }
+                        //     elems_done[j*n_vec + k]++;
+                        // }
                         // }
                         if (j == start_row) // only use vec_row_start for first vec row
                             vec_row_start = 0;
@@ -312,16 +312,16 @@ void par_SpMV_partd_csc(
         }
     }
 
-    // TODO remove. Checking no missed elements
-    for (int i = 0; i < A_csc.n_cols * n_vec; i++) {
-        if (elems_done[i] != 1) {
-            printf("rank %d elems_done val %d\n", rank, elems_done[i]);
-            printf("rank %d missed elem: %d/%d\n", rank, i, A_csc.n_cols*n_vec);
-            assert(1==0);
-        }
-    }
+    // Checking missed elements
+    // for (int i = 0; i < A_csc.n_cols * n_vec; i++) {
+    //     if (elems_done[i] != 1) {
+    //         printf("rank %d elems_done val %d\n", rank, elems_done[i]);
+    //         printf("rank %d missed elem: %d/%d\n", rank, i, A_csc.n_cols*n_vec);
+    //         assert(1==0);
+    //     }
+    // }
 
-    // TODO remove
+    // For debugging
     // for (int i = 0; i < A_csc.n_cols; i++) {
     //     SpMV_off_proc_CSC(n_vec, 0, n_vec, i, A_csc, x_off_proc, b);
     // }
@@ -339,6 +339,9 @@ void test_partitioned(const char* filename, int n_vec)
     // msg counts must be divisible by n_parts. simplest method is to have n_parts divide n_vec
     // TODO assert this ^
     int n_parts = omp_get_max_threads(); // TODO check this if things break
+    if (n_vec % n_parts != 0) {
+        printf("Unequal partitions:")
+    }
 
     int rank, num_procs;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -527,8 +530,8 @@ void test_partitioned(const char* filename, int n_vec)
     if ((t0/test_iters) > 1.0)
         iters3 = 1;
 
-    if (rank == 0)
-        printf("iters1 %d, iters2 %d, iters3 %d\n", iters1, iters2, iters3);
+    // if (rank == 0)
+    //     printf("iters1 %d, iters2 %d, iters3 %d\n", iters1, iters2, iters3);
 
 
     // Reset x's from tests
@@ -552,7 +555,7 @@ void test_partitioned(const char* filename, int n_vec)
     tf = MPI_Wtime() - t0;
     MPI_Reduce(&tf, &t0, 1, MPI_DOUBLE, MPI_MAX, 0,
         MPI_COMM_WORLD);
-    if (rank == 0) printf("Baseline Time for %d vectors: %e\n", n_vec, t0/iters1);
+    if (rank == 0) printf("Baseline: %e\n", n_vec, t0/iters1);
 
 
     // Partitioned
@@ -565,7 +568,7 @@ void test_partitioned(const char* filename, int n_vec)
     tf = MPI_Wtime() - t0;
     MPI_Reduce(&tf, &t0, 1, MPI_DOUBLE, MPI_MAX, 0,
         MPI_COMM_WORLD);
-    if (rank == 0) printf("Partitioned Time for %d vectors: %e\n", n_vec, t0/iters2);
+    if (rank == 0) printf("Partitioned: %e\n", n_vec, t0/iters2);
 
 
     // Partitioned CSC
@@ -579,7 +582,7 @@ void test_partitioned(const char* filename, int n_vec)
     tf = MPI_Wtime() - t0;
     MPI_Reduce(&tf, &t0, 1, MPI_DOUBLE, MPI_MAX, 0,
         MPI_COMM_WORLD);
-    if (rank == 0) printf("Partitioned CSC Time for %d vectors: %e\n", n_vec, t0/iters3);
+    if (rank == 0) printf("CSC: %e\n", n_vec, t0/iters3);
 
 
     // Cleanup
@@ -623,12 +626,26 @@ int main(int argc, char** argv)
         "can_1072.pm",
     };
 
+    std::vector<int> vec_sizes;
+    if (argc < 2) {
+        vec_sizes = {1024};
+    } else {
+        vec_sizes.resize(argc-1);
+        for (int i = 0; i < argc - 1; i++) {
+            vec_sizes[i] = atoi(argv[i+1]);
+            if (vec_sizes[i] == 0) {
+                printf("Invalid input\n");
+            }
+        }
+    }
+
     // Test SpM-Multivector
-    std::vector<int> vec_sizes = {64};
-    for (size_t i = 0; i < test_matrices.size(); i++) {
-        if (rank == 0) 
-            printf("Matrix %d...\n", i);
-        for (size_t j = 0; j < vec_sizes.size(); j++) {
+    for (size_t j = 0; j < vec_sizes.size(); j++) {
+        if (rank == 0)
+            printf("Vector width: %d\n", vec_sizes);
+        for (size_t i = 0; i < test_matrices.size(); i++) {
+            if (rank == 0)
+                printf("Matrix %d\n", i);
             test_partitioned((mat_dir + test_matrices[i]).c_str(), vec_sizes[j]);
         }
     }
