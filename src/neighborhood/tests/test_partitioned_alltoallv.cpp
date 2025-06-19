@@ -340,7 +340,7 @@ void test_partitioned(const char* filename, int n_vec)
     // TODO assert this ^
     int n_parts = omp_get_max_threads(); // TODO check this if things break
     if (n_vec % n_parts != 0) {
-        printf("Unequal partitions:")
+        printf("Unequal partitions\n");
     }
 
     int rank, num_procs;
@@ -555,7 +555,7 @@ void test_partitioned(const char* filename, int n_vec)
     tf = MPI_Wtime() - t0;
     MPI_Reduce(&tf, &t0, 1, MPI_DOUBLE, MPI_MAX, 0,
         MPI_COMM_WORLD);
-    if (rank == 0) printf("Baseline: %e\n", n_vec, t0/iters1);
+    if (rank == 0) printf("Baseline:\t%e\n", t0/iters1);
 
 
     // Partitioned
@@ -568,7 +568,7 @@ void test_partitioned(const char* filename, int n_vec)
     tf = MPI_Wtime() - t0;
     MPI_Reduce(&tf, &t0, 1, MPI_DOUBLE, MPI_MAX, 0,
         MPI_COMM_WORLD);
-    if (rank == 0) printf("Partitioned: %e\n", n_vec, t0/iters2);
+    if (rank == 0) printf("Partitioned:\t%e\n", t0/iters2);
 
 
     // Partitioned CSC
@@ -582,7 +582,7 @@ void test_partitioned(const char* filename, int n_vec)
     tf = MPI_Wtime() - t0;
     MPI_Reduce(&tf, &t0, 1, MPI_DOUBLE, MPI_MAX, 0,
         MPI_COMM_WORLD);
-    if (rank == 0) printf("CSC: %e\n", n_vec, t0/iters3);
+    if (rank == 0) printf("CSC:\t\t%e\n", t0/iters3);
 
 
     // Cleanup
@@ -640,13 +640,13 @@ int main(int argc, char** argv)
     }
 
     // Test SpM-Multivector
-    for (size_t j = 0; j < vec_sizes.size(); j++) {
+    for (size_t i = 0; i < vec_sizes.size(); i++) {
         if (rank == 0)
-            printf("Vector width: %d\n", vec_sizes);
-        for (size_t i = 0; i < test_matrices.size(); i++) {
+            printf("Vector width: %d\n", vec_sizes[i]);
+        for (size_t j = 0; j < test_matrices.size(); j++) {
             if (rank == 0)
-                printf("Matrix %d\n", i);
-            test_partitioned((mat_dir + test_matrices[i]).c_str(), vec_sizes[j]);
+                printf("Matrix %s\n", test_matrices[j].c_str());
+            test_partitioned((mat_dir + test_matrices[j]).c_str(), vec_sizes[i]);
         }
     }
 
