@@ -100,7 +100,11 @@ add_library(mpi_advance
 )
 target_link_libraries(mpi_advance PUBLIC ${EXTERNAL_LIBS})
 
-install(TARGETS mpi_advance DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
+install(TARGETS mpi_advance 
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
+        LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
+        RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
+
 install(FILES src/mpi_advance.h DESTINATION ${CMAKE_INSTALL_PREFIX}/include)
 install(FILES ${utils_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/utils)
 install(FILES ${communicator_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/communicator)
