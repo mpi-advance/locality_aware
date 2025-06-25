@@ -46,6 +46,10 @@ typedef struct _MPIX_Comm
     int tag;
     int max_tag;
 
+    int* global_rank_to_local;
+    int* global_rank_to_node;
+    int* ordered_global_ranks;
+
 #ifdef GPU
    int gpus_per_node;
    int rank_gpu;

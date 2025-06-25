@@ -42,6 +42,31 @@ int MPIX_Neighbor_alltoallv(
         MPIX_Comm* comm);
 
 
+int neighbor_alltoallv_standard(
+        const void* sendbuf,
+        const int sendcounts[],
+        const int sdispls[],
+        MPI_Datatype sendtype,
+        void* recvbuf,
+        const int recvcounts[],
+        const int rdispls[],
+        MPI_Datatype recvtype,
+        MPIX_Topo* topo,
+        MPIX_Comm* comm);
+
+int neighbor_alltoallv_locality(
+        const void* sendbuf,
+        const int sendcounts[],
+        const int sdispls[],
+        MPI_Datatype sendtype,
+        void* recvbuf,
+        const int recvcounts[],
+        const int rdispls[],
+        MPI_Datatype recvtype,
+        MPIX_Topo* topo,
+        MPIX_Comm* comm);
+
+
 #ifdef __cplusplus
 }
 #endif

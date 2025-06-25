@@ -205,11 +205,9 @@ int main(int argc, char** argv)
         compare_alltoall_results(pmpi_alltoall, mpix_alltoall, s);
 
 
-
     }
 
     MPIX_Comm_free(&locality_comm);
-
 
     MPI_Finalize();
     return 0;

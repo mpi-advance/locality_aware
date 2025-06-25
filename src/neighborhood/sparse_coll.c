@@ -3,43 +3,43 @@
 #include <string.h>
 
 int MPIX_Alltoall_crs(
-        int send_nnz,
-        int* dest,
-        int sendcount,
+        const int send_nnz,
+        const int* dest,
+        const int sendcount,
         MPI_Datatype sendtype,
-        void* sendvals,
+        const void* sendvals,
         int* recv_nnz,
-        int** src,
+        int** src_ptr,
         int recvcount,
         MPI_Datatype recvtype,
-        void** recvvals,
+        void** recvvals_ptr,
         MPIX_Info* xinfo,
         MPIX_Comm* xcomm)
 {
     return alltoall_crs_personalized(send_nnz, dest, sendcount, sendtype, sendvals,
-            recv_nnz, src, recvcount, recvtype, recvvals, xinfo, xcomm);
+            recv_nnz, src_ptr, recvcount, recvtype, recvvals_ptr, xinfo, xcomm);
 }
 
 int MPIX_Alltoallv_crs(
-        int send_nnz,
-        int send_size,
-        int* dest,
-        int* sendcounts,
-        int* sdispls,
+        const int send_nnz,
+        const int send_size,
+        const int* dest,
+        const int* sendcounts,
+        const int* sdispls,
         MPI_Datatype sendtype,
-        void* sendvals,
+        const void* sendvals,
         int* recv_nnz,
         int* recv_size,
-        int** src,
-        int** recvcounts,
-        int** rdispls,
+        int** src_ptr,
+        int** recvcounts_ptr,
+        int** rdispls_ptr,
         MPI_Datatype recvtype,
-        void** recvvals,
+        void** recvvals_ptr,
         MPIX_Info* xinfo,
         MPIX_Comm* xcomm)
 {
     return alltoallv_crs_personalized(send_nnz, send_size, dest, sendcounts, sdispls,
-            sendtype, sendvals, recv_nnz, recv_size, src, recvcounts, 
-            rdispls, recvtype, recvvals, xinfo, xcomm);
+            sendtype, sendvals, recv_nnz, recv_size, src_ptr, recvcounts_ptr, 
+            rdispls_ptr, recvtype, recvvals_ptr, xinfo, xcomm);
 }
 
