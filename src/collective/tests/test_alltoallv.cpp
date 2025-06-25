@@ -72,6 +72,7 @@ int main(int argc, char** argv)
                 MPI_INT,
                 MPI_COMM_WORLD);
 
+        std::fill(mpix_alltoallv.begin(), mpix_alltoallv.end(), 0);
         MPIX_Alltoallv(local_data.data(), 
                 sizes.data(),
                 displs.data(),
@@ -83,6 +84,7 @@ int main(int argc, char** argv)
                 xcomm);
         compare_alltoallv_results(pmpi_alltoallv, mpix_alltoallv, s);
 
+        std::fill(mpix_alltoallv.begin(), mpix_alltoallv.end(), 0);
         alltoallv_pairwise(local_data.data(), 
                 sizes.data(),
                 displs.data(),
@@ -94,6 +96,7 @@ int main(int argc, char** argv)
                 xcomm);
         compare_alltoallv_results(pmpi_alltoallv, mpix_alltoallv, s);
 
+        std::fill(mpix_alltoallv.begin(), mpix_alltoallv.end(), 0);
         alltoallv_nonblocking(local_data.data(), 
                 sizes.data(),
                 displs.data(),
@@ -105,6 +108,7 @@ int main(int argc, char** argv)
                 xcomm);
         compare_alltoallv_results(pmpi_alltoallv, mpix_alltoallv, s);
 
+        std::fill(mpix_alltoallv.begin(), mpix_alltoallv.end(), 0);
         alltoallv_batch(local_data.data(), 
                 sizes.data(),
                 displs.data(),
@@ -116,6 +120,7 @@ int main(int argc, char** argv)
                 xcomm);
         compare_alltoallv_results(pmpi_alltoallv, mpix_alltoallv, s);
 
+        std::fill(mpix_alltoallv.begin(), mpix_alltoallv.end(), 0);
         alltoallv_batch_async(local_data.data(), 
                 sizes.data(),
                 displs.data(),
