@@ -108,7 +108,7 @@ int main(int argc, char** argv)
 
 
     // Simple Persistent MPI Advance Implementation
-    MPIX_Neighbor_topo_alltoallv_init(alltoallv_send_vals.data(), 
+    neighbor_alltoallv_init_standard(alltoallv_send_vals.data(), 
             send_data.counts.data(),
             send_data.indptr.data(), 
             MPI_INT,
@@ -128,7 +128,7 @@ int main(int argc, char** argv)
 
     // Locality-Aware MPI Advance Implementation
     std::fill(mpix_recv_vals.begin(), mpix_recv_vals.end(), 0);
-    MPIX_Neighbor_locality_topo_alltoallv_init(alltoallv_send_vals.data(), 
+    neighbor_alltoallv_init_locality_ext(alltoallv_send_vals.data(), 
             send_data.counts.data(),
             send_data.indptr.data(), 
             global_send_idx.data(),
@@ -150,7 +150,7 @@ int main(int argc, char** argv)
 
     // Partial Locality-Aware MPI Advance Implementation
     std::fill(mpix_recv_vals.begin(), mpix_recv_vals.end(), 0);
-    MPIX_Neighbor_part_locality_topo_alltoallv_init(alltoallv_send_vals.data(), 
+    neighbor_alltoallv_init_locality(alltoallv_send_vals.data(), 
             send_data.counts.data(),
             send_data.indptr.data(), 
             MPI_INT,

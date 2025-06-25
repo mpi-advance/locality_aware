@@ -2,8 +2,11 @@
 #include "sparse_coll.h"
 #include <cstring>
 
+// Standard Method is default
+NeighborAlltoallvMethod mpix_neighbor_alltoallv_implementation = NEIGHBOR_ALLTOALLV_STANDARD;
+
 // Topology object based neighbor alltoallv
-int MPIX_Neighbor_topo_alltoallv(
+int MPIX_Neighbor_alltoallv_topo(
         const void* sendbuf,
         const int sendcounts[],
         const int sdispls[],
@@ -15,7 +18,22 @@ int MPIX_Neighbor_topo_alltoallv(
         MPIX_Topo* topo,
         MPIX_Comm* comm)
 {
-    return neighbor_alltoallv_standard(sendbuf, sendcounts, sdispls, sendtype,
+    neighbor_alltoallv_ftn method;
+    
+    switch (mpix_neighbor_alltoallv_implementation)
+    {
+        case NEIGHBOR_ALLTOALLV_STANDARD:
+            method = neighbor_alltoallv_standard;
+            break;
+        case NEIGHBOR_ALLTOALLV_LOCALITY:
+            method = neighbor_alltoallv_locality;
+            break;
+        default:
+            method = neighbor_alltoallv_standard;
+            break;
+    }
+
+    return method(sendbuf, sendcounts, sdispls, sendtype,
             recvbuf, recvcounts, rdispls, recvtype, topo, comm);
 }
 
@@ -34,7 +52,7 @@ int MPIX_Neighbor_alltoallv(
     MPIX_Topo* topo;
     MPIX_Topo_from_neighbor_comm(comm, &topo);
 
-    MPIX_Neighbor_topo_alltoallv(sendbuffer, sendcounts, sdispls, sendtype,
+    MPIX_Neighbor_alltoallv_topo(sendbuffer, sendcounts, sdispls, sendtype,
             recvbuffer, recvcounts, rdispls, recvtype, topo, comm);
 
     MPIX_Topo_free(&topo);
