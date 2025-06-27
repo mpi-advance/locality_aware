@@ -18,6 +18,8 @@ int MPIX_Neighbor_alltoallv_topo(
         MPIX_Topo* topo,
         MPIX_Comm* comm)
 {
+int rank; MPI_Comm_rank(comm->global_comm, &rank);
+
     neighbor_alltoallv_ftn method;
     
     switch (mpix_neighbor_alltoallv_implementation)
@@ -78,39 +80,50 @@ int neighbor_alltoallv_standard(
     int tag;
     MPIX_Comm_tag(comm, &tag);
 
+    if (topo->indegree + topo->outdegree == 0)
+        return MPI_SUCCESS;
+
     if (comm->n_requests < topo->indegree + topo->outdegree)
         MPIX_Comm_req_resize(comm, topo->indegree + topo->outdegree);
 
-    const char* send_buffer = (char*) sendbuf;
-    char* recv_buffer = (char*) recvbuf;
+    const char* send_buffer = NULL;
+    char* recv_buffer = NULL;
+
+    if (topo->indegree)
+        recv_buffer = (char*)recvbuf;
+    if (topo->outdegree)
+        send_buffer = (char*)sendbuf;
 
     int send_size, recv_size;
     MPI_Type_size(sendtype, &send_size);
     MPI_Type_size(recvtype, &recv_size);
 
+    int count = 0;
     for (int i = 0; i < topo->indegree; i++)
     {
-        MPI_Irecv(&(recv_buffer[rdispls[i]*recv_size]),
+        if (recvcounts[i])
+            MPI_Irecv(&(recv_buffer[rdispls[i]*recv_size]),
                 recvcounts[i],
                 recvtype,
                 topo->sources[i],
                 tag,
                 comm->global_comm,
-                &(comm->requests[i]));
+                &(comm->requests[count++]));
     }
 
     for (int i = 0; i < topo->outdegree; i++)
     {
-        MPI_Isend(&(send_buffer[sdispls[i]*send_size]),
+        if (sendcounts[i])
+            MPI_Isend(&(send_buffer[sdispls[i]*send_size]),
                 sendcounts[i],
                 sendtype,
                 topo->destinations[i],
                 tag,
                 comm->global_comm,
-                &(comm->requests[topo->indegree + i]));
+                &(comm->requests[count++]));
     }
 
-    MPI_Waitall(topo->indegree + topo->outdegree, comm->requests, MPI_STATUSES_IGNORE);
+    MPI_Waitall(count, comm->requests, comm->statuses);
 
     return MPI_SUCCESS;
 }

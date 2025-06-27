@@ -23,6 +23,7 @@ int MPIX_Comm_init(MPIX_Comm** xcomm_ptr, MPI_Comm global_comm)
     xcomm->win_bytes = 0;
 
     xcomm->requests = NULL;
+    xcomm->statuses = NULL;
     xcomm->n_requests = 0;
 
     int flag;
@@ -168,6 +169,7 @@ int MPIX_Comm_req_resize(MPIX_Comm* xcomm, int n)
 
     xcomm->n_requests = n;
     xcomm->requests = (MPI_Request*)realloc(xcomm->requests, n*sizeof(MPI_Request));
+    xcomm->statuses = (MPI_Status*)realloc(xcomm->statuses, n*sizeof(MPI_Status));
 
     return MPI_SUCCESS;
 }

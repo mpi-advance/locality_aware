@@ -41,6 +41,7 @@ typedef struct _MPIX_Comm
     int win_type_bytes;
 
     MPI_Request* requests;
+    MPI_Status* statuses;
     int n_requests;
 
     int tag;
