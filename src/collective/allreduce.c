@@ -109,9 +109,9 @@ int allreduce_locality_aware_helper(
 	MPI_Comm group_comm,
         int tag)
 {
-  int rank_num_procs;
-  MPI_Comm_rank(comm.global_comm, &rank);
-  MPI_Comm_size(comm.global_comm, &num_procs);
+  int rank, num_procs;
+  MPI_Comm_rank(comm->global_comm, &rank);
+  MPI_Comm_size(comm->global_comm, &num_procs);
 
   int ppg;
   MPI_Comm_size(local_comm, &ppg);
@@ -123,9 +123,10 @@ int allreduce_locality_aware_helper(
 
   char* tmpbuf = (char*) malloc(count*data_size);
 
-  MPI_Allreduce(sendbuf, tmpbuf, count, datatype, op, group_comm);
+  int ret_val = MPI_Allreduce(sendbuf, tmpbuf, count, datatype, op, group_comm);
 
- 
+  free(tmpbuf);
+  return ret_val;
 }
  
 int allreduce_locality_aware(const void *sendbuf,
@@ -141,7 +142,7 @@ int allreduce_locality_aware(const void *sendbuf,
   MPI_Comm_size(comm.global_comm, &num_procs);
 
   int tag;
-  MPIX_Comm_tag(comm, &tag);
+  MPIX_Comm_tag(&comm, &tag);
 
   if (comm.local_comm == MPI_COMM_NULL)
   {
@@ -162,7 +163,7 @@ int allreduce_locality_aware(const void *sendbuf,
     }
     int procs_per_group = ppn / groups_per_node;
 
-    if (comm->leader_comm != MPI_COMM_NULL)
+    if (comm.leader_comm != MPI_COMM_NULL)
     {
       int ppg;
       MPI_Comm_size(comm.leader_comm, &ppg);
@@ -171,7 +172,7 @@ int allreduce_locality_aware(const void *sendbuf,
     }
 
     if (comm.leader_comm != MPI_COMM_NULL)
-      MPIX_Comm_leader_init(comm, procs_per_group);
+      MPIX_Comm_leader_init(&comm, procs_per_group);
 
     local_comm = comm.leader_comm;
     group_comm = comm.leader_group_comm;
@@ -183,7 +184,8 @@ int allreduce_node_aware(const void *sendbuf,
         const int count,
         MPI_Datatype datatype,
         MPI_Op op,
-        MPIX_Comm)
+        MPIX_Comm comm)
 {
-  
+  return allreduce_locality_aware(sendbuf, recvbuf, count, datatype, op, comm, 1);
 }
+
