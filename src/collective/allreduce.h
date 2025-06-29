@@ -2,6 +2,11 @@
 #define MPI_ADVANCE_ALLREDUCE_H
 
 #include <mpi.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include "utils/utils.h"
+#include "collective.h"
+#include "communicator/mpix_comm.h"
 
 #ifdef __cplusplus
 extern "C"
