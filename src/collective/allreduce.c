@@ -100,6 +100,7 @@ int allreduce_hierarchical(const void *sendbuf,
 
 int allreduce_locality_aware_helper(
 	const void* sendbuf,
+	void* recvbuf,
 	const int count,
 	MPI_Datatype datatype,
 	MPI_Op op,
@@ -134,8 +135,8 @@ int allreduce_locality_aware(const void *sendbuf,
         const int count,
         MPI_Datatype datatype,
         MPI_Op op,
-	MPIX_Comm comm,
-	int groups_per_node)
+		MPIX_Comm comm,
+	    int groups_per_node)
 {
   int rank, num_procs;
   MPI_Comm_rank(comm.global_comm, &rank);
@@ -177,6 +178,8 @@ int allreduce_locality_aware(const void *sendbuf,
     local_comm = comm.leader_comm;
     group_comm = comm.leader_group_comm;
   }
+
+  return allreduce_locality_aware_helper(sendbuf, recvbuf, count, datatype, op, &comm, groups_per_node, local_comm, group_comm, tag);
 }
 
 int allreduce_node_aware(const void *sendbuf,

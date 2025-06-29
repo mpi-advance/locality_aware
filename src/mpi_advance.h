@@ -14,6 +14,7 @@
 #include "collective/collective.h"
 #include "collective/alltoall.h"
 #include "collective/alltoallv.h"
+#include "collective/allreduce.h"
 
 #include "neighborhood/dist_graph.h"
 #include "neighborhood/dist_topo.h"

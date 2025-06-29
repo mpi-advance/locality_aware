@@ -40,7 +40,8 @@ int allreduce_locality_aware(const void *sendbuf,
         const int count,
         MPI_Datatype datatype,
         MPI_Op op,
-        MPIX_Comm comm);
+		MPIX_Comm comm,
+		int groups_per_node);
 
 #ifdef __cplusplus
 }
