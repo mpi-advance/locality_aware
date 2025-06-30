@@ -1,27 +1,30 @@
-include_directories(${mpi_advance_INCDIR})
+## Make a list for all the benchmarks to compile
+set(CPP_SOURCES "")
 
+## Most benchmarks will go in just fine
+list(APPEND CPP_SOURCES "alltoall_crs.cpp")
+list(APPEND CPP_SOURCES "alltoallv_crs.cpp")
+list(APPEND CPP_SOURCES "microbenchmarks.cpp")
+list(APPEND CPP_SOURCES "p2p_alltoall.cpp")
+list(APPEND CPP_SOURCES "p2p_alltoallv.cpp")
+
+## But some need special requirements
 if(USE_GPU)
-    if(USE_CUDA)
-        set_source_files_properties(
-            gpu_alltoall.cpp
-            alltoall_crs.cpp
-            alltoallv_crs.cpp
-            PROPERTIES LANGUAGE CUDA)
-    endif()
-
-    add_executable(gpu_alltoall gpu_alltoall.cpp)
-    target_link_libraries(gpu_alltoall mpi_advance ${MPI_LIBRARIES} )
-
+    list(APPEND CPP_SOURCES "gpu_alltoall.cpp")
 endif()
 
-add_executable(alltoall_crs alltoall_crs.cpp)
-target_link_libraries(alltoall_crs mpi_advance ${MPI_LIBRARIES} )
+## All should be compiled appropriately (cxx vs nvcc vs hipcc)
+set_source_files_properties(${CPP_SOURCES} PROPERTIES LANGUAGE ${locality_aware_LANG})
 
-add_executable(alltoallv_crs alltoallv_crs.cpp)
-target_link_libraries(alltoallv_crs mpi_advance ${MPI_LIBRARIES} )
+## Go through each CPP file
+foreach(src ${CPP_SOURCES})
 
-add_executable(microbenchmarks microbenchmarks.cpp)
-target_link_libraries(microbenchmarks mpi_advance ${MPI_LIBRARIES} )
+    ## Grab the name without full path or extension
+    get_filename_component(exec_name ${src} NAME_WE)
 
-add_executable(spmv spmv.cpp)
-target_link_libraries(spmv mpi_advance ${MPI_LIBRARIES})
+    ## Create executable
+    add_executable(${exec_name} ${src})
+
+    # Link with MPI 
+    target_link_libraries(${exec_name} mpi_advance ${MPI_LIBRARIES})
+endforeach()

@@ -1,15 +1,14 @@
 #include "dist_topo.h"
 #include <string.h>
 
-int MPIX_Topo_dist_graph_create_adjacent(
+int MPIX_Topo_init(
         int indegree,
         const int sources[],
         const int sourceweights[],
         int outdegree,
         const int destinations[],
         const int destweights[],
-        MPI_Info info,
-        int reorder,
+        MPIX_Info* info,
         MPIX_Topo** mpix_topo_ptr)
 {
     MPIX_Topo* mpix_topo = (MPIX_Topo*)malloc(sizeof(MPIX_Topo));
@@ -19,31 +18,38 @@ int MPIX_Topo_dist_graph_create_adjacent(
     mpix_topo->outdegree = outdegree;
 
     // Create copy of sources/destinations in MPIX_Topo struct
-    mpix_topo->sources = (int *)malloc(indegree * sizeof(int));
-    mpix_topo->destinations = (int *)malloc(outdegree * sizeof(int));
+    mpix_topo->sources =  NULL;
+    mpix_topo->destinations = NULL;
 
-    memcpy(mpix_topo->sources, sources, indegree * sizeof(int));
-    memcpy(mpix_topo->destinations, destinations, outdegree * sizeof(int));
+    if (indegree)
+    {
+        mpix_topo->sources = (int *)malloc(indegree * sizeof(int));
+        memcpy(mpix_topo->sources, sources, indegree * sizeof(int));
+        if(sourceweights != MPI_UNWEIGHTED)
+        {
+            mpix_topo->sourceweights = (int *)malloc(indegree * sizeof(int));
+            memcpy(mpix_topo->sourceweights, sourceweights, indegree * sizeof(int));
+        }
+        else
+        {
+            mpix_topo->sourceweights = MPI_UNWEIGHTED;
+        }
+    }
 
-    // Create copy of sources/destination weights in MPIX_Topo struct
-    if(sourceweights != MPI_UNWEIGHTED)
+    if (outdegree)
     {
-        mpix_topo->sourceweights = (int *)malloc(indegree * sizeof(int));
-        memcpy(mpix_topo->sourceweights, sourceweights, indegree * sizeof(int));
-    }
-    else
-    {
-        mpix_topo->sourceweights = MPI_UNWEIGHTED;
-    }
+        mpix_topo->destinations = (int *)malloc(outdegree * sizeof(int));
+        memcpy(mpix_topo->destinations, destinations, outdegree * sizeof(int));
 
-    if(destweights != MPI_UNWEIGHTED)
-    {
-        mpix_topo->destweights = (int *)malloc(outdegree * sizeof(int));
-        memcpy(mpix_topo->destweights, destweights, outdegree * sizeof(int));
-    }
-    else
-    {
-        mpix_topo->destweights = MPI_UNWEIGHTED;
+        if(destweights != MPI_UNWEIGHTED)
+        {
+            mpix_topo->destweights = (int *)malloc(outdegree * sizeof(int));
+            memcpy(mpix_topo->destweights, destweights, outdegree * sizeof(int));
+        }
+        else
+        {
+            mpix_topo->destweights = MPI_UNWEIGHTED;
+        }
     }
 
     *mpix_topo_ptr = mpix_topo;
@@ -51,9 +57,68 @@ int MPIX_Topo_dist_graph_create_adjacent(
     return MPI_SUCCESS;
 }
 
-
-int MPIX_Topo_free(MPIX_Topo* mpix_topo)
+int MPIX_Topo_from_neighbor_comm(
+        MPIX_Comm* comm,
+        MPIX_Topo** mpix_topo_ptr)
 {
+    MPIX_Topo* mpix_topo = (MPIX_Topo*)malloc(sizeof(MPIX_Topo));
+
+    int weighted;
+    MPI_Dist_graph_neighbors_count(
+        comm->neighbor_comm,
+        &(mpix_topo->indegree),
+        &(mpix_topo->outdegree),
+        &weighted);
+
+    // Create copy of sources/destinations in MPIX_Topo struct
+    mpix_topo->sources = NULL;
+    mpix_topo->destinations = NULL;
+
+    if (mpix_topo->indegree)
+    {
+        mpix_topo->sources = (int *)malloc(mpix_topo->indegree * sizeof(int));
+        if(weighted)
+        {
+            mpix_topo->sourceweights = (int *)malloc(mpix_topo->indegree * sizeof(int));
+        }      
+        else
+        {
+            mpix_topo->sourceweights = MPI_UNWEIGHTED;
+        }
+    }
+
+    if (mpix_topo->outdegree)
+    {
+        mpix_topo->destinations = (int *)malloc(mpix_topo->outdegree * sizeof(int));
+        if (weighted)
+        {
+            mpix_topo->destweights = (int *)malloc(mpix_topo->outdegree * sizeof(int));
+        }
+        else
+        {
+            mpix_topo->destweights = MPI_UNWEIGHTED;
+        }
+    }
+
+    MPI_Dist_graph_neighbors(
+            comm->neighbor_comm, 
+            mpix_topo->indegree, 
+            mpix_topo->sources, 
+            mpix_topo->sourceweights,
+            mpix_topo->outdegree, 
+            mpix_topo->destinations, 
+            mpix_topo->destweights);
+
+    *mpix_topo_ptr = mpix_topo;
+
+    return MPI_SUCCESS;
+
+}
+
+int MPIX_Topo_free(MPIX_Topo** mpix_topo_ptr)
+{
+    MPIX_Topo* mpix_topo = *mpix_topo_ptr;
+
     free(mpix_topo->sources);
     if(mpix_topo->sourceweights != MPI_UNWEIGHTED)
         free(mpix_topo->sourceweights);
@@ -64,33 +129,3 @@ int MPIX_Topo_free(MPIX_Topo* mpix_topo)
     return MPI_SUCCESS;
 }
 
-int MPIX_Topo_dist_graph_neighbors_count(MPIX_Topo* topo,
-        int* indegree,
-        int* outdegree,
-        int* weighted)
-{
-    *indegree = topo->indegree;
-    *outdegree = topo->outdegree;
-    *weighted = (topo->sourceweights == MPI_UNWEIGHTED || topo->destweights == MPI_UNWEIGHTED);
-    return MPI_SUCCESS;
-}
-
-int MPIX_Topo_dist_graph_neighbors(MPIX_Topo* topo,
-        int maxindegree,
-        int sources[],
-        int sourceweights[],
-        int maxoutdegree,
-        int destinations[],
-        int destweights[])
-{
-    memcpy(sources, topo->sources, maxindegree * sizeof(int));
-    memcpy(destinations, topo->destinations, maxoutdegree * sizeof(int));
-
-    if(topo->sourceweights != MPI_UNWEIGHTED)
-        memcpy(sourceweights, topo->sourceweights, maxindegree * sizeof(int));
-
-    if(topo->destweights != MPI_UNWEIGHTED)
-        memcpy(destweights, topo->destweights, maxoutdegree * sizeof(int));
-        
-    return MPI_SUCCESS;
-}

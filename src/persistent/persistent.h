@@ -1,7 +1,8 @@
 #ifndef MPI_ADVANCE_PERSISTENT_H
 #define MPI_ADVANCE_PERSISTENT_H
 
-#include "locality/locality_comm.h"
+#include "communicator/locality_comm.h"
+#include "communicator/mpix_comm.h"
 #include "utils/utils.h"
 
 #ifdef __cplusplus
@@ -9,7 +10,10 @@ extern "C"
 {
 #endif
 
-typedef struct _MPIX_Request
+struct _MPIX_Request; // forward declaration
+typedef struct _MPIX_Request MPIX_Request;
+
+struct _MPIX_Request
 {
     // Message counts
     // Will only use global unless locality-aware
@@ -48,9 +52,9 @@ typedef struct _MPIX_Request
 #endif
 
     // Keep track of which start/wait functions to call for given request
-    void* start_function;
-    void* wait_function;   
-} MPIX_Request;
+    int (*start_function)(MPIX_Request* request);
+    int (*wait_function)(MPIX_Request* request, MPI_Status* status);
+};
 
 typedef int (*mpix_start_ftn)(MPIX_Request* request);
 typedef int (*mpix_wait_ftn)(MPIX_Request* request, MPI_Status* status);

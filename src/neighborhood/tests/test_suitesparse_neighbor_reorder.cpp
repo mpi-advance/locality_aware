@@ -1,11 +1,3 @@
-// EXPECT_EQ and ASSERT_EQ are macros
-// EXPECT_EQ test execution and continues even if there is a failure
-// ASSERT_EQ test execution and aborts if there is a failure
-// The ASSERT_* variants abort the program execution if an assertion fails
-// while EXPECT_* variants continue with the run.
-
-
-#include "gtest/gtest.h"
 #include "mpi_advance.h"
 #include <mpi.h>
 #include <math.h>
@@ -19,6 +11,19 @@
 #include "tests/sparse_mat.hpp"
 #include "tests/par_binary_IO.hpp"
 
+void compare_neighbor_alltoallv_results(std::vector<int>& pmpi_recv_vals, std::vector<int>& mpix_recv_vals, int s)
+{
+    for (int i = 0; i < s; i++)
+    {
+        if (pmpi_recv_vals[i] != mpix_recv_vals[i])
+        {
+            fprintf(stderr, "PMPI recv != MPIX: position %d, pmpi %d, mpix %d\n", i, 
+                    pmpi_recv_vals[i], mpix_recv_vals[i]);
+            MPI_Abort(MPI_COMM_WORLD, -1);
+        }
+    }
+}
+
 void test_matrix(const char* filename)
 {
     int rank, num_procs;
@@ -31,8 +36,7 @@ void test_matrix(const char* filename)
     readParMatrix(filename, A);
     form_comm(A);
 
-    std::vector<int> std_recv_vals, neigh_recv_vals, new_recv_vals,
-            locality_recv_vals, part_locality_recv_vals;
+    std::vector<int> pmpi_recv_vals, mpix_recv_vals;
     std::vector<int> send_vals, alltoallv_send_vals;
     std::vector<long> send_indices;
 
@@ -46,11 +50,8 @@ void test_matrix(const char* filename)
 
     if (A.recv_comm.size_msgs)
     {
-        std_recv_vals.resize(A.recv_comm.size_msgs);
-        neigh_recv_vals.resize(A.recv_comm.size_msgs);
-        new_recv_vals.resize(A.recv_comm.size_msgs);
-        locality_recv_vals.resize(A.recv_comm.size_msgs);
-        part_locality_recv_vals.resize(A.recv_comm.size_msgs);
+        pmpi_recv_vals.resize(A.recv_comm.size_msgs);
+        mpix_recv_vals.resize(A.recv_comm.size_msgs);
     }
 
     if (A.send_comm.size_msgs)
@@ -65,7 +66,7 @@ void test_matrix(const char* filename)
         }
     }
 
-    communicate(A, send_vals, std_recv_vals, MPI_INT);
+    communicate(A, send_vals, mpix_recv_vals, MPI_INT);
 
     MPI_Comm std_comm;
     MPI_Status status;
@@ -104,7 +105,7 @@ void test_matrix(const char* filename)
             send_counts,
             A.send_comm.ptr.data(), 
             MPI_INT,
-            neigh_recv_vals.data(),
+            pmpi_recv_vals.data(),
             recv_counts,
             A.recv_comm.ptr.data(),
             MPI_INT,
@@ -113,6 +114,8 @@ void test_matrix(const char* filename)
         delete[] send_counts;
     if (A.recv_comm.counts.data() == NULL)
         delete[] recv_counts;
+    compare_neighbor_alltoallv_results(pmpi_recv_vals, mpix_recv_vals, A.recv_comm.size_msgs);
+
 
     MPIX_Dist_graph_create_adjacent(MPI_COMM_WORLD,
             A.recv_comm.n_msgs,
@@ -121,7 +124,7 @@ void test_matrix(const char* filename)
             A.send_comm.n_msgs, 
             A.send_comm.procs.data(),
             MPI_UNWEIGHTED,
-            MPI_INFO_NULL, 
+            xinfo,
             0, 
             &neighbor_comm);
 
@@ -133,7 +136,7 @@ void test_matrix(const char* filename)
             A.send_comm.counts.data(),
             A.send_comm.ptr.data(), 
             MPI_INT,
-            new_recv_vals.data(), 
+            mpix_recv_vals.data(), 
             A.recv_comm.counts.data(),
             A.recv_comm.ptr.data(), 
             MPI_INT,
@@ -141,24 +144,19 @@ void test_matrix(const char* filename)
             xinfo,
             &neighbor_request);
 
+    std::fill(mpix_recv_vals.begin(), mpix_recv_vals.end(), 0);
     neighbor_request->reorder = 1;
     MPIX_Start(neighbor_request);
     MPIX_Wait(neighbor_request, &status);
-
-    for (int i = 0; i < A.recv_comm.size_msgs; i++)
-    {
-        ASSERT_EQ(std_recv_vals[i], new_recv_vals[i]);
-    }
+    compare_neighbor_alltoallv_results(pmpi_recv_vals, mpix_recv_vals, A.recv_comm.size_msgs);
 
     // Standard send/recv with reordered recvs
+    std::fill(mpix_recv_vals.begin(), mpix_recv_vals.end(), 0);
     MPIX_Start(neighbor_request);
     MPIX_Wait(neighbor_request, &status);
     MPIX_Request_free(&neighbor_request);
+    compare_neighbor_alltoallv_results(pmpi_recv_vals, mpix_recv_vals, A.recv_comm.size_msgs);
 
-    for (int i = 0; i < A.recv_comm.size_msgs; i++)
-    {
-        ASSERT_EQ(std_recv_vals[i], new_recv_vals[i]);
-    }
 
     MPIX_Info_free(&xinfo);
     MPIX_Comm_free(&neighbor_comm);
@@ -168,20 +166,6 @@ void test_matrix(const char* filename)
 int main(int argc, char** argv)
 {
     MPI_Init(&argc, &argv);
-    ::testing::InitGoogleTest(&argc, argv);
-    int temp=RUN_ALL_TESTS();
-    MPI_Finalize();
-    return temp;
-} // end of main() //
-
-
-TEST(RandomCommTest, TestsInTests)
-{
-    // Get MPI Information
-    int rank, num_procs;
-    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-    MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
-
     test_matrix("../../../../test_data/dwt_162.pm");
     test_matrix("../../../../test_data/odepa400.pm");
     test_matrix("../../../../test_data/ww_36_pmec_36.pm");
@@ -201,5 +185,8 @@ TEST(RandomCommTest, TestsInTests)
     test_matrix("../../../../test_data/can_1072.pm");
     test_matrix("../../../../test_data/lp_sctap2.pm");
     test_matrix("../../../../test_data/lp_woodw.pm");
-}
+    MPI_Finalize();
+    return 0;
+} // end of main() //
+
 

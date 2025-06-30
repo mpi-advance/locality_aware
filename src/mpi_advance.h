@@ -3,12 +3,13 @@
 
 #include "utils/utils.h"
 
-#include "locality/comm_data.h"
-#include "locality/comm_pkg.h"
-#include "locality/locality_comm.h"
-#include "locality/topology.h"
+#include "communicator/comm_data.h"
+#include "communicator/comm_pkg.h"
+#include "communicator/locality_comm.h"
+#include "communicator/mpix_comm.h"
 
 #include "persistent/persistent.h"
+#include "persistent/neighbor_persistent.h"
 
 #include "collective/collective.h"
 #include "collective/alltoall.h"
@@ -17,13 +18,12 @@
 #include "neighborhood/dist_graph.h"
 #include "neighborhood/dist_topo.h"
 #include "neighborhood/neighbor.h"
-#include "neighborhood/neighbor_persistent.h"
+#include "neighborhood/neighbor_init.h"
 #include "neighborhood/sparse_coll.h"
 
 #ifdef GPU
     #include "heterogeneous/gpu_alltoall.h"
     #include "heterogeneous/gpu_alltoallv.h"
-    #include "heterogeneous/gpu_alltoall_init.h"
 #endif
 
 #endif

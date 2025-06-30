@@ -2,8 +2,8 @@
 #define MPI_ADVANCE_DIST_TOPO_H
 
 #include "mpi.h"
-#include "locality/locality_comm.h"
-#include "locality/topology.h"
+#include "communicator/locality_comm.h"
+#include "communicator/mpix_comm.h"
 
 // Declarations of C++ methods
 #ifdef __cplusplus
@@ -23,32 +23,22 @@ typedef struct _MPIX_Topo
     int reorder;
 } MPIX_Topo;
 
-int MPIX_Topo_dist_graph_create_adjacent( 
+int MPIX_Topo_init( 
         int indegree,
         const int sources[],
         const int sourceweights[],
         int outdegree,
         const int destinations[],
         const int destweights[],
-        MPI_Info info,
-        int reorder,
+        MPIX_Info* info,
         MPIX_Topo** mpix_topo_ptr);
 
-int MPIX_Topo_free(MPIX_Topo* topo);
+int MPIX_Topo_from_neighbor_comm(
+        MPIX_Comm* comm,
+        MPIX_Topo** mpix_topo_ptr);
 
+int MPIX_Topo_free(MPIX_Topo** topo);
 
-int MPIX_Topo_dist_graph_neighbors_count(MPIX_Topo* topo,
-        int* indegree,
-        int* outdegree,
-        int* weighted);
-
-int MPIX_Topo_dist_graph_neighbors(MPIX_Topo* topo,
-        int maxindegree,
-        int sources[],
-        int sourceweights[],
-        int maxoutdegree,
-        int desitnations[],
-        int destweights[]);
 
 #ifdef __cplusplus
 }

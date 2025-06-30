@@ -19,15 +19,12 @@ extern "C"
 // MPIX Info Object
 typedef struct _MPIX_Info
 {
-    int tag;
-    int max_tag;
     int crs_num_initialized;
     int crs_size_initialized;
 } MPIX_Info;
 
 int MPIX_Info_init(MPIX_Info** info);
 int MPIX_Info_free(MPIX_Info** info);
-int MPIX_Info_tag(MPIX_Info* info, int* tag);
 
 
 // If using GPU, specific gpu methods (for either NCCL or HIP)

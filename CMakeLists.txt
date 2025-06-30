@@ -1,175 +1,127 @@
-cmake_minimum_required(VERSION 3.17 FATAL_ERROR) 
+cmake_minimum_required(VERSION 3.21 FATAL_ERROR)
+cmake_policy(VERSION 3.21.1...3.27)
 
-include(FeatureSummary)
+# Create project
+project(locality_aware LANGUAGES C CXX)
 
-enable_language(C)
-enable_language(CXX)
-#set(CMAKE_C_STANDARD 99)
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+# Set C,CXX standards
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_C_STANDARD 99)
 
-
-find_package(MPI REQUIRED)
-include_directories(${MPI_INCLUDE_PATH})
-
-find_package(OpenMP)
-
-
-
-# Options for Heterogeneous Architectures
-option(GPU_AWARE "Use GPU-Aware MPI" ON)
-option(USE_GPU "Compile heterogeneous folder" OFF)
-option(USE_HIP "Compile with HIP Support" OFF)
-option(USE_CUDA "Compile with CUDA Support" OFF)
-option(ENABLE_UNIT_TESTS "Enable unit testing" ON)
-option(USING_AMD "Compile on AMD GPU machine" OFF)
-
-add_feature_info(gpu_aware GPU_AWARE "Use GPU-Aware MPI")
-add_feature_info(use_hip USE_HIP "Compile with HIP Support")
-add_feature_info(use_cuda USE_CUDA "Compile with CUDA Support")
-add_feature_info(using_amd USING_AMD "Compile on machine with AMD GPUs")
-
-set(MPIRUN "mpirun" CACHE STRING "MPIRUN command")
-set(MPICXX "mpicxx" CACHE STRING "MPICXX command")
-set(GPURunCommand "mpirun -n4 -N2 -gpu" CACHE STRING "Command to run MPIRun with GPU-Aware MPI")
-separate_arguments(GPUAwareMPIRUN NATIVE_COMMAND ${GPURunCommand})
-
-if (USE_CUDA)
-    project(mpi_advance LANGUAGES CUDA CXX VERSION 0.1.0)
-elseif (USE_HIP)
-    project(mpi_advance LANGUAGES HIP CXX VERSION 0.1.0)
-else()
-    project(mpi_advance)
-endif()
-
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
-
+# Add warning flags to help with debugging
 set(CMAKE_C_FLAGS "-Wall -Wextra -Wpedantic -Wshadow")
 set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wpedantic -Wshadow")
-message(STATUS ${CMAKE_C_FLAGS})
-if (OPENMP_FOUND)
-    message(STATUS ${OPENMP_C_FLAGS})
-    #set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
-    #set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
-    #set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
-endif()
+
+# Build Options
+option(USE_CUDA "Enable NVIDIA CUDA support" OFF)
+option(USE_HIP "Enable AMD HIP support" OFF)
+option(GPU_AWARE "Use GPU-Aware MPI, if GPU support is enabled" ON)
+option(ENABLE_UNIT_TESTS "Enable unit testing" ON)
+
+set(MPICXX "mpicxx" CACHE STRING "MPICXX command")
+set(MPIRUN "mpirun" CACHE STRING "MPIRUN command")
+set(CUDA_ARCH "75" CACHE STRING "CUDA Architecture")
+
+include_directories("${CMAKE_SOURCE_DIR}")
+include_directories("${CMAKE_SOURCE_DIR}/src")
 
 
+# Find MPI
 find_package(MPI REQUIRED)
+if (MPI_COMPILER_FLAGS)
+  add_compile_options(${MPI_COMPILER_FLAGS})
+endif()
 include_directories(${MPI_INCLUDE_PATH})
-set(mpi_advance_INCDIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
-set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
+set(EXTERNAL_LIBS ${MPI_LIBRARIES})
 
-cmake_policy(SET CMP0104 OLD)
+# Find OpenMP (not required)
+find_package(OpenMP)
+if (${OpenMP_CXX_FOUND})
+  # Add OpenMP flags to compile options
+  add_compile_options(${OpenMP_CXX_FLAGS})
 
-if (USING_AMD)
-    set(rocm-version "6.1.2" CACHE STRING "Version of ROCM, default 6.1.2")
-    if (GPU_AWARE)
-        add_definitions(-DGPU_AWARE)
-    endif()
-    set(USE_HIP ON)
-    set(USE_CUDA OFF)
-    set(USE_GPU ON)
-    set(MPICH_GPU_SUPPORT_ENABLED 1)
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -I/opt/rocm-${rocm-version}/include -O3 -g --offload-arch=gfx90a --rocm-path=/opt/rocm-${rocm-version} -x hip -mllvm -amdgpu-early-inline-all=true -mllvm -amdgpu-function-calls=false -fhip-new-launch-api --driver-mode=g++")
-    message(STATUS ${CMAKE_C_FLAGS})
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -I/opt/rocm-${rocm-version}/include -O3 -g -std=c++11 --offload-arch=gfx90a --rocm-path=/opt/rocm-${rocm-version} -x hip -mllvm -amdgpu-early-inline-all=true -mllvm -amdgpu-function-calls=false -fhip-new-launch-api --driver-mode=g++")
-    set(CMAKE_EXE_LINKER_FLAGS "-L/opt/cray/pe/mpich/8.1.26/gtl/lib -Wl,-rpath=/opt/cray/pe/mpich/8.1.26/gtl/lib -lmpi_gtl_hsa")
-    add_definitions(-DCOMPILERID=rocm-${rocm-version})
-    add_definitions(-D__HIP_PLATFORM_AMD__)
-endif(USING_AMD)
-
-set(C_FLAGS ${CMAKE_C_FLAGS})
-message(STATUS $C_FLAGS)
-
-if (USE_CUDA)
-    if (GPU_AWARE)
-        add_definitions(-DGPU_AWARE)
-    endif()
-    set(USE_GPU ON)
-    set(CMAKE_CUDA_FLAGS "-ccbin=${MPICXX} -arch=sm_70")
-    add_definitions(-DCUDA)
-    add_definitions(-DGPU)
-endif(USE_CUDA)
-
-if (USE_HIP)
-    if (GPU_AWARE)
-        add_definitions(-DGPU_AWARE)
-    endif()
-    set(USE_GPU ON)
-    add_definitions(-DHIP)
-    add_definitions(-DGPU)
-endif(USE_HIP)
-
-
-##################### 
-## GOOGLETEST      ##
-#####################
-# Try to find an existing GoogleTest installation
-find_package(GTest)
-
-if (NOT GTest_FOUND)
-include(FetchContent)
-
-FetchContent_Declare(
-  googletest
-  GIT_REPOSITORY https://github.com/google/googletest.git
-  # Specify the commit you depend on and update it regularly.
-  GIT_TAG 58d77fa8070e8cec2dc1ed015d66b454c8d78850
-)
-# For Windows: Prevent overriding the parent project's compiler/linker settings
-set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-FetchContent_MakeAvailable(googletest)
+  set(EXTERNAL_LIBS ${EXTERNAL_LIBS} ${OpenMP_CXX_LIBRARIES})
+  add_definitions(-DOPENMP)
+  message(STATUS "Found OpenMP ${OpenMP_CXX_LIBRARIES}")
 endif()
 
-#####################
+# Set default language of .cpp files
+set(locality_aware_LANG CXX)
 
-include_directories(.)
-include_directories(src)
-add_subdirectory(src)
+if (USE_CUDA OR USE_HIP)
+  if (GPU_AWARE)
+      add_definitions(-DGPU_AWARE)
+      message(STATUS "Code will be compiled assuming GPU-Aware support.  If your compiler doesn't not support this, set GPU_AWARE to OFF")
+  endif()
+  set(USE_GPU ON)
+  add_definitions(-DGPU)
 if (USE_CUDA)
-    target_compile_options(mpi_advance PRIVATE
-    $<$<COMPILE_LANGUAGE:CUDA>: # Flags for CUDA Objects
-    -lineinfo
-    -Xcompiler -fopenmp
-    >
-    $<$<COMPILE_LANGUAGE:CXX>: # Flags for C++ Objects
-    -fno-omit-frame-pointer
-    -fopenmp
-    >
-    )
-    set_property(TARGET mpi_advance PROPERTY CUDA_SEPARABLE_COMPILATION ON)
-endif(USE_CUDA)
+  set(CMAKE_CUDA_HOST_COMPILER "${MPICXX}")
+  set(CMAKE_CUDA_ARCHITECTURES ${CUDA_ARCH})
+  enable_language(CUDA)
+  set(locality_aware_LANG CUDA)
+  message(STATUS "CUDA support enabled: ${CMAKE_CUDA_FLAGS}")
+  add_definitions(-DCUDA)
+
+elseif (USE_HIP)
+  set(CMAKE_HIP_COMPILER "${MPICXX}")
+  enable_language(HIP)
+  set(locality_aware_LANG HIP)
+  message(STATUS "HIP support enabled")
+  add_definitions(-DHIP)
+endif()
+endif()
+
+add_subdirectory(src/utils)
+add_subdirectory(src/communicator)
+add_subdirectory(src/persistent)
+add_subdirectory(src/collective)
+add_subdirectory(src/neighborhood)
+if(USE_CUDA OR USE_HIP)
+    add_subdirectory(src/heterogeneous)
+endif()
+
+set_source_files_properties(
+    ${utils_SOURCES}
+    ${communicator_SOURCES}
+    ${collective_SOURCES}
+    ${persistent_SOURCES}
+    ${neighborhood_SOURCES}
+    ${heterogeneous_SOURCES}
+    PROPERTIES LANGUAGE ${locality_aware_LANG})
+
+add_library(mpi_advance
+    ${utils_SOURCES} ${utils_HEADERS}
+    ${communicator_SOURCES} ${communicator_HEADERS}
+    ${collective_SOURCES} ${collective_HEADERS}
+    ${persistent_SOURCES} ${persistent_HEADERS}
+    ${neighborhood_SOURCES} ${neighborhood_HEADERS}
+    ${heterogeneous_SOURCES} ${heterogeneous_HEADERS}
+)
+target_link_libraries(mpi_advance PUBLIC ${EXTERNAL_LIBS})
+
+install(TARGETS mpi_advance 
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
+        LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
+        RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
+
+install(FILES src/mpi_advance.h DESTINATION ${CMAKE_INSTALL_PREFIX}/include)
+install(FILES ${utils_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/utils)
+install(FILES ${communicator_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/communicator)
+install(FILES ${collective_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/collective)
+install(FILES ${persistent_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/persistent)
+install(FILES ${neighborhood_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/neighborhood)
+install(FILES ${heterogeneous_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/heterogeneous)
+
+if (ENABLE_UNIT_TESTS)
+    enable_testing()
+    add_subdirectory(src/collective/tests)
+    add_subdirectory(src/neighborhood/tests)
+    if (USE_GPU)
+        add_subdirectory(src/heterogeneous/tests)
+    endif(USE_GPU)
+endif()
 
 add_subdirectory(benchmarks)
 
-enable_testing()
 
-include(CMakePackageConfigHelpers)
-
-# Install the actual target(s) and register them for export
-install(TARGETS mpi_advance
-        EXPORT mpiadvanceTargets
-        DESTINATION lib)
-
-# Export the targets into a CMake package
-install(EXPORT mpiadvanceTargets
-        NAMESPACE mpiadvance::
-        DESTINATION lib/cmake/mpiadvance)
-
-# Generate the Config and Version files
-write_basic_package_version_file(
-  "${CMAKE_CURRENT_BINARY_DIR}/mpiadvanceConfigVersion.cmake"
-  VERSION 1.0.0
-  COMPATIBILITY SameMajorVersion)
-
-configure_package_config_file(
-  "${CMAKE_CURRENT_SOURCE_DIR}/cmake/mpiadvanceConfig.cmake"
-  "${CMAKE_CURRENT_BINARY_DIR}/mpiadvanceConfig.cmake"
-  INSTALL_DESTINATION lib/cmake/mpiadvance)
-
-install(FILES
-  "${CMAKE_CURRENT_BINARY_DIR}/mpiadvanceConfig.cmake"
-  "${CMAKE_CURRENT_BINARY_DIR}/mpiadvanceConfigVersion.cmake"
-  DESTINATION lib/cmake/mpiadvance)
-  

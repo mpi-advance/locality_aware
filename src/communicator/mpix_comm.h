@@ -18,9 +18,18 @@ extern "C"
 typedef struct _MPIX_Comm
 {
     MPI_Comm global_comm;
-    MPI_Comm local_comm;
+
+    // For persistent neighborhood collectives
     MPI_Comm neighbor_comm;
+
+    // For hierarchical collectives
+    MPI_Comm local_comm;
     MPI_Comm group_comm;
+
+    // For multileader hierarchical collectives
+    MPI_Comm leader_comm;
+    MPI_Comm leader_group_comm;
+    MPI_Comm leader_local_comm;
 
     int num_nodes;
     int rank_node;
@@ -32,7 +41,15 @@ typedef struct _MPIX_Comm
     int win_type_bytes;
 
     MPI_Request* requests;
+    MPI_Status* statuses;
     int n_requests;
+
+    int tag;
+    int max_tag;
+
+    int* global_rank_to_local;
+    int* global_rank_to_node;
+    int* ordered_global_ranks;
 
 #ifdef GPU
    int gpus_per_node;
@@ -47,6 +64,9 @@ int MPIX_Comm_free(MPIX_Comm** xcomm_ptr);
 int MPIX_Comm_topo_init(MPIX_Comm* xcomm);
 int MPIX_Comm_topo_free(MPIX_Comm* xcomm);
 
+int MPIX_Comm_leader_init(MPIX_Comm* xcomm, int procs_per_leader);
+int MPIX_Comm_leader_free(MPIX_Comm* xcomm);
+
 int MPIX_Comm_win_init(MPIX_Comm* xcomm, int bytes, int type_bytes);
 int MPIX_Comm_win_free(MPIX_Comm* xcomm);
 
@@ -54,6 +74,8 @@ int MPIX_Comm_device_init(MPIX_Comm* xcomm);
 int MPIX_Comm_device_free(MPIX_Comm* xcomm);
 
 int MPIX_Comm_req_resize(MPIX_Comm* xcomm, int n);
+
+int MPIX_Comm_tag(MPIX_Comm* comm, int* tag);
 
 int get_node(const MPIX_Comm* data, const int proc);
 int get_local_proc(const MPIX_Comm* data, const int proc);

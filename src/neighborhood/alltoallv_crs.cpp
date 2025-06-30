@@ -3,8 +3,8 @@
 #include <vector>
 
 
-int alltoallv_crs_personalized(int send_nnz, int send_size, int* dest, int* sendcounts,
-        int* sdispls, MPI_Datatype sendtype, void* sendvals,
+int alltoallv_crs_personalized(const int send_nnz, const int send_size, const int* dest, 
+        const int* sendcounts, const int* sdispls, MPI_Datatype sendtype, const void* sendvals,
         int* recv_nnz, int* recv_size, int** src_ptr, int** recvcounts_ptr, 
         int** rdispls_ptr, MPI_Datatype recvtype, void** recvvals_ptr, MPIX_Info* xinfo, MPIX_Comm* comm)
 {
@@ -13,9 +13,9 @@ int alltoallv_crs_personalized(int send_nnz, int send_size, int* dest, int* send
     MPI_Comm_size(comm->global_comm, &num_procs);
 
     MPI_Status recv_status;
-    int proc, ctr, idx, count;
+    int proc, ctr, count;
     int tag;
-    MPIX_Info_tag(xinfo, &tag);
+    MPIX_Comm_tag(comm, &tag);
 
     char* send_buffer = (char*)sendvals;
     int send_bytes, recv_bytes;
@@ -34,7 +34,6 @@ int alltoallv_crs_personalized(int send_nnz, int send_size, int* dest, int* send
     // Allocate recvvals to size determined in allreduce
     char* recvvals;
     MPIX_Alloc((void**)&recvvals, *recv_size*recv_bytes);
-//    char* recvvals = (char*)MPIalloc(*recv_size * recv_bytes);
 
     if (comm->n_requests < send_nnz)
         MPIX_Comm_req_resize(comm, send_nnz);
@@ -76,11 +75,8 @@ int alltoallv_crs_personalized(int send_nnz, int send_size, int* dest, int* send
     *recvvals_ptr = recvvals;
 
     MPIX_Alloc((void**)src_ptr, src.size()*sizeof(int));
-	MPIX_Alloc((void**)recvcounts_ptr, recvcounts.size()*sizeof(int));
+    MPIX_Alloc((void**)recvcounts_ptr, recvcounts.size()*sizeof(int));
     MPIX_Alloc((void**)rdispls_ptr, rdispls.size()*sizeof(int));
-//    (*src_ptr) = (int*)MPIalloc(src.size()*sizeof(int));
-//    (*recvcounts_ptr) = (int*)MPIalloc(recvcounts.size()*sizeof(int));
-//    (*rdispls_ptr) = (int*)MPIalloc(rdispls.size()*sizeof(int));
     memcpy((*src_ptr), src.data(), src.size()*sizeof(int));
     memcpy((*recvcounts_ptr), recvcounts.data(), recvcounts.size()*sizeof(int));
     memcpy((*rdispls_ptr), rdispls.data(), rdispls.size()*sizeof(int));
@@ -93,11 +89,10 @@ int alltoallv_crs_personalized(int send_nnz, int send_size, int* dest, int* send
 
 
 
-int alltoallv_crs_nonblocking(int send_nnz, int send_size, int* dest, int* sendcounts,
-        int* sdispls, MPI_Datatype sendtype, void* sendvals,
+int alltoallv_crs_nonblocking(const int send_nnz, const int send_size, const int* dest, 
+        const int* sendcounts, const int* sdispls, MPI_Datatype sendtype, const void* sendvals,
         int* recv_nnz, int* recv_size, int** src_ptr, int** recvcounts_ptr, 
-        int** rdispls_ptr, MPI_Datatype recvtype, void** recvvals_ptr, 
-        MPIX_Info* xinfo, MPIX_Comm* comm)
+        int** rdispls_ptr, MPI_Datatype recvtype, void** recvvals_ptr, MPIX_Info* xinfo, MPIX_Comm* comm)
 {
     int rank, num_procs;
     MPI_Comm_rank(comm->global_comm, &rank);
@@ -112,7 +107,7 @@ int alltoallv_crs_nonblocking(int send_nnz, int send_size, int* dest, int* sendc
     MPI_Status recv_status;
     MPI_Request bar_req;
     int tag;
-    MPIX_Info_tag(xinfo, &tag);
+    MPIX_Comm_tag(comm, &tag);
 
     if (comm->n_requests < send_nnz)
         MPIX_Comm_req_resize(comm, send_nnz);
@@ -268,7 +263,7 @@ void local_redistribute(int n_recvs, std::vector<int>& origins, std::vector<int>
     // Tell them which global indices I need from them
     std::vector<MPI_Request> local_req(PPN);
 
-    MPIX_Info_tag(xinfo, &tag);
+    MPIX_Comm_tag(comm, &tag);
 
     n_sends = 0;
     for (int i = 0; i < PPN; i++)
@@ -349,11 +344,10 @@ void local_redistribute(int n_recvs, std::vector<int>& origins, std::vector<int>
 }
 
 
-int alltoallv_crs_personalized_loc(int send_nnz, int send_size, int* dest, int* sendcounts,
-        int* sdispls, MPI_Datatype sendtype, void* sendvals,
+int alltoallv_crs_personalized_loc(const int send_nnz, const int send_size, const int* dest, 
+        const int* sendcounts, const int* sdispls, MPI_Datatype sendtype, const void* sendvals,
         int* recv_nnz, int* recv_size, int** src_ptr, int** recvcounts_ptr, 
-        int** rdispls_ptr, MPI_Datatype recvtype, void** recvvals_ptr, 
-        MPIX_Info* xinfo, MPIX_Comm* comm)
+        int** rdispls_ptr, MPI_Datatype recvtype, void** recvvals_ptr, MPIX_Info* xinfo, MPIX_Comm* comm)
 {
     int rank, num_procs, local_rank, PPN;
     MPI_Comm_rank(comm->global_comm, &rank);
@@ -368,7 +362,7 @@ int alltoallv_crs_personalized_loc(int send_nnz, int send_size, int* dest, int* 
         MPIX_Comm_req_resize(comm, send_nnz);
 
     int tag;
-    MPIX_Info_tag(xinfo, &tag);
+    MPIX_Comm_tag(comm, &tag);
 
     char* send_buffer = (char*)sendvals;
     int send_bytes, recv_bytes, int_bytes;
@@ -475,11 +469,10 @@ int alltoallv_crs_personalized_loc(int send_nnz, int send_size, int* dest, int* 
 	return MPI_SUCCESS;
 }
 
-int alltoallv_crs_nonblocking_loc(int send_nnz, int send_size, int* dest, int* sendcounts,
-        int* sdispls, MPI_Datatype sendtype, void* sendvals,
+int alltoallv_crs_nonblocking_loc(const int send_nnz, const int send_size, const int* dest, 
+        const int* sendcounts, const int* sdispls, MPI_Datatype sendtype, const void* sendvals,
         int* recv_nnz, int* recv_size, int** src_ptr, int** recvcounts_ptr, 
-        int** rdispls_ptr, MPI_Datatype recvtype, void** recvvals_ptr, 
-        MPIX_Info* xinfo, MPIX_Comm* comm)
+        int** rdispls_ptr, MPI_Datatype recvtype, void** recvvals_ptr, MPIX_Info* xinfo, MPIX_Comm* comm)
 {
     int rank, num_procs, local_rank, PPN;
     MPI_Comm_rank(comm->global_comm, &rank);
@@ -494,7 +487,7 @@ int alltoallv_crs_nonblocking_loc(int send_nnz, int send_size, int* dest, int* s
         MPIX_Comm_req_resize(comm, send_nnz);
 
     int tag;
-    MPIX_Info_tag(xinfo, &tag);
+    MPIX_Comm_tag(comm, &tag);
 
     char* send_buffer = (char*)sendvals;
     int send_bytes, recv_bytes, int_bytes;

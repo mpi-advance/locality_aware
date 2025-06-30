@@ -3,16 +3,14 @@
 #include <vector>
 
 
-int alltoall_crs_rma(int send_nnz, int* dest, int sendcount, 
-        MPI_Datatype sendtype, void* sendvals,
+int alltoall_crs_rma(const int send_nnz, const int* dest, const int sendcount, 
+        MPI_Datatype sendtype, const void* sendvals,
         int* recv_nnz_ptr, int** src_ptr, int recvcount, MPI_Datatype recvtype,
         void** recvvals_ptr, MPIX_Info* xinfo, MPIX_Comm* comm)
 { 
     int rank, num_procs;
     MPI_Comm_rank(comm->global_comm, &rank);
     MPI_Comm_size(comm->global_comm, &num_procs);
-
-    int ctr, flag;
 
     // Get bytes per datatype, total bytes to be recvd (size of win_array)
     char* send_buffer;
@@ -51,6 +49,7 @@ int alltoall_crs_rma(int send_nnz, int* dest, int sendcount,
 
     std::vector<int> src;
     std::vector<char> recv_buffer;
+    int flag;
     for (int i = 0; i < num_procs; i++)
     {
         flag = 0;
@@ -82,8 +81,8 @@ int alltoall_crs_rma(int send_nnz, int* dest, int sendcount,
     return MPI_SUCCESS;
 }
 
-int alltoall_crs_personalized(int send_nnz, int* dest, int sendcount,
-        MPI_Datatype sendtype, void* sendvals,
+int alltoall_crs_personalized(const int send_nnz, const int* dest, const int sendcount,
+        MPI_Datatype sendtype, const void* sendvals,
         int* recv_nnz, int** src_ptr, int recvcount, MPI_Datatype recvtype,
         void** recvvals_ptr, MPIX_Info* xinfo, MPIX_Comm* comm)
 {
@@ -94,7 +93,7 @@ int alltoall_crs_personalized(int send_nnz, int* dest, int sendcount,
     MPI_Status recv_status;
     int proc, ctr;
     int tag;
-    MPIX_Info_tag(xinfo, &tag);
+    MPIX_Comm_tag(comm, &tag);
 
     char* send_buffer;
     if (send_nnz)
@@ -156,8 +155,8 @@ int alltoall_crs_personalized(int send_nnz, int* dest, int sendcount,
 }
 
 
-int alltoall_crs_nonblocking(int send_nnz, int* dest, int sendcount,
-        MPI_Datatype sendtype, void* sendvals,
+int alltoall_crs_nonblocking(const int send_nnz, const int* dest, const int sendcount,
+        MPI_Datatype sendtype, const void* sendvals,
         int* recv_nnz, int** src_ptr, int recvcount, MPI_Datatype recvtype,
         void** recvvals_ptr, MPIX_Info* xinfo, MPIX_Comm* comm)
 {
@@ -178,7 +177,7 @@ int alltoall_crs_nonblocking(int send_nnz, int* dest, int sendcount,
     MPI_Status recv_status;
     MPI_Request bar_req;
     int tag;
-    MPIX_Info_tag(xinfo, &tag);
+    MPIX_Comm_tag(comm, &tag);
 
     std::vector<int> src;
     std::vector<char> recv_buffer;
@@ -247,7 +246,7 @@ void local_redistribute(int node_recv_size, std::vector<char>& recv_buf, std::ve
     MPI_Comm_rank(comm->local_comm, &local_rank);
     MPI_Comm_size(comm->local_comm, &PPN);
 
-    int send_bytes, recv_bytes, int_bytes;
+    int recv_bytes, int_bytes;
     MPI_Type_size(recvtype, &recv_bytes);
     MPI_Type_size(MPI_INT, &int_bytes);
     recv_bytes *= recvcount;
@@ -295,7 +294,7 @@ void local_redistribute(int node_recv_size, std::vector<char>& recv_buf, std::ve
         displs[i+1] = displs[i] + msg_counts[i];
 
     int tag;
-    MPIX_Info_tag(xinfo, &tag);
+    MPIX_Comm_tag(comm, &tag);
 
     MPI_Allreduce(MPI_IN_PLACE, msg_counts.data(), PPN, MPI_INT, MPI_SUM, comm->local_comm);
     int recv_count = msg_counts[local_rank];
@@ -364,8 +363,8 @@ void local_redistribute(int node_recv_size, std::vector<char>& recv_buf, std::ve
 }
 
 /* Assumes SMP Ordering of ranks across nodes (aggregates ranks 0-PPN) */
-int alltoall_crs_personalized_loc(int send_nnz, int* dest, int sendcount, 
-        MPI_Datatype sendtype, void* sendvals,
+int alltoall_crs_personalized_loc(const int send_nnz, const int* dest, const int sendcount, 
+        MPI_Datatype sendtype, const void* sendvals,
         int* recv_nnz, int** src_ptr, int recvcount, MPI_Datatype recvtype,
         void** recvvals_ptr, MPIX_Info* xinfo, MPIX_Comm* comm)
 {
@@ -393,9 +392,9 @@ int alltoall_crs_personalized_loc(int send_nnz, int* dest, int sendcount,
 
     MPI_Status recv_status;
     int proc, ctr, start, end;
-    int count, n_msgs, n_sends, n_recvs, idx, new_idx;
+    int count, n_msgs, n_sends;
     int tag;
-    MPIX_Info_tag(xinfo, &tag);
+    MPIX_Comm_tag(comm, &tag);
 
     std::vector<char> node_send_buffer;
     std::vector<char> local_send_buffer;
@@ -495,8 +494,8 @@ int alltoall_crs_personalized_loc(int send_nnz, int* dest, int sendcount,
 
 
 /* Assumes SMP Ordering of ranks across nodes (aggregates ranks 0-PPN) */
-int alltoall_crs_nonblocking_loc(int send_nnz, int* dest, int sendcount, 
-        MPI_Datatype sendtype, void* sendvals,
+int alltoall_crs_nonblocking_loc(const int send_nnz, const int* dest, const int sendcount, 
+        MPI_Datatype sendtype, const void* sendvals,
         int* recv_nnz, int** src_ptr, int recvcount, MPI_Datatype recvtype,
         void** recvvals_ptr, MPIX_Info* xinfo, MPIX_Comm* comm)
 { 
@@ -524,9 +523,9 @@ int alltoall_crs_nonblocking_loc(int send_nnz, int* dest, int sendcount,
     MPI_Status recv_status;
     MPI_Request bar_req;
     int proc, ctr, flag, ibar, start, end;
-    int count, n_msgs, n_sends, n_recvs, idx, new_idx;
+    int count, n_msgs, n_sends;
     int tag;
-    MPIX_Info_tag(xinfo, &tag);
+    MPIX_Comm_tag(comm, &tag);
 
     std::vector<char> node_send_buffer;
     std::vector<char> local_send_buffer;

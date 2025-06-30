@@ -1,45 +1,44 @@
 #include "neighbor.h"
-#include "neighbor_persistent.h"
+#include "sparse_coll.h"
+#include <cstring>
 
-int MPIX_Neighbor_alltoallw(
+// Standard Method is default
+NeighborAlltoallvMethod mpix_neighbor_alltoallv_implementation = NEIGHBOR_ALLTOALLV_STANDARD;
+
+// Topology object based neighbor alltoallv
+int MPIX_Neighbor_alltoallv_topo(
         const void* sendbuf,
         const int sendcounts[],
-        const MPI_Aint sdispls[],
-        MPI_Datatype* sendtypes,
+        const int sdispls[],
+        MPI_Datatype sendtype,
         void* recvbuf,
         const int recvcounts[],
-        const MPI_Aint rdispls[],
-        MPI_Datatype* recvtypes,
+        const int rdispls[],
+        MPI_Datatype recvtype,
+        MPIX_Topo* topo,
         MPIX_Comm* comm)
 {
+int rank; MPI_Comm_rank(comm->global_comm, &rank);
 
-    MPIX_Request* request;
-    MPI_Status status;
+    neighbor_alltoallv_ftn method;
+    
+    switch (mpix_neighbor_alltoallv_implementation)
+    {
+        case NEIGHBOR_ALLTOALLV_STANDARD:
+            method = neighbor_alltoallv_standard;
+            break;
+        case NEIGHBOR_ALLTOALLV_LOCALITY:
+            method = neighbor_alltoallv_locality;
+            break;
+        default:
+            method = neighbor_alltoallv_standard;
+            break;
+    }
 
-    MPIX_Info* xinfo;
-    MPIX_Info_init(&xinfo);
-
-    int ierr = MPIX_Neighbor_alltoallw_init(
-            sendbuf,
-            sendcounts,
-            sdispls,
-            sendtypes,
-            recvbuf,
-            recvcounts,
-            rdispls,
-            recvtypes,
-            comm,
-            xinfo,
-            &request);
-
-    MPIX_Start(request);
-    MPIX_Wait(request, &status);
-    MPIX_Request_free(&request);
-
-    MPIX_Info_free(&xinfo);
-
-    return ierr;
+    return method(sendbuf, sendcounts, sdispls, sendtype,
+            recvbuf, recvcounts, rdispls, recvtype, topo, comm);
 }
+
 
 int MPIX_Neighbor_alltoallv(
         const void* sendbuffer,
@@ -52,185 +51,144 @@ int MPIX_Neighbor_alltoallv(
         MPI_Datatype recvtype,
         MPIX_Comm* comm)
 {
+    MPIX_Topo* topo;
+    MPIX_Topo_from_neighbor_comm(comm, &topo);
 
-    int tag = 349526;
+    MPIX_Neighbor_alltoallv_topo(sendbuffer, sendcounts, sdispls, sendtype,
+            recvbuffer, recvcounts, rdispls, recvtype, topo, comm);
 
-    int indegree, outdegree, weighted;
-    MPI_Dist_graph_neighbors_count(
-            comm->neighbor_comm, 
-            &indegree, 
-            &outdegree, 
-            &weighted);
-
-    int* sources = NULL;
-    int* sourceweights = NULL;
-    int* destinations = NULL;
-    int* destweights = NULL;
-
-    MPI_Request* send_requests = NULL;
-    MPI_Request* recv_requests = NULL;
-
-    const char* send_buffer = NULL;
-    char* recv_buffer = NULL;
-
-    if (indegree)
-    {
-        recv_buffer = (char*) recvbuffer;
-        sources = (int*)malloc(indegree*sizeof(int));
-        sourceweights = (int*)malloc(indegree*sizeof(int));
-        recv_requests = (MPI_Request*)malloc(indegree*sizeof(MPI_Request));
-    }
-
-    if (outdegree)
-    {
-        send_buffer = (char*) sendbuffer;
-        destinations = (int*)malloc(outdegree*sizeof(int));
-        destweights = (int*)malloc(outdegree*sizeof(int));
-        send_requests = (MPI_Request*)malloc(outdegree*sizeof(MPI_Request));
-    }
-
-    MPI_Dist_graph_neighbors(
-            comm->neighbor_comm, 
-            indegree, 
-            sources, 
-            sourceweights,
-            outdegree, 
-            destinations, 
-            destweights);
-
-    int send_size, recv_size;
-    MPI_Type_size(sendtype, &send_size);
-    MPI_Type_size(recvtype, &recv_size);
-
-
-    for (int i = 0; i < indegree; i++)
-    {
-        MPI_Irecv(&(recv_buffer[rdispls[i]*recv_size]), 
-                recvcounts[i],
-                recvtype, 
-                sources[i],
-                tag,
-                comm->global_comm, 
-                &(recv_requests[i]));
-    }
-
-    for (int i = 0; i < outdegree; i++)
-    {
-        MPI_Isend(&(send_buffer[sdispls[i]*send_size]),
-                sendcounts[i],
-                sendtype,
-                destinations[i],
-                tag,
-                comm->global_comm,
-                &(send_requests[i]));
-    }
-
-    MPI_Waitall(indegree, recv_requests, MPI_STATUSES_IGNORE);
-    MPI_Waitall(outdegree, send_requests, MPI_STATUSES_IGNORE);
-
-
-    free(sources);
-    free(sourceweights);
-    free(destinations);
-    free(destweights);
-
-    free(send_requests);
-    free(recv_requests);
+    MPIX_Topo_free(&topo);
 
     return MPI_SUCCESS;
 
 }
 
 
-// TODO : terrible implementation if not using persistent
-// Fix this to use aggregation similar to dynamic
-// Just combine messages in a 2 step approach
-int MPIX_Neighbor_part_locality_alltoallv(
-        const void* sendbuffer,
+// Standard, non-persistent neighbor collective
+int neighbor_alltoallv_standard(
+        const void* sendbuf,
         const int sendcounts[],
         const int sdispls[],
         MPI_Datatype sendtype,
-        void* recvbuffer,
+        void* recvbuf,
         const int recvcounts[],
         const int rdispls[],
         MPI_Datatype recvtype,
+        MPIX_Topo* topo,
         MPIX_Comm* comm)
 {
-    if (comm->local_comm == MPI_COMM_NULL)
-        MPIX_Comm_topo_init(comm);
+    int tag;
+    MPIX_Comm_tag(comm, &tag);
 
-    MPIX_Request* request;
-    MPI_Status status;
+    if (topo->indegree + topo->outdegree == 0)
+        return MPI_SUCCESS;
+
+    if (comm->n_requests < topo->indegree + topo->outdegree)
+        MPIX_Comm_req_resize(comm, topo->indegree + topo->outdegree);
+
+    const char* send_buffer = NULL;
+    char* recv_buffer = NULL;
+
+    if (topo->indegree)
+        recv_buffer = (char*)recvbuf;
+    if (topo->outdegree)
+        send_buffer = (char*)sendbuf;
+
+    int send_size, recv_size;
+    MPI_Type_size(sendtype, &send_size);
+    MPI_Type_size(recvtype, &recv_size);
+
+    int count = 0;
+    for (int i = 0; i < topo->indegree; i++)
+    {
+        if (recvcounts[i])
+            MPI_Irecv(&(recv_buffer[rdispls[i]*recv_size]),
+                recvcounts[i],
+                recvtype,
+                topo->sources[i],
+                tag,
+                comm->global_comm,
+                &(comm->requests[count++]));
+    }
+
+    for (int i = 0; i < topo->outdegree; i++)
+    {
+        if (sendcounts[i])
+            MPI_Isend(&(send_buffer[sdispls[i]*send_size]),
+                sendcounts[i],
+                sendtype,
+                topo->destinations[i],
+                tag,
+                comm->global_comm,
+                &(comm->requests[count++]));
+    }
+
+    MPI_Waitall(count, comm->requests, comm->statuses);
+
+    return MPI_SUCCESS;
+}
+
+// Non-persistent, locality-aware == call dynamic version
+int neighbor_alltoallv_locality(
+        const void* sendbuf,
+        const int sendcounts[],
+        const int sdispls[],
+        MPI_Datatype sendtype,
+        void* recvbuf,
+        const int recvcounts[],
+        const int rdispls[],
+        MPI_Datatype recvtype,
+        MPIX_Topo* topo,
+        MPIX_Comm* comm)
+{
+    int rank, num_procs;
+    MPI_Comm_rank(comm->global_comm, &rank);
+    MPI_Comm_size(comm->global_comm, &num_procs);
+
+    int send_nnz = topo->outdegree;
+    int send_size = 0;
+    for (int i = 0; i < send_nnz; i++)
+        send_size += sendcounts[i];
+
+    int recv_nnz, recv_size;
+    int *src_tmp, *recvcounts_tmp, *rdispls_tmp;
+    char* recvvals_tmp;
+
+    int recv_bytes;
+    MPI_Type_size(recvtype, &recv_bytes);
 
     MPIX_Info* xinfo;
     MPIX_Info_init(&xinfo);
 
-    int ierr = MPIX_Neighbor_part_locality_alltoallv_init(sendbuffer,
-            sendcounts,
-            sdispls,
-            sendtype,
-            recvbuffer,
-            recvcounts,
-            rdispls,
-            recvtype,
-            comm,
-            xinfo,
-            &request);
+    alltoallv_crs_personalized(send_nnz, send_size, topo->destinations, sendcounts,
+            sdispls, sendtype, sendbuf, &recv_nnz, &recv_size, &src_tmp, 
+            &recvcounts_tmp, &rdispls_tmp, recvtype, (void**) &recvvals_tmp,
+            xinfo, comm);
 
-    //MPIX_Start(request);
-    //MPIX_Wait(request, &status);
-    //MPIX_Request_free(&request);
+    char* recvvals = (char*)recvbuf;
+
+    int idx, proc;
+    int* new_proc_idx = (int*)malloc(num_procs*sizeof(int));
+    for (int i = 0; i < recv_nnz; i++)
+    {
+        new_proc_idx[src_tmp[i]] = i;
+    }
+    for (int i = 0; i < recv_nnz; i++)
+    {
+        proc = topo->sources[i];
+        idx = new_proc_idx[proc];
+        memcpy(&(recvvals[rdispls[i]*recv_bytes]), &(recvvals_tmp[rdispls_tmp[idx]*recv_bytes]), recvcounts[i]*recv_bytes);
+    }
+    free(new_proc_idx);
+
     MPIX_Info_free(&xinfo);
+    
+    MPIX_Free(src_tmp);
+    MPIX_Free(recvcounts_tmp);
+    MPIX_Free(rdispls_tmp);
+    MPIX_Free(recvvals_tmp);
 
-    return ierr;
+    return MPI_SUCCESS;
 }
 
 
-// Should a non-persistent version of this exist?
-// Can we cheaply remove duplicate values in a 2step approach
-int MPIX_Neighbor_locality_alltoallv(
-        const void* sendbuffer,
-        const int sendcounts[],
-        const int sdispls[],
-        const long global_sindices[],
-        MPI_Datatype sendtype,
-        void* recvbuffer,
-        const int recvcounts[],
-        const int rdispls[],
-        const long global_rindices[],
-        MPI_Datatype recvtype,
-        MPIX_Comm* comm)
-{
-
-    if (comm->local_comm == MPI_COMM_NULL)
-        MPIX_Comm_topo_init(comm);
-
-    MPIX_Request* request;
-    MPI_Status status;
-    MPIX_Info* xinfo;
-
-    MPIX_Info_init(&xinfo);
-
-    int ierr = MPIX_Neighbor_locality_alltoallv_init(sendbuffer,
-            sendcounts,
-            sdispls,
-            global_sindices,
-            sendtype,
-            recvbuffer,
-            recvcounts,
-            rdispls,
-            global_rindices,
-            recvtype,
-            comm,
-            xinfo,
-            &request);
-
-
-    MPIX_Start(request);
-    MPIX_Wait(request, &status);
-
-    MPIX_Request_free(&request);
-    MPIX_Info_free(&xinfo);
-
-    return ierr;
-}
