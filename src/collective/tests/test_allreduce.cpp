@@ -31,7 +31,9 @@ int main(int argc, char** argv)
   std::vector<int> local_data(max_s * num_procs);
 
   MPIX_Comm* locality_comm;
+  printf("Initializing locality comm\n");
   MPIX_Comm_init(&locality_comm, MPI_COMM_WORLD);
+  printf("Updating locality\n")
   update_locality(locality_comm, 4);
 
   for (int i =  0; i < max_i; i++)
@@ -48,23 +50,30 @@ int main(int argc, char** argv)
 
 	// standard allreduce
 	int pmpi_allreduce_sum;
+	printf("pmpi\n"):
 	PMPI_Allreduce(local_data.data(), &pmpi_allreduce_sum, s, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
 	
 	int mpix_allreduce_sum;
+	printf("multileader\n");
 	allreduce_multileader(local_data.data(), &mpix_allreduce_sum, s, MPI_INT, MPI_SUM, *locality_comm, 4);
 	compare_allreduce_results(pmpi_allreduce_sum, mpix_allreduce_sum);
 	
+	printf("hierarchical\n");
 	allreduce_hierarchical(local_data.data(), &mpix_allreduce_sum, s, MPI_INT, MPI_SUM, *locality_comm);
 	compare_allreduce_results(pmpi_allreduce_sum, mpix_allreduce_sum);
 
+	printf("node aware\n");
 	allreduce_node_aware(local_data.data(), &mpix_allreduce_sum, s, MPI_INT, MPI_SUM, *locality_comm);
 	compare_allreduce_results(pmpi_allreduce_sum, mpix_allreduce_sum);
 
+	printf("locality aware\n");
 	allreduce_locality_aware(local_data.data(), &mpix_allreduce_sum, s, MPI_INT, MPI_SUM, *locality_comm, 4);
 	compare_allreduce_results(pmpi_allreduce_sum, mpix_allreduce_sum);
   }
 
+  printf("comm free\n");
   MPIX_Comm_free(&locality_comm);
+  printf("finalize\n");
   MPI_Finalize();
   return 0;    
 }
