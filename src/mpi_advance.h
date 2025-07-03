@@ -14,6 +14,9 @@
 #include "collective/collective.h"
 #include "collective/alltoall.h"
 #include "collective/alltoallv.h"
+#include "collective/allgather.h"
+#include "collective/gather.h"
+#include "collective/bcast.h"
 
 #include "neighborhood/dist_graph.h"
 #include "neighborhood/dist_topo.h"
