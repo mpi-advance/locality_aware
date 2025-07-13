@@ -1,0 +1,42 @@
+name: MPI Advance Ctest
+
+on:
+  push:
+    branches: [main, cleanup]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    name: MPI Advance Ctest
+    runs-on: ubuntu-latest
+    container:
+      image: hpc/mpich:latest
+      options: --user root
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install build tools
+        run: |
+          apt-get update
+          apt-get install -y cmake build-essential
+
+      - name: Configure CMake
+        run: |
+          mkdir build
+          cd build
+          cmake -DCMAKE_BUILD_TYPE=Release ..
+          cd ..
+
+      - name: Build project
+        run: |
+          cd build 
+          make 
+          cd ..
+
+      - name: Run tests with CTest
+        run: |
+          cd build
+          ctest --output-on-failure

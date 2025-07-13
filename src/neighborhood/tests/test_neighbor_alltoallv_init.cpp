@@ -114,6 +114,8 @@ int main(int argc, char** argv)
 
 
     // Simple Persistent MPI Advance Implementation
+    mpix_neighbor_alltoallv_init_implementation = NEIGHBOR_ALLTOALLV_INIT_STANDARD;
+    std::fill(mpix_recv_vals.begin(), mpix_recv_vals.end(), 0);
     MPIX_Neighbor_alltoallv_init(alltoallv_send_vals.data(), 
             send_data.counts.data(),
             send_data.indptr.data(), 
@@ -131,9 +133,31 @@ int main(int argc, char** argv)
     compare_neighbor_alltoallv_results(pmpi_recv_vals, mpix_recv_vals, recv_data.size_msgs);
     
 
-    // Locality-Aware MPI Advance Implementation
+    mpix_neighbor_alltoallv_init_implementation = NEIGHBOR_ALLTOALLV_INIT_LOCALITY;
     std::fill(mpix_recv_vals.begin(), mpix_recv_vals.end(), 0);
-    MPIX_Neighbor_locality_alltoallv_init(alltoallv_send_vals.data(), 
+    MPIX_Neighbor_alltoallv_init(alltoallv_send_vals.data(), 
+            send_data.counts.data(),
+            send_data.indptr.data(), 
+            MPI_INT,
+            mpix_recv_vals.data(), 
+            recv_data.counts.data(),
+            recv_data.indptr.data(), 
+            MPI_INT,
+            xcomm, 
+            xinfo,
+            &xrequest);
+    MPIX_Start(xrequest);
+    MPIX_Wait(xrequest, &status);
+    MPIX_Request_free(&xrequest);
+    compare_neighbor_alltoallv_results(pmpi_recv_vals, mpix_recv_vals, recv_data.size_msgs);
+
+
+
+
+
+    mpix_neighbor_alltoallv_init_implementation = NEIGHBOR_ALLTOALLV_INIT_STANDARD;
+    std::fill(mpix_recv_vals.begin(), mpix_recv_vals.end(), 0);
+    MPIX_Neighbor_alltoallv_init_ext(alltoallv_send_vals.data(), 
             send_data.counts.data(),
             send_data.indptr.data(), 
             global_send_idx.data(),
@@ -150,17 +174,19 @@ int main(int argc, char** argv)
     MPIX_Wait(xrequest, &status);
     MPIX_Request_free(&xrequest);
     compare_neighbor_alltoallv_results(pmpi_recv_vals, mpix_recv_vals, recv_data.size_msgs);
+    
 
-
-    // Partial Locality-Aware MPI Advance Implementation
+    mpix_neighbor_alltoallv_init_implementation = NEIGHBOR_ALLTOALLV_INIT_LOCALITY;
     std::fill(mpix_recv_vals.begin(), mpix_recv_vals.end(), 0);
-    MPIX_Neighbor_part_locality_alltoallv_init(alltoallv_send_vals.data(), 
+    MPIX_Neighbor_alltoallv_init_ext(alltoallv_send_vals.data(), 
             send_data.counts.data(),
             send_data.indptr.data(), 
+            global_send_idx.data(),
             MPI_INT,
             mpix_recv_vals.data(), 
             recv_data.counts.data(),
             recv_data.indptr.data(), 
+            global_recv_idx.data(),
             MPI_INT,
             xcomm, 
             xinfo,

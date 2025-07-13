@@ -100,6 +100,19 @@ add_library(mpi_advance
 )
 target_link_libraries(mpi_advance PUBLIC ${EXTERNAL_LIBS})
 
+install(TARGETS mpi_advance 
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
+        LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
+        RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
+
+install(FILES src/mpi_advance.h DESTINATION ${CMAKE_INSTALL_PREFIX}/include)
+install(FILES ${utils_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/utils)
+install(FILES ${communicator_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/communicator)
+install(FILES ${collective_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/collective)
+install(FILES ${persistent_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/persistent)
+install(FILES ${neighborhood_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/neighborhood)
+install(FILES ${heterogeneous_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/heterogeneous)
+
 if (ENABLE_UNIT_TESTS)
     enable_testing()
     add_subdirectory(src/collective/tests)
