@@ -6,6 +6,9 @@
 #include "heterogeneous/gpu_alltoallv.h"
 #endif
 
+// Default alltoallv is pairwise
+AlltoallvMethod mpix_alltoallv_implementation = ALLTOALLV_PAIRWISE;
+
 /**************************************************
  * Locality-Aware Point-to-Point Alltoallv
  * Same as PMPI_Alltoall (no load balancing)
@@ -36,37 +39,43 @@ int MPIX_Alltoallv(const void* sendbuf,
         MPIX_Comm* mpi_comm)
 {
 #ifdef GPU
-    gpuMemoryType send_type, recv_type;
-    get_mem_types(sendbuf, recvbuf, &send_type, &recv_type);
-
-    if (send_type == gpuMemoryTypeDevice &&
-            recv_type == gpuMemoryTypeDevice)
-    {
-        return copy_to_cpu_alltoallv_pairwise(sendbuf,
-                sendcounts,
-                sdispls,
-                sendtype,
-                recvbuf,
-                recvcounts,
-                rdispls,
-                recvtype,
-                mpi_comm);
-    }
-    else if (send_type == gpuMemoryTypeDevice ||
-            recv_type == gpuMemoryTypeDevice)
-    {
-        return gpu_aware_alltoallv_pairwise(sendbuf,
-                sendcounts,
-                sdispls,
-                sendtype,
-                recvbuf,
-                recvcounts,
-                rdispls,
-                recvtype,
-                mpi_comm);
-    }
+#ifdef GPU_AWARE
+    return gpu_aware_alltoallv_pairwise(sendbuf,
+            sendcounts,
+            sdispls,
+            sendtype,
+            recvbuf,
+            recvcounts,
+            rdispls,
+            recvtype,
+            mpi_comm);
 #endif
-    return alltoallv_pairwise(
+#endif
+    alltoallv_ftn method;
+
+    switch (mpix_alltoallv_implementation)
+    {
+        case ALLTOALLV_PAIRWISE:
+            method = alltoallv_pairwise;
+            break;
+        case ALLTOALLV_NONBLOCKING:
+            method = alltoallv_nonblocking;
+            break;
+        case ALLTOALLV_BATCH:
+            method = alltoallv_batch;
+            break;
+        case ALLTOALLV_BATCH_ASYNC:
+            method = alltoallv_batch_async;
+            break;
+        case ALLTOALLV_PMPI:
+            method = alltoallv_pmpi;
+            break;
+        default:
+            method = alltoallv_pmpi;
+            break;
+    }
+
+    return method(
         sendbuf,
         sendcounts,
         sdispls,
@@ -330,3 +339,18 @@ int alltoallv_batch_async(const void* sendbuf,
     return 0;
 }
 
+
+// Calls underlying MPI implementation
+int alltoallv_pmpi(const void* sendbuf,
+        const int sendcounts[],
+        const int sdispls[],
+        MPI_Datatype sendtype,
+        void* recvbuf,
+        const int recvcounts[],
+        const int rdispls[],
+        MPI_Datatype recvtype,
+        MPIX_Comm* comm)
+{
+    return PMPI_Alltoallv(sendbuf, sendcounts, sdispls, sendtype,
+            recvbuf, recvcounts, rdispls, recvtype, comm->global_comm);
+}

@@ -41,10 +41,15 @@ typedef struct _MPIX_Comm
     int win_type_bytes;
 
     MPI_Request* requests;
+    MPI_Status* statuses;
     int n_requests;
 
     int tag;
     int max_tag;
+
+    int* global_rank_to_local;
+    int* global_rank_to_node;
+    int* ordered_global_ranks;
 
 #ifdef GPU
    int gpus_per_node;

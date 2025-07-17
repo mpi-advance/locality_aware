@@ -3,8 +3,8 @@
 #include <vector>
 
 
-int alltoall_crs_rma(int send_nnz, int* dest, int sendcount, 
-        MPI_Datatype sendtype, void* sendvals,
+int alltoall_crs_rma(const int send_nnz, const int* dest, const int sendcount, 
+        MPI_Datatype sendtype, const void* sendvals,
         int* recv_nnz_ptr, int** src_ptr, int recvcount, MPI_Datatype recvtype,
         void** recvvals_ptr, MPIX_Info* xinfo, MPIX_Comm* comm)
 { 
@@ -81,8 +81,8 @@ int alltoall_crs_rma(int send_nnz, int* dest, int sendcount,
     return MPI_SUCCESS;
 }
 
-int alltoall_crs_personalized(int send_nnz, int* dest, int sendcount,
-        MPI_Datatype sendtype, void* sendvals,
+int alltoall_crs_personalized(const int send_nnz, const int* dest, const int sendcount,
+        MPI_Datatype sendtype, const void* sendvals,
         int* recv_nnz, int** src_ptr, int recvcount, MPI_Datatype recvtype,
         void** recvvals_ptr, MPIX_Info* xinfo, MPIX_Comm* comm)
 {
@@ -155,8 +155,8 @@ int alltoall_crs_personalized(int send_nnz, int* dest, int sendcount,
 }
 
 
-int alltoall_crs_nonblocking(int send_nnz, int* dest, int sendcount,
-        MPI_Datatype sendtype, void* sendvals,
+int alltoall_crs_nonblocking(const int send_nnz, const int* dest, const int sendcount,
+        MPI_Datatype sendtype, const void* sendvals,
         int* recv_nnz, int** src_ptr, int recvcount, MPI_Datatype recvtype,
         void** recvvals_ptr, MPIX_Info* xinfo, MPIX_Comm* comm)
 {
@@ -363,8 +363,8 @@ void local_redistribute(int node_recv_size, std::vector<char>& recv_buf, std::ve
 }
 
 /* Assumes SMP Ordering of ranks across nodes (aggregates ranks 0-PPN) */
-int alltoall_crs_personalized_loc(int send_nnz, int* dest, int sendcount, 
-        MPI_Datatype sendtype, void* sendvals,
+int alltoall_crs_personalized_loc(const int send_nnz, const int* dest, const int sendcount, 
+        MPI_Datatype sendtype, const void* sendvals,
         int* recv_nnz, int** src_ptr, int recvcount, MPI_Datatype recvtype,
         void** recvvals_ptr, MPIX_Info* xinfo, MPIX_Comm* comm)
 {
@@ -494,8 +494,8 @@ int alltoall_crs_personalized_loc(int send_nnz, int* dest, int sendcount,
 
 
 /* Assumes SMP Ordering of ranks across nodes (aggregates ranks 0-PPN) */
-int alltoall_crs_nonblocking_loc(int send_nnz, int* dest, int sendcount, 
-        MPI_Datatype sendtype, void* sendvals,
+int alltoall_crs_nonblocking_loc(const int send_nnz, const int* dest, const int sendcount, 
+        MPI_Datatype sendtype, const void* sendvals,
         int* recv_nnz, int** src_ptr, int recvcount, MPI_Datatype recvtype,
         void** recvvals_ptr, MPIX_Info* xinfo, MPIX_Comm* comm)
 { 

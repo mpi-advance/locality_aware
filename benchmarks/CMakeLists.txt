@@ -28,7 +28,4 @@ foreach(src ${CPP_SOURCES})
 
     # Link with MPI 
     target_link_libraries(${exec_name} mpi_advance ${MPI_LIBRARIES})
-
-    # Add to CTEST
-    add_test(NAME ${exec_name}_Test COMMAND ${MPIRUN} -n 16 ./${exec_name})
 endforeach()

@@ -6,6 +6,10 @@
 #include "heterogeneous/gpu_alltoall.h"
 #endif
 
+
+// Default alltoall is pairwise
+AlltoallMethod mpix_alltoall_implementation = ALLTOALL_PAIRWISE;
+
 /**************************************************
  * Locality-Aware Point-to-Point Alltoall
  *  - Aggregates messages locally to reduce 
@@ -30,7 +34,8 @@ int MPIX_Alltoall(const void* sendbuf,
 {    
 #ifdef GPU
 #ifdef GPU_AWARE
-    return gpu_aware_alltoall_pairwise(sendbuf,
+    return gpu_aware_alltoall(alltoall_pairwise,
+                sendbuf,
                 sendcount,
                 sendtype,
                 recvbuf,
@@ -38,19 +43,64 @@ int MPIX_Alltoall(const void* sendbuf,
                 recvtype,
                 mpi_comm);
 #endif 
-    // TODO : could still call copy-to-CPU methods
-    // with GPU-Aware MPI
-    // But Copy To CPU Methods should really only be used persistently
-    // For now, safe to assume not passing GPU pointer to MPIX function
-    // without GPU-Aware MPI
 #endif
-    return alltoall_pairwise(sendbuf,
-        sendcount,
-        sendtype,
-        recvbuf,
-        recvcount,
-        recvtype,
-        mpi_comm);
+    alltoall_ftn method;
+
+    switch (mpix_alltoall_implementation)
+    {
+        case ALLTOALL_PAIRWISE:
+            method = alltoall_pairwise;
+            break;
+        case ALLTOALL_NONBLOCKING:
+            method = alltoall_nonblocking;
+            break;
+        case ALLTOALL_HIERARCHICAL_PAIRWISE:
+            method = alltoall_hierarchical_pairwise;
+            break;
+        case ALLTOALL_HIERARCHICAL_NONBLOCKING:
+            method = alltoall_hierarchical_nonblocking;
+            break;
+        case ALLTOALL_MULTILEADER_PAIRWISE:
+            method = alltoall_multileader_pairwise;    
+            break;
+        case ALLTOALL_MULTILEADER_NONBLOCKING:
+            method = alltoall_multileader_nonblocking;
+            break;
+        case ALLTOALL_NODE_AWARE_PAIRWISE:
+            method = alltoall_node_aware_pairwise;
+            break;
+        case ALLTOALL_NODE_AWARE_NONBLOCKING:
+            method = alltoall_node_aware_nonblocking;
+            break;
+        case ALLTOALL_LOCALITY_AWARE_PAIRWISE:
+            method = alltoall_locality_aware_pairwise;
+            break;
+        case ALLTOALL_LOCALITY_AWARE_NONBLOCKING:
+            method = alltoall_locality_aware_nonblocking;
+            break;
+        case ALLTOALL_MULTILEADER_LOCALITY_PAIRWISE:
+            method = alltoall_multileader_locality_pairwise;
+            break;
+        case ALLTOALL_MULTILEADER_LOCALITY_NONBLOCKING:
+            method = alltoall_multileader_locality_nonblocking;
+            break;
+        case ALLTOALL_PMPI:
+            method = alltoall_pmpi;
+            break;
+        default:
+            method = alltoall_pmpi;
+            break;
+    }
+
+
+    return method(sendbuf,
+            sendcount,
+            sendtype,
+            recvbuf,
+            recvcount,
+            recvtype,
+            mpi_comm);
+    
 }
 
 
@@ -780,4 +830,20 @@ int alltoall_multileader_locality_nonblocking(
             sendbuf, sendcount, sendtype, recvbuf, recvcount, 
             recvtype, comm);
 }
+
+
+
+// Calls underlying MPI implementation
+int alltoall_pmpi(const void* sendbuf,
+        const int sendcount,
+        MPI_Datatype sendtype,
+        void* recvbuf,
+        const int recvcount,
+        MPI_Datatype recvtype,
+        MPIX_Comm* comm)
+{
+    return PMPI_Alltoall(sendbuf, sendcount, sendtype, recvbuf, recvcount,
+            recvtype, comm->global_comm);
+}
+
 
