@@ -376,10 +376,13 @@ int alltoallv_rma_lock_init(const void* sendbuf,
         MPIX_Comm_win_free(xcomm);
     }
 
+    // MGFD: This needs refactoring. The window should belong to the request object, not the communicator. As this is written, a second persistant alltoallv on a communicator will fail, because the data will be improperly placed. 
     // Initialize window only if it hasn't been initialized
     if (xcomm->win == MPI_WIN_NULL) {
         MPI_Win_create(recvbuf, total_recv_bytes, 1, MPI_INFO_NULL, xcomm->global_comm, &xcomm->win);
     }
+
+    MPI_Win_lock(MPI_LOCK_EXCLUSIVE, rank, 0, request->xcomm->win); //MGFD: To ensure that the recv buffer is not modified before it is valid to do so, we need to do an exclusive self-lock here. 
 
    
    request->n_puts = num_procs;
