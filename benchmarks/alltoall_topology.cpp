@@ -96,13 +96,13 @@ void print_alltoalls(int max_p, const T* sendbuf,
         }
 
         // MPI Advance Multileader Alltoall Functions
-        std::vector<int> n_leaders_list = {4, 10, 20};
-        for (int ctr = 0; ctr < n_leaders_list.size(); ctr++)
+		std::vector<int> procs_per_leader_list = {4, 8, 16};
+        for (int ctr = 0; ctr < procs_per_leader_list.size(); ctr++)
         {
-            int n_leaders = n_leaders_list[ctr];
-            if (ppn < n_leaders)
+		    int n_procs = procs_per_leader_list[ctr];
+		    if (ppn < n_procs)
                 break;
-            MPIX_Comm_leader_init(comm, ppn / n_leaders);
+            MPIX_Comm_leader_init(comm, n_procs);
 
             for (int idx = 0; idx < multileader_funcs.size(); idx++)
             {   
@@ -115,7 +115,7 @@ void print_alltoalls(int max_p, const T* sendbuf,
                     }
                 time = test_alltoall(multileader_funcs[idx], sendbuf, s, sendtype,
                         recvbuf, s, recvtype, comm);
-                if (rank == 0) printf("%s, %d leaders: %e\n", multileader_names[idx], n_leaders, time);
+                if (rank == 0) printf("%s, %d procs per leader: %e\n", multileader_names[idx], n_procs, time);
             }
 
             MPIX_Comm_leader_free(comm);
