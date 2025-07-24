@@ -46,6 +46,57 @@ double test_alltoall(F alltoall_func, const void* sendbuf, const int sendcount,
     return time;
 }
 
+double test_hierarchical_allgather(const void* sendbuf, const int sendcount,
+							       MPI_Datatype sendtype, void* recvbuf, const int recvcount,
+							       MPI_Datatype recvtype, MPIX_Comm* comm)
+{
+  double time;
+
+  int rank, num_procs;
+  MPI_Comm_rank(comm->global_comm, &rank);
+  MPI_Comm_size(comm->global_comm, &num_procs);
+
+  int local_rank, ppn;
+  MPI_Comm_rank(comm->local_comm, &local_rank);
+  MPI_Comm_size(comm->local_comm, &ppn);
+
+  int send_size, recv_size;
+  MPI_Type_size(sendtype, &send_size);
+  MPI_Type_size(recvtype, &recv_size);
+  
+  int n_nodes = num_procs / ppn;
+
+  char* local_send_buffer = NULL;
+  char* local_recv_buffer = NULL;
+
+  if (local_rank == 0)
+  {
+	local_send_buffer = (char*)malloc(ppn*num_procs*sendcount*send_size);
+	local_recv_buffer = (char*)malloc(ppn*num_procs*recvcount*recv_size);
+  }
+  else
+  {
+	local_send_buffer = (char*)malloc(sizeof(char));
+	local_recv_buffer = (char*)malloc(sizeof(char));
+  }
+
+  char* recv_buffer = (char*)recvbuf;
+  char* send_buffer = (char*)sendbuf;
+  
+  MPI_Barrier(MPI_COMM_WORLD); // should this be local_comm?
+  double t0 = MPI_Wtime();
+  for (int i = 0; i < 1000; i++)
+  {
+	MPI_Gather(send_buffer, sendcount*num_procs, sendtype, local_recv_buffer, sendcount*num_procs, sendtype,
+			   0, comm->local_comm);
+  }
+
+  double tFinal = (MPI_Wtime() - t0) / 1000;
+  MPI_Allreduce(&tFinal, &t0, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
+
+  return tFinal;
+}
+
 template <typename T>
 void print_alltoalls(int max_p, const T* sendbuf,  
         MPI_Datatype sendtype, T* recvbuf, MPI_Datatype recvtype,
