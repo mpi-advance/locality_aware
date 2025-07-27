@@ -352,10 +352,12 @@ int alltoallv_rma_lock_init(const void* sendbuf,
 
     MPIX_Request* request;
     MPIX_Request_init(&request);
-        
+    
+    printf("******************1");
     request->start_function = rma_lock_start;
+    printf("******************2");
     request->wait_function = rma_lock_wait;
-
+    printf("******************3");
     request->global_n_msgs = num_procs;
     allocate_requests(request->global_n_msgs, &(request->global_requests));
     request->sendbuf = sendbuf;
@@ -381,13 +383,15 @@ int alltoallv_rma_lock_init(const void* sendbuf,
     if (xcomm->win == MPI_WIN_NULL) {
         MPI_Win_create(recvbuf, total_recv_bytes, 1, MPI_INFO_NULL, xcomm->global_comm, &xcomm->win);
     }
+    printf("******************4");
 
+    request->xcomm = xcomm;
+    
     MPI_Win_lock(MPI_LOCK_EXCLUSIVE, rank, 0, request->xcomm->win); //MGFD: To ensure that the recv buffer is not modified before it is valid to do so, we need to do an exclusive self-lock here. 
 
-   
+    printf("******************5");
    request->n_puts = num_procs;
 
-   request->xcomm = xcomm;
    request->sdispls = (int*)malloc(num_procs*sizeof(int));
    request->send_sizes = (int*)malloc(num_procs*sizeof(int));
    request->recv_sizes = (int*)malloc(num_procs*sizeof(int));
@@ -395,8 +399,9 @@ int alltoallv_rma_lock_init(const void* sendbuf,
 
       
    request->put_displs =(int*)malloc(num_procs*sizeof(int));
-
    MPI_Alltoall(rdispls, 1, MPI_INT, request->put_displs, 1, MPI_INT, xcomm->global_comm);
+
+   printf("******************6");
 
    for (int i = 0; i < num_procs; i++)
    {
@@ -406,6 +411,7 @@ int alltoallv_rma_lock_init(const void* sendbuf,
        request->put_displs[i] *= recv_type_size; 
    }
 
+   printf("******************7");
 *request_ptr = request;
 
     return MPI_SUCCESS;
