@@ -46,9 +46,11 @@ double test_alltoall(F alltoall_func, const void* sendbuf, const int sendcount,
     return time;
 }
 
-double test_hierarchical_allgather(const void* sendbuf, const int sendcount,
+template <typename F>
+double internal_multileader_timing(F alltoall_func, const void* sendbuf, const int sendcount,
 							       MPI_Datatype sendtype, void* recvbuf, const int recvcount,
-							       MPI_Datatype recvtype, MPIX_Comm* comm)
+							       MPI_Datatype recvtype, MPIX_Comm* comm, const char* name,
+								   int numLeaders)
 {
   double time;
 
@@ -77,7 +79,7 @@ double test_hierarchical_allgather(const void* sendbuf, const int sendcount,
   else
   {
 	local_send_buffer = (char*)malloc(sizeof(char));
-	local_recv_buffer = (char*)malloc(sizeof(char));
+	local_recv_buffer = (char*)malloc(sidzeof(char));
   }
 
   char* recv_buffer = (char*)recvbuf;
@@ -91,10 +93,78 @@ double test_hierarchical_allgather(const void* sendbuf, const int sendcount,
 			   0, comm->local_comm);
   }
 
-  double tFinal = (MPI_Wtime() - t0) / 1000;
-  MPI_Allreduce(&tFinal, &t0, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
+  double time = (MPI_Wtime() - t0) / 1000;
+  double tFinalAllgather;
+  MPI_Allreduce(&time, &tFinalAllgather, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
 
-  return tFinal;
+  // 2. Re-pack for sends
+    // Assumes SMP ordering 
+    // TODO: allow for other orderings
+    int ctr;
+
+    if (local_rank == 0)
+    {
+        ctr = 0;
+        for (int dest_node = 0; dest_node < n_nodes; dest_node++)
+        {
+            int dest_node_start = dest_node * ppn * sendcount * send_size;
+            for (int origin_proc = 0; origin_proc < ppn; origin_proc++)
+            {
+                int origin_proc_start = origin_proc * num_procs * sendcount * send_size;
+                memcpy(&(local_send_buffer[ctr]), &(local_recv_buffer[origin_proc_start + dest_node_start]),
+                        ppn * sendcount * send_size);
+                ctr += ppn * sendcount * send_size;
+            }
+        }
+
+		MPI_Barrier(comm->group_comm);
+	    t0 = MPI_Wtime();
+		for (int i = 0; i < 1000; i++)
+		{
+			alltoall_func(local_send_buffer, ppn * ppn * sendcount, sendtype,
+						  local_recv_buffer, ppn * ppn * recvcount, recvtype, comm->group_comm);
+		}
+
+		time = (MPI_Wtime() - t0) / 1000;
+		double tFinalAlltoall;
+		MPI_Allreduce(&time, &tFinalAlltoall, 1, MPI_DOUBLE, MPI_MAX,  comm->group_comm);
+
+		ctr = 0;
+		for (int dest_proc = 0; dest_proc < ppn; dest_proc++)
+        {
+            int dest_proc_start = dest_proc * recvcount * recv_size;
+            for (int orig_proc = 0; orig_proc < num_procs; orig_proc++)
+            {
+                int orig_proc_start = orig_proc * ppn * recvcount * recv_size;
+                memcpy(&(local_send_buffer[ctr]), &(local_recv_buffer[orig_proc_start + dest_proc_start]),
+                        recvcount * recv_size);
+                ctr += recvcount * recv_size;
+
+            }
+        }
+	}
+
+	MPI_Barrier(MPI_COMM_WORLD);
+	t0 = MPI_Wtime();
+	for (int i = 0; i < 1000; i++)
+	{
+	  MPI_Scatter(local_send_buffer, recvcount * num_procs, recvtype, recv_buffer, recvcount * num_procs, recvtype,
+				  0, comm->local_comm);
+	}
+	time = (MPI_Wtime - t0) / 1000; 
+	double tFinalScatter;
+	MPIAllreduce(&time, &tFinalScatter, 1, MPI_DOUBLE, MPI_MAX, comm->comm_world);
+
+
+	free(local_send_buffer);
+	free(local_recv_buffer);
+	
+	MPI_Comm_rank(comm->global_comm, &rank);
+	if (rank == 0)
+	{
+	  printf("%s, %d procs per leader, allgather: %e, alltoall: %e, scatter: %e\n", name, procsPerLeader,
+			 tFinalAllgather, tFinalAlltoall, tFinalScatter);
+	}
 }
 
 template <typename T>
