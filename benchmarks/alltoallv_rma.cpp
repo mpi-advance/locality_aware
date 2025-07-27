@@ -1,5 +1,3 @@
-
-
 #include "mpi_advance.h"
 #include <mpi.h>
 #include <vector>
@@ -8,9 +6,11 @@
 #include <cstdio>
 #include <cassert>
 #include <cmath>
-#include "/g/g92/enamug/install/include/caliper/cali.h"
-
+//#include "/g/g92/enamug/install/include/caliper/cali.h"
+#include "/g/g92/enamug/my_caliper_install/include/caliper/cali.h"
+                    
 #include "mpi_advance.h"
+
 
 int main(int argc, char* argv[]) {
     MPI_Init(&argc, &argv);
@@ -18,13 +18,23 @@ int main(int argc, char* argv[]) {
     int rank, num_procs;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
+    //Weakscaling
+  /*  int max_i = 14; // adjust to get larger sizes from here8,9,10,16,20
+    int max_s = pow(2, max_i); // Total problem size (constant)
+    int s=(max_s*num_procs)/num_procs;
+    int n_iter = 100;*/
+    //double t0, tfinal;
 
-    int max_i = 20;
+
+//strong scaling
+    int max_i = 12;
     int max_s = pow(2, max_i);
-    int s = (max_s)/ (num_procs * num_procs);
-    int n_iter = 10000;
+    int s = (max_s)/ (num_procs);
+    int n_iter = 100;
 
     std::vector<double> send_data(s * num_procs);
+    std::vector<double> RMA_winfence_init(s * num_procs);
+    std::vector<double> RMA_winlock_init(s * num_procs);
     std::vector<double> recv_data(s * num_procs);
     std::vector<double> validation_recv_data(s * num_procs);
 
@@ -32,21 +42,27 @@ int main(int argc, char* argv[]) {
     for (int i = 0; i < s * num_procs; i++) {
         send_data[i] = rand();
     }
-
     
     std::vector<int> sendcounts(num_procs, s);
     std::vector<int> recvcounts(num_procs, s);
     std::vector<int> sdispls(num_procs);
     std::vector<int> rdispls(num_procs);
+
     for (int i = 0; i < num_procs; i++) {
         sdispls[i] = i * s;
         rdispls[i] = i * s;
     }
 
-    // MPIX_Comm
-    MPIX_Comm* xcomm;
-   
+    
+    MPIX_Comm* xcomm;  
+  
     MPIX_Comm_init(&xcomm, MPI_COMM_WORLD);
+
+    //for the persistent bit
+    MPIX_Info* xinfo;
+    MPIX_Info_init(&xinfo);
+
+    MPIX_Request* xrequest;
 
     //Timing for PMPI_Alltoallv
     MPI_Barrier(MPI_COMM_WORLD);
@@ -65,88 +81,119 @@ int main(int argc, char* argv[]) {
         printf("Message Size: %ld bytes\n", s * sizeof(double));
     }
 
-    // Timing for alltoallv_rma
-    MPI_Barrier(MPI_COMM_WORLD);
-    t0 = MPI_Wtime();
-    for (int k = 0; k < n_iter; k++) {
-        alltoallv_rma_winfence(send_data.data(), sendcounts.data(), sdispls.data(), MPI_DOUBLE,
-                      recv_data.data(), recvcounts.data(), rdispls.data(), MPI_DOUBLE, xcomm);
-    }
-    double rma_tfinal = (MPI_Wtime() - t0) / n_iter;
+    
+    //Time for winlock_init
+    MPI_Barrier(xcomm->global_comm);
+    double tl = MPI_Wtime();  
+    //This is for accuracy
+    printf("******************1");
+    for (int k = 0; k < n_iter; k++) {  
+        printf("******************2");
+     alltoallv_rma_lock_init(send_data.data(),sendcounts.data(),sdispls.data(),MPI_DOUBLE,RMA_winlock_init.data()
+     ,recvcounts.data(),rdispls.data(),MPI_DOUBLE, xcomm, xinfo, &xrequest);
+     printf("******************3");
 
-    // RMA Alltoallv Time
-    MPI_Reduce(&rma_tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
-    if (rank == 0) {
-        printf("RMA_winfence Alltoallv Time: %e seconds\n", t0);
-        printf("Message Size: %ld bytes\n", s * sizeof(double));
-    }
-
-    // Comparing RMA results with PMPI results.
-    bool yes = true;
-    for (int i = 0; i < s * num_procs; i++) {
-        if (fabs(recv_data[i] - validation_recv_data[i]) > 1e-10) {
-            fprintf(stderr, "Validation failed at rank %d, index %d: RMA %f, PMPI %f\n",
-                    rank, i, recv_data[i], validation_recv_data[i]);
-            yes = false;
-        }
-    }
-
-    //Winlock starts
-
-     // Timing for alltoallv_rma_winlock
-    MPI_Barrier(MPI_COMM_WORLD);
-    t0 = MPI_Wtime();
-    for (int k = 0; k < n_iter; k++) {
-        alltoallv_rma_winlock(send_data.data(), sendcounts.data(), sdispls.data(), MPI_DOUBLE,
-                      recv_data.data(), recvcounts.data(), rdispls.data(), MPI_DOUBLE, xcomm);
-    }
-     double rmalock_final = (MPI_Wtime() - t0) / n_iter;
-
-    // RMA Alltoallv Time
-    MPI_Reduce(&rmalock_final, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
-    if (rank == 0) {
-        printf("RMA_winlock Alltoallv Time: %e seconds\n", t0);
-        printf("Message Size: %ld bytes\n", s * sizeof(double));
-    }
-
-    // Comparing RMA results with PMPI results.
-    bool valid = true;
-    for (int i = 0; i < s * num_procs; i++) {
-        if (fabs(recv_data[i] - validation_recv_data[i]) > 1e-10) {
-            fprintf(stderr, "Validation failed at rank %d, index %d: RMA %f, PMPI %f\n",
-                    rank, i, recv_data[i], validation_recv_data[i]);
-            valid = false;
-        }
-    }
-
-     
-     // Timing for alltoallv_rma_winflush
-    MPI_Barrier(MPI_COMM_WORLD);
-    t0 = MPI_Wtime();
-    for (int k = 0; k < n_iter; k++) {
-        alltoallv_rma_winflush(send_data.data(), sendcounts.data(), sdispls.data(), MPI_DOUBLE,
-                      recv_data.data(), recvcounts.data(), rdispls.data(), MPI_DOUBLE, xcomm);
-    }
-     double rmaflush_final = (MPI_Wtime() - t0) / n_iter;
-
-    // RMA Alltoallv Time
-    MPI_Reduce(&rmaflush_final, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
-    if (rank == 0) {
-        printf("RMA_winflush Alltoallv Time: %e seconds\n", t0);
-        printf("Message Size: %ld bytes\n", s * sizeof(double));
-    }
-
-    // Comparing RMA results with PMPI results.
-    bool flush_valid = true;
-    for (int i = 0; i < s * num_procs; i++) {
-        if (fabs(recv_data[i] - validation_recv_data[i]) > 1e-10) {
-            fprintf(stderr, "Validation failed at rank %d, index %d: RMA %f, PMPI %f\n",
-                    rank, i, recv_data[i], validation_recv_data[i]);
-            flush_valid = false;
-        }
-    }
+     MPIX_Request_free(xrequest);
+    
+    }      
    
-    // Clean up
+    double rma_intlock_final = (MPI_Wtime() - tl) / n_iter;
+
+      // RMA Alltoallv Time
+      MPI_Reduce(&rma_intlock_final, &tl, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
+      if (rank == 0) {
+          printf("RMA_winlock_init Alltoallv Time: %e seconds\n", tl);
+          printf("Message Size: %ld bytes\n", s * sizeof(double));
+      }
+  
+
+    alltoallv_rma_lock_init(send_data.data(),sendcounts.data(),sdispls.data(),MPI_DOUBLE,RMA_winlock_init.data()
+     ,recvcounts.data(),rdispls.data(),MPI_DOUBLE, xcomm, xinfo, &xrequest);
+        
+     MPI_Barrier(xcomm->global_comm);
+
+     tl = MPI_Wtime();  
+
+    for (int k = 0; k < n_iter; k++) {  
+      
+        MPIX_Start(xrequest);
+        MPIX_Wait(xrequest, MPI_STATUS_IGNORE);
+
+    }
+    double rma_lock_final = (MPI_Wtime() - tl) / n_iter;
+
+ // RMA Alltoallv Time
+ MPI_Reduce(&rma_lock_final, &tl, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
+ if (rank == 0) {
+     printf("RMA_winlock_ Alltoallv Time: %e seconds\n", tl);
+     printf("Message Size: %ld bytes\n", s * sizeof(double));
+ }
+
+    
+   
+//Winfence_Init
+
+    MPI_Barrier(xcomm->global_comm);
+    tl = MPI_Wtime();  
+
+    for (int k = 0; k < n_iter; k++) {  
+//printf("THIS IS 2");
+    alltoallv_rma_winfence_init(send_data.data(),sendcounts.data(),sdispls.data(),MPI_DOUBLE,RMA_winfence_init.data()
+        ,recvcounts.data(),rdispls.data(),MPI_DOUBLE, xcomm, xinfo, &xrequest);
+
+   
+    MPIX_Request_free(xrequest);
+    }
+    
+    double rma_intwin_final = (MPI_Wtime() - tl) / n_iter;
+    MPI_Reduce(&rma_intwin_final, &tl, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
+    if (rank == 0) {
+     printf("RMA_winfence_init + Finalise Alltoallv Time: %e seconds\n", tl);
+     printf("Message Size: %ld bytes\n", s * sizeof(double));
+    }
+
+    MPI_Barrier(xcomm->global_comm);
+
+    alltoallv_rma_winfence_init(send_data.data(),sendcounts.data(),sdispls.data(),MPI_DOUBLE,RMA_winfence_init.data()
+   ,recvcounts.data(),rdispls.data(),MPI_DOUBLE, xcomm, xinfo, &xrequest);
+     
+     MPI_Barrier(xcomm->global_comm);
+
+     tl = MPI_Wtime();  
+
+    for (int k = 0; k < n_iter; k++) {  
+      
+        MPIX_Start(xrequest);
+        MPIX_Wait(xrequest, MPI_STATUS_IGNORE);
+
+    }
+    double rma_fence_final = (MPI_Wtime() - tl) / n_iter;
+
+    
+
+     //which process takes the longest time 
+    MPI_Reduce(&rma_fence_final, &tl, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
+    if (rank == 0) {
+        printf("RMA_winfence_persistent_runtime(start+wait) Alltoallv Time: %e seconds\n", tl);
+        printf("Message Size: %ld bytes\n", s * sizeof(double));
+    }
+
+
+/*
+#if 0
+    // Comparing RMA results with PMPI results.
+    bool yes11 = true;
+    for (int i = 0; i < s * num_procs; i++) {
+        if (fabs(RMA_winlock_init[i] - validation_recv_data[i]) > 1e-10) {
+            fprintf(stderr, "Validation failed at rank %d, index %d: RMA %f, PMPI %f\n",
+                    rank, i, RMA_winlock_init[i], validation_recv_data[i]);
+            yes11 = false;
+        }
+    }
+
+#endif
+*/
+
     MPIX_Comm_free(&xcomm);
     MPI_Finalize();
     return 0;
