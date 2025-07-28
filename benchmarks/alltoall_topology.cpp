@@ -243,6 +243,160 @@ void internal_locality_aware_timing(F alltoallFunc, const void* sendbuf, const i
 		 tFinalLeaderGroupAlltoall, tFinalLeaderAlltoall);  
 }
 
+template <typename F>
+void internal_multileader_locality_aware_timing(F alltoallFunc, const void* sendbuf, const int sendcount,
+												MPI_Datatype sendtype, void* recvbuf, const int recvcount,
+												MPI_Datatype recvtype, MPIX_Comm* comm, const char* name,
+												int procsPerLeader)
+{
+  int rank, num_procs;
+  MPI_Comm_rank(comm->global_comm, &rank);
+  MPI_Comm_size(comm->global_comm, &num_procs);
+
+  int local_rank, ppn;
+  MPI_Comm_rank(comm->local_comm, &local_rank);
+  MPI_Comm_size(comm->local_comm, &ppn);
+
+  int procs_per_leader, leader_rank;
+  MPI_Comm_rank(comm->leader_comm, &leader_rank);
+  MPI_Comm_size(comm->leader_comm, &procs_per_leader);
+
+  int send_proc, recv_proc;
+  int send_pos, recv_pos;
+  MPI_Status status;
+
+  char* recv_buffer = (char*) recvbuf;
+  char* send_buffer = (char*) sendbuf;
+
+  int send_size, recv_size;
+  MPI_Type_size(sendtype, &send_size);
+  MPI_Type_size(recvtype, &recv_size);
+
+  int n_nodes = num_procs / ppn;
+  int n_leader = num_procs / procs_per_leader;
+
+  int leaders_per_node;
+  MPI_Comm_size(comm->leader_local_comm, &leaders_per_node);
+
+  char* local_send_buffer = NULL;
+  char* local_recv_buffer = NULL;
+  if (leader_rank == 0)
+	{
+	  local_send_buffer = (char*) malloc(procs_per_leader * num_procs * sendcount * send_size);
+	  local_recv_buffer = (char*) malloc(procs_per_leader * num_procs * recvcount * recv_size):
+	}
+  else
+	{
+	  local_send_buffer = (char*) malloc(sizeof(char));
+	  local_recv_buffer = (char*) malloc(sizeof(char));
+	}
+
+  // 1. Local gather
+  MPI_Barrier(comm->leader_comm);
+  double t0 = MPI_Wtime();
+  for (int i = 0; i < 1000; i++)
+	{
+	  MPI_Gather(send_buffer, sendcount * num_procs, sendtype, local_recv_buffer, sendcoutn * num_procs, sendtype,
+				 0, comm->leader_comm);
+	}
+  double time = (MPI_Wtime() - t0) / 1000;
+  double tFinalGather;
+  MPI_Allreduce(&time, &tFinalGather, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
+
+  int ctr;
+  double tFinalGroupAlltoall;
+  double tFinalLeaderLocalAlltoall;
+  if (leader_rank == 0)
+	{
+	  ctr = 0;
+	  for (int dest_node = 0; dest_node < n_leaders; dest_node++)
+		{
+		  int dest_node_start = dest_node * procs_per_leader * sendcount * send_size;
+		  for (int origin_proc = 0; origin_proc < procs_per_leader; origin_proc++)
+			{
+			  int origin_proc_start = origin_proc * num_procs * sendcount * send_size;
+			  memcpy(&(local_send_buffer[ctr]), &(local_rev_buffer[origin_proc_start + dest_node_start]),
+					 procs_per_leader * sendcount * send_size);
+			  ctr += procs_per_leader * sendcount * send_size;
+			}
+		}
+
+	  MPI_Barrier(comm->group_comm);
+	  t0 = MPI_Wtime();
+	  for (int i = 0; i < 1000; i++)
+		{
+		  alltoallFunc(local_send_buffer, ppn * procs_per_leader * sendcount, sendtype,
+					   local_recv_buffer, ppn * procs_per_leader * recvcount, recvtype, comm->group_comm);
+		}
+
+	  time = (MPI_Wtime() - t0) / 1000;
+
+	  MPI_Allreduce(&time, &tFinalGroupAlltoall, 1, MPI_DOUBLE, MPI_MAX, comm->group_comm);
+
+	  ctr = 0;
+	  for (int local_leader = 0; local_leader < leaders_per_node; local_leader++)
+		{
+		  int leader_start = local_leader * procs_per_leader * procs_per_leader * sendcount * send_size;
+		  for (int dest_node = 0; dest_node < n_nodes; dest_node++)
+			{
+			  memcpy(&(local_send_buffer[ctr]), &(local_recv_buffer[dest_node_start + leader_start]),
+					 procs_per_leader * procs_per_leader * sendcount * sendsize);
+			  ctr += procs_per_leader * procs_per_leader * sendcount * sendsize;
+			}
+		}
+
+	  MPI_Barrier(comm->leader_local_comm);
+	  t0 = MPI_Wtime();
+	  for (int i = 0; i < 1000; i++)
+		{
+		  alltoallFunc(local_send_buffer, n_nodes * procs_per_leader * procs_per_leader * sendcount, sendtype,
+					   local_recv_buffer, n_nodes * procs_per_leader * procs_per_leader * recvcount, recvtype,
+					   comm->leader_local_comm);
+		}
+
+	  time = (MPI_Wtime() - t0) / 1000;
+	  MPI_Allreduce(&time, &tFinalLoeaderLocalAlltoall, 1, MPI_DOUBLE< MPI_MAX, comm_leader_local_comm);
+
+	  ctr = 0;
+	  for (int dest_proc = 0; dest_proc < procs_per_leader; dest_proc++)
+		{
+		  int dest_proc_start = dest_proc * recvcount * recv_size;
+		  for (int orig_node = 0; orig_node < n_nodes; orig_node++)
+			{
+			  int orig_node_start = orig_node * procs_per_leader * procs_per_leader * recvcount * recv_size;
+			  for (int orig_leader = 0; orig_leader < leaders_per_node; orig_leader++)
+				{
+				  int orig_leader_start = orig_leader * n_nodes * procs_per_leader * procs_per_leader * recvcount * recv_size;
+				  for (int orig_proc = 0; orig_proc < procs_per_leader; orig_proc++)
+					{
+					  int orig_proc_start = orig_proc * procs_per_leader * recvcount * recv_size;
+					  int idx = orig_node_start + orig_leader_start + orig_proc_start + dest_proc_start;
+					  memcpy(&(local_send_buffer[ctr]), &(local_recv_buffer[idx]), recvcount * recv_size);
+					  ctr += recvcount * recv_size;
+					}
+				}
+			}
+		}
+	}
+
+  MPI_Barrier(comm->leader_comm);
+  t0 = MPI_Wtime();
+  for (int i = 0; i < 1000; i++)
+	{
+	  MPI_Scatter(local_send_buffer, recvcount * num_procs, recvtype, recv_buffer, recvcount * num_procs, recvtype,
+				  0, comm->leader_comm);
+	}
+  time = (MPI_Wtime() - t0) / 1000;
+  double tFinalScatter;
+  MPI_Allreduce(&time, &tFinalScatter, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
+
+  if (rank == 0)
+	{
+	  printf("%s, %d procs per leader, all gather: %d, group alltoall: %e, leader local alltoall: %e, scatter: %e\n",
+			 name, procPerLeader, tFinalGather, tFinalGroupAlltoall, tFinalLeaderLocalAlltoall, tFinalScatter);
+	}
+}
+
 template <typename T>
 void print_alltoalls(int max_p, const T* sendbuf,  
         MPI_Datatype sendtype, T* recvbuf, MPI_Datatype recvtype,
