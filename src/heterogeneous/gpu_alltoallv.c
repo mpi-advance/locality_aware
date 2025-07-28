@@ -144,8 +144,8 @@ int copy_to_cpu_alltoallv(alltoallv_ftn f,
 
     char* cpu_sendbuf;
     char* cpu_recvbuf;
-    cudaMallocHost((void**)&cpu_sendbuf, total_bytes_s);
-    cudaMallocHost((void**)&cpu_recvbuf, total_bytes_r);
+    gpuMallocHost((void**)&cpu_sendbuf, total_bytes_s);
+    gpuMallocHost((void**)&cpu_recvbuf, total_bytes_r);
 
     // Copy from GPU to CPU
     ierr += gpuMemcpy(cpu_sendbuf, sendbuf, total_bytes_s, gpuMemcpyDeviceToHost);
@@ -157,8 +157,8 @@ int copy_to_cpu_alltoallv(alltoallv_ftn f,
     // Copy from CPU to GPU
     ierr += gpuMemcpy(recvbuf, cpu_recvbuf, total_bytes_r, gpuMemcpyHostToDevice);
 
-    cudaFreeHost(cpu_sendbuf);
-    cudaFreeHost(cpu_recvbuf);
+    gpuFreeHost(cpu_sendbuf);
+    gpuFreeHost(cpu_recvbuf);
     
     return ierr;
 }
@@ -286,8 +286,8 @@ int threaded_alltoallv_pairwise(const void* sendbuf,
 
     char* cpu_sendbuf;
     char* cpu_recvbuf;
-    cudaMallocHost((void**)&cpu_sendbuf, total_bytes_s);
-    cudaMallocHost((void**)&cpu_recvbuf, total_bytes_r);
+    gpuMallocHost((void**)&cpu_sendbuf, total_bytes_s);
+    gpuMallocHost((void**)&cpu_recvbuf, total_bytes_r);
 
     // Copy from GPU to CPU
     ierr += gpuMemcpy(cpu_sendbuf, sendbuf, total_bytes_s, gpuMemcpyDeviceToHost);
@@ -348,8 +348,8 @@ int threaded_alltoallv_pairwise(const void* sendbuf,
 
     ierr += gpuMemcpy(recvbuf, cpu_recvbuf, total_bytes_r, gpuMemcpyHostToDevice);
 
-    cudaFreeHost(cpu_sendbuf);
-    cudaFreeHost(cpu_recvbuf);
+    gpuFreeHost(cpu_sendbuf);
+    gpuFreeHost(cpu_recvbuf);
 
     return ierr;
 }
@@ -387,8 +387,8 @@ int threaded_alltoallv_nonblocking(const void* sendbuf,
 
     char* cpu_sendbuf;
     char* cpu_recvbuf;
-    cudaMallocHost((void**)&cpu_sendbuf, total_bytes_s);
-    cudaMallocHost((void**)&cpu_recvbuf, total_bytes_r);
+    gpuMallocHost((void**)&cpu_sendbuf, total_bytes_s);
+    gpuMallocHost((void**)&cpu_recvbuf, total_bytes_r);
 
     // Copy from GPU to CPU
     ierr += gpuMemcpy(cpu_sendbuf, sendbuf, total_bytes_s, gpuMemcpyDeviceToHost);
@@ -455,8 +455,8 @@ int threaded_alltoallv_nonblocking(const void* sendbuf,
 
     ierr += gpuMemcpy(recvbuf, cpu_recvbuf, total_bytes_r, gpuMemcpyHostToDevice);
 
-    cudaFreeHost(cpu_sendbuf);
-    cudaFreeHost(cpu_recvbuf);
+    gpuFreeHost(cpu_sendbuf);
+    gpuFreeHost(cpu_recvbuf);
 
     return ierr;
 }
