@@ -47,10 +47,10 @@ double test_alltoall(F alltoall_func, const void* sendbuf, const int sendcount,
 }
 
 template <typename F>
-double internal_multileader_timing(F alltoall_func, const void* sendbuf, const int sendcount,
+void  internal_multileader_timing(F alltoall_func, const void* sendbuf, const int sendcount,
 							       MPI_Datatype sendtype, void* recvbuf, const int recvcount,
 							       MPI_Datatype recvtype, MPIX_Comm* comm, const char* name,
-								   int numLeaders)
+								   int procsPerLeader)
 {
   double time;
 
@@ -147,11 +147,11 @@ double internal_multileader_timing(F alltoall_func, const void* sendbuf, const i
 	MPI_Barrier(MPI_COMM_WORLD);
 	t0 = MPI_Wtime();
 	for (int i = 0; i < 1000; i++)
-	{
+	{d
 	  MPI_Scatter(local_send_buffer, recvcount * num_procs, recvtype, recv_buffer, recvcount * num_procs, recvtype,
 				  0, comm->local_comm);
 	}
-	time = (MPI_Wtime - t0) / 1000; 
+	time = (MPI_Wtime() - t0) / 1000; 
 	double tFinalScatter;
 	MPIAllreduce(&time, &tFinalScatter, 1, MPI_DOUBLE, MPI_MAX, comm->comm_world);
 
@@ -165,6 +165,82 @@ double internal_multileader_timing(F alltoall_func, const void* sendbuf, const i
 	  printf("%s, %d procs per leader, allgather: %e, alltoall: %e, scatter: %e\n", name, procsPerLeader,
 			 tFinalAllgather, tFinalAlltoall, tFinalScatter);
 	}
+}
+
+template <typename F>
+void internal_locality_aware_timing(F alltoallFunc, const void* sendbuf, const int sendcount,
+									MPI_Datatype sendtype, void* recvbuf, const int recvcount,
+									MPI_Datatype recvtype, MPIX_Comm* comm, const char* name,
+									int procsPerLeader)
+{
+  int rank, num_procs;
+  MPI_Comm_rank(comm->global_comm, &rank);
+  MPI_Comm_size(comm->global_comm, &num_procs);
+
+  int num_leaders_per_node = 4;
+  int procs_per_node;
+  MPI_Comm_size(comm->local_comm, &procs_per_node);
+  int procs_per_leader = procs_per_node / num_leaders_per_node;
+  if (procs_per_node < num_leaders_per_node)
+	{
+	  num_leaders_per_node = procs_per_node;
+	  procs_per_leader = 1;
+	}
+
+  int ppn;
+  MPI_Comm_size(comm->leader_comm, &ppn);
+
+  int send_proc, recv_proc;
+  int send_pos, recv_pos;
+  MPI_Status status;
+  
+  char* recv_buffer = (char*) recvbuf;
+  char* send_buffer = (char*) sendbuf;
+
+  int send_size, recv_size;
+  MPI_Type_size(sendtype, &send_size);
+  MPI_Type_size(recvtype, &recv_size);
+
+  int n_nodes = num_proc / ppn;
+
+  char* tmpbuf = (char*) malloc(num_procs * sendcount * send_size);
+
+  MPI_Barrier(comm->leader_group_comm);
+  double t0 = MPI_Wtime();
+  for (int i = 0; i < 1000; i++)
+	{
+	  alltoallFunc(sendbuf, ppn*sendcount, sendtype, tmpbuf, ppn*recvbuf, recvtype, comm->leader_group_comm);
+	}
+
+  double time = (MPI_Wtime() - t0) / 1000;
+  double tFinalLeaderGroupAlltoall;
+  MPI_Allreduce(&time, &tFinalLeaderGroupAlltoall, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
+
+  int ctr = 0;
+  for (int dest_proc = 0; dest_proc < ppn; dest_proc++)
+	{
+	  int offset = dest_proc * recvcount * recv_size;
+	  for (int origin = 0; origin < n_nodes; origin++)
+		{
+		  int node_offset = origin * ppn * recvcount * recv_size;
+		  memcpy(&(recbuf[ctr]), &(tmpbuf[node_offset + offset]), recvcount * recv_size);
+		  ctr += recvcount * recv_size;
+		}
+	}
+
+  MPI_Barrier(comm->leader_comm);
+  t0 = MPI_Wtime();
+  for (int i = 0; i < 1000; i++)
+	{
+	  alltoallFunc(recvbuf, n_nodes * recvcount, recvtype, tmpbuf, n_nodes * recvcount, recvtype, comm->leader_comm);
+	}
+
+  time = (MPIWtime() - t0) / 1000;
+  double tFinalLeaderAlltoall;
+  MPI_Allreduce(&time, &tFinalLeaderAlltoall, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
+
+  printf("%s, %d procs per leader, leader group comm alltoall: %e, leader comm alltoall: %e\n", name, procsPerLeader,
+		 tFinalLeaderGroupAlltoall, tFinalLeaderAlltoall);  
 }
 
 template <typename T>
@@ -187,7 +263,6 @@ void print_alltoalls(int max_p, const T* sendbuf,
 
     std::vector<F> multileader_funcs = { alltoall_multileader, alltoall_locality_aware, alltoall_multileader_locality, alltoall_multileader_nb, alltoall_locality_aware_nb, alltoall_multileader_locality_nb};
     std::vector<const char*> multileader_names = {"Pairwise Multileader", "Pairwise Locality Aware", "Pairwise Multileader Locality", "Nonblocking Multileader", "Nonblocking Locality Aware", "Nonblocking Multileader Locality"};
-
     for (int i = 0; i < max_p; i++)
     {
         int s = pow(2, i);
