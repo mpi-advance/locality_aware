@@ -81,60 +81,12 @@ int main(int argc, char* argv[]) {
         printf("Message Size: %ld bytes\n", s * sizeof(double));
     }
 
-    
-    //Time for winlock_init
+
+
+    //Winfence_Init
+/*
     MPI_Barrier(xcomm->global_comm);
     double tl = MPI_Wtime();  
-    //This is for accuracy
-    printf("******************1");
-    for (int k = 0; k < n_iter; k++) {  
-        printf("******************2");
-     alltoallv_rma_lock_init(send_data.data(),sendcounts.data(),sdispls.data(),MPI_DOUBLE,RMA_winlock_init.data()
-     ,recvcounts.data(),rdispls.data(),MPI_DOUBLE, xcomm, xinfo, &xrequest);
-     printf("******************3");
-
-     MPIX_Request_free(xrequest);
-    
-    }      
-   
-    double rma_intlock_final = (MPI_Wtime() - tl) / n_iter;
-
-      // RMA Alltoallv Time
-      MPI_Reduce(&rma_intlock_final, &tl, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
-      if (rank == 0) {
-          printf("RMA_winlock_init Alltoallv Time: %e seconds\n", tl);
-          printf("Message Size: %ld bytes\n", s * sizeof(double));
-      }
-  
-
-    alltoallv_rma_lock_init(send_data.data(),sendcounts.data(),sdispls.data(),MPI_DOUBLE,RMA_winlock_init.data()
-     ,recvcounts.data(),rdispls.data(),MPI_DOUBLE, xcomm, xinfo, &xrequest);
-        
-     MPI_Barrier(xcomm->global_comm);
-
-     tl = MPI_Wtime();  
-
-    for (int k = 0; k < n_iter; k++) {  
-      
-        MPIX_Start(xrequest);
-        MPIX_Wait(xrequest, MPI_STATUS_IGNORE);
-
-    }
-    double rma_lock_final = (MPI_Wtime() - tl) / n_iter;
-
- // RMA Alltoallv Time
- MPI_Reduce(&rma_lock_final, &tl, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
- if (rank == 0) {
-     printf("RMA_winlock_ Alltoallv Time: %e seconds\n", tl);
-     printf("Message Size: %ld bytes\n", s * sizeof(double));
- }
-
-    
-   
-//Winfence_Init
-
-    MPI_Barrier(xcomm->global_comm);
-    tl = MPI_Wtime();  
 
     for (int k = 0; k < n_iter; k++) {  
 //printf("THIS IS 2");
@@ -156,6 +108,8 @@ int main(int argc, char* argv[]) {
 
     alltoallv_rma_winfence_init(send_data.data(),sendcounts.data(),sdispls.data(),MPI_DOUBLE,RMA_winfence_init.data()
    ,recvcounts.data(),rdispls.data(),MPI_DOUBLE, xcomm, xinfo, &xrequest);
+
+    MPIX_Request_free(xrequest);
      
      MPI_Barrier(xcomm->global_comm);
 
@@ -177,6 +131,71 @@ int main(int argc, char* argv[]) {
         printf("RMA_winfence_persistent_runtime(start+wait) Alltoallv Time: %e seconds\n", tl);
         printf("Message Size: %ld bytes\n", s * sizeof(double));
     }
+*/
+
+    
+    //Time for winlock_init
+    MPI_Barrier(xcomm->global_comm);
+    double tl = MPI_Wtime();  
+    //This is for accuracy
+    printf("******************a\n");
+    fflush(stdout);
+    for (int k = 0; k < n_iter; k++) {  
+        printf("%d: ******************b k=%d\n",rank,k);
+        fflush(stdout);
+     alltoallv_rma_lock_init(send_data.data(),sendcounts.data(),sdispls.data(),MPI_DOUBLE,RMA_winlock_init.data()
+     ,recvcounts.data(),rdispls.data(),MPI_DOUBLE, xcomm, xinfo, &xrequest);
+     printf("%d: ******************c k=%d\n",rank,k);
+     fflush(stdout);
+     
+     
+     MPIX_Request_free(xrequest);
+     
+     printf("%d: ******************d k=%d\n",rank,k);
+     fflush(stdout);
+    } 
+        
+    printf("%d: ******************f\n",rank);
+    fflush(stdout);
+    double rma_intlock_final = (MPI_Wtime() - tl) / n_iter;
+
+      // RMA Alltoallv Time
+      MPI_Reduce(&rma_intlock_final, &tl, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
+      if (rank == 0) {
+          printf("RMA_winlock_init Alltoallv Time: %e seconds\n", tl);
+          printf("Message Size: %ld bytes\n", s * sizeof(double));
+      }
+     
+      printf("*****************g\n");
+      fflush(stdout);
+
+    alltoallv_rma_lock_init(send_data.data(),sendcounts.data(),sdispls.data(),MPI_DOUBLE,RMA_winlock_init.data()
+     ,recvcounts.data(),rdispls.data(),MPI_DOUBLE, xcomm, xinfo, &xrequest);
+
+     printf("*****************h\n");
+     fflush(stdout);       
+     MPI_Barrier(xcomm->global_comm);
+
+     tl = MPI_Wtime();  
+
+    for (int k = 0; k < n_iter; k++) {  
+      
+        MPIX_Start(xrequest);
+        MPIX_Wait(xrequest, MPI_STATUS_IGNORE);
+
+    }
+    double rma_lock_final = (MPI_Wtime() - tl) / n_iter;
+
+ // RMA Alltoallv Time
+ MPI_Reduce(&rma_lock_final, &tl, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
+ if (rank == 0) {
+     printf("RMA_second_winlockint Alltoallv Time: %e seconds\n", tl);
+     printf("Message Size: %ld bytes\n", s * sizeof(double));
+ }
+
+ //MPIX_Request_free(xrequest);
+
+   
 
 
 /*
