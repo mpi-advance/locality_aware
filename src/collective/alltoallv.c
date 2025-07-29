@@ -350,16 +350,17 @@ int alltoallv_rma_lock_init(const void* sendbuf,
     MPI_Comm_rank(xcomm->global_comm, &rank);
     MPI_Comm_size(xcomm->global_comm, &num_procs);
 
+    printf("%d: *****Iam in rma lock init*************1\n",rank); fflush(stdout);
     MPIX_Request* request;
     MPIX_Request_init(&request);
     
-    printf("******************1");
+   // printf("******************1");
     request->start_function = rma_lock_start;
-    printf("******************2");
+   // printf("******************2");
     request->wait_function = rma_lock_wait;
-    printf("******************3");
-    request->global_n_msgs = num_procs;
-    allocate_requests(request->global_n_msgs, &(request->global_requests));
+   // printf("******************3");
+    //request->global_n_msgs = 0;
+    //allocate_requests(num_procs, &(request->global_requests));
     request->sendbuf = sendbuf;
     request->recvbuf = recvbuf;
 
@@ -373,23 +374,30 @@ int alltoallv_rma_lock_init(const void* sendbuf,
         total_recv_bytes += recvcounts[i] * recv_type_size;
     }
 
-    
+    printf("%d: *****Iam at line %d rma lock init*************1\n",rank,__LINE__); fflush(stdout);
     if (xcomm->win_bytes != total_recv_bytes || xcomm->win_type_bytes != 1) {
+        printf("%d: *****Iam at line %d rma lock init************* Before win_free\n",rank,__LINE__); fflush(stdout);
         MPIX_Comm_win_free(xcomm);
+        printf("%d: *****Iam at line %d rma lock init************* After win_free\n",rank,__LINE__); fflush(stdout);
+    
     }
+    printf("%d: *****Iam at line %d rma lock init*************1\n",rank,__LINE__); fflush(stdout);
 
     // MGFD: This needs refactoring. The window should belong to the request object, not the communicator. As this is written, a second persistant alltoallv on a communicator will fail, because the data will be improperly placed. 
     // Initialize window only if it hasn't been initialized
     if (xcomm->win == MPI_WIN_NULL) {
+        printf("%d: *****Iam at line %d rma lock init************* Before win_create\n",rank,__LINE__); fflush(stdout);
         MPI_Win_create(recvbuf, total_recv_bytes, 1, MPI_INFO_NULL, xcomm->global_comm, &xcomm->win);
+        printf("%d: *****Iam at line %d rma lock init************* After win_create\n",rank,__LINE__); fflush(stdout);
     }
-    printf("******************4");
-
+    //printf("******************4");
+    printf("%d: *****Iam at line %d rma lock init*************1\n",rank,__LINE__); fflush(stdout);
     request->xcomm = xcomm;
     
     MPI_Win_lock(MPI_LOCK_EXCLUSIVE, rank, 0, request->xcomm->win); //MGFD: To ensure that the recv buffer is not modified before it is valid to do so, we need to do an exclusive self-lock here. 
 
-    printf("******************5");
+    //printf("******************5");
+    printf("%d: *****Iam at line %d rma lock init*************1\n",rank,__LINE__); fflush(stdout);
    request->n_puts = num_procs;
 
    request->sdispls = (int*)malloc(num_procs*sizeof(int));
@@ -397,11 +405,12 @@ int alltoallv_rma_lock_init(const void* sendbuf,
    request->recv_sizes = (int*)malloc(num_procs*sizeof(int));
    request->recv_size = total_recv_bytes;
 
-      
+   printf("%d: *****Iam at line %d rma lock init*************1\n",rank,__LINE__); fflush(stdout);
    request->put_displs =(int*)malloc(num_procs*sizeof(int));
    MPI_Alltoall(rdispls, 1, MPI_INT, request->put_displs, 1, MPI_INT, xcomm->global_comm);
 
-   printf("******************6");
+   //printf("******************6");
+   printf("%d: *****Iam at line %d rma lock init*************1\n",rank,__LINE__); fflush(stdout);
 
    for (int i = 0; i < num_procs; i++)
    {
@@ -410,10 +419,12 @@ int alltoallv_rma_lock_init(const void* sendbuf,
        request->recv_sizes[i] = recvcounts[i] * recv_type_size;
        request->put_displs[i] *= recv_type_size; 
    }
-
-   printf("******************7");
+  
+  
+   //printf("******************7");
 *request_ptr = request;
-
+    //printf("******************8");
+    printf("%d: *****Iam exiting rma lock init*************\n",rank); fflush(stdout);
     return MPI_SUCCESS;
 }
 
