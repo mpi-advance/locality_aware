@@ -177,18 +177,24 @@ int main(int argc, char* argv[]) {
      MPI_Barrier(xcomm->global_comm);
 
      tl = MPI_Wtime();  
-
+     printf("*****************I\n");
     for (int k = 0; k < n_iter; k++) {  
-      
+        printf("*****************J\n");
         MPIX_Start(xrequest);
+        printf("*****************k\n");
         MPIX_Wait(xrequest, MPI_STATUS_IGNORE);
+        printf("*****************L\n");
 
     }
     double rma_lock_final = (MPI_Wtime() - tl) / n_iter;
-
+    printf("*****************M\n");
  // RMA Alltoallv Time
  MPI_Reduce(&rma_lock_final, &tl, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
+
+ printf("*****************N\n");
+
  if (rank == 0) {
+ printf("*****************O\n");
      printf("RMA_second_winlockint Alltoallv Time: %e seconds\n", tl);
      printf("Message Size: %ld bytes\n", s * sizeof(double));
  }
