@@ -320,25 +320,25 @@ int rma_wait(MPIX_Request* request, MPI_Status* status)
 int rma_lock_start(MPIX_Request* request)
 {
     int rank;
-   // printf("******************100");
+    //printf("*************hey just entered rma_lock_start");
     //fflush(stdout);
     MPI_Comm_rank(request->xcomm->global_comm, &rank);  // Get the rank of the process
 
     char* send_buffer = (char*)(request->sendbuf);
     char* recv_buffer = (char*)(request->recvbuf); 
-    //printf("******************9");
+    //printf("*************329");
     //fflush(stdout);
-    MPI_Win_unlock(rank, request->xcomm->win); // MGFD: Release Local Exclusive Lock, this allows other process to safely put data. 
+    //MPI_Win_unlock(rank, request->xcomm->win); // MGFD: Release Local Exclusive Lock, this allows other process to safely put data. 
 
-    //printf("******************10");
-    //fflush(stdout);
+    //printf("******************333");
+   // fflush(stdout);
        // Lock the window for all processes
     MPI_Win_lock_all(0, request->xcomm->win);
    
         
     int request_count = 0;
-    //printf("******************11");
-    //fflush(stdout);
+   // printf("*************after MPI_Win_lock_all***");
+   // fflush(stdout);
 
     //  non-blocking MPI_Rput 
     for (int i = 0; i < request->n_puts; i++) {
@@ -355,11 +355,17 @@ int rma_lock_start(MPIX_Request* request)
         }
     }
     request->global_n_msgs=request_count;
-    printf("lock_start nputs=%d, request count= %d\n",request->n_puts, request_count);
-    fflush(stdout);
+   // printf("lock_start nputs=%d, request count= %d\n",request->n_puts, request_count);
+    //fflush(stdout);
+
+    //printf("*************after Rputs***");
+    //fflush(stdout);
     // Waiting for all non-blocking operations to complete 
-    //MPI_Waitall(request_count, requests, MPI_STATUSES_IGNORE);
-        
+    /*newly added */
+    MPI_Waitall(request->global_n_msgs, request->global_requests, MPI_STATUSES_IGNORE);
+
+   // printf("*************after MPI_Waitall***");
+   // fflush(stdout);    
     
     return MPI_SUCCESS;
 }
@@ -368,21 +374,23 @@ int rma_lock_start(MPIX_Request* request)
      
 int rma_lock_wait(MPIX_Request* request, MPI_Status* status)
 {
-    //printf("******************13");
-    //fflush(stdout);  
+   
     int rank;  // MGFD: We should really save this off at init, but we need this here for the exclusive lock.
     MPI_Comm_rank(request->xcomm->global_comm, &rank);
-
+    
     //MPI_Win_flush_all(request->xcomm->win); //MGFD: We're already doing the unlock and lock below so the flush is not needed
     
     MPI_Win_unlock_all(request->xcomm->win);
     
-    MPI_Win_flush_all(request->xcomm->win); //MGFD: We're already doing the unlock and lock below so the flush is not needed
+    //MPI_Win_flush_all(request->xcomm->win); //MGFD: We're already doing the unlock and lock below so the flush is not needed
+    //printf(" MPI_Win_unlock_all******************13");
+    //fflush(stdout); 
     
    // MPI_Barrier(request->xcomm->global_comm); // MGFD: Barrier would be needed if we were relying of flush, but we're not, so we don't need it.
     //printf("******************14");
     //fflush(stdout);
 
+    /*newly commented out */
    // MPI_Win_lock(MPI_LOCK_EXCLUSIVE, rank, 0, request->xcomm->win); // MGFD: this makes the buffer go into an consistent state, and therefore is safe to access by the user.
     
     //printf("******************15");
