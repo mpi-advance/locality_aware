@@ -80,8 +80,8 @@ int MPIX_Request_free(MPIX_Request* request)
             MPI_Request_free(&(request->local_R_requests[i]));
         free(request->local_R_requests);
     }
-    printf("global_num_msg %d\n",request->global_n_msgs);
-    fflush(stdout);
+   // printf("global_num_msg %d\n",request->global_n_msgs);
+    //fflush(stdout);
     if (request->global_n_msgs)
     {
         for (int i = 0; i < request->global_n_msgs; i++)

@@ -84,7 +84,7 @@ int main(int argc, char* argv[]) {
 
 
     //Winfence_Init
-/*
+
     MPI_Barrier(xcomm->global_comm);
     double tl = MPI_Wtime();  
 
@@ -100,20 +100,20 @@ int main(int argc, char* argv[]) {
     double rma_intwin_final = (MPI_Wtime() - tl) / n_iter;
     MPI_Reduce(&rma_intwin_final, &tl, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
     if (rank == 0) {
-     printf("RMA_winfence_init + Finalise Alltoallv Time: %e seconds\n", tl);
+     printf("RMA_winfence_init + Finalise Alltoallv Time (in a for loop): %e seconds\n", tl);
      printf("Message Size: %ld bytes\n", s * sizeof(double));
     }
 
-    MPI_Barrier(xcomm->global_comm);
+    //MPI_Barrier(xcomm->global_comm);
 
     alltoallv_rma_winfence_init(send_data.data(),sendcounts.data(),sdispls.data(),MPI_DOUBLE,RMA_winfence_init.data()
    ,recvcounts.data(),rdispls.data(),MPI_DOUBLE, xcomm, xinfo, &xrequest);
 
-    MPIX_Request_free(xrequest);
+    //MPIX_Request_free(xrequest);
      
      MPI_Barrier(xcomm->global_comm);
 
-     tl = MPI_Wtime();  
+    tl = MPI_Wtime();  
 
     for (int k = 0; k < n_iter; k++) {  
       
@@ -131,75 +131,62 @@ int main(int argc, char* argv[]) {
         printf("RMA_winfence_persistent_runtime(start+wait) Alltoallv Time: %e seconds\n", tl);
         printf("Message Size: %ld bytes\n", s * sizeof(double));
     }
-*/
+    
+    //End of Winfence_init
 
     
-    //Time for winlock_init
+    //T winlock_init
     MPI_Barrier(xcomm->global_comm);
-    double tl = MPI_Wtime();  
+    tl = MPI_Wtime();  
     //This is for accuracy
-    printf("******************a\n");
-    fflush(stdout);
+    
     for (int k = 0; k < n_iter; k++) {  
-        printf("%d: ******************b k=%d\n",rank,k);
-        fflush(stdout);
+       
      alltoallv_rma_lock_init(send_data.data(),sendcounts.data(),sdispls.data(),MPI_DOUBLE,RMA_winlock_init.data()
      ,recvcounts.data(),rdispls.data(),MPI_DOUBLE, xcomm, xinfo, &xrequest);
-     printf("%d: ******************c k=%d\n",rank,k);
-     fflush(stdout);
+     
+    MPIX_Request_free(xrequest);
      
      
-     MPIX_Request_free(xrequest);
-     
-     printf("%d: ******************d k=%d\n",rank,k);
-     fflush(stdout);
     } 
         
-    printf("%d: ******************f\n",rank);
-    fflush(stdout);
+    
     double rma_intlock_final = (MPI_Wtime() - tl) / n_iter;
 
       // RMA Alltoallv Time
       MPI_Reduce(&rma_intlock_final, &tl, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
       if (rank == 0) {
-          printf("RMA_winlock_init Alltoallv Time: %e seconds\n", tl);
+          printf("RMA_winlock_init Alltoallv+ Finalize Time (in a for loop): %e seconds\n", tl);
           printf("Message Size: %ld bytes\n", s * sizeof(double));
       }
      
-      printf("*****************g\n");
-      fflush(stdout);
-
+     
     alltoallv_rma_lock_init(send_data.data(),sendcounts.data(),sdispls.data(),MPI_DOUBLE,RMA_winlock_init.data()
      ,recvcounts.data(),rdispls.data(),MPI_DOUBLE, xcomm, xinfo, &xrequest);
 
-     printf("*****************h\n");
-     fflush(stdout);       
+        
      MPI_Barrier(xcomm->global_comm);
 
      tl = MPI_Wtime();  
-     printf("*****************I\n");
-    for (int k = 0; k < n_iter; k++) {  
-        printf("*****************J\n");
+     
+    for (int k = 0; k < n_iter; k++) 
+    {  
         MPIX_Start(xrequest);
-        printf("*****************k\n");
         MPIX_Wait(xrequest, MPI_STATUS_IGNORE);
-        printf("*****************L\n");
-
+      
     }
     double rma_lock_final = (MPI_Wtime() - tl) / n_iter;
-    printf("*****************M\n");
- // RMA Alltoallv Time
+   
+ // RMA_lock_init start+ wait
  MPI_Reduce(&rma_lock_final, &tl, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
 
- printf("*****************N\n");
-
  if (rank == 0) {
- printf("*****************O\n");
-     printf("RMA_second_winlockint Alltoallv Time: %e seconds\n", tl);
+
+     printf("RMA_second_winlockint Alltoallv(start+wait) Time: %e seconds\n", tl);
      printf("Message Size: %ld bytes\n", s * sizeof(double));
  }
 
- //MPIX_Request_free(xrequest);
+ 
 
    
 
