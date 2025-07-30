@@ -1,0 +1,14 @@
+#!/bin/bash
+#BSUB -J microbenchmarks_n2_ppn44
+#BSUB -e microbenchmarks_n2_ppn44.%J.err
+#BSUB -o microbenchmarks_n2_ppn44.%J.out
+#BSUB -nnodes 2
+##BSUB -q pdebug
+#BSUB -q pbatch
+#BSUB -W 00:15
+
+cd /g/g14/bienz1/locality_aware_cleanup/build_lassen/benchmarks
+
+jsrun -a44 -c44 -r1 -n2 --latency_priority=gpu-cpu --launch-distribution=packed --print_placement=1 ./gpu_microbenchmarks
+
+

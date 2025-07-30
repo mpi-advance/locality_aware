@@ -1,14 +1,15 @@
 #ifndef MPI_ADVANCE_UTILS_H
 #define MPI_ADVANCE_UTILS_H
 
+
+#ifdef GPU
 #ifdef HIP
 #include "utils_hip.h"
 #endif
-
 #ifdef CUDA
 #include "utils_cuda.h"
 #endif
-
+#endif
 
 #ifdef __cplusplus
 extern "C"

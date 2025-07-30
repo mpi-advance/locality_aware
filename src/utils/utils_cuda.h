@@ -4,6 +4,7 @@
 // Devices
 #define gpuGetDeviceCount cudaGetDeviceCount
 #define gpuSetDevice cudaSetDevice
+#define gpuGetDevice cudaGetDevice
 
 // Data allocation
 #define gpuMallocHost cudaMallocHost
@@ -42,5 +43,9 @@
 #define gpuMemoryTypeDevice cudaMemoryTypeDevice
 #define gpuMemoryType cudaMemoryType
 #define gpuMemset cudaMemset
+
+// Moving between CPU and GPU
+#define gpuMallocManaged cudaMallocManaged
+#define gpuMemPrefetchAsync cudaMemPrefetchAsync
 
 #endif

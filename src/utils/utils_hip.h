@@ -11,6 +11,7 @@
 // Devices
 #define gpuGetDeviceCount hipGetDeviceCount
 #define gpuSetDevice hipSetDevice
+#define gpuGetDevice hipGetDevice
 
 // Data allocation
 #define gpuMallocHost hipHostMalloc
@@ -49,5 +50,9 @@
 #define gpuMemoryTypeDevice hipMemoryTypeDevice
 #define gpuPointerAttributes hipPointerAttribute_t
 #define gpuMemset hipMemset
+
+// Moving between CPU and GPU
+#define gpuMallocManaged hipMallocManaged
+#define gpuMemPrefetchAsync hipMemPrefetchAsync
 
 #endif
