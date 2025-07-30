@@ -7,15 +7,14 @@
 #flux: -N 2
 #flux: -l # Add task rank prefixes to each line of output.
 #flux: --setattr=thp=always # Enable Transparent Huge Pages (THP)
-#flux: -t 45
-#flux: -q pbatch # other available queues: pdebug
+#flux: -t 20
 
 export MPICH_GPU_SUPPORT_ENABLED=1
 export HSA_XNACK=1
 
 # Check if THP are enabled
 #cat /sys/kernel/mm/transparent_hugepage/enabled
-cd ${HOME}/locality_aware_cleanup/build_tuolumne/benchmarks
+cd ${HOME}/locality_aware_cleanup/build_tioga/benchmarks
 
 echo "CPU Microbenchmarks:"
 #flux run -N2 -n192 --verbose --exclusive --setopt=mpibind=verbose:2 ./microbenchmarks
