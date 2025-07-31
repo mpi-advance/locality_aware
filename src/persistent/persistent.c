@@ -362,7 +362,7 @@ int rma_lock_start(MPIX_Request* request)
     //fflush(stdout);
     // Waiting for all non-blocking operations to complete 
     /*newly added */
-    MPI_Waitall(request->global_n_msgs, request->global_requests, MPI_STATUSES_IGNORE);
+    //MPI_Waitall(request->global_n_msgs, request->global_requests, MPI_STATUSES_IGNORE);
 
    // printf("*************after MPI_Waitall***");
    // fflush(stdout);    
