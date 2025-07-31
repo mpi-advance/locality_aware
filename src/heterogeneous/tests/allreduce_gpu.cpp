@@ -212,19 +212,27 @@ int main(int argc, char* argv[])
     float* recvbuf;
     float* tmpbuf;
 
+    float* sendbuf_h;
     float* recvbuf_std;
     float* recvbuf_new;
 
     gpuMalloc((void**)&sendbuf, max_s*sizeof(float));
     gpuMalloc((void**)&recvbuf, max_s*sizeof(float));
     gpuMalloc((void**)&tmpbuf, max_s*sizeof(float));
-
+    
+    gpuMallocHost((void**)&sendbuf_h, max_s*sizeof(float));
     gpuMallocHost((void**)&recvbuf_std, max_s*sizeof(float));
     gpuMallocHost((void**)&recvbuf_new, max_s*sizeof(float));
 
+    for (int i = 0; i < max_s; i++)
+        sendbuf_h[i] = ((float)rand()) / RAND_MAX;
+    gpuMemcpy(sendbuf, sendbuf_h, max_s*sizeof(float), gpuMemcpyHostToDevice);
+    gpuDeviceSynchronize();
+    
     print_allreduce(max_p, sendbuf, recvbuf, tmpbuf, recvbuf_std,
              recvbuf_new, MPI_COMM_WORLD, local_comm, inter_comm);
 
+    gpuFreeHost(sendbuf_h);
     gpuFreeHost(recvbuf_std);
     gpuFreeHost(recvbuf_new);
 
