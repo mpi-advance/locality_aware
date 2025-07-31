@@ -394,7 +394,7 @@ int alltoallv_rma_lock_init(const void* sendbuf,
     //printf("%d: *****Iam at line %d rma lock init*************1\n",rank,__LINE__); fflush(stdout);
     request->xcomm = xcomm;
     /*newly commented out */
-   // MPI_Win_lock(MPI_LOCK_EXCLUSIVE, rank, 0, request->xcomm->win); //MGFD: To ensure that the recv buffer is not modified before it is valid to do so, we need to do an exclusive self-lock here. 
+   MPI_Win_lock(MPI_LOCK_EXCLUSIVE, rank, 0, request->xcomm->win); //MGFD: To ensure that the recv buffer is not modified before it is valid to do so, we need to do an exclusive self-lock here. 
 
 
 
@@ -423,7 +423,7 @@ int alltoallv_rma_lock_init(const void* sendbuf,
        request->put_displs[i] *= recv_type_size; 
    }
   
-  
+   MPI_Win_unlock(rank, request->xcomm->win);
    //printf("******************7");
 *request_ptr = request;
     //printf("******************8");
