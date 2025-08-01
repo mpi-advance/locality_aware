@@ -208,7 +208,7 @@ void internal_locality_aware_timing(A alltoallFunc, const void* sendbuf, const i
 
   char* tmpbuf = (char*) malloc(num_procs * sendcount * send_size);
 
-  MPI_Barrier(comm->leader_group_comm);
+  MPI_Barrier(MPI_COMM_WORLD); // I FIXED THIS
   double t0 = MPI_Wtime();
   for (int i = 0; i < nInternalIters; i++)
   {
@@ -231,7 +231,7 @@ void internal_locality_aware_timing(A alltoallFunc, const void* sendbuf, const i
   	}
   }
 
-  MPI_Barrier(comm->leader_comm);
+  MPI_Barrier(MPI_COMM_WORLD);
   t0 = MPI_Wtime();
   for (int i = 0; i < nInternalIters; i++)
   {
