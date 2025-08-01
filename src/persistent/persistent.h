@@ -37,6 +37,7 @@ typedef struct _MPIX_Request
     int* send_sizes;
     int* recv_sizes;
     int n_puts;
+    int locked_win;
 
 
 } MPIX_Request;
