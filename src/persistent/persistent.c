@@ -6,6 +6,7 @@ int MPIX_Request_init(MPIX_Request** request_ptr)
 
     request->locality = NULL;
 
+    request->locked_win=0;
     request->local_L_n_msgs = 0;
     request->local_S_n_msgs = 0;
     request->local_R_n_msgs = 0;
@@ -62,6 +63,14 @@ int MPIX_Wait(MPIX_Request* request, MPI_Status* status)
 
 int MPIX_Request_free(MPIX_Request* request)
 {
+    int rank;
+    MPI_Comm_rank(request->xcomm->global_comm,&rank);
+    if (request->locked_win)
+    {
+        MPI_Win_unlock(rank,request->xcomm->win); // MGFD: Release Local Exclusive Lock, this allows other process to safely put data. 
+
+    }
+    
     if (request->local_L_n_msgs)
     {
         for (int i = 0; i < request->local_L_n_msgs; i++)
@@ -328,7 +337,7 @@ int rma_lock_start(MPIX_Request* request)
     char* recv_buffer = (char*)(request->recvbuf); 
     //printf("*************329");
     //fflush(stdout);
-    //MPI_Win_unlock(rank, request->xcomm->win); // MGFD: Release Local Exclusive Lock, this allows other process to safely put data. 
+    MPI_Win_unlock(rank, request->xcomm->win); // MGFD: Release Local Exclusive Lock, this allows other process to safely put data. 
 
     //printf("******************333");
    // fflush(stdout);
@@ -378,8 +387,7 @@ int rma_lock_wait(MPIX_Request* request, MPI_Status* status)
     int rank;  // MGFD: We should really save this off at init, but we need this here for the exclusive lock.
     MPI_Comm_rank(request->xcomm->global_comm, &rank);
     
-    //MPI_Win_flush_all(request->xcomm->win); //MGFD: We're already doing the unlock and lock below so the flush is not needed
-    
+   
     MPI_Win_unlock_all(request->xcomm->win);
     
     //MPI_Win_flush_all(request->xcomm->win); //MGFD: We're already doing the unlock and lock below so the flush is not needed
@@ -391,7 +399,7 @@ int rma_lock_wait(MPIX_Request* request, MPI_Status* status)
     //fflush(stdout);
 
     /*newly commented out */
-   // MPI_Win_lock(MPI_LOCK_EXCLUSIVE, rank, 0, request->xcomm->win); // MGFD: this makes the buffer go into an consistent state, and therefore is safe to access by the user.
+    MPI_Win_lock(MPI_LOCK_EXCLUSIVE, rank, 0, request->xcomm->win); // MGFD: this makes the buffer go into an consistent state, and therefore is safe to access by the user.
     
     //printf("******************15");
     //fflush(stdout);
