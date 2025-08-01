@@ -82,7 +82,7 @@ int main(int argc, char* argv[]) {
     }
 
 
-
+/*
     //Winfence_Init
 
     MPI_Barrier(xcomm->global_comm);
@@ -123,30 +123,31 @@ int main(int argc, char* argv[]) {
     }
     double rma_fence_final = (MPI_Wtime() - tl) / n_iter;
 
-    
-
-     //which process takes the longest time 
+         //which process takes the longest time 
     MPI_Reduce(&rma_fence_final, &tl, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
     if (rank == 0) {
         printf("RMA_winfence_persistent_runtime(start+wait) Alltoallv Time: %e seconds\n", tl);
         printf("Message Size: %ld bytes\n", s * sizeof(double));
     }
+    */
     
     //End of Winfence_init
 
     
     //T winlock_init
     MPI_Barrier(xcomm->global_comm);
-    tl = MPI_Wtime();  
+    double tl = MPI_Wtime();  
     //This is for accuracy
     
     for (int k = 0; k < n_iter; k++) {  
-       
+      
+     //printf("rank:%d\n,k =%d\n",rank,k);
+     //printf("****a\n");   
      alltoallv_rma_lock_init(send_data.data(),sendcounts.data(),sdispls.data(),MPI_DOUBLE,RMA_winlock_init.data()
      ,recvcounts.data(),rdispls.data(),MPI_DOUBLE, xcomm, xinfo, &xrequest);
-     
+    // printf("****b\n");   
     MPIX_Request_free(xrequest);
-     
+    //printf("****c\n");   
      
     } 
         
@@ -168,15 +169,18 @@ int main(int argc, char* argv[]) {
      MPI_Barrier(xcomm->global_comm);
 
      tl = MPI_Wtime();  
-     
+     printf("%d: *****Iam at line %d rma lock init*************\n",rank,__LINE__); fflush(stdout);
     for (int k = 0; k < n_iter; k++) 
-    {  
+    {   printf("%d: *****Iam at line %d rma lock init*************k=%d\n",rank,__LINE__,k); fflush(stdout);
         MPIX_Start(xrequest);
+        printf("%d: *****Iam at line %d rma lock init*************k=%d\n",rank,__LINE__,k); fflush(stdout);
         MPIX_Wait(xrequest, MPI_STATUS_IGNORE);
+        printf("%d: *****Iam at line %d rma lock init*************k=%d\n",rank,__LINE__,k); fflush(stdout);
       
     }
+    printf("%d: *****Iam at line %d rma lock init*************\n",rank,__LINE__); fflush(stdout);
     double rma_lock_final = (MPI_Wtime() - tl) / n_iter;
-   
+    MPIX_Request_free(xrequest);
  // RMA_lock_init start+ wait
  MPI_Reduce(&rma_lock_final, &tl, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
 
