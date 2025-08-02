@@ -147,6 +147,7 @@ int main(int argc, char* argv[]) {
      ,recvcounts.data(),rdispls.data(),MPI_DOUBLE, xcomm, xinfo, &xrequest);
     // printf("****b\n");   
     MPIX_Request_free(xrequest);
+    MPIX_Comm_win_free(xcomm);
     //printf("****c\n");   
      
     } 
