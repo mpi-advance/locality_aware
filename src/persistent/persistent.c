@@ -350,6 +350,7 @@ int rma_lock_start(MPIX_Request* request)
    // fflush(stdout);
 
     //  non-blocking MPI_Rput 
+    
     for (int i = 0; i < request->n_puts; i++) {
         if (request->send_sizes[i] > 0) {
             MPI_Rput(&request->sendbuf[request->sdispls[i]],
@@ -364,6 +365,27 @@ int rma_lock_start(MPIX_Request* request)
         }
     }
     request->global_n_msgs=request_count;
+
+
+MPI_Waitall(request->global_n_msgs, request->global_requests, MPI_STATUSES_IGNORE);
+    
+/*
+    for (int i = 0; i < request->n_puts; i++) {
+        if (request->send_sizes[i] > 0) {
+            MPI_Put(&request->sendbuf[request->sdispls[i]],
+                    request->send_sizes[i],
+                    MPI_CHAR,
+                    i,
+                    request->put_displs[i],
+                    request->send_sizes[i],
+                    MPI_CHAR,
+                    request->xcomm->win);
+        }
+    }
+    // tracking 0 requests now
+    request->global_n_msgs = 0;
+*/
+
    // printf("lock_start nputs=%d, request count= %d\n",request->n_puts, request_count);
     //fflush(stdout);
 
@@ -371,7 +393,7 @@ int rma_lock_start(MPIX_Request* request)
     //fflush(stdout);
     // Waiting for all non-blocking operations to complete 
     /*newly added */
-    //MPI_Waitall(request->global_n_msgs, request->global_requests, MPI_STATUSES_IGNORE);
+   
 
    // printf("*************after MPI_Waitall***");
    // fflush(stdout);    
@@ -393,6 +415,13 @@ int rma_lock_wait(MPIX_Request* request, MPI_Status* status)
     //MPI_Win_flush_all(request->xcomm->win); //MGFD: We're already doing the unlock and lock below so the flush is not needed
     //printf(" MPI_Win_unlock_all******************13");
     //fflush(stdout); 
+    for (int i = 0; i < request->global_n_msgs; i++) {
+
+        MPI_Request_free(&request->global_requests[i]);
+      
+      }
+      
+      
     
    // MPI_Barrier(request->xcomm->global_comm); // MGFD: Barrier would be needed if we were relying of flush, but we're not, so we don't need it.
     //printf("******************14");
