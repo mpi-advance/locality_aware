@@ -1,7 +1,7 @@
 #include "alltoall.h"
 #include <string.h>
 #include <math.h>
-
+#include <mpi.h>
 #ifdef GPU
 #include "heterogeneous/gpu_alltoall.h"
 #endif
@@ -20,11 +20,10 @@
  *      on-node so that each process holds
  *      the correct final data
  *************************************************/
-
-template <typename F, typename C>
-double time_alltoall(F alltoall_func, const void *sendbuf, const int sendcount, 
+double time_alltoall(int (*alltoall_func)(const void*, int, MPI_Datatype, void*, int, MPI_Datatype, MPI_Comm),
+		const void *sendbuf, const int sendcount, 
         MPI_Datatype sendtype, void* recvbuf, const int recvcount, MPI_Datatype recvtype,
-        C comm, int n_iters, Comm barrier_comm)
+        MPI_Comm comm, int n_iters, MPI_Comm barrier_comm)
 {
     MPI_Barrier(barrier_comm);
     double t0 = MPI_Wtime();
@@ -37,10 +36,10 @@ double time_alltoall(F alltoall_func, const void *sendbuf, const int sendcount,
     return t0;
 }
 
-template <typename F, typename C>
-double estimate_alltoall_iters(F alltoall_func, const void *sendbuf, const int sendcount, 
+double estimate_alltoall_iters(int (*alltoall_func)( const void*, int, MPI_Datatype, void*, int, MPI_Datatype, MPI_Comm),
+		const void *sendbuf, const int sendcount, 
         MPI_Datatype sendtype, void* recvbuf, const int recvcount, MPI_Datatype recvtype,
-        C comm, C barrier_comm)
+        MPI_Comm comm, MPI_Comm barrier_comm)
 {
     double time = time_alltoall(alltoall_func, sendbuf, sendcount, sendtype, recvbuf, 
         recvcount, recvtype, comm, 1, barrier_comm);
@@ -69,13 +68,13 @@ double estimate_alltoall_iters(F alltoall_func, const void *sendbuf, const int s
 }
 
 double time_gather(const void* sendbuf, const int sendcount, MPI_Datatype sendtype, void* recvbuf, 
-        int recvcount, MPI_Datatype recvtype, int root, MPI_Comm comm, int n_iters)
+		int recvcount, MPI_Datatype recvtype, int root, MPI_Comm comm, int n_iters)
 {
     MPI_Barrier(MPI_COMM_WORLD);
     double t0 = MPI_Wtime();
     for (int i = 0; i < n_iters; i++)
     {
-        MPI_Gather(send_buffer, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm);   
+        MPI_Gather(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm);   
     }
     double tfinal = (MPI_Wtime() - t0) / n_iters;
     MPI_Allreduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
@@ -83,20 +82,20 @@ double time_gather(const void* sendbuf, const int sendcount, MPI_Datatype sendty
 }
 
 double estimate_gather_iters(const void* sendbuf, const int sendcount, MPI_Datatype sendtype, 
-        void* recvbuf, const int recvcount, MPI_Datatype recvtype, MPI_Comm comm)
+		void* recvbuf, const int recvcount, MPI_Datatype recvtype, int root, MPI_Comm comm)
 {
-    double time = time_gather(sendbuf, sendcount, sendtype, recvbuf, recvcount, root, comm, 1);
+    double time = time_gather(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm, 1);
     int n_iters;
     if (time > 1)
         n_iters = 1;
     else 
     {
         if (time > 1e-01)
-            time = time_gather(sendbuf, sendcount, sendtype, recvbuf, recvcount, root, comm, 2);
+		  time = time_gather(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm, 2);
         else if (time > 1e-02)
-            time = time_gather(sendbuf, sendcount, sendtype, recvbuf, recvcount, root, comm, 10);
+		  time = time_gather(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm, 10);
         else
-            time = time_gather(sendbuf, sendcount, sendtype, recvbuf, recvcount, root, comm, 100);
+		  time = time_gather(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm, 100);
         MPI_Allreduce(MPI_IN_PLACE, &time, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
 
         n_iters = (1.0 / time) + 1;
@@ -124,7 +123,7 @@ double time_scatter(const void* sendbuf, const int sendcount, MPI_Datatype sendt
 double estimate_scatter_iters(const void* sendbuf, int sendcount, MPI_Datatype sendtype,
         void* recvbuf, int recvcount, MPI_Datatype recvtype, int root, MPI_Comm comm)
 {
-    double time = time_scatter(sendbuf, sendcount, sendtype, recvbuf, recvcount, root, comm, 1);
+  double time = time_scatter(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm, 1);
     int n_iters;
     if (time > 1)
         n_iters = 1;
@@ -400,7 +399,7 @@ int alltoall_hierarchical(const void* sendbuf,
         MPI_Gather(send_buffer, sendcount*num_procs, sendtype, local_recv_buffer, sendcount*num_procs, sendtype,
                 0, comm->local_comm);
 
-    double tfinal = (MPI_Wtime - t0) / n_iters;
+    double tfinal = (MPI_Wtime() - t0) / n_iters;
     double tfinalGather;
     MPI_Allreduce(&tfinal, &tfinalGather, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
 
@@ -426,7 +425,7 @@ int alltoall_hierarchical(const void* sendbuf,
         }
 
         // 3. MPI_Alltoall between leaders
-        n_iters = estimate_alltoall_iters(local_send_buffer, ppn * ppn * sendcount, sendtype,
+        n_iters = estimate_alltoall_iters(pairwise_helper, local_send_buffer, ppn * ppn * sendcount, sendtype,
                 local_recv_buffer, ppn * ppn * recvcount, recvtype, comm->group_comm, comm->group_comm);
         MPI_Barrier(MPI_COMM_WORLD);
         t0 = MPI_Wtime();
@@ -454,7 +453,7 @@ int alltoall_hierarchical(const void* sendbuf,
     }
 
     // 5. Scatter 
-    n_iters = estimate_scatter_iters(local_send_buffer, recvcount * num_procs, recvytype, recv_buffer, recvcount * num_procs,
+    n_iters = estimate_scatter_iters(local_send_buffer, recvcount * num_procs, recvtype, recv_buffer, recvcount * num_procs,
             recvtype, 0, comm->local_comm);
     MPI_Barrier(MPI_COMM_WORLD);
     t0 = MPI_Wtime();
@@ -466,7 +465,7 @@ int alltoall_hierarchical(const void* sendbuf,
     MPI_Allreduce(&tfinal, &tfinalScatter, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
 
     if (rank == 0)
-        printf("gather: %e, alltoall: %e, scatter: %d\n", tfinalGather, tfinalAlltoall, tfinalScatter);
+        printf("gather: %e, alltoall: %e, scatter: %e\n", tfinalGather, tfinalAlltoall, tfinalScatter);
 
     free(local_send_buffer);
     free(local_recv_buffer);
@@ -575,13 +574,13 @@ int alltoall_multileader(const void* sendbuf,
 
         // 3. MPI_Alltoall between leaders
         n_iters = estimate_alltoall_iters(pairwise_helper, local_send_buffer, ppn * ppn * sendcount, sendtype, 
-                local_recv_buffer, ppn * ppn * recvount, recvtype, comm->leader_group_comm, comm->leader_group_comm);
+                local_recv_buffer, ppn * ppn * recvcount, recvtype, comm->leader_group_comm, comm->leader_group_comm);
         MPI_Barrier(comm->leader_group_comm);
         for (int i = 0; i < n_iters; i++)
             pairwise_helper(local_send_buffer, ppn * ppn * sendcount, sendtype,
                     local_recv_buffer, ppn * ppn * recvcount, recvtype, comm->leader_group_comm);
         tfinal = (MPI_Wtime() - t0) / n_iters;
-        MPI_Allreduce(&tfinal, &tfinalAlltoall, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORlD);
+        MPI_Allreduce(&tfinal, &tfinalAlltoall, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
 
         // 4. Re-pack for local scatter
         ctr = 0;
@@ -607,7 +606,7 @@ int alltoall_multileader(const void* sendbuf,
     for (int i = 0; i < n_iters; i++)
         MPI_Scatter(local_send_buffer, recvcount * num_procs, recvtype, recv_buffer, recvcount*num_procs, recvtype,
                 0, comm->leader_comm);
-    tfinal = (MPI_Wtime - t0) / n_iters;
+    tfinal = (MPI_Wtime() - t0) / n_iters;
     double tfinalScatter;
     MPI_Allreduce(&tfinal, &tfinalScatter, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
     
@@ -686,7 +685,7 @@ int alltoall_node_aware(const void* sendbuf,
     // 3. Local alltoall
     n_iters = estimate_alltoall_iters(pairwise_helper, recvbuf, n_nodes*recvcount, recvtype, 
             tmpbuf, n_nodes*recvcount, recvtype, comm->local_comm, MPI_COMM_WORLD);
-    MPI_BARRIER(MPI_COMM_WORLD);
+    MPI_Barrier(MPI_COMM_WORLD);
     t0 = MPI_Wtime();
     for (int i = 0; i < n_iters; i++)
         pairwise_helper(recvbuf, n_nodes*recvcount, recvtype, 
@@ -776,7 +775,7 @@ int alltoall_locality_aware(const void* sendbuf,
                 comm->leader_group_comm);
     double tfinal = (MPI_Wtime() - t0) / n_iters;
     double tfinalLeaderGroupAlltoall;
-    MPI_Allreduce(&tfinal, &tfinalLeaderGroupAlltoall, 1, MPI_DOUBLE, MPI_MAX; MPI_COMM_WORLD);
+    MPI_Allreduce(&tfinal, &tfinalLeaderGroupAlltoall, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
 
     // 2. Re-pack
     int ctr = 0;
@@ -951,8 +950,8 @@ int alltoall_multileader_locality(const void* sendbuf,
             }
         }
 
-        n_iters = estimate_alltoall_iters(local_send_buffer, n_nodes*procs_per_leader*procs_per_leader*sendcount,
-                sendtype, local_recv_buffer, n_nodes*procs_per_leader*procs_per_leader*recvcount * recvtype, 
+        n_iters = estimate_alltoall_iters(pairwise_helper, local_send_buffer, n_nodes*procs_per_leader*procs_per_leader*sendcount,
+				sendtype, local_recv_buffer, n_nodes*procs_per_leader*procs_per_leader*recvcount, recvtype, 
                 comm->leader_local_comm, comm->leader_local_comm);
         MPI_Allreduce(MPI_IN_PLACE, &n_iters, 1, MPI_INT, MPI_MAX, MPI_COMM_WORLD);
         MPI_Barrier(MPI_COMM_WORLD);
@@ -991,7 +990,7 @@ int alltoall_multileader_locality(const void* sendbuf,
         // preventing deadlock
         MPI_Allreduce(MPI_IN_PLACE, &n_iters, 1, MPI_INT, MPI_MAX, MPI_COMM_WORLD);
         MPI_Barrier(MPI_COMM_WORLD);
-        MPI_AllReduce(&tfinal, &tfinalAlltoall, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
+        MPI_AllReduce(&tfinal, &tfinalGroupAlltoall, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
 
         // reset variables 
         n_iters = 0;
@@ -1147,7 +1146,7 @@ int alltoall_hierarchical_nb(const void* sendbuf,
 
     // 5. Scatter 
     n_iters = estimate_scatter_iters(local_send_buffer, recvcount * num_procs, recvtype, recv_buffer, recvcount * num_procs,
-            rectype, 0, comm->local_comm);
+            recvtype, 0, comm->local_comm);
     MPI_Barrier(MPI_COMM_WORLD);
     t0 = MPI_Wtime();
     for (int i = 0; i < n_iters; i++)
@@ -1385,7 +1384,7 @@ int alltoall_node_aware_nb(const void* sendbuf,
                 tmpbuf, n_nodes*recvcount, recvtype, comm->local_comm);
     tfinal = (MPI_Wtime() - t0) / n_iters;
     double tfinalLocalAlltoall;
-    MPI_Allreduce(&tfinal, &tfinalLocalAlltoall, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORDL);
+    MPI_Allreduce(&tfinal, &tfinalLocalAlltoall, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
 
     // 4. Re-order
     ctr = 0;
@@ -1460,7 +1459,7 @@ int alltoall_locality_aware_nb(const void* sendbuf,
 
     // 1. Alltoall between group_comms (all data for any process on node)
     int n_iters = estimate_alltoall_iters(nonblocking_helper, sendbuf, ppn*sendcount, sendtype, 
-            tmpbuf, ppn*recvcount, recvtype, comm->leader_group_comm);
+				tmpbuf, ppn*recvcount, recvtype, comm->leader_group_comm, MPI_COMM_WORLD);
     MPI_Barrier(MPI_COMM_WORLD);
     double t0 = MPI_Wtime();
     for (int i = 0; i < n_iters; i++)
@@ -1484,7 +1483,7 @@ int alltoall_locality_aware_nb(const void* sendbuf,
     }
 
     // 3. Local alltoall
-    n_iters = estimate_alltoall_iters(nonblocking_helper, recvuf, n_nodes*recvcount, recvtype, 
+    n_iters = estimate_alltoall_iters(nonblocking_helper, recvbuf, n_nodes*recvcount, recvtype, 
             tmpbuf, n_nodes*recvcount, recvtype, comm->leader_comm, MPI_COMM_WORLD);
     MPI_Barrier(MPI_COMM_WORLD);
     t0 = MPI_Wtime();
@@ -1583,7 +1582,7 @@ int alltoall_multileader_locality_nb(const void* sendbuf,
         local_recv_buffer = (char*)malloc(sizeof(char));
     }
     // 1. Gather locally
-    int n_iters = estimate_gather_iters(sendbuffer, sendcount*num_procs, sendtype, local_recv_buffer, 
+    int n_iters = estimate_gather_iters(send_buffer, sendcount*num_procs, sendtype, local_recv_buffer, 
             sendcount*num_procs, sendtype, 0, comm->leader_comm);
     MPI_Barrier(MPI_COMM_WORLD);
     double t0 = MPI_Wtime();
@@ -1643,8 +1642,8 @@ int alltoall_multileader_locality_nb(const void* sendbuf,
             }
         }
 
-        n_iters = estimate_alltoall_iters(nonblock_helper, local_send_buffer, n_nodes*procs_per_leader*procs_per_leader*sendcount, 
-                local_recv_buffer, n_nodes*procs_per_leader*procs_per_leader*recvcount, recvtype, comm->leader_local_comm, 
+        n_iters = estimate_alltoall_iters(nonblocking_helper, local_send_buffer, n_nodes*procs_per_leader*procs_per_leader*sendcount, 
+				sendtype, local_recv_buffer, n_nodes*procs_per_leader*procs_per_leader*recvcount, recvtype, comm->leader_local_comm, 
                 comm->leader_local_comm);
         MPI_Allreduce(MPI_IN_PLACE, &n_iters, 1, MPI_INT, MPI_MAX, MPI_COMM_WORLD);
         MPI_Barrier(MPI_COMM_WORLD);
