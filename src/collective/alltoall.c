@@ -20,6 +20,113 @@
  *      on-node so that each process holds
  *      the correct final data
  *************************************************/
+
+template <typename F, typename C>
+double time_alltoall(F alltoall_func, const void *sendbuf, const int sendcount, 
+        MPI_Datatype sendtype, void* recvbuf, const int recvcount, MPI_Datatype recvtype,
+        C comm, int n_iters, Comm barrier_comm)
+{
+    MPI_Barrier(barrier_comm);
+    double t0 = MPI_Wtime();
+    for (int i = 0; i < n_iters; i++)
+    {
+        alltoall_func(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm);
+    }
+    double tfinal = (MPI_Wtime() - t0) / n_iters;
+    MPI_Allreduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, barrier_comm);
+    return t0;
+}
+
+template <typename F, typename C>
+double estimate_alltoall_iters(F alltoall_func, const void *sendbuf, const int sendcount, 
+        MPI_Datatype sendtype, void* recvbuf, const int recvcount, MPI_Datatype recvtype,
+        C comm, C barrier_comm)
+{
+    double time = time_alltoall(alltoall_func, sendbuf, sendcount, sendtype, recvbuf, 
+        recvcount, recvtype, comm, 1, barrier_comm);
+    int n_iters;
+    if (time > 1)
+        n_iters = 1;
+    else
+    {
+        if (time > 1e-01)
+            time = time_alltoall(alltoall_func, sendbuf, sendcount, sendtype, recvbuf,
+                recvcount, recvtype, comm, 2, barrier_comm);
+        else if (time > 1e-02)
+            time = time_alltoall(alltoall_func, sendbuf, sendcount, sendtype, recvbuf,
+                recvcount, recvtype, comm, 10, barrier_comm);
+        else 
+            time = time_alltoall(alltoall_func, sendbuf, sendcount, sendtype, recvbuf,
+                recvcount, recvtype, comm, 100, barrier_comm);
+        MPI_Allreduce(MPI_IN_PLACE, &time, 1, MPI_DOUBLE, MPI_MAX, barrier_comm);
+
+        n_iters = (1.0 / time) + 1;
+        if (n_iters < 1)
+            n_iters = 1;
+    }
+
+    return n_iters;
+}
+
+double time_gather(const void* sendbuf, const int sendcount, MPI_Datatype sendtype, void* recvbuf, 
+        int recvcount, MPI_Datatype recvtype, int root, MPI_Comm comm, int n_iters)
+{
+    MPI_Barrier(MPI_COMM_WORLD);
+    double t0 = MPI_Wtime();
+    for (int i = 0; i < n_iters; i++)
+    {
+        MPI_Gather(send_buffer, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm);   
+    }
+    double tfinal = (MPI_Wtime() - t0) / n_iters;
+    MPI_Allreduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
+    return t0;
+}
+
+double estimate_gather_iters(const void* sendbuf, const int sendcount, MPI_Datatype sendtype, 
+        void* recvbuf, const int recvcount, MPI_Datatype recvtype, MPI_Comm comm)
+{
+    double time = time_gather(sendbuf, sendcount, sendtype, recvbuf, recvcount, root, comm, 1);
+    int n_iters;
+    if (time > 1)
+        n_iters = 1;
+    else 
+    {
+        if (time > 1e-01)
+            time = time_gather(sendbuf, sendcount, sendtype, recvbuf, recvcount, root, comm, 2);
+        else if (time > 1e-02)
+            time = time_gather(sendbuf, sendcount, sendtype, recvbuf, recvcount, root, comm, 10);
+        else
+            time = time_gather(sendbuf, sendcount, sendtype, recvbuf, recvcount, root, comm, 100);
+        MPI_Allreduce(MPI_IN_PLACE, &time, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
+
+        n_iters = (1.0 / time) + 1;
+        if (n_iters < 1)
+            n_iters = 1;
+    }
+
+    return n_iters;
+}
+
+double time_scatter(const void* sendbuf, const int sendcount, MPI_Datatype sendtype, void* recvbuf,
+        int recvcount, MPI_Datatype recvtype, int root, MPI_Comm comm, int n_iters)
+{
+    MPI_Barrier(MPI_COMM_WORLD);
+    double t0 = MPI_Wtime();
+    for (int i = 0; i < n_iters; i++)
+    {
+        MPI_Scatter(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm);
+    }
+    double tfinal = (MPI_Wtime() - t0) / n_iters;
+    MPI_Allreduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
+    return t0;
+}  
+
+double estimate_scatter_iters(const void* sendbuf, int sendcount, MPI_Datatype sendtype,
+        void* recvbuf, int recvcount, MPI_Datatype recvtype, int root, MPI_Comm comm)
+{
+    
+}
+
 int MPIX_Alltoall(const void* sendbuf,
         const int sendcount,
         MPI_Datatype sendtype,
