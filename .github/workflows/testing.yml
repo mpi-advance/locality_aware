@@ -11,8 +11,7 @@ jobs:
     name: MPI Advance Ctest
     runs-on: ubuntu-latest
     container:
-      image: hpc/mpich:latest
-      options: --user root
+      image: ghcr.io/mpi4py/mpi-bullseye:latest
 
     steps:
       - name: Checkout code
