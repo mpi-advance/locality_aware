@@ -2,9 +2,9 @@ name: MPI Advance Ctest
 
 on:
   push:
-    branches: [main, cleanup]
+    branches: [master, cleanup]
   pull_request:
-    branches: [main]
+    branches: [master]
 
 jobs:
   test:
