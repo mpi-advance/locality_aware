@@ -99,10 +99,11 @@ add_library(mpi_advance
 )
 target_link_libraries(mpi_advance PUBLIC ${EXTERNAL_LIBS})
 
-install(TARGETS mpi_advance 
+install(TARGETS mpi_advance
         ARCHIVE DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
         LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
-        RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
+        RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/bin
+)
 
 install(FILES src/mpi_advance.h DESTINATION ${CMAKE_INSTALL_PREFIX}/include)
 install(FILES ${utils_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/utils)
@@ -123,4 +124,30 @@ endif()
 
 add_subdirectory(benchmarks)
 
+include(CMakePackageConfigHelpers)
 
+# Install the actual target(s) and register them for export
+install(TARGETS mpi_advance
+        EXPORT mpiadvanceTargets
+        DESTINATION lib)
+
+# Export the targets into a CMake package
+install(EXPORT mpiadvanceTargets
+        NAMESPACE mpiadvance::
+        DESTINATION lib/cmake/mpiadvance)
+
+# Generate the Config and Version files
+write_basic_package_version_file(
+  "${CMAKE_CURRENT_BINARY_DIR}/mpiadvanceConfigVersion.cmake"
+  VERSION 1.0.0
+  COMPATIBILITY SameMajorVersion)
+
+configure_package_config_file(
+  "${CMAKE_CURRENT_SOURCE_DIR}/cmake/mpiadvanceConfig.cmake"
+  "${CMAKE_CURRENT_BINARY_DIR}/mpiadvanceConfig.cmake"
+  INSTALL_DESTINATION lib/cmake/mpiadvance)
+
+install(FILES
+  "${CMAKE_CURRENT_BINARY_DIR}/mpiadvanceConfig.cmake"
+  "${CMAKE_CURRENT_BINARY_DIR}/mpiadvanceConfigVersion.cmake"
+  DESTINATION lib/cmake/mpiadvance)
