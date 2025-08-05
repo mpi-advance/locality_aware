@@ -124,6 +124,7 @@ endif()
 
 add_subdirectory(benchmarks)
 
+### Installation Requirements for Spack Package ###
 include(CMakePackageConfigHelpers)
 
 # Install the actual target(s) and register them for export
@@ -144,3 +145,5 @@ configure_package_config_file(
 install(FILES
   "${CMAKE_CURRENT_BINARY_DIR}/mpiadvanceConfig.cmake"
   DESTINATION lib/cmake/mpiadvance)
+############## End of Spack Section ################
+
