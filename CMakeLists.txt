@@ -136,12 +136,6 @@ install(EXPORT mpiadvanceTargets
         NAMESPACE mpiadvance::
         DESTINATION lib/cmake/mpiadvance)
 
-# Generate the Config and Version files
-write_basic_package_version_file(
-  "${CMAKE_CURRENT_BINARY_DIR}/mpiadvanceConfigVersion.cmake"
-  VERSION 1.0.0
-  COMPATIBILITY SameMajorVersion)
-
 configure_package_config_file(
   "${CMAKE_CURRENT_SOURCE_DIR}/cmake/mpiadvanceConfig.cmake"
   "${CMAKE_CURRENT_BINARY_DIR}/mpiadvanceConfig.cmake"
@@ -149,5 +143,4 @@ configure_package_config_file(
 
 install(FILES
   "${CMAKE_CURRENT_BINARY_DIR}/mpiadvanceConfig.cmake"
-  "${CMAKE_CURRENT_BINARY_DIR}/mpiadvanceConfigVersion.cmake"
   DESTINATION lib/cmake/mpiadvance)
