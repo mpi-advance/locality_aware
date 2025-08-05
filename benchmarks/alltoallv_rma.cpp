@@ -39,8 +39,11 @@ int main(int argc, char* argv[]) {
     std::vector<double> validation_recv_data(s * num_procs);
 
     //  send_data
+    //for (int i = 0; i < s * num_procs; i++) {
+        //send_data[i] = rand();
+    //}
     for (int i = 0; i < s * num_procs; i++) {
-        send_data[i] = rand();
+        send_data[i] = rank;
     }
     
     std::vector<int> sendcounts(num_procs, s);
@@ -82,7 +85,7 @@ int main(int argc, char* argv[]) {
     }
 
 
-/*
+
     //Winfence_Init
 
     MPI_Barrier(xcomm->global_comm);
@@ -122,21 +125,32 @@ int main(int argc, char* argv[]) {
 
     }
     double rma_fence_final = (MPI_Wtime() - tl) / n_iter;
-
+    
+    MPIX_Request_free(xrequest);
          //which process takes the longest time 
     MPI_Reduce(&rma_fence_final, &tl, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
     if (rank == 0) {
         printf("RMA_winfence_persistent_runtime(start+wait) Alltoallv Time: %e seconds\n", tl);
         printf("Message Size: %ld bytes\n", s * sizeof(double));
     }
-    */
+    
+//correctness
+    for (int i = 0; i < num_procs; i++) {
+    for (int j = 0; j < s; j++) {
+        int index = i * s + j;
+        if (RMA_winfence_init[index] != i) {
+            printf("Mismatch at rank %d: Expected %d, got %.1f\n",
+                   rank, i, RMA_winfence_init[index]);
+        }
+    }
+}
     
     //End of Winfence_init
 
     
     //T winlock_init
     MPI_Barrier(xcomm->global_comm);
-    double tl = MPI_Wtime();  
+     tl = MPI_Wtime();  
     //This is for accuracy
     
     for (int k = 0; k < n_iter; k++) {  
@@ -170,16 +184,16 @@ int main(int argc, char* argv[]) {
      MPI_Barrier(xcomm->global_comm);
 
      tl = MPI_Wtime();  
-     printf("%d: *****Iam at line %d rma lock init*************\n",rank,__LINE__); fflush(stdout);
+     //printf("%d: *****Iam at line %d rma lock init*************\n",rank,__LINE__); fflush(stdout);
     for (int k = 0; k < n_iter; k++) 
-    {   printf("%d: *****Iam at line %d rma lock init*************k=%d\n",rank,__LINE__,k); fflush(stdout);
+    {  // printf("%d: *****Iam at line %d rma lock init*************k=%d\n",rank,__LINE__,k); fflush(stdout);
         MPIX_Start(xrequest);
-        printf("%d: *****Iam at line %d rma lock init*************k=%d\n",rank,__LINE__,k); fflush(stdout);
+        //printf("%d: *****Iam at line %d rma lock init*************k=%d\n",rank,__LINE__,k); fflush(stdout);
         MPIX_Wait(xrequest, MPI_STATUS_IGNORE);
-        printf("%d: *****Iam at line %d rma lock init*************k=%d\n",rank,__LINE__,k); fflush(stdout);
+        //printf("%d: *****Iam at line %d rma lock init*************k=%d\n",rank,__LINE__,k); fflush(stdout);
       
     }
-    printf("%d: *****Iam at line %d rma lock init*************\n",rank,__LINE__); fflush(stdout);
+    //printf("%d: *****Iam at line %d rma lock init*************\n",rank,__LINE__); fflush(stdout);
     double rma_lock_final = (MPI_Wtime() - tl) / n_iter;
     MPIX_Request_free(xrequest);
  // RMA_lock_init start+ wait
@@ -192,8 +206,16 @@ int main(int argc, char* argv[]) {
  }
 
  
+ for (int i = 0; i < num_procs; i++) {
+    for (int j = 0; j < s; j++) {
+        int index = i * s + j;
+        if (RMA_winlock_init[index] != i) {
+            printf("Mismatch at rank %d: Expected %d, got %.1f\n",
+                   rank, i, RMA_winlock_init[index]);
+        }
+    }
+}
 
-   
 
 
 /*
