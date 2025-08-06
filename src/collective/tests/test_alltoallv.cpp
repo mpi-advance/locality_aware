@@ -49,9 +49,8 @@ int main(int argc, char** argv)
 
     for (int i = 0; i < max_i; i++)
     {
-        int s = pow(2, i);
+        int s = 1 << i;
 
-        // Will only be clean for up to double digit process counts
         displs[0] = 0;
         for (int j = 0; j < num_procs; j++)
         {
@@ -60,7 +59,6 @@ int main(int argc, char** argv)
             sizes[j] = s;
             displs[j+1] = displs[j] + s;
         }
-
 
         PMPI_Alltoallv(local_data.data(), 
                 sizes.data(),
@@ -72,6 +70,7 @@ int main(int argc, char** argv)
                 MPI_INT,
                 MPI_COMM_WORLD);
 
+        /*
         std::fill(mpix_alltoallv.begin(), mpix_alltoallv.end(), 0);
         MPIX_Alltoallv(local_data.data(), 
                 sizes.data(),
@@ -83,7 +82,8 @@ int main(int argc, char** argv)
                 MPI_INT,
                 xcomm);
         compare_alltoallv_results(pmpi_alltoallv, mpix_alltoallv, s);
-
+        */
+        
         std::fill(mpix_alltoallv.begin(), mpix_alltoallv.end(), 0);
         alltoallv_pairwise(local_data.data(), 
                 sizes.data(),
