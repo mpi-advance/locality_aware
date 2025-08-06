@@ -121,7 +121,7 @@ install(EXPORT mpiadvanceTargets
         DESTINATION share/mpiadvance)
 
 configure_package_config_file(
-  "${CMAKE_CURRENT_SOURCE_DIR}/cmake/locality_aware.cmake.in"
+  "${CMAKE_CURRENT_SOURCE_DIR}/cmake/locality_aware-config.cmake.in"
   "${CMAKE_CURRENT_BINARY_DIR}/mpiadvance-config.cmake"
   INSTALL_DESTINATION share/mpiadvance)
 
