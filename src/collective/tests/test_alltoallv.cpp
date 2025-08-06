@@ -42,9 +42,9 @@ int main(int argc, char** argv)
     std::vector<int> sizes(num_procs);
     std::vector<int> displs(num_procs+1);
 
-    MPIX_Comm* xcomm;
-    MPIX_Comm_init(&xcomm, MPI_COMM_WORLD);
-    update_locality(xcomm, 4);
+    //MPIX_Comm* xcomm;
+    //MPIX_Comm_init(&xcomm, MPI_COMM_WORLD);
+    //update_locality(xcomm, 4);
 
     for (int i = 0; i < max_i; i++)
     {
@@ -59,7 +59,7 @@ int main(int argc, char** argv)
             displs[j+1] = displs[j] + s;
         }
 
-        /*
+        
         MPI_Alltoallv(local_data.data(), 
                 sizes.data(),
                 displs.data(),
@@ -69,7 +69,9 @@ int main(int argc, char** argv)
                 displs.data(),
                 MPI_INT,
                 MPI_COMM_WORLD);
+        MPI_Barrier(MPI_COMM_WORLD);
 
+/*
         
         std::fill(mpix_alltoallv.begin(), mpix_alltoallv.end(), 0);
         MPIX_Alltoallv(local_data.data(), 
@@ -135,7 +137,7 @@ int main(int argc, char** argv)
         */
     }
 
-    MPIX_Comm_free(&xcomm);
+    //MPIX_Comm_free(&xcomm);
 
 
     MPI_Finalize();
