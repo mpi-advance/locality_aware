@@ -42,8 +42,8 @@ int main(int argc, char** argv)
 
     std::vector<int> sendcounts(num_procs);
     std::vector<int> recvcounts(num_procs);
-    std::vector<int> sdispls(num_procs+1);
-    std::vector<int> rdispls(num_procs+1);
+    std::vector<int> sdispls(num_procs);
+    std::vector<int> rdispls(num_procs);
 
     MPIX_Comm* xcomm;
     MPIX_Comm_init(&xcomm, MPI_COMM_WORLD);
@@ -53,17 +53,22 @@ int main(int argc, char** argv)
     {
         int s = pow(2, i);
 
+
         // Will only be clean for up to double digit process counts
-        sdispls[0] = 0;
-        rdispls[0] = 0;
         for (int j = 0; j < num_procs; j++)
         {
             for (int k = 0; k < s; k++)
                 local_data[j*s + k] = rank*10000 + j*100 + k;
             sendcounts[j] = s;
             recvcounts[j] = s;
-            sdispls[j+1] = sdispls[j] + s;
-            rdispls[j+1] = rdispls[j] + s;
+        }
+
+        sdispls[0] = 0;
+        rdispls[0] = 0;
+        for (int j = 1; j < num_procs; j++)
+        {
+            sdispls[j] = sdispls[j-1] + s;
+            rdispls[j] = rdispls[j-1] + s;
         }
 
 
