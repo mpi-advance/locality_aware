@@ -1,0 +1,300 @@
+[gpua021.delta.ncsa.illinois.edu:2762244] mca: base: components_register: registering framework ras components
+[gpua021.delta.ncsa.illinois.edu:2762244] mca: base: components_register: found loaded component simulator
+[gpua021.delta.ncsa.illinois.edu:2762244] mca: base: components_register: component simulator register function successful
+[gpua021.delta.ncsa.illinois.edu:2762244] mca: base: components_register: found loaded component slurm
+[gpua021.delta.ncsa.illinois.edu:2762244] mca: base: components_register: component slurm register function successful
+[gpua021.delta.ncsa.illinois.edu:2762244] mca: base: components_open: opening ras components
+[gpua021.delta.ncsa.illinois.edu:2762244] mca: base: components_open: found loaded component simulator
+[gpua021.delta.ncsa.illinois.edu:2762244] mca: base: components_open: found loaded component slurm
+[gpua021.delta.ncsa.illinois.edu:2762244] mca: base: components_open: component slurm open function successful
+[gpua021.delta.ncsa.illinois.edu:2762244] mca:base:select: Auto-selecting ras components
+[gpua021.delta.ncsa.illinois.edu:2762244] mca:base:select:(  ras) Querying component [simulator]
+[gpua021.delta.ncsa.illinois.edu:2762244] mca:base:select:(  ras) Querying component [slurm]
+[gpua021.delta.ncsa.illinois.edu:2762244] mca:base:select:(  ras) Query of component [slurm] set priority to 50
+[gpua021.delta.ncsa.illinois.edu:2762244] mca:base:select:(  ras) Selected component [slurm]
+[gpua021.delta.ncsa.illinois.edu:2762244] mca: base: close: unloading component simulator
+[gpua021.delta.ncsa.illinois.edu:2762244] MCW rank 0 bound to socket 0[core 0[hwt 0]]: [B/././././././././././././././././././././././././././././././././././././././././././././././././././././././././././././././.]
+[gpua021.delta.ncsa.illinois.edu:2762244] MCW rank 1 bound to socket 0[core 1[hwt 0]]: [./B/./././././././././././././././././././././././././././././././././././././././././././././././././././././././././././././.]
+[gpua021.delta.ncsa.illinois.edu:2762244] MCW rank 2 bound to socket 0[core 2[hwt 0]]: [././B/././././././././././././././././././././././././././././././././././././././././././././././././././././././././././././.]
+[gpua021.delta.ncsa.illinois.edu:2762244] MCW rank 3 bound to socket 0[core 3[hwt 0]]: [./././B/./././././././././././././././././././././././././././././././././././././././././././././././././././././././././././.]
+[gpua021.delta.ncsa.illinois.edu:2762244] MCW rank 4 bound to socket 0[core 4[hwt 0]]: [././././B/././././././././././././././././././././././././././././././././././././././././././././././././././././././././././.]
+[gpua021.delta.ncsa.illinois.edu:2762244] MCW rank 5 bound to socket 0[core 5[hwt 0]]: [./././././B/./././././././././././././././././././././././././././././././././././././././././././././././././././././././././.]
+[gpua021.delta.ncsa.illinois.edu:2762244] MCW rank 6 bound to socket 0[core 6[hwt 0]]: [././././././B/././././././././././././././././././././././././././././././././././././././././././././././././././././././././.]
+[gpua021.delta.ncsa.illinois.edu:2762244] MCW rank 7 bound to socket 0[core 7[hwt 0]]: [./././././././B/./././././././././././././././././././././././././././././././././././././././././././././././././././././././.]
+[gpua021.delta.ncsa.illinois.edu:2762244] MCW rank 9 bound to socket 0[core 9[hwt 0]]: [./././././././././B/./././././././././././././././././././././././././././././././././././././././././././././././././././././.]
+[gpua021.delta.ncsa.illinois.edu:2762244] MCW rank 11 bound to socket 0[core 11[hwt 0]]: [./././././././././././B/./././././././././././././././././././././././././././././././././././././././././././././././././././.]
+[gpua021.delta.ncsa.illinois.edu:2762244] MCW rank 13 bound to socket 0[core 13[hwt 0]]: [./././././././././././././B/./././././././././././././././././././././././././././././././././././././././././././././././././.]
+[gpua021.delta.ncsa.illinois.edu:2762244] MCW rank 15 bound to socket 0[core 15[hwt 0]]: [./././././././././././././././B/./././././././././././././././././././././././././././././././././././././././././././././././.]
+[gpua021.delta.ncsa.illinois.edu:2762244] MCW rank 8 bound to socket 0[core 8[hwt 0]]: [././././././././B/././././././././././././././././././././././././././././././././././././././././././././././././././././././.]
+[gpua021.delta.ncsa.illinois.edu:2762244] MCW rank 10 bound to socket 0[core 10[hwt 0]]: [././././././././././B/././././././././././././././././././././././././././././././././././././././././././././././././././././.]
+[gpua021.delta.ncsa.illinois.edu:2762244] MCW rank 17 bound to socket 0[core 17[hwt 0]]: [./././././././././././././././././B/./././././././././././././././././././././././././././././././././././././././././././././.]
+[gpua021.delta.ncsa.illinois.edu:2762244] MCW rank 19 bound to socket 0[core 19[hwt 0]]: [./././././././././././././././././././B/./././././././././././././././././././././././././././././././././././././././././././.]
+[gpua021.delta.ncsa.illinois.edu:2762244] MCW rank 12 bound to socket 0[core 12[hwt 0]]: [././././././././././././B/././././././././././././././././././././././././././././././././././././././././././././././././././.]
+[gpua021.delta.ncsa.illinois.edu:2762244] MCW rank 14 bound to socket 0[core 14[hwt 0]]: [././././././././././././././B/././././././././././././././././././././././././././././././././././././././././././././././././.]
+[gpua021.delta.ncsa.illinois.edu:2762244] MCW rank 21 bound to socket 0[core 21[hwt 0]]: [./././././././././././././././././././././B/./././././././././././././././././././././././././././././././././././././././././.]
+[gpua021.delta.ncsa.illinois.edu:2762244] MCW rank 23 bound to socket 0[core 23[hwt 0]]: [./././././././././././././././././././././././B/./././././././././././././././././././././././././././././././././././././././.]
+[gpua021.delta.ncsa.illinois.edu:2762244] MCW rank 16 bound to socket 0[core 16[hwt 0]]: [././././././././././././././././B/././././././././././././././././././././././././././././././././././././././././././././././.]
+[gpua021.delta.ncsa.illinois.edu:2762244] MCW rank 18 bound to socket 0[core 18[hwt 0]]: [././././././././././././././././././B/././././././././././././././././././././././././././././././././././././././././././././.]
+[gpua021.delta.ncsa.illinois.edu:2762244] MCW rank 25 bound to socket 0[core 25[hwt 0]]: [./././././././././././././././././././././././././B/./././././././././././././././././././././././././././././././././././././.]
+[gpua021.delta.ncsa.illinois.edu:2762244] MCW rank 27 bound to socket 0[core 27[hwt 0]]: [./././././././././././././././././././././././././././B/./././././././././././././././././././././././././././././././././././.]
+[gpua021.delta.ncsa.illinois.edu:2762244] MCW rank 20 bound to socket 0[core 20[hwt 0]]: [././././././././././././././././././././B/././././././././././././././././././././././././././././././././././././././././././.]
+[gpua021.delta.ncsa.illinois.edu:2762244] MCW rank 22 bound to socket 0[core 22[hwt 0]]: [././././././././././././././././././././././B/././././././././././././././././././././././././././././././././././././././././.]
+[gpua021.delta.ncsa.illinois.edu:2762244] MCW rank 29 bound to socket 0[core 29[hwt 0]]: [./././././././././././././././././././././././././././././B/./././././././././././././././././././././././././././././././././.]
+[gpua021.delta.ncsa.illinois.edu:2762244] MCW rank 31 bound to socket 0[core 31[hwt 0]]: [./././././././././././././././././././././././././././././././B/./././././././././././././././././././././././././././././././.]
+[gpua021.delta.ncsa.illinois.edu:2762244] MCW rank 33 bound to socket 0[core 33[hwt 0]]: [./././././././././././././././././././././././././././././././././B/./././././././././././././././././././././././././././././.]
+[gpua021.delta.ncsa.illinois.edu:2762244] MCW rank 35 bound to socket 0[core 35[hwt 0]]: [./././././././././././././././././././././././././././././././././././B/./././././././././././././././././././././././././././.]
+[gpua021.delta.ncsa.illinois.edu:2762244] MCW rank 26 bound to socket 0[core 26[hwt 0]]: [././././././././././././././././././././././././././B/././././././././././././././././././././././././././././././././././././.]
+[gpua021.delta.ncsa.illinois.edu:2762244] MCW rank 24 bound to socket 0[core 24[hwt 0]]: [././././././././././././././././././././././././B/././././././././././././././././././././././././././././././././././././././.]
+[gpua021.delta.ncsa.illinois.edu:2762244] MCW rank 30 bound to socket 0[core 30[hwt 0]]: [././././././././././././././././././././././././././././././B/././././././././././././././././././././././././././././././././.]
+[gpua021.delta.ncsa.illinois.edu:2762244] MCW rank 39 bound to socket 0[core 39[hwt 0]]: [./././././././././././././././././././././././././././././././././././././././B/./././././././././././././././././././././././.]
+[gpua021.delta.ncsa.illinois.edu:2762244] MCW rank 28 bound to socket 0[core 28[hwt 0]]: [././././././././././././././././././././././././././././B/././././././././././././././././././././././././././././././././././.]
+[gpua021.delta.ncsa.illinois.edu:2762244] MCW rank 37 bound to socket 0[core 37[hwt 0]]: [./././././././././././././././././././././././././././././././././././././B/./././././././././././././././././././././././././.]
+[gpua021.delta.ncsa.illinois.edu:2762244] MCW rank 34 bound to socket 0[core 34[hwt 0]]: [././././././././././././././././././././././././././././././././././B/././././././././././././././././././././././././././././.]
+[gpua021.delta.ncsa.illinois.edu:2762244] MCW rank 43 bound to socket 0[core 43[hwt 0]]: [./././././././././././././././././././././././././././././././././././././././././././B/./././././././././././././././././././.]
+[gpua021.delta.ncsa.illinois.edu:2762244] MCW rank 32 bound to socket 0[core 32[hwt 0]]: [././././././././././././././././././././././././././././././././B/././././././././././././././././././././././././././././././.]
+[gpua021.delta.ncsa.illinois.edu:2762244] MCW rank 41 bound to socket 0[core 41[hwt 0]]: [./././././././././././././././././././././././././././././././././././././././././B/./././././././././././././././././././././.]
+[gpua021.delta.ncsa.illinois.edu:2762244] MCW rank 38 bound to socket 0[core 38[hwt 0]]: [././././././././././././././././././././././././././././././././././././././B/././././././././././././././././././././././././.]
+[gpua021.delta.ncsa.illinois.edu:2762244] MCW rank 36 bound to socket 0[core 36[hwt 0]]: [././././././././././././././././././././././././././././././././././././B/././././././././././././././././././././././././././.]
+[gpua021.delta.ncsa.illinois.edu:2762244] MCW rank 47 bound to socket 0[core 47[hwt 0]]: [./././././././././././././././././././././././././././././././././././././././././././././././B/./././././././././././././././.]
+[gpua021.delta.ncsa.illinois.edu:2762244] MCW rank 42 bound to socket 0[core 42[hwt 0]]: [././././././././././././././././././././././././././././././././././././././././././B/././././././././././././././././././././.]
+[gpua021.delta.ncsa.illinois.edu:2762244] MCW rank 45 bound to socket 0[core 45[hwt 0]]: [./././././././././././././././././././././././././././././././././././././././././././././B/./././././././././././././././././.]
+[gpua087.delta.ncsa.illinois.edu:2659346] MCW rank 76 bound to socket 0[core 12[hwt 0]]: [././././././././././././B/././././././././././././././././././././././././././././././././././././././././././././././././././.]
+[gpua087.delta.ncsa.illinois.edu:2659346] MCW rank 77 bound to socket 0[core 13[hwt 0]]: [./././././././././././././B/./././././././././././././././././././././././././././././././././././././././././././././././././.]
+[gpua087.delta.ncsa.illinois.edu:2659346] MCW rank 78 bound to socket 0[core 14[hwt 0]]: [././././././././././././././B/././././././././././././././././././././././././././././././././././././././././././././././././.]
+[gpua087.delta.ncsa.illinois.edu:2659346] MCW rank 79 bound to socket 0[core 15[hwt 0]]: [./././././././././././././././B/./././././././././././././././././././././././././././././././././././././././././././././././.]
+[gpua087.delta.ncsa.illinois.edu:2659346] MCW rank 80 bound to socket 0[core 16[hwt 0]]: [././././././././././././././././B/././././././././././././././././././././././././././././././././././././././././././././././.]
+[gpua087.delta.ncsa.illinois.edu:2659346] MCW rank 81 bound to socket 0[core 17[hwt 0]]: [./././././././././././././././././B/./././././././././././././././././././././././././././././././././././././././././././././.]
+[gpua021.delta.ncsa.illinois.edu:2762244] MCW rank 49 bound to socket 0[core 49[hwt 0]]: [./././././././././././././././././././././././././././././././././././././././././././././././././B/./././././././././././././.]
+[gpua021.delta.ncsa.illinois.edu:2762244] MCW rank 51 bound to socket 0[core 51[hwt 0]]: [./././././././././././././././././././././././././././././././././././././././././././././././././././B/./././././././././././.]
+[gpua087.delta.ncsa.illinois.edu:2659346] MCW rank 82 bound to socket 0[core 18[hwt 0]]: [././././././././././././././././././B/././././././././././././././././././././././././././././././././././././././././././././.]
+[gpua087.delta.ncsa.illinois.edu:2659346] MCW rank 83 bound to socket 0[core 19[hwt 0]]: [./././././././././././././././././././B/./././././././././././././././././././././././././././././././././././././././././././.]
+[gpua087.delta.ncsa.illinois.edu:2659346] MCW rank 84 bound to socket 0[core 20[hwt 0]]: [././././././././././././././././././././B/././././././././././././././././././././././././././././././././././././././././././.]
+[gpua021.delta.ncsa.illinois.edu:2762244] MCW rank 46 bound to socket 0[core 46[hwt 0]]: [././././././././././././././././././././././././././././././././././././././././././././././B/././././././././././././././././.]
+[gpua087.delta.ncsa.illinois.edu:2659346] MCW rank 85 bound to socket 0[core 21[hwt 0]]: [./././././././././././././././././././././B/./././././././././././././././././././././././././././././././././././././././././.]
+[gpua087.delta.ncsa.illinois.edu:2659346] MCW rank 86 bound to socket 0[core 22[hwt 0]]: [././././././././././././././././././././././B/././././././././././././././././././././././././././././././././././././././././.]
+[gpua087.delta.ncsa.illinois.edu:2659346] MCW rank 87 bound to socket 0[core 23[hwt 0]]: [./././././././././././././././././././././././B/./././././././././././././././././././././././././././././././././././././././.]
+[gpua087.delta.ncsa.illinois.edu:2659346] MCW rank 88 bound to socket 0[core 24[hwt 0]]: [././././././././././././././././././././././././B/././././././././././././././././././././././././././././././././././././././.]
+[gpua087.delta.ncsa.illinois.edu:2659346] MCW rank 89 bound to socket 0[core 25[hwt 0]]: [./././././././././././././././././././././././././B/./././././././././././././././././././././././././././././././././././././.]
+[gpua087.delta.ncsa.illinois.edu:2659346] MCW rank 90 bound to socket 0[core 26[hwt 0]]: [././././././././././././././././././././././././././B/././././././././././././././././././././././././././././././././././././.]
+[gpua087.delta.ncsa.illinois.edu:2659346] MCW rank 91 bound to socket 0[core 27[hwt 0]]: [./././././././././././././././././././././././././././B/./././././././././././././././././././././././././././././././././././.]
+[gpua087.delta.ncsa.illinois.edu:2659346] MCW rank 92 bound to socket 0[core 28[hwt 0]]: [././././././././././././././././././././././././././././B/././././././././././././././././././././././././././././././././././.]
+[gpua087.delta.ncsa.illinois.edu:2659346] MCW rank 95 bound to socket 0[core 31[hwt 0]]: [./././././././././././././././././././././././././././././././B/./././././././././././././././././././././././././././././././.]
+[gpua087.delta.ncsa.illinois.edu:2659346] MCW rank 64 bound to socket 0[core 0[hwt 0]]: [B/././././././././././././././././././././././././././././././././././././././././././././././././././././././././././././././.]
+[gpua087.delta.ncsa.illinois.edu:2659346] MCW rank 65 bound to socket 0[core 1[hwt 0]]: [./B/./././././././././././././././././././././././././././././././././././././././././././././././././././././././././././././.]
+[gpua087.delta.ncsa.illinois.edu:2659346] MCW rank 66 bound to socket 0[core 2[hwt 0]]: [././B/././././././././././././././././././././././././././././././././././././././././././././././././././././././././././././.]
+[gpua087.delta.ncsa.illinois.edu:2659346] MCW rank 67 bound to socket 0[core 3[hwt 0]]: [./././B/./././././././././././././././././././././././././././././././././././././././././././././././././././././././././././.]
+[gpua087.delta.ncsa.illinois.edu:2659346] MCW rank 68 bound to socket 0[core 4[hwt 0]]: [././././B/././././././././././././././././././././././././././././././././././././././././././././././././././././././././././.]
+[gpua087.delta.ncsa.illinois.edu:2659346] MCW rank 69 bound to socket 0[core 5[hwt 0]]: [./././././B/./././././././././././././././././././././././././././././././././././././././././././././././././././././././././.]
+[gpua087.delta.ncsa.illinois.edu:2659346] MCW rank 70 bound to socket 0[core 6[hwt 0]]: [././././././B/././././././././././././././././././././././././././././././././././././././././././././././././././././././././.]
+[gpua087.delta.ncsa.illinois.edu:2659346] MCW rank 71 bound to socket 0[core 7[hwt 0]]: [./././././././B/./././././././././././././././././././././././././././././././././././././././././././././././././././././././.]
+[gpua087.delta.ncsa.illinois.edu:2659346] MCW rank 72 bound to socket 0[core 8[hwt 0]]: [././././././././B/././././././././././././././././././././././././././././././././././././././././././././././././././././././.]
+[gpua087.delta.ncsa.illinois.edu:2659346] MCW rank 73 bound to socket 0[core 9[hwt 0]]: [./././././././././B/./././././././././././././././././././././././././././././././././././././././././././././././././././././.]
+[gpua087.delta.ncsa.illinois.edu:2659346] MCW rank 74 bound to socket 0[core 10[hwt 0]]: [././././././././././B/././././././././././././././././././././././././././././././././././././././././././././././././././././.]
+[gpua087.delta.ncsa.illinois.edu:2659346] MCW rank 75 bound to socket 0[core 11[hwt 0]]: [./././././././././././B/./././././././././././././././././././././././././././././././././././././././././././././././././././.]
+[gpua087.delta.ncsa.illinois.edu:2659346] MCW rank 93 bound to socket 0[core 29[hwt 0]]: [./././././././././././././././././././././././././././././B/./././././././././././././././././././././././././././././././././.]
+[gpua087.delta.ncsa.illinois.edu:2659346] MCW rank 94 bound to socket 0[core 30[hwt 0]]: [././././././././././././././././././././././././././././././B/././././././././././././././././././././././././././././././././.]
+[gpua087.delta.ncsa.illinois.edu:2659346] MCW rank 96 bound to socket 0[core 32[hwt 0]]: [././././././././././././././././././././././././././././././././B/././././././././././././././././././././././././././././././.]
+[gpua087.delta.ncsa.illinois.edu:2659346] MCW rank 99 bound to socket 0[core 35[hwt 0]]: [./././././././././././././././././././././././././././././././././././B/./././././././././././././././././././././././././././.]
+[gpua087.delta.ncsa.illinois.edu:2659346] MCW rank 98 bound to socket 0[core 34[hwt 0]]: [././././././././././././././././././././././././././././././././././B/././././././././././././././././././././././././././././.]
+[gpua021.delta.ncsa.illinois.edu:2762244] MCW rank 40 bound to socket 0[core 40[hwt 0]]: [././././././././././././././././././././././././././././././././././././././././B/././././././././././././././././././././././.]
+[gpua087.delta.ncsa.illinois.edu:2659346] MCW rank 100 bound to socket 0[core 36[hwt 0]]: [././././././././././././././././././././././././././././././././././././B/././././././././././././././././././././././././././.]
+[gpua087.delta.ncsa.illinois.edu:2659346] MCW rank 97 bound to socket 0[core 33[hwt 0]]: [./././././././././././././././././././././././././././././././././B/./././././././././././././././././././././././././././././.]
+[gpua087.delta.ncsa.illinois.edu:2659346] MCW rank 103 bound to socket 0[core 39[hwt 0]]: [./././././././././././././././././././././././././././././././././././././././B/./././././././././././././././././././././././.]
+[gpua087.delta.ncsa.illinois.edu:2659346] MCW rank 102 bound to socket 0[core 38[hwt 0]]: [././././././././././././././././././././././././././././././././././././././B/././././././././././././././././././././././././.]
+[gpua087.delta.ncsa.illinois.edu:2659346] MCW rank 104 bound to socket 0[core 40[hwt 0]]: [././././././././././././././././././././././././././././././././././././././././B/././././././././././././././././././././././.]
+[gpua087.delta.ncsa.illinois.edu:2659346] MCW rank 101 bound to socket 0[core 37[hwt 0]]: [./././././././././././././././././././././././././././././././././././././B/./././././././././././././././././././././././././.]
+[gpua087.delta.ncsa.illinois.edu:2659346] MCW rank 107 bound to socket 0[core 43[hwt 0]]: [./././././././././././././././././././././././././././././././././././././././././././B/./././././././././././././././././././.]
+[gpua087.delta.ncsa.illinois.edu:2659346] MCW rank 106 bound to socket 0[core 42[hwt 0]]: [././././././././././././././././././././././././././././././././././././././././././B/././././././././././././././././././././.]
+[gpua087.delta.ncsa.illinois.edu:2659346] MCW rank 108 bound to socket 0[core 44[hwt 0]]: [././././././././././././././././././././././././././././././././././././././././././././B/././././././././././././././././././.]
+[gpua021.delta.ncsa.illinois.edu:2762244] MCW rank 53 bound to socket 0[core 53[hwt 0]]: [./././././././././././././././././././././././././././././././././././././././././././././././././././././B/./././././././././.]
+[gpua021.delta.ncsa.illinois.edu:2762244] MCW rank 55 bound to socket 0[core 55[hwt 0]]: [./././././././././././././././././././././././././././././././././././././././././././././././././././././././B/./././././././.]
+[gpua087.delta.ncsa.illinois.edu:2659346] MCW rank 111 bound to socket 0[core 47[hwt 0]]: [./././././././././././././././././././././././././././././././././././././././././././././././B/./././././././././././././././.]
+[gpua021.delta.ncsa.illinois.edu:2762244] MCW rank 50 bound to socket 0[core 50[hwt 0]]: [././././././././././././././././././././././././././././././././././././././././././././././././././B/././././././././././././.]
+[gpua087.delta.ncsa.illinois.edu:2659346] MCW rank 105 bound to socket 0[core 41[hwt 0]]: [./././././././././././././././././././././././././././././././././././././././././B/./././././././././././././././././././././.]
+[gpua087.delta.ncsa.illinois.edu:2659346] MCW rank 110 bound to socket 0[core 46[hwt 0]]: [././././././././././././././././././././././././././././././././././././././././././././././B/././././././././././././././././.]
+[gpua021.delta.ncsa.illinois.edu:2762244] MCW rank 44 bound to socket 0[core 44[hwt 0]]: [././././././././././././././././././././././././././././././././././././././././././././B/././././././././././././././././././.]
+[gpua087.delta.ncsa.illinois.edu:2659346] MCW rank 112 bound to socket 0[core 48[hwt 0]]: [././././././././././././././././././././././././././././././././././././././././././././././././B/././././././././././././././.]
+[gpua087.delta.ncsa.illinois.edu:2659346] MCW rank 115 bound to socket 0[core 51[hwt 0]]: [./././././././././././././././././././././././././././././././././././././././././././././././././././B/./././././././././././.]
+[gpua087.delta.ncsa.illinois.edu:2659346] MCW rank 109 bound to socket 0[core 45[hwt 0]]: [./././././././././././././././././././././././././././././././././././././././././././././B/./././././././././././././././././.]
+[gpua087.delta.ncsa.illinois.edu:2659346] MCW rank 114 bound to socket 0[core 50[hwt 0]]: [././././././././././././././././././././././././././././././././././././././././././././././././././B/././././././././././././.]
+[gpua087.delta.ncsa.illinois.edu:2659346] MCW rank 116 bound to socket 0[core 52[hwt 0]]: [././././././././././././././././././././././././././././././././././././././././././././././././././././B/././././././././././.]
+[gpua021.delta.ncsa.illinois.edu:2762244] MCW rank 57 bound to socket 0[core 57[hwt 0]]: [./././././././././././././././././././././././././././././././././././././././././././././././././././././././././B/./././././.]
+[gpua021.delta.ncsa.illinois.edu:2762244] MCW rank 59 bound to socket 0[core 59[hwt 0]]: [./././././././././././././././././././././././././././././././././././././././././././././././././././././././././././B/./././.]
+[gpua087.delta.ncsa.illinois.edu:2659346] MCW rank 119 bound to socket 0[core 55[hwt 0]]: [./././././././././././././././././././././././././././././././././././././././././././././././././././././././B/./././././././.]
+[gpua021.delta.ncsa.illinois.edu:2762244] MCW rank 48 bound to socket 0[core 48[hwt 0]]: [././././././././././././././././././././././././././././././././././././././././././././././././B/././././././././././././././.]
+[gpua087.delta.ncsa.illinois.edu:2659346] MCW rank 118 bound to socket 0[core 54[hwt 0]]: [././././././././././././././././././././././././././././././././././././././././././././././././././././././B/././././././././.]
+[gpua087.delta.ncsa.illinois.edu:2659346] MCW rank 113 bound to socket 0[core 49[hwt 0]]: [./././././././././././././././././././././././././././././././././././././././././././././././././B/./././././././././././././.]
+[gpua087.delta.ncsa.illinois.edu:2659346] MCW rank 123 bound to socket 0[core 59[hwt 0]]: [./././././././././././././././././././././././././././././././././././././././././././././././././././././././././././B/./././.]
+[gpua087.delta.ncsa.illinois.edu:2659346] MCW rank 122 bound to socket 0[core 58[hwt 0]]: [././././././././././././././././././././././././././././././././././././././././././././././././././././././././././B/././././.]
+[gpua087.delta.ncsa.illinois.edu:2659346] MCW rank 120 bound to socket 0[core 56[hwt 0]]: [././././././././././././././././././././././././././././././././././././././././././././././././././././././././B/././././././.]
+[gpua087.delta.ncsa.illinois.edu:2659346] MCW rank 117 bound to socket 0[core 53[hwt 0]]: [./././././././././././././././././././././././././././././././././././././././././././././././././././././B/./././././././././.]
+[gpua087.delta.ncsa.illinois.edu:2659346] MCW rank 126 bound to socket 0[core 62[hwt 0]]: [././././././././././././././././././././././././././././././././././././././././././././././././././././././././././././././B/.]
+[gpua087.delta.ncsa.illinois.edu:2659346] MCW rank 124 bound to socket 0[core 60[hwt 0]]: [././././././././././././././././././././././././././././././././././././././././././././././././././././././././././././B/././.]
+[gpua021.delta.ncsa.illinois.edu:2762244] MCW rank 54 bound to socket 0[core 54[hwt 0]]: [././././././././././././././././././././././././././././././././././././././././././././././././././././././B/././././././././.]
+[gpua087.delta.ncsa.illinois.edu:2659346] MCW rank 127 bound to socket 0[core 63[hwt 0]]: [./././././././././././././././././././././././././././././././././././././././././././././././././././././././././././././././B]
+[gpua087.delta.ncsa.illinois.edu:2659346] MCW rank 121 bound to socket 0[core 57[hwt 0]]: [./././././././././././././././././././././././././././././././././././././././././././././././././././././././././B/./././././.]
+[gpua087.delta.ncsa.illinois.edu:2659346] MCW rank 125 bound to socket 0[core 61[hwt 0]]: [./././././././././././././././././././././././././././././././././././././././././././././././././././././././././././././B/./.]
+[gpua021.delta.ncsa.illinois.edu:2762244] MCW rank 61 bound to socket 0[core 61[hwt 0]]: [./././././././././././././././././././././././././././././././././././././././././././././././././././././././././././././B/./.]
+[gpua021.delta.ncsa.illinois.edu:2762244] MCW rank 63 bound to socket 0[core 63[hwt 0]]: [./././././././././././././././././././././././././././././././././././././././././././././././././././././././././././././././B]
+[gpua021.delta.ncsa.illinois.edu:2762244] MCW rank 58 bound to socket 0[core 58[hwt 0]]: [././././././././././././././././././././././././././././././././././././././././././././././././././././././././././B/././././.]
+[gpua021.delta.ncsa.illinois.edu:2762244] MCW rank 52 bound to socket 0[core 52[hwt 0]]: [././././././././././././././././././././././././././././././././././././././././././././././././././././B/././././././././././.]
+[gpua021.delta.ncsa.illinois.edu:2762244] MCW rank 62 bound to socket 0[core 62[hwt 0]]: [././././././././././././././././././././././././././././././././././././././././././././././././././././././././././././././B/.]
+[gpua021.delta.ncsa.illinois.edu:2762244] MCW rank 56 bound to socket 0[core 56[hwt 0]]: [././././././././././././././././././././././././././././././././././././././././././././././././././././././././B/././././././.]
+[gpua021.delta.ncsa.illinois.edu:2762244] MCW rank 60 bound to socket 0[core 60[hwt 0]]: [././././././././././././././././././././././././././././././././././././././././././././././././././././././././././././B/././.]
+Rank 105: Node 41 of 9, Socket 1 of 10, NUMA 4 of 4, GPU 4215426 of 2034977992 visible (and 65535 per node)
+Rank 59: Node 59 of 11, Socket 3 of 14, NUMA 4 of 4, GPU 4215426 of -807998696 visible (and 65535 per node)
+Rank 63: Node 63 of 15, Socket 3 of 15, NUMA 4 of 4, GPU 4215426 of -2126166200 visible (and 65535 per node)
+Rank 109: Node 45 of 13, Socket 1 of 11, NUMA 4 of 4, GPU 4215426 of -1667102568 visible (and 65535 per node)
+Rank 56: Node 56 of 8, Socket 0 of 14, NUMA 4 of 4, GPU 4215426 of 1329306104 visible (and 65535 per node)
+Rank 115: Node 51 of 3, Socket 3 of 12, NUMA 4 of 4, GPU 4215426 of 469730264 visible (and 65535 per node)
+Rank 60: Node 60 of 12, Socket 0 of 15, NUMA 4 of 4, GPU 4215426 of 1412377944 visible (and 65535 per node)
+Rank 19: Node 19 of 3, Socket 3 of 4, NUMA 4 of 4, GPU 4215426 of -1026079848 visible (and 65535 per node)
+Rank 114: Node 50 of 2, Socket 2 of 12, NUMA 4 of 4, GPU 4215426 of -202499928 visible (and 65535 per node)
+Rank 57: Node 57 of 9, Socket 1 of 14, NUMA 4 of 4, GPU 4215426 of 962065336 visible (and 65535 per node)
+Rank 118: Node 54 of 6, Socket 2 of 13, NUMA 4 of 4, GPU 4215426 of -159083096 visible (and 65535 per node)
+Rank 116: Node 52 of 4, Socket 0 of 13, NUMA 4 of 4, GPU 4215426 of -1161007832 visible (and 65535 per node)
+Rank 117: Node 53 of 5, Socket 1 of 13, NUMA 4 of 4, GPU 4215426 of -1709797448 visible (and 65535 per node)
+Rank 112: Node 48 of 0, Socket 0 of 12, NUMA 4 of 4, GPU 4215426 of -613747752 visible (and 65535 per node)
+Rank 58: Node 58 of 10, Socket 2 of 14, NUMA 4 of 4, GPU 4215426 of -1649372664 visible (and 65535 per node)
+Rank 55: Node 55 of 7, Socket 3 of 13, NUMA 4 of 4, GPU 4215426 of 853981992 visible (and 65535 per node)
+Rank 111: Node 47 of 15, Socket 3 of 11, NUMA 4 of 4, GPU 4215426 of 1450085368 visible (and 65535 per node)
+Rank 50: Node 50 of 2, Socket 2 of 12, NUMA 4 of 4, GPU 4215426 of -967386616 visible (and 65535 per node)
+Rank 119: Node 55 of 7, Socket 3 of 13, NUMA 4 of 4, GPU 4215426 of -388495176 visible (and 65535 per node)
+Rank 61: Node 61 of 13, Socket 1 of 15, NUMA 4 of 4, GPU 4215426 of -1899344664 visible (and 65535 per node)
+Rank 52: Node 52 of 4, Socket 0 of 13, NUMA 4 of 4, GPU 4215426 of 1327130888 visible (and 65535 per node)
+Rank 45: Node 45 of 13, Socket 1 of 11, NUMA 4 of 4, GPU 4215426 of -510146632 visible (and 65535 per node)
+Rank 113: Node 49 of 1, Socket 1 of 12, NUMA 4 of 4, GPU 4215426 of 1517643432 visible (and 65535 per node)
+Rank 110: Node 46 of 14, Socket 2 of 11, NUMA 4 of 4, GPU 4215426 of -2117730104 visible (and 65535 per node)
+Rank 62: Node 62 of 14, Socket 2 of 15, NUMA 4 of 4, GPU 4215426 of -1583053944 visible (and 65535 per node)
+Rank 54: Node 54 of 6, Socket 2 of 13, NUMA 4 of 4, GPU 4215426 of 87167880 visible (and 65535 per node)
+Rank 48: Node 48 of 0, Socket 0 of 12, NUMA 4 of 4, GPU 4215426 of -1132256680 visible (and 65535 per node)
+Rank 82: Node 18 of 2, Socket 2 of 4, NUMA 4 of 4, GPU 4215426 of 420514856 visible (and 65535 per node)
+Rank 53: Node 53 of 5, Socket 1 of 13, NUMA 4 of 4, GPU 4215426 of -782017592 visible (and 65535 per node)
+Rank 34: Node 34 of 2, Socket 2 of 8, NUMA 4 of 4, GPU 4215426 of -1182809928 visible (and 65535 per node)
+Rank 36: Node 36 of 4, Socket 0 of 9, NUMA 4 of 4, GPU 4215426 of -778593992 visible (and 65535 per node)
+Rank 35: Node 35 of 3, Socket 3 of 8, NUMA 4 of 4, GPU 4215426 of -1392524920 visible (and 65535 per node)
+Rank 25: Node 25 of 9, Socket 1 of 6, NUMA 4 of 4, GPU 4215426 of 1483457256 visible (and 65535 per node)
+Rank 104: Node 40 of 8, Socket 0 of 10, NUMA 4 of 4, GPU 4215426 of -504773704 visible (and 65535 per node)
+Rank 79: Node 15 of 15, Socket 3 of 3, NUMA 4 of 4, GPU 4215426 of 261117736 visible (and 65535 per node)
+Rank 16: Node 16 of 0, Socket 0 of 4, NUMA 4 of 4, GPU 4215426 of 1287315848 visible (and 65535 per node)
+Rank 51: Node 51 of 3, Socket 3 of 12, NUMA 4 of 4, GPU 4215426 of 1038469736 visible (and 65535 per node)
+Rank 9: Node 9 of 9, Socket 1 of 2, NUMA 4 of 4, GPU 4215426 of -1379544440 visible (and 65535 per node)
+Rank 42: Node 42 of 10, Socket 2 of 10, NUMA 4 of 4, GPU 4215426 of 2055478856 visible (and 65535 per node)
+Rank 40: Node 40 of 8, Socket 0 of 10, NUMA 4 of 4, GPU 4215426 of -834687912 visible (and 65535 per node)
+Rank 41: Node 41 of 9, Socket 1 of 10, NUMA 4 of 4, GPU 4215426 of 734528696 visible (and 65535 per node)
+Rank 44: Node 44 of 12, Socket 0 of 11, NUMA 4 of 4, GPU 4215426 of -1619051928 visible (and 65535 per node)
+Rank 69: Node 5 of 5, Socket 1 of 1, NUMA 4 of 4, GPU 4215426 of 1145616168 visible (and 65535 per node)
+Rank 108: Node 44 of 12, Socket 0 of 11, NUMA 4 of 4, GPU 4215426 of 705211864 visible (and 65535 per node)
+Rank 70: Node 6 of 6, Socket 2 of 1, NUMA 4 of 4, GPU 4215426 of 1825985208 visible (and 65535 per node)
+Rank 93: Node 29 of 13, Socket 1 of 7, NUMA 4 of 4, GPU 4215426 of 20607976 visible (and 65535 per node)
+Rank 123: Node 59 of 11, Socket 3 of 14, NUMA 4 of 4, GPU 4215426 of 579813816 visible (and 65535 per node)
+Rank 125: Node 61 of 13, Socket 1 of 15, NUMA 4 of 4, GPU 4215426 of 858968040 visible (and 65535 per node)
+Rank 124: Node 60 of 12, Socket 0 of 15, NUMA 4 of 4, GPU 4215426 of -629831448 visible (and 65535 per node)
+Rank 120: Node 56 of 8, Socket 0 of 14, NUMA 4 of 4, GPU 4215426 of -1361148792 visible (and 65535 per node)
+Rank 126: Node 62 of 14, Socket 2 of 15, NUMA 4 of 4, GPU 4215426 of -1315470296 visible (and 65535 per node)
+Rank 121: Node 57 of 9, Socket 1 of 14, NUMA 4 of 4, GPU 4215426 of 1437527048 visible (and 65535 per node)
+Rank 49: Node 49 of 1, Socket 1 of 12, NUMA 4 of 4, GPU 4215426 of -34794808 visible (and 65535 per node)
+Rank 43: Node 43 of 11, Socket 3 of 10, NUMA 4 of 4, GPU 4215426 of 1419628792 visible (and 65535 per node)
+Rank 37: Node 37 of 5, Socket 1 of 9, NUMA 4 of 4, GPU 4215426 of 293534728 visible (and 65535 per node)
+Rank 38: Node 38 of 6, Socket 2 of 9, NUMA 4 of 4, GPU 4215426 of -1806643480 visible (and 65535 per node)
+Rank 26: Node 26 of 10, Socket 2 of 6, NUMA 4 of 4, GPU 4215426 of 450674232 visible (and 65535 per node)
+Rank 27: Node 27 of 11, Socket 3 of 6, NUMA 4 of 4, GPU 4215426 of -396121784 visible (and 65535 per node)
+Rank 30: Node 30 of 14, Socket 2 of 7, NUMA 4 of 4, GPU 4215426 of 1222465704 visible (and 65535 per node)
+Rank 28: Node 28 of 12, Socket 0 of 7, NUMA 4 of 4, GPU 4215426 of 1483652456 visible (and 65535 per node)
+Rank 24: Node 24 of 8, Socket 0 of 6, NUMA 4 of 4, GPU 4215426 of 1423795928 visible (and 65535 per node)
+Rank 47: Node 47 of 15, Socket 3 of 11, NUMA 4 of 4, GPU 4215426 of -326310376 visible (and 65535 per node)
+Rank 8: Node 8 of 8, Socket 0 of 2, NUMA 4 of 4, GPU 4215426 of 1721881512 visible (and 65535 per node)
+Rank 66: Node 2 of 2, Socket 2 of 0, NUMA 4 of 4, GPU 4215426 of 1924602264 visible (and 65535 per node)
+Rank 106: Node 42 of 10, Socket 2 of 10, NUMA 4 of 4, GPU 4215426 of 1227846056 visible (and 65535 per node)
+Rank 80: Node 16 of 0, Socket 0 of 4, NUMA 4 of 4, GPU 4215426 of -1721913048 visible (and 65535 per node)
+Rank 85: Node 21 of 5, Socket 1 of 5, NUMA 4 of 4, GPU 4215426 of 1668464344 visible (and 65535 per node)
+Rank 87: Node 23 of 7, Socket 3 of 5, NUMA 4 of 4, GPU 4215426 of 1048297064 visible (and 65535 per node)
+Rank 127: Node 63 of 15, Socket 3 of 15, NUMA 4 of 4, GPU 4215426 of -446364504 visible (and 65535 per node)
+Rank 98: Node 34 of 2, Socket 2 of 8, NUMA 4 of 4, GPU 4215426 of -285518776 visible (and 65535 per node)
+Rank 102: Node 38 of 6, Socket 2 of 9, NUMA 4 of 4, GPU 4215426 of 2012762232 visible (and 65535 per node)
+Rank 77: Node 13 of 13, Socket 1 of 3, NUMA 4 of 4, GPU 4215426 of -1671208344 visible (and 65535 per node)
+Rank 83: Node 19 of 3, Socket 3 of 4, NUMA 4 of 4, GPU 4215426 of 600366920 visible (and 65535 per node)
+Rank 23: Node 23 of 7, Socket 3 of 5, NUMA 4 of 4, GPU 4215426 of -838928872 visible (and 65535 per node)
+Rank 11: Node 11 of 11, Socket 3 of 2, NUMA 4 of 4, GPU 4215426 of -1110652616 visible (and 65535 per node)
+Rank 92: Node 28 of 12, Socket 0 of 7, NUMA 4 of 4, GPU 4215426 of -827372504 visible (and 65535 per node)
+Rank 22: Node 22 of 6, Socket 2 of 5, NUMA 4 of 4, GPU 4215426 of -892607672 visible (and 65535 per node)
+Rank 17: Node 17 of 1, Socket 1 of 4, NUMA 4 of 4, GPU 4215426 of -128745288 visible (and 65535 per node)
+Rank 0: Node 0 of 0, Socket 0 of 0, NUMA 4 of 4, GPU 4215426 of -21765320 visible (and 65535 per node)
+Rank 1: Node 1 of 1, Socket 1 of 0, NUMA 4 of 4, GPU 4215426 of -1955572584 visible (and 65535 per node)
+Rank 29: Node 29 of 13, Socket 1 of 7, NUMA 4 of 4, GPU 4215426 of -568464184 visible (and 65535 per node)
+Rank 33: Node 33 of 1, Socket 1 of 8, NUMA 4 of 4, GPU 4215426 of -166763224 visible (and 65535 per node)
+Rank 68: Node 4 of 4, Socket 0 of 1, NUMA 4 of 4, GPU 4215426 of 1361326440 visible (and 65535 per node)
+Rank 107: Node 43 of 11, Socket 3 of 10, NUMA 4 of 4, GPU 4215426 of -916250760 visible (and 65535 per node)
+Rank 31: Node 31 of 15, Socket 3 of 7, NUMA 4 of 4, GPU 4215426 of -1295871352 visible (and 65535 per node)
+Rank 74: Node 10 of 10, Socket 2 of 2, NUMA 4 of 4, GPU 4215426 of 835379944 visible (and 65535 per node)
+Rank 46: Node 46 of 14, Socket 2 of 11, NUMA 4 of 4, GPU 4215426 of -707850168 visible (and 65535 per node)
+Rank 32: Node 32 of 0, Socket 0 of 8, NUMA 4 of 4, GPU 4215426 of 1476298392 visible (and 65535 per node)
+Rank 91: Node 27 of 11, Socket 3 of 6, NUMA 4 of 4, GPU 4215426 of -1153339448 visible (and 65535 per node)
+Rank 89: Node 25 of 9, Socket 1 of 6, NUMA 4 of 4, GPU 4215426 of 350587816 visible (and 65535 per node)
+Rank 100: Node 36 of 4, Socket 0 of 9, NUMA 4 of 4, GPU 4215426 of 313321528 visible (and 65535 per node)
+Rank 103: Node 39 of 7, Socket 3 of 9, NUMA 4 of 4, GPU 4215426 of -210939064 visible (and 65535 per node)
+Rank 90: Node 26 of 10, Socket 2 of 6, NUMA 4 of 4, GPU 4215426 of 1575539992 visible (and 65535 per node)
+Rank 101: Node 37 of 5, Socket 1 of 9, NUMA 4 of 4, GPU 4215426 of 944888120 visible (and 65535 per node)
+Rank 95: Node 31 of 15, Socket 3 of 7, NUMA 4 of 4, GPU 4215426 of -1314907864 visible (and 65535 per node)
+Rank 96: Node 32 of 0, Socket 0 of 8, NUMA 4 of 4, GPU 4215426 of -251394968 visible (and 65535 per node)
+Rank 81: Node 17 of 1, Socket 1 of 4, NUMA 4 of 4, GPU 4215426 of 229035336 visible (and 65535 per node)
+Rank 18: Node 18 of 2, Socket 2 of 4, NUMA 4 of 4, GPU 4215426 of 1152783640 visible (and 65535 per node)
+Rank 13: Node 13 of 13, Socket 1 of 3, NUMA 4 of 4, GPU 4215426 of -965030936 visible (and 65535 per node)
+Rank 20: Node 20 of 4, Socket 0 of 5, NUMA 4 of 4, GPU 4215426 of 1996794184 visible (and 65535 per node)
+Rank 21: Node 21 of 5, Socket 1 of 5, NUMA 4 of 4, GPU 4215426 of -1070156408 visible (and 65535 per node)
+Rank 6: Node 6 of 6, Socket 2 of 1, NUMA 4 of 4, GPU 4215426 of 1241678888 visible (and 65535 per node)
+Rank 2: Node 2 of 2, Socket 2 of 0, NUMA 4 of 4, GPU 4215426 of 1793812504 visible (and 65535 per node)
+Rank 12: Node 12 of 12, Socket 0 of 3, NUMA 4 of 4, GPU 4215426 of 1693260504 visible (and 65535 per node)
+Rank 5: Node 5 of 5, Socket 1 of 1, NUMA 4 of 4, GPU 4215426 of 1630411896 visible (and 65535 per node)
+Rank 10: Node 10 of 10, Socket 2 of 2, NUMA 4 of 4, GPU 4215426 of 37822408 visible (and 65535 per node)
+Rank 15: Node 15 of 15, Socket 3 of 3, NUMA 4 of 4, GPU 4215426 of 735444952 visible (and 65535 per node)
+Rank 7: Node 7 of 7, Socket 3 of 1, NUMA 4 of 4, GPU 4215426 of 1504281128 visible (and 65535 per node)
+Rank 14: Node 14 of 14, Socket 2 of 3, NUMA 4 of 4, GPU 4215426 of -131975880 visible (and 65535 per node)
+Rank 3: Node 3 of 3, Socket 3 of 0, NUMA 4 of 4, GPU 4215426 of 1102612888 visible (and 65535 per node)
+Rank 4: Node 4 of 4, Socket 0 of 1, NUMA 4 of 4, GPU 4215426 of -132387704 visible (and 65535 per node)
+Rank 39: Node 39 of 7, Socket 3 of 9, NUMA 4 of 4, GPU 4215426 of -1869399256 visible (and 65535 per node)
+Rank 67: Node 3 of 3, Socket 3 of 0, NUMA 4 of 4, GPU 4215426 of -718139304 visible (and 65535 per node)
+Rank 97: Node 33 of 1, Socket 1 of 8, NUMA 4 of 4, GPU 4215426 of -586750344 visible (and 65535 per node)
+Rank 99: Node 35 of 3, Socket 3 of 8, NUMA 4 of 4, GPU 4215426 of -1867115768 visible (and 65535 per node)
+Rank 76: Node 12 of 12, Socket 0 of 3, NUMA 4 of 4, GPU 4215426 of 144814392 visible (and 65535 per node)
+Rank 73: Node 9 of 9, Socket 1 of 2, NUMA 4 of 4, GPU 4215426 of 1010704008 visible (and 65535 per node)
+Rank 72: Node 8 of 8, Socket 0 of 2, NUMA 4 of 4, GPU 4215426 of 1836883752 visible (and 65535 per node)
+Rank 78: Node 14 of 14, Socket 2 of 3, NUMA 4 of 4, GPU 4215426 of 1378854920 visible (and 65535 per node)
+Rank 65: Node 1 of 1, Socket 1 of 0, NUMA 4 of 4, GPU 4215426 of 1546824872 visible (and 65535 per node)
+Rank 71: Node 7 of 7, Socket 3 of 1, NUMA 4 of 4, GPU 4215426 of 2069132072 visible (and 65535 per node)
+Rank 64: Node 0 of 0, Socket 0 of 0, NUMA 4 of 4, GPU 4215426 of 259075960 visible (and 65535 per node)
+Rank 84: Node 20 of 4, Socket 0 of 5, NUMA 4 of 4, GPU 4215426 of -1970980568 visible (and 65535 per node)
+Rank 88: Node 24 of 8, Socket 0 of 6, NUMA 4 of 4, GPU 4215426 of 2065701144 visible (and 65535 per node)
+Rank 94: Node 30 of 14, Socket 2 of 7, NUMA 4 of 4, GPU 4215426 of -1697073608 visible (and 65535 per node)
+Rank 86: Node 22 of 6, Socket 2 of 5, NUMA 4 of 4, GPU 4215426 of -1979995480 visible (and 65535 per node)
+Rank 75: Node 11 of 11, Socket 3 of 2, NUMA 4 of 4, GPU 4215426 of -458036584 visible (and 65535 per node)
+Rank 122: Node 58 of 10, Socket 2 of 14, NUMA 4 of 4, GPU 4215426 of -658048344 visible (and 65535 per node)
+[gpua021:2762258] *** Process received signal ***
+[gpua021:2762258] Signal: Segmentation fault (11)
+[gpua021:2762258] Signal code: Invalid permissions (2)
+[gpua021:2762258] Failing at address: 0x7f7f0c000000
+[gpua021:2762258] [ 0] /usr/lib64/libpthread.so.0(+0x12cf0)[0x7f7f65177cf0]
+[gpua021:2762258] [ 1] /usr/lib64/libc.so.6(+0xcee8c)[0x7f7f640b1e8c]
+[gpua021:2762258] [ 2] /opt/cray/libfabric/1.15.2.0/lib64/libfabric.so.1(+0x76e0e)[0x7f7f634d9e0e]
+[gpua021:2762258] [ 3] /opt/cray/libfabric/1.15.2.0/lib64/libfabric.so.1(+0x77445)[0x7f7f634da445]
+[gpua021:2762258] [ 4] /sw/spack/deltas11-2023-03/apps/linux-rhel8-zen3/gcc-11.4.0/openmpi-4.1.6-lranp74/lib/libmpi.so.40(+0x1b3526)[0x7f7f6577b526]
+[gpua021:2762258] [ 5] /sw/spack/deltas11-2023-03/apps/linux-rhel8-zen3/gcc-11.4.0/openmpi-4.1.6-lranp74/lib/libmpi.so.40(+0x251325)[0x7f7f65819325]
+[gpua021:2762258] [ 6] /sw/spack/deltas11-2023-03/apps/linux-rhel8-zen3/gcc-11.4.0/openmpi-4.1.6-lranp74/lib/libmpi.so.40(MPI_Send+0x123)[0x7f7f656882e3]
+[gpua021:2762258] [ 7] ./gpu_microbenchmarks[0x404672]
+[gpua021:2762258] [ 8] ./gpu_microbenchmarks[0x404949]
+[gpua021:2762258] [ 9] ./gpu_microbenchmarks[0x404be1]
+[gpua021:2762258] [10] ./gpu_microbenchmarks[0x404d10]
+[gpua021:2762258] [11] ./gpu_microbenchmarks[0x404e1d]
+[gpua021:2762258] [12] ./gpu_microbenchmarks[0x4053cb]
+[gpua021:2762258] [13] /usr/lib64/libc.so.6(__libc_start_main+0xe5)[0x7f7f6401dd75]
+[gpua021:2762258] [14] ./gpu_microbenchmarks[0x40455e]
+[gpua021:2762258] *** End of error message ***
+cxil_map: write error
+[gpua021:2762338] *** An error occurred in MPI_Recv
+[gpua021:2762338] *** reported by process [1095630849,32]
+[gpua021:2762338] *** on communicator MPI_COMM_WORLD
+[gpua021:2762338] *** MPI_ERR_OTHER: known error not in list
+[gpua021:2762338] *** MPI_ERRORS_ARE_FATAL (processes in this communicator will now abort,
+[gpua021:2762338] ***    and potentially your MPI job)
+[gpua021.delta.ncsa.illinois.edu:2762244] mca: base: close: component slurm closed
+[gpua021.delta.ncsa.illinois.edu:2762244] mca: base: close: unloading component slurm
