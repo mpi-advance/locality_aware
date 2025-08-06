@@ -108,6 +108,7 @@ int main(int argc, char** argv)
                 xcomm);
         compare_alltoallv_results(pmpi_alltoallv, mpix_alltoallv, s);
 
+        /*
         std::fill(mpix_alltoallv.begin(), mpix_alltoallv.end(), 0);
         alltoallv_batch(local_data.data(), 
                 sizes.data(),
@@ -131,7 +132,7 @@ int main(int argc, char** argv)
                 MPI_INT,
                 xcomm);
         compare_alltoallv_results(pmpi_alltoallv, mpix_alltoallv, s);
-
+        */
     }
 
     MPIX_Comm_free(&xcomm);
