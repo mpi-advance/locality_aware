@@ -45,9 +45,9 @@ int main(int argc, char** argv)
     std::vector<int> sdispls(num_procs);
     std::vector<int> rdispls(num_procs);
 
-    MPIX_Comm* xcomm;
-    MPIX_Comm_init(&xcomm, MPI_COMM_WORLD);
-    update_locality(xcomm, 4);
+    //MPIX_Comm* xcomm;
+    //MPIX_Comm_init(&xcomm, MPI_COMM_WORLD);
+    //update_locality(xcomm, 4);
 
     for (int i = 0; i < max_i; i++)
     {
@@ -82,6 +82,7 @@ int main(int argc, char** argv)
                 MPI_INT,
                 MPI_COMM_WORLD);
 
+        /*
         std::fill(mpix_alltoallv.begin(), mpix_alltoallv.end(), 0);
         MPIX_Alltoallv(local_data.data(), 
                 sendcounts.data(),
@@ -141,10 +142,10 @@ int main(int argc, char** argv)
                 MPI_INT,
                 xcomm);
         compare_alltoallv_results(pmpi_alltoallv, mpix_alltoallv, s);
-
+        */
     }
 
-    MPIX_Comm_free(&xcomm);
+    //MPIX_Comm_free(&xcomm);
 
 
     MPI_Finalize();
