@@ -9,8 +9,12 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_C_STANDARD 99)
 
 # Add warning flags to help with debugging
-set(CMAKE_C_FLAGS "-Wall -Wextra -Wpedantic -Wshadow")
-set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wpedantic -Wshadow")
+string(TOLOWER ${CMAKE_BUILD_TYPE} build_type)
+message(STATUS "Build type: ${CMAKE_BUILD_TYPE} -> ${build_type}")
+if(build_type STREQUAL "debug")
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -Wpedantic -Wshadow")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic -Wshadow")
+endif()
 
 # Build Options
 option(USE_CUDA "Enable NVIDIA CUDA support" OFF)
@@ -22,16 +26,12 @@ set(MPICXX "mpicxx" CACHE STRING "MPICXX command")
 set(MPIRUN "mpirun" CACHE STRING "MPIRUN command")
 set(CUDA_ARCH "75" CACHE STRING "CUDA Architecture")
 
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}")
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}/src")
-
 # Find MPI
 find_package(MPI REQUIRED)
 if (MPI_COMPILER_FLAGS)
   add_compile_options(${MPI_COMPILER_FLAGS})
 endif()
-include_directories(${MPI_INCLUDE_PATH})
-set(EXTERNAL_LIBS ${MPI_LIBRARIES})
+set(EXTERNAL_LIBS "MPI::MPI_CXX")
 
 # Find OpenMP (not required)
 find_package(OpenMP)
@@ -39,9 +39,9 @@ if (${OpenMP_CXX_FOUND})
   # Add OpenMP flags to compile options
   add_compile_options(${OpenMP_CXX_FLAGS})
 
-  set(EXTERNAL_LIBS ${EXTERNAL_LIBS} ${OpenMP_CXX_LIBRARIES})
+  list(APPEND EXTERNAL_LIBS "OpenMP::OpenMP_CXX")
   add_definitions(-DOPENMP)
-  message(STATUS "Found OpenMP ${OpenMP_CXX_LIBRARIES}")
+  #message(STATUS "Found OpenMP ${OpenMP_CXX_LIBRARIES}")
 endif()
 
 # Set default language of .cpp files
@@ -71,14 +71,9 @@ elseif (USE_HIP)
 endif()
 endif()
 
-add_subdirectory(src/utils)
-add_subdirectory(src/communicator)
-add_subdirectory(src/persistent)
-add_subdirectory(src/collective)
-add_subdirectory(src/neighborhood)
-if(USE_CUDA OR USE_HIP)
-    add_subdirectory(src/heterogeneous)
-endif()
+message(STATUS "Compiling all files as: ${locality_aware_LANG}")
+
+add_subdirectory(src)
 
 set_source_files_properties(
     ${utils_SOURCES}
@@ -97,14 +92,19 @@ add_library(mpi_advance
     ${neighborhood_SOURCES} ${neighborhood_HEADERS}
     ${heterogeneous_SOURCES} ${heterogeneous_HEADERS}
 )
+
+set_target_properties(mpi_advance PROPERTIES PUBLIC_HEADER src/mpi_advance.h)
+
+target_include_directories(mpi_advance PUBLIC 
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
+    $<INSTALL_INTERFACE:include>
+    )
+
 target_link_libraries(mpi_advance PUBLIC ${EXTERNAL_LIBS})
 
-install(TARGETS mpi_advance 
-        ARCHIVE DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
-        LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
-        RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
+install(TARGETS mpi_advance)
 
-install(FILES src/mpi_advance.h DESTINATION ${CMAKE_INSTALL_PREFIX}/include)
+### Install all headers that locality_aware exports
 install(FILES ${utils_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/utils)
 install(FILES ${communicator_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/communicator)
 install(FILES ${collective_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/collective)
@@ -112,15 +112,28 @@ install(FILES ${persistent_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/
 install(FILES ${neighborhood_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/neighborhood)
 install(FILES ${heterogeneous_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/heterogeneous)
 
-if (ENABLE_UNIT_TESTS)
-    enable_testing()
-    add_subdirectory(src/collective/tests)
-    add_subdirectory(src/neighborhood/tests)
-    if (USE_GPU)
-        add_subdirectory(src/heterogeneous/tests)
-    endif(USE_GPU)
-endif()
-
 add_subdirectory(benchmarks)
 
+### Installation Requirements for Spack Package ###
+include(CMakePackageConfigHelpers)
+
+# Install the actual target(s) and register them for export
+install(TARGETS mpi_advance
+        EXPORT mpiadvanceTargets
+        DESTINATION lib)
+
+# Export the targets into a CMake package
+install(EXPORT mpiadvanceTargets
+        NAMESPACE MPIAdvance::
+        DESTINATION share/mpiadvance)
+
+configure_package_config_file(
+  "${CMAKE_CURRENT_SOURCE_DIR}/cmake/mpiadvanceConfig.cmake"
+  "${CMAKE_CURRENT_BINARY_DIR}/mpiadvance-config.cmake"
+  INSTALL_DESTINATION share/mpiadvance)
+
+install(FILES
+  "${CMAKE_CURRENT_BINARY_DIR}/mpiadvance-config.cmake"
+  DESTINATION share/mpiadvance)
+############## End of Spack Section ################
 

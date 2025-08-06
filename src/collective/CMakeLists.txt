@@ -6,6 +6,6 @@ set_source_files_properties(
   ${collective_HEADERS} ${collective_SOURCES}
  PROPERTIES LANGUAGE ${locality_aware_LANG})
 
-set(collective_HEADERS ${collective_HEADERS} PARENT_SCOPE)
-set(collective_SOURCES ${collective_SOURCES} PARENT_SCOPE)
+set(collective_HEADERS ${collective_HEADERS} CACHE INTERNAL "All headers for collective files.")
+set(collective_SOURCES ${collective_SOURCES} CACHE INTERNAL "All source files for collective directory.")
 
