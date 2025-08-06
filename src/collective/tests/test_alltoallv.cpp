@@ -33,8 +33,7 @@ int main(int argc, char** argv)
 
     // Test Integer Alltoall
     int max_i = 10;
-    int max_s = pow(2, max_i);
-    srand(time(NULL));
+    int max_s = 1 << max_i;
     std::vector<int> local_data(max_s*num_procs);
 
     std::vector<int> pmpi_alltoallv(max_s*num_procs);
@@ -49,10 +48,9 @@ int main(int argc, char** argv)
     //MPIX_Comm_init(&xcomm, MPI_COMM_WORLD);
     //update_locality(xcomm, 4);
 
-    //for (int i = 0; i < max_i; i++)
+    for (int i = 0; i < max_i; i++)
     {
-        int s = pow(2, max_i-1);
-
+        int s = 1 << i;
 
         // Will only be clean for up to double digit process counts
         for (int j = 0; j < num_procs; j++)
@@ -81,6 +79,9 @@ int main(int argc, char** argv)
                 rdispls.data(),
                 MPI_INT,
                 MPI_COMM_WORLD);
+
+        MPI_Barrier(MPI_COMM_WORLD);
+
 
         /*
         std::fill(mpix_alltoallv.begin(), mpix_alltoallv.end(), 0);
