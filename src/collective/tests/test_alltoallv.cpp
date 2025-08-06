@@ -39,24 +39,34 @@ int main(int argc, char** argv)
     std::vector<int> pmpi_alltoallv(max_s*num_procs);
     std::vector<int> mpix_alltoallv(max_s*num_procs);
 
-    std::vector<int> sizes(num_procs);
-    std::vector<int> displs(num_procs);
+    std::vector<int> sendcounts(num_procs);
+    std::vector<int> sdispls(num_procs);
+
+    std::vector<int> recvcounts(num_procs);
+    std::vector<int> rdispls(num_procs);
 
     //MPIX_Comm* xcomm;
     //MPIX_Comm_init(&xcomm, MPI_COMM_WORLD);
     //update_locality(xcomm, 4);
 
-    for (int i = 0; i < max_i; i++)
+    //for (int i = 0; i < max_i; i++)
     {
-        int s = 1 << i;
+        int s = 1 << max_i;
 
-        displs[0] = 0;
-        for (int j = 1; j < num_procs; j++)
+        for (int j = 0; j < num_procs; j++)
         {
             for (int k = 0; k < s; k++)
                 local_data[j*s + k] = rank*10000 + j*100 + k;
-            sizes[j] = s;
-            displs[j] = displs[j-1] + s;
+            sendcounts[j] = s;
+            recvcounts[j] = s;
+        }
+
+        sdispls[0] = 0;
+        rdispls[0] = 0;
+        for (int j = 1; j < num_procs; j++)
+        {
+            sdispls[j] = sdispls[j-1] + s;
+            rdispls[j] = rdispls[j-1] + s;
         }
 
         
