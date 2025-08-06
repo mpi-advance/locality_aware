@@ -40,7 +40,7 @@ int main(int argc, char** argv)
     std::vector<int> mpix_alltoallv(max_s*num_procs);
 
     std::vector<int> sizes(num_procs);
-    std::vector<int> displs(num_procs+1);
+    std::vector<int> displs(num_procs);
 
     //MPIX_Comm* xcomm;
     //MPIX_Comm_init(&xcomm, MPI_COMM_WORLD);
@@ -51,12 +51,12 @@ int main(int argc, char** argv)
         int s = 1 << i;
 
         displs[0] = 0;
-        for (int j = 0; j < num_procs; j++)
+        for (int j = 1; j < num_procs; j++)
         {
             for (int k = 0; k < s; k++)
                 local_data[j*s + k] = rank*10000 + j*100 + k;
             sizes[j] = s;
-            displs[j+1] = displs[j] + s;
+            displs[j] = displs[j-1] + s;
         }
 
         
