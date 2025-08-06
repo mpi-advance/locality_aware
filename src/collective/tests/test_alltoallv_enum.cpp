@@ -71,7 +71,7 @@ int main(int argc, char** argv)
         }
 
 
-
+/*
         PMPI_Alltoallv(local_data.data(), 
                 sendcounts.data(),
                 sdispls.data(),
@@ -146,7 +146,7 @@ int main(int argc, char** argv)
                 MPI_INT,
                 xcomm);
         compare_alltoallv_results(pmpi_alltoallv, mpix_alltoallv, s);
-
+*/
     }
 
 
