@@ -1,4 +1,4 @@
-#include "mpi_advance.h"
+//#include "mpi_advance.h"
 #include <mpi.h>
 #include <math.h>
 #include <stdlib.h>
@@ -7,6 +7,7 @@
 #include <vector>
 #include <set>
 
+/*
 void compare_alltoallv_results(std::vector<int>& pmpi, std::vector<int>& mpix, int s)
 {
     int num_procs;
@@ -22,6 +23,7 @@ void compare_alltoallv_results(std::vector<int>& pmpi, std::vector<int>& mpix, i
         }
     }
 }
+*/
 
 int main(int argc, char** argv)
 {
@@ -33,108 +35,121 @@ int main(int argc, char** argv)
 
     // Test Integer Alltoall
     int max_i = 10;
-    int max_s = pow(2, max_i);
-    srand(time(NULL));
+    int max_s = 1 << max_i;
     std::vector<int> local_data(max_s*num_procs);
 
     std::vector<int> pmpi_alltoallv(max_s*num_procs);
     std::vector<int> mpix_alltoallv(max_s*num_procs);
 
-    std::vector<int> sizes(num_procs);
-    std::vector<int> displs(num_procs+1);
+    std::vector<int> sendcounts(num_procs);
+    std::vector<int> recvcounts(num_procs);
+    std::vector<int> sdispls(num_procs);
+    std::vector<int> rdispls(num_procs);
 
-    MPIX_Comm* xcomm;
-    MPIX_Comm_init(&xcomm, MPI_COMM_WORLD);
-    update_locality(xcomm, 4);
+    //MPIX_Comm* xcomm;
+    //MPIX_Comm_init(&xcomm, MPI_COMM_WORLD);
+    //update_locality(xcomm, 4);
 
     for (int i = 0; i < max_i; i++)
     {
-        int s = pow(2, i);
+        int s = 1 << i;
 
         // Will only be clean for up to double digit process counts
-        displs[0] = 0;
         for (int j = 0; j < num_procs; j++)
         {
             for (int k = 0; k < s; k++)
                 local_data[j*s + k] = rank*10000 + j*100 + k;
-            sizes[j] = s;
-            displs[j+1] = displs[j] + s;
+            sendcounts[j] = s;
+            recvcounts[j] = s;
         }
 
+        sdispls[0] = 0;
+        rdispls[0] = 0;
+        for (int j = 1; j < num_procs; j++)
+        {
+            sdispls[j] = sdispls[j-1] + s;
+            rdispls[j] = rdispls[j-1] + s;
+        }
 
-        PMPI_Alltoallv(local_data.data(), 
-                sizes.data(),
-                displs.data(),
+        MPI_Barrier(MPI_COMM_WORLD);
+
+      /*  PMPI_Alltoallv(local_data.data(), 
+                sendcounts.data(),
+                sdispls.data(),
                 MPI_INT, 
                 pmpi_alltoallv.data(), 
-                sizes.data(),
-                displs.data(),
+                recvcounts.data(),
+                rdispls.data(),
                 MPI_INT,
-                MPI_COMM_WORLD);
+                MPI_COMM_WORLD);*/
 
+        MPI_Barrier(MPI_COMM_WORLD);
+
+
+        /*
         std::fill(mpix_alltoallv.begin(), mpix_alltoallv.end(), 0);
         MPIX_Alltoallv(local_data.data(), 
-                sizes.data(),
-                displs.data(),
+                sendcounts.data(),
+                sdispls.data(),
                 MPI_INT, 
                 mpix_alltoallv.data(), 
-                sizes.data(),
-                displs.data(),
+                recvcounts.data(),
+                rdispls.data(),
                 MPI_INT,
                 xcomm);
         compare_alltoallv_results(pmpi_alltoallv, mpix_alltoallv, s);
 
         std::fill(mpix_alltoallv.begin(), mpix_alltoallv.end(), 0);
         alltoallv_pairwise(local_data.data(), 
-                sizes.data(),
-                displs.data(),
+                sendcounts.data(),
+                sdispls.data(),
                 MPI_INT, 
                 mpix_alltoallv.data(), 
-                sizes.data(),
-                displs.data(),
+                recvcounts.data(),
+                rdispls.data(),
                 MPI_INT,
                 xcomm);
         compare_alltoallv_results(pmpi_alltoallv, mpix_alltoallv, s);
 
         std::fill(mpix_alltoallv.begin(), mpix_alltoallv.end(), 0);
         alltoallv_nonblocking(local_data.data(), 
-                sizes.data(),
-                displs.data(),
+                sendcounts.data(),
+                sdispls.data(),
                 MPI_INT, 
                 mpix_alltoallv.data(), 
-                sizes.data(),
-                displs.data(),
+                recvcounts.data(),
+                rdispls.data(),
                 MPI_INT,
                 xcomm);
         compare_alltoallv_results(pmpi_alltoallv, mpix_alltoallv, s);
 
         std::fill(mpix_alltoallv.begin(), mpix_alltoallv.end(), 0);
         alltoallv_batch(local_data.data(), 
-                sizes.data(),
-                displs.data(),
+                sendcounts.data(),
+                sdispls.data(),
                 MPI_INT, 
                 mpix_alltoallv.data(), 
-                sizes.data(),
-                displs.data(),
+                recvcounts.data(),
+                rdispls.data(),
                 MPI_INT,
                 xcomm);
         compare_alltoallv_results(pmpi_alltoallv, mpix_alltoallv, s);
 
         std::fill(mpix_alltoallv.begin(), mpix_alltoallv.end(), 0);
         alltoallv_batch_async(local_data.data(), 
-                sizes.data(),
-                displs.data(),
+                sendcounts.data(),
+                sdispls.data(),
                 MPI_INT, 
                 mpix_alltoallv.data(), 
-                sizes.data(),
-                displs.data(),
+                recvcounts.data(),
+                rdispls.data(),
                 MPI_INT,
                 xcomm);
         compare_alltoallv_results(pmpi_alltoallv, mpix_alltoallv, s);
-
+        */
     }
 
-    MPIX_Comm_free(&xcomm);
+    //MPIX_Comm_free(&xcomm);
 
 
     MPI_Finalize();
