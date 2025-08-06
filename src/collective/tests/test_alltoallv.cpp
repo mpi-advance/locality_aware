@@ -71,12 +71,12 @@ int main(int argc, char** argv)
 
         
         MPI_Alltoallv(local_data.data(), 
-                sizes.data(),
-                displs.data(),
+                sendcounts.data(),
+                sdispls.data(),
                 MPI_INT, 
                 pmpi_alltoallv.data(), 
-                sizes.data(),
-                displs.data(),
+                recvcounts.data(),
+                rdispls.data(),
                 MPI_INT,
                 MPI_COMM_WORLD);
         MPI_Barrier(MPI_COMM_WORLD);
