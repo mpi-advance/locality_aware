@@ -28,20 +28,13 @@ set(CUDA_ARCH "75" CACHE STRING "CUDA Architecture")
 
 # Find MPI
 find_package(MPI REQUIRED)
-if (MPI_COMPILER_FLAGS)
-  add_compile_options(${MPI_COMPILER_FLAGS})
-endif()
 set(EXTERNAL_LIBS "MPI::MPI_CXX")
 
 # Find OpenMP (not required)
 find_package(OpenMP)
 if (${OpenMP_CXX_FOUND})
-  # Add OpenMP flags to compile options
-  add_compile_options(${OpenMP_CXX_FLAGS})
-
   list(APPEND EXTERNAL_LIBS "OpenMP::OpenMP_CXX")
   add_definitions(-DOPENMP)
-  #message(STATUS "Found OpenMP ${OpenMP_CXX_LIBRARIES}")
 endif()
 
 # Set default language of .cpp files
