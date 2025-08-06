@@ -33,8 +33,7 @@ int main(int argc, char** argv)
 
     // Test Integer Alltoall
     int max_i = 10;
-    int max_s = pow(2, max_i);
-    srand(time(NULL));
+    int max_s = 2 << max_i;
     std::vector<int> local_data(max_s*num_procs);
 
     std::vector<int> pmpi_alltoallv(max_s*num_procs);
@@ -60,6 +59,7 @@ int main(int argc, char** argv)
             displs[j+1] = displs[j] + s;
         }
 
+        /*
         MPI_Alltoallv(local_data.data(), 
                 sizes.data(),
                 displs.data(),
@@ -70,7 +70,7 @@ int main(int argc, char** argv)
                 MPI_INT,
                 MPI_COMM_WORLD);
 
-        /*
+        
         std::fill(mpix_alltoallv.begin(), mpix_alltoallv.end(), 0);
         MPIX_Alltoallv(local_data.data(), 
                 sizes.data(),
