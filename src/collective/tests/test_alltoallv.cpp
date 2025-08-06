@@ -73,7 +73,7 @@ int main(int argc, char** argv)
 
         MPI_Barrier(MPI_COMM_WORLD);
 
-        PMPI_Alltoallv(local_data.data(), 
+      /*  PMPI_Alltoallv(local_data.data(), 
                 sendcounts.data(),
                 sdispls.data(),
                 MPI_INT, 
@@ -81,7 +81,7 @@ int main(int argc, char** argv)
                 recvcounts.data(),
                 rdispls.data(),
                 MPI_INT,
-                MPI_COMM_WORLD);
+                MPI_COMM_WORLD);*/
 
         MPI_Barrier(MPI_COMM_WORLD);
 
