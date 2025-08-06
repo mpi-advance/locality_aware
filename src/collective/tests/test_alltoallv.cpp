@@ -49,9 +49,9 @@ int main(int argc, char** argv)
     //MPIX_Comm_init(&xcomm, MPI_COMM_WORLD);
     //update_locality(xcomm, 4);
 
-    for (int i = 0; i < max_i; i++)
+    //for (int i = 0; i < max_i; i++)
     {
-        int s = pow(2, i);
+        int s = pow(2, max_i-1);
 
 
         // Will only be clean for up to double digit process counts
