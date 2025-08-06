@@ -1,4 +1,4 @@
-#include "mpi_advance.h"
+//#include "mpi_advance.h"
 #include <mpi.h>
 #include <math.h>
 #include <stdlib.h>
@@ -7,6 +7,7 @@
 #include <vector>
 #include <set>
 
+/*
 void compare_alltoallv_results(std::vector<int>& pmpi, std::vector<int>& mpix, int s)
 {
     int num_procs;
@@ -22,6 +23,7 @@ void compare_alltoallv_results(std::vector<int>& pmpi, std::vector<int>& mpix, i
         }
     }
 }
+*/
 
 int main(int argc, char** argv)
 {
@@ -69,6 +71,7 @@ int main(int argc, char** argv)
             rdispls[j] = rdispls[j-1] + s;
         }
 
+        MPI_Barrier(MPI_COMM_WORLD);
 
         PMPI_Alltoallv(local_data.data(), 
                 sendcounts.data(),
