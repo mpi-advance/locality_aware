@@ -1,5 +1,3 @@
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
-
 if (USE_CUDA)
     set(gpu_util_HEADERS
         src/utils/utils_cuda.h

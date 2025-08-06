@@ -1,5 +1,3 @@
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
-
 file(GLOB neighborhood_HEADERS CONFIGURE_DEPENDS "*.h")
 file(GLOB neighborhood_SOURCES CONFIGURE_DEPENDS "*.c" "*.cpp")
 

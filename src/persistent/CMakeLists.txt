@@ -1,5 +1,3 @@
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
-
 file(GLOB persistent_HEADERS CONFIGURE_DEPENDS "*.h")
 file(GLOB persistent_SOURCES CONFIGURE_DEPENDS "*.c")
 
