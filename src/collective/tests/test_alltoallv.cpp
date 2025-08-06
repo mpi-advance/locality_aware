@@ -60,7 +60,7 @@ int main(int argc, char** argv)
             displs[j+1] = displs[j] + s;
         }
 
-        PMPI_Alltoallv(local_data.data(), 
+        MPI_Alltoallv(local_data.data(), 
                 sizes.data(),
                 displs.data(),
                 MPI_INT, 
@@ -82,7 +82,7 @@ int main(int argc, char** argv)
                 MPI_INT,
                 xcomm);
         compare_alltoallv_results(pmpi_alltoallv, mpix_alltoallv, s);
-        */
+        
         
         std::fill(mpix_alltoallv.begin(), mpix_alltoallv.end(), 0);
         alltoallv_pairwise(local_data.data(), 
@@ -108,7 +108,7 @@ int main(int argc, char** argv)
                 xcomm);
         compare_alltoallv_results(pmpi_alltoallv, mpix_alltoallv, s);
 
-        /*
+        
         std::fill(mpix_alltoallv.begin(), mpix_alltoallv.end(), 0);
         alltoallv_batch(local_data.data(), 
                 sizes.data(),
