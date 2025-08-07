@@ -425,16 +425,17 @@ int alltoall_hierarchical(const void* sendbuf,
         }
 
         // 3. MPI_Alltoall between leaders
-        n_iters = estimate_alltoall_iters(pairwise_helper, local_send_buffer, ppn * ppn * sendcount, sendtype,
-                local_recv_buffer, ppn * ppn * recvcount, recvtype, comm->group_comm, comm->group_comm);
-        MPI_Barrier(MPI_COMM_WORLD);
+
+		n_iters = estimate_alltoall_iters(pairwise_helper, send_buffer, ppn * ppn * sendcount, sendtype, 
+										  local_recv_buffer, ppn * ppn * recvcount, recvtype, comm->group_comm, comm->group_comm);
+        MPI_Barrier(comm->group_comm);
         t0 = MPI_Wtime();
         for (int i = 0; i < n_iters; i++)
             pairwise_helper(local_send_buffer, ppn * ppn * sendcount, sendtype,
                     local_recv_buffer, ppn * ppn * recvcount, recvtype, comm->group_comm);
 
         tfinal = (MPI_Wtime() - t0) / n_iters;
-        MPI_Allreduce(&tfinal, &tfinalAlltoall, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
+        MPI_Allreduce(&tfinal, &tfinalAlltoall, 1, MPI_DOUBLE, MPI_MAX, comm->group_comm);
 
         // 4. Re-pack for local scatter
         ctr = 0;
@@ -452,6 +453,7 @@ int alltoall_hierarchical(const void* sendbuf,
         }
     }
 
+
     // 5. Scatter 
     n_iters = estimate_scatter_iters(local_send_buffer, recvcount * num_procs, recvtype, recv_buffer, recvcount * num_procs,
             recvtype, 0, comm->local_comm);
@@ -465,7 +467,7 @@ int alltoall_hierarchical(const void* sendbuf,
     MPI_Allreduce(&tfinal, &tfinalScatter, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
 
     if (rank == 0)
-        printf("gather: %e, alltoall: %e, scatter: %e\n", tfinalGather, tfinalAlltoall, tfinalScatter);
+        printf("Pairwise Hierarchical: gather: %e, alltoall: %e, scatter: %e\n", tfinalGather, tfinalAlltoall, tfinalScatter);
 
     free(local_send_buffer);
     free(local_recv_buffer);
@@ -541,16 +543,16 @@ int alltoall_multileader(const void* sendbuf,
 
     // 1. Gather locally
     int n_iters = estimate_gather_iters(send_buffer, sendcount*num_procs, sendtype, local_recv_buffer, sendcount*num_procs, 
-            sendtype, 0, comm->leader_comm);
-    MPI_Barrier(MPI_COMM_WORLD);
-    double t0 = MPI_Wtime();
-    for (int i = 0; i < n_iters; i++)
+               sendtype, 0, comm->leader_comm);
+	MPI_Barrier(MPI_COMM_WORLD);
+	double t0 = MPI_Wtime();
+	for (int i = 0; i < n_iters; i++)
         MPI_Gather(send_buffer, sendcount*num_procs, sendtype, local_recv_buffer, sendcount*num_procs, sendtype,
                 0, comm->leader_comm);
     
-    double tfinal = (MPI_Wtime() - t0) / n_iters;
-    double tfinalGather;
-    MPI_Allreduce(&tfinal, &tfinalGather, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
+	double tfinal = (MPI_Wtime() - t0) / n_iters;
+	double tfinalGather;
+	MPI_Allreduce(&tfinal, &tfinalGather, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
 
     // 2. Re-pack for sends
     // Assumes SMP ordering 
@@ -573,14 +575,14 @@ int alltoall_multileader(const void* sendbuf,
         }
 
         // 3. MPI_Alltoall between leaders
-        n_iters = estimate_alltoall_iters(pairwise_helper, local_send_buffer, ppn * ppn * sendcount, sendtype, 
-                local_recv_buffer, ppn * ppn * recvcount, recvtype, comm->leader_group_comm, comm->leader_group_comm);
-        MPI_Barrier(comm->leader_group_comm);
+		n_iters = estimate_alltoall_iters(pairwise_helper, local_send_buffer, ppn * ppn * sendcount, sendtype, 
+		                local_recv_buffer, ppn * ppn * recvcount, recvtype, comm->leader_group_comm, comm->leader_group_comm);
+		MPI_Barrier(comm->leader_group_comm);
         for (int i = 0; i < n_iters; i++)
             pairwise_helper(local_send_buffer, ppn * ppn * sendcount, sendtype,
                     local_recv_buffer, ppn * ppn * recvcount, recvtype, comm->leader_group_comm);
-        tfinal = (MPI_Wtime() - t0) / n_iters;
-        MPI_Allreduce(&tfinal, &tfinalAlltoall, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
+		tfinal = (MPI_Wtime() - t0) / n_iters;
+		MPI_Allreduce(&tfinal, &tfinalAlltoall, 1, MPI_DOUBLE, MPI_MAX, comm->leader_group_comm);
 
         // 4. Re-pack for local scatter
         ctr = 0;
@@ -598,20 +600,20 @@ int alltoall_multileader(const void* sendbuf,
         }
     }
 
-    // 5. Scatter 
+    // 5. Scatter
     n_iters = estimate_scatter_iters(local_send_buffer, recvcount * num_procs, recvtype, recv_buffer, recvcount*num_procs,
-            recvtype, 0, comm->leader_comm);
+	       recvtype, 0, comm->leader_comm);
     MPI_Barrier(MPI_COMM_WORLD);
     t0 = MPI_Wtime();
     for (int i = 0; i < n_iters; i++)
         MPI_Scatter(local_send_buffer, recvcount * num_procs, recvtype, recv_buffer, recvcount*num_procs, recvtype,
                 0, comm->leader_comm);
-    tfinal = (MPI_Wtime() - t0) / n_iters;
-    double tfinalScatter;
-    MPI_Allreduce(&tfinal, &tfinalScatter, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
+	tfinal = (MPI_Wtime() - t0) / n_iters;
+	double tfinalScatter;
+	MPI_Allreduce(&tfinal, &tfinalScatter, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
     
     if (rank == 0)
-        printf("gather: %e, alltoall: %e, scatter: %e\n", tfinalGather, tfinalAlltoall, tfinalScatter);
+	  printf("Pairwise Multileader: gather: %e, alltoall: %e, scatter: %e\n", tfinalGather, tfinalAlltoall, tfinalScatter);
 
     free(local_send_buffer);
     free(local_recv_buffer);
@@ -709,7 +711,7 @@ int alltoall_node_aware(const void* sendbuf,
     }
 
     if (rank == 0)
-        printf("group alltoall: %e, local alltoall: %e\n", tfinalGroupAlltoall, tfinalLocalAlltoall);
+        printf("Pairwise Node Aware: group alltoall: %e, local alltoall: %e\n", tfinalGroupAlltoall, tfinalLocalAlltoall);
 
     free(tmpbuf);
 
@@ -817,7 +819,7 @@ int alltoall_locality_aware(const void* sendbuf,
     }
 
     if (rank == 0)
-        printf("leader group alltoall: %e, leader alltoall: %e\n", tfinalLeaderGroupAlltoall, tfinalLeaderAlltoall);
+        printf("Pairwise Locality Aware: leader group alltoall: %e, leader alltoall: %e\n", tfinalLeaderGroupAlltoall, tfinalLeaderAlltoall);
 
     free(tmpbuf);
     return MPI_SUCCESS;
@@ -1014,7 +1016,7 @@ int alltoall_multileader_locality(const void* sendbuf,
     MPI_Allreduce(&tfinal, &tfinalScatter, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
 
     if (rank == 0)
-        printf("gather: %e, group alltoall: %e, leader local alltoall: %e, scatter: %e\n", 
+        printf("Pairwise Multileader Locality Aware: gather: %e, group alltoall: %e, leader local alltoall: %e, scatter: %e\n", 
                 tfinalGather, tfinalGroupAlltoall, tfinalLeaderLocalAlltoall, tfinalScatter);
 
     free(local_send_buffer);
@@ -1157,7 +1159,7 @@ int alltoall_hierarchical_nb(const void* sendbuf,
     MPI_Allreduce(&tfinal, &tfinalScatter, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
 
     if (rank == 0)
-        printf("gather: %e, alltoall: %e, scatter: %e\n", tfinalGather, tfinalAlltoall, tfinalScatter);
+        printf("Nonblocking Hierarchical: gather: %e, alltoall: %e, scatter: %e\n", tfinalGather, tfinalAlltoall, tfinalScatter);
 
     free(local_send_buffer);
     free(local_recv_buffer);
@@ -1303,7 +1305,7 @@ int alltoall_multileader_nb(const void* sendbuf,
     MPI_Allreduce(&tfinal, &tfinalScatter, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
 
     if (rank == 0)
-        printf("gather: %e, alltoall: %e, scatter: %e\n", tfinalGather, tfinalAlltoall, tfinalScatter);
+        printf("Nonblocking Multileader: gather: %e, alltoall: %e, scatter: %e\n", tfinalGather, tfinalAlltoall, tfinalScatter);
 
     free(local_send_buffer);
     free(local_recv_buffer);
@@ -1401,7 +1403,7 @@ int alltoall_node_aware_nb(const void* sendbuf,
     }
 
     if (rank == 0)
-        printf("group alltoall: %e, local alltoall: %e\n", tfinalGroupAlltoall, tfinalLocalAlltoall);
+        printf("Nonblocking Node Aware: group alltoall: %e, local alltoall: %e\n", tfinalGroupAlltoall, tfinalLocalAlltoall);
 
     free(tmpbuf);
 
@@ -1509,7 +1511,7 @@ int alltoall_locality_aware_nb(const void* sendbuf,
     }
 
     if (rank == 0)
-        printf("leader group alltoall: %e, leader alltoall: %e\n", tfinalLeaderGroupAlltoall, tfinalLeaderAlltoall);
+        printf("Nonblocking Locality Aware: leader group alltoall: %e, leader alltoall: %e\n", tfinalLeaderGroupAlltoall, tfinalLeaderAlltoall);
 
     free(tmpbuf);
     return MPI_SUCCESS;
@@ -1705,7 +1707,7 @@ int alltoall_multileader_locality_nb(const void* sendbuf,
     MPI_Allreduce(&tfinal, &tfinalScatter, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
 
     if (rank == 0)
-        printf("gather: %e, group alltoall: %e, leader local alltoall: %e, scatter: %e\n", 
+        printf("Nonblocking Multileader Locality Aware: gather: %e, group alltoall: %e, leader local alltoall: %e, scatter: %e\n", 
                 tfinalGather, tfinalGroupAlltoall, tfinalLeaderLocalAlltoall, tfinalScatter);
 
     free(local_send_buffer);

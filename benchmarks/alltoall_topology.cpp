@@ -61,13 +61,13 @@ void print_alltoalls(int max_p, const T* sendbuf,
     double time;
 
     using F = int (*)(const void*, int, MPI_Datatype, void*, int, MPI_Datatype, _MPIX_Comm*);
-    std::vector<F> alltoall_funcs = {alltoall_pairwise, alltoall_nonblocking, alltoall_hierarchical, alltoall_node_aware, alltoall_hierarchical_nb, alltoall_node_aware_nb};
-    std::vector<const char*> names = {"Pairwise", "NonBlocking", "Pairwise Hierarchical", "Pairwise Node Aware", "Nonblocking Hierarchical", "Nonblocking Node Aware"};
+    std::vector<F> alltoall_funcs = {alltoall_hierarchical, alltoall_node_aware, alltoall_hierarchical_nb, alltoall_node_aware_nb};
+    std::vector<const char*> names = {"Pairwise Hierarchical", "Pairwise Node Aware", "Nonblocking Hierarchical", "Nonblocking Node Aware"};
 
     std::vector<F> multileader_funcs = { alltoall_multileader, alltoall_locality_aware, alltoall_multileader_locality, alltoall_multileader_nb, alltoall_locality_aware_nb, alltoall_multileader_locality_nb};
     std::vector<const char*> multileader_names = {"Pairwise Multileader", "Pairwise Locality Aware", "Pairwise Multileader Locality", "Nonblocking Multileader", "Nonblocking Locality Aware", "Nonblocking Multileader Locality"};
 
-    for (int i = 0; i < max_p; i++)
+	for (int i = 0; i < max_p; i++)
     {
         int s = pow(2, i);
 
@@ -77,49 +77,53 @@ void print_alltoalls(int max_p, const T* sendbuf,
         PMPI_Alltoall(sendbuf, s, sendtype, recvbuf, s, recvtype, comm->global_comm);
         std::memcpy(recvbuf_std, recvbuf, s*sizeof(T));
         time = test_alltoall(PMPI_Alltoall, sendbuf, s, sendtype,
-                recvbuf, s, recvtype, comm->global_comm);
+		      recvbuf, s, recvtype, comm->global_comm);
         if (rank == 0) printf("PMPI: %e\n", time);
 
         // MPI Advance Alltoall Functions (not multileader)
         for (int idx = 0; idx < alltoall_funcs.size(); idx++)
         {
-            alltoall_funcs[idx](sendbuf, s, sendtype, recvbuf, s, recvtype, comm); 
-            for (int j = 0; j < s; j++)
-                if (fabs(recvbuf_std[j] - recvbuf[j]) > 1e-06)
-                {
-                    printf("DIFF RESULTS %d vs %d\n", recvbuf_std[j], recvbuf[j]);
-                    MPI_Abort(comm->global_comm, -1);
-                }
-            time = test_alltoall(alltoall_funcs[idx], sendbuf, s, sendtype,
-                    recvbuf, s, recvtype, comm);
-            if (rank == 0) printf("%s: %e\n", names[idx], time);
+		  if (rank == 0)
+			printf("Testing %s\n", names[idx]);
+		  alltoall_funcs[idx](sendbuf, s, sendtype, recvbuf, s, recvtype, comm);
+		  for (int j = 0; j < s; j++)
+		    if (fabs(recvbuf_std[j] - recvbuf[j]) > 1e-06)
+		    {
+		        printf("DIFF RESULTS %d vs %d\n", recvbuf_std[j], recvbuf[j]);
+		        MPI_Abort(comm->global_comm, -1);
+		    }
+		  time = test_alltoall(alltoall_funcs[idx], sendbuf, s, sendtype,
+		       recvbuf, s, recvtype, comm);
+		  if (rank == 0) printf("%s: %e\n", names[idx], time);
         }
 
         // MPI Advance Multileader Alltoall Functions
+		if (rank == 0)
+		  printf("Testing multileader functions\n");
 		std::vector<int> procs_per_leader_list = {4, 8, 16};
         for (int ctr = 0; ctr < procs_per_leader_list.size(); ctr++)
         {
-		    int n_procs = procs_per_leader_list[ctr];
-		    if (ppn < n_procs)
-                break;
-            MPIX_Comm_leader_init(comm, n_procs);
+		  int n_procs = procs_per_leader_list[ctr];
+		  if (ppn < n_procs)
+		      break;
+		  MPIX_Comm_leader_init(comm, n_procs);
 
-            for (int idx = 0; idx < multileader_funcs.size(); idx++)
-            {   
-                multileader_funcs[idx](sendbuf, s, sendtype, recvbuf, s, recvtype, comm);
-                for (int j = 0; j < s; j++) 
-                    if (fabs(recvbuf_std[j] - recvbuf[j]) > 1e-06)
-                    {   
-                        printf("DIFF RESULTS %d vs %d\n", recvbuf_std[j], recvbuf[j]);
-                        MPI_Abort(comm->global_comm, -1);
-                    }
-                time = test_alltoall(multileader_funcs[idx], sendbuf, s, sendtype,
-                        recvbuf, s, recvtype, comm);
-                if (rank == 0) printf("%s, %d procs per leader: %e\n", multileader_names[idx], n_procs, time);
-            }
+		  for (int idx = 0; idx < multileader_funcs.size(); idx++)
+		  {
+		      multileader_funcs[idx](sendbuf, s, sendtype, recvbuf, s, recvtype, comm);
+		      for (int j = 0; j < s; j++) 
+		          if (fabs(recvbuf_std[j] - recvbuf[j]) > 1e-06)
+		          {   
+		              printf("DIFF RESULTS %d vs %d\n", recvbuf_std[j], recvbuf[j]);
+		              MPI_Abort(comm->global_comm, -1);
+		          }
+		      time = test_alltoall(multileader_funcs[idx], sendbuf, s, sendtype,
+		              recvbuf, s, recvtype, comm);
+		      if (rank == 0) printf("%s, %d procs per leader: %e\n", multileader_names[idx], n_procs, time);
+		}
 
-            MPIX_Comm_leader_free(comm);
-        }
+	    MPIX_Comm_leader_free(comm);
+      }
     }
 
 }
@@ -127,9 +131,9 @@ void print_alltoalls(int max_p, const T* sendbuf,
 
 int main(int argc, char* argv[])
 {
-    MPI_Init(&argc, &argv);
+  MPI_Init(&argc, &argv);
 
-    int max_p = 15;
+    int max_p = 2;
     int max_size = pow(2, max_p);
 
     MPIX_Comm* xcomm;
@@ -138,7 +142,7 @@ int main(int argc, char* argv[])
     int rank, num_procs;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
-
+	
     MPIX_Comm_topo_init(xcomm);
 
     int local_rank, ppn;
