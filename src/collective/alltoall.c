@@ -955,7 +955,7 @@ int alltoall_multileader_locality(const void* sendbuf,
                 comm->leader_local_comm, comm->leader_local_comm);
         MPI_Allreduce(MPI_IN_PLACE, &n_iters, 1, MPI_INT, MPI_MAX, MPI_COMM_WORLD);
         MPI_Barrier(MPI_COMM_WORLD);
-        t0 = MPI_WTime();
+        t0 = MPI_Wtime();
         for (int i = 0; i < n_iters; i++)
             pairwise_helper(local_send_buffer, n_nodes*procs_per_leader*procs_per_leader*sendcount, sendtype, 
                     local_recv_buffer, n_nodes*procs_per_leader*procs_per_leader*recvcount, recvtype, comm->leader_local_comm);
@@ -990,7 +990,7 @@ int alltoall_multileader_locality(const void* sendbuf,
         // preventing deadlock
         MPI_Allreduce(MPI_IN_PLACE, &n_iters, 1, MPI_INT, MPI_MAX, MPI_COMM_WORLD);
         MPI_Barrier(MPI_COMM_WORLD);
-        MPI_AllReduce(&tfinal, &tfinalGroupAlltoall, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
+        MPI_Allreduce(&tfinal, &tfinalGroupAlltoall, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
 
         // reset variables 
         n_iters = 0;
