@@ -1,5 +1,3 @@
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
-
 if (USE_CUDA)
     set(gpu_util_HEADERS
         src/utils/utils_cuda.h
@@ -11,17 +9,12 @@ elseif (USE_HIP)
 endif()
 
 file(GLOB utils_SOURCES CONFIGURE_DEPENDS "*.cpp")
-set(utils_SOURCES ${utils_SOURCES} PARENT_SCOPE)
+set(utils_SOURCES ${utils_SOURCES} CACHE INTERNAL "All source files for utils directory.")
 
 
 set(utils_HEADERS
     src/utils/utils.h
     ${gpu_util_HEADERS}
-    PARENT_SCOPE
+    CACHE INTERNAL "All headers for utils files."
     )
-
-#set(utils_SOURCES
-#    src/utils/utils.cpp
-#    PARENT_SCOPE
-#    )
 
