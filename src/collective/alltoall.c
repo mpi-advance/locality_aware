@@ -54,9 +54,10 @@ double estimate_alltoall_iters(int (*alltoall_func)( const void*, int, MPI_Datat
         else if (time > 1e-02)
             time = time_alltoall(alltoall_func, sendbuf, sendcount, sendtype, recvbuf,
                 recvcount, recvtype, comm, 10, barrier_comm);
-        else 
+        else
             time = time_alltoall(alltoall_func, sendbuf, sendcount, sendtype, recvbuf,
                 recvcount, recvtype, comm, 100, barrier_comm);
+
         MPI_Allreduce(MPI_IN_PLACE, &time, 1, MPI_DOUBLE, MPI_MAX, barrier_comm);
 
         n_iters = (1.0 / time) + 1;
@@ -406,68 +407,67 @@ int alltoall_hierarchical(const void* sendbuf,
     // 2. Re-pack for sends
     // Assumes SMP ordering 
     // TODO: allow for other orderings
-    int ctr;
+	    int ctr;
 
     double tfinalAlltoall = 0;
     if (local_rank == 0)
     {
-        ctr = 0;
-        for (int dest_node = 0; dest_node < n_nodes; dest_node++)
-        {
-            int dest_node_start = dest_node * ppn * sendcount * send_size;
+	  ctr = 0;
+	  for (int dest_node = 0; dest_node < n_nodes; dest_node++)
+	  {
+	         int dest_node_start = dest_node * ppn * sendcount * send_size;
             for (int origin_proc = 0; origin_proc < ppn; origin_proc++)
-            {
-                int origin_proc_start = origin_proc * num_procs * sendcount * send_size;
-                memcpy(&(local_send_buffer[ctr]), &(local_recv_buffer[origin_proc_start + dest_node_start]),
-                        ppn * sendcount * send_size);
-                ctr += ppn * sendcount * send_size;
-            }
-        }
+			  {
+	          int origin_proc_start = origin_proc * num_procs * sendcount * send_size;
+	          memcpy(&(local_send_buffer[ctr]), &(local_recv_buffer[origin_proc_start + dest_node_start]),
+	                  ppn * sendcount * send_size);
+	          ctr += ppn * sendcount * send_size;
+	      }
+	  }
 
         // 3. MPI_Alltoall between leaders
-
-		n_iters = estimate_alltoall_iters(pairwise_helper, send_buffer, ppn * ppn * sendcount, sendtype, 
+		n_iters = estimate_alltoall_iters(pairwise_helper, local_send_buffer, ppn * ppn * sendcount, sendtype, 
 										  local_recv_buffer, ppn * ppn * recvcount, recvtype, comm->group_comm, comm->group_comm);
-        MPI_Barrier(comm->group_comm);
-        t0 = MPI_Wtime();
-        for (int i = 0; i < n_iters; i++)
-            pairwise_helper(local_send_buffer, ppn * ppn * sendcount, sendtype,
-                    local_recv_buffer, ppn * ppn * recvcount, recvtype, comm->group_comm);
+		MPI_Barrier(comm->group_comm);
+		t0 = MPI_Wtime();
+		for (int i = 0; i < n_iters; i++)
+	      pairwise_helper(local_send_buffer, ppn * ppn * sendcount, sendtype,
+	              local_recv_buffer, ppn * ppn * recvcount, recvtype, comm->group_comm);
 
-        tfinal = (MPI_Wtime() - t0) / n_iters;
-        MPI_Allreduce(&tfinal, &tfinalAlltoall, 1, MPI_DOUBLE, MPI_MAX, comm->group_comm);
-
+		tfinal = (MPI_Wtime() - t0) / n_iters;
+		MPI_Allreduce(&tfinal, &tfinalAlltoall, 1, MPI_DOUBLE, MPI_MAX, comm->group_comm);
+	
         // 4. Re-pack for local scatter
-        ctr = 0;
-        for (int dest_proc = 0; dest_proc < ppn; dest_proc++)
-        {
-            int dest_proc_start = dest_proc * recvcount * recv_size;
-            for (int orig_proc = 0; orig_proc < num_procs; orig_proc++)
-            {
-                int orig_proc_start = orig_proc * ppn * recvcount * recv_size;
-                memcpy(&(local_send_buffer[ctr]), &(local_recv_buffer[orig_proc_start + dest_proc_start]),
-                        recvcount * recv_size);
-                ctr += recvcount * recv_size;
+		ctr = 0;
+		for (int dest_proc = 0; dest_proc < ppn; dest_proc++)
+		  {
+			int dest_proc_start = dest_proc * recvcount * recv_size;
+			for (int orig_proc = 0; orig_proc < num_procs; orig_proc++)
+			  {
+				int orig_proc_start = orig_proc * ppn * recvcount * recv_size;
+	          memcpy(&(local_send_buffer[ctr]), &(local_recv_buffer[orig_proc_start + dest_proc_start]),
+	                  recvcount * recv_size);
+	          ctr += recvcount * recv_size;
 
-            }
-        }
+	      }
+	  }
     }
 
 
     // 5. Scatter 
-    n_iters = estimate_scatter_iters(local_send_buffer, recvcount * num_procs, recvtype, recv_buffer, recvcount * num_procs,
-            recvtype, 0, comm->local_comm);
+	n_iters = estimate_scatter_iters(local_send_buffer, recvcount * num_procs, recvtype, recv_buffer, recvcount * num_procs,
+	      recvtype, 0, comm->local_comm);
     MPI_Barrier(MPI_COMM_WORLD);
     t0 = MPI_Wtime();
     for (int i = 0; i < n_iters; i++)
-        MPI_Scatter(local_send_buffer, recvcount * num_procs, recvtype, recv_buffer, recvcount * num_procs, recvtype,
-                0, comm->local_comm);
+	  MPI_Scatter(local_send_buffer, recvcount * num_procs, recvtype, recv_buffer, recvcount * num_procs, recvtype,
+				  0, comm->local_comm);
     tfinal = (MPI_Wtime() - t0) / n_iters;
     double tfinalScatter;
     MPI_Allreduce(&tfinal, &tfinalScatter, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
 
     if (rank == 0)
-        printf("Pairwise Hierarchical: gather: %e, alltoall: %e, scatter: %e\n", tfinalGather, tfinalAlltoall, tfinalScatter);
+	  printf("Pairwise Hierarchical: gather: %e, alltoall: %e, scatter: %e\n", tfinalGather, tfinalAlltoall, tfinalScatter);
 
     free(local_send_buffer);
     free(local_recv_buffer);
@@ -613,7 +613,7 @@ int alltoall_multileader(const void* sendbuf,
 	MPI_Allreduce(&tfinal, &tfinalScatter, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
     
     if (rank == 0)
-	  printf("Pairwise Multileader: gather: %e, alltoall: %e, scatter: %e\n", tfinalGather, tfinalAlltoall, tfinalScatter);
+	  printf("gather: %e, alltoall: %e, scatter: %e\n", tfinalGather, tfinalAlltoall, tfinalScatter);
 
     free(local_send_buffer);
     free(local_recv_buffer);
@@ -819,7 +819,7 @@ int alltoall_locality_aware(const void* sendbuf,
     }
 
     if (rank == 0)
-        printf("Pairwise Locality Aware: leader group alltoall: %e, leader alltoall: %e\n", tfinalLeaderGroupAlltoall, tfinalLeaderAlltoall);
+        printf("leader group alltoall: %e, leader alltoall: %e\n", tfinalLeaderGroupAlltoall, tfinalLeaderAlltoall);
 
     free(tmpbuf);
     return MPI_SUCCESS;
@@ -1016,7 +1016,7 @@ int alltoall_multileader_locality(const void* sendbuf,
     MPI_Allreduce(&tfinal, &tfinalScatter, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
 
     if (rank == 0)
-        printf("Pairwise Multileader Locality Aware: gather: %e, group alltoall: %e, leader local alltoall: %e, scatter: %e\n", 
+        printf("gather: %e, group alltoall: %e, leader local alltoall: %e, scatter: %e\n", 
                 tfinalGather, tfinalGroupAlltoall, tfinalLeaderLocalAlltoall, tfinalScatter);
 
     free(local_send_buffer);
@@ -1305,7 +1305,7 @@ int alltoall_multileader_nb(const void* sendbuf,
     MPI_Allreduce(&tfinal, &tfinalScatter, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
 
     if (rank == 0)
-        printf("Nonblocking Multileader: gather: %e, alltoall: %e, scatter: %e\n", tfinalGather, tfinalAlltoall, tfinalScatter);
+        printf("gather: %e, alltoall: %e, scatter: %e\n", tfinalGather, tfinalAlltoall, tfinalScatter);
 
     free(local_send_buffer);
     free(local_recv_buffer);
@@ -1511,7 +1511,7 @@ int alltoall_locality_aware_nb(const void* sendbuf,
     }
 
     if (rank == 0)
-        printf("Nonblocking Locality Aware: leader group alltoall: %e, leader alltoall: %e\n", tfinalLeaderGroupAlltoall, tfinalLeaderAlltoall);
+        printf("leader group alltoall: %e, leader alltoall: %e\n", tfinalLeaderGroupAlltoall, tfinalLeaderAlltoall);
 
     free(tmpbuf);
     return MPI_SUCCESS;
@@ -1707,7 +1707,7 @@ int alltoall_multileader_locality_nb(const void* sendbuf,
     MPI_Allreduce(&tfinal, &tfinalScatter, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
 
     if (rank == 0)
-        printf("Nonblocking Multileader Locality Aware: gather: %e, group alltoall: %e, leader local alltoall: %e, scatter: %e\n", 
+        printf("gather: %e, group alltoall: %e, leader local alltoall: %e, scatter: %e\n", 
                 tfinalGather, tfinalGroupAlltoall, tfinalLeaderLocalAlltoall, tfinalScatter);
 
     free(local_send_buffer);
