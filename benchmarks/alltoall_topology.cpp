@@ -111,17 +111,15 @@ void print_alltoalls(int max_p, const T* sendbuf,
 		  
 		  for (int idx = 0; idx < multileader_funcs.size(); idx++)
 			{
-			  multileader_funcs[idx](sendbuf, s, sendtype, recvbuf, s, recvtype, comm);
 			  //			  for (int j = 0; j < s; j++) 
 		        //if (fabs(recvbuf_std[j] - recvbuf[j]) > 1e-06)
 				//{   
 				//  printf("DIFF RESULTS %d vs %d\n", recvbuf_std[j], recvbuf[j]);
 				//  MPI_Abort(comm->global_comm, -1);
 		//        }
-			  printf("%s, %d procs per leader: ", multileader_names[idx], n_procs);
-				time = test_alltoall(multileader_funcs[idx], sendbuf, s, sendtype,
-									 recvbuf, s, recvtype, comm);
 			  if (rank == 0) printf("%s, %d procs per leader: %e\n", multileader_names[idx], n_procs, time);
+			  time = test_alltoall(multileader_funcs[idx], sendbuf, s, sendtype, recvbuf, s, recvtype, comm);
+
 			}
 
 		  MPIX_Comm_leader_free(comm);
@@ -165,8 +163,6 @@ int main(int argc, char* argv[])
         }
     }
 
-	if (rank ==0)
-	  printf("calling print alltoalls\n");
     print_alltoalls(max_p, sendbuf.data(), MPI_FLOAT, recvbuf.data(), MPI_FLOAT, 
             xcomm, recvbuf_std.data()); 
 
