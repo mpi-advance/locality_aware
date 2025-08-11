@@ -1,0 +1,23 @@
+#!/bin/bash
+#SBATCH --nodes=2
+#SBATCH --ntasks-per-node=32
+#SBATCH --cpus-per-task=1
+#SBATCH --partition=ghx4
+#SBATCH --time=00:45:00
+#SBATCH --job-name=locality_alltoall
+#SBATCH --output=locality_alltoall_n2.%j.out
+#SBATCH --error=locality_alltoall_n2.%j.out
+#SBATCH --account=bdys-dtai-gh
+#SBATCH --gpus-per-node=4
+#SBATCH --exclusive
+
+module list
+
+cd $HOME/MPICCL/build/benchmarks
+cd $HOME/locality_aware_cleanup/build/benchmarks
+
+ppn=32
+n_nodes=2
+n_procs=$(( n_nodes * ppn ))
+srun -n ${n_procs} -N ${n_nodes} ./alltoall_topology
+
