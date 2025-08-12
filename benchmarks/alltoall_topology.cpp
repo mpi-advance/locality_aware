@@ -309,6 +309,6 @@ int main(int argc, char *argv[])
     }
   }
 
-  print_alltoalls(max_p, sendbuf.data(), MPI_FLOAT, recvbuf.data(), MPI_FLOAT,
+  print_alltoalls(max_p, sendbuf.data(), MPI_INT, recvbuf.data(), MPI_INT,
                   xcomm, recvbuf_std.data());
 }
