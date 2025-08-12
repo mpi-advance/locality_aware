@@ -24,7 +24,6 @@ template <typename F, typename... Args>
 int estimate_collective_iters(F collective_func, bool participant, Args&&... args)
 {
   double time = time_collective(collective_func, 1, participant, std::forward<Args>(args)...);
-  MPI_Allreduce(MPI_IN_PLACE, &time, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
   int n_iters = 1;
   if (time > 1)
     n_iters = 1;
@@ -37,8 +36,7 @@ int estimate_collective_iters(F collective_func, bool participant, Args&&... arg
     else
       n_iters = 100;
     time = time_collective(collective_func, n_iters, participant, std::forward<Args>(args)...);
-    MPI_Allreduce(MPI_IN_PLACE, &time, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
-
+    
     n_iters = (1.0 / time) + 1;
     if (n_iters < 1)
       n_iters = 1;
@@ -61,7 +59,6 @@ double test_collective(F func, bool participant, Args&&... args)
 
   // Time Alltoall
   time = time_collective(func, n_iters, participant, std::forward<Args>(args)...);
-  MPI_Allreduce(MPI_IN_PLACE, &time, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
   return time;
 }
 
