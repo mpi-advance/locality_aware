@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --nodes=2
-#SBATCH --ntasks-per-node=32
+#SBATCH --ntasks-per-node=288
 #SBATCH --cpus-per-task=1
 #SBATCH --partition=ghx4
 #SBATCH --time=00:45:00
@@ -16,7 +16,7 @@ module list
 cd $HOME/MPICCL/build/benchmarks
 cd $HOME/locality_aware_cleanup/build/benchmarks
 
-ppn=32
+ppn=288
 n_nodes=2
 n_procs=$(( n_nodes * ppn ))
 srun -n ${n_procs} -N ${n_nodes} ./alltoall_topology
