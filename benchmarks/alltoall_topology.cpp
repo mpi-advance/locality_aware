@@ -14,7 +14,6 @@ double time_collective(F func, int n_iters, bool participant, Args&&... args)
   {
     if (participant)
         func(std::forward<Args>(args)...);
-    MPI_Barrier(MPI_COMM_WORLD);
   }
   double tfinal = (MPI_Wtime() - t0) / n_iters;
   MPI_Allreduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
@@ -26,19 +25,17 @@ int estimate_collective_iters(F collective_func, bool participant, Args&&... arg
 {
   double time = time_collective(collective_func, 1, participant, std::forward<Args>(args)...);
   int n_iters = 1;
-  if (time > 1)
+  if (time > 1e-01)
     n_iters = 1;
   else
   {
-    if (time > 1e-01)
-      n_iters = 2;
-    else if (time > 1e-02)
+    if (time > 1e-02)
       n_iters = 10;
     else
       n_iters = 100;
     time = time_collective(collective_func, n_iters, participant, std::forward<Args>(args)...);
     
-    n_iters = (1.0 / time) + 1;
+    n_iters = (0.1 / time) + 1;
     if (n_iters < 1)
       n_iters = 1;
   }
@@ -180,14 +177,14 @@ void print_alltoalls(int max_p, const T *sendbuf,
     std::vector<int> procs_per_leader_list = {4, 8, 16};
     for (int ctr = 0; ctr < procs_per_leader_list.size(); ctr++)
     {
-      int n_procs = procs_per_leader_list[ctr];
-      if (ppn < n_procs)
+      int procs_per_leader = procs_per_leader_list[ctr];
+      if (ppn < procs_per_leader)
          break;
 
       if (comm->leader_comm != MPI_COMM_NULL)
           MPIX_Comm_leader_free(comm);
 
-      MPIX_Comm_leader_init(comm, n_procs);
+      MPIX_Comm_leader_init(comm, procs_per_leader);
 
       int leader_rank, leader_size;
       MPI_Comm_rank(comm->leader_comm, &leader_rank);
@@ -197,7 +194,7 @@ void print_alltoalls(int max_p, const T *sendbuf,
       MPI_Comm_rank(comm->leader_group_comm, &my_leader);
       MPI_Comm_size(comm->leader_group_comm, &num_leaders);
       int leaders_per_node = num_leaders / n_nodes;
-if (rank == 0) printf("Nnodes %d, Num leaders %d, leaders per node %d, procs per leader %d\n", n_nodes, num_leaders, leaders_per_node, n_procs);
+      if (rank == 0) printf("Running Multileader/Locality-Aware Tests with %d Processes Per Leader, %d Leaders Per Node\n", procs_per_leader, leaders_per_node);
 
       if (leader_rank == 0)
       {
@@ -210,9 +207,7 @@ if (rank == 0) printf("Nnodes %d, Num leaders %d, leaders per node %d, procs per
       // 1. Full multileader pairwise alltoall
       time = test_collective(alltoall_multileader, true, pairwise_helper, sendbuf, s, sendtype, recvbuf, s, recvtype, comm, leaders_per_node);
       if (rank == 0) printf("Hierarchical Pairwise (N Leaders %d): %e\n", leaders_per_node, time);
-int new_num_leaders;
-MPI_Comm_size(comm->leader_comm, &new_num_leaders);
-if (rank == 0) printf("Num Leaders %d, new_num_leaders %d\n", num_leaders, new_num_leaders);
+
       // 2. Full multileader nonblocking alltoall
       time = test_collective(alltoall_multileader, true, nonblocking_helper, sendbuf, s, sendtype, recvbuf, s, recvtype, comm, leaders_per_node);
       if (rank == 0) printf("Hierarchical Nonblocking (N Leaders %d): %e\n", leaders_per_node, time);
@@ -227,11 +222,11 @@ if (rank == 0) printf("Num Leaders %d, new_num_leaders %d\n", num_leaders, new_n
 
       // 5. Pairwise alltoall between leaders on leader_group_comm
       time = test_collective(pairwise_helper, leader_rank == 0, local_sendbuf, s*leader_size*leader_size, sendtype, local_recvbuf, s*leader_size*leader_size, recvtype, comm->leader_group_comm, tag);
-      if (rank == 0) printf("Hierarchical (N Leaders %d) Internal: Alltoall Pairwise: %e\n", num_leaders, time);
+      if (rank == 0) printf("Hierarchical (N Leaders %d) Internal: Alltoall Pairwise: %e\n", leaders_per_node, time);
 
       // 6. Nonblocking alltoall between leaders on leader_group_comm
       time = test_collective(nonblocking_helper, leader_rank == 0, local_sendbuf, s*leader_size*leader_size, sendtype, local_recvbuf, s*leader_size*leader_size, recvtype, comm->leader_group_comm, tag);
-      if (rank == 0) printf("Hierarchical (N Leaders %d) Internal: Alltoall Nonblocking: %e\n", num_leaders, time);
+      if (rank == 0) printf("Hierarchical (N Leaders %d) Internal: Alltoall Nonblocking: %e\n", leaders_per_node, time);
 
       if (leader_rank == 0)
       {
@@ -270,6 +265,59 @@ if (rank == 0) printf("Num Leaders %d, new_num_leaders %d\n", num_leaders, new_n
       time = test_collective(nonblocking_helper, true, sendbuf, s*leader_size, sendtype, recvbuf, s*leader_size, recvtype, comm->leader_group_comm, tag);
       if (rank == 0) printf("Locality-Aware (N Groups %d) Internal: Inter-node nonblocking alltoall: %e\n", leaders_per_node, time);
 
+
+      /**************************************
+      **** Mulileader + Node-Aware Alltoall Timings ****
+      **************************************/
+      if (leader_rank == 0)
+      { 
+        local_sendbuf = (T*)malloc(s * num_procs * leader_size * sizeof(T));
+        local_recvbuf = (T*)malloc(s * num_procs * leader_size * sizeof(T));
+      }
+      // 1. Full pairwise multileader node-aware alltoall
+      time = test_collective(alltoall_multileader_locality, true, pairwise_helper, sendbuf, s, sendtype, recvbuf, s, recvtype, comm, leaders_per_node);
+      if (rank == 0) printf("Multileader Node-Aware (N Leaders %d) Alltoall Pairwise: %e\n", leaders_per_node, time);
+
+      // 2. Full nonblocking multileader node-aware alltoall
+      time = test_collective(alltoall_multileader_locality, true, nonblocking_helper, sendbuf, s, sendtype, recvbuf, s, recvtype, comm, leaders_per_node);
+      if (rank == 0) printf("Multileader Node-Aware (N Leaders %d) Alltoall Nonblocking: %e\n", leaders_per_node, time);
+
+      // 3. Initial Gather
+      time = test_collective(MPI_Gather, true, sendbuf, s*num_procs, sendtype, local_sendbuf, s*num_procs, recvtype, 0, comm->leader_comm);
+      if (rank == 0) printf("Multileader Node-Aware (N Leaders %d) Internal: MPI_Gather: %e\n", leaders_per_node, time);
+
+      // 4. Pairwise Inter-Node Alltoall
+      MPIX_Comm_tag(comm, &tag);
+      time = test_collective(pairwise_helper, leader_rank == 0, local_sendbuf, ppn*procs_per_leader*s, sendtype, local_recvbuf, ppn*procs_per_leader*s, recvtype, comm->group_comm, tag);
+      if (rank == 0) printf("Multileader Node-Aware (N Leaders %d) Internal: Pairwise Inter-Node Alltoall: %e\n", leaders_per_node, time);
+      
+      // 5. Pairwise Intra-Node Alltoall
+      MPIX_Comm_tag(comm, &tag);
+      time = test_collective(pairwise_helper, leader_rank == 0, local_sendbuf, n_nodes*procs_per_leader*procs_per_leader*s, sendtype, local_recvbuf, n_nodes*procs_per_leader*procs_per_leader*s, recvtype, comm->leader_local_comm, tag);
+      if (rank == 0) printf("Multileader Node-Aware (N Leaders %d) Internal: Pairwise Intra-Node Alltoall: %e\n", leaders_per_node, time);
+
+      // 6. Nonblocking Inter-Node Alltoall
+      MPIX_Comm_tag(comm, &tag);
+      time = test_collective(nonblocking_helper, leader_rank == 0, local_sendbuf, ppn*procs_per_leader*s, sendtype, local_recvbuf, ppn*procs_per_leader*s, recvtype, comm->group_comm, tag);
+      if (rank == 0) printf("Multileader Node-Aware (N Leaders %d) Internal: Nonblocking Inter-Node Alltoall: %e\n", leaders_per_node, time);
+      
+      // 7. Nonblocking Intra-Node Alltoall
+      MPIX_Comm_tag(comm, &tag);
+      time = test_collective(nonblocking_helper, leader_rank == 0, local_sendbuf, n_nodes*procs_per_leader*procs_per_leader*s, sendtype, local_recvbuf, n_nodes*procs_per_leader*procs_per_leader*s, recvtype, comm->leader_local_comm, tag);
+      if (rank == 0) printf("Multileader Node-Aware (N Leaders %d) Internal: Nonblocking Intra-Node Alltoall: %e\n", leaders_per_node, time);
+
+      
+      // 8. Final Scatter
+      time = test_collective(MPI_Scatter, true, local_recvbuf, s*num_procs, recvtype, recvbuf, s*num_procs, recvtype, 0, comm->leader_comm);
+      if (rank == 0) printf("Multileader Node-Aware (N Leaders %d) Internal: MPI_Scatter: %e\n", leaders_per_node, time);
+
+
+      if (leader_rank == 0)
+      {
+        free(local_sendbuf);
+        free(local_recvbuf);
+      }
+
       MPIX_Comm_leader_free(comm);
 
     }
@@ -281,7 +329,7 @@ int main(int argc, char *argv[])
   MPI_Init(&argc, &argv);
 
   int max_p = 12;
-  int max_size = pow(2, max_p);
+  int max_size = 1 << max_p;
 
   MPIX_Comm *xcomm;
   MPIX_Comm_init(&xcomm, MPI_COMM_WORLD);

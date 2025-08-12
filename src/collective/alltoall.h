@@ -148,6 +148,16 @@ int alltoall_locality_aware_nonblocking(
 
 
 
+int alltoall_multileader_locality(
+        alltoall_helper_ftn f,
+        const void* sendbuf,
+        const int sendcount,
+        MPI_Datatype sendtype,
+        void* recvbuf,
+        const int recvcount,
+        MPI_Datatype recvtype,
+        MPIX_Comm* comm,
+        int leaders_per_node);
 int alltoall_multileader_locality_pairwise(
         const void* sendbuf,
         const int sendcount,
