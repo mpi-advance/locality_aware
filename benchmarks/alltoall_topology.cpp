@@ -254,22 +254,22 @@ if (rank == 0) printf("Num Leaders %d, new_num_leaders %d\n", num_leaders, new_n
 
       // 3. Pairwise Intra-node alltoall
       MPIX_Comm_tag(comm, &tag);
-      time = test_collective(pairwise_helper, true, sendbuf, s*leader_size, sendtype, recvbuf, s*leader_size, recvtype, comm->leader_comm, tag);
+      time = test_collective(pairwise_helper, true, sendbuf, s*num_leaders, sendtype, recvbuf, s*num_leaders, recvtype, comm->leader_comm, tag);
       if (rank == 0) printf("Locality-Aware (N Groups %d) Internal: Intra-node pairwise alltoall: %e\n", leaders_per_node, time);
 
       // 4. Pairwise Inter-node alltoall
       MPIX_Comm_tag(comm, &tag);
-      time = test_collective(pairwise_helper, true, sendbuf, s*leaders_per_node, sendtype, recvbuf, s*leaders_per_node, recvtype, comm->leader_group_comm, tag);
+      time = test_collective(pairwise_helper, true, sendbuf, s*leader_size, sendtype, recvbuf, s*leader_size, recvtype, comm->leader_group_comm, tag);
       if (rank == 0) printf("Locality-Aware (N Groups %d) Internal: Inter-node pairwise alltoall: %e\n", leaders_per_node, time);
 
       // 3. Nonblocking Intra-node alltoall
       MPIX_Comm_tag(comm, &tag);
-      time = test_collective(nonblocking_helper, true, sendbuf, s*leader_size, sendtype, recvbuf, s*leader_size, recvtype, comm->leader_comm, tag);
+      time = test_collective(nonblocking_helper, true, sendbuf, s*num_leaders, sendtype, recvbuf, s*num_leaders, recvtype, comm->leader_comm, tag);
       if (rank == 0) printf("Locality-Aware (N Groups %d) Internal: Intra-node nonblocking alltoall: %e\n", leaders_per_node, time);
 
       // 4. Nonblocking Inter-node alltoall
       MPIX_Comm_tag(comm, &tag);
-      time = test_collective(nonblocking_helper, true, sendbuf, s*leaders_per_node, sendtype, recvbuf, s*leaders_per_node, recvtype, comm->leader_group_comm, tag);
+      time = test_collective(nonblocking_helper, true, sendbuf, s*leader_size, sendtype, recvbuf, s*leader_size, recvtype, comm->leader_group_comm, tag);
       if (rank == 0) printf("Locality-Aware (N Groups %d) Internal: Inter-node nonblocking alltoall: %e\n", leaders_per_node, time);
 
       MPIX_Comm_leader_free(comm);
