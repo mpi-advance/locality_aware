@@ -14,6 +14,7 @@ double time_collective(F func, int n_iters, bool participant, Args&&... args)
   {
     if (participant)
         func(std::forward<Args>(args)...);
+    MPI_Barrier(MPI_COMM_WORLD);
   }
   double tfinal = (MPI_Wtime() - t0) / n_iters;
   MPI_Allreduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
