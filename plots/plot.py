@@ -166,9 +166,10 @@ print(timings[-1].hierarchical.internal_nonblocking_internode[0:-1])
 plt.add_luke_options()
 data = [timings[-1].hierarchical.internal_gather[0:-1], timings[-1].hierarchical.internal_scatter[0:-1], timings[-1].hierarchical.internal_pairwise_internode[0:-1], timings[-1].hierarchical.internal_nonblocking_internode[0:-1]]
 labels = ["MPI_Gather", "MPI_Scatter", "Alltoall (Pairwise)", "Alltoall (Nonblocking)"]
-plt.add_labels("Message Size", "Time (Seconds)")
+plt.add_labels("Per-Message Size (Bytes)", "Time (Seconds)")
 plt.barplot(timings[-1].sizes[0:-1], data, labels)
 plt.set_scale('linear', 'log')
+plt.set_xticks(np.arange(len(timings[-1].sizes[0:-1])), [4*t for t in timings[-1].sizes[0:-1]])
 plt.save_plot("hierarchical_sizes.pdf")
 
 
@@ -179,7 +180,7 @@ scatter = [t.hierarchical.internal_scatter[-2] for t in timings]
 inter_pairwise = [t.hierarchical.internal_pairwise_internode[-2] for t in timings]
 data = [gather, scatter, inter_pairwise]
 labels = ["MPI_Gather", "MPI_Scatter", "Alltoall"]
-plt.add_labels("Message Size", "Time (Seconds)")
+plt.add_labels("Number of Nodes", "Time (Seconds)")
 plt.stacked_barplot(nodes, data, labels)
 plt.save_plot("hierarchical_nodes.pdf")
 
@@ -200,7 +201,7 @@ for i in range(len(procs_per_leader)-1, -1, -1):
 labels = ["MPI_Gather", "MPI_Scatter", "Alltoall"]
 plt.barplot([0, 1, 2, 3], [gather, scatter, inter_pairwise], labels)
     
-plt.add_labels("Message Size", "Leader Size")
+plt.add_labels("Leader Size", "Time (Seconds)")
 plt.set_xticks([0,1,2,3], ["Hierarchical", "16 PPL", "8 PPL", "4 PPL"])
 plt.save_plot("multileader_nodes.pdf")
 
@@ -208,9 +209,10 @@ plt.save_plot("multileader_nodes.pdf")
 plt.add_luke_options()
 data = [timings[-1].node_aware.internal_pairwise_intranode[0:-1], timings[-1].node_aware.internal_pairwise_internode[0:-1], timings[-1].node_aware.internal_nonblocking_intranode[0:-1], timings[-1].node_aware.internal_nonblocking_internode[0:-1]]
 labels = ["Intra-Node (Pairwise) ", "Inter-Node (Pairwise)", "Intra-Node (Nonblocking) ", "Inter-Node (Nonblocking)"]
-plt.add_labels("Message Size", "Time (Seconds)")
+plt.add_labels("Per-Message Size (Bytes)", "Time (Seconds)")
 plt.barplot(timings[-1].sizes[0:-1], data, labels)
 plt.set_scale('linear', 'log')
+plt.set_xticks(np.arange(len(timings[-1].sizes[0:-1])), [4*t for t in timings[-1].sizes[0:-1]])
 plt.save_plot("node_aware_sizes.pdf")
 
 
@@ -220,7 +222,7 @@ intra_alltoall = [t.node_aware.internal_pairwise_intranode[-2] for t in timings]
 inter_alltoall = [t.node_aware.internal_pairwise_internode[-2] for t in timings]
 data = [intra_alltoall, inter_alltoall]
 labels = ["Intra-Node Alltoall", "Inter-Node Alltoall"]
-plt.add_labels("Message Size", "Time (Seconds)")
+plt.add_labels("Number of Nodes", "Time (Seconds)")
 plt.stacked_barplot(nodes, data, labels)
 plt.save_plot("node_aware_nodes.pdf")
 
@@ -237,7 +239,7 @@ for i in range(len(procs_per_leader)-1, -1, -1):
 labels = ["Intra-Node Alltoall", "Inter-Node Alltoall"]
 plt.barplot([0, 1, 2, 3], [intra_alltoall, inter_alltoall], labels)
     
-plt.add_labels("Message Size", "Leader Size")
+plt.add_labels("Group Size", "Time (Seconds)")
 plt.set_xticks([0,1,2,3], ["Node-Aware", "16 PPG", "8 PPG", "4 PPG"])
 plt.save_plot("locality_aware_nodes.pdf")
 
