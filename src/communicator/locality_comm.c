@@ -1,7 +1,9 @@
 #include "locality_comm.h"
 
-void init_locality_comm(LocalityComm** locality_ptr, MPIX_Comm* mpix_comm,
-        MPI_Datatype sendtype, MPI_Datatype recvtype)
+void init_locality_comm(LocalityComm** locality_ptr,
+                        MPIX_Comm* mpix_comm,
+                        MPI_Datatype sendtype,
+                        MPI_Datatype recvtype)
 {
     LocalityComm* locality = (LocalityComm*)malloc(sizeof(LocalityComm));
 
@@ -42,10 +44,10 @@ void destroy_locality_comm(LocalityComm* locality)
 }
 
 void get_local_comm_data(LocalityComm* locality,
-       int* max_local_num, 
-       int* max_local_size,
-       int* max_non_local_num,
-       int* max_non_local_size)
+                         int* max_local_num,
+                         int* max_local_size,
+                         int* max_non_local_num,
+                         int* max_non_local_size)
 {
     int sizes[4];
     int max_sizes[4];
@@ -76,11 +78,8 @@ void get_local_comm_data(LocalityComm* locality,
 
     MPI_Allreduce(MPI_IN_PLACE, max_sizes, 4, MPI_INT, MPI_MAX, MPI_COMM_WORLD);
 
-    *max_local_num = sizes[0];
-    *max_local_size = sizes[1];
-    *max_non_local_num = sizes[2];
+    *max_local_num      = sizes[0];
+    *max_local_size     = sizes[1];
+    *max_non_local_num  = sizes[2];
     *max_non_local_size = sizes[3];
-
 }
-
-

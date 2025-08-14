@@ -10,8 +10,10 @@ typedef struct _CommPkg
     int tag;
 } CommPkg;
 
-void init_comm_pkg(CommPkg** comm_ptr, MPI_Datatype sendtype,
-        MPI_Datatype recvtype, int _tag);
+void init_comm_pkg(CommPkg** comm_ptr,
+                   MPI_Datatype sendtype,
+                   MPI_Datatype recvtype,
+                   int _tag);
 void finalize_comm_pkg(CommPkg* comm);
 void destroy_comm_pkg(CommPkg* comm);
 

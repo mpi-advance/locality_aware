@@ -6,11 +6,10 @@
 #include "utils/utils.h"
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
-struct _MPIX_Request; // forward declaration
+struct _MPIX_Request;  // forward declaration
 typedef struct _MPIX_Request MPIX_Request;
 
 struct _MPIX_Request
@@ -33,8 +32,8 @@ struct _MPIX_Request
     LocalityComm* locality;
 
     // Pointer to sendbuf and recvbuf
-    const void* sendbuf; // pointer to sendbuf (where original data begins)
-    void* recvbuf; // pointer to recvbuf (where final data goes)
+    const void* sendbuf;  // pointer to sendbuf (where original data begins)
+    void* recvbuf;        // pointer to recvbuf (where final data goes)
 
     // Number of bytes per receive object (for locality-aware)
     int recv_size;
@@ -47,8 +46,8 @@ struct _MPIX_Request
 
     // For allocating cpu buffers for heterogeneous communication
 #ifdef GPU
-    void* cpu_sendbuf; // for copy-to-cpu
-    void* cpu_recvbuf; // for copy-to-cpu
+    void* cpu_sendbuf;  // for copy-to-cpu
+    void* cpu_recvbuf;  // for copy-to-cpu
 #endif
 
     // Keep track of which start/wait functions to call for given request
@@ -65,7 +64,6 @@ typedef int (*mpix_wait_ftn)(MPIX_Request* request, MPI_Status* status);
 // 3. Start global
 int MPIX_Start(MPIX_Request* request);
 
-
 // Wait for locality-aware requests
 // 1. Wait for global
 // 2. Start and wait for local_R
@@ -78,11 +76,8 @@ void init_request(MPIX_Request** request_ptr);
 void allocate_requests(int n_requests, MPI_Request** request_ptr);
 void destroy_request(MPIX_Request* request);
 
-
-    
 #ifdef __cplusplus
 }
 #endif
-
 
 #endif

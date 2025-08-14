@@ -1,6 +1,9 @@
 #include "comm_pkg.h"
 
-void init_comm_pkg(CommPkg** comm_ptr, MPI_Datatype sendtype, MPI_Datatype recvtype, int _tag)
+void init_comm_pkg(CommPkg** comm_ptr,
+                   MPI_Datatype sendtype,
+                   MPI_Datatype recvtype,
+                   int _tag)
 {
     CommPkg* comm = (CommPkg*)malloc(sizeof(CommPkg));
 
@@ -24,4 +27,3 @@ void destroy_comm_pkg(CommPkg* comm)
 
     free(comm);
 }
-

@@ -1,13 +1,12 @@
 #ifndef MPI_ADVANCE_COMM_DATA_H
 #define MPI_ADVANCE_COMM_DATA_H
 
-#include <stdlib.h>
-#include <stdio.h>
 #include <mpi.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 typedef struct _CommData
@@ -30,6 +29,5 @@ void finalize_comm_data(CommData* data);
 #ifdef __cplusplus
 }
 #endif
-
 
 #endif

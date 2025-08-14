@@ -2,12 +2,11 @@
 #define MPI_ADVANCE_NEIGHBOR_INIT_H
 
 #include "communicator/locality_comm.h"
-#include "persistent.h"
 #include "neighborhood/neighbor.h"
+#include "persistent.h"
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 // Starting locality-aware requests
@@ -15,7 +14,6 @@ extern "C"
 // 2. Start and wait for local_S
 // 3. Start global
 int neighbor_start(MPIX_Request* request);
-
 
 // Wait for locality-aware requests
 // 1. Wait for global
