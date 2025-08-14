@@ -28,7 +28,7 @@
 // Streams
 #define gpuStream_t cudaStream_t
 #define gpuStreamCreate cudaStreamCreate
-#define gpuStreamDestroy cudaStreamDestroy 
+#define gpuStreamDestroy cudaStreamDestroy
 
 // Synchronization
 #define gpuDeviceSynchronize cudaDeviceSynchronize

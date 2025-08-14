@@ -5,7 +5,7 @@
 #define __HIP_PLATFORM_AMD__ 1
 #endif
 
-//#include "hip/hip_runtime_api.h"
+// #include "hip/hip_runtime_api.h"
 #include "hip/hip_runtime.h"
 
 // Devices
@@ -35,7 +35,7 @@
 // Streams
 #define gpuStream_t hipStream_t
 #define gpuStreamCreate hipStreamCreate
-#define gpuStreamDestroy hipStreamDestroy 
+#define gpuStreamDestroy hipStreamDestroy
 
 // Synchronization
 #define gpuDeviceSynchronize hipDeviceSynchronize

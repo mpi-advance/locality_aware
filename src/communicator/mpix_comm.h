@@ -1,4 +1,4 @@
-// TODO Currently Assumes SMP Ordering 
+// TODO Currently Assumes SMP Ordering
 //      And equal number of processes per node
 
 #ifndef MPI_ADVANCE_TOPOLOGY_H
@@ -11,8 +11,7 @@
 #include "utils/utils.h"
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 typedef struct _MPIX_Comm
@@ -52,9 +51,9 @@ typedef struct _MPIX_Comm
     int* ordered_global_ranks;
 
 #ifdef GPU
-   int gpus_per_node;
-   int rank_gpu;
-   gpuStream_t proc_stream;
+    int gpus_per_node;
+    int rank_gpu;
+    gpuStream_t proc_stream;
 #endif
 } MPIX_Comm;
 
@@ -87,8 +86,5 @@ void update_locality(MPIX_Comm* xcomm, int ppn);
 #ifdef __cplusplus
 }
 #endif
-
-
-
 
 #endif
