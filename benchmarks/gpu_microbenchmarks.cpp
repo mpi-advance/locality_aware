@@ -10,7 +10,7 @@
 
 #define NODES 2 //number of nodes
 #define SPN 4   //number of sockets per node
-#define PPNUMA 4 // number of processes per NUMA region
+#define PPNUMA 16 // number of processes per NUMA region
 #define PPS 16  //number of processes per socket
 #define PPN 64 //number of processes per node
 
@@ -21,8 +21,6 @@
 
 #define MATCHING 0
 
-// Want to store my device ID globally
-int device;
 
 typedef void (*pingpong_ftn)(char*, char*, char*, char*, int, int, gpuStream_t stream, MPI_Comm);
 
@@ -43,25 +41,21 @@ void pong_gpu_aware(char* sendbuf_d, char* sendbuf_h, char* recvbuf_d, char* rec
 void ping_copy_to_cpu(char* sendbuf_d, char* sendbuf_h, char* recvbuf_d, char* recvbuf_h, int size, int proc,
         gpuStream_t stream, MPI_Comm comm)
 {
-//    gpuMemcpyAsync(sendbuf_h, sendbuf_d, size*sizeof(char), gpuMemcpyDeviceToHost, stream);
-//    gpuStreamSynchronize(stream);
-    gpuMemcpy(sendbuf_h, sendbuf_d, size*sizeof(char), gpuMemcpyDeviceToHost);
+    gpuMemcpyAsync(sendbuf_h, sendbuf_d, size*sizeof(char), gpuMemcpyDeviceToHost, stream);
+    gpuStreamSynchronize(stream);
     MPI_Send(sendbuf_h, size, MPI_CHAR, proc, 0, comm);
     MPI_Recv(recvbuf_h, size, MPI_CHAR, proc, 0, comm, MPI_STATUS_IGNORE);
-    gpuMemcpy(recvbuf_d, recvbuf_h, size*sizeof(char), gpuMemcpyHostToDevice);
-//    gpuMemcpyAsync(recvbuf_d, recvbuf_h, size*sizeof(char), gpuMemcpyHostToDevice, stream);
-//    gpuStreamSynchronize(stream);
+    gpuMemcpyAsync(recvbuf_d, recvbuf_h, size*sizeof(char), gpuMemcpyHostToDevice, stream);
+    gpuStreamSynchronize(stream);
 }
 void pong_copy_to_cpu(char* sendbuf_d, char* sendbuf_h, char* recvbuf_d, char* recvbuf_h, int size, int proc,
         gpuStream_t stream, MPI_Comm comm)
 {
     MPI_Recv(recvbuf_h, size, MPI_CHAR, proc, 0, comm, MPI_STATUS_IGNORE);
-    //gpuMemcpyAsync(recvbuf_d, recvbuf_h, size*sizeof(char), gpuMemcpyHostToDevice, stream);
-    //gpuStreamSynchronize(stream);
-    gpuMemcpy(recvbuf_d, recvbuf_h, size*sizeof(char), gpuMemcpyHostToDevice);
-    gpuMemcpy(sendbuf_h, sendbuf_d, size*sizeof(char), gpuMemcpyDeviceToHost);
-    //gpuMemcpyAsync(sendbuf_h, sendbuf_d, size*sizeof(char), gpuMemcpyDeviceToHost, stream);
-    //gpuStreamSynchronize(stream);
+    gpuMemcpyAsync(recvbuf_d, recvbuf_h, size*sizeof(char), gpuMemcpyHostToDevice, stream);
+    gpuStreamSynchronize(stream);
+    gpuMemcpyAsync(sendbuf_h, sendbuf_d, size*sizeof(char), gpuMemcpyDeviceToHost, stream);
+    gpuStreamSynchronize(stream);
     MPI_Send(sendbuf_h, size, MPI_CHAR, proc, 0, comm);
 }
 
@@ -155,7 +149,6 @@ void print_ping_pong(pingpong_ftn f_ping, pingpong_ftn f_pong, int max_p, int ra
     // Print Times
     for (int i = 0; i < max_p; i++)
     {
-        //int s = pow(2, i);
         int s = 1 << i;
         if (rank == 0) printf("Size %d: ", s);
         double time = time_ping_pong(f_ping, f_pong, rank0, rank1, s, sendbuf_d, sendbuf_h, 
@@ -332,8 +325,7 @@ int main(int argc, char* argv[])
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
 
-    int max_p = 25;
-    //int max_s = pow(2, max_p);
+    int max_p = 30;
     int max_s = 1 << max_p;
 
     if (rank == 0) 
@@ -395,15 +387,9 @@ int main(int argc, char* argv[])
         }
     }
 
-    gpuGetDevice(&device);
-
     if (rank == 0) printf("Running standard GPU-Aware benchmarks\n");
     standard_ping_pong_gpu(ping_gpu_aware, pong_gpu_aware, max_p, sendbuf_d, NULL,
             recvbuf_d, NULL, stream, MPI_COMM_WORLD);
-
-    if (rank == 0) printf("Running standard inter-CPU benchmarks on host buffers\n");
-    standard_ping_pong_gpu(ping_gpu_aware, pong_gpu_aware, max_p, sendbuf_h, NULL,
-            recvbuf_h, NULL, stream, MPI_COMM_WORLD);
 
     if (rank == 0) printf("Running standard Copy-to-CPU benchmarks\n");
     standard_ping_pong_gpu(ping_copy_to_cpu, pong_copy_to_cpu, max_p, sendbuf_d, sendbuf_h,
@@ -416,6 +402,7 @@ int main(int argc, char* argv[])
     if (rank == 0) printf("Running multi-proc Copy-to-CPU benchmarks\n");
     multiproc_ping_pong_gpu(ping_copy_to_cpu, pong_copy_to_cpu, max_p, sendbuf_d, sendbuf_h,
             recvbuf_d, recvbuf_h, stream, MPI_COMM_WORLD);
+
 
     gpuStreamDestroy(stream);
 

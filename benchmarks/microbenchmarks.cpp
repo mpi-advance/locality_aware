@@ -9,14 +9,9 @@
 
 #define NODES 2 //number of nodes
 #define SPN 4   //number of sockets per node
-#define PPNUMA 4 // number of processes per NUMA region
+#define PPNUMA 16 // number of processes per NUMA region
 #define PPS 16  //number of processes per socket
 #define PPN 64 //number of processes per node
-
-#define GPNUMA 1
-#define GPS 1
-#define GPN 4
-#define PPG 16
 
 #define MATCHING 0
 
@@ -493,8 +488,8 @@ int main(int argc, char* argv[])
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
 
-    int max_p = 25;
-    int max_s = pow(2, max_p);
+    int max_p = 30;
+    long max_s = 1 << max_p;
     char* sendbuf = new char[max_s];
     char* recvbuf = new char[max_s];
     MPI_Request* req = new MPI_Request[max_s];
