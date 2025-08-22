@@ -1,21 +1,51 @@
 #!/bin/sh
 #Submit using flux batch <filename>
 
-#flux: --job-name=ccl_microbenchmarks_n2
-#flux: --output='ccl_microbenchmarks_n2.{{id}}.out'
-#flux: --error='ccl_microbenchmarks_n2.{{id}}.err'
+#flux: --job-name=ccl_microbenchmarks_n2_debug
+#flux: --output='ccl_microbenchmarks_n2_debug.{{id}}.out'
+#flux: --error='ccl_microbenchmarks_n2_debug.{{id}}.err'
 #flux: -N 2
 #flux: -l # Add task rank prefixes to each line of output.
 #flux: --setattr=thp=always # Enable Transparent Huge Pages (THP)
 #flux: -t 45
 #flux: -q pbatch # other available queues: pdebug
 
+module load rocmcc/6.4.0-magic
+module load cce/19.0.0
+module load cray-mpich/9.0.1
+
 export MPICH_GPU_SUPPORT_ENABLED=1
 export HSA_XNACK=1
+
+export ROCM_PATH=/usr/tce/packages/rocmcc/rocmcc-6.4.0-magic/
+export MPICH_DIR=/usr/tce/packages/cray-mpich/cray-mpich-9.0.1-rocmcc-6.4.0-magic/
+
+MPI_INSTALL_DIR=${MPICH_DIR}
+RCCL_INSTALL_DIR=${ROCM_PATH}
+WORKDIR=${PWD}
+LIBFABRIC_DIR=/opt/cray/libfabric/2.1/lib64
+AWS_OFI_DIR=/g/g14/bienz1/locality_aware_cleanup/benchmark_tests/tuolumne/aws-ofi-rccl/install/lib/
+
+export PATH=${MPI_INSTALL_DIR}/bin:${ROCM_PATH}/bin:$PATH
+export LD_LIBRARY_PATH=${LIBFABRIC_DIR}:${AWS_OFI_DIR}:${RCCL_INSTALL_DIR}/lib:${MPI_INSTALL_DIR}/lib:$CRAY_LD_LIBRARY_PATH:$LD_LIBRARY_PATH
+
+# RCCL settings
+export NCCL_DEBUG=VERSION
+export NCCL_NET_PLUGIN=${AWS_OFI_DIR}/librccl-net.so
 
 # Check if THP are enabled
 #cat /sys/kernel/mm/transparent_hugepage/enabled
 cd ${HOME}/MPICCL/build/benchmarks
 
-echo "CCL Microbenchmarks:"
-flux run -N2 -n128 --verbose --exclusive --setopt=mpibind=verbose:2 ./ccl_microbenchmarks
+echo "CCL Microbenchmarks - 1 Cores per Rank:"
+flux run -N2 -n32 -c1 --verbose --exclusive --setopt=mpibind=verbose:2 ./ccl_microbenchmarks
+echo "CCL Microbenchmarks - 2 Cores per Rank:"
+flux run -N2 -n32 -c2 --verbose --exclusive --setopt=mpibind=verbose:2 ./ccl_microbenchmarks
+echo "CCL Microbenchmarks - 4 Cores per Rank:"
+flux run -N2 -n32 -c4 --verbose --exclusive --setopt=mpibind=verbose:2 ./ccl_microbenchmarks
+#echo "CCL Microbenchmarks - 8 Cores per Rank:"
+#flux run -N2 -n16 -c8 --verbose --exclusive --setopt=mpibind=verbose:2 ./ccl_microbenchmarks
+#echo "CCL Microbenchmarks - 16 Cores per Rank:"
+#flux run -N2 -n8 -c16 --verbose --exclusive --setopt=mpibind=verbose:2 ./ccl_microbenchmarks
+echo "CCL Microbenchmarks - 6 Cores per Rank:"
+flux run -N2 -n32 -c12 --verbose --exclusive --setopt=mpibind=verbose:2 ./ccl_microbenchmarks
