@@ -1,0 +1,886 @@
+0: CCL Microbenchmarks - 1 Cores per Rank:
+0: Inter-GPU Microbenchmarks will be run with the following:
+0: # Processes per NUMA: 4
+0: # Processes per socket: 4
+0: # Processes per node: 16
+0: # of nodes: 2
+0: # GPUs per NUMA: 1
+0: # GPUs per socket: 1
+0: # GPUs per node: 4
+0: # Processes per GPU: 4
+0: If these are incorrect, edit the defines at the top of benchmarks/microbenchmarks.cpp
+0: RCCL version : 2.22.3-HEAD:271856d
+0: HIP version  : 6.4.43482-0f2d60242
+0: ROCm version : 6.4.0.0-47-73dae9c
+0: Hostname     : tuolumne2029
+0: Librccl path : /usr/tce/packages/rocmcc/rocmcc-6.4.0-magic/lib/librccl.so.1
+0: GPU-Aware intra-NUMA tests will not be run because GPNUMA is set to 1.
+0: intra-socket tests will not be run because GPS is set to 1.
+0: Running standard GPU-Aware benchmarks
+0: Not measuring GPU-Aware intra-NUMA, because GPNUMA is set to 1
+0: Not measuring GPU-Aware intra-socket, because GPS is set to 1
+0: GPU-Aware On-Node, Off-Socket Ping-Pong:
+0: Size 1: 1.706707e-05
+0: Size 2: 1.698491e-05
+0: Size 4: 1.703904e-05
+0: Size 8: 1.719415e-05
+0: Size 16: 1.722018e-05
+0: Size 32: 1.716542e-05
+0: Size 64: 1.717518e-05
+0: Size 128: 1.718672e-05
+0: Size 256: 1.722290e-05
+0: Size 512: 1.732650e-05
+0: Size 1024: 1.763867e-05
+0: Size 2048: 1.859322e-05
+0: Size 4096: 2.051685e-05
+0: Size 8192: 2.432304e-05
+0: Size 16384: 3.200685e-05
+0: Size 32768: 3.256280e-05
+0: Size 65536: 2.636488e-05
+0: Size 131072: 2.659376e-05
+0: Size 262144: 3.403229e-05
+0: Size 524288: 4.641724e-05
+0: Size 1048576: 7.073477e-05
+0: Size 2097152: 1.178225e-04
+0: Size 4194304: 2.120575e-04
+0: Size 8388608: 3.984821e-04
+0: Size 16777216: 7.692334e-04
+0: Size 33554432: 1.507018e-03
+0: Size 67108864: 2.978990e-03
+0: Size 134217728: 5.945880e-03
+0: Size 268435456: 1.187753e-02
+0: Size 536870912: 2.368169e-02
+0: 
+0: GPU-Aware Off-Node Ping-Pong:
+0: Size 1: 2.590154e-05
+0: Size 2: 2.543495e-05
+0: Size 4: 2.483298e-05
+0: Size 8: 2.481269e-05
+0: Size 16: 2.460817e-05
+0: Size 32: 2.464179e-05
+0: Size 64: 2.449627e-05
+0: Size 128: 2.502798e-05
+0: Size 256: 2.495734e-05
+0: Size 512: 2.509970e-05
+0: Size 1024: 2.533175e-05
+0: Size 2048: 2.534064e-05
+0: Size 4096: 2.618057e-05
+0: Size 8192: 2.962093e-05
+0: Size 16384: 3.031946e-05
+0: Size 32768: 3.202053e-05
+0: Size 65536: 3.691756e-05
+0: Size 131072: 3.949974e-05
+0: Size 262144: 4.639304e-05
+0: Size 524288: 5.955228e-05
+0: Size 1048576: 8.655033e-05
+0: Size 2097152: 1.382291e-04
+0: Size 4194304: 2.333159e-04
+0: Size 8388608: 4.232799e-04
+0: Size 16777216: 7.914809e-04
+0: Size 33554432: 1.534281e-03
+0: Size 67108864: 3.015622e-03
+0: Size 134217728: 5.983620e-03
+0: Size 268435456: 1.189701e-02
+0: Size 536870912: 2.380685e-02
+0: 
+0: Running multi-proc GPU-Aware benchmarks
+0: Off-Node Multiple Processes Per GPU:
+0: Active Procs: 1
+0: Size 1: 2.471239e-05
+0: Size 2: 2.469854e-05
+0: Size 4: 2.474590e-05
+0: Size 8: 2.467293e-05
+0: Size 16: 2.450569e-05
+0: Size 32: 2.446273e-05
+0: Size 64: 2.446033e-05
+0: Size 128: 2.498816e-05
+0: Size 256: 2.493116e-05
+0: Size 512: 2.496503e-05
+0: Size 1024: 2.505565e-05
+0: Size 2048: 2.532067e-05
+0: Size 4096: 2.611325e-05
+0: Size 8192: 2.765262e-05
+0: Size 16384: 2.943332e-05
+0: Size 32768: 3.205002e-05
+0: Size 65536: 3.692744e-05
+0: Size 131072: 3.959553e-05
+0: Size 262144: 4.692282e-05
+0: Size 524288: 5.987758e-05
+0: Size 1048576: 8.643960e-05
+0: Size 2097152: 1.374645e-04
+0: Size 4194304: 2.311731e-04
+0: Size 8388608: 4.197790e-04
+0: Size 16777216: 7.914591e-04
+0: Size 33554432: 1.532642e-03
+0: Size 67108864: 3.016118e-03
+0: Size 134217728: 5.991495e-03
+0: Size 268435456: 1.191284e-02
+0: Size 536870912: 2.378432e-02
+0: 
+0: Active Procs: 2
+0: Size 1: 3.019641e-05
+0: Size 2: 2.972447e-05
+0: Size 4: 2.976308e-05
+0: Size 8: 2.987523e-05
+0: Size 16: 2.984129e-05
+0: Size 32: 3.161553e-05
+0: Size 64: 3.341723e-05
+0: Size 128: 3.397135e-05
+0: Size 256: 3.398826e-05
+0: Size 512: 3.379725e-05
+0: Size 1024: 3.426647e-05
+0: Size 2048: 3.383295e-05
+0: Size 4096: 3.467777e-05
+0: Size 8192: 1.352258e-04
+0: Size 16384: 1.492415e-04
+0: Size 32768: 4.203365e-05
+0: Size 65536: 4.665818e-05
+0: Size 131072: 5.050825e-05
+0: Size 262144: 5.911772e-05
+0: Size 524288: 7.850068e-05
+0: Size 1048576: 1.221430e-04
+0: Size 2097152: 1.888685e-04
+0: Size 4194304: 3.690801e-04
+0: Size 8388608: 7.401754e-04
+0: Size 16777216: 1.483123e-03
+0: Size 33554432: 2.974439e-03
+0: Size 67108864: 5.935103e-03
+0: Size 134217728: 1.184673e-02
+0: Size 268435456: 2.366014e-02
+0: Size 536870912: 4.716921e-02
+0: 
+0: Active Procs: 4
+0: Size 1: 3.402549e-05
+0: Size 2: 3.391692e-05
+0: Size 4: 3.388471e-05
+0: Size 8: 3.382076e-05
+0: Size 16: 3.408969e-05
+0: Size 32: 3.388587e-05
+0: Size 64: 3.371318e-05
+0: Size 128: 3.409248e-05
+0: Size 256: 3.396496e-05
+0: Size 512: 3.414314e-05
+0: Size 1024: 3.417937e-05
+0: Size 2048: 3.454012e-05
+0: Size 4096: 3.482586e-05
+0: Size 8192: 8.438800e-05
+0: Size 16384: 1.224392e-04
+0: Size 32768: 4.206284e-05
+0: Size 65536: 4.734787e-05
+0: Size 131072: 5.193017e-05
+0: Size 262144: 6.433057e-05
+0: Size 524288: 9.611719e-05
+0: Size 1048576: 1.840541e-04
+0: Size 2097152: 3.681456e-04
+0: Size 4194304: 7.368157e-04
+0: Size 8388608: 1.474787e-03
+0: Size 16777216: 2.965049e-03
+0: Size 33554432: 5.941096e-03
+0: Size 67108864: 1.188347e-02
+0: Size 134217728: 2.380080e-02
+0: Size 268435456: 4.750920e-02
+0: Size 536870912: 9.540252e-02
+0: 
+0: Off-Node Multiple Processes Per GPU (all GPUs active per node):
+0: Active Procs: 1
+0: Size 1: 2.784446e-05
+0: Size 2: 2.727364e-05
+0: Size 4: 2.708572e-05
+0: Size 8: 2.703787e-05
+0: Size 16: 2.688566e-05
+0: Size 32: 2.708269e-05
+0: Size 64: 2.689571e-05
+0: Size 128: 2.737299e-05
+0: Size 256: 2.727088e-05
+0: Size 512: 2.723327e-05
+0: Size 1024: 2.737426e-05
+0: Size 2048: 2.778495e-05
+0: Size 4096: 2.855043e-05
+0: Size 8192: 3.987918e-05
+0: Size 16384: 4.070607e-05
+0: Size 32768: 3.443029e-05
+0: Size 65536: 3.924057e-05
+0: Size 131072: 4.228829e-05
+0: Size 262144: 4.901869e-05
+0: Size 524288: 6.220765e-05
+0: Size 1048576: 8.891690e-05
+0: Size 2097152: 1.418609e-04
+0: Size 4194304: 2.355309e-04
+0: Size 8388608: 4.364028e-04
+0: Size 16777216: 7.943194e-04
+0: Size 33554432: 1.533976e-03
+0: Size 67108864: 3.023511e-03
+0: Size 134217728: 6.134038e-03
+0: Size 268435456: 1.192792e-02
+0: Size 536870912: 2.386143e-02
+0: 
+0: Active Procs: 2
+0: Size 1: 3.434819e-05
+0: Size 2: 3.445793e-05
+0: Size 4: 3.454309e-05
+0: Size 8: 3.453471e-05
+0: Size 16: 3.457191e-05
+0: Size 32: 3.441582e-05
+0: Size 64: 3.446640e-05
+0: Size 128: 3.470234e-05
+0: Size 256: 3.456814e-05
+0: Size 512: 3.474637e-05
+0: Size 1024: 3.484225e-05
+0: Size 2048: 3.501872e-05
+0: Size 4096: 3.592814e-05
+0: Size 8192: 6.030532e-05
+0: Size 16384: 6.738022e-05
+0: Size 32768: 4.107774e-05
+0: Size 65536: 4.640702e-05
+0: Size 131072: 5.009119e-05
+0: Size 262144: 5.874764e-05
+0: Size 524288: 7.861016e-05
+0: Size 1048576: 1.268021e-04
+0: Size 2097152: 2.238897e-04
+0: Size 4194304: 4.091318e-04
+0: Size 8388608: 7.822449e-04
+0: Size 16777216: 1.518504e-03
+0: Size 33554432: 3.002110e-03
+0: Size 67108864: 5.957639e-03
+0: Size 134217728: 1.187333e-02
+0: Size 268435456: 2.368188e-02
+0: Size 536870912: 4.730438e-02
+0: 
+0: Active Procs: 4
+0: Size 1: 3.455008e-05
+0: Size 2: 3.447479e-05
+0: Size 4: 3.451777e-05
+0: Size 8: 3.464001e-05
+0: Size 16: 3.447659e-05
+0: Size 32: 3.466452e-05
+0: Size 64: 3.453058e-05
+0: Size 128: 3.503280e-05
+0: Size 256: 3.482726e-05
+0: Size 512: 3.515678e-05
+0: Size 1024: 3.569257e-05
+0: Size 2048: 3.572521e-05
+0: Size 4096: 3.644202e-05
+0: Size 8192: 9.180627e-05
+0: Size 16384: 9.898283e-05
+0: Size 32768: 4.203328e-05
+0: Size 65536: 4.812128e-05
+0: Size 131072: 5.278008e-05
+0: Size 262144: 6.427180e-05
+0: Size 524288: 9.660783e-05
+0: Size 1048576: 1.842423e-04
+0: Size 2097152: 3.681713e-04
+0: Size 4194304: 7.471971e-04
+0: Size 8388608: 1.478998e-03
+0: Size 16777216: 2.968788e-03
+0: Size 33554432: 5.952038e-03
+0: Size 67108864: 1.192017e-02
+0: Size 134217728: 2.382367e-02
+0: Size 268435456: 4.773600e-02
+0: Size 536870912: 9.556944e-02
+0: 
+0: RCCL version : 2.22.3-HEAD:271856d
+0: RCCL version : 2.22.3-HEAD:271856d
+0: HIP version  : 6.4.43482-0f2d60242
+0: HIP version  : 6.4.43482-0f2d60242
+0: ROCm version : 6.4.0.0-47-73dae9c
+0: ROCm version : 6.4.0.0-47-73dae9c
+0: Hostname     : tuolumne2029
+0: Hostname     : tuolumne2029
+0: Librccl path : /usr/tce/packages/rocmcc/rocmcc-6.4.0-magic/lib/librccl.so.1
+0: Librccl path : /usr/tce/packages/rocmcc/rocmcc-6.4.0-magic/lib/librccl.so.1
+0: RCCL version : 2.22.3-HEAD:271856d
+0: HIP version  : 6.4.43482-0f2d60242
+0: ROCm version : 6.4.0.0-47-73dae9c
+0: Hostname     : tuolumne2029
+0: Librccl path : /usr/tce/packages/rocmcc/rocmcc-6.4.0-magic/lib/librccl.so.1
+0: CCL Microbenchmarks - 2 Cores per Rank:
+0: Inter-GPU Microbenchmarks will be run with the following:
+0: # Processes per NUMA: 4
+0: # Processes per socket: 4
+0: # Processes per node: 16
+0: # of nodes: 2
+0: # GPUs per NUMA: 1
+0: # GPUs per socket: 1
+0: # GPUs per node: 4
+0: # Processes per GPU: 4
+0: If these are incorrect, edit the defines at the top of benchmarks/microbenchmarks.cpp
+0: RCCL version : 2.22.3-HEAD:271856d
+0: HIP version  : 6.4.43482-0f2d60242
+0: ROCm version : 6.4.0.0-47-73dae9c
+0: Hostname     : tuolumne2029
+0: Librccl path : /usr/tce/packages/rocmcc/rocmcc-6.4.0-magic/lib/librccl.so.1
+0: GPU-Aware intra-NUMA tests will not be run because GPNUMA is set to 1.
+0: intra-socket tests will not be run because GPS is set to 1.
+0: Running standard GPU-Aware benchmarks
+0: Not measuring GPU-Aware intra-NUMA, because GPNUMA is set to 1
+0: Not measuring GPU-Aware intra-socket, because GPS is set to 1
+0: GPU-Aware On-Node, Off-Socket Ping-Pong:
+0: Size 1: 1.730868e-05
+0: Size 2: 1.723497e-05
+0: Size 4: 1.728333e-05
+0: Size 8: 1.747333e-05
+0: Size 16: 1.749480e-05
+0: Size 32: 1.743124e-05
+0: Size 64: 1.746028e-05
+0: Size 128: 1.746739e-05
+0: Size 256: 1.752627e-05
+0: Size 512: 1.757742e-05
+0: Size 1024: 1.773321e-05
+0: Size 2048: 1.867435e-05
+0: Size 4096: 2.051794e-05
+0: Size 8192: 2.442814e-05
+0: Size 16384: 3.211626e-05
+0: Size 32768: 3.256537e-05
+0: Size 65536: 2.662339e-05
+0: Size 131072: 2.674398e-05
+0: Size 262144: 3.426470e-05
+0: Size 524288: 4.667428e-05
+0: Size 1048576: 7.094177e-05
+0: Size 2097152: 1.181221e-04
+0: Size 4194304: 2.118828e-04
+0: Size 8388608: 3.977774e-04
+0: Size 16777216: 7.686088e-04
+0: Size 33554432: 1.509841e-03
+0: Size 67108864: 2.988282e-03
+0: Size 134217728: 5.945988e-03
+0: Size 268435456: 1.186057e-02
+0: Size 536870912: 2.376621e-02
+0: 
+0: GPU-Aware Off-Node Ping-Pong:
+0: Size 1: 2.513853e-05
+0: Size 2: 2.493819e-05
+0: Size 4: 2.478430e-05
+0: Size 8: 2.468541e-05
+0: Size 16: 2.457880e-05
+0: Size 32: 2.460343e-05
+0: Size 64: 2.450321e-05
+0: Size 128: 2.499779e-05
+0: Size 256: 2.495723e-05
+0: Size 512: 2.499363e-05
+0: Size 1024: 2.523831e-05
+0: Size 2048: 2.537684e-05
+0: Size 4096: 2.603609e-05
+0: Size 8192: 2.980792e-05
+0: Size 16384: 3.012361e-05
+0: Size 32768: 3.204989e-05
+0: Size 65536: 3.698912e-05
+0: Size 131072: 3.999736e-05
+0: Size 262144: 4.670753e-05
+0: Size 524288: 5.989375e-05
+0: Size 1048576: 8.675423e-05
+0: Size 2097152: 1.383066e-04
+0: Size 4194304: 2.351518e-04
+0: Size 8388608: 4.236861e-04
+0: Size 16777216: 7.950779e-04
+0: Size 33554432: 1.531684e-03
+0: Size 67108864: 3.014445e-03
+0: Size 134217728: 5.980659e-03
+0: Size 268435456: 1.189863e-02
+0: Size 536870912: 2.376365e-02
+0: 
+0: Running multi-proc GPU-Aware benchmarks
+0: Off-Node Multiple Processes Per GPU:
+0: Active Procs: 1
+0: Size 1: 2.630772e-05
+0: Size 2: 2.626143e-05
+0: Size 4: 2.615357e-05
+0: Size 8: 2.620603e-05
+0: Size 16: 2.596981e-05
+0: Size 32: 2.592883e-05
+0: Size 64: 2.595774e-05
+0: Size 128: 2.644068e-05
+0: Size 256: 2.636544e-05
+0: Size 512: 2.642751e-05
+0: Size 1024: 2.649329e-05
+0: Size 2048: 2.683661e-05
+0: Size 4096: 2.756133e-05
+0: Size 8192: 3.964580e-05
+0: Size 16384: 4.194199e-05
+0: Size 32768: 3.365680e-05
+0: Size 65536: 3.880518e-05
+0: Size 131072: 4.163651e-05
+0: Size 262144: 4.908833e-05
+0: Size 524288: 6.249455e-05
+0: Size 1048576: 8.868384e-05
+0: Size 2097152: 1.371391e-04
+0: Size 4194304: 2.319793e-04
+0: Size 8388608: 4.183047e-04
+0: Size 16777216: 7.902436e-04
+0: Size 33554432: 1.530105e-03
+0: Size 67108864: 3.016294e-03
+0: Size 134217728: 5.978757e-03
+0: Size 268435456: 1.189880e-02
+0: Size 536870912: 2.377895e-02
+0: 
+0: Active Procs: 2
+0: Size 1: 2.890677e-05
+0: Size 2: 2.834462e-05
+0: Size 4: 2.825917e-05
+0: Size 8: 2.828428e-05
+0: Size 16: 2.828690e-05
+0: Size 32: 2.830098e-05
+0: Size 64: 2.816285e-05
+0: Size 128: 2.862192e-05
+0: Size 256: 2.854999e-05
+0: Size 512: 2.860117e-05
+0: Size 1024: 2.870977e-05
+0: Size 2048: 2.909948e-05
+0: Size 4096: 2.951312e-05
+0: Size 8192: 4.405716e-05
+0: Size 16384: 4.094633e-05
+0: Size 32768: 3.570977e-05
+0: Size 65536: 4.082755e-05
+0: Size 131072: 4.493213e-05
+0: Size 262144: 5.347005e-05
+0: Size 524288: 7.195260e-05
+0: Size 1048576: 1.257607e-04
+0: Size 2097152: 2.161104e-04
+0: Size 4194304: 4.071201e-04
+0: Size 8388608: 7.806093e-04
+0: Size 16777216: 1.523707e-03
+0: Size 33554432: 2.999899e-03
+0: Size 67108864: 5.959946e-03
+0: Size 134217728: 1.187844e-02
+0: Size 268435456: 2.361579e-02
+0: Size 536870912: 4.722880e-02
+0: 
+0: Active Procs: 4
+0: Size 1: 2.829480e-05
+0: Size 2: 2.835015e-05
+0: Size 4: 2.840121e-05
+0: Size 8: 2.840833e-05
+0: Size 16: 2.827682e-05
+0: Size 32: 2.826002e-05
+0: Size 64: 2.826543e-05
+0: Size 128: 2.878848e-05
+0: Size 256: 2.867867e-05
+0: Size 512: 2.872019e-05
+0: Size 1024: 2.892639e-05
+0: Size 2048: 2.917437e-05
+0: Size 4096: 2.995232e-05
+0: Size 8192: 9.987938e-05
+0: Size 16384: 1.091870e-04
+0: Size 32768: 3.773418e-05
+0: Size 65536: 4.312429e-05
+0: Size 131072: 4.629857e-05
+0: Size 262144: 5.641945e-05
+0: Size 524288: 9.455660e-05
+0: Size 1048576: 1.839874e-04
+0: Size 2097152: 3.696466e-04
+0: Size 4194304: 7.376219e-04
+0: Size 8388608: 1.474784e-03
+0: Size 16777216: 2.963679e-03
+0: Size 33554432: 5.963617e-03
+0: Size 67108864: 1.191676e-02
+0: Size 134217728: 2.373198e-02
+0: Size 268435456: 4.751649e-02
+0: Size 536870912: 9.489129e-02
+0: 
+0: Off-Node Multiple Processes Per GPU (all GPUs active per node):
+0: Active Procs: 1
+0: Size 1: 2.787430e-05
+0: Size 2: 2.762800e-05
+0: Size 4: 2.748954e-05
+0: Size 8: 2.733219e-05
+0: Size 16: 2.713270e-05
+0: Size 32: 2.731408e-05
+0: Size 64: 2.716381e-05
+0: Size 128: 2.767259e-05
+0: Size 256: 2.760251e-05
+0: Size 512: 2.764067e-05
+0: Size 1024: 2.773060e-05
+0: Size 2048: 2.804468e-05
+0: Size 4096: 2.881861e-05
+0: Size 8192: 4.242006e-05
+0: Size 16384: 4.262312e-05
+0: Size 32768: 3.458854e-05
+0: Size 65536: 3.954238e-05
+0: Size 131072: 4.244427e-05
+0: Size 262144: 4.990178e-05
+0: Size 524288: 6.373011e-05
+0: Size 1048576: 8.999230e-05
+0: Size 2097152: 1.416125e-04
+0: Size 4194304: 2.360419e-04
+0: Size 8388608: 4.249390e-04
+0: Size 16777216: 8.205029e-04
+0: Size 33554432: 1.540183e-03
+0: Size 67108864: 3.032915e-03
+0: Size 134217728: 6.011850e-03
+0: Size 268435456: 1.198280e-02
+0: Size 536870912: 2.438902e-02
+0: 
+0: Active Procs: 2
+0: Size 1: 3.117196e-05
+0: Size 2: 3.085183e-05
+0: Size 4: 3.078650e-05
+0: Size 8: 3.069091e-05
+0: Size 16: 3.138688e-05
+0: Size 32: 3.131129e-05
+0: Size 64: 3.143635e-05
+0: Size 128: 3.172120e-05
+0: Size 256: 3.166159e-05
+0: Size 512: 3.168000e-05
+0: Size 1024: 3.176243e-05
+0: Size 2048: 3.216856e-05
+0: Size 4096: 3.292094e-05
+0: Size 8192: 6.069151e-05
+0: Size 16384: 6.526909e-05
+0: Size 32768: 3.891444e-05
+0: Size 65536: 4.408165e-05
+0: Size 131072: 4.809533e-05
+0: Size 262144: 5.671194e-05
+0: Size 524288: 7.724517e-05
+0: Size 1048576: 1.283412e-04
+0: Size 2097152: 2.190835e-04
+0: Size 4194304: 4.160644e-04
+0: Size 8388608: 7.857625e-04
+0: Size 16777216: 1.524851e-03
+0: Size 33554432: 3.012189e-03
+0: Size 67108864: 5.963202e-03
+0: Size 134217728: 1.187136e-02
+0: Size 268435456: 2.370485e-02
+0: Size 536870912: 4.725065e-02
+0: 
+0: Active Procs: 4
+0: Size 1: 3.211720e-05
+0: Size 2: 3.212607e-05
+0: Size 4: 3.218638e-05
+0: Size 8: 3.214000e-05
+0: Size 16: 3.198665e-05
+0: Size 32: 3.198912e-05
+0: Size 64: 3.196427e-05
+0: Size 128: 3.248469e-05
+0: Size 256: 3.232312e-05
+0: Size 512: 3.243417e-05
+0: Size 1024: 3.254611e-05
+0: Size 2048: 3.279825e-05
+0: Size 4096: 3.339446e-05
+0: Size 8192: 1.091719e-04
+0: Size 16384: 1.190988e-04
+0: Size 32768: 3.950606e-05
+0: Size 65536: 4.502915e-05
+0: Size 131072: 5.003074e-05
+0: Size 262144: 6.135703e-05
+0: Size 524288: 9.447413e-05
+0: Size 1048576: 1.840568e-04
+0: Size 2097152: 3.734073e-04
+0: Size 4194304: 7.380115e-04
+0: Size 8388608: 1.477304e-03
+0: Size 16777216: 2.969669e-03
+0: Size 33554432: 5.959690e-03
+0: Size 67108864: 1.192382e-02
+0: Size 134217728: 2.393652e-02
+0: Size 268435456: 4.774966e-02
+0: Size 536870912: 9.576931e-02
+0: 
+0: RCCL version : 2.22.3-HEAD:271856d
+0: RCCL version : 2.22.3-HEAD:271856d
+0: RCCL version : 2.22.3-HEAD:271856d
+0: HIP version  : 6.4.43482-0f2d60242
+0: HIP version  : 6.4.43482-0f2d60242
+0: HIP version  : 6.4.43482-0f2d60242
+0: ROCm version : 6.4.0.0-47-73dae9c
+0: ROCm version : 6.4.0.0-47-73dae9c
+0: ROCm version : 6.4.0.0-47-73dae9c
+0: Hostname     : tuolumne2029
+0: Hostname     : tuolumne2029
+0: Hostname     : tuolumne2029
+0: Librccl path : /usr/tce/packages/rocmcc/rocmcc-6.4.0-magic/lib/librccl.so.1
+0: Librccl path : /usr/tce/packages/rocmcc/rocmcc-6.4.0-magic/lib/librccl.so.1
+0: Librccl path : /usr/tce/packages/rocmcc/rocmcc-6.4.0-magic/lib/librccl.so.1
+0: CCL Microbenchmarks - 4 Cores per Rank:
+0: Inter-GPU Microbenchmarks will be run with the following:
+0: # Processes per NUMA: 4
+0: # Processes per socket: 4
+0: # Processes per node: 16
+0: # of nodes: 2
+0: # GPUs per NUMA: 1
+0: # GPUs per socket: 1
+0: # GPUs per node: 4
+0: # Processes per GPU: 4
+0: If these are incorrect, edit the defines at the top of benchmarks/microbenchmarks.cpp
+0: RCCL version : 2.22.3-HEAD:271856d
+0: HIP version  : 6.4.43482-0f2d60242
+0: ROCm version : 6.4.0.0-47-73dae9c
+0: Hostname     : tuolumne2029
+0: Librccl path : /usr/tce/packages/rocmcc/rocmcc-6.4.0-magic/lib/librccl.so.1
+0: GPU-Aware intra-NUMA tests will not be run because GPNUMA is set to 1.
+0: intra-socket tests will not be run because GPS is set to 1.
+0: Running standard GPU-Aware benchmarks
+0: Not measuring GPU-Aware intra-NUMA, because GPNUMA is set to 1
+0: Not measuring GPU-Aware intra-socket, because GPS is set to 1
+0: GPU-Aware On-Node, Off-Socket Ping-Pong:
+0: Size 1: 1.688246e-05
+0: Size 2: 1.682002e-05
+0: Size 4: 1.688220e-05
+0: Size 8: 1.702523e-05
+0: Size 16: 1.702601e-05
+0: Size 32: 1.701200e-05
+0: Size 64: 1.704329e-05
+0: Size 128: 1.705601e-05
+0: Size 256: 1.713498e-05
+0: Size 512: 1.721921e-05
+0: Size 1024: 1.751634e-05
+0: Size 2048: 1.851199e-05
+0: Size 4096: 2.047698e-05
+0: Size 8192: 2.415699e-05
+0: Size 16384: 3.191050e-05
+0: Size 32768: 3.236117e-05
+0: Size 65536: 2.631996e-05
+0: Size 131072: 2.643418e-05
+0: Size 262144: 3.398968e-05
+0: Size 524288: 4.644019e-05
+0: Size 1048576: 7.089377e-05
+0: Size 2097152: 1.188333e-04
+0: Size 4194304: 2.137159e-04
+0: Size 8388608: 4.004267e-04
+0: Size 16777216: 7.762352e-04
+0: Size 33554432: 1.523383e-03
+0: Size 67108864: 3.027759e-03
+0: Size 134217728: 6.027509e-03
+0: Size 268435456: 1.205199e-02
+0: Size 536870912: 2.413810e-02
+0: 
+0: GPU-Aware Off-Node Ping-Pong:
+0: Size 1: 2.466833e-05
+0: Size 2: 2.437031e-05
+0: Size 4: 2.431682e-05
+0: Size 8: 2.431862e-05
+0: Size 16: 2.423931e-05
+0: Size 32: 2.404998e-05
+0: Size 64: 2.402030e-05
+0: Size 128: 2.451136e-05
+0: Size 256: 2.443372e-05
+0: Size 512: 2.450857e-05
+0: Size 1024: 2.468536e-05
+0: Size 2048: 2.489862e-05
+0: Size 4096: 2.566996e-05
+0: Size 8192: 3.016811e-05
+0: Size 16384: 3.133851e-05
+0: Size 32768: 3.186533e-05
+0: Size 65536: 3.648954e-05
+0: Size 131072: 3.925059e-05
+0: Size 262144: 4.651209e-05
+0: Size 524288: 5.942296e-05
+0: Size 1048576: 8.640781e-05
+0: Size 2097152: 1.378695e-04
+0: Size 4194304: 2.332416e-04
+0: Size 8388608: 4.218963e-04
+0: Size 16777216: 7.897325e-04
+0: Size 33554432: 1.528676e-03
+0: Size 67108864: 3.015767e-03
+0: Size 134217728: 5.991456e-03
+0: Size 268435456: 1.226157e-02
+0: Size 536870912: 2.386312e-02
+0: 
+0: Running multi-proc GPU-Aware benchmarks
+0: Off-Node Multiple Processes Per GPU:
+0: Active Procs: 1
+0: Size 1: 2.428949e-05
+0: Size 2: 2.420674e-05
+0: Size 4: 2.418992e-05
+0: Size 8: 2.417161e-05
+0: Size 16: 2.396730e-05
+0: Size 32: 2.397777e-05
+0: Size 64: 2.396723e-05
+0: Size 128: 2.449675e-05
+0: Size 256: 2.441384e-05
+0: Size 512: 2.449492e-05
+0: Size 1024: 2.457374e-05
+0: Size 2048: 2.491064e-05
+0: Size 4096: 2.562989e-05
+0: Size 8192: 3.037016e-05
+0: Size 16384: 3.065159e-05
+0: Size 32768: 3.183957e-05
+0: Size 65536: 3.647734e-05
+0: Size 131072: 3.932765e-05
+0: Size 262144: 4.701509e-05
+0: Size 524288: 6.046699e-05
+0: Size 1048576: 8.786316e-05
+0: Size 2097152: 1.364939e-04
+0: Size 4194304: 2.309942e-04
+0: Size 8388608: 4.157593e-04
+0: Size 16777216: 7.871058e-04
+0: Size 33554432: 1.527525e-03
+0: Size 67108864: 3.017117e-03
+0: Size 134217728: 5.994916e-03
+0: Size 268435456: 1.195926e-02
+0: Size 536870912: 2.393006e-02
+0: 
+0: Active Procs: 2
+0: Size 1: 2.804323e-05
+0: Size 2: 2.775197e-05
+0: Size 4: 2.771049e-05
+0: Size 8: 2.770992e-05
+0: Size 16: 2.762747e-05
+0: Size 32: 2.768508e-05
+0: Size 64: 2.761085e-05
+0: Size 128: 2.808855e-05
+0: Size 256: 2.805102e-05
+0: Size 512: 2.814118e-05
+0: Size 1024: 2.820184e-05
+0: Size 2048: 2.849564e-05
+0: Size 4096: 2.904981e-05
+0: Size 8192: 4.187659e-05
+0: Size 16384: 4.188145e-05
+0: Size 32768: 3.536022e-05
+0: Size 65536: 4.040422e-05
+0: Size 131072: 4.426087e-05
+0: Size 262144: 5.272289e-05
+0: Size 524288: 7.557193e-05
+0: Size 1048576: 1.250374e-04
+0: Size 2097152: 2.158917e-04
+0: Size 4194304: 3.820663e-04
+0: Size 8388608: 7.579000e-04
+0: Size 16777216: 1.486880e-03
+0: Size 33554432: 3.009753e-03
+0: Size 67108864: 5.935569e-03
+0: Size 134217728: 1.185271e-02
+0: Size 268435456: 2.365849e-02
+0: Size 536870912: 4.718257e-02
+0: 
+0: Active Procs: 4
+0: Size 1: 2.799344e-05
+0: Size 2: 2.808135e-05
+0: Size 4: 2.806436e-05
+0: Size 8: 2.902739e-05
+0: Size 16: 2.904846e-05
+0: Size 32: 2.907589e-05
+0: Size 64: 2.907510e-05
+0: Size 128: 2.951887e-05
+0: Size 256: 2.939621e-05
+0: Size 512: 2.947111e-05
+0: Size 1024: 2.951913e-05
+0: Size 2048: 2.987427e-05
+0: Size 4096: 3.039154e-05
+0: Size 8192: 9.082679e-05
+0: Size 16384: 9.359037e-05
+0: Size 32768: 3.681803e-05
+0: Size 65536: 4.213150e-05
+0: Size 131072: 4.722166e-05
+0: Size 262144: 5.856354e-05
+0: Size 524288: 9.400288e-05
+0: Size 1048576: 1.839820e-04
+0: Size 2097152: 3.692325e-04
+0: Size 4194304: 7.366107e-04
+0: Size 8388608: 1.476277e-03
+0: Size 16777216: 2.966556e-03
+0: Size 33554432: 5.956594e-03
+0: Size 67108864: 1.191353e-02
+0: Size 134217728: 2.380217e-02
+0: Size 268435456: 4.772861e-02
+0: Size 536870912: 9.509429e-02
+0: 
+0: Off-Node Multiple Processes Per GPU (all GPUs active per node):
+0: Active Procs: 1
+0: Size 1: 2.760565e-05
+0: Size 2: 2.716553e-05
+0: Size 4: 2.713228e-05
+0: Size 8: 2.786288e-05
+0: Size 16: 2.751715e-05
+0: Size 32: 2.762589e-05
+0: Size 64: 2.739460e-05
+0: Size 128: 2.785835e-05
+0: Size 256: 2.769654e-05
+0: Size 512: 2.779360e-05
+0: Size 1024: 2.781979e-05
+0: Size 2048: 2.836178e-05
+0: Size 4096: 2.919033e-05
+0: Size 8192: 4.869207e-05
+0: Size 16384: 5.307601e-05
+0: Size 32768: 3.505820e-05
+0: Size 65536: 3.999705e-05
+0: Size 131072: 4.281337e-05
+0: Size 262144: 4.984515e-05
+0: Size 524288: 6.328191e-05
+0: Size 1048576: 9.193492e-05
+0: Size 2097152: 1.418684e-04
+0: Size 4194304: 2.360215e-04
+0: Size 8388608: 4.368663e-04
+0: Size 16777216: 7.930125e-04
+0: Size 33554432: 1.538142e-03
+0: Size 67108864: 3.027636e-03
+0: Size 134217728: 6.017027e-03
+0: Size 268435456: 1.226683e-02
+0: Size 536870912: 2.398797e-02
+0: 
+0: Active Procs: 2
+0: Size 1: 3.132781e-05
+0: Size 2: 3.098980e-05
+0: Size 4: 3.090939e-05
+0: Size 8: 3.084826e-05
+0: Size 16: 3.074623e-05
+0: Size 32: 3.077145e-05
+0: Size 64: 3.086653e-05
+0: Size 128: 3.123207e-05
+0: Size 256: 3.124886e-05
+0: Size 512: 3.121395e-05
+0: Size 1024: 3.126697e-05
+0: Size 2048: 3.160142e-05
+0: Size 4096: 3.236084e-05
+0: Size 8192: 5.482048e-05
+0: Size 16384: 6.117089e-05
+0: Size 32768: 3.845129e-05
+0: Size 65536: 4.331985e-05
+0: Size 131072: 4.745321e-05
+0: Size 262144: 5.614936e-05
+0: Size 524288: 7.687517e-05
+0: Size 1048576: 1.275486e-04
+0: Size 2097152: 2.204523e-04
+0: Size 4194304: 4.130355e-04
+0: Size 8388608: 7.798797e-04
+0: Size 16777216: 1.514459e-03
+0: Size 33554432: 3.014036e-03
+0: Size 67108864: 5.971747e-03
+0: Size 134217728: 1.187887e-02
+0: Size 268435456: 2.367790e-02
+0: Size 536870912: 4.725362e-02
+0: 
+0: Active Procs: 4
+0: Size 1: 3.188852e-05
+0: Size 2: 3.147813e-05
+0: Size 4: 3.139181e-05
+0: Size 8: 3.147165e-05
+0: Size 16: 3.134597e-05
+0: Size 32: 3.137701e-05
+0: Size 64: 3.143074e-05
+0: Size 128: 3.193905e-05
+0: Size 256: 3.185690e-05
+0: Size 512: 3.360198e-05
+0: Size 1024: 3.448214e-05
+0: Size 2048: 3.475519e-05
+0: Size 4096: 3.542344e-05
+0: Size 8192: 1.053885e-04
+0: Size 16384: 1.127299e-04
+0: Size 32768: 4.221392e-05
+0: Size 65536: 4.759626e-05
+0: Size 131072: 5.216195e-05
+0: Size 262144: 6.395403e-05
+0: Size 524288: 9.439160e-05
+0: Size 1048576: 1.840659e-04
+0: Size 2097152: 3.696464e-04
+0: Size 4194304: 7.386221e-04
+0: Size 8388608: 1.477185e-03
+0: Size 16777216: 2.960402e-03
+0: Size 33554432: 5.978562e-03
+0: Size 67108864: 1.190687e-02
+0: Size 134217728: 2.385808e-02
+0: Size 268435456: 4.787662e-02
+0: Size 536870912: 9.529545e-02
+0: 
+0: RCCL version : 2.22.3-HEAD:271856d
+0: HIP version  : 6.4.43482-0f2d60242
+0: RCCL version : 2.22.3-HEAD:271856d
+0: RCCL version : 2.22.3-HEAD:271856d
+0: ROCm version : 6.4.0.0-47-73dae9c
+0: HIP version  : 6.4.43482-0f2d60242
+0: HIP version  : 6.4.43482-0f2d60242
+0: Hostname     : tuolumne2029
+0: ROCm version : 6.4.0.0-47-73dae9c
+0: ROCm version : 6.4.0.0-47-73dae9c
+0: Librccl path : /usr/tce/packages/rocmcc/rocmcc-6.4.0-magic/lib/librccl.so.1
+0: Hostname     : tuolumne2029
+0: Hostname     : tuolumne2029
+0: Librccl path : /usr/tce/packages/rocmcc/rocmcc-6.4.0-magic/lib/librccl.so.1
+0: Librccl path : /usr/tce/packages/rocmcc/rocmcc-6.4.0-magic/lib/librccl.so.1
+0: CCL Microbenchmarks - 6 Cores per Rank:
