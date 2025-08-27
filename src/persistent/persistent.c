@@ -95,8 +95,8 @@ int MPIX_Request_free(MPIX_Request* request)
     {
         for (int i = 0; i < request->global_n_msgs; i++)
        {     
-        printf("print before fail; i=%d,ptr=%p\n",i,request->global_requests[i]);
-        fflush(stdout);
+        //printf("print before fail; i=%d,ptr=%p\n",i,request->global_requests[i]);
+        //fflush(stdout);
         
         MPI_Request_free(&(request->global_requests[i]));
         
@@ -299,17 +299,35 @@ int rma_start(MPIX_Request* request)
     
     char* send_buffer = (char*)(request->sendbuf);
     char* recv_buffer = (char*)(request->recvbuf);
-        // printf("Process %d entering rma_start\n", rank);
+         printf("Process %d entering rma_start\n", rank);
 
-    //MPI_Barrier(request->xcomm->global_comm);  // synchronized before proceeding.
+    MPI_Barrier(request->xcomm->global_comm);  // synchronized before proceeding.
+
+    int puts_done = 0;//just want to see which processes actually do the puts
 
     MPI_Win_fence(MPI_MODE_NOSTORE|MPI_MODE_NOPRECEDE, request->xcomm->win);
     for (int i = 0; i < request->n_puts; i++)
     {
+     
+    
+
+	    
+         // Skip if no data to send to this target
+    if (request->send_sizes[i] == 0 || request->recv_sizes[i] == 0)
+    continue;
+
+printf("Rank %d: sending %d bytes to Rank %d; Rank %d expects %d bytes from Rank %d\n",
+       rank, request->send_sizes[i], i,
+       i, request->recv_sizes[i], i);
+
+
+         // printf("Process %d starts puts in winfence's rma_start\n", rank);
          MPI_Put(&(send_buffer[request->sdispls[i]]), request->send_sizes[i], MPI_CHAR,
                  i, request->put_displs[i], request->recv_sizes[i], MPI_CHAR, request->xcomm->win);
     }   
-        //printf("Process %d leaving rma_start\n", rank);  
+
+  
+        printf("Process %d leaving rma_start\n", rank);  
 
     return MPI_SUCCESS;
 }
@@ -317,11 +335,18 @@ int rma_start(MPIX_Request* request)
 
 int rma_wait(MPIX_Request* request, MPI_Status* status)
 {
-    
-   
-    MPI_Win_fence(MPI_MODE_NOPUT|MPI_MODE_NOSUCCEED, request->xcomm->win);
+   int rank;
 
-    
+    MPI_Comm_rank(request->xcomm->global_comm, &rank);  // Get the rank of the process
+
+
+   MPI_Barrier(request->xcomm->global_comm);
+printf("[rma_wait] Rank %d entering fence\n", rank); fflush(stdout);
+
+    MPI_Win_fence(MPI_MODE_NOPUT|MPI_MODE_NOSUCCEED, request->xcomm->win);
+printf("[rma_wait] Rank %d leaving fence\n", rank); fflush(stdout);
+   
+
     return MPI_SUCCESS;
 }
 
@@ -439,5 +464,4 @@ int rma_lock_wait(MPIX_Request* request, MPI_Status* status)
 
 
   
-
 
