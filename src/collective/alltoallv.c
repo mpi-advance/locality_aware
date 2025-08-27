@@ -300,14 +300,16 @@ int alltoallv_rma_winfence_init(const void* sendbuf,
     
     if (xcomm->win_bytes != total_recv_bytes || xcomm->win_type_bytes != 1) {
         MPIX_Comm_win_free(xcomm);
+         //xcomm->win = MPI_WIN_NULL;
     }
+    //printf("[Init] Rank %d total_recv_bytes = %d\n", rank, total_recv_bytes); fflush(stdout);
 
     // Initialize window only if it hasn't been initialized
     if (xcomm->win == MPI_WIN_NULL) {
         MPI_Win_create(recvbuf, total_recv_bytes, 1, MPI_INFO_NULL, xcomm->global_comm, &xcomm->win);
     }
 
-   
+    
    request->n_puts = num_procs;
 
    request->xcomm = xcomm;
@@ -327,8 +329,18 @@ int alltoallv_rma_winfence_init(const void* sendbuf,
        request->send_sizes[i] = sendcounts[i] * send_type_size;
        request->recv_sizes[i] = recvcounts[i] * recv_type_size;
        request->put_displs[i] *= recv_type_size; 
+      
    }
-
+/*
+   if (rank == 0) {
+    printf("[Debug] Rank %d:\n", rank);
+    printf("  send_displ[0] in bytes: %d\n", request->sdispls[0]);
+    printf("  put_displ[0] in bytes: %d\n", request->put_displs[0]);
+    printf("  send_size[0]: %d\n", request->send_sizes[0]);
+    printf("  recv_size[0]: %d\n", request->recv_sizes[0]);
+    fflush(stdout);
+}
+*/
 *request_ptr = request;
 
     return MPI_SUCCESS;
