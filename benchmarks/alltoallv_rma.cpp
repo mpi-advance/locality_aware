@@ -23,7 +23,7 @@ int main(int argc, char* argv[]) {
     int s = max_s / num_procs;
     int n_iter = 100;
 
-    srand(rank + 42);//can also just write srand(rank:))
+    srand(rank);
     std::vector<int> sendcounts(num_procs);
     std::vector<int> recvcounts(num_procs);
     std::vector<int> sdispls(num_procs);
@@ -32,8 +32,12 @@ int main(int argc, char* argv[]) {
     for (int i = 0; i < num_procs; i++) {
         double factor = 0.9 + 0.2 * ((double)rand() / RAND_MAX); // [0.9, 1.1]
         sendcounts[i] = static_cast<int>(s * factor);//Because we want an int
-        recvcounts[i] = sendcounts[i];//
+       // recvcounts[i] = sendcounts[i];//
     }
+
+    
+    // Hey I will be sending these  sendcounts so every body knows what it's receiving
+MPI_Alltoall(sendcounts.data(), 1, MPI_INT, recvcounts.data(), 1, MPI_INT, MPI_COMM_WORLD);
 
     //Modified send and recive displacements as well
     sdispls[0] = 0;
@@ -47,30 +51,37 @@ int main(int argc, char* argv[]) {
     int total_send = 0;
     int total_recv = 0;
 
+    
     for(int i=0;i<num_procs;i++)
     {
         total_send += sendcounts[i];
         total_recv += recvcounts[i];
     }
-
   
-
+    
     std::vector<double> send_data(total_send);
     std::vector<double> RMA_winfence_init(total_recv);
     std::vector<double> RMA_winlock_init(total_recv);
     std::vector<double> recv_data(total_recv);
     std::vector<double> validation_recv_data(total_recv);
-/*
-    for (int i = 0; i < total_send; i++) {
-        send_data[i] = rank;
-    }
-  */
+
+
  
   for (int i = 0; i < num_procs; i++) {
     for (int j = 0; j < sendcounts[i]; j++) {
         send_data[sdispls[i] + j] = (double)rank;
     }
 }
+
+
+for (int j = 0; j < num_procs; j++) {
+    int bytes_sent = sendcounts[j] * sizeof(double);
+    int bytes_expected = recvcounts[j] * sizeof(double);
+    printf("Rank %d sends %d bytes to Rank %d, but Rank %d expects %d bytes from Rank %d\n",
+           rank, bytes_sent, j, j, bytes_expected, rank);
+}
+fflush(stdout);
+
 
     
     MPIX_Comm* xcomm;
@@ -133,12 +144,16 @@ int main(int argc, char* argv[]) {
     tl = MPI_Wtime();  
 
     for (int k = 0; k < n_iter; k++) {  
-      
+         //printf("%d: *****Iam at line %d ************k=%d\n",rank,__LINE__,k); fflush(stdout); 
+           	    
         MPIX_Start(xrequest);
+	  //printf("%d: *****Iam at line %d *************k=%d\n",rank,__LINE__,k); fflush(stdout);
         MPIX_Wait(xrequest, MPI_STATUS_IGNORE);
 
+	  //printf("%d: *****Iam at line %d *************k=%d\n",rank,__LINE__,k); fflush(stdout);
+
     }
-    rma_fence_final = (MPI_Wtime() - tl) / n_iter;
+     rma_fence_final = (MPI_Wtime() - tl) / n_iter;
     
     MPIX_Request_free(xrequest);
          //which process takes the longest time 
@@ -205,11 +220,11 @@ int main(int argc, char* argv[]) {
     //printf("%d: *****Iam at line %d rma lock init*************\n",rank,__LINE__); fflush(stdout);
    // printf("***********1111\n");
     for (int k = 0; k < n_iter; k++) {
-         // printf("%d: *****Iam at line %d rma lock init*************k=%d\n",rank,__LINE__,k); fflush(stdout);
+          printf("%d: *****Iam at line %d rma lock init*************k=%d\n",rank,__LINE__,k); fflush(stdout);
         MPIX_Start(xrequest);
-       // printf("***********222\n");
+        printf("Rank %d: starting MPIX_Start at iter %d\n", rank, k); fflush(stdout);
         MPIX_Wait(xrequest, MPI_STATUS_IGNORE);
-       // printf("***********333\n");
+        printf("Rank %d: completed iteration %d\n", rank, k); fflush(stdout);
     }
     double rma_lock_final = (MPI_Wtime() - t0) / n_iter;
     MPIX_Request_free(xrequest);
