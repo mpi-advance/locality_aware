@@ -8,9 +8,17 @@ project(locality_aware LANGUAGES C CXX)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_C_STANDARD 99)
 
-# Add warning flags to help with debugging
+# Set default build type
+if(NOT CMAKE_BUILD_TYPE)
+	message(STATUS "No CMAKE_BUILD_TYPE specified, setting build type to RELEASE.")
+	set(CMAKE_BUILD_TYPE "RELEASE")
+endif()
+
+# Convert to lower case string to ignore case
 string(TOLOWER ${CMAKE_BUILD_TYPE} build_type)
 message(STATUS "Build type: ${CMAKE_BUILD_TYPE} -> ${build_type}")
+
+# Add warning flags to help with debugging
 if(build_type STREQUAL "debug")
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -Wpedantic -Wshadow")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic -Wshadow")
