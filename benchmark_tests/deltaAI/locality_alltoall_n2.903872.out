@@ -1,0 +1,1564 @@
+
+Currently Loaded Modules:
+  1) craype-arm-grace                                8) cray-dsmml/0.3.0
+  2) libfabric/1.20.1                                9) cray-mpich/8.1.30
+  3) craype-network-ofi                             10) cray-libsci/24.07.0
+  4) perftools-base/24.07.0                         11) PrgEnv-gnu/8.5.0
+  5) xpmem/2.9.6-1.1_20240511212657__g087dc11fc19d  12) cudatoolkit/24.3_12.3
+  6) gcc-native/13.2                                13) default
+  7) craype/2.7.32
+
+ 
+
+PE 292: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 432: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 419: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 518: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 515: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 54: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 449: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 33: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 389: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 234: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 474: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 255: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 555: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 437: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 535: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 63: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 488: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 231: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 312: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 235: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 501: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 170: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 560: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 471: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 13: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 527: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 92: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 194: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 356: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 71: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 544: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 491: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 182: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 257: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 502: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 117: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 484: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 45: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 521: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 373: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 55: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 192: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 90: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 546: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 286: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 482: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 336: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 40: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 572: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 412: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 574: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 178: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 405: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 37: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 127: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 480: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 493: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 87: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 299: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 243: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 508: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 197: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 470: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 478: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 14: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 362: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 96: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 391: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 244: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 73: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 445: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 67: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 476: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 12: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 433: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 305: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 316: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 38: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 462: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 166: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 214: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 558: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 339: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 60: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 537: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 25: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 298: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 421: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 240: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 442: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 335: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 413: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 272: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 428: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 168: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 18: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 154: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 387: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 248: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 283: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 21: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 79: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 177: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 447: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 260: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 238: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 6: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 350: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 191: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 538: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 554: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 246: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 59: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 135: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 262: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 217: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 464: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 425: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 530: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 138: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 35: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 107: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 334: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 202: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 183: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 109: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 221: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 481: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 113: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 205: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 450: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 172: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 505: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 36: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 9: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 85: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 167: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 77: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 475: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 571: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 303: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 309: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 204: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 218: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 29: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 7: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 368: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 497: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 287: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 224: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 268: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 344: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 119: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 196: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 390: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 136: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 540: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 193: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 528: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 436: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 536: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 548: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 310: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 8: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 179: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 15: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 93: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 542: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 228: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 473: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 452: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 293: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 50: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 199: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 556: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 377: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 212: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 51: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 313: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 543: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 399: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 510: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 455: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 346: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 507: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 404: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 295: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 427: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 10: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 479: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 547: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 53: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 563: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 523: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 465: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 379: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 401: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 294: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 125: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 250: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 115: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 206: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 156: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 188: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 46: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 118: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 395: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 406: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 34: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 95: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 19: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 129: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 81: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 301: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 318: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 459: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 407: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 531: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 402: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 417: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 549: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 403: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 444: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 279: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 133: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 285: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 28: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 270: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 230: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 483: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 120: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 144: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 323: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 477: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 162: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 247: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 237: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 381: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 369: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 308: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 139: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 232: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 306: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 249: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 121: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 276: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 565: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 443: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 409: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 398: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 22: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 97: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 207: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 241: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 210: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 529: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 371: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 426: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 454: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 333: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 189: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 32: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 82: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 489: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 56: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 468: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 340: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 225: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 49: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 5: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 557: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 559: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 148: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 487: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 525: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 143: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 575: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 351: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 375: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 472: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 448: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 400: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 393: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 359: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 253: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 213: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 3: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 105: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 86: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 24: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 187: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 126: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 195: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 321: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 141: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 89: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 76: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 41: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 364: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 396: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 266: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 416: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 564: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 180: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 219: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 98: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 198: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 352: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 415: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 66: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 137: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 261: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 539: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 284: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 112: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 116: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 1: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 526: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 322: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 353: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 367: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 324: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 100: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 220: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 494: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 439: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 458: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 271: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 490: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 380: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 566: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 57: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 114: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 47: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 160: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 236: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 70: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 11: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 226: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 58: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 496: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 498: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 200: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 280: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 104: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 215: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 296: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 164: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 506: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 343: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 328: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 289: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 423: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 545: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 532: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 304: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 338: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 108: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 386: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 147: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 163: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 26: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 252: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 91: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 485: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 78: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 275: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 102: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 151: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 152: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 88: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 278: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 227: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 0: Launcher/PMI did not supply NIC data (node_idx=0, rc=0, num_pmi_nics=0)
+PE 265: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 229: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 101: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 165: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 173: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 201: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 467: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 17: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 149: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 519: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 169: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 319: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 355: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 269: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 65: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 233: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 499: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 181: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 463: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 157: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 61: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 145: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 435: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 503: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 245: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 209: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 153: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 161: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 551: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 383: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 69: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 363: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 311: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 277: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 495: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 567: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 331: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 281: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 411: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 315: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 273: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 185: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 307: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 291: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 0: MPICH_OFI_NIC_POLICY = BLOCK
+PE 431: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 0: MPICH CH4 OFI detected 4 NICs/node on host gh075.hsn.cm.delta.internal.ncsa.edu
+PE 0: ======================== Display NIC Addrs  ========================
+PE 347: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 0: Hostname: gh075.hsn.cm.delta.internal.ncsa.edu
+PE 0:   MPICH_OFI_NIC_POLICY: BLOCK
+PE 0:   Number of NICs: 4
+PE 0:     nic_index 0: domain_name=cxi0, numa_domain=0, addr=0x78f0
+PE 0:     nic_index 1: domain_name=cxi1, numa_domain=1, addr=0x7830
+PE 0:     nic_index 2: domain_name=cxi2, numa_domain=2, addr=0x7831
+PE 0:     nic_index 3: domain_name=cxi3, numa_domain=3, addr=0x78f1
+PE 0:   Number of NUMA domains: 36
+PE 0:     numa_domain 0: cpu_list=[0-71]
+PE 0:     numa_domain 1: cpu_list=[72-143]
+PE 0:     numa_domain 2: cpu_list=[144-215]
+PE 0:     numa_domain 3: cpu_list=[216-287]
+PE 0:     numa_domain 4: cpu_list=[]
+PE 0:     numa_domain 5: cpu_list=[]
+PE 0:     numa_domain 6: cpu_list=[]
+PE 0:     numa_domain 7: cpu_list=[]
+PE 0:     numa_domain 8: cpu_list=[]
+PE 0:     numa_domain 9: cpu_list=[]
+PE 0:     numa_domain 10: cpu_list=[]
+PE 0:     numa_domain 11: cpu_list=[]
+PE 0:     numa_domain 12: cpu_list=[]
+PE 0:     numa_domain 13: cpu_list=[]
+PE 0:     numa_domain 14: cpu_list=[]
+PE 0:     numa_domain 15: cpu_list=[]
+PE 0:     numa_domain 16: cpu_list=[]
+PE 0:     numa_domain 17: cpu_list=[]
+PE 0:     numa_domain 18: cpu_list=[]
+PE 0:     numa_domain 19: cpu_list=[]
+PE 0:     numa_domain 20: cpu_list=[]
+PE 0:     numa_domain 21: cpu_list=[]
+PE 0:     numa_domain 22: cpu_list=[]
+PE 0:     numa_domain 23: cpu_list=[]
+PE 0:     numa_domain 24: cpu_list=[]
+PE 0:     numa_domain 25: cpu_list=[]
+PE 0:     numa_domain 26: cpu_list=[]
+PE 0:     numa_domain 27: cpu_list=[]
+PE 0:     numa_domain 28: cpu_list=[]
+PE 0:     numa_domain 29: cpu_list=[]
+PE 0:     numa_domain 30: cpu_list=[]
+PE 0:     numa_domain 31: cpu_list=[]
+PE 0:     numa_domain 32: cpu_list=[]
+PE 0:     numa_domain 33: cpu_list=[]
+PE 0:     numa_domain 34: cpu_list=[]
+PE 0:     numa_domain 35: cpu_list=[]
+PE 0: ====================================================================
+PE 64: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 509: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 68: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 52: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 256: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 20: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 44: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 327: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 208: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 132: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 176: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 124: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 48: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 216: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 140: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 440: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 520: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 504: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 128: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 184: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 420: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 512: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 84: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 460: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 360: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 0: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 0: MPICH CH4 OFI netmod using cxi provider (domain_name=cxi0, src_addr=0x78f0)
+PE 0: Selected traffic class: [TC_BEST_EFFORT, 512]
+PE 424: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 348: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 456: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 384: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 516: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 392: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 388: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 524: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 320: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 72: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 492: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 4: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 376: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 500: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 511: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 552: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 408: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 451: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 372: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 568: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 300: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 263: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 332: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 264: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 274: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 130: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 110: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 174: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 146: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 282: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 223: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 94: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 251: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 42: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 203: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 23: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 186: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 211: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 267: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 222: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 259: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 27: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 134: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 159: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 155: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 288: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 111: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 123: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 99: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 2: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 175: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 103: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 158: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 39: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 239: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 43: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 31: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 150: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 190: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 75: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 258: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 62: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 354: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 16: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 30: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x78f0]
+PE 131: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 142: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 122: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 394: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 290: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 80: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 466: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 533: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 254: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 242: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x78f1]
+PE 569: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 83: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 329: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 438: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 302: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 106: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 74: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x7830]
+PE 171: Host gh075.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x7831]
+PE 410: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 385: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 314: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 422: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 397: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 553: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 514: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 573: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 441: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 562: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 517: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 337: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 457: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 550: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 541: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 469: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 461: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 341: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 317: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 297: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 357: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 418: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 446: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 361: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 453: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 378: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 522: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 382: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 430: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 349: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 345: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 358: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 414: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 366: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 434: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 534: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 429: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 570: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 326: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 370: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 325: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 342: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 365: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 513: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 486: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=2, domain_name=cxi2, numa_node=2, address=[0x78b1]
+PE 374: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=1, domain_name=cxi1, numa_node=1, address=[0x78b0]
+PE 561: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=3, domain_name=cxi3, numa_node=3, address=[0x7871]
+PE 330: Host gh076.hsn.cm.delta.internal.ncsa.edu selected NIC index=0, domain_name=cxi0, numa_node=0, address=[0x7870]
+PE 0: MPICH CH4 OFI CXI counters initialized
+Size 1
+PMPI: 1.220963e-04
+Hierarchical Pairwise: 1.524244e-03
+Hierarchical Nonblocking: 9.093657e-04
+Hierarchical Internal: Gather: 7.908396e-05
+Hierarchical Internal: Scatter: 6.618148e-05
+Hierarchical Internal: Pairwise inter-node alltoall: 5.962271e-05
+Hierarchical Interal: Nonblocking inter-node alltoall: 5.043277e-05
+Node-Aware Pairwise: 1.544097e-01
+Node-Aware Nonblocking: 1.961276e-03
+Node-Aware Internal: Pairwise intra-node alltoall: 3.104522e-03
+Node-Aware Internal: Pairwise inter-node alltoall: 9.172151e-06
+Node-Aware Internal: Nonblocking intra-node alltoall: 1.000630e-03
+Node-Aware Internal: Nonblocking inter-node alltoall: 8.068910e-06
+Running Multileader/Locality-Aware Tests with 4 Processes Per Leader, 72 Leaders Per Node
+Hierarchical Pairwise (N Leaders 72): 6.957318e-04
+Hierarchical Nonblocking (N Leaders 72): 2.515611e-04
+Hierarchical (N Leaders 72) Internal: Gather: 7.229539e-06
+Hierarchical (N Leaders 72) Internal: Scatter: 6.011480e-06
+Hierarchical (N Leaders 72) Internal: Alltoall Pairwise: 6.387430e-04
+Hierarchical (N Leaders 72) Internal: Alltoall Nonblocking: 1.935196e-04
+Locality-Aware (N Groups 72) Alltoall Pairwise: 8.146300e-04
+Locality-Aware (N Groups 72) Alltoall Nonblocking: 3.224317e-04
+Locality-Aware (N Groups 72) Internal: Intra-node pairwise alltoall: 2.301649e-05
+Locality-Aware (N Groups 72) Internal: Inter-node pairwise alltoall: 6.948589e-04
+Locality-Aware (N Groups 72) Internal: Intra-node nonblocking alltoall: 1.642540e-05
+Locality-Aware (N Groups 72) Internal: Inter-node nonblocking alltoall: 2.253470e-04
+Multileader Node-Aware (N Leaders 72) Alltoall Pairwise: 5.298958e-04
+Multileader Node-Aware (N Leaders 72) Alltoall Nonblocking: 4.260278e-04
+Multileader Node-Aware (N Leaders 72) Internal: MPI_Gather: 7.088987e-06
+Multileader Node-Aware (N Leaders 72) Internal: Pairwise Inter-Node Alltoall: 9.621330e-06
+Multileader Node-Aware (N Leaders 72) Internal: Pairwise Intra-Node Alltoall: 1.163517e-04
+Multileader Node-Aware (N Leaders 72) Internal: Nonblocking Inter-Node Alltoall: 8.536768e-06
+Multileader Node-Aware (N Leaders 72) Internal: Nonblocking Intra-Node Alltoall: 5.178639e-05
+Multileader Node-Aware (N Leaders 72) Internal: MPI_Scatter: 5.962429e-06
+Running Multileader/Locality-Aware Tests with 8 Processes Per Leader, 36 Leaders Per Node
+Hierarchical Pairwise (N Leaders 36): 5.797405e-04
+Hierarchical Nonblocking (N Leaders 36): 1.611975e-04
+Hierarchical (N Leaders 36) Internal: Gather: 5.505480e-05
+Hierarchical (N Leaders 36) Internal: Scatter: 8.231529e-06
+Hierarchical (N Leaders 36) Internal: Alltoall Pairwise: 5.030144e-04
+Hierarchical (N Leaders 36) Internal: Alltoall Nonblocking: 1.241657e-04
+Locality-Aware (N Groups 36) Alltoall Pairwise: 4.995431e-04
+Locality-Aware (N Groups 36) Alltoall Nonblocking: 2.049623e-04
+Locality-Aware (N Groups 36) Internal: Intra-node pairwise alltoall: 4.779648e-05
+Locality-Aware (N Groups 36) Internal: Inter-node pairwise alltoall: 3.461526e-04
+Locality-Aware (N Groups 36) Internal: Intra-node nonblocking alltoall: 2.730933e-05
+Locality-Aware (N Groups 36) Internal: Inter-node nonblocking alltoall: 1.150156e-04
+Multileader Node-Aware (N Leaders 36) Alltoall Pairwise: 4.296889e-04
+Multileader Node-Aware (N Leaders 36) Alltoall Nonblocking: 4.223473e-04
+Multileader Node-Aware (N Leaders 36) Internal: MPI_Gather: 8.975704e-05
+Multileader Node-Aware (N Leaders 36) Internal: Pairwise Inter-Node Alltoall: 9.915189e-06
+Multileader Node-Aware (N Leaders 36) Internal: Pairwise Intra-Node Alltoall: 4.985532e-05
+Multileader Node-Aware (N Leaders 36) Internal: Nonblocking Inter-Node Alltoall: 8.753956e-06
+Multileader Node-Aware (N Leaders 36) Internal: Nonblocking Intra-Node Alltoall: 2.578529e-05
+Multileader Node-Aware (N Leaders 36) Internal: MPI_Scatter: 8.594496e-06
+Running Multileader/Locality-Aware Tests with 16 Processes Per Leader, 18 Leaders Per Node
+Hierarchical Pairwise (N Leaders 18): 3.303516e-04
+Hierarchical Nonblocking (N Leaders 18): 1.435074e-04
+Hierarchical (N Leaders 18) Internal: Gather: 1.255473e-04
+Hierarchical (N Leaders 18) Internal: Scatter: 1.336102e-05
+Hierarchical (N Leaders 18) Internal: Alltoall Pairwise: 2.238824e-04
+Hierarchical (N Leaders 18) Internal: Alltoall Nonblocking: 5.409889e-05
+Locality-Aware (N Groups 18) Alltoall Pairwise: 3.551052e-04
+Locality-Aware (N Groups 18) Alltoall Nonblocking: 1.647354e-04
+Locality-Aware (N Groups 18) Internal: Intra-node pairwise alltoall: 1.003795e-04
+Locality-Aware (N Groups 18) Internal: Inter-node pairwise alltoall: 1.683920e-04
+Locality-Aware (N Groups 18) Internal: Intra-node nonblocking alltoall: 5.223091e-05
+Locality-Aware (N Groups 18) Internal: Inter-node nonblocking alltoall: 5.789422e-05
+Multileader Node-Aware (N Leaders 18) Alltoall Pairwise: 4.811031e-04
+Multileader Node-Aware (N Leaders 18) Alltoall Nonblocking: 4.450644e-04
+Multileader Node-Aware (N Leaders 18) Internal: MPI_Gather: 1.402046e-04
+Multileader Node-Aware (N Leaders 18) Internal: Pairwise Inter-Node Alltoall: 1.038974e-05
+Multileader Node-Aware (N Leaders 18) Internal: Pairwise Intra-Node Alltoall: 2.569336e-05
+Multileader Node-Aware (N Leaders 18) Internal: Nonblocking Inter-Node Alltoall: 9.159988e-06
+Multileader Node-Aware (N Leaders 18) Internal: Nonblocking Intra-Node Alltoall: 1.502813e-05
+Multileader Node-Aware (N Leaders 18) Internal: MPI_Scatter: 1.323986e-05
+Size 2
+PMPI: 1.369177e-04
+Hierarchical Pairwise: 1.065202e-03
+Hierarchical Nonblocking: 1.012452e-03
+Hierarchical Internal: Gather: 1.115666e-04
+Hierarchical Internal: Scatter: 1.271973e-04
+Hierarchical Internal: Pairwise inter-node alltoall: 1.201245e-04
+Hierarchical Interal: Nonblocking inter-node alltoall: 9.303770e-05
+Node-Aware Pairwise: 3.309485e-03
+Node-Aware Nonblocking: 1.102328e-03
+Node-Aware Internal: Pairwise intra-node alltoall: 3.106635e-03
+Node-Aware Internal: Pairwise inter-node alltoall: 1.046619e-05
+Node-Aware Internal: Nonblocking intra-node alltoall: 1.031454e-03
+Node-Aware Internal: Nonblocking inter-node alltoall: 9.227857e-06
+Running Multileader/Locality-Aware Tests with 4 Processes Per Leader, 72 Leaders Per Node
+Hierarchical Pairwise (N Leaders 72): 8.122399e-04
+Hierarchical Nonblocking (N Leaders 72): 3.142799e-04
+Hierarchical (N Leaders 72) Internal: Gather: 2.904321e-05
+Hierarchical (N Leaders 72) Internal: Scatter: 1.101926e-05
+Hierarchical (N Leaders 72) Internal: Alltoall Pairwise: 6.183569e-04
+Hierarchical (N Leaders 72) Internal: Alltoall Nonblocking: 2.066891e-04
+Locality-Aware (N Groups 72) Alltoall Pairwise: 8.003718e-04
+Locality-Aware (N Groups 72) Alltoall Nonblocking: 3.305380e-04
+Locality-Aware (N Groups 72) Internal: Intra-node pairwise alltoall: 2.379474e-05
+Locality-Aware (N Groups 72) Internal: Inter-node pairwise alltoall: 7.117242e-04
+Locality-Aware (N Groups 72) Internal: Intra-node nonblocking alltoall: 1.668573e-05
+Locality-Aware (N Groups 72) Internal: Inter-node nonblocking alltoall: 2.310155e-04
+Multileader Node-Aware (N Leaders 72) Alltoall Pairwise: 5.482308e-04
+Multileader Node-Aware (N Leaders 72) Alltoall Nonblocking: 4.755658e-04
+Multileader Node-Aware (N Leaders 72) Internal: MPI_Gather: 2.925809e-05
+Multileader Node-Aware (N Leaders 72) Internal: Pairwise Inter-Node Alltoall: 1.113754e-05
+Multileader Node-Aware (N Leaders 72) Internal: Pairwise Intra-Node Alltoall: 1.181402e-04
+Multileader Node-Aware (N Leaders 72) Internal: Nonblocking Inter-Node Alltoall: 1.006340e-05
+Multileader Node-Aware (N Leaders 72) Internal: Nonblocking Intra-Node Alltoall: 5.261801e-05
+Multileader Node-Aware (N Leaders 72) Internal: MPI_Scatter: 1.104227e-05
+Running Multileader/Locality-Aware Tests with 8 Processes Per Leader, 36 Leaders Per Node
+Hierarchical Pairwise (N Leaders 36): 6.146489e-04
+Hierarchical Nonblocking (N Leaders 36): 2.089320e-04
+Hierarchical (N Leaders 36) Internal: Gather: 4.129620e-05
+Hierarchical (N Leaders 36) Internal: Scatter: 4.377800e-05
+Hierarchical (N Leaders 36) Internal: Alltoall Pairwise: 4.729381e-04
+Hierarchical (N Leaders 36) Internal: Alltoall Nonblocking: 1.035341e-04
+Locality-Aware (N Groups 36) Alltoall Pairwise: 4.918987e-04
+Locality-Aware (N Groups 36) Alltoall Nonblocking: 2.121073e-04
+Locality-Aware (N Groups 36) Internal: Intra-node pairwise alltoall: 4.842334e-05
+Locality-Aware (N Groups 36) Internal: Inter-node pairwise alltoall: 3.479437e-04
+Locality-Aware (N Groups 36) Internal: Intra-node nonblocking alltoall: 2.855140e-05
+Locality-Aware (N Groups 36) Internal: Inter-node nonblocking alltoall: 1.208319e-04
+Multileader Node-Aware (N Leaders 36) Alltoall Pairwise: 5.170569e-04
+Multileader Node-Aware (N Leaders 36) Alltoall Nonblocking: 4.446826e-04
+Multileader Node-Aware (N Leaders 36) Internal: MPI_Gather: 2.653557e-05
+Multileader Node-Aware (N Leaders 36) Internal: Pairwise Inter-Node Alltoall: 1.173785e-05
+Multileader Node-Aware (N Leaders 36) Internal: Pairwise Intra-Node Alltoall: 5.186757e-05
+Multileader Node-Aware (N Leaders 36) Internal: Nonblocking Inter-Node Alltoall: 1.055262e-05
+Multileader Node-Aware (N Leaders 36) Internal: Nonblocking Intra-Node Alltoall: 2.784682e-05
+Multileader Node-Aware (N Leaders 36) Internal: MPI_Scatter: 4.407205e-05
+Running Multileader/Locality-Aware Tests with 16 Processes Per Leader, 18 Leaders Per Node
+Hierarchical Pairwise (N Leaders 18): 3.994294e-04
+Hierarchical Nonblocking (N Leaders 18): 2.093612e-04
+Hierarchical (N Leaders 18) Internal: Gather: 5.114868e-05
+Hierarchical (N Leaders 18) Internal: Scatter: 5.414196e-05
+Hierarchical (N Leaders 18) Internal: Alltoall Pairwise: 2.377091e-04
+Hierarchical (N Leaders 18) Internal: Alltoall Nonblocking: 5.876366e-05
+Locality-Aware (N Groups 18) Alltoall Pairwise: 3.707229e-04
+Locality-Aware (N Groups 18) Alltoall Nonblocking: 1.714858e-04
+Locality-Aware (N Groups 18) Internal: Intra-node pairwise alltoall: 1.022006e-04
+Locality-Aware (N Groups 18) Internal: Inter-node pairwise alltoall: 1.717772e-04
+Locality-Aware (N Groups 18) Internal: Intra-node nonblocking alltoall: 5.274602e-05
+Locality-Aware (N Groups 18) Internal: Inter-node nonblocking alltoall: 6.289121e-05
+Multileader Node-Aware (N Leaders 18) Alltoall Pairwise: 5.835248e-04
+Multileader Node-Aware (N Leaders 18) Alltoall Nonblocking: 5.639181e-04
+Multileader Node-Aware (N Leaders 18) Internal: MPI_Gather: 5.284685e-05
+Multileader Node-Aware (N Leaders 18) Internal: Pairwise Inter-Node Alltoall: 5.026345e-05
+Multileader Node-Aware (N Leaders 18) Internal: Pairwise Intra-Node Alltoall: 3.033346e-05
+Multileader Node-Aware (N Leaders 18) Internal: Nonblocking Inter-Node Alltoall: 4.784289e-05
+Multileader Node-Aware (N Leaders 18) Internal: Nonblocking Intra-Node Alltoall: 1.725918e-05
+Multileader Node-Aware (N Leaders 18) Internal: MPI_Scatter: 5.497676e-05
+Size 4
+PMPI: 1.801047e-04
+Hierarchical Pairwise: 1.549690e-03
+Hierarchical Nonblocking: 1.471130e-03
+Hierarchical Internal: Gather: 1.537693e-04
+Hierarchical Internal: Scatter: 2.344607e-04
+Hierarchical Internal: Pairwise inter-node alltoall: 2.411708e-04
+Hierarchical Interal: Nonblocking inter-node alltoall: 1.800735e-04
+Node-Aware Pairwise: 3.181561e-03
+Node-Aware Nonblocking: 1.078090e-03
+Node-Aware Internal: Pairwise intra-node alltoall: 3.061485e-03
+Node-Aware Internal: Pairwise inter-node alltoall: 1.556395e-05
+Node-Aware Internal: Nonblocking intra-node alltoall: 1.015427e-03
+Node-Aware Internal: Nonblocking inter-node alltoall: 1.543144e-05
+Running Multileader/Locality-Aware Tests with 4 Processes Per Leader, 72 Leaders Per Node
+Hierarchical Pairwise (N Leaders 72): 1.257095e-03
+Hierarchical Nonblocking (N Leaders 72): 4.147635e-04
+Hierarchical (N Leaders 72) Internal: Gather: 6.832673e-05
+Hierarchical (N Leaders 72) Internal: Scatter: 9.399168e-05
+Hierarchical (N Leaders 72) Internal: Alltoall Pairwise: 1.053523e-03
+Hierarchical (N Leaders 72) Internal: Alltoall Nonblocking: 2.189989e-04
+Locality-Aware (N Groups 72) Alltoall Pairwise: 7.842519e-04
+Locality-Aware (N Groups 72) Alltoall Nonblocking: 3.517773e-04
+Locality-Aware (N Groups 72) Internal: Intra-node pairwise alltoall: 2.676009e-05
+Locality-Aware (N Groups 72) Internal: Inter-node pairwise alltoall: 6.732324e-04
+Locality-Aware (N Groups 72) Internal: Intra-node nonblocking alltoall: 1.868473e-05
+Locality-Aware (N Groups 72) Internal: Inter-node nonblocking alltoall: 2.429661e-04
+Multileader Node-Aware (N Leaders 72) Alltoall Pairwise: 6.634769e-04
+Multileader Node-Aware (N Leaders 72) Alltoall Nonblocking: 5.814667e-04
+Multileader Node-Aware (N Leaders 72) Internal: MPI_Gather: 6.931549e-05
+Multileader Node-Aware (N Leaders 72) Internal: Pairwise Inter-Node Alltoall: 1.467123e-05
+Multileader Node-Aware (N Leaders 72) Internal: Pairwise Intra-Node Alltoall: 1.160224e-04
+Multileader Node-Aware (N Leaders 72) Internal: Nonblocking Inter-Node Alltoall: 1.454933e-05
+Multileader Node-Aware (N Leaders 72) Internal: Nonblocking Intra-Node Alltoall: 5.545242e-05
+Multileader Node-Aware (N Leaders 72) Internal: MPI_Scatter: 9.684690e-05
+Running Multileader/Locality-Aware Tests with 8 Processes Per Leader, 36 Leaders Per Node
+Hierarchical Pairwise (N Leaders 36): 7.516356e-04
+Hierarchical Nonblocking (N Leaders 36): 3.493139e-04
+Hierarchical (N Leaders 36) Internal: Gather: 6.942361e-05
+Hierarchical (N Leaders 36) Internal: Scatter: 1.256016e-04
+Hierarchical (N Leaders 36) Internal: Alltoall Pairwise: 4.983117e-04
+Hierarchical (N Leaders 36) Internal: Alltoall Nonblocking: 1.124363e-04
+Locality-Aware (N Groups 36) Alltoall Pairwise: 5.239130e-04
+Locality-Aware (N Groups 36) Alltoall Nonblocking: 2.320833e-04
+Locality-Aware (N Groups 36) Internal: Intra-node pairwise alltoall: 5.116955e-05
+Locality-Aware (N Groups 36) Internal: Inter-node pairwise alltoall: 3.413193e-04
+Locality-Aware (N Groups 36) Internal: Intra-node nonblocking alltoall: 2.993970e-05
+Locality-Aware (N Groups 36) Internal: Inter-node nonblocking alltoall: 1.218202e-04
+Multileader Node-Aware (N Leaders 36) Alltoall Pairwise: 7.597161e-04
+Multileader Node-Aware (N Leaders 36) Alltoall Nonblocking: 6.953972e-04
+Multileader Node-Aware (N Leaders 36) Internal: MPI_Gather: 6.934400e-05
+Multileader Node-Aware (N Leaders 36) Internal: Pairwise Inter-Node Alltoall: 7.267621e-05
+Multileader Node-Aware (N Leaders 36) Internal: Pairwise Intra-Node Alltoall: 5.519654e-05
+Multileader Node-Aware (N Leaders 36) Internal: Nonblocking Inter-Node Alltoall: 7.127705e-05
+Multileader Node-Aware (N Leaders 36) Internal: Nonblocking Intra-Node Alltoall: 3.126032e-05
+Multileader Node-Aware (N Leaders 36) Internal: MPI_Scatter: 1.242436e-04
+Running Multileader/Locality-Aware Tests with 16 Processes Per Leader, 18 Leaders Per Node
+Hierarchical Pairwise (N Leaders 18): 5.399593e-04
+Hierarchical Nonblocking (N Leaders 18): 3.722211e-04
+Hierarchical (N Leaders 18) Internal: Gather: 7.223473e-05
+Hierarchical (N Leaders 18) Internal: Scatter: 1.372790e-04
+Hierarchical (N Leaders 18) Internal: Alltoall Pairwise: 2.447880e-04
+Hierarchical (N Leaders 18) Internal: Alltoall Nonblocking: 6.529428e-05
+Locality-Aware (N Groups 18) Alltoall Pairwise: 4.163894e-04
+Locality-Aware (N Groups 18) Alltoall Nonblocking: 1.693436e-04
+Locality-Aware (N Groups 18) Internal: Intra-node pairwise alltoall: 1.042333e-04
+Locality-Aware (N Groups 18) Internal: Inter-node pairwise alltoall: 2.679993e-04
+Locality-Aware (N Groups 18) Internal: Intra-node nonblocking alltoall: 5.525791e-05
+Locality-Aware (N Groups 18) Internal: Inter-node nonblocking alltoall: 6.064997e-05
+Multileader Node-Aware (N Leaders 18) Alltoall Pairwise: 8.380890e-04
+Multileader Node-Aware (N Leaders 18) Alltoall Nonblocking: 7.598506e-04
+Multileader Node-Aware (N Leaders 18) Internal: MPI_Gather: 7.240283e-05
+Multileader Node-Aware (N Leaders 18) Internal: Pairwise Inter-Node Alltoall: 7.690156e-05
+Multileader Node-Aware (N Leaders 18) Internal: Pairwise Intra-Node Alltoall: 1.080726e-04
+Multileader Node-Aware (N Leaders 18) Internal: Nonblocking Inter-Node Alltoall: 7.501643e-05
+Multileader Node-Aware (N Leaders 18) Internal: Nonblocking Intra-Node Alltoall: 6.562610e-05
+Multileader Node-Aware (N Leaders 18) Internal: MPI_Scatter: 1.374435e-04
+Size 8
+PMPI: 8.242120e-04
+Hierarchical Pairwise: 2.642988e-03
+Hierarchical Nonblocking: 2.445891e-03
+Hierarchical Internal: Gather: 2.792507e-04
+Hierarchical Internal: Scatter: 2.910922e-04
+Hierarchical Internal: Pairwise inter-node alltoall: 4.516036e-04
+Hierarchical Interal: Nonblocking inter-node alltoall: 3.160640e-04
+Node-Aware Pairwise: 3.275989e-03
+Node-Aware Nonblocking: 1.103512e-03
+Node-Aware Internal: Pairwise intra-node alltoall: 3.086607e-03
+Node-Aware Internal: Pairwise inter-node alltoall: 4.621293e-05
+Node-Aware Internal: Nonblocking intra-node alltoall: 1.399990e-03
+Node-Aware Internal: Nonblocking inter-node alltoall: 2.935528e-05
+Running Multileader/Locality-Aware Tests with 4 Processes Per Leader, 72 Leaders Per Node
+Hierarchical Pairwise (N Leaders 72): 1.543317e-03
+Hierarchical Nonblocking (N Leaders 72): 4.996614e-04
+Hierarchical (N Leaders 72) Internal: Gather: 8.498424e-05
+Hierarchical (N Leaders 72) Internal: Scatter: 9.592590e-05
+Hierarchical (N Leaders 72) Internal: Alltoall Pairwise: 1.053002e-03
+Hierarchical (N Leaders 72) Internal: Alltoall Nonblocking: 2.296270e-04
+Locality-Aware (N Groups 72) Alltoall Pairwise: 7.945206e-04
+Locality-Aware (N Groups 72) Alltoall Nonblocking: 3.442940e-04
+Locality-Aware (N Groups 72) Internal: Intra-node pairwise alltoall: 2.962339e-05
+Locality-Aware (N Groups 72) Internal: Inter-node pairwise alltoall: 6.871120e-04
+Locality-Aware (N Groups 72) Internal: Intra-node nonblocking alltoall: 2.077150e-05
+Locality-Aware (N Groups 72) Internal: Inter-node nonblocking alltoall: 2.425626e-04
+Multileader Node-Aware (N Leaders 72) Alltoall Pairwise: 9.348150e-04
+Multileader Node-Aware (N Leaders 72) Alltoall Nonblocking: 7.891808e-04
+Multileader Node-Aware (N Leaders 72) Internal: MPI_Gather: 8.584020e-05
+Multileader Node-Aware (N Leaders 72) Internal: Pairwise Inter-Node Alltoall: 1.327587e-04
+Multileader Node-Aware (N Leaders 72) Internal: Pairwise Intra-Node Alltoall: 1.152293e-04
+Multileader Node-Aware (N Leaders 72) Internal: Nonblocking Inter-Node Alltoall: 1.383741e-04
+Multileader Node-Aware (N Leaders 72) Internal: Nonblocking Intra-Node Alltoall: 6.071811e-05
+Multileader Node-Aware (N Leaders 72) Internal: MPI_Scatter: 9.802203e-05
+Running Multileader/Locality-Aware Tests with 8 Processes Per Leader, 36 Leaders Per Node
+Hierarchical Pairwise (N Leaders 36): 8.173815e-04
+Hierarchical Nonblocking (N Leaders 36): 4.156710e-04
+Hierarchical (N Leaders 36) Internal: Gather: 7.869208e-05
+Hierarchical (N Leaders 36) Internal: Scatter: 1.273232e-04
+Hierarchical (N Leaders 36) Internal: Alltoall Pairwise: 5.294133e-04
+Hierarchical (N Leaders 36) Internal: Alltoall Nonblocking: 1.282463e-04
+Locality-Aware (N Groups 36) Alltoall Pairwise: 6.957789e-04
+Locality-Aware (N Groups 36) Alltoall Nonblocking: 2.326238e-04
+Locality-Aware (N Groups 36) Internal: Intra-node pairwise alltoall: 5.417051e-05
+Locality-Aware (N Groups 36) Internal: Inter-node pairwise alltoall: 5.533426e-04
+Locality-Aware (N Groups 36) Internal: Intra-node nonblocking alltoall: 3.324812e-05
+Locality-Aware (N Groups 36) Internal: Inter-node nonblocking alltoall: 1.227674e-04
+Multileader Node-Aware (N Leaders 36) Alltoall Pairwise: 9.290196e-04
+Multileader Node-Aware (N Leaders 36) Alltoall Nonblocking: 8.521321e-04
+Multileader Node-Aware (N Leaders 36) Internal: MPI_Gather: 7.816751e-05
+Multileader Node-Aware (N Leaders 36) Internal: Pairwise Inter-Node Alltoall: 1.394649e-04
+Multileader Node-Aware (N Leaders 36) Internal: Pairwise Intra-Node Alltoall: 6.808502e-05
+Multileader Node-Aware (N Leaders 36) Internal: Nonblocking Inter-Node Alltoall: 1.377905e-04
+Multileader Node-Aware (N Leaders 36) Internal: Nonblocking Intra-Node Alltoall: 3.624248e-05
+Multileader Node-Aware (N Leaders 36) Internal: MPI_Scatter: 1.251035e-04
+Running Multileader/Locality-Aware Tests with 16 Processes Per Leader, 18 Leaders Per Node
+Hierarchical Pairwise (N Leaders 18): 7.473703e-04
+Hierarchical Nonblocking (N Leaders 18): 5.100312e-04
+Hierarchical (N Leaders 18) Internal: Gather: 8.074772e-05
+Hierarchical (N Leaders 18) Internal: Scatter: 1.368601e-04
+Hierarchical (N Leaders 18) Internal: Alltoall Pairwise: 3.089051e-04
+Hierarchical (N Leaders 18) Internal: Alltoall Nonblocking: 1.186623e-04
+Locality-Aware (N Groups 18) Alltoall Pairwise: 4.628581e-04
+Locality-Aware (N Groups 18) Alltoall Nonblocking: 1.795116e-04
+Locality-Aware (N Groups 18) Internal: Intra-node pairwise alltoall: 1.159192e-04
+Locality-Aware (N Groups 18) Internal: Inter-node pairwise alltoall: 2.733544e-04
+Locality-Aware (N Groups 18) Internal: Intra-node nonblocking alltoall: 5.779668e-05
+Locality-Aware (N Groups 18) Internal: Inter-node nonblocking alltoall: 6.568518e-05
+Multileader Node-Aware (N Leaders 18) Alltoall Pairwise: 1.144179e-03
+Multileader Node-Aware (N Leaders 18) Alltoall Nonblocking: 1.065238e-03
+Multileader Node-Aware (N Leaders 18) Internal: MPI_Gather: 8.106563e-05
+Multileader Node-Aware (N Leaders 18) Internal: Pairwise Inter-Node Alltoall: 1.051713e-04
+Multileader Node-Aware (N Leaders 18) Internal: Pairwise Intra-Node Alltoall: 1.208829e-04
+Multileader Node-Aware (N Leaders 18) Internal: Nonblocking Inter-Node Alltoall: 1.064844e-04
+Multileader Node-Aware (N Leaders 18) Internal: Nonblocking Intra-Node Alltoall: 7.095987e-05
+Multileader Node-Aware (N Leaders 18) Internal: MPI_Scatter: 1.402001e-04
+Size 16
+PMPI: 8.652327e-04
+Hierarchical Pairwise: 4.477363e-03
+Hierarchical Nonblocking: 4.315499e-03
+Hierarchical Internal: Gather: 5.092476e-04
+Hierarchical Internal: Scatter: 4.578092e-04
+Hierarchical Internal: Pairwise inter-node alltoall: 9.068495e-04
+Hierarchical Interal: Nonblocking inter-node alltoall: 6.307650e-04
+Node-Aware Pairwise: 3.690679e-03
+Node-Aware Nonblocking: 1.139945e-03
+Node-Aware Internal: Pairwise intra-node alltoall: 3.367875e-03
+Node-Aware Internal: Pairwise inter-node alltoall: 5.762392e-05
+Node-Aware Internal: Nonblocking intra-node alltoall: 1.064591e-03
+Node-Aware Internal: Nonblocking inter-node alltoall: 5.736508e-05
+Running Multileader/Locality-Aware Tests with 4 Processes Per Leader, 72 Leaders Per Node
+Hierarchical Pairwise (N Leaders 72): 1.570596e-03
+Hierarchical Nonblocking (N Leaders 72): 5.328112e-04
+Hierarchical (N Leaders 72) Internal: Gather: 1.113503e-04
+Hierarchical (N Leaders 72) Internal: Scatter: 9.602993e-05
+Hierarchical (N Leaders 72) Internal: Alltoall Pairwise: 1.149242e-03
+Hierarchical (N Leaders 72) Internal: Alltoall Nonblocking: 2.751463e-04
+Locality-Aware (N Groups 72) Alltoall Pairwise: 1.664699e-03
+Locality-Aware (N Groups 72) Alltoall Nonblocking: 4.820997e-04
+Locality-Aware (N Groups 72) Internal: Intra-node pairwise alltoall: 4.491586e-04
+Locality-Aware (N Groups 72) Internal: Inter-node pairwise alltoall: 1.148130e-03
+Locality-Aware (N Groups 72) Internal: Intra-node nonblocking alltoall: 3.778890e-04
+Locality-Aware (N Groups 72) Internal: Inter-node nonblocking alltoall: 2.580289e-04
+Multileader Node-Aware (N Leaders 72) Alltoall Pairwise: 1.314475e-03
+Multileader Node-Aware (N Leaders 72) Alltoall Nonblocking: 1.212390e-03
+Multileader Node-Aware (N Leaders 72) Internal: MPI_Gather: 1.113680e-04
+Multileader Node-Aware (N Leaders 72) Internal: Pairwise Inter-Node Alltoall: 2.908942e-04
+Multileader Node-Aware (N Leaders 72) Internal: Pairwise Intra-Node Alltoall: 1.293239e-04
+Multileader Node-Aware (N Leaders 72) Internal: Nonblocking Inter-Node Alltoall: 8.531291e-04
+Multileader Node-Aware (N Leaders 72) Internal: Nonblocking Intra-Node Alltoall: 7.234809e-05
+Multileader Node-Aware (N Leaders 72) Internal: MPI_Scatter: 9.795585e-05
+Running Multileader/Locality-Aware Tests with 8 Processes Per Leader, 36 Leaders Per Node
+Hierarchical Pairwise (N Leaders 36): 9.401847e-04
+Hierarchical Nonblocking (N Leaders 36): 5.166081e-04
+Hierarchical (N Leaders 36) Internal: Gather: 1.156552e-04
+Hierarchical (N Leaders 36) Internal: Scatter: 1.280057e-04
+Hierarchical (N Leaders 36) Internal: Alltoall Pairwise: 5.502687e-04
+Hierarchical (N Leaders 36) Internal: Alltoall Nonblocking: 1.558699e-04
+Locality-Aware (N Groups 36) Alltoall Pairwise: 6.822363e-04
+Locality-Aware (N Groups 36) Alltoall Nonblocking: 2.262206e-04
+Locality-Aware (N Groups 36) Internal: Intra-node pairwise alltoall: 6.107884e-05
+Locality-Aware (N Groups 36) Internal: Inter-node pairwise alltoall: 5.677072e-04
+Locality-Aware (N Groups 36) Internal: Intra-node nonblocking alltoall: 3.754068e-05
+Locality-Aware (N Groups 36) Internal: Inter-node nonblocking alltoall: 1.283067e-04
+Multileader Node-Aware (N Leaders 36) Alltoall Pairwise: 2.526894e-03
+Multileader Node-Aware (N Leaders 36) Alltoall Nonblocking: 1.334146e-03
+Multileader Node-Aware (N Leaders 36) Internal: MPI_Gather: 1.150189e-04
+Multileader Node-Aware (N Leaders 36) Internal: Pairwise Inter-Node Alltoall: 1.578633e-04
+Multileader Node-Aware (N Leaders 36) Internal: Pairwise Intra-Node Alltoall: 2.529277e-04
+Multileader Node-Aware (N Leaders 36) Internal: Nonblocking Inter-Node Alltoall: 1.515175e-04
+Multileader Node-Aware (N Leaders 36) Internal: Nonblocking Intra-Node Alltoall: 1.494053e-04
+Multileader Node-Aware (N Leaders 36) Internal: MPI_Scatter: 1.291137e-04
+Running Multileader/Locality-Aware Tests with 16 Processes Per Leader, 18 Leaders Per Node
+Hierarchical Pairwise (N Leaders 18): 8.865549e-04
+Hierarchical Nonblocking (N Leaders 18): 6.411445e-04
+Hierarchical (N Leaders 18) Internal: Gather: 1.165051e-04
+Hierarchical (N Leaders 18) Internal: Scatter: 1.503261e-04
+Hierarchical (N Leaders 18) Internal: Alltoall Pairwise: 3.353183e-04
+Hierarchical (N Leaders 18) Internal: Alltoall Nonblocking: 1.360052e-04
+Locality-Aware (N Groups 18) Alltoall Pairwise: 4.618311e-04
+Locality-Aware (N Groups 18) Alltoall Nonblocking: 1.841728e-04
+Locality-Aware (N Groups 18) Internal: Intra-node pairwise alltoall: 1.107341e-04
+Locality-Aware (N Groups 18) Internal: Inter-node pairwise alltoall: 2.783833e-04
+Locality-Aware (N Groups 18) Internal: Intra-node nonblocking alltoall: 6.486470e-05
+Locality-Aware (N Groups 18) Internal: Inter-node nonblocking alltoall: 7.506334e-05
+Multileader Node-Aware (N Leaders 18) Alltoall Pairwise: 1.450421e-03
+Multileader Node-Aware (N Leaders 18) Alltoall Nonblocking: 1.310301e-03
+Multileader Node-Aware (N Leaders 18) Internal: MPI_Gather: 1.191890e-04
+Multileader Node-Aware (N Leaders 18) Internal: Pairwise Inter-Node Alltoall: 9.218079e-05
+Multileader Node-Aware (N Leaders 18) Internal: Pairwise Intra-Node Alltoall: 1.388684e-04
+Multileader Node-Aware (N Leaders 18) Internal: Nonblocking Inter-Node Alltoall: 9.810439e-05
+Multileader Node-Aware (N Leaders 18) Internal: Nonblocking Intra-Node Alltoall: 7.846052e-05
+Multileader Node-Aware (N Leaders 18) Internal: MPI_Scatter: 1.459170e-04
+Size 32
+PMPI: 1.692385e-03
+Hierarchical Pairwise: 9.557198e-03
+Hierarchical Nonblocking: 8.448863e-03
+Hierarchical Internal: Gather: 9.833771e-04
+Hierarchical Internal: Scatter: 7.988671e-04
+Hierarchical Internal: Pairwise inter-node alltoall: 1.867816e-03
+Hierarchical Interal: Nonblocking inter-node alltoall: 1.315727e-03
+Node-Aware Pairwise: 4.342089e-03
+Node-Aware Nonblocking: 1.671812e-03
+Node-Aware Internal: Pairwise intra-node alltoall: 3.098192e-03
+Node-Aware Internal: Pairwise inter-node alltoall: 4.138804e-04
+Node-Aware Internal: Nonblocking intra-node alltoall: 1.029223e-03
+Node-Aware Internal: Nonblocking inter-node alltoall: 4.205168e-04
+Running Multileader/Locality-Aware Tests with 4 Processes Per Leader, 72 Leaders Per Node
+Hierarchical Pairwise (N Leaders 72): 1.774831e-03
+Hierarchical Nonblocking (N Leaders 72): 7.478437e-04
+Hierarchical (N Leaders 72) Internal: Gather: 2.037068e-04
+Hierarchical (N Leaders 72) Internal: Scatter: 1.033649e-04
+Hierarchical (N Leaders 72) Internal: Alltoall Pairwise: 1.149383e-03
+Hierarchical (N Leaders 72) Internal: Alltoall Nonblocking: 3.000642e-04
+Locality-Aware (N Groups 72) Alltoall Pairwise: 1.639214e-03
+Locality-Aware (N Groups 72) Alltoall Nonblocking: 4.773783e-04
+Locality-Aware (N Groups 72) Internal: Intra-node pairwise alltoall: 4.440322e-04
+Locality-Aware (N Groups 72) Internal: Inter-node pairwise alltoall: 1.162140e-03
+Locality-Aware (N Groups 72) Internal: Intra-node nonblocking alltoall: 3.689881e-04
+Locality-Aware (N Groups 72) Internal: Inter-node nonblocking alltoall: 2.854562e-04
+Multileader Node-Aware (N Leaders 72) Alltoall Pairwise: 1.994530e-03
+Multileader Node-Aware (N Leaders 72) Alltoall Nonblocking: 1.666504e-03
+Multileader Node-Aware (N Leaders 72) Internal: MPI_Gather: 2.063787e-04
+Multileader Node-Aware (N Leaders 72) Internal: Pairwise Inter-Node Alltoall: 4.619147e-04
+Multileader Node-Aware (N Leaders 72) Internal: Pairwise Intra-Node Alltoall: 1.682685e-04
+Multileader Node-Aware (N Leaders 72) Internal: Nonblocking Inter-Node Alltoall: 4.550830e-04
+Multileader Node-Aware (N Leaders 72) Internal: Nonblocking Intra-Node Alltoall: 9.102476e-05
+Multileader Node-Aware (N Leaders 72) Internal: MPI_Scatter: 1.055994e-04
+Running Multileader/Locality-Aware Tests with 8 Processes Per Leader, 36 Leaders Per Node
+Hierarchical Pairwise (N Leaders 36): 1.477192e-03
+Hierarchical Nonblocking (N Leaders 36): 8.039397e-04
+Hierarchical (N Leaders 36) Internal: Gather: 2.057432e-04
+Hierarchical (N Leaders 36) Internal: Scatter: 1.436806e-04
+Hierarchical (N Leaders 36) Internal: Alltoall Pairwise: 6.700447e-04
+Hierarchical (N Leaders 36) Internal: Alltoall Nonblocking: 2.673582e-04
+Locality-Aware (N Groups 36) Alltoall Pairwise: 1.646839e-03
+Locality-Aware (N Groups 36) Alltoall Nonblocking: 7.021580e-04
+Locality-Aware (N Groups 36) Internal: Intra-node pairwise alltoall: 1.021797e-03
+Locality-Aware (N Groups 36) Internal: Inter-node pairwise alltoall: 5.809954e-04
+Locality-Aware (N Groups 36) Internal: Intra-node nonblocking alltoall: 6.975465e-04
+Locality-Aware (N Groups 36) Internal: Inter-node nonblocking alltoall: 1.568314e-04
+Multileader Node-Aware (N Leaders 36) Alltoall Pairwise: 2.204346e-03
+Multileader Node-Aware (N Leaders 36) Alltoall Nonblocking: 1.858615e-03
+Multileader Node-Aware (N Leaders 36) Internal: MPI_Gather: 2.038016e-04
+Multileader Node-Aware (N Leaders 36) Internal: Pairwise Inter-Node Alltoall: 2.879649e-04
+Multileader Node-Aware (N Leaders 36) Internal: Pairwise Intra-Node Alltoall: 2.729937e-04
+Multileader Node-Aware (N Leaders 36) Internal: Nonblocking Inter-Node Alltoall: 2.820268e-04
+Multileader Node-Aware (N Leaders 36) Internal: Nonblocking Intra-Node Alltoall: 1.597483e-04
+Multileader Node-Aware (N Leaders 36) Internal: MPI_Scatter: 1.411742e-04
+Running Multileader/Locality-Aware Tests with 16 Processes Per Leader, 18 Leaders Per Node
+Hierarchical Pairwise (N Leaders 18): 1.986921e-03
+Hierarchical Nonblocking (N Leaders 18): 1.223667e-03
+Hierarchical (N Leaders 18) Internal: Gather: 2.061529e-04
+Hierarchical (N Leaders 18) Internal: Scatter: 1.845244e-04
+Hierarchical (N Leaders 18) Internal: Alltoall Pairwise: 9.719403e-04
+Hierarchical (N Leaders 18) Internal: Alltoall Nonblocking: 4.734051e-04
+Locality-Aware (N Groups 18) Alltoall Pairwise: 5.121129e-04
+Locality-Aware (N Groups 18) Alltoall Nonblocking: 2.437193e-04
+Locality-Aware (N Groups 18) Internal: Intra-node pairwise alltoall: 1.273497e-04
+Locality-Aware (N Groups 18) Internal: Inter-node pairwise alltoall: 2.963170e-04
+Locality-Aware (N Groups 18) Internal: Intra-node nonblocking alltoall: 7.407970e-05
+Locality-Aware (N Groups 18) Internal: Inter-node nonblocking alltoall: 1.293055e-04
+Multileader Node-Aware (N Leaders 18) Alltoall Pairwise: 2.270833e-03
+Multileader Node-Aware (N Leaders 18) Alltoall Nonblocking: 1.942868e-03
+Multileader Node-Aware (N Leaders 18) Internal: MPI_Gather: 2.031671e-04
+Multileader Node-Aware (N Leaders 18) Internal: Pairwise Inter-Node Alltoall: 4.521801e-04
+Multileader Node-Aware (N Leaders 18) Internal: Pairwise Intra-Node Alltoall: 1.940064e-04
+Multileader Node-Aware (N Leaders 18) Internal: Nonblocking Inter-Node Alltoall: 4.490000e-04
+Multileader Node-Aware (N Leaders 18) Internal: Nonblocking Intra-Node Alltoall: 1.048714e-04
+Multileader Node-Aware (N Leaders 18) Internal: MPI_Scatter: 1.847857e-04
+Size 64
+PMPI: 2.914915e-03
+Hierarchical Pairwise: 2.158945e-02
+Hierarchical Nonblocking: 1.954238e-02
+Hierarchical Internal: Gather: 2.938266e-03
+Hierarchical Internal: Scatter: 1.590124e-03
+Hierarchical Internal: Pairwise inter-node alltoall: 3.776419e-03
+Hierarchical Interal: Nonblocking inter-node alltoall: 2.753612e-03
+Node-Aware Pairwise: 5.205613e-03
+Node-Aware Nonblocking: 2.082081e-03
+Node-Aware Internal: Pairwise intra-node alltoall: 3.207382e-03
+Node-Aware Internal: Pairwise inter-node alltoall: 9.170560e-04
+Node-Aware Internal: Nonblocking intra-node alltoall: 1.087706e-03
+Node-Aware Internal: Nonblocking inter-node alltoall: 8.873991e-04
+Running Multileader/Locality-Aware Tests with 4 Processes Per Leader, 72 Leaders Per Node
+Hierarchical Pairwise (N Leaders 72): 2.353370e-03
+Hierarchical Nonblocking (N Leaders 72): 1.297127e-03
+Hierarchical (N Leaders 72) Internal: Gather: 4.276687e-04
+Hierarchical (N Leaders 72) Internal: Scatter: 2.035801e-04
+Hierarchical (N Leaders 72) Internal: Alltoall Pairwise: 1.208115e-03
+Hierarchical (N Leaders 72) Internal: Alltoall Nonblocking: 3.739189e-04
+Locality-Aware (N Groups 72) Alltoall Pairwise: 1.800974e-03
+Locality-Aware (N Groups 72) Alltoall Nonblocking: 6.169900e-04
+Locality-Aware (N Groups 72) Internal: Intra-node pairwise alltoall: 4.457046e-04
+Locality-Aware (N Groups 72) Internal: Inter-node pairwise alltoall: 1.193681e-03
+Locality-Aware (N Groups 72) Internal: Intra-node nonblocking alltoall: 3.605152e-04
+Locality-Aware (N Groups 72) Internal: Inter-node nonblocking alltoall: 3.601970e-04
+Multileader Node-Aware (N Leaders 72) Alltoall Pairwise: 3.534659e-03
+Multileader Node-Aware (N Leaders 72) Alltoall Nonblocking: 3.008161e-03
+Multileader Node-Aware (N Leaders 72) Internal: MPI_Gather: 4.269061e-04
+Multileader Node-Aware (N Leaders 72) Internal: Pairwise Inter-Node Alltoall: 6.909065e-04
+Multileader Node-Aware (N Leaders 72) Internal: Pairwise Intra-Node Alltoall: 6.461338e-04
+Multileader Node-Aware (N Leaders 72) Internal: Nonblocking Inter-Node Alltoall: 7.176220e-04
+Multileader Node-Aware (N Leaders 72) Internal: Nonblocking Intra-Node Alltoall: 4.102533e-04
+Multileader Node-Aware (N Leaders 72) Internal: MPI_Scatter: 2.048396e-04
+Running Multileader/Locality-Aware Tests with 8 Processes Per Leader, 36 Leaders Per Node
+Hierarchical Pairwise (N Leaders 36): 2.119966e-03
+Hierarchical Nonblocking (N Leaders 36): 1.344267e-03
+Hierarchical (N Leaders 36) Internal: Gather: 4.060657e-04
+Hierarchical (N Leaders 36) Internal: Scatter: 2.119298e-04
+Hierarchical (N Leaders 36) Internal: Alltoall Pairwise: 7.862714e-04
+Hierarchical (N Leaders 36) Internal: Alltoall Nonblocking: 3.061756e-04
+Locality-Aware (N Groups 36) Alltoall Pairwise: 1.825034e-03
+Locality-Aware (N Groups 36) Alltoall Nonblocking: 8.243691e-04
+Locality-Aware (N Groups 36) Internal: Intra-node pairwise alltoall: 1.028543e-03
+Locality-Aware (N Groups 36) Internal: Inter-node pairwise alltoall: 6.221399e-04
+Locality-Aware (N Groups 36) Internal: Intra-node nonblocking alltoall: 7.018903e-04
+Locality-Aware (N Groups 36) Internal: Inter-node nonblocking alltoall: 2.650672e-04
+Multileader Node-Aware (N Leaders 36) Alltoall Pairwise: 3.682154e-03
+Multileader Node-Aware (N Leaders 36) Alltoall Nonblocking: 3.319356e-03
+Multileader Node-Aware (N Leaders 36) Internal: MPI_Gather: 4.231818e-04
+Multileader Node-Aware (N Leaders 36) Internal: Pairwise Inter-Node Alltoall: 9.879086e-04
+Multileader Node-Aware (N Leaders 36) Internal: Pairwise Intra-Node Alltoall: 3.320804e-04
+Multileader Node-Aware (N Leaders 36) Internal: Nonblocking Inter-Node Alltoall: 9.693001e-04
+Multileader Node-Aware (N Leaders 36) Internal: Nonblocking Intra-Node Alltoall: 1.945814e-04
+Multileader Node-Aware (N Leaders 36) Internal: MPI_Scatter: 2.094879e-04
+Running Multileader/Locality-Aware Tests with 16 Processes Per Leader, 18 Leaders Per Node
+Hierarchical Pairwise (N Leaders 18): 3.641243e-03
+Hierarchical Nonblocking (N Leaders 18): 2.143296e-03
+Hierarchical (N Leaders 18) Internal: Gather: 4.134669e-04
+Hierarchical (N Leaders 18) Internal: Scatter: 3.123315e-04
+Hierarchical (N Leaders 18) Internal: Alltoall Pairwise: 2.073911e-03
+Hierarchical (N Leaders 18) Internal: Alltoall Nonblocking: 8.953462e-04
+Locality-Aware (N Groups 18) Alltoall Pairwise: 2.820446e-03
+Locality-Aware (N Groups 18) Alltoall Nonblocking: 1.380246e-03
+Locality-Aware (N Groups 18) Internal: Intra-node pairwise alltoall: 2.195627e-03
+Locality-Aware (N Groups 18) Internal: Inter-node pairwise alltoall: 3.405019e-04
+Locality-Aware (N Groups 18) Internal: Intra-node nonblocking alltoall: 1.421573e-03
+Locality-Aware (N Groups 18) Internal: Inter-node nonblocking alltoall: 2.478097e-04
+Multileader Node-Aware (N Leaders 18) Alltoall Pairwise: 4.392382e-03
+Multileader Node-Aware (N Leaders 18) Alltoall Nonblocking: 4.013099e-03
+Multileader Node-Aware (N Leaders 18) Internal: MPI_Gather: 4.134455e-04
+Multileader Node-Aware (N Leaders 18) Internal: Pairwise Inter-Node Alltoall: 9.680232e-04
+Multileader Node-Aware (N Leaders 18) Internal: Pairwise Intra-Node Alltoall: 2.985065e-04
+Multileader Node-Aware (N Leaders 18) Internal: Nonblocking Inter-Node Alltoall: 9.711634e-04
+Multileader Node-Aware (N Leaders 18) Internal: Nonblocking Intra-Node Alltoall: 1.939055e-04
+Multileader Node-Aware (N Leaders 18) Internal: MPI_Scatter: 3.075562e-04
+Size 128
+PMPI: 5.641766e-03
+Hierarchical Pairwise: 4.627078e-02
+Hierarchical Nonblocking: 4.241617e-02
+Hierarchical Internal: Gather: 7.126246e-03
+Hierarchical Internal: Scatter: 5.988633e-03
+Hierarchical Internal: Pairwise inter-node alltoall: 9.412530e-03
+Hierarchical Interal: Nonblocking inter-node alltoall: 6.663694e-03
+Node-Aware Pairwise: 5.524210e-03
+Node-Aware Nonblocking: 2.338018e-03
+Node-Aware Internal: Pairwise intra-node alltoall: 3.382363e-03
+Node-Aware Internal: Pairwise inter-node alltoall: 2.166957e-03
+Node-Aware Internal: Nonblocking intra-node alltoall: 1.165320e-03
+Node-Aware Internal: Nonblocking inter-node alltoall: 2.327827e-03
+Running Multileader/Locality-Aware Tests with 4 Processes Per Leader, 72 Leaders Per Node
+Hierarchical Pairwise (N Leaders 72): 5.953390e-03
+Hierarchical Nonblocking (N Leaders 72): 2.325230e-03
+Hierarchical (N Leaders 72) Internal: Gather: 8.438162e-04
+Hierarchical (N Leaders 72) Internal: Scatter: 4.040919e-04
+Hierarchical (N Leaders 72) Internal: Alltoall Pairwise: 1.618088e-03
+Hierarchical (N Leaders 72) Internal: Alltoall Nonblocking: 7.461817e-04
+Locality-Aware (N Groups 72) Alltoall Pairwise: 2.255549e-03
+Locality-Aware (N Groups 72) Alltoall Nonblocking: 1.036904e-03
+Locality-Aware (N Groups 72) Internal: Intra-node pairwise alltoall: 4.444392e-04
+Locality-Aware (N Groups 72) Internal: Inter-node pairwise alltoall: 1.254198e-03
+Locality-Aware (N Groups 72) Internal: Intra-node nonblocking alltoall: 3.662487e-04
+Locality-Aware (N Groups 72) Internal: Inter-node nonblocking alltoall: 6.297054e-04
+Multileader Node-Aware (N Leaders 72) Alltoall Pairwise: 6.252947e-03
+Multileader Node-Aware (N Leaders 72) Alltoall Nonblocking: 5.540708e-03
+Multileader Node-Aware (N Leaders 72) Internal: MPI_Gather: 8.448159e-04
+Multileader Node-Aware (N Leaders 72) Internal: Pairwise Inter-Node Alltoall: 2.078783e-03
+Multileader Node-Aware (N Leaders 72) Internal: Pairwise Intra-Node Alltoall: 7.934111e-04
+Multileader Node-Aware (N Leaders 72) Internal: Nonblocking Inter-Node Alltoall: 2.125074e-03
+Multileader Node-Aware (N Leaders 72) Internal: Nonblocking Intra-Node Alltoall: 5.532655e-04
+Multileader Node-Aware (N Leaders 72) Internal: MPI_Scatter: 4.049286e-04
+Running Multileader/Locality-Aware Tests with 8 Processes Per Leader, 36 Leaders Per Node
+Hierarchical Pairwise (N Leaders 36): 7.485138e-03
+Hierarchical Nonblocking (N Leaders 36): 5.679100e-03
+Hierarchical (N Leaders 36) Internal: Gather: 8.595421e-04
+Hierarchical (N Leaders 36) Internal: Scatter: 4.209090e-04
+Hierarchical (N Leaders 36) Internal: Alltoall Pairwise: 4.693745e-03
+Hierarchical (N Leaders 36) Internal: Alltoall Nonblocking: 5.990291e-03
+Locality-Aware (N Groups 36) Alltoall Pairwise: 2.284572e-03
+Locality-Aware (N Groups 36) Alltoall Nonblocking: 1.185087e-03
+Locality-Aware (N Groups 36) Internal: Intra-node pairwise alltoall: 1.052966e-03
+Locality-Aware (N Groups 36) Internal: Inter-node pairwise alltoall: 7.182750e-04
+Locality-Aware (N Groups 36) Internal: Intra-node nonblocking alltoall: 7.334561e-04
+Locality-Aware (N Groups 36) Internal: Inter-node nonblocking alltoall: 5.356961e-04
+Multileader Node-Aware (N Leaders 36) Alltoall Pairwise: 7.315377e-03
+Multileader Node-Aware (N Leaders 36) Alltoall Nonblocking: 6.649755e-03
+Multileader Node-Aware (N Leaders 36) Internal: MPI_Gather: 8.573575e-04
+Multileader Node-Aware (N Leaders 36) Internal: Pairwise Inter-Node Alltoall: 2.262615e-03
+Multileader Node-Aware (N Leaders 36) Internal: Pairwise Intra-Node Alltoall: 5.636903e-04
+Multileader Node-Aware (N Leaders 36) Internal: Nonblocking Inter-Node Alltoall: 2.224177e-03
+Multileader Node-Aware (N Leaders 36) Internal: Nonblocking Intra-Node Alltoall: 4.092398e-04
+Multileader Node-Aware (N Leaders 36) Internal: MPI_Scatter: 4.165666e-04
+Running Multileader/Locality-Aware Tests with 16 Processes Per Leader, 18 Leaders Per Node
+Hierarchical Pairwise (N Leaders 18): 6.665871e-03
+Hierarchical Nonblocking (N Leaders 18): 4.212307e-03
+Hierarchical (N Leaders 18) Internal: Gather: 8.341614e-04
+Hierarchical (N Leaders 18) Internal: Scatter: 5.726216e-04
+Hierarchical (N Leaders 18) Internal: Alltoall Pairwise: 3.611079e-03
+Hierarchical (N Leaders 18) Internal: Alltoall Nonblocking: 2.532047e-03
+Locality-Aware (N Groups 18) Alltoall Pairwise: 8.978696e-03
+Locality-Aware (N Groups 18) Alltoall Nonblocking: 2.167071e-03
+Locality-Aware (N Groups 18) Internal: Intra-node pairwise alltoall: 2.194601e-03
+Locality-Aware (N Groups 18) Internal: Inter-node pairwise alltoall: 2.221518e-03
+Locality-Aware (N Groups 18) Internal: Intra-node nonblocking alltoall: 1.402534e-03
+Locality-Aware (N Groups 18) Internal: Inter-node nonblocking alltoall: 5.778233e-04
+Multileader Node-Aware (N Leaders 18) Alltoall Pairwise: 8.494957e-03
+Multileader Node-Aware (N Leaders 18) Alltoall Nonblocking: 7.486414e-03
+Multileader Node-Aware (N Leaders 18) Internal: MPI_Gather: 8.213941e-04
+Multileader Node-Aware (N Leaders 18) Internal: Pairwise Inter-Node Alltoall: 2.473075e-03
+Multileader Node-Aware (N Leaders 18) Internal: Pairwise Intra-Node Alltoall: 6.455981e-04
+Multileader Node-Aware (N Leaders 18) Internal: Nonblocking Inter-Node Alltoall: 2.533200e-03
+Multileader Node-Aware (N Leaders 18) Internal: Nonblocking Intra-Node Alltoall: 4.328212e-04
+Multileader Node-Aware (N Leaders 18) Internal: MPI_Scatter: 6.232390e-04
+Size 256
+PMPI: 2.182125e-03
+Hierarchical Pairwise: 9.083550e-02
+Hierarchical Nonblocking: 8.705133e-02
+Hierarchical Internal: Gather: 1.505400e-02
+Hierarchical Internal: Scatter: 1.288913e-02
+Hierarchical Internal: Pairwise inter-node alltoall: 2.091375e-02
+Hierarchical Interal: Nonblocking inter-node alltoall: 1.418471e-02
+Node-Aware Pairwise: 7.878084e-03
+Node-Aware Nonblocking: 4.475727e-03
+Node-Aware Internal: Pairwise intra-node alltoall: 3.363473e-03
+Node-Aware Internal: Pairwise inter-node alltoall: 4.868932e-03
+Node-Aware Internal: Nonblocking intra-node alltoall: 1.376397e-03
+Node-Aware Internal: Nonblocking inter-node alltoall: 4.653192e-03
+Running Multileader/Locality-Aware Tests with 4 Processes Per Leader, 72 Leaders Per Node
+Hierarchical Pairwise (N Leaders 72): 9.068400e-03
+Hierarchical Nonblocking (N Leaders 72): 4.669192e-03
+Hierarchical (N Leaders 72) Internal: Gather: 1.615756e-03
+Hierarchical (N Leaders 72) Internal: Scatter: 8.469619e-04
+Hierarchical (N Leaders 72) Internal: Alltoall Pairwise: 2.088158e-03
+Hierarchical (N Leaders 72) Internal: Alltoall Nonblocking: 1.402612e-03
+Locality-Aware (N Groups 72) Alltoall Pairwise: 2.749957e-03
+Locality-Aware (N Groups 72) Alltoall Nonblocking: 1.866471e-03
+Locality-Aware (N Groups 72) Internal: Intra-node pairwise alltoall: 4.397318e-04
+Locality-Aware (N Groups 72) Internal: Inter-node pairwise alltoall: 1.485806e-03
+Locality-Aware (N Groups 72) Internal: Intra-node nonblocking alltoall: 3.661875e-04
+Locality-Aware (N Groups 72) Internal: Inter-node nonblocking alltoall: 1.212990e-03
+Multileader Node-Aware (N Leaders 72) Alltoall Pairwise: 1.301195e-02
+Multileader Node-Aware (N Leaders 72) Alltoall Nonblocking: 1.152626e-02
+Multileader Node-Aware (N Leaders 72) Internal: MPI_Gather: 1.619584e-03
+Multileader Node-Aware (N Leaders 72) Internal: Pairwise Inter-Node Alltoall: 4.787867e-03
+Multileader Node-Aware (N Leaders 72) Internal: Pairwise Intra-Node Alltoall: 1.199274e-03
+Multileader Node-Aware (N Leaders 72) Internal: Nonblocking Inter-Node Alltoall: 4.813779e-03
+Multileader Node-Aware (N Leaders 72) Internal: Nonblocking Intra-Node Alltoall: 1.001289e-03
+Multileader Node-Aware (N Leaders 72) Internal: MPI_Scatter: 8.395684e-04
+Running Multileader/Locality-Aware Tests with 8 Processes Per Leader, 36 Leaders Per Node
+Hierarchical Pairwise (N Leaders 36): 1.306234e-02
+Hierarchical Nonblocking (N Leaders 36): 8.543079e-03
+Hierarchical (N Leaders 36) Internal: Gather: 1.617137e-03
+Hierarchical (N Leaders 36) Internal: Scatter: 8.349348e-04
+Hierarchical (N Leaders 36) Internal: Alltoall Pairwise: 7.825146e-03
+Hierarchical (N Leaders 36) Internal: Alltoall Nonblocking: 4.335397e-03
+Locality-Aware (N Groups 36) Alltoall Pairwise: 1.404427e-02
+Locality-Aware (N Groups 36) Alltoall Nonblocking: 3.459005e-03
+Locality-Aware (N Groups 36) Internal: Intra-node pairwise alltoall: 9.979315e-04
+Locality-Aware (N Groups 36) Internal: Inter-node pairwise alltoall: 5.814235e-03
+Locality-Aware (N Groups 36) Internal: Intra-node nonblocking alltoall: 7.868212e-04
+Locality-Aware (N Groups 36) Internal: Inter-node nonblocking alltoall: 1.198796e-03
+Multileader Node-Aware (N Leaders 36) Alltoall Pairwise: 1.458409e-02
+Multileader Node-Aware (N Leaders 36) Alltoall Nonblocking: 1.366610e-02
+Multileader Node-Aware (N Leaders 36) Internal: MPI_Gather: 1.617668e-03
+Multileader Node-Aware (N Leaders 36) Internal: Pairwise Inter-Node Alltoall: 4.943034e-03
+Multileader Node-Aware (N Leaders 36) Internal: Pairwise Intra-Node Alltoall: 1.147756e-03
+Multileader Node-Aware (N Leaders 36) Internal: Nonblocking Inter-Node Alltoall: 4.979447e-03
+Multileader Node-Aware (N Leaders 36) Internal: Nonblocking Intra-Node Alltoall: 9.503612e-04
+Multileader Node-Aware (N Leaders 36) Internal: MPI_Scatter: 1.242077e-03
+Running Multileader/Locality-Aware Tests with 16 Processes Per Leader, 18 Leaders Per Node
+Hierarchical Pairwise (N Leaders 18): 1.294305e-02
+Hierarchical Nonblocking (N Leaders 18): 8.846404e-03
+Hierarchical (N Leaders 18) Internal: Gather: 1.645762e-03
+Hierarchical (N Leaders 18) Internal: Scatter: 1.816111e-03
+Hierarchical (N Leaders 18) Internal: Alltoall Pairwise: 6.324251e-03
+Hierarchical (N Leaders 18) Internal: Alltoall Nonblocking: 3.579083e-03
+Locality-Aware (N Groups 18) Alltoall Pairwise: 4.837073e-03
+Locality-Aware (N Groups 18) Alltoall Nonblocking: 2.401059e-03
+Locality-Aware (N Groups 18) Internal: Intra-node pairwise alltoall: 2.167431e-03
+Locality-Aware (N Groups 18) Internal: Inter-node pairwise alltoall: 3.882392e-03
+Locality-Aware (N Groups 18) Internal: Intra-node nonblocking alltoall: 1.396442e-03
+Locality-Aware (N Groups 18) Internal: Inter-node nonblocking alltoall: 1.064938e-03
+Multileader Node-Aware (N Leaders 18) Alltoall Pairwise: 1.676599e-02
+Multileader Node-Aware (N Leaders 18) Alltoall Nonblocking: 1.521243e-02
+Multileader Node-Aware (N Leaders 18) Internal: MPI_Gather: 1.655237e-03
+Multileader Node-Aware (N Leaders 18) Internal: Pairwise Inter-Node Alltoall: 5.748042e-03
+Multileader Node-Aware (N Leaders 18) Internal: Pairwise Intra-Node Alltoall: 1.510535e-03
+Multileader Node-Aware (N Leaders 18) Internal: Nonblocking Inter-Node Alltoall: 5.636067e-03
+Multileader Node-Aware (N Leaders 18) Internal: Nonblocking Intra-Node Alltoall: 1.103002e-03
+Multileader Node-Aware (N Leaders 18) Internal: MPI_Scatter: 1.880781e-03
+Size 512
+PMPI: 2.360042e-03
+Hierarchical Pairwise: 1.786908e-01
+Hierarchical Nonblocking: 1.646213e-01
+Hierarchical Internal: Gather: 3.029354e-02
+Hierarchical Internal: Scatter: 2.712610e-02
+Hierarchical Internal: Pairwise inter-node alltoall: 4.313602e-02
+Hierarchical Interal: Nonblocking inter-node alltoall: 2.849846e-02
+Node-Aware Pairwise: 1.381208e-02
+Node-Aware Nonblocking: 1.117338e-02
+Node-Aware Internal: Pairwise intra-node alltoall: 4.077027e-03
+Node-Aware Internal: Pairwise inter-node alltoall: 1.039785e-02
+Node-Aware Internal: Nonblocking intra-node alltoall: 1.904346e-03
+Node-Aware Internal: Nonblocking inter-node alltoall: 1.049129e-02
+Running Multileader/Locality-Aware Tests with 4 Processes Per Leader, 72 Leaders Per Node
+Hierarchical Pairwise (N Leaders 72): 2.682260e-02
+Hierarchical Nonblocking (N Leaders 72): 1.283341e-02
+Hierarchical (N Leaders 72) Internal: Gather: 3.117065e-03
+Hierarchical (N Leaders 72) Internal: Scatter: 1.794398e-03
+Hierarchical (N Leaders 72) Internal: Alltoall Pairwise: 1.994092e-02
+Hierarchical (N Leaders 72) Internal: Alltoall Nonblocking: 4.214457e-03
+Locality-Aware (N Groups 72) Alltoall Pairwise: 2.259031e-02
+Locality-Aware (N Groups 72) Alltoall Nonblocking: 4.039421e-03
+Locality-Aware (N Groups 72) Internal: Intra-node pairwise alltoall: 7.179420e-04
+Locality-Aware (N Groups 72) Internal: Inter-node pairwise alltoall: 1.353520e-02
+Locality-Aware (N Groups 72) Internal: Intra-node nonblocking alltoall: 5.048806e-04
+Locality-Aware (N Groups 72) Internal: Inter-node nonblocking alltoall: 2.758071e-03
+Multileader Node-Aware (N Leaders 72) Alltoall Pairwise: 2.622968e-02
+Multileader Node-Aware (N Leaders 72) Alltoall Nonblocking: 2.398470e-02
+Multileader Node-Aware (N Leaders 72) Internal: MPI_Gather: 3.102354e-03
+Multileader Node-Aware (N Leaders 72) Internal: Pairwise Inter-Node Alltoall: 9.891727e-03
+Multileader Node-Aware (N Leaders 72) Internal: Pairwise Intra-Node Alltoall: 2.086953e-03
+Multileader Node-Aware (N Leaders 72) Internal: Nonblocking Inter-Node Alltoall: 9.888883e-03
+Multileader Node-Aware (N Leaders 72) Internal: Nonblocking Intra-Node Alltoall: 1.931027e-03
+Multileader Node-Aware (N Leaders 72) Internal: MPI_Scatter: 2.947312e-03
+Running Multileader/Locality-Aware Tests with 8 Processes Per Leader, 36 Leaders Per Node
+Hierarchical Pairwise (N Leaders 36): 2.403884e-02
+Hierarchical Nonblocking (N Leaders 36): 1.616539e-02
+Hierarchical (N Leaders 36) Internal: Gather: 3.125419e-03
+Hierarchical (N Leaders 36) Internal: Scatter: 3.971575e-03
+Hierarchical (N Leaders 36) Internal: Alltoall Pairwise: 1.295776e-02
+Hierarchical (N Leaders 36) Internal: Alltoall Nonblocking: 6.548020e-03
+Locality-Aware (N Groups 36) Alltoall Pairwise: 1.370603e-02
+Locality-Aware (N Groups 36) Alltoall Nonblocking: 3.404019e-03
+Locality-Aware (N Groups 36) Internal: Intra-node pairwise alltoall: 1.046756e-03
+Locality-Aware (N Groups 36) Internal: Inter-node pairwise alltoall: 6.554704e-03
+Locality-Aware (N Groups 36) Internal: Intra-node nonblocking alltoall: 8.149554e-04
+Locality-Aware (N Groups 36) Internal: Inter-node nonblocking alltoall: 2.272442e-03
+Multileader Node-Aware (N Leaders 36) Alltoall Pairwise: 2.983449e-02
+Multileader Node-Aware (N Leaders 36) Alltoall Nonblocking: 2.761112e-02
+Multileader Node-Aware (N Leaders 36) Internal: MPI_Gather: 3.141080e-03
+Multileader Node-Aware (N Leaders 36) Internal: Pairwise Inter-Node Alltoall: 1.110463e-02
+Multileader Node-Aware (N Leaders 36) Internal: Pairwise Intra-Node Alltoall: 2.352205e-03
+Multileader Node-Aware (N Leaders 36) Internal: Nonblocking Inter-Node Alltoall: 1.091199e-02
+Multileader Node-Aware (N Leaders 36) Internal: Nonblocking Intra-Node Alltoall: 1.903354e-03
+Multileader Node-Aware (N Leaders 36) Internal: MPI_Scatter: 3.936802e-03
+Running Multileader/Locality-Aware Tests with 16 Processes Per Leader, 18 Leaders Per Node
+Hierarchical Pairwise (N Leaders 18): 2.673025e-02
+Hierarchical Nonblocking (N Leaders 18): 1.942101e-02
+Hierarchical (N Leaders 18) Internal: Gather: 3.444484e-03
+Hierarchical (N Leaders 18) Internal: Scatter: 4.727333e-03
+Hierarchical (N Leaders 18) Internal: Alltoall Pairwise: 1.252235e-02
+Hierarchical (N Leaders 18) Internal: Alltoall Nonblocking: 7.895060e-03
+Locality-Aware (N Groups 18) Alltoall Pairwise: 1.160593e-02
+Locality-Aware (N Groups 18) Alltoall Nonblocking: 4.309902e-03
+Locality-Aware (N Groups 18) Internal: Intra-node pairwise alltoall: 2.209026e-03
+Locality-Aware (N Groups 18) Internal: Inter-node pairwise alltoall: 1.025191e-02
+Locality-Aware (N Groups 18) Internal: Intra-node nonblocking alltoall: 1.654286e-03
+Locality-Aware (N Groups 18) Internal: Inter-node nonblocking alltoall: 4.561790e-03
+Multileader Node-Aware (N Leaders 18) Alltoall Pairwise: 3.438672e-02
+Multileader Node-Aware (N Leaders 18) Alltoall Nonblocking: 3.223300e-02
+Multileader Node-Aware (N Leaders 18) Internal: MPI_Gather: 3.464374e-03
+Multileader Node-Aware (N Leaders 18) Internal: Pairwise Inter-Node Alltoall: 1.179097e-02
+Multileader Node-Aware (N Leaders 18) Internal: Pairwise Intra-Node Alltoall: 3.288892e-03
+Multileader Node-Aware (N Leaders 18) Internal: Nonblocking Inter-Node Alltoall: 1.151706e-02
+Multileader Node-Aware (N Leaders 18) Internal: Nonblocking Intra-Node Alltoall: 2.510870e-03
+Multileader Node-Aware (N Leaders 18) Internal: MPI_Scatter: 4.774797e-03
+Size 1024
+PMPI: 4.021818e-03
+Hierarchical Pairwise: 3.526423e-01
+Hierarchical Nonblocking: 3.247429e-01
+Hierarchical Internal: Gather: 6.648115e-02
+Hierarchical Internal: Scatter: 6.953184e-02
+Hierarchical Internal: Pairwise inter-node alltoall: 8.194040e-02
+Hierarchical Interal: Nonblocking inter-node alltoall: 5.251782e-02
+Node-Aware Pairwise: 5.828304e-02
+Node-Aware Nonblocking: 3.203278e-02
+Node-Aware Internal: Pairwise intra-node alltoall: 4.242784e-02
+Node-Aware Internal: Pairwise inter-node alltoall: 2.120066e-02
+Node-Aware Internal: Nonblocking intra-node alltoall: 2.195039e-02
+Node-Aware Internal: Nonblocking inter-node alltoall: 2.166797e-02
+Running Multileader/Locality-Aware Tests with 4 Processes Per Leader, 72 Leaders Per Node
+Hierarchical Pairwise (N Leaders 72): 4.565107e-02
+Hierarchical Nonblocking (N Leaders 72): 2.381273e-02
+Hierarchical (N Leaders 72) Internal: Gather: 6.142162e-03
+Hierarchical (N Leaders 72) Internal: Scatter: 4.371707e-03
+Hierarchical (N Leaders 72) Internal: Alltoall Pairwise: 2.867218e-02
+Hierarchical (N Leaders 72) Internal: Alltoall Nonblocking: 9.761075e-03
+Locality-Aware (N Groups 72) Alltoall Pairwise: 3.735104e-02
+Locality-Aware (N Groups 72) Alltoall Nonblocking: 9.507056e-03
+Locality-Aware (N Groups 72) Internal: Intra-node pairwise alltoall: 1.396401e-03
+Locality-Aware (N Groups 72) Internal: Inter-node pairwise alltoall: 1.784007e-02
+Locality-Aware (N Groups 72) Internal: Intra-node nonblocking alltoall: 1.334719e-03
+Locality-Aware (N Groups 72) Internal: Inter-node nonblocking alltoall: 5.253106e-03
+Multileader Node-Aware (N Leaders 72) Alltoall Pairwise: 5.210071e-02
+Multileader Node-Aware (N Leaders 72) Alltoall Nonblocking: 5.045335e-02
+Multileader Node-Aware (N Leaders 72) Internal: MPI_Gather: 6.181652e-03
+Multileader Node-Aware (N Leaders 72) Internal: Pairwise Inter-Node Alltoall: 2.042896e-02
+Multileader Node-Aware (N Leaders 72) Internal: Pairwise Intra-Node Alltoall: 4.030123e-03
+Multileader Node-Aware (N Leaders 72) Internal: Nonblocking Inter-Node Alltoall: 2.059679e-02
+Multileader Node-Aware (N Leaders 72) Internal: Nonblocking Intra-Node Alltoall: 4.041751e-03
+Multileader Node-Aware (N Leaders 72) Internal: MPI_Scatter: 6.438139e-03
+Running Multileader/Locality-Aware Tests with 8 Processes Per Leader, 36 Leaders Per Node
+Hierarchical Pairwise (N Leaders 36): 4.903949e-02
+Hierarchical Nonblocking (N Leaders 36): 3.405576e-02
+Hierarchical (N Leaders 36) Internal: Gather: 7.621650e-03
+Hierarchical (N Leaders 36) Internal: Scatter: 9.117778e-03
+Hierarchical (N Leaders 36) Internal: Alltoall Pairwise: 2.422369e-02
+Hierarchical (N Leaders 36) Internal: Alltoall Nonblocking: 1.406782e-02
+Locality-Aware (N Groups 36) Alltoall Pairwise: 2.424516e-02
+Locality-Aware (N Groups 36) Alltoall Nonblocking: 7.376614e-03
+Locality-Aware (N Groups 36) Internal: Intra-node pairwise alltoall: 1.415389e-03
+Locality-Aware (N Groups 36) Internal: Inter-node pairwise alltoall: 3.761174e-02
+Locality-Aware (N Groups 36) Internal: Intra-node nonblocking alltoall: 1.263415e-03
+Locality-Aware (N Groups 36) Internal: Inter-node nonblocking alltoall: 6.310534e-03
+Multileader Node-Aware (N Leaders 36) Alltoall Pairwise: 6.067742e-02
+Multileader Node-Aware (N Leaders 36) Alltoall Nonblocking: 5.561026e-02
+Multileader Node-Aware (N Leaders 36) Internal: MPI_Gather: 7.210212e-03
+Multileader Node-Aware (N Leaders 36) Internal: Pairwise Inter-Node Alltoall: 2.226946e-02
+Multileader Node-Aware (N Leaders 36) Internal: Pairwise Intra-Node Alltoall: 5.126119e-03
+Multileader Node-Aware (N Leaders 36) Internal: Nonblocking Inter-Node Alltoall: 2.207265e-02
+Multileader Node-Aware (N Leaders 36) Internal: Nonblocking Intra-Node Alltoall: 4.099751e-03
+Multileader Node-Aware (N Leaders 36) Internal: MPI_Scatter: 8.642262e-03
+Running Multileader/Locality-Aware Tests with 16 Processes Per Leader, 18 Leaders Per Node
+Hierarchical Pairwise (N Leaders 18): 6.765752e-02
+Hierarchical Nonblocking (N Leaders 18): 4.825152e-02
+Hierarchical (N Leaders 18) Internal: Gather: 8.061280e-03
+Hierarchical (N Leaders 18) Internal: Scatter: 5.225243e-03
+Hierarchical (N Leaders 18) Internal: Alltoall Pairwise: 2.893084e-02
+Hierarchical (N Leaders 18) Internal: Alltoall Nonblocking: 1.944412e-02
+Locality-Aware (N Groups 18) Alltoall Pairwise: 2.029859e-02
+Locality-Aware (N Groups 18) Alltoall Nonblocking: 7.941687e-03
+Locality-Aware (N Groups 18) Internal: Intra-node pairwise alltoall: 2.407986e-03
+Locality-Aware (N Groups 18) Internal: Inter-node pairwise alltoall: 2.195499e-02
+Locality-Aware (N Groups 18) Internal: Intra-node nonblocking alltoall: 1.801535e-03
+Locality-Aware (N Groups 18) Internal: Inter-node nonblocking alltoall: 6.757873e-03
+Multileader Node-Aware (N Leaders 18) Alltoall Pairwise: 8.317442e-02
+Multileader Node-Aware (N Leaders 18) Alltoall Nonblocking: 7.711404e-02
+Multileader Node-Aware (N Leaders 18) Internal: MPI_Gather: 8.039662e-03
+Multileader Node-Aware (N Leaders 18) Internal: Pairwise Inter-Node Alltoall: 3.082072e-02
+Multileader Node-Aware (N Leaders 18) Internal: Pairwise Intra-Node Alltoall: 7.743361e-03
+Multileader Node-Aware (N Leaders 18) Internal: Nonblocking Inter-Node Alltoall: 3.018774e-02
+Multileader Node-Aware (N Leaders 18) Internal: Nonblocking Intra-Node Alltoall: 5.445930e-03
+Multileader Node-Aware (N Leaders 18) Internal: MPI_Scatter: 1.104876e-02
+Size 2048
+PMPI: 3.268229e-02
+Hierarchical Pairwise: 6.945328e-01
+Hierarchical Nonblocking: 6.355252e-01
+Hierarchical Internal: Gather: 1.440975e-01
+Hierarchical Internal: Scatter: 1.378885e-01
+Hierarchical Internal: Pairwise inter-node alltoall: 1.522414e-01
+Hierarchical Interal: Nonblocking inter-node alltoall: 9.328136e-02
+Node-Aware Pairwise: 7.859190e-02
+Node-Aware Nonblocking: 4.302584e-02
+Node-Aware Internal: Pairwise intra-node alltoall: 4.302646e-02
+Node-Aware Internal: Pairwise inter-node alltoall: 4.592951e-02
+Node-Aware Internal: Nonblocking intra-node alltoall: 2.251283e-02
+Node-Aware Internal: Nonblocking inter-node alltoall: 4.534441e-02
+Running Multileader/Locality-Aware Tests with 4 Processes Per Leader, 72 Leaders Per Node
+Hierarchical Pairwise (N Leaders 72): 9.005429e-02
+Hierarchical Nonblocking (N Leaders 72): 4.751644e-02
+Hierarchical (N Leaders 72) Internal: Gather: 1.310687e-02
+Hierarchical (N Leaders 72) Internal: Scatter: 8.434024e-03
+Hierarchical (N Leaders 72) Internal: Alltoall Pairwise: 5.098171e-02
+Hierarchical (N Leaders 72) Internal: Alltoall Nonblocking: 1.662778e-02
+Locality-Aware (N Groups 72) Alltoall Pairwise: 4.605628e-02
+Locality-Aware (N Groups 72) Alltoall Nonblocking: 1.563310e-02
+Locality-Aware (N Groups 72) Internal: Intra-node pairwise alltoall: 3.051454e-03
+Locality-Aware (N Groups 72) Internal: Inter-node pairwise alltoall: 4.841284e-02
+Locality-Aware (N Groups 72) Internal: Intra-node nonblocking alltoall: 2.972679e-03
+Locality-Aware (N Groups 72) Internal: Inter-node nonblocking alltoall: 1.272826e-02
+Multileader Node-Aware (N Leaders 72) Alltoall Pairwise: 1.030516e-01
+Multileader Node-Aware (N Leaders 72) Alltoall Nonblocking: 9.820792e-02
+Multileader Node-Aware (N Leaders 72) Internal: MPI_Gather: 1.293854e-02
+Multileader Node-Aware (N Leaders 72) Internal: Pairwise Inter-Node Alltoall: 4.233427e-02
+Multileader Node-Aware (N Leaders 72) Internal: Pairwise Intra-Node Alltoall: 8.664009e-03
+Multileader Node-Aware (N Leaders 72) Internal: Nonblocking Inter-Node Alltoall: 4.094457e-02
+Multileader Node-Aware (N Leaders 72) Internal: Nonblocking Intra-Node Alltoall: 8.352956e-03
+Multileader Node-Aware (N Leaders 72) Internal: MPI_Scatter: 1.269812e-02
+Running Multileader/Locality-Aware Tests with 8 Processes Per Leader, 36 Leaders Per Node
+Hierarchical Pairwise (N Leaders 36): 1.276313e-01
+Hierarchical Nonblocking (N Leaders 36): 8.108772e-02
+Hierarchical (N Leaders 36) Internal: Gather: 1.521585e-02
+Hierarchical (N Leaders 36) Internal: Scatter: 9.442520e-03
+Hierarchical (N Leaders 36) Internal: Alltoall Pairwise: 5.781781e-02
+Hierarchical (N Leaders 36) Internal: Alltoall Nonblocking: 3.190962e-02
+Locality-Aware (N Groups 36) Alltoall Pairwise: 4.191087e-02
+Locality-Aware (N Groups 36) Alltoall Nonblocking: 1.536289e-02
+Locality-Aware (N Groups 36) Internal: Intra-node pairwise alltoall: 3.077911e-03
+Locality-Aware (N Groups 36) Internal: Inter-node pairwise alltoall: 4.563054e-02
+Locality-Aware (N Groups 36) Internal: Intra-node nonblocking alltoall: 3.029684e-03
+Locality-Aware (N Groups 36) Internal: Inter-node nonblocking alltoall: 1.168324e-02
+Multileader Node-Aware (N Leaders 36) Alltoall Pairwise: 1.325015e-01
+Multileader Node-Aware (N Leaders 36) Alltoall Nonblocking: 1.247232e-01
+Multileader Node-Aware (N Leaders 36) Internal: MPI_Gather: 1.668899e-02
+Multileader Node-Aware (N Leaders 36) Internal: Pairwise Inter-Node Alltoall: 5.676997e-02
+Multileader Node-Aware (N Leaders 36) Internal: Pairwise Intra-Node Alltoall: 1.129756e-02
+Multileader Node-Aware (N Leaders 36) Internal: Nonblocking Inter-Node Alltoall: 5.523088e-02
+Multileader Node-Aware (N Leaders 36) Internal: Nonblocking Intra-Node Alltoall: 8.394539e-03
+Multileader Node-Aware (N Leaders 36) Internal: MPI_Scatter: 1.953737e-02
+Running Multileader/Locality-Aware Tests with 16 Processes Per Leader, 18 Leaders Per Node
+Hierarchical Pairwise (N Leaders 18): 1.365350e-01
+Hierarchical Nonblocking (N Leaders 18): 1.066409e-01
+Hierarchical (N Leaders 18) Internal: Gather: 1.853879e-02
+Hierarchical (N Leaders 18) Internal: Scatter: 1.419681e-02
+Hierarchical (N Leaders 18) Internal: Alltoall Pairwise: 5.778916e-02
+Hierarchical (N Leaders 18) Internal: Alltoall Nonblocking: 3.936778e-02
+Locality-Aware (N Groups 18) Alltoall Pairwise: 4.192357e-02
+Locality-Aware (N Groups 18) Alltoall Nonblocking: 1.526217e-02
+Locality-Aware (N Groups 18) Internal: Intra-node pairwise alltoall: 3.244143e-03
+Locality-Aware (N Groups 18) Internal: Inter-node pairwise alltoall: 4.660992e-02
+Locality-Aware (N Groups 18) Internal: Intra-node nonblocking alltoall: 3.170613e-03
+Locality-Aware (N Groups 18) Internal: Inter-node nonblocking alltoall: 1.496951e-02
+Multileader Node-Aware (N Leaders 18) Alltoall Pairwise: 1.628510e-01
+Multileader Node-Aware (N Leaders 18) Alltoall Nonblocking: 1.535846e-01
+Multileader Node-Aware (N Leaders 18) Internal: MPI_Gather: 1.846141e-02
+Multileader Node-Aware (N Leaders 18) Internal: Pairwise Inter-Node Alltoall: 6.302407e-02
+Multileader Node-Aware (N Leaders 18) Internal: Pairwise Intra-Node Alltoall: 1.479882e-02
+Multileader Node-Aware (N Leaders 18) Internal: Nonblocking Inter-Node Alltoall: 6.040329e-02
+Multileader Node-Aware (N Leaders 18) Internal: Nonblocking Intra-Node Alltoall: 1.111763e-02
+Multileader Node-Aware (N Leaders 18) Internal: MPI_Scatter: 2.223993e-02
