@@ -1,0 +1,924 @@
+0: Size 1
+0: PMPI: 1.313396e-04
+0: Hierarchical Pairwise: 1.619707e-03
+0: Hierarchical Nonblocking: 1.291004e-03
+0: Hierarchical Internal: Gather: 2.701800e-04
+0: Hierarchical Internal: Scatter: 2.080459e-04
+0: Hierarchical Internal: Pairwise inter-node alltoall: 8.676582e-05
+0: Hierarchical Interal: Nonblocking inter-node alltoall: 2.641834e-05
+0: Node-Aware Pairwise: 4.049342e-04
+0: Node-Aware Nonblocking: 1.777323e-04
+0: Node-Aware Internal: Pairwise intra-node alltoall: 2.978784e-04
+0: Node-Aware Internal: Pairwise inter-node alltoall: 6.507790e-05
+0: Node-Aware Internal: Nonblocking intra-node alltoall: 1.609389e-04
+0: Node-Aware Internal: Nonblocking inter-node alltoall: 1.526524e-05
+0: Running Multileader/Locality-Aware Tests with 4 Processes Per Leader, 16 Leaders Per Node
+0: Hierarchical Pairwise (N Leaders 16): 8.536385e-04
+0: Hierarchical Nonblocking (N Leaders 16): 5.858043e-04
+0: Hierarchical (N Leaders 16) Internal: Gather: 2.275635e-05
+0: Hierarchical (N Leaders 16) Internal: Scatter: 1.001749e-05
+0: Hierarchical (N Leaders 16) Internal: Alltoall Pairwise: 8.586274e-04
+0: Hierarchical (N Leaders 16) Internal: Alltoall Nonblocking: 9.366876e-04
+0: Locality-Aware (N Groups 16) Alltoall Pairwise: 9.644997e-04
+0: Locality-Aware (N Groups 16) Alltoall Nonblocking: 4.156794e-03
+0: Locality-Aware (N Groups 16) Internal: Intra-node pairwise alltoall: 9.066402e-06
+0: Locality-Aware (N Groups 16) Internal: Inter-node pairwise alltoall: 7.950653e-04
+0: Locality-Aware (N Groups 16) Internal: Intra-node nonblocking alltoall: 6.439963e-06
+0: Locality-Aware (N Groups 16) Internal: Inter-node nonblocking alltoall: 4.086591e-04
+0: Multileader Node-Aware (N Leaders 16) Alltoall Pairwise: 8.478178e-04
+0: Multileader Node-Aware (N Leaders 16) Alltoall Nonblocking: 5.833963e-04
+0: Multileader Node-Aware (N Leaders 16) Internal: MPI_Gather: 2.301672e-05
+0: Multileader Node-Aware (N Leaders 16) Internal: Pairwise Inter-Node Alltoall: 6.440834e-05
+0: Multileader Node-Aware (N Leaders 16) Internal: Pairwise Intra-Node Alltoall: 8.016451e-05
+0: Multileader Node-Aware (N Leaders 16) Internal: Nonblocking Inter-Node Alltoall: 1.467145e-05
+0: Multileader Node-Aware (N Leaders 16) Internal: Nonblocking Intra-Node Alltoall: 4.674564e-05
+0: Multileader Node-Aware (N Leaders 16) Internal: MPI_Scatter: 1.013451e-05
+0: Running Multileader/Locality-Aware Tests with 8 Processes Per Leader, 8 Leaders Per Node
+0: Hierarchical Pairwise (N Leaders 8): 6.953522e-04
+0: Hierarchical Nonblocking (N Leaders 8): 2.833821e-04
+0: Hierarchical (N Leaders 8) Internal: Gather: 3.010894e-05
+0: Hierarchical (N Leaders 8) Internal: Scatter: 1.729957e-05
+0: Hierarchical (N Leaders 8) Internal: Alltoall Pairwise: 5.334273e-04
+0: Hierarchical (N Leaders 8) Internal: Alltoall Nonblocking: 1.184058e-04
+0: Locality-Aware (N Groups 8) Alltoall Pairwise: 4.490925e-04
+0: Locality-Aware (N Groups 8) Alltoall Nonblocking: 2.655766e-04
+0: Locality-Aware (N Groups 8) Internal: Intra-node pairwise alltoall: 2.163920e-05
+0: Locality-Aware (N Groups 8) Internal: Inter-node pairwise alltoall: 4.221822e-04
+0: Locality-Aware (N Groups 8) Internal: Intra-node nonblocking alltoall: 1.469159e-05
+0: Locality-Aware (N Groups 8) Internal: Inter-node nonblocking alltoall: 2.324169e-04
+0: Multileader Node-Aware (N Leaders 8) Alltoall Pairwise: 3.045038e-04
+0: Multileader Node-Aware (N Leaders 8) Alltoall Nonblocking: 2.360929e-04
+0: Multileader Node-Aware (N Leaders 8) Internal: MPI_Gather: 3.133993e-05
+0: Multileader Node-Aware (N Leaders 8) Internal: Pairwise Inter-Node Alltoall: 6.502889e-05
+0: Multileader Node-Aware (N Leaders 8) Internal: Pairwise Intra-Node Alltoall: 7.319986e-05
+0: Multileader Node-Aware (N Leaders 8) Internal: Nonblocking Inter-Node Alltoall: 1.564934e-05
+0: Multileader Node-Aware (N Leaders 8) Internal: Nonblocking Intra-Node Alltoall: 5.818090e-05
+0: Multileader Node-Aware (N Leaders 8) Internal: MPI_Scatter: 1.811560e-05
+0: Running Multileader/Locality-Aware Tests with 16 Processes Per Leader, 4 Leaders Per Node
+0: Hierarchical Pairwise (N Leaders 4): 5.103020e-04
+0: Hierarchical Nonblocking (N Leaders 4): 3.029165e-04
+0: Hierarchical (N Leaders 4) Internal: Gather: 4.787693e-05
+0: Hierarchical (N Leaders 4) Internal: Scatter: 4.161794e-05
+0: Hierarchical (N Leaders 4) Internal: Alltoall Pairwise: 2.716534e-04
+0: Hierarchical (N Leaders 4) Internal: Alltoall Nonblocking: 6.622124e-05
+0: Locality-Aware (N Groups 4) Alltoall Pairwise: 4.769078e-04
+0: Locality-Aware (N Groups 4) Alltoall Nonblocking: 7.474664e-04
+0: Locality-Aware (N Groups 4) Internal: Intra-node pairwise alltoall: 5.179457e-05
+0: Locality-Aware (N Groups 4) Internal: Inter-node pairwise alltoall: 2.514743e-04
+0: Locality-Aware (N Groups 4) Internal: Intra-node nonblocking alltoall: 2.791145e-05
+0: Locality-Aware (N Groups 4) Internal: Inter-node nonblocking alltoall: 1.960898e-04
+0: Multileader Node-Aware (N Leaders 4) Alltoall Pairwise: 1.073934e-03
+0: Multileader Node-Aware (N Leaders 4) Alltoall Nonblocking: 1.003589e-03
+0: Multileader Node-Aware (N Leaders 4) Internal: MPI_Gather: 4.880851e-05
+0: Multileader Node-Aware (N Leaders 4) Internal: Pairwise Inter-Node Alltoall: 6.742325e-05
+0: Multileader Node-Aware (N Leaders 4) Internal: Pairwise Intra-Node Alltoall: 5.791442e-05
+0: Multileader Node-Aware (N Leaders 4) Internal: Nonblocking Inter-Node Alltoall: 1.725097e-05
+0: Multileader Node-Aware (N Leaders 4) Internal: Nonblocking Intra-Node Alltoall: 4.678035e-05
+0: Multileader Node-Aware (N Leaders 4) Internal: MPI_Scatter: 4.202771e-05
+0: Size 2
+0: PMPI: 1.000219e-03
+0: Hierarchical Pairwise: 2.177773e-03
+0: Hierarchical Nonblocking: 2.064717e-03
+0: Hierarchical Internal: Gather: 5.098638e-04
+0: Hierarchical Internal: Scatter: 3.972480e-04
+0: Hierarchical Internal: Pairwise inter-node alltoall: 1.405076e-04
+0: Hierarchical Interal: Nonblocking inter-node alltoall: 3.174095e-05
+0: Node-Aware Pairwise: 6.115031e-04
+0: Node-Aware Nonblocking: 1.897423e-04
+0: Node-Aware Internal: Pairwise intra-node alltoall: 3.015817e-04
+0: Node-Aware Internal: Pairwise inter-node alltoall: 6.446826e-05
+0: Node-Aware Internal: Nonblocking intra-node alltoall: 1.594212e-04
+0: Node-Aware Internal: Nonblocking inter-node alltoall: 1.481346e-05
+0: Running Multileader/Locality-Aware Tests with 4 Processes Per Leader, 16 Leaders Per Node
+0: Hierarchical Pairwise (N Leaders 16): 9.658704e-04
+0: Hierarchical Nonblocking (N Leaders 16): 3.761618e-04
+0: Hierarchical (N Leaders 16) Internal: Gather: 2.243232e-05
+0: Hierarchical (N Leaders 16) Internal: Scatter: 1.516650e-05
+0: Hierarchical (N Leaders 16) Internal: Alltoall Pairwise: 8.680148e-04
+0: Hierarchical (N Leaders 16) Internal: Alltoall Nonblocking: 2.314134e-04
+0: Locality-Aware (N Groups 16) Alltoall Pairwise: 8.340836e-04
+0: Locality-Aware (N Groups 16) Alltoall Nonblocking: 1.653687e-03
+0: Locality-Aware (N Groups 16) Internal: Intra-node pairwise alltoall: 1.145431e-05
+0: Locality-Aware (N Groups 16) Internal: Inter-node pairwise alltoall: 7.984846e-04
+0: Locality-Aware (N Groups 16) Internal: Intra-node nonblocking alltoall: 9.495791e-06
+0: Locality-Aware (N Groups 16) Internal: Inter-node nonblocking alltoall: 2.097248e-04
+0: Multileader Node-Aware (N Leaders 16) Alltoall Pairwise: 6.560343e-04
+0: Multileader Node-Aware (N Leaders 16) Alltoall Nonblocking: 5.679940e-04
+0: Multileader Node-Aware (N Leaders 16) Internal: MPI_Gather: 2.253295e-05
+0: Multileader Node-Aware (N Leaders 16) Internal: Pairwise Inter-Node Alltoall: 6.596591e-05
+0: Multileader Node-Aware (N Leaders 16) Internal: Pairwise Intra-Node Alltoall: 1.071809e-04
+0: Multileader Node-Aware (N Leaders 16) Internal: Nonblocking Inter-Node Alltoall: 1.555433e-05
+0: Multileader Node-Aware (N Leaders 16) Internal: Nonblocking Intra-Node Alltoall: 7.322740e-05
+0: Multileader Node-Aware (N Leaders 16) Internal: MPI_Scatter: 1.573770e-05
+0: Running Multileader/Locality-Aware Tests with 8 Processes Per Leader, 8 Leaders Per Node
+0: Hierarchical Pairwise (N Leaders 8): 7.461776e-04
+0: Hierarchical Nonblocking (N Leaders 8): 3.345902e-04
+0: Hierarchical (N Leaders 8) Internal: Gather: 3.855604e-05
+0: Hierarchical (N Leaders 8) Internal: Scatter: 2.772205e-05
+0: Hierarchical (N Leaders 8) Internal: Alltoall Pairwise: 5.399205e-04
+0: Hierarchical (N Leaders 8) Internal: Alltoall Nonblocking: 1.231090e-04
+0: Locality-Aware (N Groups 8) Alltoall Pairwise: 4.399301e-04
+0: Locality-Aware (N Groups 8) Alltoall Nonblocking: 1.370236e-04
+0: Locality-Aware (N Groups 8) Internal: Intra-node pairwise alltoall: 2.284443e-05
+0: Locality-Aware (N Groups 8) Internal: Inter-node pairwise alltoall: 4.014647e-04
+0: Locality-Aware (N Groups 8) Internal: Intra-node nonblocking alltoall: 1.589438e-05
+0: Locality-Aware (N Groups 8) Internal: Inter-node nonblocking alltoall: 1.099845e-04
+0: Multileader Node-Aware (N Leaders 8) Alltoall Pairwise: 7.801239e-04
+0: Multileader Node-Aware (N Leaders 8) Alltoall Nonblocking: 6.864273e-04
+0: Multileader Node-Aware (N Leaders 8) Internal: MPI_Gather: 3.859930e-05
+0: Multileader Node-Aware (N Leaders 8) Internal: Pairwise Inter-Node Alltoall: 6.844530e-05
+0: Multileader Node-Aware (N Leaders 8) Internal: Pairwise Intra-Node Alltoall: 1.132092e-04
+0: Multileader Node-Aware (N Leaders 8) Internal: Nonblocking Inter-Node Alltoall: 1.751858e-05
+0: Multileader Node-Aware (N Leaders 8) Internal: Nonblocking Intra-Node Alltoall: 9.036319e-05
+0: Multileader Node-Aware (N Leaders 8) Internal: MPI_Scatter: 2.809259e-05
+0: Running Multileader/Locality-Aware Tests with 16 Processes Per Leader, 4 Leaders Per Node
+0: Hierarchical Pairwise (N Leaders 4): 6.449118e-04
+0: Hierarchical Nonblocking (N Leaders 4): 4.269072e-04
+0: Hierarchical (N Leaders 4) Internal: Gather: 6.833067e-05
+0: Hierarchical (N Leaders 4) Internal: Scatter: 7.643177e-05
+0: Hierarchical (N Leaders 4) Internal: Alltoall Pairwise: 2.923938e-04
+0: Hierarchical (N Leaders 4) Internal: Alltoall Nonblocking: 7.527825e-05
+0: Locality-Aware (N Groups 4) Alltoall Pairwise: 2.737128e-04
+0: Locality-Aware (N Groups 4) Alltoall Nonblocking: 9.628697e-05
+0: Locality-Aware (N Groups 4) Internal: Intra-node pairwise alltoall: 5.168605e-05
+0: Locality-Aware (N Groups 4) Internal: Inter-node pairwise alltoall: 2.151161e-04
+0: Locality-Aware (N Groups 4) Internal: Intra-node nonblocking alltoall: 2.854110e-05
+0: Locality-Aware (N Groups 4) Internal: Inter-node nonblocking alltoall: 5.650825e-05
+0: Multileader Node-Aware (N Leaders 4) Alltoall Pairwise: 1.549235e-03
+0: Multileader Node-Aware (N Leaders 4) Alltoall Nonblocking: 1.467477e-03
+0: Multileader Node-Aware (N Leaders 4) Internal: MPI_Gather: 6.845535e-05
+0: Multileader Node-Aware (N Leaders 4) Internal: Pairwise Inter-Node Alltoall: 7.365974e-05
+0: Multileader Node-Aware (N Leaders 4) Internal: Pairwise Intra-Node Alltoall: 7.401869e-05
+0: Multileader Node-Aware (N Leaders 4) Internal: Nonblocking Inter-Node Alltoall: 2.098384e-05
+0: Multileader Node-Aware (N Leaders 4) Internal: Nonblocking Intra-Node Alltoall: 6.459651e-05
+0: Multileader Node-Aware (N Leaders 4) Internal: MPI_Scatter: 7.704448e-05
+0: Size 4
+0: PMPI: 3.843800e-04
+0: Hierarchical Pairwise: 2.327641e-03
+0: Hierarchical Nonblocking: 2.207013e-03
+0: Hierarchical Internal: Gather: 9.802783e-04
+0: Hierarchical Internal: Scatter: 7.528346e-04
+0: Hierarchical Internal: Pairwise inter-node alltoall: 1.681581e-04
+0: Hierarchical Interal: Nonblocking inter-node alltoall: 6.548341e-05
+0: Node-Aware Pairwise: 4.146203e-04
+0: Node-Aware Nonblocking: 1.780347e-04
+0: Node-Aware Internal: Pairwise intra-node alltoall: 3.019802e-04
+0: Node-Aware Internal: Pairwise inter-node alltoall: 6.582804e-05
+0: Node-Aware Internal: Nonblocking intra-node alltoall: 1.625595e-04
+0: Node-Aware Internal: Nonblocking inter-node alltoall: 1.701924e-05
+0: Running Multileader/Locality-Aware Tests with 4 Processes Per Leader, 16 Leaders Per Node
+0: Hierarchical Pairwise (N Leaders 16): 1.268583e-03
+0: Hierarchical Nonblocking (N Leaders 16): 4.042122e-04
+0: Hierarchical (N Leaders 16) Internal: Gather: 3.478723e-05
+0: Hierarchical (N Leaders 16) Internal: Scatter: 1.919296e-05
+0: Hierarchical (N Leaders 16) Internal: Alltoall Pairwise: 1.078502e-03
+0: Hierarchical (N Leaders 16) Internal: Alltoall Nonblocking: 2.423532e-04
+0: Locality-Aware (N Groups 16) Alltoall Pairwise: 8.444764e-04
+0: Locality-Aware (N Groups 16) Alltoall Nonblocking: 1.266970e-03
+0: Locality-Aware (N Groups 16) Internal: Intra-node pairwise alltoall: 1.581474e-05
+0: Locality-Aware (N Groups 16) Internal: Inter-node pairwise alltoall: 8.091619e-04
+0: Locality-Aware (N Groups 16) Internal: Intra-node nonblocking alltoall: 1.429194e-05
+0: Locality-Aware (N Groups 16) Internal: Inter-node nonblocking alltoall: 2.243563e-04
+0: Multileader Node-Aware (N Leaders 16) Alltoall Pairwise: 7.330500e-04
+0: Multileader Node-Aware (N Leaders 16) Alltoall Nonblocking: 6.320359e-04
+0: Multileader Node-Aware (N Leaders 16) Internal: MPI_Gather: 3.469949e-05
+0: Multileader Node-Aware (N Leaders 16) Internal: Pairwise Inter-Node Alltoall: 7.098130e-05
+0: Multileader Node-Aware (N Leaders 16) Internal: Pairwise Intra-Node Alltoall: 1.528112e-04
+0: Multileader Node-Aware (N Leaders 16) Internal: Nonblocking Inter-Node Alltoall: 1.719551e-05
+0: Multileader Node-Aware (N Leaders 16) Internal: Nonblocking Intra-Node Alltoall: 1.158975e-04
+0: Multileader Node-Aware (N Leaders 16) Internal: MPI_Scatter: 1.887493e-05
+0: Running Multileader/Locality-Aware Tests with 8 Processes Per Leader, 8 Leaders Per Node
+0: Hierarchical Pairwise (N Leaders 8): 8.480516e-04
+0: Hierarchical Nonblocking (N Leaders 8): 4.251607e-04
+0: Hierarchical (N Leaders 8) Internal: Gather: 6.564134e-05
+0: Hierarchical (N Leaders 8) Internal: Scatter: 4.492780e-05
+0: Hierarchical (N Leaders 8) Internal: Alltoall Pairwise: 5.514804e-04
+0: Hierarchical (N Leaders 8) Internal: Alltoall Nonblocking: 1.357228e-04
+0: Locality-Aware (N Groups 8) Alltoall Pairwise: 4.778974e-04
+0: Locality-Aware (N Groups 8) Alltoall Nonblocking: 1.469646e-04
+0: Locality-Aware (N Groups 8) Internal: Intra-node pairwise alltoall: 2.746899e-05
+0: Locality-Aware (N Groups 8) Internal: Inter-node pairwise alltoall: 4.522672e-04
+0: Locality-Aware (N Groups 8) Internal: Intra-node nonblocking alltoall: 2.079496e-05
+0: Locality-Aware (N Groups 8) Internal: Inter-node nonblocking alltoall: 1.124889e-04
+0: Multileader Node-Aware (N Leaders 8) Alltoall Pairwise: 1.276868e-03
+0: Multileader Node-Aware (N Leaders 8) Alltoall Nonblocking: 1.162307e-03
+0: Multileader Node-Aware (N Leaders 8) Internal: MPI_Gather: 6.567918e-05
+0: Multileader Node-Aware (N Leaders 8) Internal: Pairwise Inter-Node Alltoall: 7.718988e-05
+0: Multileader Node-Aware (N Leaders 8) Internal: Pairwise Intra-Node Alltoall: 1.326028e-04
+0: Multileader Node-Aware (N Leaders 8) Internal: Nonblocking Inter-Node Alltoall: 2.209224e-05
+0: Multileader Node-Aware (N Leaders 8) Internal: Nonblocking Intra-Node Alltoall: 1.152052e-04
+0: Multileader Node-Aware (N Leaders 8) Internal: MPI_Scatter: 4.449391e-05
+0: Running Multileader/Locality-Aware Tests with 16 Processes Per Leader, 4 Leaders Per Node
+0: Hierarchical Pairwise (N Leaders 4): 8.617784e-04
+0: Hierarchical Nonblocking (N Leaders 4): 6.356347e-04
+0: Hierarchical (N Leaders 4) Internal: Gather: 1.185068e-04
+0: Hierarchical (N Leaders 4) Internal: Scatter: 1.254543e-04
+0: Hierarchical (N Leaders 4) Internal: Alltoall Pairwise: 3.117577e-04
+0: Hierarchical (N Leaders 4) Internal: Alltoall Nonblocking: 9.313550e-05
+0: Locality-Aware (N Groups 4) Alltoall Pairwise: 3.370918e-04
+0: Locality-Aware (N Groups 4) Alltoall Nonblocking: 1.042681e-04
+0: Locality-Aware (N Groups 4) Internal: Intra-node pairwise alltoall: 5.477745e-05
+0: Locality-Aware (N Groups 4) Internal: Inter-node pairwise alltoall: 2.748102e-04
+0: Locality-Aware (N Groups 4) Internal: Intra-node nonblocking alltoall: 3.114094e-05
+0: Locality-Aware (N Groups 4) Internal: Inter-node nonblocking alltoall: 5.975125e-05
+0: Multileader Node-Aware (N Leaders 4) Alltoall Pairwise: 2.489629e-03
+0: Multileader Node-Aware (N Leaders 4) Alltoall Nonblocking: 2.394479e-03
+0: Multileader Node-Aware (N Leaders 4) Internal: MPI_Gather: 1.197298e-04
+0: Multileader Node-Aware (N Leaders 4) Internal: Pairwise Inter-Node Alltoall: 8.868757e-05
+0: Multileader Node-Aware (N Leaders 4) Internal: Pairwise Intra-Node Alltoall: 1.081898e-04
+0: Multileader Node-Aware (N Leaders 4) Internal: Nonblocking Inter-Node Alltoall: 2.686923e-05
+0: Multileader Node-Aware (N Leaders 4) Internal: Nonblocking Intra-Node Alltoall: 9.113859e-05
+0: Multileader Node-Aware (N Leaders 4) Internal: MPI_Scatter: 1.245239e-04
+0: Size 8
+0: PMPI: 5.568094e-04
+0: Hierarchical Pairwise: 3.042343e-03
+0: Hierarchical Nonblocking: 2.930928e-03
+0: Hierarchical Internal: Gather: 1.960642e-03
+0: Hierarchical Internal: Scatter: 1.427803e-03
+0: Hierarchical Internal: Pairwise inter-node alltoall: 2.199034e-04
+0: Hierarchical Interal: Nonblocking inter-node alltoall: 1.221967e-04
+0: Node-Aware Pairwise: 4.153608e-04
+0: Node-Aware Nonblocking: 1.864065e-04
+0: Node-Aware Internal: Pairwise intra-node alltoall: 3.144034e-04
+0: Node-Aware Internal: Pairwise inter-node alltoall: 7.573103e-05
+0: Node-Aware Internal: Nonblocking intra-node alltoall: 1.653840e-04
+0: Node-Aware Internal: Nonblocking inter-node alltoall: 2.635816e-05
+0: Running Multileader/Locality-Aware Tests with 4 Processes Per Leader, 16 Leaders Per Node
+0: Hierarchical Pairwise (N Leaders 16): 1.333579e-03
+0: Hierarchical Nonblocking (N Leaders 16): 4.812184e-04
+0: Hierarchical (N Leaders 16) Internal: Gather: 6.069370e-05
+0: Hierarchical (N Leaders 16) Internal: Scatter: 2.584821e-05
+0: Hierarchical (N Leaders 16) Internal: Alltoall Pairwise: 1.092531e-03
+0: Hierarchical (N Leaders 16) Internal: Alltoall Nonblocking: 2.580119e-04
+0: Locality-Aware (N Groups 16) Alltoall Pairwise: 9.415078e-04
+0: Locality-Aware (N Groups 16) Alltoall Nonblocking: 3.487590e-04
+0: Locality-Aware (N Groups 16) Internal: Intra-node pairwise alltoall: 3.400389e-05
+0: Locality-Aware (N Groups 16) Internal: Inter-node pairwise alltoall: 8.397221e-04
+0: Locality-Aware (N Groups 16) Internal: Intra-node nonblocking alltoall: 2.373549e-05
+0: Locality-Aware (N Groups 16) Internal: Inter-node nonblocking alltoall: 2.335658e-04
+0: Multileader Node-Aware (N Leaders 16) Alltoall Pairwise: 1.687285e-03
+0: Multileader Node-Aware (N Leaders 16) Alltoall Nonblocking: 1.529027e-03
+0: Multileader Node-Aware (N Leaders 16) Internal: MPI_Gather: 6.106466e-05
+0: Multileader Node-Aware (N Leaders 16) Internal: Pairwise Inter-Node Alltoall: 7.981593e-05
+0: Multileader Node-Aware (N Leaders 16) Internal: Pairwise Intra-Node Alltoall: 2.389354e-04
+0: Multileader Node-Aware (N Leaders 16) Internal: Nonblocking Inter-Node Alltoall: 2.800997e-05
+0: Multileader Node-Aware (N Leaders 16) Internal: Nonblocking Intra-Node Alltoall: 1.878638e-04
+0: Multileader Node-Aware (N Leaders 16) Internal: MPI_Scatter: 2.583516e-05
+0: Running Multileader/Locality-Aware Tests with 8 Processes Per Leader, 8 Leaders Per Node
+0: Hierarchical Pairwise (N Leaders 8): 1.061726e-03
+0: Hierarchical Nonblocking (N Leaders 8): 6.024901e-04
+0: Hierarchical (N Leaders 8) Internal: Gather: 1.198961e-04
+0: Hierarchical (N Leaders 8) Internal: Scatter: 6.061986e-05
+0: Hierarchical (N Leaders 8) Internal: Alltoall Pairwise: 5.920920e-04
+0: Hierarchical (N Leaders 8) Internal: Alltoall Nonblocking: 1.543713e-04
+0: Locality-Aware (N Groups 8) Alltoall Pairwise: 6.055066e-04
+0: Locality-Aware (N Groups 8) Alltoall Nonblocking: 1.706234e-04
+0: Locality-Aware (N Groups 8) Internal: Intra-node pairwise alltoall: 3.612698e-05
+0: Locality-Aware (N Groups 8) Internal: Inter-node pairwise alltoall: 5.474522e-04
+0: Locality-Aware (N Groups 8) Internal: Intra-node nonblocking alltoall: 3.167047e-05
+0: Locality-Aware (N Groups 8) Internal: Inter-node nonblocking alltoall: 1.185195e-04
+0: Multileader Node-Aware (N Leaders 8) Alltoall Pairwise: 2.205531e-03
+0: Multileader Node-Aware (N Leaders 8) Alltoall Nonblocking: 2.075891e-03
+0: Multileader Node-Aware (N Leaders 8) Internal: MPI_Gather: 1.199749e-04
+0: Multileader Node-Aware (N Leaders 8) Internal: Pairwise Inter-Node Alltoall: 9.170290e-05
+0: Multileader Node-Aware (N Leaders 8) Internal: Pairwise Intra-Node Alltoall: 1.921790e-04
+0: Multileader Node-Aware (N Leaders 8) Internal: Nonblocking Inter-Node Alltoall: 2.801027e-05
+0: Multileader Node-Aware (N Leaders 8) Internal: Nonblocking Intra-Node Alltoall: 1.762902e-04
+0: Multileader Node-Aware (N Leaders 8) Internal: MPI_Scatter: 6.135569e-05
+0: Running Multileader/Locality-Aware Tests with 16 Processes Per Leader, 4 Leaders Per Node
+0: Hierarchical Pairwise (N Leaders 4): 1.511891e-03
+0: Hierarchical Nonblocking (N Leaders 4): 1.246568e-03
+0: Hierarchical (N Leaders 4) Internal: Gather: 2.144619e-04
+0: Hierarchical (N Leaders 4) Internal: Scatter: 2.262494e-04
+0: Hierarchical (N Leaders 4) Internal: Alltoall Pairwise: 3.579722e-04
+0: Hierarchical (N Leaders 4) Internal: Alltoall Nonblocking: 1.224470e-04
+0: Locality-Aware (N Groups 4) Alltoall Pairwise: 3.569288e-04
+0: Locality-Aware (N Groups 4) Alltoall Nonblocking: 1.173872e-04
+0: Locality-Aware (N Groups 4) Internal: Intra-node pairwise alltoall: 6.510296e-05
+0: Locality-Aware (N Groups 4) Internal: Inter-node pairwise alltoall: 2.789363e-04
+0: Locality-Aware (N Groups 4) Internal: Intra-node nonblocking alltoall: 3.992357e-05
+0: Locality-Aware (N Groups 4) Internal: Inter-node nonblocking alltoall: 6.184802e-05
+0: Multileader Node-Aware (N Leaders 4) Alltoall Pairwise: 4.300267e-03
+0: Multileader Node-Aware (N Leaders 4) Alltoall Nonblocking: 4.265815e-03
+0: Multileader Node-Aware (N Leaders 4) Internal: MPI_Gather: 2.156232e-04
+0: Multileader Node-Aware (N Leaders 4) Internal: Pairwise Inter-Node Alltoall: 1.426542e-04
+0: Multileader Node-Aware (N Leaders 4) Internal: Pairwise Intra-Node Alltoall: 1.595003e-04
+0: Multileader Node-Aware (N Leaders 4) Internal: Nonblocking Inter-Node Alltoall: 3.338720e-05
+0: Multileader Node-Aware (N Leaders 4) Internal: Nonblocking Intra-Node Alltoall: 1.694450e-04
+0: Multileader Node-Aware (N Leaders 4) Internal: MPI_Scatter: 2.267863e-04
+0: Size 16
+0: PMPI: 9.791918e-04
+0: Hierarchical Pairwise: 5.074614e-03
+0: Hierarchical Nonblocking: 5.038554e-03
+0: Hierarchical Internal: Gather: 3.837756e-03
+0: Hierarchical Internal: Scatter: 2.759605e-03
+0: Hierarchical Internal: Pairwise inter-node alltoall: 3.199209e-04
+0: Hierarchical Interal: Nonblocking inter-node alltoall: 2.486257e-04
+0: Node-Aware Pairwise: 4.518035e-04
+0: Node-Aware Nonblocking: 2.212997e-04
+0: Node-Aware Internal: Pairwise intra-node alltoall: 3.400049e-04
+0: Node-Aware Internal: Pairwise inter-node alltoall: 8.442845e-05
+0: Node-Aware Internal: Nonblocking intra-node alltoall: 1.943276e-04
+0: Node-Aware Internal: Nonblocking inter-node alltoall: 4.569679e-05
+0: Running Multileader/Locality-Aware Tests with 4 Processes Per Leader, 16 Leaders Per Node
+0: Hierarchical Pairwise (N Leaders 16): 1.516896e-03
+0: Hierarchical Nonblocking (N Leaders 16): 6.322955e-04
+0: Hierarchical (N Leaders 16) Internal: Gather: 1.136782e-04
+0: Hierarchical (N Leaders 16) Internal: Scatter: 3.681228e-05
+0: Hierarchical (N Leaders 16) Internal: Alltoall Pairwise: 1.123035e-03
+0: Hierarchical (N Leaders 16) Internal: Alltoall Nonblocking: 2.797317e-04
+0: Locality-Aware (N Groups 16) Alltoall Pairwise: 1.253954e-03
+0: Locality-Aware (N Groups 16) Alltoall Nonblocking: 3.656438e-04
+0: Locality-Aware (N Groups 16) Internal: Intra-node pairwise alltoall: 3.897998e-05
+0: Locality-Aware (N Groups 16) Internal: Inter-node pairwise alltoall: 1.153039e-03
+0: Locality-Aware (N Groups 16) Internal: Intra-node nonblocking alltoall: 2.656389e-05
+0: Locality-Aware (N Groups 16) Internal: Inter-node nonblocking alltoall: 2.415756e-04
+0: Multileader Node-Aware (N Leaders 16) Alltoall Pairwise: 1.877782e-03
+0: Multileader Node-Aware (N Leaders 16) Alltoall Nonblocking: 1.690837e-03
+0: Multileader Node-Aware (N Leaders 16) Internal: MPI_Gather: 1.141563e-04
+0: Multileader Node-Aware (N Leaders 16) Internal: Pairwise Inter-Node Alltoall: 9.933996e-05
+0: Multileader Node-Aware (N Leaders 16) Internal: Pairwise Intra-Node Alltoall: 2.935722e-04
+0: Multileader Node-Aware (N Leaders 16) Internal: Nonblocking Inter-Node Alltoall: 4.814120e-05
+0: Multileader Node-Aware (N Leaders 16) Internal: Nonblocking Intra-Node Alltoall: 2.366838e-04
+0: Multileader Node-Aware (N Leaders 16) Internal: MPI_Scatter: 3.629309e-05
+0: Running Multileader/Locality-Aware Tests with 8 Processes Per Leader, 8 Leaders Per Node
+0: Hierarchical Pairwise (N Leaders 8): 1.484704e-03
+0: Hierarchical Nonblocking (N Leaders 8): 9.850236e-04
+0: Hierarchical (N Leaders 8) Internal: Gather: 2.269034e-04
+0: Hierarchical (N Leaders 8) Internal: Scatter: 1.058612e-04
+0: Hierarchical (N Leaders 8) Internal: Alltoall Pairwise: 6.517446e-04
+0: Hierarchical (N Leaders 8) Internal: Alltoall Nonblocking: 1.925071e-04
+0: Locality-Aware (N Groups 8) Alltoall Pairwise: 7.480713e-04
+0: Locality-Aware (N Groups 8) Alltoall Nonblocking: 2.887601e-04
+0: Locality-Aware (N Groups 8) Internal: Intra-node pairwise alltoall: 8.007625e-05
+0: Locality-Aware (N Groups 8) Internal: Inter-node pairwise alltoall: 5.536283e-04
+0: Locality-Aware (N Groups 8) Internal: Intra-node nonblocking alltoall: 5.430632e-05
+0: Locality-Aware (N Groups 8) Internal: Inter-node nonblocking alltoall: 1.240781e-04
+0: Multileader Node-Aware (N Leaders 8) Alltoall Pairwise: 2.495553e-03
+0: Multileader Node-Aware (N Leaders 8) Alltoall Nonblocking: 2.289116e-03
+0: Multileader Node-Aware (N Leaders 8) Internal: MPI_Gather: 2.183202e-04
+0: Multileader Node-Aware (N Leaders 8) Internal: Pairwise Inter-Node Alltoall: 1.612578e-04
+0: Multileader Node-Aware (N Leaders 8) Internal: Pairwise Intra-Node Alltoall: 2.399175e-04
+0: Multileader Node-Aware (N Leaders 8) Internal: Nonblocking Inter-Node Alltoall: 6.187976e-05
+0: Multileader Node-Aware (N Leaders 8) Internal: Nonblocking Intra-Node Alltoall: 2.129993e-04
+0: Multileader Node-Aware (N Leaders 8) Internal: MPI_Scatter: 1.049514e-04
+0: Running Multileader/Locality-Aware Tests with 16 Processes Per Leader, 4 Leaders Per Node
+0: Hierarchical Pairwise (N Leaders 4): 2.362753e-03
+0: Hierarchical Nonblocking (N Leaders 4): 2.016858e-03
+0: Hierarchical (N Leaders 4) Internal: Gather: 4.028094e-04
+0: Hierarchical (N Leaders 4) Internal: Scatter: 4.505800e-04
+0: Hierarchical (N Leaders 4) Internal: Alltoall Pairwise: 4.189539e-04
+0: Hierarchical (N Leaders 4) Internal: Alltoall Nonblocking: 1.500132e-04
+0: Locality-Aware (N Groups 4) Alltoall Pairwise: 3.957962e-04
+0: Locality-Aware (N Groups 4) Alltoall Nonblocking: 1.407100e-04
+0: Locality-Aware (N Groups 4) Internal: Intra-node pairwise alltoall: 8.560380e-05
+0: Locality-Aware (N Groups 4) Internal: Inter-node pairwise alltoall: 2.898687e-04
+0: Locality-Aware (N Groups 4) Internal: Intra-node nonblocking alltoall: 5.845161e-05
+0: Locality-Aware (N Groups 4) Internal: Inter-node nonblocking alltoall: 6.660871e-05
+0: Multileader Node-Aware (N Leaders 4) Alltoall Pairwise: 5.304334e-03
+0: Multileader Node-Aware (N Leaders 4) Alltoall Nonblocking: 5.312245e-03
+0: Multileader Node-Aware (N Leaders 4) Internal: MPI_Gather: 4.025499e-04
+0: Multileader Node-Aware (N Leaders 4) Internal: Pairwise Inter-Node Alltoall: 1.786122e-04
+0: Multileader Node-Aware (N Leaders 4) Internal: Pairwise Intra-Node Alltoall: 2.075908e-04
+0: Multileader Node-Aware (N Leaders 4) Internal: Nonblocking Inter-Node Alltoall: 6.655750e-05
+0: Multileader Node-Aware (N Leaders 4) Internal: Nonblocking Intra-Node Alltoall: 3.340231e-04
+0: Multileader Node-Aware (N Leaders 4) Internal: MPI_Scatter: 4.419856e-04
+0: Size 32
+0: PMPI: 1.350915e-03
+0: Hierarchical Pairwise: 1.266371e-02
+0: Hierarchical Nonblocking: 1.156852e-02
+0: Hierarchical Internal: Gather: 7.185445e-03
+0: Hierarchical Internal: Scatter: 5.764725e-03
+0: Hierarchical Internal: Pairwise inter-node alltoall: 5.287493e-04
+0: Hierarchical Interal: Nonblocking inter-node alltoall: 5.360491e-04
+0: Node-Aware Pairwise: 5.799432e-04
+0: Node-Aware Nonblocking: 3.350331e-04
+0: Node-Aware Internal: Pairwise intra-node alltoall: 4.330077e-04
+0: Node-Aware Internal: Pairwise inter-node alltoall: 1.054340e-04
+0: Node-Aware Internal: Nonblocking intra-node alltoall: 2.864988e-04
+0: Node-Aware Internal: Nonblocking inter-node alltoall: 8.633554e-05
+0: Running Multileader/Locality-Aware Tests with 4 Processes Per Leader, 16 Leaders Per Node
+0: Hierarchical Pairwise (N Leaders 16): 1.926527e-03
+0: Hierarchical Nonblocking (N Leaders 16): 9.823408e-04
+0: Hierarchical (N Leaders 16) Internal: Gather: 2.222254e-04
+0: Hierarchical (N Leaders 16) Internal: Scatter: 6.627421e-05
+0: Hierarchical (N Leaders 16) Internal: Alltoall Pairwise: 1.198801e-03
+0: Hierarchical (N Leaders 16) Internal: Alltoall Nonblocking: 3.246924e-04
+0: Locality-Aware (N Groups 16) Alltoall Pairwise: 1.295438e-03
+0: Locality-Aware (N Groups 16) Alltoall Nonblocking: 3.946240e-04
+0: Locality-Aware (N Groups 16) Internal: Intra-node pairwise alltoall: 4.753795e-05
+0: Locality-Aware (N Groups 16) Internal: Inter-node pairwise alltoall: 1.115503e-03
+0: Locality-Aware (N Groups 16) Internal: Intra-node nonblocking alltoall: 3.104348e-05
+0: Locality-Aware (N Groups 16) Internal: Inter-node nonblocking alltoall: 2.525328e-04
+0: Multileader Node-Aware (N Leaders 16) Alltoall Pairwise: 2.329656e-03
+0: Multileader Node-Aware (N Leaders 16) Alltoall Nonblocking: 2.146414e-03
+0: Multileader Node-Aware (N Leaders 16) Internal: MPI_Gather: 2.132009e-04
+0: Multileader Node-Aware (N Leaders 16) Internal: Pairwise Inter-Node Alltoall: 1.802710e-04
+0: Multileader Node-Aware (N Leaders 16) Internal: Pairwise Intra-Node Alltoall: 3.462779e-04
+0: Multileader Node-Aware (N Leaders 16) Internal: Nonblocking Inter-Node Alltoall: 1.039598e-04
+0: Multileader Node-Aware (N Leaders 16) Internal: Nonblocking Intra-Node Alltoall: 2.867484e-04
+0: Multileader Node-Aware (N Leaders 16) Internal: MPI_Scatter: 6.398009e-05
+0: Running Multileader/Locality-Aware Tests with 8 Processes Per Leader, 8 Leaders Per Node
+0: Hierarchical Pairwise (N Leaders 8): 2.494238e-03
+0: Hierarchical Nonblocking (N Leaders 8): 1.946847e-03
+0: Hierarchical (N Leaders 8) Internal: Gather: 4.255539e-04
+0: Hierarchical (N Leaders 8) Internal: Scatter: 1.760094e-04
+0: Hierarchical (N Leaders 8) Internal: Alltoall Pairwise: 7.754124e-04
+0: Hierarchical (N Leaders 8) Internal: Alltoall Nonblocking: 2.490717e-04
+0: Locality-Aware (N Groups 8) Alltoall Pairwise: 7.932416e-04
+0: Locality-Aware (N Groups 8) Alltoall Nonblocking: 3.181762e-04
+0: Locality-Aware (N Groups 8) Internal: Intra-node pairwise alltoall: 9.158246e-05
+0: Locality-Aware (N Groups 8) Internal: Inter-node pairwise alltoall: 5.886839e-04
+0: Locality-Aware (N Groups 8) Internal: Intra-node nonblocking alltoall: 5.893173e-05
+0: Locality-Aware (N Groups 8) Internal: Inter-node nonblocking alltoall: 1.335813e-04
+0: Multileader Node-Aware (N Leaders 8) Alltoall Pairwise: 3.246745e-03
+0: Multileader Node-Aware (N Leaders 8) Alltoall Nonblocking: 3.846651e-03
+0: Multileader Node-Aware (N Leaders 8) Internal: MPI_Gather: 4.235814e-04
+0: Multileader Node-Aware (N Leaders 8) Internal: Pairwise Inter-Node Alltoall: 2.110712e-04
+0: Multileader Node-Aware (N Leaders 8) Internal: Pairwise Intra-Node Alltoall: 3.346253e-04
+0: Multileader Node-Aware (N Leaders 8) Internal: Nonblocking Inter-Node Alltoall: 1.141614e-04
+0: Multileader Node-Aware (N Leaders 8) Internal: Nonblocking Intra-Node Alltoall: 5.211884e-04
+0: Multileader Node-Aware (N Leaders 8) Internal: MPI_Scatter: 1.773613e-04
+0: Running Multileader/Locality-Aware Tests with 16 Processes Per Leader, 4 Leaders Per Node
+0: Hierarchical Pairwise (N Leaders 4): 4.001956e-03
+0: Hierarchical Nonblocking (N Leaders 4): 3.448897e-03
+0: Hierarchical (N Leaders 4) Internal: Gather: 7.901094e-04
+0: Hierarchical (N Leaders 4) Internal: Scatter: 8.274672e-04
+0: Hierarchical (N Leaders 4) Internal: Alltoall Pairwise: 7.127042e-04
+0: Hierarchical (N Leaders 4) Internal: Alltoall Nonblocking: 1.414058e-04
+0: Locality-Aware (N Groups 4) Alltoall Pairwise: 6.314080e-04
+0: Locality-Aware (N Groups 4) Alltoall Nonblocking: 2.985428e-04
+0: Locality-Aware (N Groups 4) Internal: Intra-node pairwise alltoall: 1.644686e-04
+0: Locality-Aware (N Groups 4) Internal: Inter-node pairwise alltoall: 3.104050e-04
+0: Locality-Aware (N Groups 4) Internal: Intra-node nonblocking alltoall: 1.048943e-04
+0: Locality-Aware (N Groups 4) Internal: Inter-node nonblocking alltoall: 1.093047e-04
+0: Multileader Node-Aware (N Leaders 4) Alltoall Pairwise: 4.419504e-03
+0: Multileader Node-Aware (N Leaders 4) Alltoall Nonblocking: 5.723452e-03
+0: Multileader Node-Aware (N Leaders 4) Internal: MPI_Gather: 8.031679e-04
+0: Multileader Node-Aware (N Leaders 4) Internal: Pairwise Inter-Node Alltoall: 2.295595e-04
+0: Multileader Node-Aware (N Leaders 4) Internal: Pairwise Intra-Node Alltoall: 3.396907e-04
+0: Multileader Node-Aware (N Leaders 4) Internal: Nonblocking Inter-Node Alltoall: 1.230618e-04
+0: Multileader Node-Aware (N Leaders 4) Internal: Nonblocking Intra-Node Alltoall: 8.764854e-04
+0: Multileader Node-Aware (N Leaders 4) Internal: MPI_Scatter: 8.268482e-04
+0: Size 64
+0: PMPI: 2.059355e-03
+0: Hierarchical Pairwise: 2.130575e-02
+0: Hierarchical Nonblocking: 2.292164e-02
+0: Hierarchical Internal: Gather: 1.286342e-02
+0: Hierarchical Internal: Scatter: 1.049532e-02
+0: Hierarchical Internal: Pairwise inter-node alltoall: 8.954848e-04
+0: Hierarchical Interal: Nonblocking inter-node alltoall: 1.225847e-03
+0: Node-Aware Pairwise: 8.214815e-04
+0: Node-Aware Nonblocking: 5.203198e-04
+0: Node-Aware Internal: Pairwise intra-node alltoall: 6.040891e-04
+0: Node-Aware Internal: Pairwise inter-node alltoall: 1.734942e-04
+0: Node-Aware Internal: Nonblocking intra-node alltoall: 4.450417e-04
+0: Node-Aware Internal: Nonblocking inter-node alltoall: 1.711559e-04
+0: Running Multileader/Locality-Aware Tests with 4 Processes Per Leader, 16 Leaders Per Node
+0: Hierarchical Pairwise (N Leaders 16): 2.715795e-03
+0: Hierarchical Nonblocking (N Leaders 16): 1.655530e-03
+0: Hierarchical (N Leaders 16) Internal: Gather: 4.096963e-04
+0: Hierarchical (N Leaders 16) Internal: Scatter: 1.328695e-04
+0: Hierarchical (N Leaders 16) Internal: Alltoall Pairwise: 1.324946e-03
+0: Hierarchical (N Leaders 16) Internal: Alltoall Nonblocking: 4.051146e-04
+0: Locality-Aware (N Groups 16) Alltoall Pairwise: 1.481310e-03
+0: Locality-Aware (N Groups 16) Alltoall Nonblocking: 5.070614e-04
+0: Locality-Aware (N Groups 16) Internal: Intra-node pairwise alltoall: 1.239808e-04
+0: Locality-Aware (N Groups 16) Internal: Inter-node pairwise alltoall: 1.148848e-03
+0: Locality-Aware (N Groups 16) Internal: Intra-node nonblocking alltoall: 9.904763e-05
+0: Locality-Aware (N Groups 16) Internal: Inter-node nonblocking alltoall: 2.733284e-04
+0: Multileader Node-Aware (N Leaders 16) Alltoall Pairwise: 2.537907e-03
+0: Multileader Node-Aware (N Leaders 16) Alltoall Nonblocking: 2.264274e-03
+0: Multileader Node-Aware (N Leaders 16) Internal: MPI_Gather: 4.114393e-04
+0: Multileader Node-Aware (N Leaders 16) Internal: Pairwise Inter-Node Alltoall: 2.725042e-04
+0: Multileader Node-Aware (N Leaders 16) Internal: Pairwise Intra-Node Alltoall: 4.993719e-04
+0: Multileader Node-Aware (N Leaders 16) Internal: Nonblocking Inter-Node Alltoall: 1.828904e-04
+0: Multileader Node-Aware (N Leaders 16) Internal: Nonblocking Intra-Node Alltoall: 4.310548e-04
+0: Multileader Node-Aware (N Leaders 16) Internal: MPI_Scatter: 1.339713e-04
+0: Running Multileader/Locality-Aware Tests with 8 Processes Per Leader, 8 Leaders Per Node
+0: Hierarchical Pairwise (N Leaders 8): 3.995379e-03
+0: Hierarchical Nonblocking (N Leaders 8): 3.103034e-03
+0: Hierarchical (N Leaders 8) Internal: Gather: 8.334742e-04
+0: Hierarchical (N Leaders 8) Internal: Scatter: 2.736706e-04
+0: Hierarchical (N Leaders 8) Internal: Alltoall Pairwise: 9.037527e-04
+0: Hierarchical (N Leaders 8) Internal: Alltoall Nonblocking: 3.126958e-04
+0: Locality-Aware (N Groups 8) Alltoall Pairwise: 9.768220e-04
+0: Locality-Aware (N Groups 8) Alltoall Nonblocking: 4.447943e-04
+0: Locality-Aware (N Groups 8) Internal: Intra-node pairwise alltoall: 1.278655e-04
+0: Locality-Aware (N Groups 8) Internal: Inter-node pairwise alltoall: 6.232051e-04
+0: Locality-Aware (N Groups 8) Internal: Intra-node nonblocking alltoall: 8.467119e-05
+0: Locality-Aware (N Groups 8) Internal: Inter-node nonblocking alltoall: 1.954641e-04
+0: Multileader Node-Aware (N Leaders 8) Alltoall Pairwise: 6.426270e-03
+0: Multileader Node-Aware (N Leaders 8) Alltoall Nonblocking: 3.886471e-03
+0: Multileader Node-Aware (N Leaders 8) Internal: MPI_Gather: 8.386157e-04
+0: Multileader Node-Aware (N Leaders 8) Internal: Pairwise Inter-Node Alltoall: 2.998558e-04
+0: Multileader Node-Aware (N Leaders 8) Internal: Pairwise Intra-Node Alltoall: 5.055328e-04
+0: Multileader Node-Aware (N Leaders 8) Internal: Nonblocking Inter-Node Alltoall: 1.880075e-04
+0: Multileader Node-Aware (N Leaders 8) Internal: Nonblocking Intra-Node Alltoall: 1.474063e-03
+0: Multileader Node-Aware (N Leaders 8) Internal: MPI_Scatter: 2.750518e-04
+0: Running Multileader/Locality-Aware Tests with 16 Processes Per Leader, 4 Leaders Per Node
+0: Hierarchical Pairwise (N Leaders 4): 7.778361e-03
+0: Hierarchical Nonblocking (N Leaders 4): 7.121626e-03
+0: Hierarchical (N Leaders 4) Internal: Gather: 1.583685e-03
+0: Hierarchical (N Leaders 4) Internal: Scatter: 1.550646e-03
+0: Hierarchical (N Leaders 4) Internal: Alltoall Pairwise: 8.031283e-04
+0: Hierarchical (N Leaders 4) Internal: Alltoall Nonblocking: 2.724504e-04
+0: Locality-Aware (N Groups 4) Alltoall Pairwise: 7.578725e-04
+0: Locality-Aware (N Groups 4) Alltoall Nonblocking: 4.481415e-04
+0: Locality-Aware (N Groups 4) Internal: Intra-node pairwise alltoall: 1.879555e-04
+0: Locality-Aware (N Groups 4) Internal: Inter-node pairwise alltoall: 3.586782e-04
+0: Locality-Aware (N Groups 4) Internal: Intra-node nonblocking alltoall: 1.236436e-04
+0: Locality-Aware (N Groups 4) Internal: Inter-node nonblocking alltoall: 1.924411e-04
+0: Multileader Node-Aware (N Leaders 4) Alltoall Pairwise: 9.173227e-03
+0: Multileader Node-Aware (N Leaders 4) Alltoall Nonblocking: 9.311810e-03
+0: Multileader Node-Aware (N Leaders 4) Internal: MPI_Gather: 1.588760e-03
+0: Multileader Node-Aware (N Leaders 4) Internal: Pairwise Inter-Node Alltoall: 3.315088e-04
+0: Multileader Node-Aware (N Leaders 4) Internal: Pairwise Intra-Node Alltoall: 6.440479e-04
+0: Multileader Node-Aware (N Leaders 4) Internal: Nonblocking Inter-Node Alltoall: 2.489740e-04
+0: Multileader Node-Aware (N Leaders 4) Internal: Nonblocking Intra-Node Alltoall: 9.314440e-04
+0: Multileader Node-Aware (N Leaders 4) Internal: MPI_Scatter: 1.549368e-03
+0: Size 128
+0: PMPI: 3.659994e-03
+0: Hierarchical Pairwise: 4.991433e-02
+0: Hierarchical Nonblocking: 4.883244e-02
+0: Hierarchical Internal: Gather: 1.290062e-02
+0: Hierarchical Internal: Scatter: 2.045601e-02
+0: Hierarchical Internal: Pairwise inter-node alltoall: 1.632123e-03
+0: Hierarchical Interal: Nonblocking inter-node alltoall: 2.741062e-03
+0: Node-Aware Pairwise: 2.077374e-03
+0: Node-Aware Nonblocking: 1.549763e-03
+0: Node-Aware Internal: Pairwise intra-node alltoall: 1.104123e-03
+0: Node-Aware Internal: Pairwise inter-node alltoall: 3.717688e-04
+0: Node-Aware Internal: Nonblocking intra-node alltoall: 7.664236e-04
+0: Node-Aware Internal: Nonblocking inter-node alltoall: 3.571130e-04
+0: Running Multileader/Locality-Aware Tests with 4 Processes Per Leader, 16 Leaders Per Node
+0: Hierarchical Pairwise (N Leaders 16): 4.313540e-03
+0: Hierarchical Nonblocking (N Leaders 16): 2.909515e-03
+0: Hierarchical (N Leaders 16) Internal: Gather: 8.434335e-04
+0: Hierarchical (N Leaders 16) Internal: Scatter: 2.356432e-04
+0: Hierarchical (N Leaders 16) Internal: Alltoall Pairwise: 1.660796e-03
+0: Hierarchical (N Leaders 16) Internal: Alltoall Nonblocking: 5.036334e-04
+0: Locality-Aware (N Groups 16) Alltoall Pairwise: 1.747233e-03
+0: Locality-Aware (N Groups 16) Alltoall Nonblocking: 7.179333e-04
+0: Locality-Aware (N Groups 16) Internal: Intra-node pairwise alltoall: 2.183064e-04
+0: Locality-Aware (N Groups 16) Internal: Inter-node pairwise alltoall: 1.266016e-03
+0: Locality-Aware (N Groups 16) Internal: Intra-node nonblocking alltoall: 1.992039e-04
+0: Locality-Aware (N Groups 16) Internal: Inter-node nonblocking alltoall: 3.776919e-04
+0: Multileader Node-Aware (N Leaders 16) Alltoall Pairwise: 6.601258e-03
+0: Multileader Node-Aware (N Leaders 16) Alltoall Nonblocking: 5.824564e-03
+0: Multileader Node-Aware (N Leaders 16) Internal: MPI_Gather: 8.427210e-04
+0: Multileader Node-Aware (N Leaders 16) Internal: Pairwise Inter-Node Alltoall: 4.726623e-04
+0: Multileader Node-Aware (N Leaders 16) Internal: Pairwise Intra-Node Alltoall: 6.849930e-04
+0: Multileader Node-Aware (N Leaders 16) Internal: Nonblocking Inter-Node Alltoall: 3.555127e-04
+0: Multileader Node-Aware (N Leaders 16) Internal: Nonblocking Intra-Node Alltoall: 1.584203e-03
+0: Multileader Node-Aware (N Leaders 16) Internal: MPI_Scatter: 2.381308e-04
+0: Running Multileader/Locality-Aware Tests with 8 Processes Per Leader, 8 Leaders Per Node
+0: Hierarchical Pairwise (N Leaders 8): 7.419282e-03
+0: Hierarchical Nonblocking (N Leaders 8): 6.126902e-03
+0: Hierarchical (N Leaders 8) Internal: Gather: 1.664097e-03
+0: Hierarchical (N Leaders 8) Internal: Scatter: 5.192510e-04
+0: Hierarchical (N Leaders 8) Internal: Alltoall Pairwise: 1.480396e-03
+0: Hierarchical (N Leaders 8) Internal: Alltoall Nonblocking: 5.380963e-04
+0: Locality-Aware (N Groups 8) Alltoall Pairwise: 1.260371e-03
+0: Locality-Aware (N Groups 8) Alltoall Nonblocking: 6.477720e-04
+0: Locality-Aware (N Groups 8) Internal: Intra-node pairwise alltoall: 2.675426e-04
+0: Locality-Aware (N Groups 8) Internal: Inter-node pairwise alltoall: 7.316067e-04
+0: Locality-Aware (N Groups 8) Internal: Intra-node nonblocking alltoall: 1.850972e-04
+0: Locality-Aware (N Groups 8) Internal: Inter-node nonblocking alltoall: 3.729303e-04
+0: Multileader Node-Aware (N Leaders 8) Alltoall Pairwise: 6.748995e-03
+0: Multileader Node-Aware (N Leaders 8) Alltoall Nonblocking: 7.109469e-03
+0: Multileader Node-Aware (N Leaders 8) Internal: MPI_Gather: 1.658449e-03
+0: Multileader Node-Aware (N Leaders 8) Internal: Pairwise Inter-Node Alltoall: 4.992304e-04
+0: Multileader Node-Aware (N Leaders 8) Internal: Pairwise Intra-Node Alltoall: 8.629873e-04
+0: Multileader Node-Aware (N Leaders 8) Internal: Nonblocking Inter-Node Alltoall: 3.786852e-04
+0: Multileader Node-Aware (N Leaders 8) Internal: Nonblocking Intra-Node Alltoall: 1.516422e-03
+0: Multileader Node-Aware (N Leaders 8) Internal: MPI_Scatter: 4.551149e-04
+0: Running Multileader/Locality-Aware Tests with 16 Processes Per Leader, 4 Leaders Per Node
+0: Hierarchical Pairwise (N Leaders 4): 1.206619e-02
+0: Hierarchical Nonblocking (N Leaders 4): 1.123843e-02
+0: Hierarchical (N Leaders 4) Internal: Gather: 3.090489e-03
+0: Hierarchical (N Leaders 4) Internal: Scatter: 3.479908e-03
+0: Hierarchical (N Leaders 4) Internal: Alltoall Pairwise: 1.081685e-03
+0: Hierarchical (N Leaders 4) Internal: Alltoall Nonblocking: 5.711516e-04
+0: Locality-Aware (N Groups 4) Alltoall Pairwise: 1.076032e-03
+0: Locality-Aware (N Groups 4) Alltoall Nonblocking: 7.441117e-04
+0: Locality-Aware (N Groups 4) Internal: Intra-node pairwise alltoall: 2.825937e-04
+0: Locality-Aware (N Groups 4) Internal: Inter-node pairwise alltoall: 4.685697e-04
+0: Locality-Aware (N Groups 4) Internal: Intra-node nonblocking alltoall: 2.040058e-04
+0: Locality-Aware (N Groups 4) Internal: Inter-node nonblocking alltoall: 3.523517e-04
+0: Multileader Node-Aware (N Leaders 4) Alltoall Pairwise: 1.798830e-02
+0: Multileader Node-Aware (N Leaders 4) Alltoall Nonblocking: 1.834144e-02
+0: Multileader Node-Aware (N Leaders 4) Internal: MPI_Gather: 3.091071e-03
+0: Multileader Node-Aware (N Leaders 4) Internal: Pairwise Inter-Node Alltoall: 5.409439e-04
+0: Multileader Node-Aware (N Leaders 4) Internal: Pairwise Intra-Node Alltoall: 1.333256e-03
+0: Multileader Node-Aware (N Leaders 4) Internal: Nonblocking Inter-Node Alltoall: 5.455905e-04
+0: Multileader Node-Aware (N Leaders 4) Internal: Nonblocking Intra-Node Alltoall: 1.351820e-03
+0: Multileader Node-Aware (N Leaders 4) Internal: MPI_Scatter: 3.476173e-03
+0: Size 256
+0: PMPI: 1.538325e-03
+0: Hierarchical Pairwise: 7.796425e-02
+0: Hierarchical Nonblocking: 7.089535e-02
+0: Hierarchical Internal: Gather: 2.152075e-02
+0: Hierarchical Internal: Scatter: 3.532842e-02
+0: Hierarchical Internal: Pairwise inter-node alltoall: 3.105187e-03
+0: Hierarchical Interal: Nonblocking inter-node alltoall: 6.092089e-03
+0: Node-Aware Pairwise: 2.396959e-03
+0: Node-Aware Nonblocking: 3.553040e-02
+0: Node-Aware Internal: Pairwise intra-node alltoall: 1.326395e-03
+0: Node-Aware Internal: Pairwise inter-node alltoall: 6.917185e-04
+0: Node-Aware Internal: Nonblocking intra-node alltoall: 9.612122e-04
+0: Node-Aware Internal: Nonblocking inter-node alltoall: 7.174635e-04
+0: Running Multileader/Locality-Aware Tests with 4 Processes Per Leader, 16 Leaders Per Node
+0: Hierarchical Pairwise (N Leaders 16): 6.638689e-03
+0: Hierarchical Nonblocking (N Leaders 16): 4.484704e-03
+0: Hierarchical (N Leaders 16) Internal: Gather: 1.671985e-03
+0: Hierarchical (N Leaders 16) Internal: Scatter: 4.743953e-04
+0: Hierarchical (N Leaders 16) Internal: Alltoall Pairwise: 2.039280e-03
+0: Hierarchical (N Leaders 16) Internal: Alltoall Nonblocking: 7.948686e-04
+0: Locality-Aware (N Groups 16) Alltoall Pairwise: 2.384476e-03
+0: Locality-Aware (N Groups 16) Alltoall Nonblocking: 1.155445e-03
+0: Locality-Aware (N Groups 16) Internal: Intra-node pairwise alltoall: 4.501677e-04
+0: Locality-Aware (N Groups 16) Internal: Inter-node pairwise alltoall: 1.498009e-03
+0: Locality-Aware (N Groups 16) Internal: Intra-node nonblocking alltoall: 4.524496e-04
+0: Locality-Aware (N Groups 16) Internal: Inter-node nonblocking alltoall: 7.449924e-04
+0: Multileader Node-Aware (N Leaders 16) Alltoall Pairwise: 1.087131e-02
+0: Multileader Node-Aware (N Leaders 16) Alltoall Nonblocking: 1.209281e-02
+0: Multileader Node-Aware (N Leaders 16) Internal: MPI_Gather: 1.670255e-03
+0: Multileader Node-Aware (N Leaders 16) Internal: Pairwise Inter-Node Alltoall: 7.936404e-04
+0: Multileader Node-Aware (N Leaders 16) Internal: Pairwise Intra-Node Alltoall: 1.221582e-03
+0: Multileader Node-Aware (N Leaders 16) Internal: Nonblocking Inter-Node Alltoall: 7.593379e-04
+0: Multileader Node-Aware (N Leaders 16) Internal: Nonblocking Intra-Node Alltoall: 1.850670e-03
+0: Multileader Node-Aware (N Leaders 16) Internal: MPI_Scatter: 4.832881e-04
+0: Running Multileader/Locality-Aware Tests with 8 Processes Per Leader, 8 Leaders Per Node
+0: Hierarchical Pairwise (N Leaders 8): 1.075871e-02
+0: Hierarchical Nonblocking (N Leaders 8): 8.740564e-03
+0: Hierarchical (N Leaders 8) Internal: Gather: 3.381580e-03
+0: Hierarchical (N Leaders 8) Internal: Scatter: 1.002138e-03
+0: Hierarchical (N Leaders 8) Internal: Alltoall Pairwise: 1.962559e-03
+0: Hierarchical (N Leaders 8) Internal: Alltoall Nonblocking: 1.136466e-03
+0: Locality-Aware (N Groups 8) Alltoall Pairwise: 1.941471e-03
+0: Locality-Aware (N Groups 8) Alltoall Nonblocking: 1.147676e-03
+0: Locality-Aware (N Groups 8) Internal: Intra-node pairwise alltoall: 3.606773e-04
+0: Locality-Aware (N Groups 8) Internal: Inter-node pairwise alltoall: 9.612968e-04
+0: Locality-Aware (N Groups 8) Internal: Intra-node nonblocking alltoall: 3.539280e-04
+0: Locality-Aware (N Groups 8) Internal: Inter-node nonblocking alltoall: 7.454309e-04
+0: Multileader Node-Aware (N Leaders 8) Alltoall Pairwise: 1.247628e-02
+0: Multileader Node-Aware (N Leaders 8) Alltoall Nonblocking: 1.557850e-02
+0: Multileader Node-Aware (N Leaders 8) Internal: MPI_Gather: 3.377490e-03
+0: Multileader Node-Aware (N Leaders 8) Internal: Pairwise Inter-Node Alltoall: 9.012024e-04
+0: Multileader Node-Aware (N Leaders 8) Internal: Pairwise Intra-Node Alltoall: 1.603197e-03
+0: Multileader Node-Aware (N Leaders 8) Internal: Nonblocking Inter-Node Alltoall: 8.306954e-04
+0: Multileader Node-Aware (N Leaders 8) Internal: Nonblocking Intra-Node Alltoall: 4.294206e-03
+0: Multileader Node-Aware (N Leaders 8) Internal: MPI_Scatter: 8.589307e-04
+0: Running Multileader/Locality-Aware Tests with 16 Processes Per Leader, 4 Leaders Per Node
+0: Hierarchical Pairwise (N Leaders 4): 1.643130e-02
+0: Hierarchical Nonblocking (N Leaders 4): 1.509811e-02
+0: Hierarchical (N Leaders 4) Internal: Gather: 5.523509e-03
+0: Hierarchical (N Leaders 4) Internal: Scatter: 8.519653e-03
+0: Hierarchical (N Leaders 4) Internal: Alltoall Pairwise: 1.598952e-03
+0: Hierarchical (N Leaders 4) Internal: Alltoall Nonblocking: 1.184673e-03
+0: Locality-Aware (N Groups 4) Alltoall Pairwise: 1.692175e-03
+0: Locality-Aware (N Groups 4) Alltoall Nonblocking: 1.388722e-03
+0: Locality-Aware (N Groups 4) Internal: Intra-node pairwise alltoall: 5.614681e-04
+0: Locality-Aware (N Groups 4) Internal: Inter-node pairwise alltoall: 7.150179e-04
+0: Locality-Aware (N Groups 4) Internal: Intra-node nonblocking alltoall: 3.728517e-04
+0: Locality-Aware (N Groups 4) Internal: Inter-node nonblocking alltoall: 7.006355e-04
+0: Multileader Node-Aware (N Leaders 4) Alltoall Pairwise: 2.195182e-02
+0: Multileader Node-Aware (N Leaders 4) Alltoall Nonblocking: 2.632387e-02
+0: Multileader Node-Aware (N Leaders 4) Internal: MPI_Gather: 5.507036e-03
+0: Multileader Node-Aware (N Leaders 4) Internal: Pairwise Inter-Node Alltoall: 8.999560e-04
+0: Multileader Node-Aware (N Leaders 4) Internal: Pairwise Intra-Node Alltoall: 5.267278e-03
+0: Multileader Node-Aware (N Leaders 4) Internal: Nonblocking Inter-Node Alltoall: 1.225563e-03
+0: Multileader Node-Aware (N Leaders 4) Internal: Nonblocking Intra-Node Alltoall: 6.381700e-03
+0: Multileader Node-Aware (N Leaders 4) Internal: MPI_Scatter: 8.412620e-03
+0: Size 512
+0: PMPI: 1.651827e-03
+0: Hierarchical Pairwise: 1.192954e-01
+0: Hierarchical Nonblocking: 1.009973e-01
+0: Hierarchical Internal: Gather: 4.688066e-02
+0: Hierarchical Internal: Scatter: 4.543820e-02
+0: Hierarchical Internal: Pairwise inter-node alltoall: 6.081996e-03
+0: Hierarchical Interal: Nonblocking inter-node alltoall: 1.188096e-02
+0: Node-Aware Pairwise: 3.944190e-03
+0: Node-Aware Nonblocking: 3.389283e-03
+0: Node-Aware Internal: Pairwise intra-node alltoall: 1.777489e-03
+0: Node-Aware Internal: Pairwise inter-node alltoall: 1.437177e-03
+0: Node-Aware Internal: Nonblocking intra-node alltoall: 1.440729e-03
+0: Node-Aware Internal: Nonblocking inter-node alltoall: 1.485991e-03
+0: Running Multileader/Locality-Aware Tests with 4 Processes Per Leader, 16 Leaders Per Node
+0: Hierarchical Pairwise (N Leaders 16): 9.214882e-03
+0: Hierarchical Nonblocking (N Leaders 16): 6.108842e-03
+0: Hierarchical (N Leaders 16) Internal: Gather: 1.785866e-03
+0: Hierarchical (N Leaders 16) Internal: Scatter: 2.249344e-03
+0: Hierarchical (N Leaders 16) Internal: Alltoall Pairwise: 3.366840e-03
+0: Hierarchical (N Leaders 16) Internal: Alltoall Nonblocking: 1.859259e-03
+0: Locality-Aware (N Groups 16) Alltoall Pairwise: 3.653089e-03
+0: Locality-Aware (N Groups 16) Alltoall Nonblocking: 2.158964e-03
+0: Locality-Aware (N Groups 16) Internal: Intra-node pairwise alltoall: 8.688494e-04
+0: Locality-Aware (N Groups 16) Internal: Inter-node pairwise alltoall: 1.990342e-03
+0: Locality-Aware (N Groups 16) Internal: Intra-node nonblocking alltoall: 9.364113e-04
+0: Locality-Aware (N Groups 16) Internal: Inter-node nonblocking alltoall: 1.562670e-03
+0: Multileader Node-Aware (N Leaders 16) Alltoall Pairwise: 1.135581e-02
+0: Multileader Node-Aware (N Leaders 16) Alltoall Nonblocking: 1.749861e-02
+0: Multileader Node-Aware (N Leaders 16) Internal: MPI_Gather: 1.658267e-03
+0: Multileader Node-Aware (N Leaders 16) Internal: Pairwise Inter-Node Alltoall: 1.546084e-03
+0: Multileader Node-Aware (N Leaders 16) Internal: Pairwise Intra-Node Alltoall: 2.834736e-03
+0: Multileader Node-Aware (N Leaders 16) Internal: Nonblocking Inter-Node Alltoall: 1.644613e-03
+0: Multileader Node-Aware (N Leaders 16) Internal: Nonblocking Intra-Node Alltoall: 4.091479e-03
+0: Multileader Node-Aware (N Leaders 16) Internal: MPI_Scatter: 1.153638e-03
+0: Running Multileader/Locality-Aware Tests with 8 Processes Per Leader, 8 Leaders Per Node
+0: Hierarchical Pairwise (N Leaders 8): 1.350708e-02
+0: Hierarchical Nonblocking (N Leaders 8): 1.100347e-02
+0: Hierarchical (N Leaders 8) Internal: Gather: 2.864269e-03
+0: Hierarchical (N Leaders 8) Internal: Scatter: 2.123234e-03
+0: Hierarchical (N Leaders 8) Internal: Alltoall Pairwise: 2.827775e-03
+0: Hierarchical (N Leaders 8) Internal: Alltoall Nonblocking: 2.314885e-03
+0: Locality-Aware (N Groups 8) Alltoall Pairwise: 3.108480e-03
+0: Locality-Aware (N Groups 8) Alltoall Nonblocking: 2.517341e-03
+0: Locality-Aware (N Groups 8) Internal: Intra-node pairwise alltoall: 7.629801e-04
+0: Locality-Aware (N Groups 8) Internal: Inter-node pairwise alltoall: 1.477771e-03
+0: Locality-Aware (N Groups 8) Internal: Intra-node nonblocking alltoall: 7.630688e-04
+0: Locality-Aware (N Groups 8) Internal: Inter-node nonblocking alltoall: 1.493121e-03
+0: Multileader Node-Aware (N Leaders 8) Alltoall Pairwise: 1.605401e-02
+0: Multileader Node-Aware (N Leaders 8) Alltoall Nonblocking: 2.919860e-02
+0: Multileader Node-Aware (N Leaders 8) Internal: MPI_Gather: 2.875437e-03
+0: Multileader Node-Aware (N Leaders 8) Internal: Pairwise Inter-Node Alltoall: 1.661497e-03
+0: Multileader Node-Aware (N Leaders 8) Internal: Pairwise Intra-Node Alltoall: 5.728707e-03
+0: Multileader Node-Aware (N Leaders 8) Internal: Nonblocking Inter-Node Alltoall: 1.890618e-03
+0: Multileader Node-Aware (N Leaders 8) Internal: Nonblocking Intra-Node Alltoall: 7.822295e-03
+0: Multileader Node-Aware (N Leaders 8) Internal: MPI_Scatter: 2.121884e-03
+0: Running Multileader/Locality-Aware Tests with 16 Processes Per Leader, 4 Leaders Per Node
+0: Hierarchical Pairwise (N Leaders 4): 2.152448e-02
+0: Hierarchical Nonblocking (N Leaders 4): 2.014811e-02
+0: Hierarchical (N Leaders 4) Internal: Gather: 5.951851e-03
+0: Hierarchical (N Leaders 4) Internal: Scatter: 1.381997e-02
+0: Hierarchical (N Leaders 4) Internal: Alltoall Pairwise: 2.485745e-03
+0: Hierarchical (N Leaders 4) Internal: Alltoall Nonblocking: 2.477529e-03
+0: Locality-Aware (N Groups 4) Alltoall Pairwise: 3.179970e-03
+0: Locality-Aware (N Groups 4) Alltoall Nonblocking: 3.049662e-03
+0: Locality-Aware (N Groups 4) Internal: Intra-node pairwise alltoall: 9.463173e-04
+0: Locality-Aware (N Groups 4) Internal: Inter-node pairwise alltoall: 1.493817e-03
+0: Locality-Aware (N Groups 4) Internal: Intra-node nonblocking alltoall: 8.838651e-04
+0: Locality-Aware (N Groups 4) Internal: Inter-node nonblocking alltoall: 1.466424e-03
+0: Multileader Node-Aware (N Leaders 4) Alltoall Pairwise: 3.340568e-02
+0: Multileader Node-Aware (N Leaders 4) Alltoall Nonblocking: 5.065468e-02
+0: Multileader Node-Aware (N Leaders 4) Internal: MPI_Gather: 5.912339e-03
+0: Multileader Node-Aware (N Leaders 4) Internal: Pairwise Inter-Node Alltoall: 1.632140e-03
+0: Multileader Node-Aware (N Leaders 4) Internal: Pairwise Intra-Node Alltoall: 1.039409e-02
+0: Multileader Node-Aware (N Leaders 4) Internal: Nonblocking Inter-Node Alltoall: 2.803763e-03
+0: Multileader Node-Aware (N Leaders 4) Internal: Nonblocking Intra-Node Alltoall: 1.206542e-02
+0: Multileader Node-Aware (N Leaders 4) Internal: MPI_Scatter: 1.325575e-02
+0: Size 1024
+0: PMPI: 3.237112e-03
+0: Hierarchical Pairwise: 2.379247e-01
+0: Hierarchical Nonblocking: 2.366540e-01
+0: Hierarchical Internal: Gather: 4.940024e-02
+0: Hierarchical Internal: Scatter: 5.477665e-02
+0: Hierarchical Internal: Pairwise inter-node alltoall: 1.381601e-02
+0: Hierarchical Interal: Nonblocking inter-node alltoall: 2.646168e-02
+0: Node-Aware Pairwise: 7.717335e-03
+0: Node-Aware Nonblocking: 7.738234e-03
+0: Node-Aware Internal: Pairwise intra-node alltoall: 2.652693e-03
+0: Node-Aware Internal: Pairwise inter-node alltoall: 3.018880e-03
+0: Node-Aware Internal: Nonblocking intra-node alltoall: 2.216954e-03
+0: Node-Aware Internal: Nonblocking inter-node alltoall: 3.101772e-03
+0: Running Multileader/Locality-Aware Tests with 4 Processes Per Leader, 16 Leaders Per Node
+0: Hierarchical Pairwise (N Leaders 16): 1.286052e-02
+0: Hierarchical Nonblocking (N Leaders 16): 1.007786e-02
+0: Hierarchical (N Leaders 16) Internal: Gather: 2.684776e-03
+0: Hierarchical (N Leaders 16) Internal: Scatter: 2.117339e-03
+0: Hierarchical (N Leaders 16) Internal: Alltoall Pairwise: 4.895226e-03
+0: Hierarchical (N Leaders 16) Internal: Alltoall Nonblocking: 4.083798e-03
+0: Locality-Aware (N Groups 16) Alltoall Pairwise: 5.964792e-03
+0: Locality-Aware (N Groups 16) Alltoall Nonblocking: 4.670567e-03
+0: Locality-Aware (N Groups 16) Internal: Intra-node pairwise alltoall: 1.164888e-03
+0: Locality-Aware (N Groups 16) Internal: Inter-node pairwise alltoall: 3.112783e-03
+0: Locality-Aware (N Groups 16) Internal: Intra-node nonblocking alltoall: 1.360665e-03
+0: Locality-Aware (N Groups 16) Internal: Inter-node nonblocking alltoall: 3.449138e-03
+0: Multileader Node-Aware (N Leaders 16) Alltoall Pairwise: 1.842960e-02
+0: Multileader Node-Aware (N Leaders 16) Alltoall Nonblocking: 3.423862e-02
+0: Multileader Node-Aware (N Leaders 16) Internal: MPI_Gather: 2.686419e-03
+0: Multileader Node-Aware (N Leaders 16) Internal: Pairwise Inter-Node Alltoall: 3.325093e-03
+0: Multileader Node-Aware (N Leaders 16) Internal: Pairwise Intra-Node Alltoall: 5.688418e-03
+0: Multileader Node-Aware (N Leaders 16) Internal: Nonblocking Inter-Node Alltoall: 3.779900e-03
+0: Multileader Node-Aware (N Leaders 16) Internal: Nonblocking Intra-Node Alltoall: 9.136076e-03
+0: Multileader Node-Aware (N Leaders 16) Internal: MPI_Scatter: 2.120007e-03
+0: Running Multileader/Locality-Aware Tests with 8 Processes Per Leader, 8 Leaders Per Node
+0: Hierarchical Pairwise (N Leaders 8): 2.278599e-02
+0: Hierarchical Nonblocking (N Leaders 8): 1.904190e-02
+0: Hierarchical (N Leaders 8) Internal: Gather: 5.941654e-03
+0: Hierarchical (N Leaders 8) Internal: Scatter: 6.711904e-03
+0: Hierarchical (N Leaders 8) Internal: Alltoall Pairwise: 4.529154e-03
+0: Hierarchical (N Leaders 8) Internal: Alltoall Nonblocking: 4.804636e-03
+0: Locality-Aware (N Groups 8) Alltoall Pairwise: 6.016810e-03
+0: Locality-Aware (N Groups 8) Alltoall Nonblocking: 5.434487e-03
+0: Locality-Aware (N Groups 8) Internal: Intra-node pairwise alltoall: 1.616004e-03
+0: Locality-Aware (N Groups 8) Internal: Inter-node pairwise alltoall: 3.018246e-03
+0: Locality-Aware (N Groups 8) Internal: Intra-node nonblocking alltoall: 1.549396e-03
+0: Locality-Aware (N Groups 8) Internal: Inter-node nonblocking alltoall: 3.185183e-03
+0: Multileader Node-Aware (N Leaders 8) Alltoall Pairwise: 3.326792e-02
+0: Multileader Node-Aware (N Leaders 8) Alltoall Nonblocking: 6.582242e-02
+0: Multileader Node-Aware (N Leaders 8) Internal: MPI_Gather: 5.874755e-03
+0: Multileader Node-Aware (N Leaders 8) Internal: Pairwise Inter-Node Alltoall: 3.320395e-03
+0: Multileader Node-Aware (N Leaders 8) Internal: Pairwise Intra-Node Alltoall: 1.086720e-02
+0: Multileader Node-Aware (N Leaders 8) Internal: Nonblocking Inter-Node Alltoall: 4.355011e-03
+0: Multileader Node-Aware (N Leaders 8) Internal: Nonblocking Intra-Node Alltoall: 2.118099e-02
+0: Multileader Node-Aware (N Leaders 8) Internal: MPI_Scatter: 6.833760e-03
+0: Running Multileader/Locality-Aware Tests with 16 Processes Per Leader, 4 Leaders Per Node
+0: Hierarchical Pairwise (N Leaders 4): 3.813296e-02
+0: Hierarchical Nonblocking (N Leaders 4): 3.841598e-02
+0: Hierarchical (N Leaders 4) Internal: Gather: 1.050769e-02
+0: Hierarchical (N Leaders 4) Internal: Scatter: 1.097323e-02
+0: Hierarchical (N Leaders 4) Internal: Alltoall Pairwise: 4.226691e-03
+0: Hierarchical (N Leaders 4) Internal: Alltoall Nonblocking: 5.213565e-03
+0: Locality-Aware (N Groups 4) Alltoall Pairwise: 5.692995e-03
+0: Locality-Aware (N Groups 4) Alltoall Nonblocking: 5.852304e-03
+0: Locality-Aware (N Groups 4) Internal: Intra-node pairwise alltoall: 1.575385e-03
+0: Locality-Aware (N Groups 4) Internal: Inter-node pairwise alltoall: 2.791227e-03
+0: Locality-Aware (N Groups 4) Internal: Intra-node nonblocking alltoall: 1.581625e-03
+0: Locality-Aware (N Groups 4) Internal: Inter-node nonblocking alltoall: 3.004659e-03
+0: Multileader Node-Aware (N Leaders 4) Alltoall Pairwise: 6.078114e-02
+0: Multileader Node-Aware (N Leaders 4) Alltoall Nonblocking: 8.345464e-02
+0: Multileader Node-Aware (N Leaders 4) Internal: MPI_Gather: 1.033672e-02
+0: Multileader Node-Aware (N Leaders 4) Internal: Pairwise Inter-Node Alltoall: 3.107193e-03
+0: Multileader Node-Aware (N Leaders 4) Internal: Pairwise Intra-Node Alltoall: 1.916503e-02
+0: Multileader Node-Aware (N Leaders 4) Internal: Nonblocking Inter-Node Alltoall: 6.493643e-03
+0: Multileader Node-Aware (N Leaders 4) Internal: Nonblocking Intra-Node Alltoall: 2.163599e-02
+0: Multileader Node-Aware (N Leaders 4) Internal: MPI_Scatter: 1.129134e-02
+0: Size 2048
+0: PMPI: 5.651306e-03
+0: Hierarchical Pairwise: 4.360464e-01
+0: Hierarchical Nonblocking: 4.372279e-01
+0: Hierarchical Internal: Gather: 7.700013e-02
+0: Hierarchical Internal: Scatter: 8.967495e-02
+0: Hierarchical Internal: Pairwise inter-node alltoall: 2.704319e-02
+0: Hierarchical Interal: Nonblocking inter-node alltoall: 5.031866e-02
+0: Node-Aware Pairwise: 1.509778e-02
+0: Node-Aware Nonblocking: 2.094450e-02
+0: Node-Aware Internal: Pairwise intra-node alltoall: 5.367011e-03
+0: Node-Aware Internal: Pairwise inter-node alltoall: 6.515414e-03
+0: Node-Aware Internal: Nonblocking intra-node alltoall: 7.959761e-03
+0: Node-Aware Internal: Nonblocking inter-node alltoall: 6.960996e-03
+0: Running Multileader/Locality-Aware Tests with 4 Processes Per Leader, 16 Leaders Per Node
+0: Hierarchical Pairwise (N Leaders 16): 2.264225e-02
+0: Hierarchical Nonblocking (N Leaders 16): 1.992521e-02
+0: Hierarchical (N Leaders 16) Internal: Gather: 5.144854e-03
+0: Hierarchical (N Leaders 16) Internal: Scatter: 4.043497e-03
+0: Hierarchical (N Leaders 16) Internal: Alltoall Pairwise: 7.816177e-03
+0: Hierarchical (N Leaders 16) Internal: Alltoall Nonblocking: 8.773790e-03
+0: Locality-Aware (N Groups 16) Alltoall Pairwise: 1.258264e-02
+0: Locality-Aware (N Groups 16) Alltoall Nonblocking: 1.194249e-02
+0: Locality-Aware (N Groups 16) Internal: Intra-node pairwise alltoall: 4.224275e-03
+0: Locality-Aware (N Groups 16) Internal: Inter-node pairwise alltoall: 6.361457e-03
+0: Locality-Aware (N Groups 16) Internal: Intra-node nonblocking alltoall: 4.264324e-03
+0: Locality-Aware (N Groups 16) Internal: Inter-node nonblocking alltoall: 8.709636e-03
+0: Multileader Node-Aware (N Leaders 16) Alltoall Pairwise: 3.503250e-02
+0: Multileader Node-Aware (N Leaders 16) Alltoall Nonblocking: 8.520580e-02
+0: Multileader Node-Aware (N Leaders 16) Internal: MPI_Gather: 4.845076e-03
+0: Multileader Node-Aware (N Leaders 16) Internal: Pairwise Inter-Node Alltoall: 6.997935e-03
+0: Multileader Node-Aware (N Leaders 16) Internal: Pairwise Intra-Node Alltoall: 1.108350e-02
+0: Multileader Node-Aware (N Leaders 16) Internal: Nonblocking Inter-Node Alltoall: 8.836324e-03
+0: Multileader Node-Aware (N Leaders 16) Internal: Nonblocking Intra-Node Alltoall: 2.810582e-02
+0: Multileader Node-Aware (N Leaders 16) Internal: MPI_Scatter: 4.049539e-03
+0: Running Multileader/Locality-Aware Tests with 8 Processes Per Leader, 8 Leaders Per Node
+0: Hierarchical Pairwise (N Leaders 8): 4.159977e-02
+0: Hierarchical Nonblocking (N Leaders 8): 3.841464e-02
+0: Hierarchical (N Leaders 8) Internal: Gather: 1.098165e-02
+0: Hierarchical (N Leaders 8) Internal: Scatter: 1.355868e-02
+0: Hierarchical (N Leaders 8) Internal: Alltoall Pairwise: 7.848872e-03
+0: Hierarchical (N Leaders 8) Internal: Alltoall Nonblocking: 1.024639e-02
+0: Locality-Aware (N Groups 8) Alltoall Pairwise: 1.174254e-02
+0: Locality-Aware (N Groups 8) Alltoall Nonblocking: 1.216107e-02
+0: Locality-Aware (N Groups 8) Internal: Intra-node pairwise alltoall: 3.357138e-03
+0: Locality-Aware (N Groups 8) Internal: Inter-node pairwise alltoall: 5.773158e-03
+0: Locality-Aware (N Groups 8) Internal: Intra-node nonblocking alltoall: 3.492031e-03
+0: Locality-Aware (N Groups 8) Internal: Inter-node nonblocking alltoall: 7.078909e-03
+0: Multileader Node-Aware (N Leaders 8) Alltoall Pairwise: 6.183082e-02
+0: Multileader Node-Aware (N Leaders 8) Alltoall Nonblocking: 1.249202e-01
+0: Multileader Node-Aware (N Leaders 8) Internal: MPI_Gather: 1.112256e-02
+0: Multileader Node-Aware (N Leaders 8) Internal: Pairwise Inter-Node Alltoall: 6.694477e-03
+0: Multileader Node-Aware (N Leaders 8) Internal: Pairwise Intra-Node Alltoall: 1.984503e-02
+0: Multileader Node-Aware (N Leaders 8) Internal: Nonblocking Inter-Node Alltoall: 1.026604e-02
+0: Multileader Node-Aware (N Leaders 8) Internal: Nonblocking Intra-Node Alltoall: 4.813086e-02
+0: Multileader Node-Aware (N Leaders 8) Internal: MPI_Scatter: 1.332179e-02
+0: Running Multileader/Locality-Aware Tests with 16 Processes Per Leader, 4 Leaders Per Node
+0: Hierarchical Pairwise (N Leaders 4): 6.856301e-02
+0: Hierarchical Nonblocking (N Leaders 4): 6.897705e-02
+0: Hierarchical (N Leaders 4) Internal: Gather: 1.792772e-02
+0: Hierarchical (N Leaders 4) Internal: Scatter: 2.183517e-02
+0: Hierarchical (N Leaders 4) Internal: Alltoall Pairwise: 7.662602e-03
+0: Hierarchical (N Leaders 4) Internal: Alltoall Nonblocking: 1.107398e-02
+0: Locality-Aware (N Groups 4) Alltoall Pairwise: 1.187746e-02
+0: Locality-Aware (N Groups 4) Alltoall Nonblocking: 1.293989e-02
+0: Locality-Aware (N Groups 4) Internal: Intra-node pairwise alltoall: 3.352974e-03
+0: Locality-Aware (N Groups 4) Internal: Inter-node pairwise alltoall: 5.653807e-03
+0: Locality-Aware (N Groups 4) Internal: Intra-node nonblocking alltoall: 3.471880e-03
+0: Locality-Aware (N Groups 4) Internal: Inter-node nonblocking alltoall: 6.586657e-03
+0: Multileader Node-Aware (N Leaders 4) Alltoall Pairwise: 1.121771e-01
+0: Multileader Node-Aware (N Leaders 4) Alltoall Nonblocking: 1.626974e-01
+0: Multileader Node-Aware (N Leaders 4) Internal: MPI_Gather: 1.842883e-02
+0: Multileader Node-Aware (N Leaders 4) Internal: Pairwise Inter-Node Alltoall: 6.084694e-03
+0: Multileader Node-Aware (N Leaders 4) Internal: Pairwise Intra-Node Alltoall: 3.478856e-02
+0: Multileader Node-Aware (N Leaders 4) Internal: Nonblocking Inter-Node Alltoall: 1.327806e-02
+0: Multileader Node-Aware (N Leaders 4) Internal: Nonblocking Intra-Node Alltoall: 6.348847e-02
+0: Multileader Node-Aware (N Leaders 4) Internal: MPI_Scatter: 1.832766e-02

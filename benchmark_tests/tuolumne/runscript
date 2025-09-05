@@ -1,0 +1,21 @@
+#!/bin/sh
+#Submit using flux batch <filename>
+
+#flux: --job-name=alltoalls_n32
+#flux: --output='alltoalls_n32.{{id}}.out'
+#flux: --error='alltoalls_n32.{{id}}.err'
+#flux: -N32
+#flux: -l # Add task rank prefixes to each line of output.
+#flux: --setattr=thp=always # Enable Transparent Huge Pages (THP)
+#flux: -t 45
+#flux: -q pbatch # other available queues: pdebug
+
+#export MPICH_GPU_SUPPORT_ENABLED=1
+#export HSA_XNACK=1
+
+# Check if THP are enabled
+#cat /sys/kernel/mm/transparent_hugepage/enabled
+cd ${HOME}/locality_alltoalls/build_tuolumne/benchmarks
+
+flux run -N32 --tasks-per-node=64 --verbose --exclusive --setopt=mpibind=verbose:2 ./alltoall_topology
+

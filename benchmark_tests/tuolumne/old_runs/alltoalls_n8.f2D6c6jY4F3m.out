@@ -1,0 +1,594 @@
+0: Size 1
+0: PMPI: 1.036148e-04
+0: Hierarchical Pairwise: 7.023586e-04
+0: Hierarchical Nonblocking: 6.737420e-04
+0: Hierarchical Internal: Gather: 1.983738e-04
+0: Hierarchical Internal: Scatter: 1.120372e-04
+0: Hierarchical Internal: Pairwise inter-node alltoall: 3.939174e-05
+0: Hierarchical Interal: Nonblocking inter-node alltoall: 1.491480e-05
+0: Node-Aware Pairwise: 3.875834e-04
+0: Node-Aware Nonblocking: 2.689368e-04
+0: Node-Aware Internal: Pairwise intra-node alltoall: 3.087548e-04
+0: Node-Aware Internal: Pairwise inter-node alltoall: 3.013687e-05
+0: Node-Aware Internal: Nonblocking intra-node alltoall: 1.658529e-04
+0: Node-Aware Internal: Nonblocking inter-node alltoall: 8.658605e-06
+0: Hierarchical Pairwise (N Leaders 16): 4.293931e-04
+0: Hierarchical Nonblocking (N Leaders 16): 1.409659e-04
+0: Hierarchical (N Leaders 16) Internal: Gather: 2.441609e-05
+0: Hierarchical (N Leaders 16) Internal: Scatter: 4.426424e-06
+0: Hierarchical (N Leaders 16) Internal: Alltoall Pairwise: 4.095773e-04
+0: Hierarchical (N Leaders 16) Internal: Alltoall Nonblocking: 1.207907e-04
+0: Locality-Aware (N Groups 16) Alltoall Pairwise: 4.386508e-04
+0: Locality-Aware (N Groups 16) Alltoall Nonblocking: 1.276450e-04
+0: Locality-Aware (N Groups 16) Internal: Intra-node pairwise alltoall: 8.162135e-06
+0: Locality-Aware (N Groups 16) Internal: Inter-node pairwise alltoall: 4.219490e-04
+0: Locality-Aware (N Groups 16) Internal: Intra-node nonblocking alltoall: 5.594390e-06
+0: Locality-Aware (N Groups 16) Internal: Inter-node nonblocking alltoall: 1.232762e-04
+0: Hierarchical Pairwise (N Leaders 8): 3.398974e-04
+0: Hierarchical Nonblocking (N Leaders 8): 1.380616e-04
+0: Hierarchical (N Leaders 8) Internal: Gather: 3.062488e-04
+0: Hierarchical (N Leaders 8) Internal: Scatter: 1.145278e-05
+0: Hierarchical (N Leaders 8) Internal: Alltoall Pairwise: 2.666237e-04
+0: Hierarchical (N Leaders 8) Internal: Alltoall Nonblocking: 6.357839e-05
+0: Locality-Aware (N Groups 8) Alltoall Pairwise: 2.368444e-04
+0: Locality-Aware (N Groups 8) Alltoall Nonblocking: 8.066010e-05
+0: Locality-Aware (N Groups 8) Internal: Intra-node pairwise alltoall: 1.776707e-05
+0: Locality-Aware (N Groups 8) Internal: Inter-node pairwise alltoall: 2.063768e-04
+0: Locality-Aware (N Groups 8) Internal: Intra-node nonblocking alltoall: 1.431176e-05
+0: Locality-Aware (N Groups 8) Internal: Inter-node nonblocking alltoall: 5.856473e-05
+0: Hierarchical Pairwise (N Leaders 4): 2.602493e-04
+0: Hierarchical Nonblocking (N Leaders 4): 1.627930e-04
+0: Hierarchical (N Leaders 4) Internal: Gather: 9.477462e-04
+0: Hierarchical (N Leaders 4) Internal: Scatter: 2.254409e-05
+0: Hierarchical (N Leaders 4) Internal: Alltoall Pairwise: 1.358751e-04
+0: Hierarchical (N Leaders 4) Internal: Alltoall Nonblocking: 3.734147e-05
+0: Locality-Aware (N Groups 4) Alltoall Pairwise: 1.603632e-04
+0: Locality-Aware (N Groups 4) Alltoall Nonblocking: 6.570902e-05
+0: Locality-Aware (N Groups 4) Internal: Intra-node pairwise alltoall: 4.815068e-05
+0: Locality-Aware (N Groups 4) Internal: Inter-node pairwise alltoall: 1.009618e-04
+0: Locality-Aware (N Groups 4) Internal: Intra-node nonblocking alltoall: 2.720586e-05
+0: Locality-Aware (N Groups 4) Internal: Inter-node nonblocking alltoall: 3.098330e-05
+0: Size 2
+0: PMPI: 8.657386e-05
+0: Hierarchical Pairwise: 1.134709e-03
+0: Hierarchical Nonblocking: 1.065704e-03
+0: Hierarchical Internal: Gather: 2.980237e-04
+0: Hierarchical Internal: Scatter: 2.059469e-04
+0: Hierarchical Internal: Pairwise inter-node alltoall: 6.550487e-05
+0: Hierarchical Interal: Nonblocking inter-node alltoall: 1.947674e-05
+0: Node-Aware Pairwise: 3.626239e-04
+0: Node-Aware Nonblocking: 1.673701e-04
+0: Node-Aware Internal: Pairwise intra-node alltoall: 2.942806e-04
+0: Node-Aware Internal: Pairwise inter-node alltoall: 2.929922e-05
+0: Node-Aware Internal: Nonblocking intra-node alltoall: 1.610744e-04
+0: Node-Aware Internal: Nonblocking inter-node alltoall: 8.815193e-06
+0: Hierarchical Pairwise (N Leaders 16): 4.888688e-04
+0: Hierarchical Nonblocking (N Leaders 16): 1.818024e-04
+0: Hierarchical (N Leaders 16) Internal: Gather: 5.349078e-04
+0: Hierarchical (N Leaders 16) Internal: Scatter: 9.834739e-06
+0: Hierarchical (N Leaders 16) Internal: Alltoall Pairwise: 4.290788e-04
+0: Hierarchical (N Leaders 16) Internal: Alltoall Nonblocking: 1.246186e-04
+0: Locality-Aware (N Groups 16) Alltoall Pairwise: 4.413135e-04
+0: Locality-Aware (N Groups 16) Alltoall Nonblocking: 1.297247e-04
+0: Locality-Aware (N Groups 16) Internal: Intra-node pairwise alltoall: 8.275309e-06
+0: Locality-Aware (N Groups 16) Internal: Inter-node pairwise alltoall: 4.372561e-04
+0: Locality-Aware (N Groups 16) Internal: Intra-node nonblocking alltoall: 5.825097e-06
+0: Locality-Aware (N Groups 16) Internal: Inter-node nonblocking alltoall: 1.276876e-04
+0: Hierarchical Pairwise (N Leaders 8): 3.744698e-04
+0: Hierarchical Nonblocking (N Leaders 8): 1.699336e-04
+0: Hierarchical (N Leaders 8) Internal: Gather: 6.252308e-04
+0: Hierarchical (N Leaders 8) Internal: Scatter: 1.754568e-05
+0: Hierarchical (N Leaders 8) Internal: Alltoall Pairwise: 2.695214e-04
+0: Hierarchical (N Leaders 8) Internal: Alltoall Nonblocking: 6.603929e-05
+0: Locality-Aware (N Groups 8) Alltoall Pairwise: 2.381296e-04
+0: Locality-Aware (N Groups 8) Alltoall Nonblocking: 8.243780e-05
+0: Locality-Aware (N Groups 8) Internal: Intra-node pairwise alltoall: 1.861608e-05
+0: Locality-Aware (N Groups 8) Internal: Inter-node pairwise alltoall: 2.071511e-04
+0: Locality-Aware (N Groups 8) Internal: Intra-node nonblocking alltoall: 1.442425e-05
+0: Locality-Aware (N Groups 8) Internal: Inter-node nonblocking alltoall: 6.000648e-05
+0: Hierarchical Pairwise (N Leaders 4): 3.238457e-04
+0: Hierarchical Nonblocking (N Leaders 4): 2.170493e-04
+0: Hierarchical (N Leaders 4) Internal: Gather: 5.053405e-04
+0: Hierarchical (N Leaders 4) Internal: Scatter: 4.081555e-05
+0: Hierarchical (N Leaders 4) Internal: Alltoall Pairwise: 1.492480e-04
+0: Hierarchical (N Leaders 4) Internal: Alltoall Nonblocking: 4.523682e-05
+0: Locality-Aware (N Groups 4) Alltoall Pairwise: 1.656761e-04
+0: Locality-Aware (N Groups 4) Alltoall Nonblocking: 6.633544e-05
+0: Locality-Aware (N Groups 4) Internal: Intra-node pairwise alltoall: 4.931998e-05
+0: Locality-Aware (N Groups 4) Internal: Inter-node pairwise alltoall: 1.014370e-04
+0: Locality-Aware (N Groups 4) Internal: Intra-node nonblocking alltoall: 2.809384e-05
+0: Locality-Aware (N Groups 4) Internal: Inter-node nonblocking alltoall: 3.163095e-05
+0: Size 4
+0: PMPI: 9.984300e-05
+0: Hierarchical Pairwise: 1.848241e-03
+0: Hierarchical Nonblocking: 1.812990e-03
+0: Hierarchical Internal: Gather: 4.969921e-04
+0: Hierarchical Internal: Scatter: 4.344445e-04
+0: Hierarchical Internal: Pairwise inter-node alltoall: 7.781934e-05
+0: Hierarchical Interal: Nonblocking inter-node alltoall: 3.319407e-05
+0: Node-Aware Pairwise: 3.606214e-04
+0: Node-Aware Nonblocking: 1.681213e-04
+0: Node-Aware Internal: Pairwise intra-node alltoall: 2.957029e-04
+0: Node-Aware Internal: Pairwise inter-node alltoall: 3.016305e-05
+0: Node-Aware Internal: Nonblocking intra-node alltoall: 1.529021e-04
+0: Node-Aware Internal: Nonblocking inter-node alltoall: 9.711041e-06
+0: Hierarchical Pairwise (N Leaders 16): 6.332311e-04
+0: Hierarchical Nonblocking (N Leaders 16): 2.165040e-04
+0: Hierarchical (N Leaders 16) Internal: Gather: 2.240569e-05
+0: Hierarchical (N Leaders 16) Internal: Scatter: 1.580620e-05
+0: Hierarchical (N Leaders 16) Internal: Alltoall Pairwise: 5.429607e-04
+0: Hierarchical (N Leaders 16) Internal: Alltoall Nonblocking: 1.320368e-04
+0: Locality-Aware (N Groups 16) Alltoall Pairwise: 4.455754e-04
+0: Locality-Aware (N Groups 16) Alltoall Nonblocking: 1.401302e-04
+0: Locality-Aware (N Groups 16) Internal: Intra-node pairwise alltoall: 8.289207e-06
+0: Locality-Aware (N Groups 16) Internal: Inter-node pairwise alltoall: 5.506185e-04
+0: Locality-Aware (N Groups 16) Internal: Intra-node nonblocking alltoall: 5.904520e-06
+0: Locality-Aware (N Groups 16) Internal: Inter-node nonblocking alltoall: 1.320100e-04
+0: Hierarchical Pairwise (N Leaders 8): 4.409692e-04
+0: Hierarchical Nonblocking (N Leaders 8): 2.327793e-04
+0: Hierarchical (N Leaders 8) Internal: Gather: 3.700293e-05
+0: Hierarchical (N Leaders 8) Internal: Scatter: 2.575618e-05
+0: Hierarchical (N Leaders 8) Internal: Alltoall Pairwise: 2.780585e-04
+0: Hierarchical (N Leaders 8) Internal: Alltoall Nonblocking: 7.423781e-05
+0: Locality-Aware (N Groups 8) Alltoall Pairwise: 2.484087e-04
+0: Locality-Aware (N Groups 8) Alltoall Nonblocking: 8.613488e-05
+0: Locality-Aware (N Groups 8) Internal: Intra-node pairwise alltoall: 1.985925e-05
+0: Locality-Aware (N Groups 8) Internal: Inter-node pairwise alltoall: 2.156839e-04
+0: Locality-Aware (N Groups 8) Internal: Intra-node nonblocking alltoall: 1.505978e-05
+0: Locality-Aware (N Groups 8) Internal: Inter-node nonblocking alltoall: 6.107654e-05
+0: Hierarchical Pairwise (N Leaders 4): 4.513878e-04
+0: Hierarchical Nonblocking (N Leaders 4): 3.383396e-04
+0: Hierarchical (N Leaders 4) Internal: Gather: 6.869868e-05
+0: Hierarchical (N Leaders 4) Internal: Scatter: 7.250779e-05
+0: Hierarchical (N Leaders 4) Internal: Alltoall Pairwise: 1.682190e-04
+0: Hierarchical (N Leaders 4) Internal: Alltoall Nonblocking: 5.902531e-05
+0: Locality-Aware (N Groups 4) Alltoall Pairwise: 1.917021e-04
+0: Locality-Aware (N Groups 4) Alltoall Nonblocking: 6.857490e-05
+0: Locality-Aware (N Groups 4) Internal: Intra-node pairwise alltoall: 4.882246e-05
+0: Locality-Aware (N Groups 4) Internal: Inter-node pairwise alltoall: 1.021455e-04
+0: Locality-Aware (N Groups 4) Internal: Intra-node nonblocking alltoall: 2.753275e-05
+0: Locality-Aware (N Groups 4) Internal: Inter-node nonblocking alltoall: 3.211498e-05
+0: Size 8
+0: PMPI: 3.096442e-04
+0: Hierarchical Pairwise: 2.160708e-03
+0: Hierarchical Nonblocking: 2.104034e-03
+0: Hierarchical Internal: Gather: 9.628765e-04
+0: Hierarchical Internal: Scatter: 7.404420e-04
+0: Hierarchical Internal: Pairwise inter-node alltoall: 1.021315e-04
+0: Hierarchical Interal: Nonblocking inter-node alltoall: 5.945075e-05
+0: Node-Aware Pairwise: 3.476491e-04
+0: Node-Aware Nonblocking: 1.687064e-04
+0: Node-Aware Internal: Pairwise intra-node alltoall: 2.983360e-04
+0: Node-Aware Internal: Pairwise inter-node alltoall: 3.243764e-05
+0: Node-Aware Internal: Nonblocking intra-node alltoall: 1.499608e-04
+0: Node-Aware Internal: Nonblocking inter-node alltoall: 1.351938e-05
+0: Hierarchical Pairwise (N Leaders 16): 7.125584e-04
+0: Hierarchical Nonblocking (N Leaders 16): 2.767612e-04
+0: Hierarchical (N Leaders 16) Internal: Gather: 3.473286e-05
+0: Hierarchical (N Leaders 16) Internal: Scatter: 1.948077e-05
+0: Hierarchical (N Leaders 16) Internal: Alltoall Pairwise: 5.499261e-04
+0: Hierarchical (N Leaders 16) Internal: Alltoall Nonblocking: 1.384310e-04
+0: Locality-Aware (N Groups 16) Alltoall Pairwise: 4.692975e-04
+0: Locality-Aware (N Groups 16) Alltoall Nonblocking: 1.459754e-04
+0: Locality-Aware (N Groups 16) Internal: Intra-node pairwise alltoall: 8.520523e-06
+0: Locality-Aware (N Groups 16) Internal: Inter-node pairwise alltoall: 5.634578e-04
+0: Locality-Aware (N Groups 16) Internal: Intra-node nonblocking alltoall: 6.009962e-06
+0: Locality-Aware (N Groups 16) Internal: Inter-node nonblocking alltoall: 1.362918e-04
+0: Hierarchical Pairwise (N Leaders 8): 5.512124e-04
+0: Hierarchical Nonblocking (N Leaders 8): 3.270018e-04
+0: Hierarchical (N Leaders 8) Internal: Gather: 6.397568e-05
+0: Hierarchical (N Leaders 8) Internal: Scatter: 3.788081e-05
+0: Hierarchical (N Leaders 8) Internal: Alltoall Pairwise: 3.071395e-04
+0: Hierarchical (N Leaders 8) Internal: Alltoall Nonblocking: 8.954368e-05
+0: Locality-Aware (N Groups 8) Alltoall Pairwise: 3.100648e-04
+0: Locality-Aware (N Groups 8) Alltoall Nonblocking: 9.698908e-05
+0: Locality-Aware (N Groups 8) Internal: Intra-node pairwise alltoall: 2.049637e-05
+0: Locality-Aware (N Groups 8) Internal: Inter-node pairwise alltoall: 2.711111e-04
+0: Locality-Aware (N Groups 8) Internal: Intra-node nonblocking alltoall: 1.454219e-05
+0: Locality-Aware (N Groups 8) Internal: Inter-node nonblocking alltoall: 6.452868e-05
+0: Hierarchical Pairwise (N Leaders 4): 8.963973e-04
+0: Hierarchical Nonblocking (N Leaders 4): 7.377467e-04
+0: Hierarchical (N Leaders 4) Internal: Gather: 1.174810e-04
+0: Hierarchical (N Leaders 4) Internal: Scatter: 1.204623e-04
+0: Hierarchical (N Leaders 4) Internal: Alltoall Pairwise: 1.964902e-04
+0: Hierarchical (N Leaders 4) Internal: Alltoall Nonblocking: 7.377680e-05
+0: Locality-Aware (N Groups 4) Alltoall Pairwise: 1.963857e-04
+0: Locality-Aware (N Groups 4) Alltoall Nonblocking: 7.395856e-05
+0: Locality-Aware (N Groups 4) Internal: Intra-node pairwise alltoall: 4.934211e-05
+0: Locality-Aware (N Groups 4) Internal: Inter-node pairwise alltoall: 1.072142e-04
+0: Locality-Aware (N Groups 4) Internal: Intra-node nonblocking alltoall: 2.822164e-05
+0: Locality-Aware (N Groups 4) Internal: Inter-node nonblocking alltoall: 3.384643e-05
+0: Size 16
+0: PMPI: 5.327976e-04
+0: Hierarchical Pairwise: 2.969267e-03
+0: Hierarchical Nonblocking: 2.884733e-03
+0: Hierarchical Internal: Gather: 1.905204e-03
+0: Hierarchical Internal: Scatter: 1.433210e-03
+0: Hierarchical Internal: Pairwise inter-node alltoall: 1.492661e-04
+0: Hierarchical Interal: Nonblocking inter-node alltoall: 1.062738e-04
+0: Node-Aware Pairwise: 3.631181e-04
+0: Node-Aware Nonblocking: 1.762297e-04
+0: Node-Aware Internal: Pairwise intra-node alltoall: 3.095332e-04
+0: Node-Aware Internal: Pairwise inter-node alltoall: 3.734842e-05
+0: Node-Aware Internal: Nonblocking intra-node alltoall: 1.481003e-04
+0: Node-Aware Internal: Nonblocking inter-node alltoall: 2.117368e-05
+0: Hierarchical Pairwise (N Leaders 16): 7.746126e-04
+0: Hierarchical Nonblocking (N Leaders 16): 3.393167e-04
+0: Hierarchical (N Leaders 16) Internal: Gather: 6.013801e-05
+0: Hierarchical (N Leaders 16) Internal: Scatter: 2.495131e-05
+0: Hierarchical (N Leaders 16) Internal: Alltoall Pairwise: 5.634325e-04
+0: Hierarchical (N Leaders 16) Internal: Alltoall Nonblocking: 1.531144e-04
+0: Locality-Aware (N Groups 16) Alltoall Pairwise: 6.448762e-04
+0: Locality-Aware (N Groups 16) Alltoall Nonblocking: 2.055002e-04
+0: Locality-Aware (N Groups 16) Internal: Intra-node pairwise alltoall: 8.501206e-06
+0: Locality-Aware (N Groups 16) Internal: Inter-node pairwise alltoall: 5.759024e-04
+0: Locality-Aware (N Groups 16) Internal: Intra-node nonblocking alltoall: 6.034443e-06
+0: Locality-Aware (N Groups 16) Internal: Inter-node nonblocking alltoall: 1.493187e-04
+0: Hierarchical Pairwise (N Leaders 8): 7.776312e-04
+0: Hierarchical Nonblocking (N Leaders 8): 5.284240e-04
+0: Hierarchical (N Leaders 8) Internal: Gather: 1.225004e-04
+0: Hierarchical (N Leaders 8) Internal: Scatter: 4.775384e-05
+0: Hierarchical (N Leaders 8) Internal: Alltoall Pairwise: 3.492158e-04
+0: Hierarchical (N Leaders 8) Internal: Alltoall Nonblocking: 1.202319e-04
+0: Locality-Aware (N Groups 8) Alltoall Pairwise: 3.250424e-04
+0: Locality-Aware (N Groups 8) Alltoall Nonblocking: 1.077626e-04
+0: Locality-Aware (N Groups 8) Internal: Intra-node pairwise alltoall: 2.029562e-05
+0: Locality-Aware (N Groups 8) Internal: Inter-node pairwise alltoall: 2.753251e-04
+0: Locality-Aware (N Groups 8) Internal: Intra-node nonblocking alltoall: 1.484239e-05
+0: Locality-Aware (N Groups 8) Internal: Inter-node nonblocking alltoall: 6.617672e-05
+0: Hierarchical Pairwise (N Leaders 4): 1.293974e-03
+0: Hierarchical Nonblocking (N Leaders 4): 1.094488e-03
+0: Hierarchical (N Leaders 4) Internal: Gather: 2.157432e-04
+0: Hierarchical (N Leaders 4) Internal: Scatter: 2.373905e-04
+0: Hierarchical (N Leaders 4) Internal: Alltoall Pairwise: 2.244927e-04
+0: Hierarchical (N Leaders 4) Internal: Alltoall Nonblocking: 9.114807e-05
+0: Locality-Aware (N Groups 4) Alltoall Pairwise: 2.145982e-04
+0: Locality-Aware (N Groups 4) Alltoall Nonblocking: 8.822441e-05
+0: Locality-Aware (N Groups 4) Internal: Intra-node pairwise alltoall: 5.081456e-05
+0: Locality-Aware (N Groups 4) Internal: Inter-node pairwise alltoall: 1.342770e-04
+0: Locality-Aware (N Groups 4) Internal: Intra-node nonblocking alltoall: 2.818933e-05
+0: Locality-Aware (N Groups 4) Internal: Inter-node nonblocking alltoall: 3.398758e-05
+0: Size 32
+0: PMPI: 7.141676e-04
+0: Hierarchical Pairwise: 4.624738e-03
+0: Hierarchical Nonblocking: 4.641822e-03
+0: Hierarchical Internal: Gather: 3.774325e-03
+0: Hierarchical Internal: Scatter: 2.782651e-03
+0: Hierarchical Internal: Pairwise inter-node alltoall: 2.447709e-04
+0: Hierarchical Interal: Nonblocking inter-node alltoall: 2.039902e-04
+0: Node-Aware Pairwise: 3.981802e-04
+0: Node-Aware Nonblocking: 2.114817e-04
+0: Node-Aware Internal: Pairwise intra-node alltoall: 3.304525e-04
+0: Node-Aware Internal: Pairwise inter-node alltoall: 4.629791e-05
+0: Node-Aware Internal: Nonblocking intra-node alltoall: 1.596931e-04
+0: Node-Aware Internal: Nonblocking inter-node alltoall: 3.991931e-05
+0: Hierarchical Pairwise (N Leaders 16): 9.825033e-04
+0: Hierarchical Nonblocking (N Leaders 16): 5.153819e-04
+0: Hierarchical (N Leaders 16) Internal: Gather: 1.143401e-04
+0: Hierarchical (N Leaders 16) Internal: Scatter: 3.486411e-05
+0: Hierarchical (N Leaders 16) Internal: Alltoall Pairwise: 6.183282e-04
+0: Hierarchical (N Leaders 16) Internal: Alltoall Nonblocking: 1.894781e-04
+0: Locality-Aware (N Groups 16) Alltoall Pairwise: 6.762507e-04
+0: Locality-Aware (N Groups 16) Alltoall Nonblocking: 2.331017e-04
+0: Locality-Aware (N Groups 16) Internal: Intra-node pairwise alltoall: 8.710905e-06
+0: Locality-Aware (N Groups 16) Internal: Inter-node pairwise alltoall: 6.378605e-04
+0: Locality-Aware (N Groups 16) Internal: Intra-node nonblocking alltoall: 6.032790e-06
+0: Locality-Aware (N Groups 16) Internal: Inter-node nonblocking alltoall: 1.907936e-04
+0: Hierarchical Pairwise (N Leaders 8): 1.320944e-03
+0: Hierarchical Nonblocking (N Leaders 8): 1.000212e-03
+0: Hierarchical (N Leaders 8) Internal: Gather: 2.285100e-04
+0: Hierarchical (N Leaders 8) Internal: Scatter: 7.573101e-05
+0: Hierarchical (N Leaders 8) Internal: Alltoall Pairwise: 4.342803e-04
+0: Hierarchical (N Leaders 8) Internal: Alltoall Nonblocking: 1.557637e-04
+0: Locality-Aware (N Groups 8) Alltoall Pairwise: 4.511265e-04
+0: Locality-Aware (N Groups 8) Alltoall Nonblocking: 2.065808e-04
+0: Locality-Aware (N Groups 8) Internal: Intra-node pairwise alltoall: 2.145939e-05
+0: Locality-Aware (N Groups 8) Internal: Inter-node pairwise alltoall: 2.841570e-04
+0: Locality-Aware (N Groups 8) Internal: Intra-node nonblocking alltoall: 1.618717e-05
+0: Locality-Aware (N Groups 8) Internal: Inter-node nonblocking alltoall: 7.448872e-05
+0: Hierarchical Pairwise (N Leaders 4): 2.143889e-03
+0: Hierarchical Nonblocking (N Leaders 4): 1.849379e-03
+0: Hierarchical (N Leaders 4) Internal: Gather: 4.032809e-04
+0: Hierarchical (N Leaders 4) Internal: Scatter: 4.099780e-04
+0: Hierarchical (N Leaders 4) Internal: Alltoall Pairwise: 3.462105e-04
+0: Hierarchical (N Leaders 4) Internal: Alltoall Nonblocking: 8.591918e-05
+0: Locality-Aware (N Groups 4) Alltoall Pairwise: 2.543747e-04
+0: Locality-Aware (N Groups 4) Alltoall Nonblocking: 1.143262e-04
+0: Locality-Aware (N Groups 4) Internal: Intra-node pairwise alltoall: 6.191898e-05
+0: Locality-Aware (N Groups 4) Internal: Inter-node pairwise alltoall: 1.370255e-04
+0: Locality-Aware (N Groups 4) Internal: Intra-node nonblocking alltoall: 3.626253e-05
+0: Locality-Aware (N Groups 4) Internal: Inter-node nonblocking alltoall: 3.553094e-05
+0: Size 64
+0: PMPI: 1.095044e-03
+0: Hierarchical Pairwise: 1.078920e-02
+0: Hierarchical Nonblocking: 7.798821e-03
+0: Hierarchical Internal: Gather: 6.952113e-03
+0: Hierarchical Internal: Scatter: 5.425649e-03
+0: Hierarchical Internal: Pairwise inter-node alltoall: 4.333246e-04
+0: Hierarchical Interal: Nonblocking inter-node alltoall: 4.125559e-04
+0: Node-Aware Pairwise: 5.451682e-04
+0: Node-Aware Nonblocking: 3.235953e-04
+0: Node-Aware Internal: Pairwise intra-node alltoall: 4.314169e-04
+0: Node-Aware Internal: Pairwise inter-node alltoall: 7.980206e-05
+0: Node-Aware Internal: Nonblocking intra-node alltoall: 2.625697e-04
+0: Node-Aware Internal: Nonblocking inter-node alltoall: 7.927975e-05
+0: Hierarchical Pairwise (N Leaders 16): 1.383408e-03
+0: Hierarchical Nonblocking (N Leaders 16): 8.356413e-04
+0: Hierarchical (N Leaders 16) Internal: Gather: 2.143087e-04
+0: Hierarchical (N Leaders 16) Internal: Scatter: 5.903427e-05
+0: Hierarchical (N Leaders 16) Internal: Alltoall Pairwise: 7.063394e-04
+0: Hierarchical (N Leaders 16) Internal: Alltoall Nonblocking: 2.517756e-04
+0: Locality-Aware (N Groups 16) Alltoall Pairwise: 7.408265e-04
+0: Locality-Aware (N Groups 16) Alltoall Nonblocking: 2.863397e-04
+0: Locality-Aware (N Groups 16) Internal: Intra-node pairwise alltoall: 9.303857e-06
+0: Locality-Aware (N Groups 16) Internal: Inter-node pairwise alltoall: 7.495830e-04
+0: Locality-Aware (N Groups 16) Internal: Intra-node nonblocking alltoall: 6.777950e-06
+0: Locality-Aware (N Groups 16) Internal: Inter-node nonblocking alltoall: 3.660675e-04
+0: Hierarchical Pairwise (N Leaders 8): 2.101794e-03
+0: Hierarchical Nonblocking (N Leaders 8): 1.738589e-03
+0: Hierarchical (N Leaders 8) Internal: Gather: 4.240455e-04
+0: Hierarchical (N Leaders 8) Internal: Scatter: 1.417668e-04
+0: Hierarchical (N Leaders 8) Internal: Alltoall Pairwise: 4.913793e-04
+0: Hierarchical (N Leaders 8) Internal: Alltoall Nonblocking: 1.861569e-04
+0: Locality-Aware (N Groups 8) Alltoall Pairwise: 5.367027e-04
+0: Locality-Aware (N Groups 8) Alltoall Nonblocking: 2.640732e-04
+0: Locality-Aware (N Groups 8) Internal: Intra-node pairwise alltoall: 2.586644e-05
+0: Locality-Aware (N Groups 8) Internal: Inter-node pairwise alltoall: 3.201440e-04
+0: Locality-Aware (N Groups 8) Internal: Intra-node nonblocking alltoall: 2.002266e-05
+0: Locality-Aware (N Groups 8) Internal: Inter-node nonblocking alltoall: 9.928191e-05
+0: Hierarchical Pairwise (N Leaders 4): 3.826147e-03
+0: Hierarchical Nonblocking (N Leaders 4): 3.515594e-03
+0: Hierarchical (N Leaders 4) Internal: Gather: 8.626282e-04
+0: Hierarchical (N Leaders 4) Internal: Scatter: 9.743948e-04
+0: Hierarchical (N Leaders 4) Internal: Alltoall Pairwise: 4.167472e-04
+0: Hierarchical (N Leaders 4) Internal: Alltoall Nonblocking: 1.446422e-04
+0: Locality-Aware (N Groups 4) Alltoall Pairwise: 4.564580e-04
+0: Locality-Aware (N Groups 4) Alltoall Nonblocking: 2.646353e-04
+0: Locality-Aware (N Groups 4) Internal: Intra-node pairwise alltoall: 7.813785e-05
+0: Locality-Aware (N Groups 4) Internal: Inter-node pairwise alltoall: 1.434653e-04
+0: Locality-Aware (N Groups 4) Internal: Intra-node nonblocking alltoall: 4.978755e-05
+0: Locality-Aware (N Groups 4) Internal: Inter-node nonblocking alltoall: 3.892442e-05
+0: Size 128
+0: PMPI: 1.991541e-03
+0: Hierarchical Pairwise: 2.378061e-02
+0: Hierarchical Nonblocking: 2.044337e-02
+0: Hierarchical Internal: Gather: 1.226153e-02
+0: Hierarchical Internal: Scatter: 1.051940e-02
+0: Hierarchical Internal: Pairwise inter-node alltoall: 8.138602e-04
+0: Hierarchical Interal: Nonblocking inter-node alltoall: 9.053086e-04
+0: Node-Aware Pairwise: 8.151305e-04
+0: Node-Aware Nonblocking: 5.428736e-04
+0: Node-Aware Internal: Pairwise intra-node alltoall: 5.974383e-04
+0: Node-Aware Internal: Pairwise inter-node alltoall: 1.668802e-04
+0: Node-Aware Internal: Nonblocking intra-node alltoall: 4.240679e-04
+0: Node-Aware Internal: Nonblocking inter-node alltoall: 1.597089e-04
+0: Hierarchical Pairwise (N Leaders 16): 2.385736e-03
+0: Hierarchical Nonblocking (N Leaders 16): 1.676719e-03
+0: Hierarchical (N Leaders 16) Internal: Gather: 4.069383e-04
+0: Hierarchical (N Leaders 16) Internal: Scatter: 1.167412e-04
+0: Hierarchical (N Leaders 16) Internal: Alltoall Pairwise: 9.300214e-04
+0: Hierarchical (N Leaders 16) Internal: Alltoall Nonblocking: 3.198364e-04
+0: Locality-Aware (N Groups 16) Alltoall Pairwise: 9.239805e-04
+0: Locality-Aware (N Groups 16) Alltoall Nonblocking: 4.125782e-04
+0: Locality-Aware (N Groups 16) Internal: Intra-node pairwise alltoall: 1.147912e-05
+0: Locality-Aware (N Groups 16) Internal: Inter-node pairwise alltoall: 1.038229e-03
+0: Locality-Aware (N Groups 16) Internal: Intra-node nonblocking alltoall: 9.622723e-06
+0: Locality-Aware (N Groups 16) Internal: Inter-node nonblocking alltoall: 6.990406e-04
+0: Hierarchical Pairwise (N Leaders 8): 3.833166e-03
+0: Hierarchical Nonblocking (N Leaders 8): 3.222588e-03
+0: Hierarchical (N Leaders 8) Internal: Gather: 8.165690e-04
+0: Hierarchical (N Leaders 8) Internal: Scatter: 2.690702e-04
+0: Hierarchical (N Leaders 8) Internal: Alltoall Pairwise: 7.514258e-04
+0: Hierarchical (N Leaders 8) Internal: Alltoall Nonblocking: 2.601224e-04
+0: Locality-Aware (N Groups 8) Alltoall Pairwise: 7.050384e-04
+0: Locality-Aware (N Groups 8) Alltoall Nonblocking: 3.968997e-04
+0: Locality-Aware (N Groups 8) Internal: Intra-node pairwise alltoall: 3.432944e-05
+0: Locality-Aware (N Groups 8) Internal: Inter-node pairwise alltoall: 3.751730e-04
+0: Locality-Aware (N Groups 8) Internal: Intra-node nonblocking alltoall: 3.023958e-05
+0: Locality-Aware (N Groups 8) Internal: Inter-node nonblocking alltoall: 1.828875e-04
+0: Hierarchical Pairwise (N Leaders 4): 7.195435e-03
+0: Hierarchical Nonblocking (N Leaders 4): 6.768312e-03
+0: Hierarchical (N Leaders 4) Internal: Gather: 1.563013e-03
+0: Hierarchical (N Leaders 4) Internal: Scatter: 1.527323e-03
+0: Hierarchical (N Leaders 4) Internal: Alltoall Pairwise: 5.895228e-04
+0: Hierarchical (N Leaders 4) Internal: Alltoall Nonblocking: 3.016350e-04
+0: Locality-Aware (N Groups 4) Alltoall Pairwise: 6.228167e-04
+0: Locality-Aware (N Groups 4) Alltoall Nonblocking: 3.966127e-04
+0: Locality-Aware (N Groups 4) Internal: Intra-node pairwise alltoall: 1.668551e-04
+0: Locality-Aware (N Groups 4) Internal: Inter-node pairwise alltoall: 1.575287e-04
+0: Locality-Aware (N Groups 4) Internal: Intra-node nonblocking alltoall: 1.017864e-04
+0: Locality-Aware (N Groups 4) Internal: Inter-node nonblocking alltoall: 5.074110e-05
+0: Size 256
+0: PMPI: 7.112168e-04
+0: Hierarchical Pairwise: 5.081074e-02
+0: Hierarchical Nonblocking: 4.382480e-02
+0: Hierarchical Internal: Gather: 1.218730e-02
+0: Hierarchical Internal: Scatter: 1.973986e-02
+0: Hierarchical Internal: Pairwise inter-node alltoall: 1.556219e-03
+0: Hierarchical Interal: Nonblocking inter-node alltoall: 1.957760e-03
+0: Node-Aware Pairwise: 2.029281e-03
+0: Node-Aware Nonblocking: 1.552022e-03
+0: Node-Aware Internal: Pairwise intra-node alltoall: 1.055450e-03
+0: Node-Aware Internal: Pairwise inter-node alltoall: 3.175980e-04
+0: Node-Aware Internal: Nonblocking intra-node alltoall: 7.418804e-04
+0: Node-Aware Internal: Nonblocking inter-node alltoall: 3.173871e-04
+0: Hierarchical Pairwise (N Leaders 16): 3.890160e-03
+0: Hierarchical Nonblocking (N Leaders 16): 2.972681e-03
+0: Hierarchical (N Leaders 16) Internal: Gather: 8.029502e-04
+0: Hierarchical (N Leaders 16) Internal: Scatter: 2.193228e-04
+0: Hierarchical (N Leaders 16) Internal: Alltoall Pairwise: 1.089157e-03
+0: Hierarchical (N Leaders 16) Internal: Alltoall Nonblocking: 3.801520e-04
+0: Locality-Aware (N Groups 16) Alltoall Pairwise: 1.217259e-03
+0: Locality-Aware (N Groups 16) Alltoall Nonblocking: 6.266168e-04
+0: Locality-Aware (N Groups 16) Internal: Intra-node pairwise alltoall: 1.576952e-05
+0: Locality-Aware (N Groups 16) Internal: Inter-node pairwise alltoall: 1.548992e-03
+0: Locality-Aware (N Groups 16) Internal: Intra-node nonblocking alltoall: 1.424164e-05
+0: Locality-Aware (N Groups 16) Internal: Inter-node nonblocking alltoall: 1.486723e-03
+0: Hierarchical Pairwise (N Leaders 8): 6.865467e-03
+0: Hierarchical Nonblocking (N Leaders 8): 6.120731e-03
+0: Hierarchical (N Leaders 8) Internal: Gather: 1.632289e-03
+0: Hierarchical (N Leaders 8) Internal: Scatter: 6.153131e-04
+0: Hierarchical (N Leaders 8) Internal: Alltoall Pairwise: 1.079464e-03
+0: Hierarchical (N Leaders 8) Internal: Alltoall Nonblocking: 5.428279e-04
+0: Locality-Aware (N Groups 8) Alltoall Pairwise: 1.034584e-03
+0: Locality-Aware (N Groups 8) Alltoall Nonblocking: 5.922951e-04
+0: Locality-Aware (N Groups 8) Internal: Intra-node pairwise alltoall: 8.245143e-05
+0: Locality-Aware (N Groups 8) Internal: Inter-node pairwise alltoall: 4.930955e-04
+0: Locality-Aware (N Groups 8) Internal: Intra-node nonblocking alltoall: 5.577951e-05
+0: Locality-Aware (N Groups 8) Internal: Inter-node nonblocking alltoall: 3.275726e-04
+0: Hierarchical Pairwise (N Leaders 4): 1.231743e-02
+0: Hierarchical Nonblocking (N Leaders 4): 1.187303e-02
+0: Hierarchical (N Leaders 4) Internal: Gather: 3.237860e-03
+0: Hierarchical (N Leaders 4) Internal: Scatter: 2.899449e-03
+0: Hierarchical (N Leaders 4) Internal: Alltoall Pairwise: 8.537286e-04
+0: Hierarchical (N Leaders 4) Internal: Alltoall Nonblocking: 6.291908e-04
+0: Locality-Aware (N Groups 4) Alltoall Pairwise: 9.254400e-04
+0: Locality-Aware (N Groups 4) Alltoall Nonblocking: 6.822337e-04
+0: Locality-Aware (N Groups 4) Internal: Intra-node pairwise alltoall: 1.962738e-04
+0: Locality-Aware (N Groups 4) Internal: Inter-node pairwise alltoall: 1.857205e-04
+0: Locality-Aware (N Groups 4) Internal: Intra-node nonblocking alltoall: 1.294989e-04
+0: Locality-Aware (N Groups 4) Internal: Inter-node nonblocking alltoall: 9.160342e-05
+0: Size 512
+0: PMPI: 7.044612e-04
+0: Hierarchical Pairwise: 6.786182e-02
+0: Hierarchical Nonblocking: 6.594147e-02
+0: Hierarchical Internal: Gather: 2.292356e-02
+0: Hierarchical Internal: Scatter: 3.587101e-02
+0: Hierarchical Internal: Pairwise inter-node alltoall: 3.062640e-03
+0: Hierarchical Interal: Nonblocking inter-node alltoall: 4.132666e-03
+0: Node-Aware Pairwise: 2.270960e-03
+0: Node-Aware Nonblocking: 1.547604e-03
+0: Node-Aware Internal: Pairwise intra-node alltoall: 1.314377e-03
+0: Node-Aware Internal: Pairwise inter-node alltoall: 6.356037e-04
+0: Node-Aware Internal: Nonblocking intra-node alltoall: 9.355488e-04
+0: Node-Aware Internal: Nonblocking inter-node alltoall: 6.327602e-04
+0: Hierarchical Pairwise (N Leaders 16): 6.092434e-03
+0: Hierarchical Nonblocking (N Leaders 16): 4.487944e-03
+0: Hierarchical (N Leaders 16) Internal: Gather: 1.682960e-03
+0: Hierarchical (N Leaders 16) Internal: Scatter: 1.489352e-03
+0: Hierarchical (N Leaders 16) Internal: Alltoall Pairwise: 1.784554e-03
+0: Hierarchical (N Leaders 16) Internal: Alltoall Nonblocking: 9.601734e-04
+0: Locality-Aware (N Groups 16) Alltoall Pairwise: 1.810989e-03
+0: Locality-Aware (N Groups 16) Alltoall Nonblocking: 1.026589e-03
+0: Locality-Aware (N Groups 16) Internal: Intra-node pairwise alltoall: 3.452130e-05
+0: Locality-Aware (N Groups 16) Internal: Inter-node pairwise alltoall: 3.013999e-03
+0: Locality-Aware (N Groups 16) Internal: Intra-node nonblocking alltoall: 2.443529e-05
+0: Locality-Aware (N Groups 16) Internal: Inter-node nonblocking alltoall: 2.927087e-03
+0: Hierarchical Pairwise (N Leaders 8): 9.972131e-03
+0: Hierarchical Nonblocking (N Leaders 8): 8.517318e-03
+0: Hierarchical (N Leaders 8) Internal: Gather: 3.371816e-03
+0: Hierarchical (N Leaders 8) Internal: Scatter: 1.059955e-03
+0: Hierarchical (N Leaders 8) Internal: Alltoall Pairwise: 1.580699e-03
+0: Hierarchical (N Leaders 8) Internal: Alltoall Nonblocking: 1.085577e-03
+0: Locality-Aware (N Groups 8) Alltoall Pairwise: 1.573343e-03
+0: Locality-Aware (N Groups 8) Alltoall Nonblocking: 1.056750e-03
+0: Locality-Aware (N Groups 8) Internal: Intra-node pairwise alltoall: 8.949877e-05
+0: Locality-Aware (N Groups 8) Internal: Inter-node pairwise alltoall: 7.202847e-04
+0: Locality-Aware (N Groups 8) Internal: Intra-node nonblocking alltoall: 5.728206e-05
+0: Locality-Aware (N Groups 8) Internal: Inter-node nonblocking alltoall: 6.564355e-04
+0: Hierarchical Pairwise (N Leaders 4): 1.535987e-02
+0: Hierarchical Nonblocking (N Leaders 4): 1.553329e-02
+0: Hierarchical (N Leaders 4) Internal: Gather: 5.354734e-03
+0: Hierarchical (N Leaders 4) Internal: Scatter: 5.681621e-03
+0: Hierarchical (N Leaders 4) Internal: Alltoall Pairwise: 1.371076e-03
+0: Hierarchical (N Leaders 4) Internal: Alltoall Nonblocking: 1.776623e-03
+0: Locality-Aware (N Groups 4) Alltoall Pairwise: 1.630633e-03
+0: Locality-Aware (N Groups 4) Alltoall Nonblocking: 1.405278e-03
+0: Locality-Aware (N Groups 4) Internal: Intra-node pairwise alltoall: 2.746820e-04
+0: Locality-Aware (N Groups 4) Internal: Inter-node pairwise alltoall: 2.347340e-04
+0: Locality-Aware (N Groups 4) Internal: Intra-node nonblocking alltoall: 1.872443e-04
+0: Locality-Aware (N Groups 4) Internal: Inter-node nonblocking alltoall: 1.622506e-04
+0: Size 1024
+0: PMPI: 1.350305e-03
+0: Hierarchical Pairwise: 1.068853e-01
+0: Hierarchical Nonblocking: 1.027545e-01
+0: Hierarchical Internal: Gather: 4.122039e-02
+0: Hierarchical Internal: Scatter: 4.536273e-02
+0: Hierarchical Internal: Pairwise inter-node alltoall: 7.505943e-03
+0: Hierarchical Interal: Nonblocking inter-node alltoall: 8.429666e-03
+0: Node-Aware Pairwise: 3.707794e-03
+0: Node-Aware Nonblocking: 2.789207e-03
+0: Node-Aware Internal: Pairwise intra-node alltoall: 1.721310e-03
+0: Node-Aware Internal: Pairwise inter-node alltoall: 1.293764e-03
+0: Node-Aware Internal: Nonblocking intra-node alltoall: 1.389405e-03
+0: Node-Aware Internal: Nonblocking inter-node alltoall: 1.280808e-03
+0: Hierarchical Pairwise (N Leaders 16): 7.587837e-03
+0: Hierarchical Nonblocking (N Leaders 16): 5.783141e-03
+0: Hierarchical (N Leaders 16) Internal: Gather: 1.851255e-03
+0: Hierarchical (N Leaders 16) Internal: Scatter: 1.448174e-03
+0: Hierarchical (N Leaders 16) Internal: Alltoall Pairwise: 2.643519e-03
+0: Hierarchical (N Leaders 16) Internal: Alltoall Nonblocking: 1.896176e-03
+0: Locality-Aware (N Groups 16) Alltoall Pairwise: 3.006024e-03
+0: Locality-Aware (N Groups 16) Alltoall Nonblocking: 1.991413e-03
+0: Locality-Aware (N Groups 16) Internal: Intra-node pairwise alltoall: 3.781806e-05
+0: Locality-Aware (N Groups 16) Internal: Inter-node pairwise alltoall: 5.631786e-03
+0: Locality-Aware (N Groups 16) Internal: Intra-node nonblocking alltoall: 2.602776e-05
+0: Locality-Aware (N Groups 16) Internal: Inter-node nonblocking alltoall: 6.236705e-03
+0: Hierarchical Pairwise (N Leaders 8): 1.291600e-02
+0: Hierarchical Nonblocking (N Leaders 8): 1.155923e-02
+0: Hierarchical (N Leaders 8) Internal: Gather: 2.816372e-03
+0: Hierarchical (N Leaders 8) Internal: Scatter: 3.159777e-03
+0: Hierarchical (N Leaders 8) Internal: Alltoall Pairwise: 2.404594e-03
+0: Hierarchical (N Leaders 8) Internal: Alltoall Nonblocking: 2.267091e-03
+0: Locality-Aware (N Groups 8) Alltoall Pairwise: 3.007752e-03
+0: Locality-Aware (N Groups 8) Alltoall Nonblocking: 2.414870e-03
+0: Locality-Aware (N Groups 8) Internal: Intra-node pairwise alltoall: 1.238595e-04
+0: Locality-Aware (N Groups 8) Internal: Inter-node pairwise alltoall: 1.447006e-03
+0: Locality-Aware (N Groups 8) Internal: Intra-node nonblocking alltoall: 8.712551e-05
+0: Locality-Aware (N Groups 8) Internal: Inter-node nonblocking alltoall: 1.381302e-03
+0: Hierarchical Pairwise (N Leaders 4): 2.239908e-02
+0: Hierarchical Nonblocking (N Leaders 4): 2.169270e-02
+0: Hierarchical (N Leaders 4) Internal: Gather: 6.259996e-03
+0: Hierarchical (N Leaders 4) Internal: Scatter: 8.696882e-03
+0: Hierarchical (N Leaders 4) Internal: Alltoall Pairwise: 2.400876e-03
+0: Hierarchical (N Leaders 4) Internal: Alltoall Nonblocking: 3.210344e-03
+0: Locality-Aware (N Groups 4) Alltoall Pairwise: 2.958440e-03
+0: Locality-Aware (N Groups 4) Alltoall Nonblocking: 3.052191e-03
+0: Locality-Aware (N Groups 4) Internal: Intra-node pairwise alltoall: 6.835940e-04
+0: Locality-Aware (N Groups 4) Internal: Inter-node pairwise alltoall: 3.435244e-04
+0: Locality-Aware (N Groups 4) Internal: Intra-node nonblocking alltoall: 3.860868e-04
+0: Locality-Aware (N Groups 4) Internal: Inter-node nonblocking alltoall: 3.212740e-04
+0: Size 2048
+0: PMPI: 2.637784e-03
+0: Hierarchical Pairwise: 2.149385e-01
+0: Hierarchical Nonblocking: 2.105660e-01
+0: Hierarchical Internal: Gather: 4.048728e-02
+0: Hierarchical Internal: Scatter: 5.141423e-02
+0: Hierarchical Internal: Pairwise inter-node alltoall: 1.508710e-02
+0: Hierarchical Interal: Nonblocking inter-node alltoall: 1.719893e-02
+0: Node-Aware Pairwise: 7.690777e-03
+0: Node-Aware Nonblocking: 6.031799e-03
+0: Node-Aware Internal: Pairwise intra-node alltoall: 2.641104e-03
+0: Node-Aware Internal: Pairwise inter-node alltoall: 2.687836e-03
+0: Node-Aware Internal: Nonblocking intra-node alltoall: 2.157317e-03
+0: Node-Aware Internal: Nonblocking inter-node alltoall: 2.582348e-03
+0: Hierarchical Pairwise (N Leaders 16): 1.189676e-02
+0: Hierarchical Nonblocking (N Leaders 16): 1.020810e-02
+0: Hierarchical (N Leaders 16) Internal: Gather: 2.448708e-03
+0: Hierarchical (N Leaders 16) Internal: Scatter: 2.096887e-03
+0: Hierarchical (N Leaders 16) Internal: Alltoall Pairwise: 4.121478e-03
+0: Hierarchical (N Leaders 16) Internal: Alltoall Nonblocking: 4.112127e-03
+0: Locality-Aware (N Groups 16) Alltoall Pairwise: 5.697824e-03
+0: Locality-Aware (N Groups 16) Alltoall Nonblocking: 4.357366e-03
+0: Locality-Aware (N Groups 16) Internal: Intra-node pairwise alltoall: 4.614744e-05
+0: Locality-Aware (N Groups 16) Internal: Inter-node pairwise alltoall: 1.131360e-02
+0: Locality-Aware (N Groups 16) Internal: Intra-node nonblocking alltoall: 3.124105e-05
+0: Locality-Aware (N Groups 16) Internal: Inter-node nonblocking alltoall: 1.363801e-02
+0: Hierarchical Pairwise (N Leaders 8): 1.984392e-02
+0: Hierarchical Nonblocking (N Leaders 8): 1.835578e-02
+0: Hierarchical (N Leaders 8) Internal: Gather: 5.458467e-03
+0: Hierarchical (N Leaders 8) Internal: Scatter: 4.927621e-03
+0: Hierarchical (N Leaders 8) Internal: Alltoall Pairwise: 4.224612e-03
+0: Hierarchical (N Leaders 8) Internal: Alltoall Nonblocking: 4.734852e-03
+0: Locality-Aware (N Groups 8) Alltoall Pairwise: 5.582810e-03
+0: Locality-Aware (N Groups 8) Alltoall Nonblocking: 4.992288e-03
+0: Locality-Aware (N Groups 8) Internal: Intra-node pairwise alltoall: 2.557386e-04
+0: Locality-Aware (N Groups 8) Internal: Inter-node pairwise alltoall: 2.749568e-03
+0: Locality-Aware (N Groups 8) Internal: Intra-node nonblocking alltoall: 2.020235e-04
+0: Locality-Aware (N Groups 8) Internal: Inter-node nonblocking alltoall: 2.888874e-03
+0: Hierarchical Pairwise (N Leaders 4): 3.880592e-02
+0: Hierarchical Nonblocking (N Leaders 4): 3.640892e-02
+0: Hierarchical (N Leaders 4) Internal: Gather: 9.623554e-03
+0: Hierarchical (N Leaders 4) Internal: Scatter: 9.749668e-03
+0: Hierarchical (N Leaders 4) Internal: Alltoall Pairwise: 4.440524e-03
+0: Hierarchical (N Leaders 4) Internal: Allto
