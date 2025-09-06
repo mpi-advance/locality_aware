@@ -78,9 +78,6 @@ int allreduce_multileader(const void *sendbuf,
     int send_proc, recv_proc;
     int send_pos, recv_pos;
 
-    char *recv_bufer = (char *)recvbuf;
-    char *send_buffer = (char *)sendbuf;
-
     int data_size;
     MPI_Type_size(datatype, &data_size);
 
@@ -200,4 +197,75 @@ int allreduce_locality_aware(const void *sendbuf,
     free(tmpbuf);
 
     return MPI_SUCCESS;    
+}
+
+int allreduce_multileader_locality(
+    const void* sendbuf,
+    void* recvbuf,
+    const int count,
+    MPI_Datatype datatype,
+    MPI_Op op,
+    MPIX_Comm comm)
+{
+    int rank, num_procs;
+    MPI_Comm_rank(comm.global_comm, &rank);
+    MPI_Comm_size(comm.global_comm, &num_procs);
+
+    int tag;
+    MPIX_Comm_tag(&comm, &tag);
+    if (comm.local_comm == MPI_COMM_NULL)
+        MPIX_Comm_topo_init(&comm);
+
+    int local_rank, ppn;
+    MPI_Comm_rank(comm.local_comm, &local_rank);
+    MPI_Comm_size(comm.local_comm, &ppn);
+
+    if (comm.leader_comm == MPI_COMM_NULL)
+    {
+        int num_leaders_per_node = 4;
+        if (ppn < num_leaders_per_node)
+            num_leaders_per_node = ppn;
+
+        MPIX_Comm_leader_init(&comm, ppn / num_leaders_per_node);
+    }
+
+    int procs_per_leader, leader_rank;
+    MPI_Comm_rank(comm.leader_comm, &leader_rank);
+    MPI_Comm_size(comm.leader_comm, &procs_per_leader);
+
+    int data_size;
+    MPI_Type_size(datatype, &data_size);
+
+    char* local_send_buff = NULL;
+    char* local_recv_buff = NULL;
+    if (leader_rank == 0)
+    {
+        local_send_buff = (char*) malloc(count * data_size);
+        local_recv_buff = (char*) malloc(count * data_size);
+    }
+    else
+    {
+        local_send_buff = (char*) malloc(sizeof(char));
+        local_recv_buff = (char*) malloc(sizeof(char));
+    }
+
+    // 1.  Local reduce
+    MPI_Reduce(sendbuf, local_send_buff, count, datatype, op, 0, comm.leader_comm);
+
+    if (leader_rank == 0)
+    {
+        // 2. Allreduce between nodes
+        MPI_Allreduce(local_send_buff, local_recv_buff, count, datatype, op, comm.group_comm);
+
+        // 3. Allreduce between local leaders
+        MPI_Allreduce(local_recv_buff, recvbuf, count, datatype, op, comm.leader_local_comm);
+    }
+
+    // 4. Broadcast
+    MPI_Bcast(recvbuf, count, datatype, 0, comm.leader_comm);
+
+    free(local_send_buff);
+    free(local_recv_buff);
+
+    return MPI_SUCCESS;
 }

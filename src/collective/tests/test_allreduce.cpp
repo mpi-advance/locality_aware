@@ -63,6 +63,9 @@ int main(int argc, char **argv)
 
         allreduce_locality_aware(local_data.data(), mpix_allreduce_sum, s, MPI_INT, MPI_SUM, *locality_comm);
         compare_allreduce_results(pmpi_allreduce_sum, mpix_allreduce_sum, s);
+
+        allreduce_multileader_locality(local_data.data(), mpix_allreduce_sum, s, MPI_INT, MPI_SUM, *locality_comm);
+        compare_allreduce_results(pmpi_allreduce_sum, mpix_allreduce_sum, s);
     }
 
     MPIX_Comm_free(&locality_comm);
