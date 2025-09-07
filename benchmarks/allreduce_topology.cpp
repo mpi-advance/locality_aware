@@ -1,5 +1,6 @@
 #include <vector>
 #include <cstring>
+#include <stdio.h>
 #include <math.h>
 #include <mpi.h>
 #include "mpi_advance.h"
@@ -26,37 +27,37 @@ double time_allreduce(F allreduce_func,
 	return t0;
 }
 
-template <typename F1, typename C>
-double time_multileader_allreduce(F1 allreduce_func,
-								  const void *sendbuf,
-																	void *recvbuf,
-																	int count,
-																	MPI_Datatype datatype,
-																	MPI_Op op,
-																	C comm,
-																	int n_leaders,
-																	int n_iters)
-{
-	MPI_Barrier(MPI_COMM_WORLD);
-	double t0 = MPI_Wtime();
-	for (int i = 0; i < n_iters; i++)
-	{
-		allreduce_func(sendbuf, recvbuf, count, datatype, op, comm, n_leaders);
-	}
+// template <typename F1, typename C>
+// double time_multileader_allreduce(F1 allreduce_func,
+// 								  const void *sendbuf,
+// 								  void *recvbuf,
+// 								  int count,
+// 								  MPI_Datatype datatype,
+// 								  MPI_Op op,
+// 								  C comm,
+// 								  int n_leaders,
+// 								  int n_iters)
+// {
+// 	MPI_Barrier(MPI_COMM_WORLD);
+// 	double t0 = MPI_Wtime();
+// 	for (int i = 0; i < n_iters; i++)
+// 	{
+// 		allreduce_func(sendbuf, recvbuf, count, datatype, op, comm, n_leaders);
+// 	}
 
-	double tfinal = (MPI_Wtime() - t0) / n_iters;
-	MPI_Allreduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
-	return t0;
-}
+// 	double tfinal = (MPI_Wtime() - t0) / n_iters;
+// 	MPI_Allreduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
+// 	return t0;
+// }
 
 template <typename F, typename C>
 double test_allreduce(F allreduce_func,
-											const void *sendbuf,
-											void *recvbuf,
-											int count,
-											MPI_Datatype datatype,
-											MPI_Op op,
-											C comm)
+					  const void *sendbuf,
+					  void *recvbuf,
+					  int count,
+					  MPI_Datatype datatype,
+					  MPI_Op op,
+					  C comm)
 {
 	double time;
 	int n_iters;
@@ -75,41 +76,41 @@ double test_allreduce(F allreduce_func,
 	return time;
 }
 
-template <typename F1, typename C>
-double test_multileader_allreduce(F1 allreduce_func,
-																	const void *sendbuf,
-																	void *recvbuf,
-																	int count,
-																	MPI_Datatype datatype,
-																	MPI_Op op,
-																	C comm,
-																	int n_leaders)
-{
-	double time;
-	double n_iters;
+// template <typename F1, typename C>
+// double test_multileader_allreduce(F1 allreduce_func,
+// 								  const void *sendbuf,
+// 								  void *recvbuf,
+// 								  int count,
+// 								  MPI_Datatype datatype,
+// 								  MPI_Op op,
+// 								  C comm,
+// 								  int n_leaders)
+// {
+// 	double time;
+// 	double n_iters;
 
-	// Warm-UP
-	time_multileader_allreduce(allreduce_func, sendbuf, recvbuf, count, datatype, op, comm, 1, n_leaders);
+// 	// Warm-UP
+// 	time_multileader_allreduce(allreduce_func, sendbuf, recvbuf, count, datatype, op, comm, 1, n_leaders);
 
-	// Estimate Iterations
-	time = time_multileader_allreduce(allreduce_func, sendbuf, recvbuf, count, datatype, op, comm, 2, n_leaders);
-	MPI_Allreduce(MPI_IN_PLACE, &time, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
-	n_iters = (1.0 / time) + 1;
+// 	// Estimate Iterations
+// 	time = time_multileader_allreduce(allreduce_func, sendbuf, recvbuf, count, datatype, op, comm, 2, n_leaders);
+// 	MPI_Allreduce(MPI_IN_PLACE, &time, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
+// 	n_iters = (1.0 / time) + 1;
 
-	// Time Allreduce
-	time = time_multileader_allreduce(allreduce_func, sendbuf, recvbuf, count, datatype, op, comm, n_iters, n_leaders);
-	MPI_Allreduce(MPI_IN_PLACE, &time, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
-	return time;
-}
+// 	// Time Allreduce
+// 	time = time_multileader_allreduce(allreduce_func, sendbuf, recvbuf, count, datatype, op, comm, n_iters, n_leaders);
+// 	MPI_Allreduce(MPI_IN_PLACE, &time, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
+// 	return time;
+// }
 
 template <typename T>
 void print_allreduces(int max_p,
-											const T *sendbuf,
-											T *recvbuf,
-											MPI_Datatype datatype,
-											MPI_Op op,
-											MPIX_Comm *comm,
-											T *recvbuf_std)
+					  const T *sendbuf,
+					  T *recvbuf,
+					  MPI_Datatype datatype,
+					  MPI_Op op,
+					  MPIX_Comm *comm,
+					  T *recvbuf_std)
 {
 	int rank;
 	MPI_Comm_rank(comm->global_comm, &rank);
@@ -123,8 +124,7 @@ void print_allreduces(int max_p,
 	std::vector<F> allreduce_funcs = {allreduce_hierarchical, allreduce_node_aware};
 	std::vector<const char *> names = {"Hierarchical", "Node Aware"};
 
-	using F1 = int(*)(const void *, void *, int, MPI_Datatype, MPI_Op, _MPIX_Comm, int);
-	std::vector<F1> multileader_allreduce_funcs = {allreduce_multileader, allreduce_locality_aware};
+	std::vector<F> multileader_allreduce_funcs = {allreduce_multileader, allreduce_locality_aware, allreduce_multileader_locality};
 	std::vector<const char *> multileader_names = {"Multileader", "Locality Aware"};
 
 	for (int i = 0; i < max_p; i++)
@@ -149,12 +149,17 @@ void print_allreduces(int max_p,
 		// MPI Advance Allreduce functions (not multileader)
 		for (int idx = 0; idx < allreduce_funcs.size(); idx++)
 		{
+			if (rank == 0)
+			{
+				printf("Testing %s\n", names[idx]);
+			}
+
 			allreduce_funcs[idx](sendbuf, recvbuf, s, datatype, op, *comm);
 			for (int j = 0; j < s; j++)
 			{
-				if (fabs(recvbuf_std[j] = recvbuf[j]) > 1e-06)
+				if (fabs(recvbuf_std[j] - recvbuf[j]) > 1e-06)
 				{
-					printf("Diff Results %d vs %d\n", recvbuf_std[j], recvbuf[j]);
+					printf("Diff Results (%s) %d vs %d\n", names[idx], recvbuf_std[j], recvbuf[j]);
 					MPI_Abort(comm->global_comm, -1);
 				}
 			}
@@ -176,26 +181,26 @@ void print_allreduces(int max_p,
 				break;
 			}
 
-	  MPIX_Comm_leader_init(comm, ppn / n_leaders);
-	  for (int idx = 0; idx < multileader_allreduce_funcs.size(); idx++)
-	  {
-		multileader_allreduce_funcs[idx](sendbuf, recvbuf, s, datatype, op, *comm, n_leaders);
+			MPIX_Comm_leader_init(comm, ppn / n_leaders);
+			for (int idx = 0; idx < multileader_allreduce_funcs.size(); idx++)
+			{
+				multileader_allreduce_funcs[idx](sendbuf, recvbuf, s, datatype, op, *comm);
 				for (int j = 0; j < s; j++)
 				{
 					if (fabs(recvbuf_std[j] - recvbuf[j] > 1e-06))
-				  {
-						printf("DIFF RESULTS %d vs %d\n", recvbuf_std[j], recvbuf[j]);
+					{
+                        printf("DIFF RESULTS (%s) %d vs %d\n", multileader_names[idx], recvbuf_std[j], recvbuf[j]);
 						MPI_Abort(comm->global_comm, -1);
-		  		}
+					}
 				}
 
-				time = test_multileader_allreduce(multileader_allreduce_funcs[idx], sendbuf, recvbuf, s, datatype, op, *comm, n_leaders);
+				time = test_allreduce(multileader_allreduce_funcs[idx], sendbuf, recvbuf, s, datatype, op, *comm);
 				if (rank == 0)
 				{
 					printf("%s, %d leaders, %e\n", multileader_names[idx], n_leaders, time);
 				}
 			}
-	  }
+		}
 	}
 }
 
@@ -203,7 +208,7 @@ int main(int argc, char *argv[])
 {
 	MPI_Init(&argc, &argv);
 
-	int max_p = 15;
+	int max_p = 11;
 	int max_size = pow(2, max_p);
 
 	MPIX_Comm *xcomm;
