@@ -125,7 +125,7 @@ void print_allreduces(int max_p,
 	std::vector<const char *> names = {"Hierarchical", "Node Aware"};
 
 	std::vector<F> multileader_allreduce_funcs = {allreduce_multileader, allreduce_locality_aware, allreduce_multileader_locality};
-	std::vector<const char *> multileader_names = {"Multileader", "Locality Aware"};
+	std::vector<const char *> multileader_names = {"Multileader", "Locality Aware", "Multileader Locality Aware"};
 
 	for (int i = 0; i < max_p; i++)
 	{
@@ -172,16 +172,16 @@ void print_allreduces(int max_p,
 		}
 
 		// MPI Advance Multileader Allreduce Functions
-		std::vector<int> n_leaders_list = {4, 10, 20};
-		for (int ctr = 0; ctr < n_leaders_list.size(); ctr++)
+        std::vector<int> procs_per_leader_list = {4, 8, 16};
+		for (int ctr = 0; ctr < procs_per_leader_list.size(); ctr++)
 		{
-			int n_leaders = n_leaders_list[ctr];
-			if (ppn < n_leaders)
+            int procs_per_leader = procs_per_leader_list[ctr];
+			if (ppn <  procs_per_leader)
 			{
 				break;
 			}
 
-			MPIX_Comm_leader_init(comm, ppn / n_leaders);
+			MPIX_Comm_leader_init(comm, procs_per_leader);
 			for (int idx = 0; idx < multileader_allreduce_funcs.size(); idx++)
 			{
 				multileader_allreduce_funcs[idx](sendbuf, recvbuf, s, datatype, op, *comm);
@@ -197,7 +197,7 @@ void print_allreduces(int max_p,
 				time = test_allreduce(multileader_allreduce_funcs[idx], sendbuf, recvbuf, s, datatype, op, *comm);
 				if (rank == 0)
 				{
-					printf("%s, %d leaders, %e\n", multileader_names[idx], n_leaders, time);
+					printf("%s, %d procs per leaders, %e\n", multileader_names[idx], procs_per_leader, time);
 				}
 			}
 		}
