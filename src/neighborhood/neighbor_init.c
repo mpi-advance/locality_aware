@@ -303,18 +303,65 @@ int neighbor_alltoallv_init_locality_ext(
     MPIX_Request* request;
     init_neighbor_request(&request);
 
+    int indegree = 0;
+    int outdegree = 0;
+
+    int* sources = NULL;
+    int* source_counts = NULL;
+    int* source_displs = NULL;
+    int* destinations = NULL;
+    int* dest_counts = NULL;
+    int* dest_displs = NULL;
+
+    if (topo->indegree)
+    {
+        sources = (int*)malloc(topo->indegree*sizeof(int));
+        source_counts = (int*)malloc(topo->indegree*sizeof(int));
+        source_displs = (int*)malloc(topo->indegree*sizeof(int));
+    }
+    if (topo->outdegree)
+    {
+        destinations = (int*)malloc(topo->outdegree*sizeof(int));
+        dest_counts = (int*)malloc(topo->outdegree*sizeof(int));
+        dest_displs = (int*)malloc(topo->outdegree*sizeof(int));
+    }
+
+    for (int i = 0; i < topo->indegree; i++)
+    {
+        if (recvcounts[i])
+        {
+            sources[indegree] = topo->sources[i];
+            source_counts[indegree] = recvcounts[i];
+            source_displs[indegree] = rdispls[i];
+            indegree++;
+        }
+    }
+
+    for (int i = 0; i < topo->outdegree; i++)
+    {
+        if (sendcounts[i])
+        {
+            destinations[outdegree] = topo->destinations[i];
+            dest_counts[outdegree] = sendcounts[i];
+            dest_displs[outdegree] = sdispls[i];
+            outdegree++;
+        }
+    }
+
+
+
     // Initialize Locality-Aware Communication Strategy (3-Step)
     // E.G. Determine which processes talk to eachother at every step
     // TODO : instead of mpi_comm, use comm
     //        - will need to create local_comm in dist_graph_create_adjacent...
-    init_locality(topo->outdegree, 
-            topo->destinations, 
-            sdispls, 
-            sendcounts,
-            topo->indegree, 
-            topo->sources, 
-            rdispls,
-            recvcounts,
+    init_locality(outdegree, 
+            destinations, 
+            dest_displs, 
+            dest_counts,
+            indegree, 
+            sources, 
+            source_displs,
+            source_counts,
             global_sindices,
             global_rindices,
             sendtype,
@@ -393,6 +440,19 @@ int neighbor_alltoallv_init_locality_ext(
             &(request->local_R_requests));
 
     *request_ptr = request;
+
+    if (topo->indegree)
+    {
+        free(sources);
+        free(source_counts);
+        free(source_displs);
+    }
+    if (topo->outdegree)
+    {
+        free(destinations);
+        free(dest_counts);
+        free(dest_displs);
+    }
 
     return MPI_SUCCESS;
 }
