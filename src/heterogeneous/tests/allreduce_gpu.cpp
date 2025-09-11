@@ -123,7 +123,7 @@ void print_allreduce(int max_p, float* sendbuf, float* recvbuf, float* tmpbuf,
             if (fabs(recvbuf_new[i] - recvbuf_std[i]) > maxError) maxError = fabs(recvbuf_new[i] - recvbuf_std[i]);
             if (fabs(recvbuf_new[i] - recvbuf_std[i]) > 1e-3)
             {
-                printf("DIFFERENCE IN RESULTS! %e vs %e\n", recvbuf_new[i], recvbuf_std[i]);
+                printf("DIFFERENCE IN RESULTS in LOC! %e vs %e\n", recvbuf_new[i], recvbuf_std[i]);
                 MPI_Abort(MPI_COMM_WORLD, 1);
             }
         }
@@ -142,7 +142,7 @@ void print_allreduce(int max_p, float* sendbuf, float* recvbuf, float* tmpbuf,
             if (fabs(recvbuf_new[i] - recvbuf_std[i]) > maxError) maxError = fabs(recvbuf_new[i] - recvbuf_std[i]);
             if (fabs(recvbuf_new[i] - recvbuf_std[i]) > 1e-3)
             {
-                printf("DIFFERENCE IN RESULTS! %e vs %e\n", recvbuf_new[i], recvbuf_std[i]);
+                printf("DIFFERENCE IN RESULTS in LANE! %e vs %e\n", recvbuf_new[i], recvbuf_std[i]);
                 MPI_Abort(MPI_COMM_WORLD, 1);
             }
         }
