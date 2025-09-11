@@ -2,6 +2,7 @@
 #include <mpi.h>
 #include <math.h>
 #include <stdlib.h>
+#include <string.h>
 #include <iostream>
 #include <assert.h>
 #include <vector>
@@ -33,24 +34,90 @@ double allreduce(int size, float* sendbuf, float* sendbuf_loc,
     return tfinal;
 }
 
-void print_allreduce(int max_p, float* sendbuf_d, float* sendbuf_d_local, 
-        float* recvbuf_d, float* recvbuf_d_local, float* recvbuf, float* recvbuf_std,
-        MPI_Comm comm, int ppg, int socket_rank)
+double allreduce_loc(int size, float* sendbuf, float* recvbuf_1, float* tmpbuf_1,
+    float* recvbuf_2, float* tmpbuf_2, float* recvbuf_3,
+    int* recvcounts, MPI_Comm comm, MPI_Comm intra_comm, 
+    MPI_Comm inter_comm, MPI_Comm socket_comm, int n_iters,
+    float* sendbuf_global, float* recvbuf_global)
+{   
+    MPI_Request gpu_req;
+    int intra_comm_size;
+    MPI_Comm_size(intra_comm, &intra_comm_size);
+    int sum_recvcounts = recvcounts[0] * intra_comm_size;
+    gpuDeviceSynchronize();
+    MPI_Barrier(comm);
+    double t0 = MPI_Wtime();
+    for (int i = 0; i < n_iters; i++)
+    {
+        cudaMemcpy(sendbuf, sendbuf_global, sum_recvcounts * sizeof(float), cudaMemcpyDeviceToDevice);
+        MPI_Reduce_scatter(sendbuf, recvbuf_1, recvcounts, MPI_FLOAT,
+                MPI_SUM, intra_comm);
+        MPI_Allreduce(recvbuf_2, tmpbuf_1, recvcounts[0], MPI_FLOAT,
+                MPI_SUM, inter_comm);
+        MPI_Allgather(tmpbuf_2, recvcounts[0], MPI_FLOAT, recvbuf_3, 
+                recvcounts[0], MPI_FLOAT, intra_comm);
+        cudaMemcpy(recvbuf_global, recvbuf_3, sum_recvcounts * sizeof(float), cudaMemcpyDeviceToDevice);
+        MPI_Barrier(socket_comm);
+    }
+    double tfinal = (MPI_Wtime() - t0) / n_iters;
+    return tfinal;
+}
+
+double allreduce_lane(int size, float* sendbuf, float* recvbuf, float* tmpbuf_1, float* tmpbuf_2,
+        int* recvcounts, MPI_Comm comm, MPI_Comm intra_comm, 
+        MPI_Comm inter_comm, MPI_Comm socket_comm, int n_iters,
+        float *sendbuf_global, float *recvbuf_global)
 {
-    int rank;
+    MPI_Request gpu_req;
+    gpuDeviceSynchronize();
+    MPI_Barrier(comm);
+    double t0 = MPI_Wtime();
+    for (int i = 0; i < n_iters; i++)
+    {
+        cudaMemcpy(sendbuf, sendbuf_global, recvcounts[0] * sizeof(float), cudaMemcpyDeviceToDevice);
+        MPI_Allreduce(sendbuf, tmpbuf_1, recvcounts[0], MPI_FLOAT,
+                MPI_SUM, inter_comm);
+        MPI_Allreduce(tmpbuf_2, recvbuf, recvcounts[0], MPI_FLOAT,
+                MPI_SUM, intra_comm);
+        cudaMemcpy(recvbuf_global, recvbuf, recvcounts[0] * sizeof(float), cudaMemcpyDeviceToDevice);
+        MPI_Barrier(socket_comm);
+    }
+    double tfinal = (MPI_Wtime() - t0) / n_iters;
+    return tfinal;
+}
+
+void print_allreduce(int max_p, float* sendbuf_d, float* sendbuf_d_local, float* tmpbuf_d_local,
+        float* recvbuf_d, float* recvbuf_d_local, float* recvbuf, float* recvbuf_std,
+        MPI_Comm comm, MPI_Comm intra_comm, MPI_Comm inter_comm, MPI_Comm socket_comm, int ppg, int socket_rank, int local_gpu)
+{
+    int rank, num_procs;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-   
+    MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
+    
     double max_time;
 
-    int start_i = log2(ppg);
-
+    int num_gpus;
+    cudaGetDeviceCount(&num_gpus);
+    int* recvcounts_pergpu = new int[num_gpus];
+    int* recvcounts_s = new int[num_gpus];
+    int* recvcounts_s_pergpu = new int[num_gpus];
+    int start_i = log2(ppg * num_procs);
     for (int i = start_i; i < max_p; i++)
     { 
         double time = 0;
         int s_g = pow(2, i);
+        int pergpu = s_g / num_gpus;
         int s = s_g / ppg;
-        if (rank == 0) printf("Size %d (Per Proc %d): ", s_g, s);
-
+        int s_pergpu = s / num_gpus;
+        if (rank == 0) printf("Size %d (Per Proc %d, %d, %d): ", s_g, pergpu, s, s_pergpu);
+        
+        for (int i = 0; i < num_gpus; i++)
+        {
+            recvcounts_pergpu[i] = pergpu;
+            recvcounts_s[i] = s;
+            recvcounts_s_pergpu[i] = s_pergpu;
+        }
+        
         // Compare Results
         // 1. Multi-Proc
         allreduce(s, &(sendbuf_d[s*socket_rank]), sendbuf_d_local,
@@ -64,13 +131,61 @@ void print_allreduce(int max_p, float* sendbuf_d, float* sendbuf_d_local,
         MPI_Barrier(MPI_COMM_WORLD);
 
         gpuMemcpy(recvbuf, &(recvbuf_d[socket_rank*s]), s*sizeof(float), gpuMemcpyDeviceToHost);
+        float maxError = 0.0;
+        // Compare recvbuf std and recvbuf new
         for (int i = 0; i < s; i++)
-            if (fabs(recvbuf[i] - recvbuf_std[i]) > 1e-6) 
+        {
+            if (fabs(recvbuf[i] - recvbuf_std[i]) > maxError) maxError = fabs(recvbuf[i] - recvbuf_std[i]);
+            if (fabs(recvbuf[i] - recvbuf_std[i]) > 1e-3)
             {
-                printf("DIFFERENCE IN RESULTS! %e vs %e\n", recvbuf[i], recvbuf_std[i]);
+                printf("DIFFERENCE IN RESULTS in STD MPS COPY! %e vs %e\n", recvbuf[i], recvbuf_std[i]);
                 MPI_Abort(MPI_COMM_WORLD, 1);
             }
-     
+        }
+    	MPI_Allreduce(MPI_IN_PLACE, &maxError, 1, MPI_FLOAT, MPI_MAX, MPI_COMM_WORLD);
+        if (rank == 0) printf("STD MPS COPY MAX ERROR: %e\n", maxError);
+        
+        cudaMemset(&(recvbuf_d[socket_rank*s]), 0, s*sizeof(float));
+        MPI_Barrier(MPI_COMM_WORLD);
+        allreduce_loc(s_g, sendbuf_d_local, recvbuf_d_local,
+                tmpbuf_d_local, recvbuf_d_local,
+                tmpbuf_d_local, recvbuf_d_local, recvcounts_s_pergpu, comm, intra_comm, inter_comm, socket_comm, 1, &(sendbuf_d[socket_rank*s]), &(recvbuf_d[socket_rank*s]));
+        gpuMemcpy(recvbuf_std, &(recvbuf_d[socket_rank*s]), s*sizeof(float), gpuMemcpyDeviceToHost);
+        maxError = 0.0;
+        // Compare recvbuf std and recvbuf new
+        for (int i = 0; i < s; i++)
+        {
+            if (fabs(recvbuf[i] - recvbuf_std[i]) > maxError) maxError = fabs(recvbuf[i] - recvbuf_std[i]);
+            if (fabs(recvbuf[i] - recvbuf_std[i]) > 1e-3)
+            {
+             	printf("DIFFERENCE IN RESULTS in LOC MPS FULL COPY! %e vs %e\n", recvbuf[i], recvbuf_std[i]);
+                MPI_Abort(MPI_COMM_WORLD, 1);
+            }
+    	}
+    	MPI_Allreduce(MPI_IN_PLACE, &maxError, 1, MPI_FLOAT, MPI_MAX, MPI_COMM_WORLD);
+        if (rank == 0) printf("LOC MPS FULL COPY MAX ERROR: %e\n", maxError);
+        
+        cudaMemset(&(recvbuf_d[socket_rank*s]), 0, s*sizeof(float));
+        MPI_Barrier(MPI_COMM_WORLD);
+        allreduce_lane(s_g, sendbuf_d_local, 
+                            recvbuf_d_local, 
+                            tmpbuf_d_local, 
+                            tmpbuf_d_local, recvcounts_s, comm, intra_comm, inter_comm, socket_comm, 1, &(sendbuf_d[socket_rank*s]), &(recvbuf_d[socket_rank*s]));
+        gpuMemcpy(recvbuf_std, &(recvbuf_d[socket_rank*s]), s*sizeof(float), gpuMemcpyDeviceToHost);
+        maxError = 0.0;
+        // Compare recvbuf std and recvbuf new
+        for (int i = 0; i < s; i++)
+        {
+            if (fabs(recvbuf[i] - recvbuf_std[i]) > maxError) maxError = fabs(recvbuf[i] - recvbuf_std[i]);
+            if (fabs(recvbuf[i] - recvbuf_std[i]) > 1e-3)
+            {
+                printf("DIFFERENCE IN RESULTS in LANE MPS FULL COPY! %e vs %e\n", recvbuf[i], recvbuf_std[i]);
+                MPI_Abort(MPI_COMM_WORLD, 1);
+            }
+	}
+    	MPI_Allreduce(MPI_IN_PLACE, &maxError, 1, MPI_FLOAT, MPI_MAX, MPI_COMM_WORLD);
+        if (rank == 0) printf("LANE MPS FULL COPY MAX ERROR: %e\n", maxError);
+        
         // Warm-Up
         allreduce(s, &(sendbuf_d[s*socket_rank]), sendbuf_d_local,
                 &(recvbuf_d[s*socket_rank]), recvbuf_d_local,  comm, 1);
@@ -90,7 +205,60 @@ void print_allreduce(int max_p, float* sendbuf_d, float* sendbuf_d_local,
                 &(recvbuf_d[s*socket_rank]), recvbuf_d_local,  comm, n_iters);
 
         MPI_Allreduce(&time, &max_time, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);    
-        if (rank == 0) printf("%e\n", max_time);
+        if (rank == 0) printf("STD MPS COPY: %e\n", max_time);
+        
+        // Warm-Up
+        allreduce_loc(s_g, sendbuf_d_local, recvbuf_d_local,
+                tmpbuf_d_local, recvbuf_d_local,
+                tmpbuf_d_local, recvbuf_d_local, recvcounts_s_pergpu, comm, intra_comm, inter_comm, socket_comm, 1, &(sendbuf_d[socket_rank*s]), &(recvbuf_d[socket_rank*s]));
+                
+        // Time 2 iterations
+        time = allreduce_loc(s_g, sendbuf_d_local, recvbuf_d_local,
+                tmpbuf_d_local, recvbuf_d_local,
+                tmpbuf_d_local, recvbuf_d_local, recvcounts_s_pergpu, comm, intra_comm, inter_comm, socket_comm, 2, &(sendbuf_d[socket_rank*s]), &(recvbuf_d[socket_rank*s]));
+        
+        // Get Max Time
+        MPI_Allreduce(&time, &max_time, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
+        
+        // Set NIters so Timing ~ 1 Second
+        n_iters = (2.0 / max_time) + 1;
+        
+        // Time Allreduce
+        time = allreduce_loc(s_g, sendbuf_d_local, recvbuf_d_local,
+                tmpbuf_d_local, recvbuf_d_local,
+                tmpbuf_d_local, recvbuf_d_local, recvcounts_s_pergpu, comm, intra_comm, inter_comm, socket_comm, n_iters, &(sendbuf_d[socket_rank*s]), &(recvbuf_d[socket_rank*s]));
+                
+        MPI_Allreduce(&time, &max_time, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
+        if (rank == 0) printf("LOC MPS FULL COPY: %e\n", max_time);
+        
+        // Warm-Up
+        allreduce_lane(s_g, sendbuf_d_local, 
+                            recvbuf_d_local, 
+                            tmpbuf_d_local, 
+                            tmpbuf_d_local, recvcounts_s, comm, intra_comm, inter_comm, socket_comm, 1, &(sendbuf_d[socket_rank*s]), &(recvbuf_d[socket_rank*s]));
+                
+        // Time 2 iterations
+        time = allreduce_lane(s_g, sendbuf_d_local, 
+                            recvbuf_d_local, 
+                            tmpbuf_d_local, 
+                            tmpbuf_d_local, recvcounts_s, comm, intra_comm, inter_comm, socket_comm, 2, &(sendbuf_d[socket_rank*s]), &(recvbuf_d[socket_rank*s]));
+        
+        // Get Max Time
+        MPI_Allreduce(&time, &max_time, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
+        
+        // Set NIters so Timing ~ 1 Second
+        n_iters = (2.0 / max_time) + 1;
+        
+        // Time Allreduce
+        time = allreduce_lane(s_g, sendbuf_d_local, 
+                            recvbuf_d_local, 
+                            tmpbuf_d_local, 
+                            tmpbuf_d_local, recvcounts_s, comm, intra_comm, inter_comm, socket_comm, n_iters, &(sendbuf_d[socket_rank*s]), &(recvbuf_d[socket_rank*s]));
+                
+        MPI_Allreduce(&time, &max_time, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
+        if (rank == 0) printf("LANE MPS FULL COPY: %e\n", max_time);
+                
+        fflush(stdout);
     }
     if (rank == 0) printf("\n");
 }
@@ -118,17 +286,32 @@ int main(int argc, char* argv[])
     int local_gpu = local_rank / ppg;
     int gpu_rank = local_rank % ppg;
 
-    int max_p = 30;
+    int max_p = 28;
     int max_s = pow(2, max_p);
     int max_s_proc = max_s / ppg;
 
-    cudaCheck(cudaSetDevice(local_gpu));
+    if (argc < 2 || (strcmp(argv[1], "r") != 0))
+    {
+        cudaCheck(cudaSetDevice(local_gpu));
+    }
+    else
+    {
+        cudaSetDevice((gpn - local_gpu) - 1);
+        printf("rank %d reversed\n", rank);
+        fflush(stdout);
+    }
     
     MPI_Comm gpu_comm;
     MPI_Comm_split(MPI_COMM_WORLD, gpu_rank, rank, &gpu_comm);
 
+    MPI_Comm lane_comm;
+    MPI_Comm_split(MPI_COMM_WORLD, local_rank, rank / ppn, &lane_comm);
+        
     MPI_Comm socket_comm;
     MPI_Comm_split(local_comm, local_gpu, rank, &socket_comm);
+    
+    MPI_Comm intra_comm;
+    MPI_Comm_split(local_comm, local_rank % ppg, local_rank / ppg, &intra_comm);
 
     float* sendbuf_d;
     float* recvbuf_d;
@@ -137,6 +320,7 @@ int main(int argc, char* argv[])
     float* recvbuf_std;
     float* sendbuf_d_local;
     float* recvbuf_d_local;
+    float* tmpbuf_d_local;
 
     cudaCheck(cudaMallocHost((void**)&sendbuf, max_s_proc*sizeof(float)));
     cudaCheck(cudaMallocHost((void**)&recvbuf, max_s_proc*sizeof(float)));
@@ -144,6 +328,7 @@ int main(int argc, char* argv[])
 
     cudaCheck(cudaMalloc((void**)&sendbuf_d_local, max_s_proc*sizeof(float)));
     cudaCheck(cudaMalloc((void**)&recvbuf_d_local, max_s_proc*sizeof(float)));
+    cudaCheck(cudaMalloc((void**)&tmpbuf_d_local, max_s_proc*sizeof(float)));
 
     cudaIpcMemHandle_t send_handle, recv_handle;
     if (gpu_rank == 0)
@@ -170,8 +355,8 @@ int main(int argc, char* argv[])
     cudaCheck(cudaDeviceSynchronize());
 
     if (rank == 0) printf("Starting Allreduce Timings, PPG %d:\n", ppg);
-    print_allreduce(max_p, sendbuf_d, sendbuf_d_local, recvbuf_d, recvbuf_d_local, 
-            recvbuf, recvbuf_std, gpu_comm, ppg, gpu_rank);
+    print_allreduce(max_p, sendbuf_d, sendbuf_d_local, tmpbuf_d_local, recvbuf_d, recvbuf_d_local, 
+            recvbuf, recvbuf_std, gpu_comm, intra_comm, lane_comm, socket_comm, ppg, gpu_rank, local_gpu);
     MPI_Barrier(MPI_COMM_WORLD);
 
     if (gpu_rank == 0)
@@ -187,6 +372,7 @@ int main(int argc, char* argv[])
 
     cudaCheck(cudaFree(sendbuf_d_local));
     cudaCheck(cudaFree(recvbuf_d_local));
+    cudaCheck(cudaFree(tmpbuf_d_local));
 
     cudaCheck(cudaFreeHost(sendbuf));
     cudaCheck(cudaFreeHost(recvbuf));
@@ -194,6 +380,8 @@ int main(int argc, char* argv[])
 
     MPI_Comm_free(&socket_comm);
     MPI_Comm_free(&gpu_comm);
+    MPI_Comm_free(&lane_comm);
+    MPI_Comm_free(&intra_comm);
     MPI_Comm_free(&local_comm);
 
     MPI_Finalize();
