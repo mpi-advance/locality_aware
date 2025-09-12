@@ -93,8 +93,8 @@ void print_allreduce(int max_p, float* sendbuf, float* recvbuf, float* tmpbuf,
 
     int num_gpus;
     cudaGetDeviceCount(&num_gpus);
-
-    for (int i = 0; i < max_p; i++)
+    int start_i = log2(num_gpus);
+    for (int i = start_i; i < max_p; i++)
     { 
         int s = pow(2, i);
         if (rank == 0) printf("Size %d\n", s);
@@ -164,6 +164,7 @@ void print_allreduce(int max_p, float* sendbuf, float* recvbuf, float* tmpbuf,
                 recvcounts, comm, intra_comm, inter_comm);
         if (rank == 0) printf("LANE: %e\n", time);
 
+        fflush(stdout);
     }
     if (rank == 0) printf("\n");
 
