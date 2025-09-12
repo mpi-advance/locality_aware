@@ -14,7 +14,7 @@ int allgather_multileader(const void* sendbuf,
                           void *recvbuf, 
                           int recvcount,
                           MPI_Datatype recvtype, 
-                          MPI_Comm comm);
+                          MPIX_Comm comm);
 
 
 int allgather_hierarchical(const void* sendbuf,
@@ -23,7 +23,7 @@ int allgather_hierarchical(const void* sendbuf,
                            void *recvbuf,
                            int recvcount,
                            MPI_Datatype recvtype,
-                           MPI_Comm comm);
+                           MPIX_Comm comm);
 
 int allgather_locality_aware(const void* sendbuf,
                              int sendcount,
@@ -31,7 +31,7 @@ int allgather_locality_aware(const void* sendbuf,
                              void *recvbuf,
                              int recvcount,
                              MPI_Datatype recvtype,
-                             MPI_Comm comm);
+                             MPIX_Comm comm);
 
 int allgather_node_aware(const void* sendbuf,
                          int sendcount,
@@ -39,7 +39,7 @@ int allgather_node_aware(const void* sendbuf,
                          void* recvbuf,
                          int recvcount,
                          MPI_Datatype recvtype,
-                         MPI_Comm comm);
+                         MPIX_Comm comm);
 
 int allgather_multileader_locality_aware(const void* sendbuf,
                                          int sendcount,
@@ -47,7 +47,7 @@ int allgather_multileader_locality_aware(const void* sendbuf,
                                          void* recvbuf,
                                          int recvcount,
                                          MPI_Datatype recvtype,
-                                         MPI_Comm comm);
+                                         MPIX_Comm comm);
 
 
 #ifdef 
