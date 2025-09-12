@@ -287,7 +287,7 @@ int main(int argc, char* argv[])
     int gpu_rank = local_rank % ppg;
 
     int max_p = 28;
-    int max_s = pow(2, max_p);
+    int max_s = pow(2, max_p - 1);
     int max_s_proc = max_s / ppg;
 
     if (argc < 2 || (strcmp(argv[1], "r") != 0))

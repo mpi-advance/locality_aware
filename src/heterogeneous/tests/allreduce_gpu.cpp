@@ -28,9 +28,9 @@ void allreduce_loc(int size, float* sendbuf, float* recvbuf, float* tmpbuf,
 void allreduce_lane(int size, float* sendbuf, float* recvbuf, float* tmpbuf,
         int* recvcounts, MPI_Comm comm, MPI_Comm intra_comm, MPI_Comm inter_comm)
 {   
-    MPI_Allreduce(sendbuf, tmpbuf, recvcounts[0], MPI_FLOAT,
+    MPI_Allreduce(sendbuf, tmpbuf, size, MPI_FLOAT,
             MPI_SUM, inter_comm);
-    MPI_Allreduce(tmpbuf, recvbuf, recvcounts[0], MPI_FLOAT,
+    MPI_Allreduce(tmpbuf, recvbuf, size, MPI_FLOAT,
             MPI_SUM, intra_comm);
 }
 
@@ -179,7 +179,7 @@ int main(int argc, char* argv[])
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
 
     int max_p = 28;
-    int max_s = pow(2, max_p);
+    int max_s = pow(2, max_p - 1);
 
     // Set Local GPU
     MPI_Comm local_comm;
