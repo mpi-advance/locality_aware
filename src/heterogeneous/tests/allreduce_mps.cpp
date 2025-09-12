@@ -454,6 +454,7 @@ int main(int argc, char* argv[])
         cudaCheck(cudaIpcOpenMemHandle((void**)&tmpbuf_d, tmp_handle, cudaIpcMemLazyEnablePeerAccess)); 
     }
 
+    srand(time(NULL) + (rank * 120));
     for (int i = 0; i < max_s_proc; i++)
         sendbuf[i] = ((float)rand()) / RAND_MAX;
     cudaCheck(cudaMemcpy(&(sendbuf_d[gpu_rank*max_s_proc]), sendbuf, max_s_proc*sizeof(float), cudaMemcpyHostToDevice));

@@ -225,6 +225,7 @@ int main(int argc, char* argv[])
     gpuMallocHost((void**)&recvbuf_std, max_s*sizeof(float));
     gpuMallocHost((void**)&recvbuf_new, max_s*sizeof(float));
 
+    srand(time(NULL) + (rank * 120));
     for (int i = 0; i < max_s; i++)
         sendbuf_h[i] = ((float)rand()) / RAND_MAX;
     gpuMemcpy(sendbuf, sendbuf_h, max_s*sizeof(float), gpuMemcpyHostToDevice);

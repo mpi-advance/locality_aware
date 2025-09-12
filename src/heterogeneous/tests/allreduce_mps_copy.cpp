@@ -101,7 +101,7 @@ void print_allreduce(int max_p, float* sendbuf_d, float* sendbuf_d_local, float*
     int* recvcounts_pergpu = new int[num_gpus];
     int* recvcounts_s = new int[num_gpus];
     int* recvcounts_s_pergpu = new int[num_gpus];
-    int start_i = log2(ppg * num_procs);
+    int start_i = log2(ppg * num_gpus);
     for (int i = start_i; i < max_p; i++)
     { 
         double time = 0;
@@ -347,6 +347,7 @@ int main(int argc, char* argv[])
         cudaCheck(cudaIpcOpenMemHandle((void**)&recvbuf_d, recv_handle, cudaIpcMemLazyEnablePeerAccess)); 
     }
 
+    srand(time(NULL) + (rank * 120));
     for (int i = 0; i < max_s_proc; i++)
         sendbuf[i] = ((float)rand()) / RAND_MAX;
     cudaCheck(cudaMemcpy(&(sendbuf_d[gpu_rank*max_s_proc]), sendbuf, max_s_proc*sizeof(float), cudaMemcpyHostToDevice));
