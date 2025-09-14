@@ -2,6 +2,7 @@
 #define MPI_ADVANCE_ALLREDUCE_H
 
 #include <mpi.h>
+#include "communicator/mpix_comm.h"
 
 #ifdef __cplusplus
 extern "C"
@@ -50,8 +51,7 @@ int allgather_multileader_locality_aware(const void* sendbuf,
                                          MPIX_Comm comm);
 
 
-#ifdef 
-__cplusplus
+#ifdef __cplusplus
 }
 #endif
 
