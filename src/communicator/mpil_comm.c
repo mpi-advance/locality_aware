@@ -1,12 +1,12 @@
 #include "mpil_comm.h"
 
-int MPIX_Comm_init(MPIX_Comm** xcomm_ptr, MPI_Comm global_comm)
+int MPIL_Comm_init(MPIL_Comm** xcomm_ptr, MPI_Comm global_comm)
 {
     int rank, num_procs;
     MPI_Comm_rank(global_comm, &rank);
     MPI_Comm_size(global_comm, &num_procs);
 
-    MPIX_Comm* xcomm   = (MPIX_Comm*)malloc(sizeof(MPIX_Comm));
+    MPIL_Comm* xcomm   = (MPIL_Comm*)malloc(sizeof(MPIL_Comm));
     xcomm->global_comm = global_comm;
 
     xcomm->local_comm = MPI_COMM_NULL;
@@ -43,7 +43,7 @@ int MPIX_Comm_init(MPIX_Comm** xcomm_ptr, MPI_Comm global_comm)
     return MPI_SUCCESS;
 }
 
-int MPIX_Comm_topo_init(MPIX_Comm* xcomm)
+int MPIL_Comm_topo_init(MPIL_Comm* xcomm)
 {
     int rank, num_procs;
     MPI_Comm_rank(xcomm->global_comm, &rank);
@@ -98,7 +98,7 @@ int MPIX_Comm_topo_init(MPIX_Comm* xcomm)
     return MPI_SUCCESS;
 }
 
-int MPIX_Comm_leader_init(MPIX_Comm* xcomm, int procs_per_leader)
+int MPIL_Comm_leader_init(MPIL_Comm* xcomm, int procs_per_leader)
 {
     int rank, num_procs;
     MPI_Comm_rank(xcomm->global_comm, &rank);
@@ -114,7 +114,7 @@ int MPIX_Comm_leader_init(MPIX_Comm* xcomm, int procs_per_leader)
 
     if (xcomm->local_comm == MPI_COMM_NULL)
     {
-        MPIX_Comm_topo_init(xcomm);
+        MPIL_Comm_topo_init(xcomm);
     }
 
     MPI_Comm_split(xcomm->local_comm, leader_rank, rank, &(xcomm->leader_local_comm));
@@ -122,12 +122,12 @@ int MPIX_Comm_leader_init(MPIX_Comm* xcomm, int procs_per_leader)
     return MPI_SUCCESS;
 }
 
-int MPIX_Comm_device_init(MPIX_Comm* xcomm)
+int MPIL_Comm_device_init(MPIL_Comm* xcomm)
 {
 #ifdef GPU
     if (xcomm->local_comm == MPI_COMM_NULL)
     {
-        MPIX_Comm_topo_init(xcomm);
+        MPIL_Comm_topo_init(xcomm);
     }
 
     int local_rank, ierr;
@@ -145,7 +145,7 @@ int MPIX_Comm_device_init(MPIX_Comm* xcomm)
     return MPI_SUCCESS;
 }
 
-int MPIX_Comm_win_init(MPIX_Comm* xcomm, int bytes, int type_bytes)
+int MPIL_Comm_win_init(MPIL_Comm* xcomm, int bytes, int type_bytes)
 {
     int rank, num_procs;
     MPI_Comm_rank(xcomm->global_comm, &rank);
@@ -164,7 +164,7 @@ int MPIX_Comm_win_init(MPIX_Comm* xcomm, int bytes, int type_bytes)
     return MPI_SUCCESS;
 }
 
-int MPIX_Comm_req_resize(MPIX_Comm* xcomm, int n)
+int MPIL_Comm_req_resize(MPIL_Comm* xcomm, int n)
 {
     if (n <= 0)
     {
@@ -178,7 +178,7 @@ int MPIX_Comm_req_resize(MPIX_Comm* xcomm, int n)
     return MPI_SUCCESS;
 }
 
-int MPIX_Comm_tag(MPIX_Comm* xcomm, int* tag)
+int MPIL_Comm_tag(MPIL_Comm* xcomm, int* tag)
 {
     *tag       = xcomm->tag;
     xcomm->tag = ((xcomm->tag + 1) % xcomm->max_tag);
@@ -186,9 +186,9 @@ int MPIX_Comm_tag(MPIX_Comm* xcomm, int* tag)
     return MPI_SUCCESS;
 }
 
-int MPIX_Comm_free(MPIX_Comm** xcomm_ptr)
+int MPIL_Comm_free(MPIL_Comm** xcomm_ptr)
 {
-    MPIX_Comm* xcomm = *xcomm_ptr;
+    MPIL_Comm* xcomm = *xcomm_ptr;
 
     if (xcomm->n_requests > 0)
     {
@@ -200,17 +200,17 @@ int MPIX_Comm_free(MPIX_Comm** xcomm_ptr)
         MPI_Comm_free(&(xcomm->neighbor_comm));
     }
 
-    MPIX_Comm_topo_free(xcomm);
-    MPIX_Comm_leader_free(xcomm);
-    MPIX_Comm_win_free(xcomm);
-    MPIX_Comm_device_free(xcomm);
+    MPIL_Comm_topo_free(xcomm);
+    MPIL_Comm_leader_free(xcomm);
+    MPIL_Comm_win_free(xcomm);
+    MPIL_Comm_device_free(xcomm);
 
     free(xcomm);
 
     return MPI_SUCCESS;
 }
 
-int MPIX_Comm_topo_free(MPIX_Comm* xcomm)
+int MPIL_Comm_topo_free(MPIL_Comm* xcomm)
 {
     if (xcomm->local_comm != MPI_COMM_NULL)
     {
@@ -237,7 +237,7 @@ int MPIX_Comm_topo_free(MPIX_Comm* xcomm)
     return MPI_SUCCESS;
 }
 
-int MPIX_Comm_leader_free(MPIX_Comm* xcomm)
+int MPIL_Comm_leader_free(MPIL_Comm* xcomm)
 {
     if (xcomm->leader_comm != MPI_COMM_NULL)
     {
@@ -255,7 +255,7 @@ int MPIX_Comm_leader_free(MPIX_Comm* xcomm)
     return MPI_SUCCESS;
 }
 
-int MPIX_Comm_win_free(MPIX_Comm* xcomm)
+int MPIL_Comm_win_free(MPIL_Comm* xcomm)
 {
     int rank, num_procs;
     MPI_Comm_rank(xcomm->global_comm, &rank);
@@ -275,7 +275,7 @@ int MPIX_Comm_win_free(MPIX_Comm* xcomm)
     return MPI_SUCCESS;
 }
 
-int MPIX_Comm_device_free(MPIX_Comm* xcomm)
+int MPIL_Comm_device_free(MPIL_Comm* xcomm)
 {
 #ifdef GPU
     int ierr = gpuSuccess;
@@ -290,24 +290,24 @@ int MPIX_Comm_device_free(MPIX_Comm* xcomm)
 }
 
 /****  Topology Functions   ****/
-int get_node(const MPIX_Comm* data, const int proc)
+int get_node(const MPIL_Comm* data, const int proc)
 {
     return data->global_rank_to_node[proc];
 }
 
-int get_local_proc(const MPIX_Comm* data, const int proc)
+int get_local_proc(const MPIL_Comm* data, const int proc)
 {
     return data->global_rank_to_local[proc];
 }
 
-int get_global_proc(const MPIX_Comm* data, const int node, const int local_proc)
+int get_global_proc(const MPIL_Comm* data, const int node, const int local_proc)
 {
     return data->ordered_global_ranks[local_proc + (node * data->ppn)];
 }
 
 // For testing purposes
 // Manually update aggregation size (ppn)
-void update_locality(MPIX_Comm* xcomm, int ppn)
+void update_locality(MPIL_Comm* xcomm, int ppn)
 {
     int rank, num_procs;
     MPI_Comm_rank(xcomm->global_comm, &rank);

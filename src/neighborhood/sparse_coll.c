@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-int MPIX_Alltoall_crs(const int send_nnz,
+int MPIL_Alltoall_crs(const int send_nnz,
                       const int* dest,
                       const int sendcount,
                       MPI_Datatype sendtype,
@@ -13,8 +13,8 @@ int MPIX_Alltoall_crs(const int send_nnz,
                       int recvcount,
                       MPI_Datatype recvtype,
                       void** recvvals_ptr,
-                      MPIX_Info* xinfo,
-                      MPIX_Comm* xcomm)
+                      MPIL_Info* xinfo,
+                      MPIL_Comm* xcomm)
 {
     return alltoall_crs_personalized(send_nnz,
                                      dest,
@@ -30,7 +30,7 @@ int MPIX_Alltoall_crs(const int send_nnz,
                                      xcomm);
 }
 
-int MPIX_Alltoallv_crs(const int send_nnz,
+int MPIL_Alltoallv_crs(const int send_nnz,
                        const int send_size,
                        const int* dest,
                        const int* sendcounts,
@@ -44,8 +44,8 @@ int MPIX_Alltoallv_crs(const int send_nnz,
                        int** rdispls_ptr,
                        MPI_Datatype recvtype,
                        void** recvvals_ptr,
-                       MPIX_Info* xinfo,
-                       MPIX_Comm* xcomm)
+                       MPIL_Info* xinfo,
+                       MPIL_Comm* xcomm)
 {
     return alltoallv_crs_personalized(send_nnz,
                                       send_size,

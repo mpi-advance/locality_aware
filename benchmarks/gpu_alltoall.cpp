@@ -32,9 +32,9 @@ int main(int argc, char* argv[])
     gpuMalloc((void**)(&recv_data_d), max_s*num_procs*sizeof(double));
     gpuMemcpy(send_data_d, send_data.data(), max_s*num_procs*sizeof(double), gpuMemcpyHostToDevice);
 
-    MPIX_Comm* xcomm;
-    MPIX_Comm_init(&xcomm, MPI_COMM_WORLD);
-    MPIX_Comm_topo_init(xcomm);
+    MPIL_Comm* xcomm;
+    MPIL_Comm_init(&xcomm, MPI_COMM_WORLD);
+    MPIL_Comm_topo_init(xcomm);
     int local_rank;
     MPI_Comm_rank(xcomm->local_comm, &local_rank);
     gpuSetDevice(local_rank);
@@ -390,7 +390,7 @@ int main(int argc, char* argv[])
     
     }
 
-    MPIX_Comm_free(&xcomm);
+    MPIL_Comm_free(&xcomm);
 
     gpuFree(send_data_d);
     gpuFree(recv_data_d);

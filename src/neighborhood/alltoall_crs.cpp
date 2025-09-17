@@ -13,8 +13,8 @@ int alltoall_crs_rma(const int send_nnz,
                      int recvcount,
                      MPI_Datatype recvtype,
                      void** recvvals_ptr,
-                     MPIX_Info* xinfo,
-                     MPIX_Comm* comm)
+                     MPIL_Info* xinfo,
+                     MPIL_Comm* comm)
 {
     int rank, num_procs;
     MPI_Comm_rank(comm->global_comm, &rank);
@@ -34,12 +34,12 @@ int alltoall_crs_rma(const int send_nnz,
 
     if (comm->win_bytes != bytes || comm->win_type_bytes != 1)
     {
-        MPIX_Comm_win_free(comm);
+        MPIL_Comm_win_free(comm);
     }
 
     if (comm->win == MPI_WIN_NULL)
     {
-        MPIX_Comm_win_init(comm, bytes, 1);
+        MPIL_Comm_win_init(comm, bytes, 1);
     }
 
     // RMA puts to find sizes recvd from each process
@@ -88,8 +88,8 @@ int alltoall_crs_rma(const int send_nnz,
     }
 
     *recv_nnz_ptr = src.size();
-    MPIX_Alloc((void**)src_ptr, src.size() * sizeof(int));
-    MPIX_Alloc(recvvals_ptr, recv_buffer.size());
+    MPIL_Alloc((void**)src_ptr, src.size() * sizeof(int));
+    MPIL_Alloc(recvvals_ptr, recv_buffer.size());
     //(*src_ptr) = (int*)MPIalloc(src.size()*sizeof(int));
     //(*recvvals_ptr) = MPIalloc(recv_buffer.size());
     memcpy((*src_ptr), src.data(), src.size() * sizeof(int));
@@ -108,8 +108,8 @@ int alltoall_crs_personalized(const int send_nnz,
                               int recvcount,
                               MPI_Datatype recvtype,
                               void** recvvals_ptr,
-                              MPIX_Info* xinfo,
-                              MPIX_Comm* comm)
+                              MPIL_Info* xinfo,
+                              MPIL_Comm* comm)
 {
     int rank, num_procs;
     MPI_Comm_rank(comm->global_comm, &rank);
@@ -118,7 +118,7 @@ int alltoall_crs_personalized(const int send_nnz,
     MPI_Status recv_status;
     int proc, ctr;
     int tag;
-    MPIX_Comm_tag(comm, &tag);
+    MPIL_Comm_tag(comm, &tag);
 
     char* send_buffer;
     if (send_nnz)
@@ -148,14 +148,14 @@ int alltoall_crs_personalized(const int send_nnz,
 
     int* src;
     char* recvvals;
-    MPIX_Alloc((void**)&src, *recv_nnz * sizeof(int));
-    MPIX_Alloc((void**)&recvvals, *recv_nnz * recv_bytes);
+    MPIL_Alloc((void**)&src, *recv_nnz * sizeof(int));
+    MPIL_Alloc((void**)&recvvals, *recv_nnz * recv_bytes);
     //    int* src = (int*)MPIalloc(*recv_nnz*sizeof(int));
     //    void* recvvals = MPIalloc(*recv_nnz*recv_bytes);
 
     if (comm->n_requests < send_nnz)
     {
-        MPIX_Comm_req_resize(comm, send_nnz);
+        MPIL_Comm_req_resize(comm, send_nnz);
     }
 
     for (int i = 0; i < send_nnz; i++)
@@ -208,8 +208,8 @@ int alltoall_crs_nonblocking(const int send_nnz,
                              int recvcount,
                              MPI_Datatype recvtype,
                              void** recvvals_ptr,
-                             MPIX_Info* xinfo,
-                             MPIX_Comm* comm)
+                             MPIL_Info* xinfo,
+                             MPIL_Comm* comm)
 {
     int rank, num_procs;
     MPI_Comm_rank(comm->global_comm, &rank);
@@ -230,14 +230,14 @@ int alltoall_crs_nonblocking(const int send_nnz,
     MPI_Status recv_status;
     MPI_Request bar_req;
     int tag;
-    MPIX_Comm_tag(comm, &tag);
+    MPIL_Comm_tag(comm, &tag);
 
     std::vector<int> src;
     std::vector<char> recv_buffer;
 
     if (comm->n_requests < send_nnz)
     {
-        MPIX_Comm_req_resize(comm, send_nnz);
+        MPIL_Comm_req_resize(comm, send_nnz);
     }
 
     for (int i = 0; i < send_nnz; i++)
@@ -292,8 +292,8 @@ int alltoall_crs_nonblocking(const int send_nnz,
     }
 
     *recv_nnz = src.size();
-    MPIX_Alloc((void**)src_ptr, src.size() * sizeof(int));
-    MPIX_Alloc(recvvals_ptr, recv_buffer.size());
+    MPIL_Alloc((void**)src_ptr, src.size() * sizeof(int));
+    MPIL_Alloc(recvvals_ptr, recv_buffer.size());
     //(*src_ptr) = (int*)MPIalloc(src.size()*sizeof(int));
     //(*recvvals_ptr) = MPIalloc(recv_buffer.size());
     memcpy((*src_ptr), src.data(), src.size() * sizeof(int));
@@ -310,8 +310,8 @@ void local_redistribute(int node_recv_size,
                         int recvcount,
                         MPI_Datatype recvtype,
                         void** recvvals_ptr,
-                        MPIX_Info* xinfo,
-                        MPIX_Comm* comm)
+                        MPIL_Info* xinfo,
+                        MPIL_Comm* comm)
 {
     int rank, num_procs, local_rank, PPN;
     MPI_Comm_rank(comm->global_comm, &rank);
@@ -385,14 +385,14 @@ void local_redistribute(int node_recv_size,
     }
 
     int tag;
-    MPIX_Comm_tag(comm, &tag);
+    MPIL_Comm_tag(comm, &tag);
 
     MPI_Allreduce(
         MPI_IN_PLACE, msg_counts.data(), PPN, MPI_INT, MPI_SUM, comm->local_comm);
     int recv_count = msg_counts[local_rank];
     if (PPN > comm->n_requests)
     {
-        MPIX_Comm_req_resize(comm, PPN);
+        MPIL_Comm_req_resize(comm, PPN);
     }
 
     // Send a message to every process that I will need data from
@@ -475,8 +475,8 @@ void local_redistribute(int node_recv_size,
     }
     *recv_nnz = src.size();
 
-    MPIX_Alloc((void**)src_ptr, src.size() * sizeof(int));
-    MPIX_Alloc(recvvals_ptr, recv_buffer.size());
+    MPIL_Alloc((void**)src_ptr, src.size() * sizeof(int));
+    MPIL_Alloc(recvvals_ptr, recv_buffer.size());
     //    (*src_ptr) = (int*)MPIalloc(src.size()*sizeof(int));
     //    (*recvvals_ptr) = MPIalloc(recv_buffer.size());
     memcpy((*src_ptr), src.data(), src.size() * sizeof(int));
@@ -494,8 +494,8 @@ int alltoall_crs_personalized_loc(const int send_nnz,
                                   int recvcount,
                                   MPI_Datatype recvtype,
                                   void** recvvals_ptr,
-                                  MPIX_Info* xinfo,
-                                  MPIX_Comm* comm)
+                                  MPIL_Info* xinfo,
+                                  MPIL_Comm* comm)
 {
     int rank, num_procs, local_rank, PPN;
     MPI_Comm_rank(comm->global_comm, &rank);
@@ -503,7 +503,7 @@ int alltoall_crs_personalized_loc(const int send_nnz,
 
     if (comm->local_comm == MPI_COMM_NULL)
     {
-        MPIX_Comm_topo_init(comm);
+        MPIL_Comm_topo_init(comm);
     }
 
     MPI_Comm_rank(comm->local_comm, &local_rank);
@@ -519,14 +519,14 @@ int alltoall_crs_personalized_loc(const int send_nnz,
 
     if (comm->n_requests < send_nnz)
     {
-        MPIX_Comm_req_resize(comm, send_nnz);
+        MPIL_Comm_req_resize(comm, send_nnz);
     }
 
     MPI_Status recv_status;
     int proc, ctr, start, end;
     int count, n_msgs, n_sends;
     int tag;
-    MPIX_Comm_tag(comm, &tag);
+    MPIL_Comm_tag(comm, &tag);
 
     std::vector<char> node_send_buffer;
     std::vector<char> local_send_buffer;
@@ -678,8 +678,8 @@ int alltoall_crs_nonblocking_loc(const int send_nnz,
                                  int recvcount,
                                  MPI_Datatype recvtype,
                                  void** recvvals_ptr,
-                                 MPIX_Info* xinfo,
-                                 MPIX_Comm* comm)
+                                 MPIL_Info* xinfo,
+                                 MPIL_Comm* comm)
 {
     int rank, num_procs, local_rank, PPN;
     MPI_Comm_rank(comm->global_comm, &rank);
@@ -687,7 +687,7 @@ int alltoall_crs_nonblocking_loc(const int send_nnz,
 
     if (comm->local_comm == MPI_COMM_NULL)
     {
-        MPIX_Comm_topo_init(comm);
+        MPIL_Comm_topo_init(comm);
     }
 
     MPI_Comm_rank(comm->local_comm, &local_rank);
@@ -703,7 +703,7 @@ int alltoall_crs_nonblocking_loc(const int send_nnz,
 
     if (comm->n_requests < send_nnz)
     {
-        MPIX_Comm_req_resize(comm, send_nnz);
+        MPIL_Comm_req_resize(comm, send_nnz);
     }
 
     MPI_Status recv_status;
@@ -711,7 +711,7 @@ int alltoall_crs_nonblocking_loc(const int send_nnz,
     int proc, ctr, flag, ibar, start, end;
     int count, n_msgs, n_sends;
     int tag;
-    MPIX_Comm_tag(comm, &tag);
+    MPIL_Comm_tag(comm, &tag);
 
     std::vector<char> node_send_buffer;
     std::vector<char> local_send_buffer;

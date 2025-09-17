@@ -17,7 +17,7 @@ void compare_alltoallv_results(std::vector<int>& pmpi, std::vector<int>& mpix, i
     {
         if (pmpi[i] != mpix[i])
         {
-            fprintf(stderr, "MPIX Alltoallv != PMPI, position %d, pmpi %d, mpix %d\n", 
+            fprintf(stderr, "MPIL Alltoallv != PMPI, position %d, pmpi %d, mpix %d\n", 
                     i, pmpi[i], mpix[i]);
             MPI_Abort(MPI_COMM_WORLD, 1);
         }
@@ -31,8 +31,8 @@ void test_matrix(const char* filename)
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
 
-    MPIX_Comm* xcomm;
-    MPIX_Comm_init(&xcomm, MPI_COMM_WORLD);
+    MPIL_Comm* xcomm;
+    MPIL_Comm_init(&xcomm, MPI_COMM_WORLD);
     update_locality(xcomm, 4);
 
     // Read suitesparse matrix
@@ -101,7 +101,7 @@ void test_matrix(const char* filename)
     compare_alltoallv_results(pmpi_recv_vals, mpix_recv_vals, A.recv_comm.size_msgs);
 
     std::fill(mpix_recv_vals.begin(), mpix_recv_vals.end(), 0);
-    MPIX_Alltoallv(alltoallv_send_vals.data(), 
+    MPIL_Alltoallv(alltoallv_send_vals.data(), 
             sendcounts.data(),
             sdispls.data(),
             MPI_INT,
@@ -161,7 +161,7 @@ void test_matrix(const char* filename)
             xcomm);
     compare_alltoallv_results(pmpi_recv_vals, mpix_recv_vals, A.recv_comm.size_msgs);
 
-    MPIX_Comm_free(&xcomm);
+    MPIL_Comm_free(&xcomm);
 }
 
 int main(int argc, char** argv)

@@ -14,7 +14,7 @@
 extern "C" {
 #endif
 
-typedef struct _MPIX_Comm
+typedef struct _MPIL_Comm
 {
     MPI_Comm global_comm;
 
@@ -55,33 +55,33 @@ typedef struct _MPIX_Comm
     int rank_gpu;
     gpuStream_t proc_stream;
 #endif
-} MPIX_Comm;
+} MPIL_Comm;
 
-int MPIX_Comm_init(MPIX_Comm** xcomm_ptr, MPI_Comm global_comm);
-int MPIX_Comm_free(MPIX_Comm** xcomm_ptr);
+int MPIL_Comm_init(MPIL_Comm** xcomm_ptr, MPI_Comm global_comm);
+int MPIL_Comm_free(MPIL_Comm** xcomm_ptr);
 
-int MPIX_Comm_topo_init(MPIX_Comm* xcomm);
-int MPIX_Comm_topo_free(MPIX_Comm* xcomm);
+int MPIL_Comm_topo_init(MPIL_Comm* xcomm);
+int MPIL_Comm_topo_free(MPIL_Comm* xcomm);
 
-int MPIX_Comm_leader_init(MPIX_Comm* xcomm, int procs_per_leader);
-int MPIX_Comm_leader_free(MPIX_Comm* xcomm);
+int MPIL_Comm_leader_init(MPIL_Comm* xcomm, int procs_per_leader);
+int MPIL_Comm_leader_free(MPIL_Comm* xcomm);
 
-int MPIX_Comm_win_init(MPIX_Comm* xcomm, int bytes, int type_bytes);
-int MPIX_Comm_win_free(MPIX_Comm* xcomm);
+int MPIL_Comm_win_init(MPIL_Comm* xcomm, int bytes, int type_bytes);
+int MPIL_Comm_win_free(MPIL_Comm* xcomm);
 
-int MPIX_Comm_device_init(MPIX_Comm* xcomm);
-int MPIX_Comm_device_free(MPIX_Comm* xcomm);
+int MPIL_Comm_device_init(MPIL_Comm* xcomm);
+int MPIL_Comm_device_free(MPIL_Comm* xcomm);
 
-int MPIX_Comm_req_resize(MPIX_Comm* xcomm, int n);
+int MPIL_Comm_req_resize(MPIL_Comm* xcomm, int n);
 
-int MPIX_Comm_tag(MPIX_Comm* comm, int* tag);
+int MPIL_Comm_tag(MPIL_Comm* comm, int* tag);
 
-int get_node(const MPIX_Comm* data, const int proc);
-int get_local_proc(const MPIX_Comm* data, const int proc);
-int get_global_proc(const MPIX_Comm* data, const int node, const int local_proc);
+int get_node(const MPIL_Comm* data, const int proc);
+int get_local_proc(const MPIL_Comm* data, const int proc);
+int get_global_proc(const MPIL_Comm* data, const int node, const int local_proc);
 
 // For testing purposes (manually set PPN)
-void update_locality(MPIX_Comm* xcomm, int ppn);
+void update_locality(MPIL_Comm* xcomm, int ppn);
 
 #ifdef __cplusplus
 }

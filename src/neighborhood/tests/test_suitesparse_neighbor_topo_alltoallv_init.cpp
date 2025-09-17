@@ -17,7 +17,7 @@ void compare_neighbor_alltoallv_results(std::vector<int>& pmpi_recv_vals, std::v
     {
         if (pmpi_recv_vals[i] != mpix_recv_vals[i])
         {
-            fprintf(stderr, "PMPI recv != MPIX: position %d, pmpi %d, mpix %d\n", i, 
+            fprintf(stderr, "PMPI recv != MPIL: position %d, pmpi %d, mpix %d\n", i, 
                     pmpi_recv_vals[i], mpix_recv_vals[i]);
             MPI_Abort(MPI_COMM_WORLD, -1);
         }
@@ -71,15 +71,15 @@ void test_matrix(const char* filename)
     MPI_Comm std_comm;
     MPI_Status status;
 
-    MPIX_Request* xrequest;
-    MPIX_Comm* xcomm;
-    MPIX_Comm_init(&xcomm, MPI_COMM_WORLD);
+    MPIL_Request* xrequest;
+    MPIL_Comm* xcomm;
+    MPIL_Comm_init(&xcomm, MPI_COMM_WORLD);
     update_locality(xcomm, 4);
-    MPIX_Info* xinfo;
-    MPIX_Info_init(&xinfo);
+    MPIL_Info* xinfo;
+    MPIL_Info_init(&xinfo);
 
-    MPIX_Topo* topo;
-    MPIX_Topo_init(A.recv_comm.n_msgs,
+    MPIL_Topo* topo;
+    MPIL_Topo_init(A.recv_comm.n_msgs,
             A.recv_comm.procs.data(), 
             A.recv_comm.counts.data(),
             A.send_comm.n_msgs, 
@@ -130,7 +130,7 @@ void test_matrix(const char* filename)
        
     mpix_neighbor_alltoallv_implementation = NEIGHBOR_ALLTOALLV_STANDARD;
     std::fill(mpix_recv_vals.begin(), mpix_recv_vals.end(), 0);
-    MPIX_Neighbor_alltoallv_topo(alltoallv_send_vals.data(), 
+    MPIL_Neighbor_alltoallv_topo(alltoallv_send_vals.data(), 
             A.send_comm.counts.data(),
             A.send_comm.ptr.data(), 
             MPI_INT,
@@ -145,7 +145,7 @@ void test_matrix(const char* filename)
 
     mpix_neighbor_alltoallv_init_implementation = NEIGHBOR_ALLTOALLV_INIT_STANDARD;
     std::fill(mpix_recv_vals.begin(), mpix_recv_vals.end(), 0);
-    MPIX_Neighbor_alltoallv_init_topo(alltoallv_send_vals.data(), 
+    MPIL_Neighbor_alltoallv_init_topo(alltoallv_send_vals.data(), 
             A.send_comm.counts.data(),
             A.send_comm.ptr.data(), 
             MPI_INT,
@@ -158,15 +158,15 @@ void test_matrix(const char* filename)
             xinfo,
             &xrequest);
 
-    MPIX_Start(xrequest);
-    MPIX_Wait(xrequest, &status);
-    MPIX_Request_free(&xrequest);
+    MPIL_Start(xrequest);
+    MPIL_Wait(xrequest, &status);
+    MPIL_Request_free(&xrequest);
     compare_neighbor_alltoallv_results(pmpi_recv_vals, mpix_recv_vals, A.recv_comm.size_msgs);
 
 
     mpix_neighbor_alltoallv_init_implementation = NEIGHBOR_ALLTOALLV_INIT_LOCALITY;
     std::fill(mpix_recv_vals.begin(), mpix_recv_vals.end(), 0);
-    MPIX_Neighbor_alltoallv_init_topo(alltoallv_send_vals.data(), 
+    MPIL_Neighbor_alltoallv_init_topo(alltoallv_send_vals.data(), 
             A.send_comm.counts.data(),
             A.send_comm.ptr.data(), 
             MPI_INT,
@@ -179,16 +179,16 @@ void test_matrix(const char* filename)
             xinfo,
             &xrequest);
 
-    MPIX_Start(xrequest);
-    MPIX_Wait(xrequest, &status);
-    MPIX_Request_free(&xrequest);
+    MPIL_Start(xrequest);
+    MPIL_Wait(xrequest, &status);
+    MPIL_Request_free(&xrequest);
     compare_neighbor_alltoallv_results(pmpi_recv_vals, mpix_recv_vals, A.recv_comm.size_msgs);
 
 
     // 3. MPI Advance - Optimized Communication
     mpix_neighbor_alltoallv_init_implementation = NEIGHBOR_ALLTOALLV_INIT_STANDARD;
     std::fill(mpix_recv_vals.begin(), mpix_recv_vals.end(), 0);
-    MPIX_Neighbor_alltoallv_init_ext_topo(alltoallv_send_vals.data(), 
+    MPIL_Neighbor_alltoallv_init_ext_topo(alltoallv_send_vals.data(), 
             A.send_comm.counts.data(),
             A.send_comm.ptr.data(), 
             send_indices.data(),
@@ -203,15 +203,15 @@ void test_matrix(const char* filename)
             xinfo,
             &xrequest);
 
-    MPIX_Start(xrequest);
-    MPIX_Wait(xrequest, &status);
-    MPIX_Request_free(&xrequest);
+    MPIL_Start(xrequest);
+    MPIL_Wait(xrequest, &status);
+    MPIL_Request_free(&xrequest);
     compare_neighbor_alltoallv_results(pmpi_recv_vals, mpix_recv_vals, A.recv_comm.size_msgs);
 
 
     mpix_neighbor_alltoallv_init_implementation = NEIGHBOR_ALLTOALLV_INIT_LOCALITY;
     std::fill(mpix_recv_vals.begin(), mpix_recv_vals.end(), 0);
-    MPIX_Neighbor_alltoallv_init_ext_topo(alltoallv_send_vals.data(), 
+    MPIL_Neighbor_alltoallv_init_ext_topo(alltoallv_send_vals.data(), 
             A.send_comm.counts.data(),
             A.send_comm.ptr.data(), 
             send_indices.data(),
@@ -226,14 +226,14 @@ void test_matrix(const char* filename)
             xinfo,
             &xrequest);
 
-    MPIX_Start(xrequest);
-    MPIX_Wait(xrequest, &status);
-    MPIX_Request_free(&xrequest);
+    MPIL_Start(xrequest);
+    MPIL_Wait(xrequest, &status);
+    MPIL_Request_free(&xrequest);
     compare_neighbor_alltoallv_results(pmpi_recv_vals, mpix_recv_vals, A.recv_comm.size_msgs);
 
-    MPIX_Topo_free(&topo);
-    MPIX_Info_free(&xinfo);
-    MPIX_Comm_free(&xcomm);
+    MPIL_Topo_free(&topo);
+    MPIL_Info_free(&xinfo);
+    MPIL_Comm_free(&xcomm);
     PMPI_Comm_free(&std_comm);
 }
 

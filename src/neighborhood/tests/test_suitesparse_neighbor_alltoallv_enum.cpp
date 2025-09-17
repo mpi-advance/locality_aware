@@ -17,7 +17,7 @@ void compare_neighbor_alltoallv_results(std::vector<int>& pmpi_recv_vals, std::v
     {
         if (pmpi_recv_vals[i] != mpix_recv_vals[i])
         {
-            fprintf(stderr, "PMPI recv != MPIX: position %d, pmpi %d, mpix %d\n", i, 
+            fprintf(stderr, "PMPI recv != MPIL: position %d, pmpi %d, mpix %d\n", i, 
                     pmpi_recv_vals[i], mpix_recv_vals[i]);
             MPI_Abort(MPI_COMM_WORLD, -1);
         }
@@ -70,11 +70,11 @@ void test_matrix(const char* filename)
 
     MPI_Comm std_comm;
     MPI_Status status;
-    MPIX_Comm* xcomm;
-    MPIX_Request* xrequest;
-    MPIX_Info* xinfo;
+    MPIL_Comm* xcomm;
+    MPIL_Request* xrequest;
+    MPIL_Info* xinfo;
 
-    MPIX_Info_init(&xinfo);
+    MPIL_Info_init(&xinfo);
 
     int* s = A.recv_comm.procs.data();
     if (A.recv_comm.n_msgs == 0)
@@ -115,7 +115,7 @@ void test_matrix(const char* filename)
         delete[] recv_counts;
     compare_neighbor_alltoallv_results(pmpi_recv_vals, mpix_recv_vals, A.recv_comm.size_msgs);
 
-    MPIX_Dist_graph_create_adjacent(MPI_COMM_WORLD,
+    MPIL_Dist_graph_create_adjacent(MPI_COMM_WORLD,
             A.recv_comm.n_msgs,
             A.recv_comm.procs.data(), 
             MPI_UNWEIGHTED,
@@ -130,7 +130,7 @@ void test_matrix(const char* filename)
     
     mpix_neighbor_alltoallv_implementation = NEIGHBOR_ALLTOALLV_STANDARD;
     std::fill(mpix_recv_vals.begin(), mpix_recv_vals.end(), 0);
-    MPIX_Neighbor_alltoallv(alltoallv_send_vals.data(), 
+    MPIL_Neighbor_alltoallv(alltoallv_send_vals.data(), 
             A.send_comm.counts.data(),
             A.send_comm.ptr.data(), 
             MPI_INT,
@@ -144,7 +144,7 @@ void test_matrix(const char* filename)
 
     mpix_neighbor_alltoallv_implementation = NEIGHBOR_ALLTOALLV_LOCALITY;
     std::fill(mpix_recv_vals.begin(), mpix_recv_vals.end(), 0);
-    MPIX_Neighbor_alltoallv(alltoallv_send_vals.data(),
+    MPIL_Neighbor_alltoallv(alltoallv_send_vals.data(),
             A.send_comm.counts.data(),
             A.send_comm.ptr.data(),
             MPI_INT,
@@ -156,8 +156,8 @@ void test_matrix(const char* filename)
     compare_neighbor_alltoallv_results(pmpi_recv_vals, mpix_recv_vals, A.recv_comm.size_msgs);
 
     
-    MPIX_Info_free(&xinfo);
-    MPIX_Comm_free(&xcomm);
+    MPIL_Info_free(&xinfo);
+    MPIL_Comm_free(&xcomm);
     PMPI_Comm_free(&std_comm);
 }
 

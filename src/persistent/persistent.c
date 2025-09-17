@@ -1,8 +1,8 @@
 #include "persistent.h"
 
-void init_request(MPIX_Request** request_ptr)
+void init_request(MPIL_Request** request_ptr)
 {
-    MPIX_Request* request = (MPIX_Request*)malloc(sizeof(MPIX_Request));
+    MPIL_Request* request = (MPIL_Request*)malloc(sizeof(MPIL_Request));
 
     request->locality = NULL;
 
@@ -44,7 +44,7 @@ void allocate_requests(int n_requests, MPI_Request** request_ptr)
 // 1. Start Local_L
 // 2. Start and wait for local_S
 // 3. Start global
-int MPIX_Start(MPIX_Request* request)
+int MPIL_Start(MPIL_Request* request)
 {
     if (request == NULL)
     {
@@ -60,7 +60,7 @@ int MPIX_Start(MPIX_Request* request)
 // 2. Start and wait for local_R
 // 3. Wait for local_L
 // TODO : Currently ignores the status!
-int MPIX_Wait(MPIX_Request* request, MPI_Status* status)
+int MPIL_Wait(MPIL_Request* request, MPI_Status* status)
 {
     if (request == NULL)
     {
@@ -71,9 +71,9 @@ int MPIX_Wait(MPIX_Request* request, MPI_Status* status)
     return wait_function(request, status);
 }
 
-int MPIX_Request_free(MPIX_Request** request_ptr)
+int MPIL_Request_free(MPIL_Request** request_ptr)
 {
-    MPIX_Request* request = *request_ptr;
+    MPIL_Request* request = *request_ptr;
 
     if (request->local_L_n_msgs)
     {

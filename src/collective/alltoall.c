@@ -24,13 +24,13 @@ AlltoallMethod mpix_alltoall_implementation = ALLTOALL_PAIRWISE;
  *      on-node so that each process holds
  *      the correct final data
  *************************************************/
-int MPIX_Alltoall(const void* sendbuf,
+int MPIL_Alltoall(const void* sendbuf,
                   const int sendcount,
                   MPI_Datatype sendtype,
                   void* recvbuf,
                   const int recvcount,
                   MPI_Datatype recvtype,
-                  MPIX_Comm* mpi_comm)
+                  MPIL_Comm* mpi_comm)
 {
 #ifdef GPU
 #ifdef GPU_AWARE
@@ -158,10 +158,10 @@ int alltoall_pairwise(const void* sendbuf,
                       void* recvbuf,
                       const int recvcount,
                       MPI_Datatype recvtype,
-                      MPIX_Comm* comm)
+                      MPIL_Comm* comm)
 {
     int tag;
-    MPIX_Comm_tag(comm, &tag);
+    MPIL_Comm_tag(comm, &tag);
 
     return pairwise_helper(sendbuf,
                            sendcount,
@@ -243,10 +243,10 @@ int alltoall_nonblocking(const void* sendbuf,
                          void* recvbuf,
                          const int recvcount,
                          MPI_Datatype recvtype,
-                         MPIX_Comm* comm)
+                         MPIL_Comm* comm)
 {
     int tag;
-    MPIX_Comm_tag(comm, &tag);
+    MPIL_Comm_tag(comm, &tag);
 
     return nonblocking_helper(sendbuf,
                               sendcount,
@@ -265,7 +265,7 @@ int alltoall_multileader(alltoall_helper_ftn f,
                          void* recvbuf,
                          const int recvcount,
                          MPI_Datatype recvtype,
-                         MPIX_Comm* comm,
+                         MPIL_Comm* comm,
                          int n_leaders)
 {
     int rank, num_procs;
@@ -273,11 +273,11 @@ int alltoall_multileader(alltoall_helper_ftn f,
     MPI_Comm_size(comm->global_comm, &num_procs);
 
     int tag;
-    MPIX_Comm_tag(comm, &tag);
+    MPIL_Comm_tag(comm, &tag);
 
     if (comm->local_comm == MPI_COMM_NULL)
     {
-        MPIX_Comm_topo_init(comm);
+        MPIL_Comm_topo_init(comm);
     }
 
     int ppn;
@@ -309,7 +309,7 @@ int alltoall_multileader(alltoall_helper_ftn f,
         // If leader comm does not exist, create it
         if (comm->leader_comm == MPI_COMM_NULL)
         {
-            MPIX_Comm_leader_init(comm, procs_per_leader);
+            MPIL_Comm_leader_init(comm, procs_per_leader);
         }
 
         local_comm = comm->leader_comm;
@@ -426,7 +426,7 @@ int alltoall_hierarchical(alltoall_helper_ftn f,
                           void* recvbuf,
                           const int recvcount,
                           MPI_Datatype recvtype,
-                          MPIX_Comm* comm)
+                          MPIL_Comm* comm)
 {
     return alltoall_multileader(
         f, sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, 1);
@@ -438,7 +438,7 @@ int alltoall_hierarchical_pairwise(const void* sendbuf,
                                    void* recvbuf,
                                    const int recvcount,
                                    MPI_Datatype recvtype,
-                                   MPIX_Comm* comm)
+                                   MPIL_Comm* comm)
 {
     return alltoall_hierarchical(pairwise_helper,
                                  sendbuf,
@@ -456,7 +456,7 @@ int alltoall_hierarchical_nonblocking(const void* sendbuf,
                                       void* recvbuf,
                                       const int recvcount,
                                       MPI_Datatype recvtype,
-                                      MPIX_Comm* comm)
+                                      MPIL_Comm* comm)
 {
     return alltoall_hierarchical(nonblocking_helper,
                                  sendbuf,
@@ -474,7 +474,7 @@ int alltoall_multileader_pairwise(const void* sendbuf,
                                   void* recvbuf,
                                   const int recvcount,
                                   MPI_Datatype recvtype,
-                                  MPIX_Comm* comm)
+                                  MPIL_Comm* comm)
 {
     return alltoall_multileader(pairwise_helper,
                                 sendbuf,
@@ -493,7 +493,7 @@ int alltoall_multileader_nonblocking(const void* sendbuf,
                                      void* recvbuf,
                                      const int recvcount,
                                      MPI_Datatype recvtype,
-                                     MPIX_Comm* comm)
+                                     MPIL_Comm* comm)
 {
     return alltoall_multileader(nonblocking_helper,
                                 sendbuf,
@@ -513,7 +513,7 @@ int alltoall_locality_aware_helper(alltoall_helper_ftn f,
                                    void* recvbuf,
                                    const int recvcount,
                                    MPI_Datatype recvtype,
-                                   MPIX_Comm* comm,
+                                   MPIL_Comm* comm,
                                    int groups_per_node,
                                    MPI_Comm local_comm,
                                    MPI_Comm group_comm,
@@ -597,7 +597,7 @@ int alltoall_locality_aware(alltoall_helper_ftn f,
                             void* recvbuf,
                             const int recvcount,
                             MPI_Datatype recvtype,
-                            MPIX_Comm* comm,
+                            MPIL_Comm* comm,
                             int groups_per_node)
 {
     int rank, num_procs;
@@ -605,11 +605,11 @@ int alltoall_locality_aware(alltoall_helper_ftn f,
     MPI_Comm_size(comm->global_comm, &num_procs);
 
     int tag;
-    MPIX_Comm_tag(comm, &tag);
+    MPIL_Comm_tag(comm, &tag);
 
     if (comm->local_comm == MPI_COMM_NULL)
     {
-        MPIX_Comm_topo_init(comm);
+        MPIL_Comm_topo_init(comm);
     }
 
     int ppn;
@@ -638,7 +638,7 @@ int alltoall_locality_aware(alltoall_helper_ftn f,
 
         if (comm->leader_comm == MPI_COMM_NULL)
         {
-            MPIX_Comm_leader_init(comm, procs_per_group);
+            MPIL_Comm_leader_init(comm, procs_per_group);
         }
 
         local_comm = comm->leader_comm;
@@ -666,7 +666,7 @@ int alltoall_node_aware(alltoall_helper_ftn f,
                         void* recvbuf,
                         const int recvcount,
                         MPI_Datatype recvtype,
-                        MPIX_Comm* comm)
+                        MPIL_Comm* comm)
 {
     return alltoall_locality_aware(
         f, sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, 1);
@@ -678,7 +678,7 @@ int alltoall_node_aware_pairwise(const void* sendbuf,
                                  void* recvbuf,
                                  const int recvcount,
                                  MPI_Datatype recvtype,
-                                 MPIX_Comm* comm)
+                                 MPIL_Comm* comm)
 {
     return alltoall_node_aware(pairwise_helper,
                                sendbuf,
@@ -696,7 +696,7 @@ int alltoall_node_aware_nonblocking(const void* sendbuf,
                                     void* recvbuf,
                                     const int recvcount,
                                     MPI_Datatype recvtype,
-                                    MPIX_Comm* comm)
+                                    MPIL_Comm* comm)
 {
     return alltoall_node_aware(nonblocking_helper,
                                sendbuf,
@@ -714,7 +714,7 @@ int alltoall_locality_aware_pairwise(const void* sendbuf,
                                      void* recvbuf,
                                      const int recvcount,
                                      MPI_Datatype recvtype,
-                                     MPIX_Comm* comm)
+                                     MPIL_Comm* comm)
 {
     return alltoall_locality_aware(pairwise_helper,
                                    sendbuf,
@@ -733,7 +733,7 @@ int alltoall_locality_aware_nonblocking(const void* sendbuf,
                                         void* recvbuf,
                                         const int recvcount,
                                         MPI_Datatype recvtype,
-                                        MPIX_Comm* comm)
+                                        MPIL_Comm* comm)
 {
     return alltoall_locality_aware(nonblocking_helper,
                                    sendbuf,
@@ -753,18 +753,18 @@ int alltoall_multileader_locality(alltoall_helper_ftn f,
                                   void* recvbuf,
                                   const int recvcount,
                                   MPI_Datatype recvtype,
-                                  MPIX_Comm* comm)
+                                  MPIL_Comm* comm)
 {
     int rank, num_procs;
     MPI_Comm_rank(comm->global_comm, &rank);
     MPI_Comm_size(comm->global_comm, &num_procs);
 
     int tag;
-    MPIX_Comm_tag(comm, &tag);
+    MPIL_Comm_tag(comm, &tag);
 
     if (comm->local_comm == MPI_COMM_NULL)
     {
-        MPIX_Comm_topo_init(comm);
+        MPIL_Comm_topo_init(comm);
     }
 
     int local_rank, ppn;
@@ -778,7 +778,7 @@ int alltoall_multileader_locality(alltoall_helper_ftn f,
         {
             num_leaders_per_node = ppn;
         }
-        MPIX_Comm_leader_init(comm, ppn / num_leaders_per_node);
+        MPIL_Comm_leader_init(comm, ppn / num_leaders_per_node);
     }
 
     int procs_per_leader, leader_rank;
@@ -940,7 +940,7 @@ int alltoall_multileader_locality_pairwise(const void* sendbuf,
                                            void* recvbuf,
                                            const int recvcount,
                                            MPI_Datatype recvtype,
-                                           MPIX_Comm* comm)
+                                           MPIL_Comm* comm)
 {
     return alltoall_multileader_locality(pairwise_helper,
                                          sendbuf,
@@ -958,7 +958,7 @@ int alltoall_multileader_locality_nonblocking(const void* sendbuf,
                                               void* recvbuf,
                                               const int recvcount,
                                               MPI_Datatype recvtype,
-                                              MPIX_Comm* comm)
+                                              MPIL_Comm* comm)
 {
     return alltoall_multileader_locality(nonblocking_helper,
                                          sendbuf,
@@ -977,7 +977,7 @@ int alltoall_pmpi(const void* sendbuf,
                   void* recvbuf,
                   const int recvcount,
                   MPI_Datatype recvtype,
-                  MPIX_Comm* comm)
+                  MPIL_Comm* comm)
 {
     return PMPI_Alltoall(
         sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm->global_comm);

@@ -30,13 +30,13 @@ typedef int (*neighbor_alltoallv_ftn)(const void* sendbuffer,
                                       const int recvcounts[],
                                       const int rdispls[],
                                       MPI_Datatype recvtype,
-                                      MPIX_Topo* topo,
-                                      MPIX_Comm* comm);
+                                      MPIL_Topo* topo,
+                                      MPIL_Comm* comm);
 
 // Standard Neighbor Alltoallv
 // Extension takes array of requests instead of single request
 // 'requests' must be of size indegree+outdegree!
-int MPIX_Neighbor_alltoallv_topo(const void* sendbuf,
+int MPIL_Neighbor_alltoallv_topo(const void* sendbuf,
                                  const int sendcounts[],
                                  const int sdispls[],
                                  MPI_Datatype sendtype,
@@ -44,10 +44,10 @@ int MPIX_Neighbor_alltoallv_topo(const void* sendbuf,
                                  const int recvcounts[],
                                  const int rdispls[],
                                  MPI_Datatype recvtype,
-                                 MPIX_Topo* topo,
-                                 MPIX_Comm* comm);
+                                 MPIL_Topo* topo,
+                                 MPIL_Comm* comm);
 
-int MPIX_Neighbor_alltoallv(const void* sendbuf,
+int MPIL_Neighbor_alltoallv(const void* sendbuf,
                             const int sendcounts[],
                             const int sdispls[],
                             MPI_Datatype sendtype,
@@ -55,7 +55,7 @@ int MPIX_Neighbor_alltoallv(const void* sendbuf,
                             const int recvcounts[],
                             const int rdispls[],
                             MPI_Datatype recvtype,
-                            MPIX_Comm* comm);
+                            MPIL_Comm* comm);
 
 int neighbor_alltoallv_standard(const void* sendbuf,
                                 const int sendcounts[],
@@ -65,8 +65,8 @@ int neighbor_alltoallv_standard(const void* sendbuf,
                                 const int recvcounts[],
                                 const int rdispls[],
                                 MPI_Datatype recvtype,
-                                MPIX_Topo* topo,
-                                MPIX_Comm* comm);
+                                MPIL_Topo* topo,
+                                MPIL_Comm* comm);
 
 int neighbor_alltoallv_locality(const void* sendbuf,
                                 const int sendcounts[],
@@ -76,8 +76,8 @@ int neighbor_alltoallv_locality(const void* sendbuf,
                                 const int recvcounts[],
                                 const int rdispls[],
                                 MPI_Datatype recvtype,
-                                MPIX_Topo* topo,
-                                MPIX_Comm* comm);
+                                MPIL_Topo* topo,
+                                MPIL_Comm* comm);
 
 #ifdef __cplusplus
 }

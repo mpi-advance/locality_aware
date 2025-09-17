@@ -11,7 +11,7 @@
 extern "C" {
 #endif
 
-int MPIX_Alltoall_crs(const int send_nnz,
+int MPIL_Alltoall_crs(const int send_nnz,
                       const int* dest,
                       const int sendcount,
                       MPI_Datatype sendtype,
@@ -21,10 +21,10 @@ int MPIX_Alltoall_crs(const int send_nnz,
                       int recvcount,
                       MPI_Datatype recvtype,
                       void** recvvals_ptr,
-                      MPIX_Info* xinfo,
-                      MPIX_Comm* xcomm);
+                      MPIL_Info* xinfo,
+                      MPIL_Comm* xcomm);
 
-int MPIX_Alltoallv_crs(const int send_nnz,
+int MPIL_Alltoallv_crs(const int send_nnz,
                        const int send_size,
                        const int* dest,
                        const int* sendcounts,
@@ -38,8 +38,8 @@ int MPIX_Alltoallv_crs(const int send_nnz,
                        int** rdispls_ptr,
                        MPI_Datatype recvtype,
                        void** recvvals_ptr,
-                       MPIX_Info* xinfo,
-                       MPIX_Comm* comm);
+                       MPIL_Info* xinfo,
+                       MPIL_Comm* comm);
 
 int alltoall_crs_rma(const int send_nnz,
                      const int* dest,
@@ -51,8 +51,8 @@ int alltoall_crs_rma(const int send_nnz,
                      int recvcount,
                      MPI_Datatype recvtype,
                      void** recvvals,
-                     MPIX_Info* xinfo,
-                     MPIX_Comm* comm);
+                     MPIL_Info* xinfo,
+                     MPIL_Comm* comm);
 
 int alltoall_crs_personalized(const int send_nnz,
                               const int* dest,
@@ -64,8 +64,8 @@ int alltoall_crs_personalized(const int send_nnz,
                               int recvcount,
                               MPI_Datatype recvtype,
                               void** recvvals,
-                              MPIX_Info* xinfo,
-                              MPIX_Comm* comm);
+                              MPIL_Info* xinfo,
+                              MPIL_Comm* comm);
 
 int alltoall_crs_personalized_loc(const int send_nnz,
                                   const int* dest,
@@ -77,8 +77,8 @@ int alltoall_crs_personalized_loc(const int send_nnz,
                                   int recvcount,
                                   MPI_Datatype recvtype,
                                   void** recvvals,
-                                  MPIX_Info* xinfo,
-                                  MPIX_Comm* comm);
+                                  MPIL_Info* xinfo,
+                                  MPIL_Comm* comm);
 
 int alltoall_crs_nonblocking(const int send_nnz,
                              const int* dest,
@@ -90,8 +90,8 @@ int alltoall_crs_nonblocking(const int send_nnz,
                              int recvcount,
                              MPI_Datatype recvtype,
                              void** recvvals,
-                             MPIX_Info* xinfo,
-                             MPIX_Comm* comm);
+                             MPIL_Info* xinfo,
+                             MPIL_Comm* comm);
 
 int alltoall_crs_nonblocking_loc(const int send_nnz,
                                  const int* dest,
@@ -103,8 +103,8 @@ int alltoall_crs_nonblocking_loc(const int send_nnz,
                                  int recvcount,
                                  MPI_Datatype recvtype,
                                  void** recvvals,
-                                 MPIX_Info* xinfo,
-                                 MPIX_Comm* comm);
+                                 MPIL_Info* xinfo,
+                                 MPIL_Comm* comm);
 
 int alltoallv_crs_personalized(const int send_nnz,
                                const int send_size,
@@ -120,8 +120,8 @@ int alltoallv_crs_personalized(const int send_nnz,
                                int** rdispls_ptr,
                                MPI_Datatype recvtype,
                                void** recvvals_ptr,
-                               MPIX_Info* xinfo,
-                               MPIX_Comm* comm);
+                               MPIL_Info* xinfo,
+                               MPIL_Comm* comm);
 
 int alltoallv_crs_personalized_loc(const int send_nnz,
                                    const int send_size,
@@ -137,8 +137,8 @@ int alltoallv_crs_personalized_loc(const int send_nnz,
                                    int** rdispls_ptr,
                                    MPI_Datatype recvtype,
                                    void** recvvals_ptr,
-                                   MPIX_Info* xinfo,
-                                   MPIX_Comm* comm);
+                                   MPIL_Info* xinfo,
+                                   MPIL_Comm* comm);
 
 int alltoallv_crs_nonblocking(const int send_nnz,
                               const int send_size,
@@ -154,8 +154,8 @@ int alltoallv_crs_nonblocking(const int send_nnz,
                               int** rdispls_ptr,
                               MPI_Datatype recvtype,
                               void** recvvals_ptr,
-                              MPIX_Info* xinfo,
-                              MPIX_Comm* comm);
+                              MPIL_Info* xinfo,
+                              MPIL_Comm* comm);
 
 int alltoallv_crs_nonblocking_loc(const int send_nnz,
                                   const int send_size,
@@ -171,8 +171,8 @@ int alltoallv_crs_nonblocking_loc(const int send_nnz,
                                   int** rdispls_ptr,
                                   MPI_Datatype recvtype,
                                   void** recvvals_ptr,
-                                  MPIX_Info* xinfo,
-                                  MPIX_Comm* comm);
+                                  MPIL_Info* xinfo,
+                                  MPIL_Comm* comm);
 
 #ifdef __cplusplus
 }

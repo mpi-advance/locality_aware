@@ -29,7 +29,7 @@ AlltoallvMethod mpix_alltoallv_implementation = ALLTOALLV_PAIRWISE;
  *      - Load balacing is too expensive for
  *          non-persistent Alltoallv
  *************************************************/
-int MPIX_Alltoallv(const void* sendbuf,
+int MPIL_Alltoallv(const void* sendbuf,
                    const int sendcounts[],
                    const int sdispls[],
                    MPI_Datatype sendtype,
@@ -37,7 +37,7 @@ int MPIX_Alltoallv(const void* sendbuf,
                    const int recvcounts[],
                    const int rdispls[],
                    MPI_Datatype recvtype,
-                   MPIX_Comm* mpi_comm)
+                   MPIL_Comm* mpi_comm)
 {
 #ifdef GPU
 #ifdef GPU_AWARE
@@ -95,14 +95,14 @@ int alltoallv_pairwise(const void* sendbuf,
                        const int recvcounts[],
                        const int rdispls[],
                        MPI_Datatype recvtype,
-                       MPIX_Comm* comm)
+                       MPIL_Comm* comm)
 {
     int rank, num_procs;
     MPI_Comm_rank(comm->global_comm, &rank);
     MPI_Comm_size(comm->global_comm, &num_procs);
 
     int tag;
-    MPIX_Comm_tag(comm, &tag);
+    MPIL_Comm_tag(comm, &tag);
 
     int send_proc, recv_proc;
     int send_pos, recv_pos;
@@ -158,7 +158,7 @@ int alltoallv_nonblocking(const void* sendbuf,
                           const int recvcounts[],
                           const int rdispls[],
                           MPI_Datatype recvtype,
-                          MPIX_Comm* comm)
+                          MPIL_Comm* comm)
 {
     int rank, num_procs;
     MPI_Comm_rank(comm->global_comm, &rank);
@@ -178,7 +178,7 @@ int alltoallv_nonblocking(const void* sendbuf,
     }
 
     int tag;
-    MPIX_Comm_tag(comm, &tag);
+    MPIL_Comm_tag(comm, &tag);
 
     int send_proc, recv_proc;
     int send_pos, recv_pos;
@@ -241,7 +241,7 @@ int alltoallv_batch(const void* sendbuf,
                     const int recvcounts[],
                     const int rdispls[],
                     MPI_Datatype recvtype,
-                    MPIX_Comm* comm)
+                    MPIL_Comm* comm)
 {
     int rank, num_procs;
     MPI_Comm_rank(comm->global_comm, &rank);
@@ -263,7 +263,7 @@ int alltoallv_batch(const void* sendbuf,
     }
 
     int tag;
-    MPIX_Comm_tag(comm, &tag);
+    MPIL_Comm_tag(comm, &tag);
 
     int ctr;
     int send_proc, recv_proc;
@@ -337,7 +337,7 @@ int alltoallv_batch_async(const void* sendbuf,
                           const int recvcounts[],
                           const int rdispls[],
                           MPI_Datatype recvtype,
-                          MPIX_Comm* comm)
+                          MPIL_Comm* comm)
 {
     int rank, num_procs;
     MPI_Comm_rank(comm->global_comm, &rank);
@@ -359,7 +359,7 @@ int alltoallv_batch_async(const void* sendbuf,
     }
 
     int tag;
-    MPIX_Comm_tag(comm, &tag);
+    MPIL_Comm_tag(comm, &tag);
 
     int send_proc, recv_proc;
     int send_pos, recv_pos;
@@ -432,7 +432,7 @@ int alltoallv_pmpi(const void* sendbuf,
                    const int recvcounts[],
                    const int rdispls[],
                    MPI_Datatype recvtype,
-                   MPIX_Comm* comm)
+                   MPIL_Comm* comm)
 {
     return PMPI_Alltoallv(sendbuf,
                           sendcounts,

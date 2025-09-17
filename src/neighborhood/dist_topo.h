@@ -10,7 +10,7 @@
 extern "C" {
 #endif
 
-typedef struct _MPIX_Topo
+typedef struct _MPIL_Topo
 {
     int indegree;
     int* sources;
@@ -19,20 +19,20 @@ typedef struct _MPIX_Topo
     int* destinations;
     int* destweights;
     int reorder;
-} MPIX_Topo;
+} MPIL_Topo;
 
-int MPIX_Topo_init(int indegree,
+int MPIL_Topo_init(int indegree,
                    const int sources[],
                    const int sourceweights[],
                    int outdegree,
                    const int destinations[],
                    const int destweights[],
-                   MPIX_Info* info,
-                   MPIX_Topo** mpix_topo_ptr);
+                   MPIL_Info* info,
+                   MPIL_Topo** mpix_topo_ptr);
 
-int MPIX_Topo_from_neighbor_comm(MPIX_Comm* comm, MPIX_Topo** mpix_topo_ptr);
+int MPIL_Topo_from_neighbor_comm(MPIL_Comm* comm, MPIL_Topo** mpix_topo_ptr);
 
-int MPIX_Topo_free(MPIX_Topo** topo);
+int MPIL_Topo_free(MPIL_Topo** topo);
 
 #ifdef __cplusplus
 }
