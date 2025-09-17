@@ -6,7 +6,7 @@
 #include <stdlib.h>
 
 #include "collective.h"
-#include "communicator/mpix_comm.h"
+#include "communicator/mpil_comm.h"
 #include "utils/utils.h"
 
 #ifdef __cplusplus

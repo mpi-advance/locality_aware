@@ -1,4 +1,4 @@
-#include "mpix_comm.h"
+#include "mpil_comm.h"
 
 int MPIX_Comm_init(MPIX_Comm** xcomm_ptr, MPI_Comm global_comm)
 {

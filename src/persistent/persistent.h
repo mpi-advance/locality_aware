@@ -2,7 +2,7 @@
 #define MPI_ADVANCE_PERSISTENT_H
 
 #include "communicator/locality_comm.h"
-#include "communicator/mpix_comm.h"
+#include "communicator/mpil_comm.h"
 #include "utils/utils.h"
 
 #ifdef __cplusplus

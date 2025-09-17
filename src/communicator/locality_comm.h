@@ -4,7 +4,7 @@
 #include <mpi.h>
 
 #include "comm_pkg.h"
-#include "mpix_comm.h"
+#include "mpil_comm.h"
 
 // Declarations of C++ methods
 #ifdef __cplusplus
