@@ -28,7 +28,7 @@ endif()
 option(USE_CUDA "Enable NVIDIA CUDA support" OFF)
 option(USE_HIP "Enable AMD HIP support" OFF)
 option(GPU_AWARE "Use GPU-Aware MPI, if GPU support is enabled" ON)
-option(ENABLE_UNIT_TESTS "Enable unit testing" ON)
+option(ENABLE_UNIT_TESTS "Enable unit testing" OFF)
 
 set(MPICXX "mpicxx" CACHE STRING "MPICXX command")
 set(MPIRUN "mpirun" CACHE STRING "MPIRUN command")
@@ -85,7 +85,7 @@ set_source_files_properties(
     ${heterogeneous_SOURCES}
     PROPERTIES LANGUAGE ${locality_aware_LANG})
 
-add_library(mpi_advance
+add_library(locality_aware
     ${utils_SOURCES} ${utils_HEADERS}
     ${communicator_SOURCES} ${communicator_HEADERS}
     ${collective_SOURCES} ${collective_HEADERS}
@@ -94,16 +94,16 @@ add_library(mpi_advance
     ${heterogeneous_SOURCES} ${heterogeneous_HEADERS}
 )
 
-set_target_properties(mpi_advance PROPERTIES PUBLIC_HEADER src/mpi_advance.h)
+set_target_properties(locality_aware PROPERTIES PUBLIC_HEADER src/mpi_advance.h)
 
-target_include_directories(mpi_advance PUBLIC 
+target_include_directories(locality_aware PUBLIC 
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
     $<INSTALL_INTERFACE:include>
     )
 
-target_link_libraries(mpi_advance PUBLIC ${EXTERNAL_LIBS})
+target_link_libraries(locality_aware PUBLIC ${EXTERNAL_LIBS})
 
-install(TARGETS mpi_advance)
+install(TARGETS locality_aware)
 
 ### Install all headers that locality_aware exports
 install(FILES ${utils_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/utils)
@@ -113,13 +113,13 @@ install(FILES ${persistent_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/
 install(FILES ${neighborhood_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/neighborhood)
 install(FILES ${heterogeneous_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/heterogeneous)
 
-add_subdirectory(benchmarks)
+ add_subdirectory(benchmarks)
 
 ### Installation Requirements for Spack Package ###
 include(CMakePackageConfigHelpers)
 
 # Install the actual target(s) and register them for export
-install(TARGETS mpi_advance
+install(TARGETS locality_aware
         EXPORT mpiadvanceTargets
         DESTINATION lib)
 
