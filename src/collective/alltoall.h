@@ -29,7 +29,24 @@ int alltoall_nonblocking(const void* sendbuf,
         MPI_Datatype recvtype,
         MPIX_Comm* comm);
 
+  // Hack to support timing
+  int pairwise_helper(const void* sendbuf,
+					  const int sendcount,
+					  MPI_Datatype sendtype,
+					  void* recvbuf,
+					  const int recvcount,
+					  MPI_Datatype recvtype,
+					  MPI_Comm comm);
 
+  int nonblocking_helper(const void* sendbuf,
+						 const int sendcount,
+						 MPI_Datatype sendtype,
+						 void* recvbuf,
+						 const int recvcount,
+						 MPI_Datatype recvtype,
+						 MPI_Comm comm);
+
+  
 int alltoall_hierarchical(const void* sendbuf,
         const int sendcount,
         MPI_Datatype sendtype,
