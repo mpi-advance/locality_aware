@@ -1,8 +1,13 @@
-#ifndef MPI_ADVANCE_ALLREDUCE_H
-#define MPI_ADVANCE_ALLREDUCE_H
+#ifndef MPI_ADVANCE_ALLGATHER_H
+#define MPI_ADVANCE_ALLGATHER_H
 
 #include <mpi.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include "utils/utils.h"
+#include "collective.h"
 #include "communicator/mpix_comm.h"
+
 
 #ifdef __cplusplus
 extern "C"
@@ -55,4 +60,4 @@ int allgather_multileader_locality_aware(const void* sendbuf,
 }
 #endif
 
-#endif // MPI_ADVANCE_ALLREDUCE_H
+#endif // MPI_ADVANCE_ALLGATHER_H
