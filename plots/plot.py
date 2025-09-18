@@ -153,7 +153,7 @@ for i in range(len(nodes)):
     plt.line_plot(timings[i].pairwise.leader[0].ml_loc, timings[i].sizes, color='purple', label='Multileader + Locality')
     plt.line_plot(timings[i].nonblocking.leader[0].ml_loc, timings[i].sizes, color='purple', tickmark='--')
 
-    plt.add_anchored_legend()
+    plt.add_anchored_legend(ncol=3)
     plt.set_scale('log', 'log')
     plt.add_labels("Msg Size", "Timing (seconds)")
     plt.save_plot("%s/sizes_n%d.pdf"%(computer,nodes[i]))
@@ -213,7 +213,7 @@ for i in range(len(nodes)):
     plt.line_plot(timings[i].pairwise.node_aware, timings[i].sizes, color='blue', label="Node-Aware")
     plt.line_plot(timings[i].nonblocking.node_aware, timings[i].sizes, color='blue', tickmark='--')
 
-    plt.add_anchored_legend()
+    plt.add_anchored_legend(ncol=3)
     plt.set_scale('log', 'log')
     plt.add_labels("Msg Size", "Timing (seconds)")
     plt.save_plot("%s/multileader_loc_n%d.pdf"%(computer,nodes[i]))
@@ -244,7 +244,7 @@ plt.line_plot([timings[i].nonblocking.leader[-1].loc[0] for i in range(len(timin
 plt.line_plot([timings[i].pairwise.leader[-1].ml_loc[0] for i in range(len(timings))], nodes, color='purple', label='Multileader + Locality')
 plt.line_plot([timings[i].nonblocking.leader[-1].ml_loc[0] for i in range(len(timings))], nodes, color='purple', tickmark='--')
 
-plt.add_anchored_legend()
+plt.add_anchored_legend(ncol=3)
 ax = plt.get_ax()
 ax.set_xscale('log', base=2)
 ax.set_yscale('log')
@@ -279,7 +279,7 @@ plt.line_plot([timings[i].nonblocking.leader[-1].loc[idx] for i in range(len(tim
 plt.line_plot([timings[i].pairwise.leader[-1].ml_loc[idx] for i in range(len(timings))], nodes, color='purple', label='Multileader + Locality')
 plt.line_plot([timings[i].nonblocking.leader[-1].ml_loc[idx] for i in range(len(timings))], nodes, color='purple', tickmark='--')
 
-plt.add_anchored_legend()
+plt.add_anchored_legend(ncol=3)
 ax = plt.get_ax()
 ax.set_xscale('log', base=2)
 ax.set_yscale('log')
