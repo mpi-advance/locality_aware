@@ -1,4 +1,4 @@
-#include "mpi_advance.h"
+#include "locality_aware.h"
 #include "tests/sparse_mat.hpp"
 #include "tests/par_binary_IO.hpp"
 
