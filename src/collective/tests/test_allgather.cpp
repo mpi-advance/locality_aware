@@ -54,9 +54,10 @@ int main(int argc, char** argv)
         PMPI_Allgather(local_data.data(), s, MPI_INT, pmpi_allgather, s, MPI_INT, MPI_COMM_WORLD);
 
         int* mpix_allgather = (int*) malloc(s * num_procs * sizeof(int));
-        memset(mpix_allgather, 9, s * num_procs * sizeof(int));
         allgather_multileader(local_data.data(), s, MPI_INT, mpix_allgather, s, MPI_INT, *locality_comm);
+        compare_allgather_results(pmpi_allgather, mpix_allgather, s * num_procs, rank);
 
+        allgather_hierarchical(local_data.data(), s, MPI_INT, mpix_allgather, s, MPI_INT, *locality_comm);
         compare_allgather_results(pmpi_allgather, mpix_allgather, s * num_procs, rank);
 
         free(pmpi_allgather);

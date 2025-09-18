@@ -104,14 +104,17 @@ int allgather_hierarchical(const void* sendbuf,
         temp_buffer = (char*) malloc(sizeof(char));
     }
 
-    // MPI_Gather(send_buffer, sendcount, sendtype, temp_buffer, sendcount, sendtype, 0, comm.local_comm);
+    MPI_Gather(sendbuf, sendcount, sendtype, temp_buffer, sendcount, sendtype, 0, comm.local_comm);
 
     if (local_rank == 0)
     {
         MPI_Allgather(temp_buffer, ppn * sendcount, sendtype, recvbuf, ppn * recvcount, recvtype, comm.group_comm);
     }
 
+    MPI_Bcast(recvbuf, recvcount * num_procs, recvtype, 0, comm.local_comm);
 
+    free(temp_buffer);
+    return MPI_SUCCESS;
 }
         
 
