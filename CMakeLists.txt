@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.21 FATAL_ERROR)
 cmake_policy(VERSION 3.21.1...3.27)
 
 # Create project
-project(locality_aware LANGUAGES C CXX)
+project(locality_aware VERSION 0.1.0 LANGUAGES C CXX)
 
 # Set C,CXX standards
 set(CMAKE_CXX_STANDARD 11)
@@ -120,21 +120,39 @@ include(CMakePackageConfigHelpers)
 
 # Install the actual target(s) and register them for export
 install(TARGETS locality_aware
-        EXPORT mpiadvanceTargets
+        EXPORT locality_awareTargets
         DESTINATION lib)
+
+
+
+# Create the configuration file
+configure_package_config_file(
+	${CMAKE_CURRENT_SOURCE_DIR}/cmake/locality_aware-config.cmake.in
+	${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
+	INSTALL_DESTINATION share/${PROJECT_NAME}
+)
+
+## Version file
+write_basic_package_version_file(
+	${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config-version.cmake
+	COMPATIBILITY SameMinorVersion
+)
+
+install(FILES
+	${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config-version.cmake
+	${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
+	DESTINATION share/${PROJECT_NAME}
+)
 
 # Export the targets into a CMake package
 install(EXPORT mpiadvanceTargets
         NAMESPACE MPIAdvance::
-        DESTINATION share/mpiadvance)
+        DESTINATION share/${PROJECT_NAME})
 
-configure_package_config_file(
-  "${CMAKE_CURRENT_SOURCE_DIR}/cmake/locality_aware-config.cmake.in"
-  "${CMAKE_CURRENT_BINARY_DIR}/mpiadvance-config.cmake"
-  INSTALL_DESTINATION share/mpiadvance)
-
-install(FILES
-  "${CMAKE_CURRENT_BINARY_DIR}/mpiadvance-config.cmake"
-  DESTINATION share/mpiadvance)
 ############## End of Spack Section ################
+
+
+
+
+
 
