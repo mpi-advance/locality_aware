@@ -145,7 +145,7 @@ install(FILES
 )
 
 # Export the targets into a CMake package
-install(EXPORT mpiadvanceTargets
+install(EXPORT locality_awareTargets
         NAMESPACE MPIAdvance::
         DESTINATION share/${PROJECT_NAME})
 
