@@ -94,7 +94,7 @@ add_library(locality_aware
     ${heterogeneous_SOURCES} ${heterogeneous_HEADERS}
 )
 
-set_target_properties(locality_aware PROPERTIES PUBLIC_HEADER src/mpi_advance.h)
+set_target_properties(locality_aware PROPERTIES PUBLIC_HEADER src/locality_aware.h)
 
 target_include_directories(locality_aware PUBLIC 
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
