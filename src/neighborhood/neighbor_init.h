@@ -14,7 +14,7 @@ enum NeighborAlltoallvInitMethod
     NEIGHBOR_ALLTOALLV_INIT_STANDARD,
     NEIGHBOR_ALLTOALLV_INIT_LOCALITY
 };
-extern NeighborAlltoallvInitMethod mpix_neighbor_alltoallv_init_implementation;
+extern enum NeighborAlltoallvInitMethod mpix_neighbor_alltoallv_init_implementation;
 
 typedef int (*neighbor_alltoallv_init_ftn)(const void* sendbuf,
                                            const int sendcounts[],
