@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.21 FATAL_ERROR)
 cmake_policy(VERSION 3.21.1...3.27)
 
 # Create project
-project(locality_aware VERSION 0.1.0 LANGUAGES C CXX)
+project(locality_aware VERSION 2.0.0 LANGUAGES C CXX)
 
 # Set C,CXX standards
 set(CMAKE_CXX_STANDARD 11)
