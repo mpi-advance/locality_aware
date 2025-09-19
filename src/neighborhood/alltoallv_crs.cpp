@@ -222,11 +222,7 @@ int alltoallv_crs_nonblocking(const int send_nnz,
     MPIL_Alloc((void**)recvcounts_ptr, recvcounts.size() * sizeof(int));
     MPIL_Alloc((void**)rdispls_ptr, rdispls.size() * sizeof(int));
     MPIL_Alloc((void**)recvvals_ptr, recvvals.size());
-    //(*src_ptr) = (int*)MPIalloc(src.size()*sizeof(int));
-    //(*recvcounts_ptr) = (int*)MPIalloc(recvcounts.size()*sizeof(int));
-    //(*rdispls_ptr) = (int*)MPIalloc(rdispls.size()*sizeof(int));
-    //(*recvvals_ptr) = MPIalloc(recvvals.size());
-
+   
     memcpy((*src_ptr), src.data(), src.size() * sizeof(int));
     memcpy((*recvcounts_ptr), recvcounts.data(), recvcounts.size() * sizeof(int));
     memcpy((*rdispls_ptr), rdispls.data(), rdispls.size() * sizeof(int));
@@ -473,10 +469,7 @@ void local_redistribute(int n_recvs,
     MPIL_Alloc((void**)recvcounts_ptr, recvcounts.size() * sizeof(int));
     MPIL_Alloc((void**)rdispls_ptr, rdispls.size() * sizeof(int));
     MPIL_Alloc(recvvals_ptr, recvvals.size());
-    //(*src_ptr) = (int*)MPIalloc(src.size()*sizeof(int));
-    //(*recvcounts_ptr) = (int*)MPIalloc(recvcounts.size()*sizeof(int));
-    //(*rdispls_ptr) = (int*)MPIalloc(rdispls.size()*sizeof(int));
-    //(*recvvals_ptr) = MPIalloc(recvvals.size());
+  
 
     memcpy((*src_ptr), src.data(), src.size() * sizeof(int));
     memcpy((*recvcounts_ptr), recvcounts.data(), recvcounts.size() * sizeof(int));

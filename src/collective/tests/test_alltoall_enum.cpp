@@ -7,17 +7,17 @@
 #include <vector>
 #include <set>
 
-void compare_alltoall_results(std::vector<int>& pmpi, std::vector<int>& mpix, int s)
+void compare_alltoall_results(std::vector<int>& pmpi, std::vector<int>& mpil, int s)
 {
     int num_procs;
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
 
     for (int j = 0; j < s*num_procs; j++)
     {
-        if (pmpi[j] != mpix[j])
+        if (pmpi[j] != mpil[j])
         {
-            fprintf(stderr, "MPIL Alltoall != PMPI, position %d, pmpi %d, mpix %d\n", 
-                    j, pmpi[j], mpix[j]);
+            fprintf(stderr, "MPIL Alltoall != PMPI, position %d, pmpi %d, mpil %d\n", 
+                    j, pmpi[j], mpil[j]);
             MPI_Abort(MPI_COMM_WORLD, -1);
         }
     }
@@ -38,7 +38,7 @@ int main(int argc, char** argv)
     std::vector<int> local_data(max_s*num_procs);
 
     std::vector<int> pmpi_alltoall(max_s*num_procs);
-    std::vector<int> mpix_alltoall(max_s*num_procs);
+    std::vector<int> mpil_alltoall(max_s*num_procs);
 
     MPIL_Comm* locality_comm;
     MPIL_Comm_init(&locality_comm, MPI_COMM_WORLD);
@@ -62,160 +62,160 @@ int main(int argc, char** argv)
                 MPI_INT,
                 MPI_COMM_WORLD);
 
-        mpix_alltoall_implementation = ALLTOALL_PAIRWISE;
-        std::fill(mpix_alltoall.begin(), mpix_alltoall.end(), 0);
+        mpil_alltoall_implementation = ALLTOALL_PAIRWISE;
+        std::fill(mpil_alltoall.begin(), mpil_alltoall.end(), 0);
         MPIL_Alltoall(local_data.data(), 
                 s, 
                 MPI_INT,
-                mpix_alltoall.data(), 
+                mpil_alltoall.data(), 
                 s, 
                 MPI_INT,
                 locality_comm);
-        compare_alltoall_results(pmpi_alltoall, mpix_alltoall, s);
+        compare_alltoall_results(pmpi_alltoall, mpil_alltoall, s);
 
 
-        mpix_alltoall_implementation = ALLTOALL_NONBLOCKING;
-        std::fill(mpix_alltoall.begin(), mpix_alltoall.end(), 0);
+        mpil_alltoall_implementation = ALLTOALL_NONBLOCKING;
+        std::fill(mpil_alltoall.begin(), mpil_alltoall.end(), 0);
         MPIL_Alltoall(local_data.data(), 
                 s, 
                 MPI_INT,
-                mpix_alltoall.data(), 
+                mpil_alltoall.data(), 
                 s, 
                 MPI_INT,
                 locality_comm);
-        compare_alltoall_results(pmpi_alltoall, mpix_alltoall, s);
+        compare_alltoall_results(pmpi_alltoall, mpil_alltoall, s);
 
 
-        mpix_alltoall_implementation = ALLTOALL_HIERARCHICAL_PAIRWISE;
-        std::fill(mpix_alltoall.begin(), mpix_alltoall.end(), 0);
+        mpil_alltoall_implementation = ALLTOALL_HIERARCHICAL_PAIRWISE;
+        std::fill(mpil_alltoall.begin(), mpil_alltoall.end(), 0);
         MPIL_Alltoall(local_data.data(), 
                 s, 
                 MPI_INT,
-                mpix_alltoall.data(), 
+                mpil_alltoall.data(), 
                 s, 
                 MPI_INT,
                 locality_comm);
-        compare_alltoall_results(pmpi_alltoall, mpix_alltoall, s);
+        compare_alltoall_results(pmpi_alltoall, mpil_alltoall, s);
 
 
-        mpix_alltoall_implementation = ALLTOALL_HIERARCHICAL_NONBLOCKING;
-        std::fill(mpix_alltoall.begin(), mpix_alltoall.end(), 0);
+        mpil_alltoall_implementation = ALLTOALL_HIERARCHICAL_NONBLOCKING;
+        std::fill(mpil_alltoall.begin(), mpil_alltoall.end(), 0);
         MPIL_Alltoall(local_data.data(), 
                 s, 
                 MPI_INT,
-                mpix_alltoall.data(), 
+                mpil_alltoall.data(), 
                 s, 
                 MPI_INT,
                 locality_comm);
-        compare_alltoall_results(pmpi_alltoall, mpix_alltoall, s);
+        compare_alltoall_results(pmpi_alltoall, mpil_alltoall, s);
 
 
-        mpix_alltoall_implementation = ALLTOALL_MULTILEADER_PAIRWISE;
-        std::fill(mpix_alltoall.begin(), mpix_alltoall.end(), 0);
+        mpil_alltoall_implementation = ALLTOALL_MULTILEADER_PAIRWISE;
+        std::fill(mpil_alltoall.begin(), mpil_alltoall.end(), 0);
         MPIL_Alltoall(local_data.data(), 
                 s, 
                 MPI_INT,
-                mpix_alltoall.data(), 
+                mpil_alltoall.data(), 
                 s, 
                 MPI_INT,
                 locality_comm);
-        compare_alltoall_results(pmpi_alltoall, mpix_alltoall, s);
+        compare_alltoall_results(pmpi_alltoall, mpil_alltoall, s);
 
 
-        mpix_alltoall_implementation = ALLTOALL_MULTILEADER_NONBLOCKING;
-        std::fill(mpix_alltoall.begin(), mpix_alltoall.end(), 0);
+        mpil_alltoall_implementation = ALLTOALL_MULTILEADER_NONBLOCKING;
+        std::fill(mpil_alltoall.begin(), mpil_alltoall.end(), 0);
         MPIL_Alltoall(local_data.data(), 
                 s, 
                 MPI_INT,
-                mpix_alltoall.data(), 
+                mpil_alltoall.data(), 
                 s, 
                 MPI_INT,
                 locality_comm);
-        compare_alltoall_results(pmpi_alltoall, mpix_alltoall, s);
+        compare_alltoall_results(pmpi_alltoall, mpil_alltoall, s);
 
 
-        mpix_alltoall_implementation = ALLTOALL_NODE_AWARE_PAIRWISE;
-        std::fill(mpix_alltoall.begin(), mpix_alltoall.end(), 0);
+        mpil_alltoall_implementation = ALLTOALL_NODE_AWARE_PAIRWISE;
+        std::fill(mpil_alltoall.begin(), mpil_alltoall.end(), 0);
         MPIL_Alltoall(local_data.data(), 
                 s, 
                 MPI_INT,
-                mpix_alltoall.data(), 
+                mpil_alltoall.data(), 
                 s, 
                 MPI_INT,
                 locality_comm);
-        compare_alltoall_results(pmpi_alltoall, mpix_alltoall, s);
+        compare_alltoall_results(pmpi_alltoall, mpil_alltoall, s);
 
 
-        mpix_alltoall_implementation = ALLTOALL_NODE_AWARE_NONBLOCKING;
-        std::fill(mpix_alltoall.begin(), mpix_alltoall.end(), 0);
+        mpil_alltoall_implementation = ALLTOALL_NODE_AWARE_NONBLOCKING;
+        std::fill(mpil_alltoall.begin(), mpil_alltoall.end(), 0);
         MPIL_Alltoall(local_data.data(), 
                 s, 
                 MPI_INT,
-                mpix_alltoall.data(), 
+                mpil_alltoall.data(), 
                 s, 
                 MPI_INT,
                 locality_comm);
-        compare_alltoall_results(pmpi_alltoall, mpix_alltoall, s);
+        compare_alltoall_results(pmpi_alltoall, mpil_alltoall, s);
 
 
-        mpix_alltoall_implementation = ALLTOALL_LOCALITY_AWARE_PAIRWISE;
-        std::fill(mpix_alltoall.begin(), mpix_alltoall.end(), 0);
+        mpil_alltoall_implementation = ALLTOALL_LOCALITY_AWARE_PAIRWISE;
+        std::fill(mpil_alltoall.begin(), mpil_alltoall.end(), 0);
         MPIL_Alltoall(local_data.data(), 
                 s, 
                 MPI_INT,
-                mpix_alltoall.data(), 
+                mpil_alltoall.data(), 
                 s, 
                 MPI_INT,
                 locality_comm);
-        compare_alltoall_results(pmpi_alltoall, mpix_alltoall, s);
+        compare_alltoall_results(pmpi_alltoall, mpil_alltoall, s);
 
 
-        mpix_alltoall_implementation = ALLTOALL_LOCALITY_AWARE_NONBLOCKING;
-        std::fill(mpix_alltoall.begin(), mpix_alltoall.end(), 0);
+        mpil_alltoall_implementation = ALLTOALL_LOCALITY_AWARE_NONBLOCKING;
+        std::fill(mpil_alltoall.begin(), mpil_alltoall.end(), 0);
         MPIL_Alltoall(local_data.data(), 
                 s, 
                 MPI_INT,
-                mpix_alltoall.data(), 
+                mpil_alltoall.data(), 
                 s, 
                 MPI_INT,
                 locality_comm);
-        compare_alltoall_results(pmpi_alltoall, mpix_alltoall, s);
+        compare_alltoall_results(pmpi_alltoall, mpil_alltoall, s);
 
 
-        mpix_alltoall_implementation = ALLTOALL_MULTILEADER_LOCALITY_PAIRWISE;
-        std::fill(mpix_alltoall.begin(), mpix_alltoall.end(), 0);
+        mpil_alltoall_implementation = ALLTOALL_MULTILEADER_LOCALITY_PAIRWISE;
+        std::fill(mpil_alltoall.begin(), mpil_alltoall.end(), 0);
         MPIL_Alltoall(local_data.data(), 
                 s, 
                 MPI_INT,
-                mpix_alltoall.data(), 
+                mpil_alltoall.data(), 
                 s, 
                 MPI_INT,
                 locality_comm);
-        compare_alltoall_results(pmpi_alltoall, mpix_alltoall, s);
+        compare_alltoall_results(pmpi_alltoall, mpil_alltoall, s);
 
 
-        mpix_alltoall_implementation = ALLTOALL_MULTILEADER_LOCALITY_NONBLOCKING;
-        std::fill(mpix_alltoall.begin(), mpix_alltoall.end(), 0);
+        mpil_alltoall_implementation = ALLTOALL_MULTILEADER_LOCALITY_NONBLOCKING;
+        std::fill(mpil_alltoall.begin(), mpil_alltoall.end(), 0);
         MPIL_Alltoall(local_data.data(), 
                 s, 
                 MPI_INT,
-                mpix_alltoall.data(), 
+                mpil_alltoall.data(), 
                 s, 
                 MPI_INT,
                 locality_comm);
-        compare_alltoall_results(pmpi_alltoall, mpix_alltoall, s);
+        compare_alltoall_results(pmpi_alltoall, mpil_alltoall, s);
 
 
-        mpix_alltoall_implementation = ALLTOALL_PMPI;
-        std::fill(mpix_alltoall.begin(), mpix_alltoall.end(), 0);
+        mpil_alltoall_implementation = ALLTOALL_PMPI;
+        std::fill(mpil_alltoall.begin(), mpil_alltoall.end(), 0);
         MPIL_Alltoall(local_data.data(), 
                 s, 
                 MPI_INT,
-                mpix_alltoall.data(), 
+                mpil_alltoall.data(), 
                 s, 
                 MPI_INT,
                 locality_comm);
-        compare_alltoall_results(pmpi_alltoall, mpix_alltoall, s);
+        compare_alltoall_results(pmpi_alltoall, mpil_alltoall, s);
 
  
     }

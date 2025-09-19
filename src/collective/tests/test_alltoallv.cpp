@@ -7,17 +7,17 @@
 #include <vector>
 #include <set>
 
-void compare_alltoallv_results(std::vector<int>& pmpi, std::vector<int>& mpix, int s)
+void compare_alltoallv_results(std::vector<int>& pmpi, std::vector<int>& mpil, int s)
 {
     int num_procs;
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
 
     for (int j = 0; j < s*num_procs; j++)
     {
-        if (pmpi[j] != mpix[j])
+        if (pmpi[j] != mpil[j])
         {
-            fprintf(stderr, "MPIL Alltoallv != PMPI, position %d, pmpi %d, mpix %d\n", 
-                    j, pmpi[j], mpix[j]);
+            fprintf(stderr, "MPIL Alltoallv != PMPI, position %d, pmpi %d, mpil %d\n", 
+                    j, pmpi[j], mpil[j]);
             MPI_Abort(MPI_COMM_WORLD, -1);
         }
     }
@@ -38,7 +38,7 @@ int main(int argc, char** argv)
     std::vector<int> local_data(max_s*num_procs);
 
     std::vector<int> pmpi_alltoallv(max_s*num_procs);
-    std::vector<int> mpix_alltoallv(max_s*num_procs);
+    std::vector<int> mpil_alltoallv(max_s*num_procs);
 
     std::vector<int> sizes(num_procs);
     std::vector<int> displs(num_procs+1);
@@ -72,65 +72,65 @@ int main(int argc, char** argv)
                 MPI_INT,
                 MPI_COMM_WORLD);
 
-        std::fill(mpix_alltoallv.begin(), mpix_alltoallv.end(), 0);
+        std::fill(mpil_alltoallv.begin(), mpil_alltoallv.end(), 0);
         MPIL_Alltoallv(local_data.data(), 
                 sizes.data(),
                 displs.data(),
                 MPI_INT, 
-                mpix_alltoallv.data(), 
+                mpil_alltoallv.data(), 
                 sizes.data(),
                 displs.data(),
                 MPI_INT,
                 xcomm);
-        compare_alltoallv_results(pmpi_alltoallv, mpix_alltoallv, s);
+        compare_alltoallv_results(pmpi_alltoallv, mpil_alltoallv, s);
 
-        std::fill(mpix_alltoallv.begin(), mpix_alltoallv.end(), 0);
+        std::fill(mpil_alltoallv.begin(), mpil_alltoallv.end(), 0);
         alltoallv_pairwise(local_data.data(), 
                 sizes.data(),
                 displs.data(),
                 MPI_INT, 
-                mpix_alltoallv.data(), 
+                mpil_alltoallv.data(), 
                 sizes.data(),
                 displs.data(),
                 MPI_INT,
                 xcomm);
-        compare_alltoallv_results(pmpi_alltoallv, mpix_alltoallv, s);
+        compare_alltoallv_results(pmpi_alltoallv, mpil_alltoallv, s);
 
-        std::fill(mpix_alltoallv.begin(), mpix_alltoallv.end(), 0);
+        std::fill(mpil_alltoallv.begin(), mpil_alltoallv.end(), 0);
         alltoallv_nonblocking(local_data.data(), 
                 sizes.data(),
                 displs.data(),
                 MPI_INT, 
-                mpix_alltoallv.data(), 
+                mpil_alltoallv.data(), 
                 sizes.data(),
                 displs.data(),
                 MPI_INT,
                 xcomm);
-        compare_alltoallv_results(pmpi_alltoallv, mpix_alltoallv, s);
+        compare_alltoallv_results(pmpi_alltoallv, mpil_alltoallv, s);
 
-        std::fill(mpix_alltoallv.begin(), mpix_alltoallv.end(), 0);
+        std::fill(mpil_alltoallv.begin(), mpil_alltoallv.end(), 0);
         alltoallv_batch(local_data.data(), 
                 sizes.data(),
                 displs.data(),
                 MPI_INT, 
-                mpix_alltoallv.data(), 
+                mpil_alltoallv.data(), 
                 sizes.data(),
                 displs.data(),
                 MPI_INT,
                 xcomm);
-        compare_alltoallv_results(pmpi_alltoallv, mpix_alltoallv, s);
+        compare_alltoallv_results(pmpi_alltoallv, mpil_alltoallv, s);
 
-        std::fill(mpix_alltoallv.begin(), mpix_alltoallv.end(), 0);
+        std::fill(mpil_alltoallv.begin(), mpil_alltoallv.end(), 0);
         alltoallv_batch_async(local_data.data(), 
                 sizes.data(),
                 displs.data(),
                 MPI_INT, 
-                mpix_alltoallv.data(), 
+                mpil_alltoallv.data(), 
                 sizes.data(),
                 displs.data(),
                 MPI_INT,
                 xcomm);
-        compare_alltoallv_results(pmpi_alltoallv, mpix_alltoallv, s);
+        compare_alltoallv_results(pmpi_alltoallv, mpil_alltoallv, s);
 
     }
 

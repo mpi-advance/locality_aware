@@ -90,8 +90,7 @@ int alltoall_crs_rma(const int send_nnz,
     *recv_nnz_ptr = src.size();
     MPIL_Alloc((void**)src_ptr, src.size() * sizeof(int));
     MPIL_Alloc(recvvals_ptr, recv_buffer.size());
-    //(*src_ptr) = (int*)MPIalloc(src.size()*sizeof(int));
-    //(*recvvals_ptr) = MPIalloc(recv_buffer.size());
+    
     memcpy((*src_ptr), src.data(), src.size() * sizeof(int));
     memcpy((*recvvals_ptr), recv_buffer.data(), recv_buffer.size());
 
@@ -150,9 +149,7 @@ int alltoall_crs_personalized(const int send_nnz,
     char* recvvals;
     MPIL_Alloc((void**)&src, *recv_nnz * sizeof(int));
     MPIL_Alloc((void**)&recvvals, *recv_nnz * recv_bytes);
-    //    int* src = (int*)MPIalloc(*recv_nnz*sizeof(int));
-    //    void* recvvals = MPIalloc(*recv_nnz*recv_bytes);
-
+  
     if (comm->n_requests < send_nnz)
     {
         MPIL_Comm_req_resize(comm, send_nnz);
@@ -259,7 +256,6 @@ int alltoall_crs_nonblocking(const int send_nnz,
         MPI_Iprobe(MPI_ANY_SOURCE, tag, comm->global_comm, &flag, &recv_status);
         if (flag)
         {
-            // char* recv_buffer = (char*)recvvals;
             proc = recv_status.MPI_SOURCE;
             src.push_back(proc);
             recv_buffer.resize(src.size() * recv_bytes);
@@ -294,8 +290,7 @@ int alltoall_crs_nonblocking(const int send_nnz,
     *recv_nnz = src.size();
     MPIL_Alloc((void**)src_ptr, src.size() * sizeof(int));
     MPIL_Alloc(recvvals_ptr, recv_buffer.size());
-    //(*src_ptr) = (int*)MPIalloc(src.size()*sizeof(int));
-    //(*recvvals_ptr) = MPIalloc(recv_buffer.size());
+  
     memcpy((*src_ptr), src.data(), src.size() * sizeof(int));
     memcpy((*recvvals_ptr), recv_buffer.data(), recv_buffer.size());
 

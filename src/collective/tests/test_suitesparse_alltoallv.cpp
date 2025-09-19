@@ -11,14 +11,14 @@
 #include "tests/sparse_mat.hpp"
 #include "tests/par_binary_IO.hpp"
 
-void compare_alltoallv_results(std::vector<int>& pmpi, std::vector<int>& mpix, int s)
+void compare_alltoallv_results(std::vector<int>& pmpi, std::vector<int>& mpil, int s)
 {
     for (int i = 0; i < s; i++)
     {
-        if (pmpi[i] != mpix[i])
+        if (pmpi[i] != mpil[i])
         {
-            fprintf(stderr, "MPIL Alltoallv != PMPI, position %d, pmpi %d, mpix %d\n", 
-                    i, pmpi[i], mpix[i]);
+            fprintf(stderr, "MPIL Alltoallv != PMPI, position %d, pmpi %d, mpil %d\n", 
+                    i, pmpi[i], mpil[i]);
             MPI_Abort(MPI_COMM_WORLD, 1);
         }
     }
@@ -85,9 +85,9 @@ void test_matrix(const char* filename)
     }
 
     std::vector<int> pmpi_recv_vals(A.recv_comm.size_msgs);
-    std::vector<int> mpix_recv_vals(A.recv_comm.size_msgs);
+    std::vector<int> mpil_recv_vals(A.recv_comm.size_msgs);
 
-    communicate(A, send_vals, mpix_recv_vals, MPI_INT);
+    communicate(A, send_vals, mpil_recv_vals, MPI_INT);
 
     PMPI_Alltoallv(alltoallv_send_vals.data(), 
             sendcounts.data(),
@@ -98,68 +98,68 @@ void test_matrix(const char* filename)
             rdispls.data(),
             MPI_INT,
             MPI_COMM_WORLD);
-    compare_alltoallv_results(pmpi_recv_vals, mpix_recv_vals, A.recv_comm.size_msgs);
+    compare_alltoallv_results(pmpi_recv_vals, mpil_recv_vals, A.recv_comm.size_msgs);
 
-    std::fill(mpix_recv_vals.begin(), mpix_recv_vals.end(), 0);
+    std::fill(mpil_recv_vals.begin(), mpil_recv_vals.end(), 0);
     MPIL_Alltoallv(alltoallv_send_vals.data(), 
             sendcounts.data(),
             sdispls.data(),
             MPI_INT,
-            mpix_recv_vals.data(),
+            mpil_recv_vals.data(),
             recvcounts.data(),
             rdispls.data(),
             MPI_INT,
             xcomm);
-    compare_alltoallv_results(pmpi_recv_vals, mpix_recv_vals, A.recv_comm.size_msgs);
+    compare_alltoallv_results(pmpi_recv_vals, mpil_recv_vals, A.recv_comm.size_msgs);
 
 
-    std::fill(mpix_recv_vals.begin(), mpix_recv_vals.end(), 0);
+    std::fill(mpil_recv_vals.begin(), mpil_recv_vals.end(), 0);
     alltoallv_pairwise(alltoallv_send_vals.data(), 
             sendcounts.data(),
             sdispls.data(),
             MPI_INT,
-            mpix_recv_vals.data(),
+            mpil_recv_vals.data(),
             recvcounts.data(),
             rdispls.data(),
             MPI_INT,
             xcomm);
-    compare_alltoallv_results(pmpi_recv_vals, mpix_recv_vals, A.recv_comm.size_msgs);
+    compare_alltoallv_results(pmpi_recv_vals, mpil_recv_vals, A.recv_comm.size_msgs);
     
-    std::fill(mpix_recv_vals.begin(), mpix_recv_vals.end(), 0);
+    std::fill(mpil_recv_vals.begin(), mpil_recv_vals.end(), 0);
     alltoallv_nonblocking(alltoallv_send_vals.data(), 
             sendcounts.data(),
             sdispls.data(),
             MPI_INT,
-            mpix_recv_vals.data(),
+            mpil_recv_vals.data(),
             recvcounts.data(),
             rdispls.data(),
             MPI_INT,
             xcomm);
-    compare_alltoallv_results(pmpi_recv_vals, mpix_recv_vals, A.recv_comm.size_msgs);
+    compare_alltoallv_results(pmpi_recv_vals, mpil_recv_vals, A.recv_comm.size_msgs);
 
-    std::fill(mpix_recv_vals.begin(), mpix_recv_vals.end(), 0);
+    std::fill(mpil_recv_vals.begin(), mpil_recv_vals.end(), 0);
     alltoallv_batch(alltoallv_send_vals.data(), 
             sendcounts.data(),
             sdispls.data(),
             MPI_INT,
-            mpix_recv_vals.data(),
+            mpil_recv_vals.data(),
             recvcounts.data(),
             rdispls.data(),
             MPI_INT,
             xcomm);
-    compare_alltoallv_results(pmpi_recv_vals, mpix_recv_vals, A.recv_comm.size_msgs);
+    compare_alltoallv_results(pmpi_recv_vals, mpil_recv_vals, A.recv_comm.size_msgs);
 
-    std::fill(mpix_recv_vals.begin(), mpix_recv_vals.end(), 0);
+    std::fill(mpil_recv_vals.begin(), mpil_recv_vals.end(), 0);
     alltoallv_batch_async(alltoallv_send_vals.data(), 
             sendcounts.data(),
             sdispls.data(),
             MPI_INT,
-            mpix_recv_vals.data(),
+            mpil_recv_vals.data(),
             recvcounts.data(),
             rdispls.data(),
             MPI_INT,
             xcomm);
-    compare_alltoallv_results(pmpi_recv_vals, mpix_recv_vals, A.recv_comm.size_msgs);
+    compare_alltoallv_results(pmpi_recv_vals, mpil_recv_vals, A.recv_comm.size_msgs);
 
     MPIL_Comm_free(&xcomm);
 }
