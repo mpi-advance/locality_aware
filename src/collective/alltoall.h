@@ -30,7 +30,7 @@ enum AlltoallMethod
     ALLTOALL_MULTILEADER_LOCALITY_NONBLOCKING,
     ALLTOALL_PMPI
 };
-extern AlltoallMethod mpix_alltoall_implementation;
+extern AlltoallMethod mpil_alltoall_implementation;
 
 typedef int (*alltoall_ftn)(
     const void*, const int, MPI_Datatype, void*, const int, MPI_Datatype, MPIL_Comm*);

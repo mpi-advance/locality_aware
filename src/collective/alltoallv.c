@@ -8,7 +8,7 @@
 #endif
 
 // Default alltoallv is pairwise
-AlltoallvMethod mpix_alltoallv_implementation = ALLTOALLV_PAIRWISE;
+AlltoallvMethod mpil_alltoallv_implementation = ALLTOALLV_PAIRWISE;
 
 /**************************************************
  * Locality-Aware Point-to-Point Alltoallv
@@ -54,7 +54,7 @@ int MPIL_Alltoallv(const void* sendbuf,
 #endif
     alltoallv_ftn method;
 
-    switch (mpix_alltoallv_implementation)
+    switch (mpil_alltoallv_implementation)
     {
         case ALLTOALLV_PAIRWISE:
             method = alltoallv_pairwise;

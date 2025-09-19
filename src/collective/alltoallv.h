@@ -21,7 +21,7 @@ enum AlltoallvMethod
     ALLTOALLV_BATCH_ASYNC,
     ALLTOALLV_PMPI
 };
-extern AlltoallvMethod mpix_alltoallv_implementation;
+extern enum AlltoallvMethod mpil_alltoallv_implementation;
 
 typedef int (*alltoallv_ftn)(const void*,
                              const int*,
