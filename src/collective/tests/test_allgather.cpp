@@ -37,7 +37,6 @@ int main(int argc, char** argv)
     MPIX_Comm_init(&locality_comm, MPI_COMM_WORLD);
     MPIX_Comm_topo_init(locality_comm);
     // update_locality(locality_comm, 4);
-    int min = 0;
     for (int i = 0; i < max_i; i++)
     {
         int s = pow(2, i);
@@ -58,6 +57,12 @@ int main(int argc, char** argv)
         compare_allgather_results(pmpi_allgather, mpix_allgather, s * num_procs, rank);
 
         allgather_hierarchical(local_data.data(), s, MPI_INT, mpix_allgather, s, MPI_INT, *locality_comm);
+        compare_allgather_results(pmpi_allgather, mpix_allgather, s * num_procs, rank);
+
+        allgather_locality_aware(local_data.data(), s, MPI_INT, mpix_allgather, s, MPI_INT, *locality_comm);
+        compare_allgather_results(pmpi_allgather, mpix_allgather, s * num_procs, rank);
+
+        allgather_node_aware(local_data.data(), s, MPI_INT, mpix_allgather, s, MPI_INT, *locality_comm);
         compare_allgather_results(pmpi_allgather, mpix_allgather, s * num_procs, rank);
 
         free(pmpi_allgather);
