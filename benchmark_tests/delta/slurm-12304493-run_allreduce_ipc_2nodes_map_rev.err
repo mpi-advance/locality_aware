@@ -1,0 +1,448 @@
+[gpua020.delta.ncsa.illinois.edu:580946] mca: base: component_find: searching NULL for ras components
+[gpua020.delta.ncsa.illinois.edu:580946] mca: base: find_dyn_components: checking NULL for ras components
+[gpua020.delta.ncsa.illinois.edu:580946] pmix:mca: base: components_register: registering framework ras components
+[gpua020.delta.ncsa.illinois.edu:580946] pmix:mca: base: components_register: found loaded component simulator
+[gpua020.delta.ncsa.illinois.edu:580946] pmix:mca: base: components_register: component simulator register function successful
+[gpua020.delta.ncsa.illinois.edu:580946] pmix:mca: base: components_register: found loaded component testrm
+[gpua020.delta.ncsa.illinois.edu:580946] pmix:mca: base: components_register: component testrm register function successful
+[gpua020.delta.ncsa.illinois.edu:580946] pmix:mca: base: components_register: found loaded component pbs
+[gpua020.delta.ncsa.illinois.edu:580946] pmix:mca: base: components_register: component pbs register function successful
+[gpua020.delta.ncsa.illinois.edu:580946] pmix:mca: base: components_register: found loaded component slurm
+[gpua020.delta.ncsa.illinois.edu:580946] pmix:mca: base: components_register: component slurm register function successful
+[gpua020.delta.ncsa.illinois.edu:580946] mca: base: components_open: opening ras components
+[gpua020.delta.ncsa.illinois.edu:580946] mca: base: components_open: found loaded component simulator
+[gpua020.delta.ncsa.illinois.edu:580946] mca: base: components_open: found loaded component testrm
+[gpua020.delta.ncsa.illinois.edu:580946] mca: base: components_open: found loaded component pbs
+[gpua020.delta.ncsa.illinois.edu:580946] mca: base: components_open: component pbs open function successful
+[gpua020.delta.ncsa.illinois.edu:580946] mca: base: components_open: found loaded component slurm
+[gpua020.delta.ncsa.illinois.edu:580946] mca: base: components_open: component slurm open function successful
+[gpua020.delta.ncsa.illinois.edu:580946] mca:base:select: Auto-selecting ras components
+[gpua020.delta.ncsa.illinois.edu:580946] mca:base:select:(  ras) Querying component [simulator]
+[gpua020.delta.ncsa.illinois.edu:580946] mca:base:select:(  ras) Querying component [testrm]
+[gpua020.delta.ncsa.illinois.edu:580946] mca:base:select:(  ras) Querying component [pbs]
+[gpua020.delta.ncsa.illinois.edu:580946] mca:base:select:(  ras) Querying component [slurm]
+[gpua020.delta.ncsa.illinois.edu:580946] [prterun-gpua020-580946@0,0] ras:slurm: available for selection
+[gpua020.delta.ncsa.illinois.edu:580946] mca:base:select:(  ras) Query of component [slurm] set priority to 50
+[gpua020.delta.ncsa.illinois.edu:580946] mca:base:select:(  ras) Selected component [slurm]
+[gpua020.delta.ncsa.illinois.edu:580946] mca: base: close: unloading component simulator
+[gpua020.delta.ncsa.illinois.edu:580946] mca: base: close: unloading component testrm
+[gpua020.delta.ncsa.illinois.edu:580946] mca: base: close: unloading component pbs
+[gpua020.delta.ncsa.illinois.edu:580946] [prterun-gpua020-580946@0,0] ras:base:allocate
+[gpua020.delta.ncsa.illinois.edu:580946] [prterun-gpua020-580946@0,0] ras:slurm:allocate:discover: checking nodelist: gpua[020,073]
+[gpua020.delta.ncsa.illinois.edu:580946] [prterun-gpua020-580946@0,0] ras:slurm:allocate:discover: parse range 073 (2)
+[gpua020.delta.ncsa.illinois.edu:580946] [prterun-gpua020-580946@0,0] ras:slurm:allocate:discover: adding node gpua020 (64 slots)
+[gpua020.delta.ncsa.illinois.edu:580946] [prterun-gpua020-580946@0,0] ras:slurm:allocate:discover: adding node gpua073 (64 slots)
+[gpua020.delta.ncsa.illinois.edu:580946] [prterun-gpua020-580946@0,0] ras:slurm:allocate: success
+[gpua020.delta.ncsa.illinois.edu:580946] [prterun-gpua020-580946@0,0] ras:base:node_insert inserting 2 nodes
+[gpua020.delta.ncsa.illinois.edu:580946] [prterun-gpua020-580946@0,0] ras:base:node_insert updating HNP [gpua020] info to 64 slots
+[gpua020.delta.ncsa.illinois.edu:580946] [prterun-gpua020-580946@0,0] ras:base:node_insert node gpua073 slots 64
+[gpua020.delta.ncsa.illinois.edu:580946] [prterun-gpua020-580946@0,0] ras:base:allocate
+[gpua020.delta.ncsa.illinois.edu:580946] [prterun-gpua020-580946@0,0] ras:base:allocate allocation already read
+[gpua020.delta.ncsa.illinois.edu:580946] Rank 0 bound to package[0][core:0]
+[gpua020.delta.ncsa.illinois.edu:580946] Rank 2 bound to package[0][core:32]
+[gpua020.delta.ncsa.illinois.edu:580946] Rank 1 bound to package[0][core:16]
+[gpua020.delta.ncsa.illinois.edu:580946] Rank 3 bound to package[0][core:48]
+[gpua073.delta.ncsa.illinois.edu:346423] Rank 4 bound to package[0][core:0]
+[gpua073.delta.ncsa.illinois.edu:346423] Rank 5 bound to package[0][core:16]
+[gpua073.delta.ncsa.illinois.edu:346423] Rank 6 bound to package[0][core:32]
+[gpua073.delta.ncsa.illinois.edu:346423] Rank 7 bound to package[0][core:48]
+[gpua020.delta.ncsa.illinois.edu:581661] mca: base: component_find: searching NULL for ras components
+[gpua020.delta.ncsa.illinois.edu:581661] mca: base: find_dyn_components: checking NULL for ras components
+[gpua020.delta.ncsa.illinois.edu:581661] pmix:mca: base: components_register: registering framework ras components
+[gpua020.delta.ncsa.illinois.edu:581661] pmix:mca: base: components_register: found loaded component simulator
+[gpua020.delta.ncsa.illinois.edu:581661] pmix:mca: base: components_register: component simulator register function successful
+[gpua020.delta.ncsa.illinois.edu:581661] pmix:mca: base: components_register: found loaded component testrm
+[gpua020.delta.ncsa.illinois.edu:581661] pmix:mca: base: components_register: component testrm register function successful
+[gpua020.delta.ncsa.illinois.edu:581661] pmix:mca: base: components_register: found loaded component pbs
+[gpua020.delta.ncsa.illinois.edu:581661] pmix:mca: base: components_register: component pbs register function successful
+[gpua020.delta.ncsa.illinois.edu:581661] pmix:mca: base: components_register: found loaded component slurm
+[gpua020.delta.ncsa.illinois.edu:581661] pmix:mca: base: components_register: component slurm register function successful
+[gpua020.delta.ncsa.illinois.edu:581661] mca: base: components_open: opening ras components
+[gpua020.delta.ncsa.illinois.edu:581661] mca: base: components_open: found loaded component simulator
+[gpua020.delta.ncsa.illinois.edu:581661] mca: base: components_open: found loaded component testrm
+[gpua020.delta.ncsa.illinois.edu:581661] mca: base: components_open: found loaded component pbs
+[gpua020.delta.ncsa.illinois.edu:581661] mca: base: components_open: component pbs open function successful
+[gpua020.delta.ncsa.illinois.edu:581661] mca: base: components_open: found loaded component slurm
+[gpua020.delta.ncsa.illinois.edu:581661] mca: base: components_open: component slurm open function successful
+[gpua020.delta.ncsa.illinois.edu:581661] mca:base:select: Auto-selecting ras components
+[gpua020.delta.ncsa.illinois.edu:581661] mca:base:select:(  ras) Querying component [simulator]
+[gpua020.delta.ncsa.illinois.edu:581661] mca:base:select:(  ras) Querying component [testrm]
+[gpua020.delta.ncsa.illinois.edu:581661] mca:base:select:(  ras) Querying component [pbs]
+[gpua020.delta.ncsa.illinois.edu:581661] mca:base:select:(  ras) Querying component [slurm]
+[gpua020.delta.ncsa.illinois.edu:581661] [prterun-gpua020-581661@0,0] ras:slurm: available for selection
+[gpua020.delta.ncsa.illinois.edu:581661] mca:base:select:(  ras) Query of component [slurm] set priority to 50
+[gpua020.delta.ncsa.illinois.edu:581661] mca:base:select:(  ras) Selected component [slurm]
+[gpua020.delta.ncsa.illinois.edu:581661] mca: base: close: unloading component simulator
+[gpua020.delta.ncsa.illinois.edu:581661] mca: base: close: unloading component testrm
+[gpua020.delta.ncsa.illinois.edu:581661] mca: base: close: unloading component pbs
+[gpua020.delta.ncsa.illinois.edu:581661] [prterun-gpua020-581661@0,0] ras:base:allocate
+[gpua020.delta.ncsa.illinois.edu:581661] [prterun-gpua020-581661@0,0] ras:slurm:allocate:discover: checking nodelist: gpua[020,073]
+[gpua020.delta.ncsa.illinois.edu:581661] [prterun-gpua020-581661@0,0] ras:slurm:allocate:discover: parse range 073 (2)
+[gpua020.delta.ncsa.illinois.edu:581661] [prterun-gpua020-581661@0,0] ras:slurm:allocate:discover: adding node gpua020 (64 slots)
+[gpua020.delta.ncsa.illinois.edu:581661] [prterun-gpua020-581661@0,0] ras:slurm:allocate:discover: adding node gpua073 (64 slots)
+[gpua020.delta.ncsa.illinois.edu:581661] [prterun-gpua020-581661@0,0] ras:slurm:allocate: success
+[gpua020.delta.ncsa.illinois.edu:581661] [prterun-gpua020-581661@0,0] ras:base:node_insert inserting 2 nodes
+[gpua020.delta.ncsa.illinois.edu:581661] [prterun-gpua020-581661@0,0] ras:base:node_insert updating HNP [gpua020] info to 64 slots
+[gpua020.delta.ncsa.illinois.edu:581661] [prterun-gpua020-581661@0,0] ras:base:node_insert node gpua073 slots 64
+[gpua020.delta.ncsa.illinois.edu:581661] [prterun-gpua020-581661@0,0] ras:base:allocate
+[gpua020.delta.ncsa.illinois.edu:581661] [prterun-gpua020-581661@0,0] ras:base:allocate allocation already read
+[gpua020.delta.ncsa.illinois.edu:581661] Rank 1 bound to package[0][core:1]
+[gpua020.delta.ncsa.illinois.edu:581661] Rank 0 bound to package[0][core:0]
+[gpua020.delta.ncsa.illinois.edu:581661] Rank 3 bound to package[0][core:17]
+[gpua020.delta.ncsa.illinois.edu:581661] Rank 2 bound to package[0][core:16]
+[gpua020.delta.ncsa.illinois.edu:581661] Rank 4 bound to package[0][core:32]
+[gpua020.delta.ncsa.illinois.edu:581661] Rank 5 bound to package[0][core:33]
+[gpua020.delta.ncsa.illinois.edu:581661] Rank 6 bound to package[0][core:48]
+[gpua020.delta.ncsa.illinois.edu:581661] Rank 7 bound to package[0][core:49]
+[gpua073.delta.ncsa.illinois.edu:347159] Rank 8 bound to package[0][core:0]
+[gpua073.delta.ncsa.illinois.edu:347159] Rank 9 bound to package[0][core:1]
+[gpua073.delta.ncsa.illinois.edu:347159] Rank 10 bound to package[0][core:16]
+[gpua073.delta.ncsa.illinois.edu:347159] Rank 11 bound to package[0][core:17]
+[gpua073.delta.ncsa.illinois.edu:347159] Rank 12 bound to package[0][core:32]
+[gpua073.delta.ncsa.illinois.edu:347159] Rank 13 bound to package[0][core:33]
+[gpua073.delta.ncsa.illinois.edu:347159] Rank 14 bound to package[0][core:48]
+[gpua073.delta.ncsa.illinois.edu:347159] Rank 15 bound to package[0][core:49]
+[gpua020.delta.ncsa.illinois.edu:582740] mca: base: component_find: searching NULL for ras components
+[gpua020.delta.ncsa.illinois.edu:582740] mca: base: find_dyn_components: checking NULL for ras components
+[gpua020.delta.ncsa.illinois.edu:582740] pmix:mca: base: components_register: registering framework ras components
+[gpua020.delta.ncsa.illinois.edu:582740] pmix:mca: base: components_register: found loaded component simulator
+[gpua020.delta.ncsa.illinois.edu:582740] pmix:mca: base: components_register: component simulator register function successful
+[gpua020.delta.ncsa.illinois.edu:582740] pmix:mca: base: components_register: found loaded component testrm
+[gpua020.delta.ncsa.illinois.edu:582740] pmix:mca: base: components_register: component testrm register function successful
+[gpua020.delta.ncsa.illinois.edu:582740] pmix:mca: base: components_register: found loaded component pbs
+[gpua020.delta.ncsa.illinois.edu:582740] pmix:mca: base: components_register: component pbs register function successful
+[gpua020.delta.ncsa.illinois.edu:582740] pmix:mca: base: components_register: found loaded component slurm
+[gpua020.delta.ncsa.illinois.edu:582740] pmix:mca: base: components_register: component slurm register function successful
+[gpua020.delta.ncsa.illinois.edu:582740] mca: base: components_open: opening ras components
+[gpua020.delta.ncsa.illinois.edu:582740] mca: base: components_open: found loaded component simulator
+[gpua020.delta.ncsa.illinois.edu:582740] mca: base: components_open: found loaded component testrm
+[gpua020.delta.ncsa.illinois.edu:582740] mca: base: components_open: found loaded component pbs
+[gpua020.delta.ncsa.illinois.edu:582740] mca: base: components_open: component pbs open function successful
+[gpua020.delta.ncsa.illinois.edu:582740] mca: base: components_open: found loaded component slurm
+[gpua020.delta.ncsa.illinois.edu:582740] mca: base: components_open: component slurm open function successful
+[gpua020.delta.ncsa.illinois.edu:582740] mca:base:select: Auto-selecting ras components
+[gpua020.delta.ncsa.illinois.edu:582740] mca:base:select:(  ras) Querying component [simulator]
+[gpua020.delta.ncsa.illinois.edu:582740] mca:base:select:(  ras) Querying component [testrm]
+[gpua020.delta.ncsa.illinois.edu:582740] mca:base:select:(  ras) Querying component [pbs]
+[gpua020.delta.ncsa.illinois.edu:582740] mca:base:select:(  ras) Querying component [slurm]
+[gpua020.delta.ncsa.illinois.edu:582740] [prterun-gpua020-582740@0,0] ras:slurm: available for selection
+[gpua020.delta.ncsa.illinois.edu:582740] mca:base:select:(  ras) Query of component [slurm] set priority to 50
+[gpua020.delta.ncsa.illinois.edu:582740] mca:base:select:(  ras) Selected component [slurm]
+[gpua020.delta.ncsa.illinois.edu:582740] mca: base: close: unloading component simulator
+[gpua020.delta.ncsa.illinois.edu:582740] mca: base: close: unloading component testrm
+[gpua020.delta.ncsa.illinois.edu:582740] mca: base: close: unloading component pbs
+[gpua020.delta.ncsa.illinois.edu:582740] [prterun-gpua020-582740@0,0] ras:base:allocate
+[gpua020.delta.ncsa.illinois.edu:582740] [prterun-gpua020-582740@0,0] ras:slurm:allocate:discover: checking nodelist: gpua[020,073]
+[gpua020.delta.ncsa.illinois.edu:582740] [prterun-gpua020-582740@0,0] ras:slurm:allocate:discover: parse range 073 (2)
+[gpua020.delta.ncsa.illinois.edu:582740] [prterun-gpua020-582740@0,0] ras:slurm:allocate:discover: adding node gpua020 (64 slots)
+[gpua020.delta.ncsa.illinois.edu:582740] [prterun-gpua020-582740@0,0] ras:slurm:allocate:discover: adding node gpua073 (64 slots)
+[gpua020.delta.ncsa.illinois.edu:582740] [prterun-gpua020-582740@0,0] ras:slurm:allocate: success
+[gpua020.delta.ncsa.illinois.edu:582740] [prterun-gpua020-582740@0,0] ras:base:node_insert inserting 2 nodes
+[gpua020.delta.ncsa.illinois.edu:582740] [prterun-gpua020-582740@0,0] ras:base:node_insert updating HNP [gpua020] info to 64 slots
+[gpua020.delta.ncsa.illinois.edu:582740] [prterun-gpua020-582740@0,0] ras:base:node_insert node gpua073 slots 64
+[gpua020.delta.ncsa.illinois.edu:582740] [prterun-gpua020-582740@0,0] ras:base:allocate
+[gpua020.delta.ncsa.illinois.edu:582740] [prterun-gpua020-582740@0,0] ras:base:allocate allocation already read
+[gpua020.delta.ncsa.illinois.edu:582740] Rank 1 bound to package[0][core:1]
+[gpua020.delta.ncsa.illinois.edu:582740] Rank 0 bound to package[0][core:0]
+[gpua020.delta.ncsa.illinois.edu:582740] Rank 2 bound to package[0][core:2]
+[gpua020.delta.ncsa.illinois.edu:582740] Rank 4 bound to package[0][core:16]
+[gpua020.delta.ncsa.illinois.edu:582740] Rank 3 bound to package[0][core:3]
+[gpua020.delta.ncsa.illinois.edu:582740] Rank 5 bound to package[0][core:17]
+[gpua020.delta.ncsa.illinois.edu:582740] Rank 6 bound to package[0][core:18]
+[gpua020.delta.ncsa.illinois.edu:582740] Rank 7 bound to package[0][core:19]
+[gpua020.delta.ncsa.illinois.edu:582740] Rank 8 bound to package[0][core:32]
+[gpua020.delta.ncsa.illinois.edu:582740] Rank 9 bound to package[0][core:33]
+[gpua020.delta.ncsa.illinois.edu:582740] Rank 10 bound to package[0][core:34]
+[gpua020.delta.ncsa.illinois.edu:582740] Rank 11 bound to package[0][core:35]
+[gpua020.delta.ncsa.illinois.edu:582740] Rank 12 bound to package[0][core:48]
+[gpua020.delta.ncsa.illinois.edu:582740] Rank 13 bound to package[0][core:49]
+[gpua020.delta.ncsa.illinois.edu:582740] Rank 14 bound to package[0][core:50]
+[gpua020.delta.ncsa.illinois.edu:582740] Rank 15 bound to package[0][core:51]
+[gpua073.delta.ncsa.illinois.edu:348240] Rank 26 bound to package[0][core:34]
+[gpua073.delta.ncsa.illinois.edu:348240] Rank 17 bound to package[0][core:1]
+[gpua073.delta.ncsa.illinois.edu:348240] Rank 23 bound to package[0][core:19]
+[gpua073.delta.ncsa.illinois.edu:348240] Rank 19 bound to package[0][core:3]
+[gpua073.delta.ncsa.illinois.edu:348240] Rank 25 bound to package[0][core:33]
+[gpua073.delta.ncsa.illinois.edu:348240] Rank 21 bound to package[0][core:17]
+[gpua073.delta.ncsa.illinois.edu:348240] Rank 16 bound to package[0][core:0]
+[gpua073.delta.ncsa.illinois.edu:348240] Rank 20 bound to package[0][core:16]
+[gpua073.delta.ncsa.illinois.edu:348240] Rank 24 bound to package[0][core:32]
+[gpua073.delta.ncsa.illinois.edu:348240] Rank 27 bound to package[0][core:35]
+[gpua073.delta.ncsa.illinois.edu:348240] Rank 22 bound to package[0][core:18]
+[gpua073.delta.ncsa.illinois.edu:348240] Rank 18 bound to package[0][core:2]
+[gpua073.delta.ncsa.illinois.edu:348240] Rank 28 bound to package[0][core:48]
+[gpua073.delta.ncsa.illinois.edu:348240] Rank 29 bound to package[0][core:49]
+[gpua073.delta.ncsa.illinois.edu:348240] Rank 30 bound to package[0][core:50]
+[gpua073.delta.ncsa.illinois.edu:348240] Rank 31 bound to package[0][core:51]
+[gpua020.delta.ncsa.illinois.edu:584172] mca: base: component_find: searching NULL for ras components
+[gpua020.delta.ncsa.illinois.edu:584172] mca: base: find_dyn_components: checking NULL for ras components
+[gpua020.delta.ncsa.illinois.edu:584172] pmix:mca: base: components_register: registering framework ras components
+[gpua020.delta.ncsa.illinois.edu:584172] pmix:mca: base: components_register: found loaded component simulator
+[gpua020.delta.ncsa.illinois.edu:584172] pmix:mca: base: components_register: component simulator register function successful
+[gpua020.delta.ncsa.illinois.edu:584172] pmix:mca: base: components_register: found loaded component testrm
+[gpua020.delta.ncsa.illinois.edu:584172] pmix:mca: base: components_register: component testrm register function successful
+[gpua020.delta.ncsa.illinois.edu:584172] pmix:mca: base: components_register: found loaded component pbs
+[gpua020.delta.ncsa.illinois.edu:584172] pmix:mca: base: components_register: component pbs register function successful
+[gpua020.delta.ncsa.illinois.edu:584172] pmix:mca: base: components_register: found loaded component slurm
+[gpua020.delta.ncsa.illinois.edu:584172] pmix:mca: base: components_register: component slurm register function successful
+[gpua020.delta.ncsa.illinois.edu:584172] mca: base: components_open: opening ras components
+[gpua020.delta.ncsa.illinois.edu:584172] mca: base: components_open: found loaded component simulator
+[gpua020.delta.ncsa.illinois.edu:584172] mca: base: components_open: found loaded component testrm
+[gpua020.delta.ncsa.illinois.edu:584172] mca: base: components_open: found loaded component pbs
+[gpua020.delta.ncsa.illinois.edu:584172] mca: base: components_open: component pbs open function successful
+[gpua020.delta.ncsa.illinois.edu:584172] mca: base: components_open: found loaded component slurm
+[gpua020.delta.ncsa.illinois.edu:584172] mca: base: components_open: component slurm open function successful
+[gpua020.delta.ncsa.illinois.edu:584172] mca:base:select: Auto-selecting ras components
+[gpua020.delta.ncsa.illinois.edu:584172] mca:base:select:(  ras) Querying component [simulator]
+[gpua020.delta.ncsa.illinois.edu:584172] mca:base:select:(  ras) Querying component [testrm]
+[gpua020.delta.ncsa.illinois.edu:584172] mca:base:select:(  ras) Querying component [pbs]
+[gpua020.delta.ncsa.illinois.edu:584172] mca:base:select:(  ras) Querying component [slurm]
+[gpua020.delta.ncsa.illinois.edu:584172] [prterun-gpua020-584172@0,0] ras:slurm: available for selection
+[gpua020.delta.ncsa.illinois.edu:584172] mca:base:select:(  ras) Query of component [slurm] set priority to 50
+[gpua020.delta.ncsa.illinois.edu:584172] mca:base:select:(  ras) Selected component [slurm]
+[gpua020.delta.ncsa.illinois.edu:584172] mca: base: close: unloading component simulator
+[gpua020.delta.ncsa.illinois.edu:584172] mca: base: close: unloading component testrm
+[gpua020.delta.ncsa.illinois.edu:584172] mca: base: close: unloading component pbs
+[gpua020.delta.ncsa.illinois.edu:584172] [prterun-gpua020-584172@0,0] ras:base:allocate
+[gpua020.delta.ncsa.illinois.edu:584172] [prterun-gpua020-584172@0,0] ras:slurm:allocate:discover: checking nodelist: gpua[020,073]
+[gpua020.delta.ncsa.illinois.edu:584172] [prterun-gpua020-584172@0,0] ras:slurm:allocate:discover: parse range 073 (2)
+[gpua020.delta.ncsa.illinois.edu:584172] [prterun-gpua020-584172@0,0] ras:slurm:allocate:discover: adding node gpua020 (64 slots)
+[gpua020.delta.ncsa.illinois.edu:584172] [prterun-gpua020-584172@0,0] ras:slurm:allocate:discover: adding node gpua073 (64 slots)
+[gpua020.delta.ncsa.illinois.edu:584172] [prterun-gpua020-584172@0,0] ras:slurm:allocate: success
+[gpua020.delta.ncsa.illinois.edu:584172] [prterun-gpua020-584172@0,0] ras:base:node_insert inserting 2 nodes
+[gpua020.delta.ncsa.illinois.edu:584172] [prterun-gpua020-584172@0,0] ras:base:node_insert updating HNP [gpua020] info to 64 slots
+[gpua020.delta.ncsa.illinois.edu:584172] [prterun-gpua020-584172@0,0] ras:base:node_insert node gpua073 slots 64
+[gpua020.delta.ncsa.illinois.edu:584172] [prterun-gpua020-584172@0,0] ras:base:allocate
+[gpua020.delta.ncsa.illinois.edu:584172] [prterun-gpua020-584172@0,0] ras:base:allocate allocation already read
+[gpua020.delta.ncsa.illinois.edu:584172] Rank 1 bound to package[0][core:1]
+[gpua020.delta.ncsa.illinois.edu:584172] Rank 2 bound to package[0][core:2]
+[gpua020.delta.ncsa.illinois.edu:584172] Rank 0 bound to package[0][core:0]
+[gpua020.delta.ncsa.illinois.edu:584172] Rank 3 bound to package[0][core:3]
+[gpua020.delta.ncsa.illinois.edu:584172] Rank 4 bound to package[0][core:4]
+[gpua020.delta.ncsa.illinois.edu:584172] Rank 5 bound to package[0][core:5]
+[gpua020.delta.ncsa.illinois.edu:584172] Rank 7 bound to package[0][core:7]
+[gpua020.delta.ncsa.illinois.edu:584172] Rank 6 bound to package[0][core:6]
+[gpua020.delta.ncsa.illinois.edu:584172] Rank 8 bound to package[0][core:16]
+[gpua020.delta.ncsa.illinois.edu:584172] Rank 9 bound to package[0][core:17]
+[gpua020.delta.ncsa.illinois.edu:584172] Rank 10 bound to package[0][core:18]
+[gpua020.delta.ncsa.illinois.edu:584172] Rank 11 bound to package[0][core:19]
+[gpua020.delta.ncsa.illinois.edu:584172] Rank 12 bound to package[0][core:20]
+[gpua020.delta.ncsa.illinois.edu:584172] Rank 13 bound to package[0][core:21]
+[gpua020.delta.ncsa.illinois.edu:584172] Rank 14 bound to package[0][core:22]
+[gpua020.delta.ncsa.illinois.edu:584172] Rank 16 bound to package[0][core:32]
+[gpua020.delta.ncsa.illinois.edu:584172] Rank 15 bound to package[0][core:23]
+[gpua020.delta.ncsa.illinois.edu:584172] Rank 17 bound to package[0][core:33]
+[gpua020.delta.ncsa.illinois.edu:584172] Rank 18 bound to package[0][core:34]
+[gpua020.delta.ncsa.illinois.edu:584172] Rank 20 bound to package[0][core:36]
+[gpua020.delta.ncsa.illinois.edu:584172] Rank 19 bound to package[0][core:35]
+[gpua020.delta.ncsa.illinois.edu:584172] Rank 21 bound to package[0][core:37]
+[gpua020.delta.ncsa.illinois.edu:584172] Rank 23 bound to package[0][core:39]
+[gpua020.delta.ncsa.illinois.edu:584172] Rank 22 bound to package[0][core:38]
+[gpua020.delta.ncsa.illinois.edu:584172] Rank 24 bound to package[0][core:48]
+[gpua020.delta.ncsa.illinois.edu:584172] Rank 25 bound to package[0][core:49]
+[gpua020.delta.ncsa.illinois.edu:584172] Rank 26 bound to package[0][core:50]
+[gpua020.delta.ncsa.illinois.edu:584172] Rank 27 bound to package[0][core:51]
+[gpua020.delta.ncsa.illinois.edu:584172] Rank 28 bound to package[0][core:52]
+[gpua020.delta.ncsa.illinois.edu:584172] Rank 29 bound to package[0][core:53]
+[gpua020.delta.ncsa.illinois.edu:584172] Rank 30 bound to package[0][core:54]
+[gpua020.delta.ncsa.illinois.edu:584172] Rank 31 bound to package[0][core:55]
+[gpua073.delta.ncsa.illinois.edu:349694] Rank 32 bound to package[0][core:0]
+[gpua073.delta.ncsa.illinois.edu:349694] Rank 35 bound to package[0][core:3]
+[gpua073.delta.ncsa.illinois.edu:349694] Rank 36 bound to package[0][core:4]
+[gpua073.delta.ncsa.illinois.edu:349694] Rank 34 bound to package[0][core:2]
+[gpua073.delta.ncsa.illinois.edu:349694] Rank 37 bound to package[0][core:5]
+[gpua073.delta.ncsa.illinois.edu:349694] Rank 33 bound to package[0][core:1]
+[gpua073.delta.ncsa.illinois.edu:349694] Rank 38 bound to package[0][core:6]
+[gpua073.delta.ncsa.illinois.edu:349694] Rank 40 bound to package[0][core:16]
+[gpua073.delta.ncsa.illinois.edu:349694] Rank 39 bound to package[0][core:7]
+[gpua073.delta.ncsa.illinois.edu:349694] Rank 42 bound to package[0][core:18]
+[gpua073.delta.ncsa.illinois.edu:349694] Rank 41 bound to package[0][core:17]
+[gpua073.delta.ncsa.illinois.edu:349694] Rank 43 bound to package[0][core:19]
+[gpua073.delta.ncsa.illinois.edu:349694] Rank 44 bound to package[0][core:20]
+[gpua073.delta.ncsa.illinois.edu:349694] Rank 45 bound to package[0][core:21]
+[gpua073.delta.ncsa.illinois.edu:349694] Rank 46 bound to package[0][core:22]
+[gpua073.delta.ncsa.illinois.edu:349694] Rank 47 bound to package[0][core:23]
+[gpua073.delta.ncsa.illinois.edu:349694] Rank 51 bound to package[0][core:35]
+[gpua073.delta.ncsa.illinois.edu:349694] Rank 48 bound to package[0][core:32]
+[gpua073.delta.ncsa.illinois.edu:349694] Rank 50 bound to package[0][core:34]
+[gpua073.delta.ncsa.illinois.edu:349694] Rank 49 bound to package[0][core:33]
+[gpua073.delta.ncsa.illinois.edu:349694] Rank 52 bound to package[0][core:36]
+[gpua073.delta.ncsa.illinois.edu:349694] Rank 54 bound to package[0][core:38]
+[gpua073.delta.ncsa.illinois.edu:349694] Rank 53 bound to package[0][core:37]
+[gpua073.delta.ncsa.illinois.edu:349694] Rank 55 bound to package[0][core:39]
+[gpua073.delta.ncsa.illinois.edu:349694] Rank 56 bound to package[0][core:48]
+[gpua073.delta.ncsa.illinois.edu:349694] Rank 57 bound to package[0][core:49]
+[gpua073.delta.ncsa.illinois.edu:349694] Rank 58 bound to package[0][core:50]
+[gpua073.delta.ncsa.illinois.edu:349694] Rank 59 bound to package[0][core:51]
+[gpua073.delta.ncsa.illinois.edu:349694] Rank 60 bound to package[0][core:52]
+[gpua073.delta.ncsa.illinois.edu:349694] Rank 61 bound to package[0][core:53]
+[gpua073.delta.ncsa.illinois.edu:349694] Rank 62 bound to package[0][core:54]
+[gpua073.delta.ncsa.illinois.edu:349694] Rank 63 bound to package[0][core:55]
+[gpua020.delta.ncsa.illinois.edu:585695] mca: base: component_find: searching NULL for ras components
+[gpua020.delta.ncsa.illinois.edu:585695] mca: base: find_dyn_components: checking NULL for ras components
+[gpua020.delta.ncsa.illinois.edu:585695] pmix:mca: base: components_register: registering framework ras components
+[gpua020.delta.ncsa.illinois.edu:585695] pmix:mca: base: components_register: found loaded component simulator
+[gpua020.delta.ncsa.illinois.edu:585695] pmix:mca: base: components_register: component simulator register function successful
+[gpua020.delta.ncsa.illinois.edu:585695] pmix:mca: base: components_register: found loaded component testrm
+[gpua020.delta.ncsa.illinois.edu:585695] pmix:mca: base: components_register: component testrm register function successful
+[gpua020.delta.ncsa.illinois.edu:585695] pmix:mca: base: components_register: found loaded component pbs
+[gpua020.delta.ncsa.illinois.edu:585695] pmix:mca: base: components_register: component pbs register function successful
+[gpua020.delta.ncsa.illinois.edu:585695] pmix:mca: base: components_register: found loaded component slurm
+[gpua020.delta.ncsa.illinois.edu:585695] pmix:mca: base: components_register: component slurm register function successful
+[gpua020.delta.ncsa.illinois.edu:585695] mca: base: components_open: opening ras components
+[gpua020.delta.ncsa.illinois.edu:585695] mca: base: components_open: found loaded component simulator
+[gpua020.delta.ncsa.illinois.edu:585695] mca: base: components_open: found loaded component testrm
+[gpua020.delta.ncsa.illinois.edu:585695] mca: base: components_open: found loaded component pbs
+[gpua020.delta.ncsa.illinois.edu:585695] mca: base: components_open: component pbs open function successful
+[gpua020.delta.ncsa.illinois.edu:585695] mca: base: components_open: found loaded component slurm
+[gpua020.delta.ncsa.illinois.edu:585695] mca: base: components_open: component slurm open function successful
+[gpua020.delta.ncsa.illinois.edu:585695] mca:base:select: Auto-selecting ras components
+[gpua020.delta.ncsa.illinois.edu:585695] mca:base:select:(  ras) Querying component [simulator]
+[gpua020.delta.ncsa.illinois.edu:585695] mca:base:select:(  ras) Querying component [testrm]
+[gpua020.delta.ncsa.illinois.edu:585695] mca:base:select:(  ras) Querying component [pbs]
+[gpua020.delta.ncsa.illinois.edu:585695] mca:base:select:(  ras) Querying component [slurm]
+[gpua020.delta.ncsa.illinois.edu:585695] [prterun-gpua020-585695@0,0] ras:slurm: available for selection
+[gpua020.delta.ncsa.illinois.edu:585695] mca:base:select:(  ras) Query of component [slurm] set priority to 50
+[gpua020.delta.ncsa.illinois.edu:585695] mca:base:select:(  ras) Selected component [slurm]
+[gpua020.delta.ncsa.illinois.edu:585695] mca: base: close: unloading component simulator
+[gpua020.delta.ncsa.illinois.edu:585695] mca: base: close: unloading component testrm
+[gpua020.delta.ncsa.illinois.edu:585695] mca: base: close: unloading component pbs
+[gpua020.delta.ncsa.illinois.edu:585695] [prterun-gpua020-585695@0,0] ras:base:allocate
+[gpua020.delta.ncsa.illinois.edu:585695] [prterun-gpua020-585695@0,0] ras:slurm:allocate:discover: checking nodelist: gpua[020,073]
+[gpua020.delta.ncsa.illinois.edu:585695] [prterun-gpua020-585695@0,0] ras:slurm:allocate:discover: parse range 073 (2)
+[gpua020.delta.ncsa.illinois.edu:585695] [prterun-gpua020-585695@0,0] ras:slurm:allocate:discover: adding node gpua020 (64 slots)
+[gpua020.delta.ncsa.illinois.edu:585695] [prterun-gpua020-585695@0,0] ras:slurm:allocate:discover: adding node gpua073 (64 slots)
+[gpua020.delta.ncsa.illinois.edu:585695] [prterun-gpua020-585695@0,0] ras:slurm:allocate: success
+[gpua020.delta.ncsa.illinois.edu:585695] [prterun-gpua020-585695@0,0] ras:base:node_insert inserting 2 nodes
+[gpua020.delta.ncsa.illinois.edu:585695] [prterun-gpua020-585695@0,0] ras:base:node_insert updating HNP [gpua020] info to 64 slots
+[gpua020.delta.ncsa.illinois.edu:585695] [prterun-gpua020-585695@0,0] ras:base:node_insert node gpua073 slots 64
+[gpua020.delta.ncsa.illinois.edu:585695] [prterun-gpua020-585695@0,0] ras:base:allocate
+[gpua020.delta.ncsa.illinois.edu:585695] [prterun-gpua020-585695@0,0] ras:base:allocate allocation already read
+[gpua020.delta.ncsa.illinois.edu:585695] Rank 4 bound to package[0][core:4]
+[gpua020.delta.ncsa.illinois.edu:585695] Rank 0 bound to package[0][core:0]
+[gpua020.delta.ncsa.illinois.edu:585695] Rank 2 bound to package[0][core:2]
+[gpua020.delta.ncsa.illinois.edu:585695] Rank 7 bound to package[0][core:7]
+[gpua020.delta.ncsa.illinois.edu:585695] Rank 3 bound to package[0][core:3]
+[gpua020.delta.ncsa.illinois.edu:585695] Rank 5 bound to package[0][core:5]
+[gpua020.delta.ncsa.illinois.edu:585695] Rank 1 bound to package[0][core:1]
+[gpua020.delta.ncsa.illinois.edu:585695] Rank 6 bound to package[0][core:6]
+[gpua020.delta.ncsa.illinois.edu:585695] Rank 9 bound to package[0][core:9]
+[gpua020.delta.ncsa.illinois.edu:585695] Rank 8 bound to package[0][core:8]
+[gpua020.delta.ncsa.illinois.edu:585695] Rank 10 bound to package[0][core:10]
+[gpua020.delta.ncsa.illinois.edu:585695] Rank 12 bound to package[0][core:12]
+[gpua020.delta.ncsa.illinois.edu:585695] Rank 13 bound to package[0][core:13]
+[gpua020.delta.ncsa.illinois.edu:585695] Rank 11 bound to package[0][core:11]
+[gpua020.delta.ncsa.illinois.edu:585695] Rank 14 bound to package[0][core:14]
+[gpua020.delta.ncsa.illinois.edu:585695] Rank 15 bound to package[0][core:15]
+[gpua020.delta.ncsa.illinois.edu:585695] Rank 17 bound to package[0][core:17]
+[gpua020.delta.ncsa.illinois.edu:585695] Rank 16 bound to package[0][core:16]
+[gpua020.delta.ncsa.illinois.edu:585695] Rank 18 bound to package[0][core:18]
+[gpua020.delta.ncsa.illinois.edu:585695] Rank 19 bound to package[0][core:19]
+[gpua020.delta.ncsa.illinois.edu:585695] Rank 20 bound to package[0][core:20]
+[gpua020.delta.ncsa.illinois.edu:585695] Rank 21 bound to package[0][core:21]
+[gpua020.delta.ncsa.illinois.edu:585695] Rank 22 bound to package[0][core:22]
+[gpua020.delta.ncsa.illinois.edu:585695] Rank 23 bound to package[0][core:23]
+[gpua020.delta.ncsa.illinois.edu:585695] Rank 24 bound to package[0][core:24]
+[gpua020.delta.ncsa.illinois.edu:585695] Rank 25 bound to package[0][core:25]
+[gpua020.delta.ncsa.illinois.edu:585695] Rank 28 bound to package[0][core:28]
+[gpua020.delta.ncsa.illinois.edu:585695] Rank 27 bound to package[0][core:27]
+[gpua020.delta.ncsa.illinois.edu:585695] Rank 26 bound to package[0][core:26]
+[gpua020.delta.ncsa.illinois.edu:585695] Rank 30 bound to package[0][core:30]
+[gpua020.delta.ncsa.illinois.edu:585695] Rank 31 bound to package[0][core:31]
+[gpua020.delta.ncsa.illinois.edu:585695] Rank 29 bound to package[0][core:29]
+[gpua020.delta.ncsa.illinois.edu:585695] Rank 32 bound to package[0][core:32]
+[gpua020.delta.ncsa.illinois.edu:585695] Rank 34 bound to package[0][core:34]
+[gpua020.delta.ncsa.illinois.edu:585695] Rank 33 bound to package[0][core:33]
+[gpua020.delta.ncsa.illinois.edu:585695] Rank 37 bound to package[0][core:37]
+[gpua020.delta.ncsa.illinois.edu:585695] Rank 35 bound to package[0][core:35]
+[gpua020.delta.ncsa.illinois.edu:585695] Rank 36 bound to package[0][core:36]
+[gpua020.delta.ncsa.illinois.edu:585695] Rank 38 bound to package[0][core:38]
+[gpua020.delta.ncsa.illinois.edu:585695] Rank 39 bound to package[0][core:39]
+[gpua020.delta.ncsa.illinois.edu:585695] Rank 40 bound to package[0][core:40]
+[gpua020.delta.ncsa.illinois.edu:585695] Rank 41 bound to package[0][core:41]
+[gpua020.delta.ncsa.illinois.edu:585695] Rank 43 bound to package[0][core:43]
+[gpua020.delta.ncsa.illinois.edu:585695] Rank 42 bound to package[0][core:42]
+[gpua020.delta.ncsa.illinois.edu:585695] Rank 46 bound to package[0][core:46]
+[gpua020.delta.ncsa.illinois.edu:585695] Rank 44 bound to package[0][core:44]
+[gpua020.delta.ncsa.illinois.edu:585695] Rank 45 bound to package[0][core:45]
+[gpua020.delta.ncsa.illinois.edu:585695] Rank 48 bound to package[0][core:48]
+[gpua020.delta.ncsa.illinois.edu:585695] Rank 50 bound to package[0][core:50]
+[gpua020.delta.ncsa.illinois.edu:585695] Rank 51 bound to package[0][core:51]
+[gpua020.delta.ncsa.illinois.edu:585695] Rank 49 bound to package[0][core:49]
+[gpua020.delta.ncsa.illinois.edu:585695] Rank 47 bound to package[0][core:47]
+[gpua020.delta.ncsa.illinois.edu:585695] Rank 53 bound to package[0][core:53]
+[gpua020.delta.ncsa.illinois.edu:585695] Rank 52 bound to package[0][core:52]
+[gpua020.delta.ncsa.illinois.edu:585695] Rank 54 bound to package[0][core:54]
+[gpua020.delta.ncsa.illinois.edu:585695] Rank 55 bound to package[0][core:55]
+[gpua020.delta.ncsa.illinois.edu:585695] Rank 56 bound to package[0][core:56]
+[gpua020.delta.ncsa.illinois.edu:585695] Rank 57 bound to package[0][core:57]
+[gpua020.delta.ncsa.illinois.edu:585695] Rank 58 bound to package[0][core:58]
+[gpua020.delta.ncsa.illinois.edu:585695] Rank 59 bound to package[0][core:59]
+[gpua020.delta.ncsa.illinois.edu:585695] Rank 61 bound to package[0][core:61]
+[gpua020.delta.ncsa.illinois.edu:585695] Rank 60 bound to package[0][core:60]
+[gpua020.delta.ncsa.illinois.edu:585695] Rank 62 bound to package[0][core:62]
+[gpua020.delta.ncsa.illinois.edu:585695] Rank 63 bound to package[0][core:63]
+[gpua073.delta.ncsa.illinois.edu:351229] Rank 64 bound to package[0][core:0]
+[gpua073.delta.ncsa.illinois.edu:351229] Rank 65 bound to package[0][core:1]
+[gpua073.delta.ncsa.illinois.edu:351229] Rank 67 bound to package[0][core:3]
+[gpua073.delta.ncsa.illinois.edu:351229] Rank 66 bound to package[0][core:2]
+[gpua073.delta.ncsa.illinois.edu:351229] Rank 68 bound to package[0][core:4]
+[gpua073.delta.ncsa.illinois.edu:351229] Rank 69 bound to package[0][core:5]
+[gpua073.delta.ncsa.illinois.edu:351229] Rank 71 bound to package[0][core:7]
+[gpua073.delta.ncsa.illinois.edu:351229] Rank 70 bound to package[0][core:6]
+[gpua073.delta.ncsa.illinois.edu:351229] Rank 73 bound to package[0][core:9]
+[gpua073.delta.ncsa.illinois.edu:351229] Rank 72 bound to package[0][core:8]
+[gpua073.delta.ncsa.illinois.edu:351229] Rank 74 bound to package[0][core:10]
+[gpua073.delta.ncsa.illinois.edu:351229] Rank 75 bound to package[0][core:11]
+[gpua073.delta.ncsa.illinois.edu:351229] Rank 76 bound to package[0][core:12]
+[gpua073.delta.ncsa.illinois.edu:351229] Rank 77 bound to package[0][core:13]
+[gpua073.delta.ncsa.illinois.edu:351229] Rank 78 bound to package[0][core:14]
+[gpua073.delta.ncsa.illinois.edu:351229] Rank 79 bound to package[0][core:15]
+[gpua073.delta.ncsa.illinois.edu:351229] Rank 80 bound to package[0][core:16]
+[gpua073.delta.ncsa.illinois.edu:351229] Rank 81 bound to package[0][core:17]
+[gpua073.delta.ncsa.illinois.edu:351229] Rank 83 bound to package[0][core:19]
+[gpua073.delta.ncsa.illinois.edu:351229] Rank 82 bound to package[0][core:18]
+[gpua073.delta.ncsa.illinois.edu:351229] Rank 85 bound to package[0][core:21]
+[gpua073.delta.ncsa.illinois.edu:351229] Rank 84 bound to package[0][core:20]
+[gpua073.delta.ncsa.illinois.edu:351229] Rank 86 bound to package[0][core:22]
+[gpua073.delta.ncsa.illinois.edu:351229] Rank 89 bound to package[0][core:25]
+[gpua073.delta.ncsa.illinois.edu:351229] Rank 88 bound to package[0][core:24]
+[gpua073.delta.ncsa.illinois.edu:351229] Rank 87 bound to package[0][core:23]
+[gpua073.delta.ncsa.illinois.edu:351229] Rank 90 bound to package[0][core:26]
+[gpua073.delta.ncsa.illinois.edu:351229] Rank 91 bound to package[0][core:27]
+[gpua073.delta.ncsa.illinois.edu:351229] Rank 93 bound to package[0][core:29]
+[gpua073.delta.ncsa.illinois.edu:351229] Rank 94 bound to package[0][core:30]
+[gpua073.delta.ncsa.illinois.edu:351229] Rank 95 bound to package[0][core:31]
+[gpua073.delta.ncsa.illinois.edu:351229] Rank 92 bound to package[0][core:28]
+[gpua073.delta.ncsa.illinois.edu:351229] Rank 96 bound to package[0][core:32]
+[gpua073.delta.ncsa.illinois.edu:351229] Rank 97 bound to package[0][core:33]
+[gpua073.delta.ncsa.illinois.edu:351229] Rank 99 bound to package[0][core:35]
+[gpua073.delta.ncsa.illinois.edu:351229] Rank 98 bound to package[0][core:34]
+[gpua073.delta.ncsa.illinois.edu:351229] Rank 100 bound to package[0][core:36]
+[gpua073.delta.ncsa.illinois.edu:351229] Rank 102 bound to package[0][core:38]
+[gpua073.delta.ncsa.illinois.edu:351229] Rank 101 bound to package[0][core:37]
+[gpua073.delta.ncsa.illinois.edu:351229] Rank 103 bound to package[0][core:39]
+[gpua073.delta.ncsa.illinois.edu:351229] Rank 107 bound to package[0][core:43]
+[gpua073.delta.ncsa.illinois.edu:351229] Rank 106 bound to package[0][core:42]
+[gpua073.delta.ncsa.illinois.edu:351229] Rank 108 bound to package[0][core:44]
+[gpua073.delta.ncsa.illinois.edu:351229] Rank 104 bound to package[0][core:40]
+[gpua073.delta.ncsa.illinois.edu:351229] Rank 109 bound to package[0][core:45]
+[gpua073.delta.ncsa.illinois.edu:351229] Rank 105 bound to package[0][core:41]
+[gpua073.delta.ncsa.illinois.edu:351229] Rank 110 bound to package[0][core:46]
+[gpua073.delta.ncsa.illinois.edu:351229] Rank 111 bound to package[0][core:47]
+[gpua073.delta.ncsa.illinois.edu:351229] Rank 114 bound to package[0][core:50]
+[gpua073.delta.ncsa.illinois.edu:351229] Rank 112 bound to package[0][core:48]
+[gpua073.delta.ncsa.illinois.edu:351229] Rank 119 bound to package[0][core:55]
+[gpua073.delta.ncsa.illinois.edu:351229] Rank 113 bound to package[0][core:49]
+[gpua073.delta.ncsa.illinois.edu:351229] Rank 117 bound to package[0][core:53]
+[gpua073.delta.ncsa.illinois.edu:351229] Rank 124 bound to package[0][core:60]
+[gpua073.delta.ncsa.illinois.edu:351229] Rank 115 bound to package[0][core:51]
+[gpua073.delta.ncsa.illinois.edu:351229] Rank 120 bound to package[0][core:56]
+[gpua073.delta.ncsa.illinois.edu:351229] Rank 116 bound to package[0][core:52]
+[gpua073.delta.ncsa.illinois.edu:351229] Rank 118 bound to package[0][core:54]
+[gpua073.delta.ncsa.illinois.edu:351229] Rank 126 bound to package[0][core:62]
+[gpua073.delta.ncsa.illinois.edu:351229] Rank 121 bound to package[0][core:57]
+[gpua073.delta.ncsa.illinois.edu:351229] Rank 122 bound to package[0][core:58]
+[gpua073.delta.ncsa.illinois.edu:351229] Rank 125 bound to package[0][core:61]
+[gpua073.delta.ncsa.illinois.edu:351229] Rank 123 bound to package[0][core:59]
+[gpua073.delta.ncsa.illinois.edu:351229] Rank 127 bound to package[0][core:63]

@@ -1,0 +1,1608 @@
+
+======================   ALLOCATED NODES   ======================
+    gpua020: slots=64 max_slots=0 slots_inuse=0 state=UP
+	Flags: DAEMON_LAUNCHED:LOCATION_VERIFIED:SLOTS_GIVEN
+	aliases: gpua020.delta.ncsa.illinois.edu,gpua020
+    gpua073: slots=64 max_slots=0 slots_inuse=0 state=UP
+	Flags: SLOTS_GIVEN
+	aliases: NONE
+=================================================================
+
+======================   ALLOCATED NODES   ======================
+    gpua020: slots=64 max_slots=0 slots_inuse=0 state=UP
+	Flags: DAEMON_LAUNCHED:LOCATION_VERIFIED:SLOTS_GIVEN
+	aliases: gpua020.delta.ncsa.illinois.edu,gpua020
+    gpua073: slots=64 max_slots=0 slots_inuse=0 state=UP
+	Flags: DAEMON_LAUNCHED:SLOTS_GIVEN
+	aliases: gpua073.delta.ncsa.illinois.edu,172.28.23.73,172.28.86.73,141.142.254.73
+=================================================================
+
+======================   ALLOCATED NODES   ======================
+    gpua020: slots=64 max_slots=0 slots_inuse=0 state=UP
+	Flags: DAEMON_LAUNCHED:LOCATION_VERIFIED:SLOTS_GIVEN
+	aliases: gpua020.delta.ncsa.illinois.edu,gpua020
+    gpua073: slots=64 max_slots=0 slots_inuse=0 state=UP
+	Flags: DAEMON_LAUNCHED:SLOTS_GIVEN
+	aliases: gpua073.delta.ncsa.illinois.edu,172.28.23.73,172.28.86.73,141.142.254.73
+=================================================================
+
+========================   JOB MAP   ========================
+Data for JOB prterun-gpua020-580946@1 offset 0 Total slots allocated 128
+    Mapping policy: BYNUMA:NOOVERSUBSCRIBE  Ranking policy: SLOT Binding policy: CORE
+    Cpu set: N/A  PPR: 1:numa  Cpus-per-rank: N/A  Cpu Type: CORE
+
+
+Data for node: gpua020	Num slots: 64	Max slots: 0	Num procs: 4
+        Process jobid: prterun-gpua020-580946@1 App: 0 Process rank: 0 Bound: package[0][core:0]
+        Process jobid: prterun-gpua020-580946@1 App: 0 Process rank: 1 Bound: package[0][core:16]
+        Process jobid: prterun-gpua020-580946@1 App: 0 Process rank: 2 Bound: package[0][core:32]
+        Process jobid: prterun-gpua020-580946@1 App: 0 Process rank: 3 Bound: package[0][core:48]
+
+Data for node: gpua073	Num slots: 64	Max slots: 0	Num procs: 4
+        Process jobid: prterun-gpua020-580946@1 App: 0 Process rank: 4 Bound: package[0][core:0]
+        Process jobid: prterun-gpua020-580946@1 App: 0 Process rank: 5 Bound: package[0][core:16]
+        Process jobid: prterun-gpua020-580946@1 App: 0 Process rank: 6 Bound: package[0][core:32]
+        Process jobid: prterun-gpua020-580946@1 App: 0 Process rank: 7 Bound: package[0][core:48]
+
+=============================================================
+rank 7 reversed
+rank 1 reversed
+rank 3 reversed
+rank 2 reversed
+rank 4 reversed
+rank 5 reversed
+rank 6 reversed
+rank 0 reversed
+Size 4
+LOC MAX ERROR: 0.000000e+00
+LANE MAX ERROR: 0.000000e+00
+STD: 4.305586e-05
+LOC: 1.172522e-04
+LANE: 7.296028e-05
+Size 8
+LOC MAX ERROR: 0.000000e+00
+LANE MAX ERROR: 4.768372e-07
+STD: 4.597006e-05
+LOC: 1.184437e-04
+LANE: 7.306625e-05
+Size 16
+LOC MAX ERROR: 4.768372e-07
+LANE MAX ERROR: 4.768372e-07
+STD: 4.597402e-05
+LOC: 1.192591e-04
+LANE: 7.295898e-05
+Size 32
+LOC MAX ERROR: 4.768372e-07
+LANE MAX ERROR: 4.768372e-07
+STD: 4.929837e-05
+LOC: 1.189747e-04
+LANE: 7.307408e-05
+Size 64
+LOC MAX ERROR: 4.768372e-07
+LANE MAX ERROR: 4.768372e-07
+STD: 5.018284e-05
+LOC: 1.192697e-04
+LANE: 7.612393e-05
+Size 128
+LOC MAX ERROR: 4.768372e-07
+LANE MAX ERROR: 4.768372e-07
+STD: 5.074877e-05
+LOC: 1.206597e-04
+LANE: 7.655662e-05
+Size 256
+LOC MAX ERROR: 4.768372e-07
+LANE MAX ERROR: 4.768372e-07
+STD: 5.101244e-05
+LOC: 1.228601e-04
+LANE: 7.665994e-05
+Size 512
+LOC MAX ERROR: 4.768372e-07
+LANE MAX ERROR: 9.536743e-07
+STD: 5.351452e-05
+LOC: 1.237288e-04
+LANE: 7.562567e-05
+Size 1024
+LOC MAX ERROR: 9.536743e-07
+LANE MAX ERROR: 9.536743e-07
+STD: 5.679366e-05
+LOC: 1.241326e-04
+LANE: 8.265730e-05
+Size 2048
+LOC MAX ERROR: 9.536743e-07
+LANE MAX ERROR: 9.536743e-07
+STD: 7.325675e-05
+LOC: 1.240633e-04
+LANE: 9.463279e-05
+Size 4096
+LOC MAX ERROR: 9.536743e-07
+LANE MAX ERROR: 9.536743e-07
+STD: 8.391023e-05
+LOC: 1.368505e-04
+LANE: 1.221055e-04
+Size 8192
+LOC MAX ERROR: 9.536743e-07
+LANE MAX ERROR: 9.536743e-07
+STD: 1.045391e-04
+LOC: 1.483752e-04
+LANE: 1.532138e-04
+Size 16384
+LOC MAX ERROR: 9.536743e-07
+LANE MAX ERROR: 9.536743e-07
+STD: 1.562422e-04
+LOC: 1.814175e-04
+LANE: 2.105753e-04
+Size 32768
+LOC MAX ERROR: 9.536743e-07
+LANE MAX ERROR: 9.536743e-07
+STD: 2.555434e-04
+LOC: 2.289442e-04
+LANE: 3.388349e-04
+Size 65536
+LOC MAX ERROR: 9.536743e-07
+LANE MAX ERROR: 9.536743e-07
+STD: 4.260405e-04
+LOC: 3.287370e-04
+LANE: 5.482500e-04
+Size 131072
+LOC MAX ERROR: 9.536743e-07
+LANE MAX ERROR: 9.536743e-07
+STD: 7.825213e-04
+LOC: 5.154513e-04
+LANE: 9.905715e-04
+Size 262144
+LOC MAX ERROR: 9.536743e-07
+LANE MAX ERROR: 9.536743e-07
+STD: 1.483452e-03
+LOC: 8.746120e-04
+LANE: 1.834773e-03
+Size 524288
+LOC MAX ERROR: 9.536743e-07
+LANE MAX ERROR: 9.536743e-07
+STD: 6.042536e-03
+LOC: 1.569305e-03
+LANE: 8.566079e-03
+Size 1048576
+LOC MAX ERROR: 9.536743e-07
+LANE MAX ERROR: 9.536743e-07
+STD: 9.442174e-03
+LOC: 3.079906e-03
+LANE: 1.304953e-02
+Size 2097152
+LOC MAX ERROR: 9.536743e-07
+LANE MAX ERROR: 9.536743e-07
+STD: 1.639867e-02
+LOC: 5.893998e-03
+LANE: 2.176233e-02
+Size 4194304
+LOC MAX ERROR: 9.536743e-07
+LANE MAX ERROR: 9.536743e-07
+STD: 3.342960e-02
+LOC: 1.194362e-02
+LANE: 4.128242e-02
+Size 8388608
+LOC MAX ERROR: 9.536743e-07
+LANE MAX ERROR: 9.536743e-07
+STD: 6.514013e-02
+LOC: 3.197708e-02
+LANE: 5.065405e-02
+Size 16777216
+LOC MAX ERROR: 9.536743e-07
+LANE MAX ERROR: 9.536743e-07
+STD: 1.224291e-01
+LOC: 7.089296e-02
+LANE: 9.845246e-02
+Size 33554432
+LOC MAX ERROR: 9.536743e-07
+LANE MAX ERROR: 9.536743e-07
+STD: 2.326373e-01
+LOC: 1.229331e-01
+LANE: 1.961419e-01
+Size 67108864
+LOC MAX ERROR: 9.536743e-07
+LANE MAX ERROR: 9.536743e-07
+STD: 4.557997e-01
+LOC: 2.443878e-01
+LANE: 3.852130e-01
+Size 134217728
+LOC MAX ERROR: 9.536743e-07
+LANE MAX ERROR: 9.536743e-07
+STD: 9.036907e-01
+LOC: 4.852248e-01
+LANE: 7.639360e-01
+
+
+======================   ALLOCATED NODES   ======================
+    gpua020: slots=64 max_slots=0 slots_inuse=0 state=UP
+	Flags: DAEMON_LAUNCHED:LOCATION_VERIFIED:SLOTS_GIVEN
+	aliases: gpua020.delta.ncsa.illinois.edu,gpua020
+    gpua073: slots=64 max_slots=0 slots_inuse=0 state=UP
+	Flags: SLOTS_GIVEN
+	aliases: NONE
+=================================================================
+
+======================   ALLOCATED NODES   ======================
+    gpua020: slots=64 max_slots=0 slots_inuse=0 state=UP
+	Flags: DAEMON_LAUNCHED:LOCATION_VERIFIED:SLOTS_GIVEN
+	aliases: gpua020.delta.ncsa.illinois.edu,gpua020
+    gpua073: slots=64 max_slots=0 slots_inuse=0 state=UP
+	Flags: DAEMON_LAUNCHED:SLOTS_GIVEN
+	aliases: gpua073.delta.ncsa.illinois.edu,172.28.23.73,172.28.86.73,141.142.254.73
+=================================================================
+
+======================   ALLOCATED NODES   ======================
+    gpua020: slots=64 max_slots=0 slots_inuse=0 state=UP
+	Flags: DAEMON_LAUNCHED:LOCATION_VERIFIED:SLOTS_GIVEN
+	aliases: gpua020.delta.ncsa.illinois.edu,gpua020
+    gpua073: slots=64 max_slots=0 slots_inuse=0 state=UP
+	Flags: DAEMON_LAUNCHED:SLOTS_GIVEN
+	aliases: gpua073.delta.ncsa.illinois.edu,172.28.23.73,172.28.86.73,141.142.254.73
+=================================================================
+
+========================   JOB MAP   ========================
+Data for JOB prterun-gpua020-581661@1 offset 0 Total slots allocated 128
+    Mapping policy: BYNUMA:NOOVERSUBSCRIBE  Ranking policy: SLOT Binding policy: CORE
+    Cpu set: N/A  PPR: 2:numa  Cpus-per-rank: N/A  Cpu Type: CORE
+
+
+Data for node: gpua020	Num slots: 64	Max slots: 0	Num procs: 8
+        Process jobid: prterun-gpua020-581661@1 App: 0 Process rank: 0 Bound: package[0][core:0]
+        Process jobid: prterun-gpua020-581661@1 App: 0 Process rank: 1 Bound: package[0][core:1]
+        Process jobid: prterun-gpua020-581661@1 App: 0 Process rank: 2 Bound: package[0][core:16]
+        Process jobid: prterun-gpua020-581661@1 App: 0 Process rank: 3 Bound: package[0][core:17]
+        Process jobid: prterun-gpua020-581661@1 App: 0 Process rank: 4 Bound: package[0][core:32]
+        Process jobid: prterun-gpua020-581661@1 App: 0 Process rank: 5 Bound: package[0][core:33]
+        Process jobid: prterun-gpua020-581661@1 App: 0 Process rank: 6 Bound: package[0][core:48]
+        Process jobid: prterun-gpua020-581661@1 App: 0 Process rank: 7 Bound: package[0][core:49]
+
+Data for node: gpua073	Num slots: 64	Max slots: 0	Num procs: 8
+        Process jobid: prterun-gpua020-581661@1 App: 0 Process rank: 8 Bound: package[0][core:0]
+        Process jobid: prterun-gpua020-581661@1 App: 0 Process rank: 9 Bound: package[0][core:1]
+        Process jobid: prterun-gpua020-581661@1 App: 0 Process rank: 10 Bound: package[0][core:16]
+        Process jobid: prterun-gpua020-581661@1 App: 0 Process rank: 11 Bound: package[0][core:17]
+        Process jobid: prterun-gpua020-581661@1 App: 0 Process rank: 12 Bound: package[0][core:32]
+        Process jobid: prterun-gpua020-581661@1 App: 0 Process rank: 13 Bound: package[0][core:33]
+        Process jobid: prterun-gpua020-581661@1 App: 0 Process rank: 14 Bound: package[0][core:48]
+        Process jobid: prterun-gpua020-581661@1 App: 0 Process rank: 15 Bound: package[0][core:49]
+
+=============================================================
+rank 8 reversed
+rank 14 reversed
+rank 11 reversed
+rank 0 reversed
+rank 3 reversed
+rank 9 reversed
+rank 4 reversed
+rank 15 reversed
+rank 10 reversed
+rank 6 reversed
+rank 1 reversed
+rank 2 reversed
+rank 7 reversed
+rank 5 reversed
+rank 13 reversed
+rank 12 reversed
+Starting Allreduce Timings, PPG 2:
+Size 8 (Per Proc 2, 4, 1): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 2.384186e-07
+LANE MPS FULL MAX ERROR: 2.384186e-07
+LANE MPS MAX ERROR: 2.384186e-07
+STD MPS: 3.075535e-04
+LOC MPS FULL: 1.392623e-03
+LANE MPS FULL: 5.820711e-04
+LANE MPS: 3.745713e-04
+Size 16 (Per Proc 4, 8, 2): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 4.768372e-07
+LANE MPS FULL MAX ERROR: 4.768372e-07
+LANE MPS MAX ERROR: 4.768372e-07
+STD MPS: 2.983869e-04
+LOC MPS FULL: 1.398510e-03
+LANE MPS FULL: 5.979466e-04
+LANE MPS: 3.764657e-04
+Size 32 (Per Proc 8, 16, 4): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 4.768372e-07
+LANE MPS FULL MAX ERROR: 4.768372e-07
+LANE MPS MAX ERROR: 4.768372e-07
+STD MPS: 2.985795e-04
+LOC MPS FULL: 1.398312e-03
+LANE MPS FULL: 5.817158e-04
+LANE MPS: 3.786666e-04
+Size 64 (Per Proc 16, 32, 8): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 4.768372e-07
+LANE MPS FULL MAX ERROR: 4.768372e-07
+LANE MPS MAX ERROR: 4.768372e-07
+STD MPS: 2.979837e-04
+LOC MPS FULL: 1.403017e-03
+LANE MPS FULL: 5.957725e-04
+LANE MPS: 3.844458e-04
+Size 128 (Per Proc 32, 64, 16): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 4.768372e-07
+LANE MPS FULL MAX ERROR: 4.768372e-07
+LANE MPS MAX ERROR: 4.768372e-07
+STD MPS: 2.985331e-04
+LOC MPS FULL: 1.398133e-03
+LANE MPS FULL: 5.472126e-04
+LANE MPS: 3.881166e-04
+Size 256 (Per Proc 64, 128, 32): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 4.768372e-07
+LANE MPS FULL MAX ERROR: 4.768372e-07
+LANE MPS MAX ERROR: 4.768372e-07
+STD MPS: 2.986116e-04
+LOC MPS FULL: 1.406275e-03
+LANE MPS FULL: 5.361961e-04
+LANE MPS: 3.883767e-04
+Size 512 (Per Proc 128, 256, 64): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 4.768372e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 2.985797e-04
+LOC MPS FULL: 1.405524e-03
+LANE MPS FULL: 5.379093e-04
+LANE MPS: 3.886021e-04
+Size 1024 (Per Proc 256, 512, 128): STD MPS MAX ERROR: 9.536743e-07
+LOC MPS FULL MAX ERROR: 4.768372e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 2.984769e-04
+LOC MPS FULL: 1.401267e-03
+LANE MPS FULL: 5.310100e-04
+LANE MPS: 3.896713e-04
+Size 2048 (Per Proc 512, 1024, 256): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 2.984519e-04
+LOC MPS FULL: 1.397526e-03
+LANE MPS FULL: 5.461270e-04
+LANE MPS: 4.116589e-04
+Size 4096 (Per Proc 1024, 2048, 512): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 2.992949e-04
+LOC MPS FULL: 1.399909e-03
+LANE MPS FULL: 6.090823e-04
+LANE MPS: 4.634834e-04
+Size 8192 (Per Proc 2048, 4096, 1024): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 3.002490e-04
+LOC MPS FULL: 1.411050e-03
+LANE MPS FULL: 6.499474e-04
+LANE MPS: 4.925444e-04
+Size 16384 (Per Proc 4096, 8192, 2048): STD MPS MAX ERROR: 9.536743e-07
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 3.026517e-04
+LOC MPS FULL: 1.435227e-03
+LANE MPS FULL: 6.350638e-04
+LANE MPS: 5.500228e-04
+Size 32768 (Per Proc 8192, 16384, 4096): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 3.059430e-04
+LOC MPS FULL: 1.446582e-03
+LANE MPS FULL: 6.900356e-04
+LANE MPS: 5.793235e-04
+Size 65536 (Per Proc 16384, 32768, 8192): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 2.726714e-04
+LOC MPS FULL: 1.529228e-03
+LANE MPS FULL: 3.971063e-04
+LANE MPS: 4.904930e-04
+Size 131072 (Per Proc 32768, 65536, 16384): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 4.749497e-04
+LOC MPS FULL: 1.326241e-03
+LANE MPS FULL: 7.075915e-04
+LANE MPS: 8.555384e-04
+Size 262144 (Per Proc 65536, 131072, 32768): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 8.837894e-04
+LOC MPS FULL: 7.979184e-04
+LANE MPS FULL: 1.292406e-03
+LANE MPS: 1.596522e-03
+Size 524288 (Per Proc 131072, 262144, 65536): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 1.688849e-03
+LOC MPS FULL: 1.358969e-03
+LANE MPS FULL: 2.626340e-03
+LANE MPS: 5.613513e-03
+Size 1048576 (Per Proc 262144, 524288, 131072): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 6.275808e-03
+LOC MPS FULL: 2.507000e-03
+LANE MPS FULL: 9.003230e-03
+LANE MPS: 1.063610e-02
+Size 2097152 (Per Proc 524288, 1048576, 262144): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 1.038572e-02
+LOC MPS FULL: 4.970054e-03
+LANE MPS FULL: 1.429664e-02
+LANE MPS: 1.835999e-02
+Size 4194304 (Per Proc 1048576, 2097152, 524288): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 1.942632e-02
+LOC MPS FULL: 1.028911e-02
+LANE MPS FULL: 2.520503e-02
+LANE MPS: 3.392492e-02
+Size 8388608 (Per Proc 2097152, 4194304, 1048576): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 3.997747e-02
+LOC MPS FULL: 2.146350e-02
+LANE MPS FULL: 5.674387e-02
+LANE MPS: 5.415142e-02
+Size 16777216 (Per Proc 4194304, 8388608, 2097152): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 8.470313e-02
+LOC MPS FULL: 4.911801e-02
+LANE MPS FULL: 8.822924e-02
+LANE MPS: 9.455812e-02
+Size 33554432 (Per Proc 8388608, 16777216, 4194304): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 1.630025e-01
+LOC MPS FULL: 1.073808e-01
+LANE MPS FULL: 1.778502e-01
+LANE MPS: 1.875967e-01
+Size 67108864 (Per Proc 16777216, 33554432, 8388608): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 3.102614e-01
+LOC MPS FULL: 2.029155e-01
+LANE MPS FULL: 3.552283e-01
+LANE MPS: 3.801641e-01
+Size 134217728 (Per Proc 33554432, 67108864, 16777216): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 6.087455e-01
+LOC MPS FULL: 4.067792e-01
+LANE MPS FULL: 6.735216e-01
+LANE MPS: 7.375851e-01
+
+
+======================   ALLOCATED NODES   ======================
+    gpua020: slots=64 max_slots=0 slots_inuse=0 state=UP
+	Flags: DAEMON_LAUNCHED:LOCATION_VERIFIED:SLOTS_GIVEN
+	aliases: gpua020.delta.ncsa.illinois.edu,gpua020
+    gpua073: slots=64 max_slots=0 slots_inuse=0 state=UP
+	Flags: SLOTS_GIVEN
+	aliases: NONE
+=================================================================
+
+======================   ALLOCATED NODES   ======================
+    gpua020: slots=64 max_slots=0 slots_inuse=0 state=UP
+	Flags: DAEMON_LAUNCHED:LOCATION_VERIFIED:SLOTS_GIVEN
+	aliases: gpua020.delta.ncsa.illinois.edu,gpua020
+    gpua073: slots=64 max_slots=0 slots_inuse=0 state=UP
+	Flags: DAEMON_LAUNCHED:SLOTS_GIVEN
+	aliases: gpua073.delta.ncsa.illinois.edu,172.28.23.73,172.28.86.73,141.142.254.73
+=================================================================
+
+======================   ALLOCATED NODES   ======================
+    gpua020: slots=64 max_slots=0 slots_inuse=0 state=UP
+	Flags: DAEMON_LAUNCHED:LOCATION_VERIFIED:SLOTS_GIVEN
+	aliases: gpua020.delta.ncsa.illinois.edu,gpua020
+    gpua073: slots=64 max_slots=0 slots_inuse=0 state=UP
+	Flags: DAEMON_LAUNCHED:SLOTS_GIVEN
+	aliases: gpua073.delta.ncsa.illinois.edu,172.28.23.73,172.28.86.73,141.142.254.73
+=================================================================
+
+========================   JOB MAP   ========================
+Data for JOB prterun-gpua020-582740@1 offset 0 Total slots allocated 128
+    Mapping policy: BYNUMA:NOOVERSUBSCRIBE  Ranking policy: SLOT Binding policy: CORE
+    Cpu set: N/A  PPR: 4:numa  Cpus-per-rank: N/A  Cpu Type: CORE
+
+
+Data for node: gpua020	Num slots: 64	Max slots: 0	Num procs: 16
+        Process jobid: prterun-gpua020-582740@1 App: 0 Process rank: 0 Bound: package[0][core:0]
+        Process jobid: prterun-gpua020-582740@1 App: 0 Process rank: 1 Bound: package[0][core:1]
+        Process jobid: prterun-gpua020-582740@1 App: 0 Process rank: 2 Bound: package[0][core:2]
+        Process jobid: prterun-gpua020-582740@1 App: 0 Process rank: 3 Bound: package[0][core:3]
+        Process jobid: prterun-gpua020-582740@1 App: 0 Process rank: 4 Bound: package[0][core:16]
+        Process jobid: prterun-gpua020-582740@1 App: 0 Process rank: 5 Bound: package[0][core:17]
+        Process jobid: prterun-gpua020-582740@1 App: 0 Process rank: 6 Bound: package[0][core:18]
+        Process jobid: prterun-gpua020-582740@1 App: 0 Process rank: 7 Bound: package[0][core:19]
+        Process jobid: prterun-gpua020-582740@1 App: 0 Process rank: 8 Bound: package[0][core:32]
+        Process jobid: prterun-gpua020-582740@1 App: 0 Process rank: 9 Bound: package[0][core:33]
+        Process jobid: prterun-gpua020-582740@1 App: 0 Process rank: 10 Bound: package[0][core:34]
+        Process jobid: prterun-gpua020-582740@1 App: 0 Process rank: 11 Bound: package[0][core:35]
+        Process jobid: prterun-gpua020-582740@1 App: 0 Process rank: 12 Bound: package[0][core:48]
+        Process jobid: prterun-gpua020-582740@1 App: 0 Process rank: 13 Bound: package[0][core:49]
+        Process jobid: prterun-gpua020-582740@1 App: 0 Process rank: 14 Bound: package[0][core:50]
+        Process jobid: prterun-gpua020-582740@1 App: 0 Process rank: 15 Bound: package[0][core:51]
+
+Data for node: gpua073	Num slots: 64	Max slots: 0	Num procs: 16
+        Process jobid: prterun-gpua020-582740@1 App: 0 Process rank: 16 Bound: package[0][core:0]
+        Process jobid: prterun-gpua020-582740@1 App: 0 Process rank: 17 Bound: package[0][core:1]
+        Process jobid: prterun-gpua020-582740@1 App: 0 Process rank: 18 Bound: package[0][core:2]
+        Process jobid: prterun-gpua020-582740@1 App: 0 Process rank: 19 Bound: package[0][core:3]
+        Process jobid: prterun-gpua020-582740@1 App: 0 Process rank: 20 Bound: package[0][core:16]
+        Process jobid: prterun-gpua020-582740@1 App: 0 Process rank: 21 Bound: package[0][core:17]
+        Process jobid: prterun-gpua020-582740@1 App: 0 Process rank: 22 Bound: package[0][core:18]
+        Process jobid: prterun-gpua020-582740@1 App: 0 Process rank: 23 Bound: package[0][core:19]
+        Process jobid: prterun-gpua020-582740@1 App: 0 Process rank: 24 Bound: package[0][core:32]
+        Process jobid: prterun-gpua020-582740@1 App: 0 Process rank: 25 Bound: package[0][core:33]
+        Process jobid: prterun-gpua020-582740@1 App: 0 Process rank: 26 Bound: package[0][core:34]
+        Process jobid: prterun-gpua020-582740@1 App: 0 Process rank: 27 Bound: package[0][core:35]
+        Process jobid: prterun-gpua020-582740@1 App: 0 Process rank: 28 Bound: package[0][core:48]
+        Process jobid: prterun-gpua020-582740@1 App: 0 Process rank: 29 Bound: package[0][core:49]
+        Process jobid: prterun-gpua020-582740@1 App: 0 Process rank: 30 Bound: package[0][core:50]
+        Process jobid: prterun-gpua020-582740@1 App: 0 Process rank: 31 Bound: package[0][core:51]
+
+=============================================================
+rank 20 reversed
+rank 29 reversed
+rank 16 reversed
+rank 2 reversed
+rank 8 reversed
+rank 3 reversed
+rank 28 reversed
+rank 31 reversed
+rank 17 reversed
+rank 13 reversed
+rank 30 reversed
+rank 27 reversed
+rank 25 reversed
+rank 23 reversed
+rank 22 reversed
+rank 21 reversed
+rank 7 reversed
+rank 18 reversed
+rank 12 reversed
+rank 11 reversed
+rank 19 reversed
+rank 24 reversed
+rank 26 reversed
+rank 0 reversed
+rank 15 reversed
+rank 14 reversed
+rank 9 reversed
+rank 1 reversed
+rank 10 reversed
+rank 6 reversed
+rank 4 reversed
+rank 5 reversed
+Starting Allreduce Timings, PPG 4:
+Size 16 (Per Proc 4, 4, 1): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 4.768372e-07
+LANE MPS FULL MAX ERROR: 4.768372e-07
+LANE MPS MAX ERROR: 4.768372e-07
+STD MPS: 6.155431e-04
+LOC MPS FULL: 3.018202e-03
+LANE MPS FULL: 1.229522e-03
+LANE MPS: 6.769774e-04
+Size 32 (Per Proc 8, 8, 2): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 4.768372e-07
+LANE MPS FULL MAX ERROR: 4.768372e-07
+LANE MPS MAX ERROR: 4.768372e-07
+STD MPS: 5.976919e-04
+LOC MPS FULL: 3.017323e-03
+LANE MPS FULL: 1.228353e-03
+LANE MPS: 6.771033e-04
+Size 64 (Per Proc 16, 16, 4): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 4.768372e-07
+LANE MPS FULL MAX ERROR: 4.768372e-07
+LANE MPS MAX ERROR: 4.768372e-07
+STD MPS: 5.969566e-04
+LOC MPS FULL: 3.015744e-03
+LANE MPS FULL: 1.229191e-03
+LANE MPS: 6.797359e-04
+Size 128 (Per Proc 32, 32, 8): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 4.768372e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 5.967071e-04
+LOC MPS FULL: 3.010685e-03
+LANE MPS FULL: 1.230370e-03
+LANE MPS: 6.823264e-04
+Size 256 (Per Proc 64, 64, 16): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 4.768372e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 5.983078e-04
+LOC MPS FULL: 3.011928e-03
+LANE MPS FULL: 1.229076e-03
+LANE MPS: 6.818062e-04
+Size 512 (Per Proc 128, 128, 32): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 4.768372e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 5.977401e-04
+LOC MPS FULL: 3.014618e-03
+LANE MPS FULL: 1.231560e-03
+LANE MPS: 6.814102e-04
+Size 1024 (Per Proc 256, 256, 64): STD MPS MAX ERROR: 9.536743e-07
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 5.970036e-04
+LOC MPS FULL: 3.019381e-03
+LANE MPS FULL: 1.231330e-03
+LANE MPS: 6.831885e-04
+Size 2048 (Per Proc 512, 512, 128): STD MPS MAX ERROR: 9.536743e-07
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 5.972035e-04
+LOC MPS FULL: 3.024163e-03
+LANE MPS FULL: 1.234886e-03
+LANE MPS: 6.958485e-04
+Size 4096 (Per Proc 1024, 1024, 256): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 5.975284e-04
+LOC MPS FULL: 3.022332e-03
+LANE MPS FULL: 1.240232e-03
+LANE MPS: 7.116643e-04
+Size 8192 (Per Proc 2048, 2048, 512): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 5.990335e-04
+LOC MPS FULL: 3.023937e-03
+LANE MPS FULL: 1.240278e-03
+LANE MPS: 7.552553e-04
+Size 16384 (Per Proc 4096, 4096, 1024): STD MPS MAX ERROR: 9.536743e-07
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 6.016478e-04
+LOC MPS FULL: 3.035968e-03
+LANE MPS FULL: 1.262476e-03
+LANE MPS: 8.608692e-04
+Size 32768 (Per Proc 8192, 8192, 2048): STD MPS MAX ERROR: 9.536743e-07
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 6.056806e-04
+LOC MPS FULL: 3.046607e-03
+LANE MPS FULL: 1.284217e-03
+LANE MPS: 8.592951e-04
+Size 65536 (Per Proc 16384, 16384, 4096): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 6.122675e-04
+LOC MPS FULL: 3.082856e-03
+LANE MPS FULL: 1.332592e-03
+LANE MPS: 1.026351e-03
+Size 131072 (Per Proc 32768, 32768, 8192): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 3.636340e-04
+LOC MPS FULL: 3.235281e-03
+LANE MPS FULL: 6.079156e-04
+LANE MPS: 8.216960e-04
+Size 262144 (Per Proc 65536, 65536, 16384): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 6.757226e-04
+LOC MPS FULL: 2.794964e-03
+LANE MPS FULL: 1.116206e-03
+LANE MPS: 1.524623e-03
+Size 524288 (Per Proc 131072, 131072, 32768): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 1.299426e-03
+LOC MPS FULL: 1.534209e-03
+LANE MPS FULL: 2.148861e-03
+LANE MPS: 5.416903e-03
+Size 1048576 (Per Proc 262144, 262144, 65536): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 2.568069e-03
+LOC MPS FULL: 2.412361e-03
+LANE MPS FULL: 4.222120e-03
+LANE MPS: 9.563696e-03
+Size 2097152 (Per Proc 524288, 524288, 131072): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 7.568046e-03
+LOC MPS FULL: 4.714805e-03
+LANE MPS FULL: 1.288997e-02
+LANE MPS: 1.773062e-02
+Size 4194304 (Per Proc 1048576, 1048576, 262144): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 1.400761e-02
+LOC MPS FULL: 9.751391e-03
+LANE MPS FULL: 2.343021e-02
+LANE MPS: 3.199618e-02
+Size 8388608 (Per Proc 2097152, 2097152, 524288): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 2.926495e-02
+LOC MPS FULL: 2.080676e-02
+LANE MPS FULL: 4.526018e-02
+LANE MPS: 4.863107e-02
+Size 16777216 (Per Proc 4194304, 4194304, 1048576): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 6.396217e-02
+LOC MPS FULL: 4.202847e-02
+LANE MPS FULL: 9.443411e-02
+LANE MPS: 1.012467e-01
+Size 33554432 (Per Proc 8388608, 8388608, 2097152): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 1.414815e-01
+LOC MPS FULL: 9.558433e-02
+LANE MPS FULL: 1.788364e-01
+LANE MPS: 1.937709e-01
+Size 67108864 (Per Proc 16777216, 16777216, 4194304): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 3.002290e-01
+LOC MPS FULL: 2.019458e-01
+LANE MPS FULL: 3.695769e-01
+LANE MPS: 3.921456e-01
+Size 134217728 (Per Proc 33554432, 33554432, 8388608): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 5.946504e-01
+LOC MPS FULL: 4.047080e-01
+LANE MPS FULL: 7.147789e-01
+LANE MPS: 8.018343e-01
+
+
+======================   ALLOCATED NODES   ======================
+    gpua020: slots=64 max_slots=0 slots_inuse=0 state=UP
+	Flags: DAEMON_LAUNCHED:LOCATION_VERIFIED:SLOTS_GIVEN
+	aliases: gpua020.delta.ncsa.illinois.edu,gpua020
+    gpua073: slots=64 max_slots=0 slots_inuse=0 state=UP
+	Flags: SLOTS_GIVEN
+	aliases: NONE
+=================================================================
+
+======================   ALLOCATED NODES   ======================
+    gpua020: slots=64 max_slots=0 slots_inuse=0 state=UP
+	Flags: DAEMON_LAUNCHED:LOCATION_VERIFIED:SLOTS_GIVEN
+	aliases: gpua020.delta.ncsa.illinois.edu,gpua020
+    gpua073: slots=64 max_slots=0 slots_inuse=0 state=UP
+	Flags: DAEMON_LAUNCHED:SLOTS_GIVEN
+	aliases: gpua073.delta.ncsa.illinois.edu,172.28.23.73,172.28.86.73,141.142.254.73
+=================================================================
+
+======================   ALLOCATED NODES   ======================
+    gpua020: slots=64 max_slots=0 slots_inuse=0 state=UP
+	Flags: DAEMON_LAUNCHED:LOCATION_VERIFIED:SLOTS_GIVEN
+	aliases: gpua020.delta.ncsa.illinois.edu,gpua020
+    gpua073: slots=64 max_slots=0 slots_inuse=0 state=UP
+	Flags: DAEMON_LAUNCHED:SLOTS_GIVEN
+	aliases: gpua073.delta.ncsa.illinois.edu,172.28.23.73,172.28.86.73,141.142.254.73
+=================================================================
+
+========================   JOB MAP   ========================
+Data for JOB prterun-gpua020-584172@1 offset 0 Total slots allocated 128
+    Mapping policy: BYNUMA:NOOVERSUBSCRIBE  Ranking policy: SLOT Binding policy: CORE
+    Cpu set: N/A  PPR: 8:numa  Cpus-per-rank: N/A  Cpu Type: CORE
+
+
+Data for node: gpua020	Num slots: 64	Max slots: 0	Num procs: 32
+        Process jobid: prterun-gpua020-584172@1 App: 0 Process rank: 0 Bound: package[0][core:0]
+        Process jobid: prterun-gpua020-584172@1 App: 0 Process rank: 1 Bound: package[0][core:1]
+        Process jobid: prterun-gpua020-584172@1 App: 0 Process rank: 2 Bound: package[0][core:2]
+        Process jobid: prterun-gpua020-584172@1 App: 0 Process rank: 3 Bound: package[0][core:3]
+        Process jobid: prterun-gpua020-584172@1 App: 0 Process rank: 4 Bound: package[0][core:4]
+        Process jobid: prterun-gpua020-584172@1 App: 0 Process rank: 5 Bound: package[0][core:5]
+        Process jobid: prterun-gpua020-584172@1 App: 0 Process rank: 6 Bound: package[0][core:6]
+        Process jobid: prterun-gpua020-584172@1 App: 0 Process rank: 7 Bound: package[0][core:7]
+        Process jobid: prterun-gpua020-584172@1 App: 0 Process rank: 8 Bound: package[0][core:16]
+        Process jobid: prterun-gpua020-584172@1 App: 0 Process rank: 9 Bound: package[0][core:17]
+        Process jobid: prterun-gpua020-584172@1 App: 0 Process rank: 10 Bound: package[0][core:18]
+        Process jobid: prterun-gpua020-584172@1 App: 0 Process rank: 11 Bound: package[0][core:19]
+        Process jobid: prterun-gpua020-584172@1 App: 0 Process rank: 12 Bound: package[0][core:20]
+        Process jobid: prterun-gpua020-584172@1 App: 0 Process rank: 13 Bound: package[0][core:21]
+        Process jobid: prterun-gpua020-584172@1 App: 0 Process rank: 14 Bound: package[0][core:22]
+        Process jobid: prterun-gpua020-584172@1 App: 0 Process rank: 15 Bound: package[0][core:23]
+        Process jobid: prterun-gpua020-584172@1 App: 0 Process rank: 16 Bound: package[0][core:32]
+        Process jobid: prterun-gpua020-584172@1 App: 0 Process rank: 17 Bound: package[0][core:33]
+        Process jobid: prterun-gpua020-584172@1 App: 0 Process rank: 18 Bound: package[0][core:34]
+        Process jobid: prterun-gpua020-584172@1 App: 0 Process rank: 19 Bound: package[0][core:35]
+        Process jobid: prterun-gpua020-584172@1 App: 0 Process rank: 20 Bound: package[0][core:36]
+        Process jobid: prterun-gpua020-584172@1 App: 0 Process rank: 21 Bound: package[0][core:37]
+        Process jobid: prterun-gpua020-584172@1 App: 0 Process rank: 22 Bound: package[0][core:38]
+        Process jobid: prterun-gpua020-584172@1 App: 0 Process rank: 23 Bound: package[0][core:39]
+        Process jobid: prterun-gpua020-584172@1 App: 0 Process rank: 24 Bound: package[0][core:48]
+        Process jobid: prterun-gpua020-584172@1 App: 0 Process rank: 25 Bound: package[0][core:49]
+        Process jobid: prterun-gpua020-584172@1 App: 0 Process rank: 26 Bound: package[0][core:50]
+        Process jobid: prterun-gpua020-584172@1 App: 0 Process rank: 27 Bound: package[0][core:51]
+        Process jobid: prterun-gpua020-584172@1 App: 0 Process rank: 28 Bound: package[0][core:52]
+        Process jobid: prterun-gpua020-584172@1 App: 0 Process rank: 29 Bound: package[0][core:53]
+        Process jobid: prterun-gpua020-584172@1 App: 0 Process rank: 30 Bound: package[0][core:54]
+        Process jobid: prterun-gpua020-584172@1 App: 0 Process rank: 31 Bound: package[0][core:55]
+
+Data for node: gpua073	Num slots: 64	Max slots: 0	Num procs: 32
+        Process jobid: prterun-gpua020-584172@1 App: 0 Process rank: 32 Bound: package[0][core:0]
+        Process jobid: prterun-gpua020-584172@1 App: 0 Process rank: 33 Bound: package[0][core:1]
+        Process jobid: prterun-gpua020-584172@1 App: 0 Process rank: 34 Bound: package[0][core:2]
+        Process jobid: prterun-gpua020-584172@1 App: 0 Process rank: 35 Bound: package[0][core:3]
+        Process jobid: prterun-gpua020-584172@1 App: 0 Process rank: 36 Bound: package[0][core:4]
+        Process jobid: prterun-gpua020-584172@1 App: 0 Process rank: 37 Bound: package[0][core:5]
+        Process jobid: prterun-gpua020-584172@1 App: 0 Process rank: 38 Bound: package[0][core:6]
+        Process jobid: prterun-gpua020-584172@1 App: 0 Process rank: 39 Bound: package[0][core:7]
+        Process jobid: prterun-gpua020-584172@1 App: 0 Process rank: 40 Bound: package[0][core:16]
+        Process jobid: prterun-gpua020-584172@1 App: 0 Process rank: 41 Bound: package[0][core:17]
+        Process jobid: prterun-gpua020-584172@1 App: 0 Process rank: 42 Bound: package[0][core:18]
+        Process jobid: prterun-gpua020-584172@1 App: 0 Process rank: 43 Bound: package[0][core:19]
+        Process jobid: prterun-gpua020-584172@1 App: 0 Process rank: 44 Bound: package[0][core:20]
+        Process jobid: prterun-gpua020-584172@1 App: 0 Process rank: 45 Bound: package[0][core:21]
+        Process jobid: prterun-gpua020-584172@1 App: 0 Process rank: 46 Bound: package[0][core:22]
+        Process jobid: prterun-gpua020-584172@1 App: 0 Process rank: 47 Bound: package[0][core:23]
+        Process jobid: prterun-gpua020-584172@1 App: 0 Process rank: 48 Bound: package[0][core:32]
+        Process jobid: prterun-gpua020-584172@1 App: 0 Process rank: 49 Bound: package[0][core:33]
+        Process jobid: prterun-gpua020-584172@1 App: 0 Process rank: 50 Bound: package[0][core:34]
+        Process jobid: prterun-gpua020-584172@1 App: 0 Process rank: 51 Bound: package[0][core:35]
+        Process jobid: prterun-gpua020-584172@1 App: 0 Process rank: 52 Bound: package[0][core:36]
+        Process jobid: prterun-gpua020-584172@1 App: 0 Process rank: 53 Bound: package[0][core:37]
+        Process jobid: prterun-gpua020-584172@1 App: 0 Process rank: 54 Bound: package[0][core:38]
+        Process jobid: prterun-gpua020-584172@1 App: 0 Process rank: 55 Bound: package[0][core:39]
+        Process jobid: prterun-gpua020-584172@1 App: 0 Process rank: 56 Bound: package[0][core:48]
+        Process jobid: prterun-gpua020-584172@1 App: 0 Process rank: 57 Bound: package[0][core:49]
+        Process jobid: prterun-gpua020-584172@1 App: 0 Process rank: 58 Bound: package[0][core:50]
+        Process jobid: prterun-gpua020-584172@1 App: 0 Process rank: 59 Bound: package[0][core:51]
+        Process jobid: prterun-gpua020-584172@1 App: 0 Process rank: 60 Bound: package[0][core:52]
+        Process jobid: prterun-gpua020-584172@1 App: 0 Process rank: 61 Bound: package[0][core:53]
+        Process jobid: prterun-gpua020-584172@1 App: 0 Process rank: 62 Bound: package[0][core:54]
+        Process jobid: prterun-gpua020-584172@1 App: 0 Process rank: 63 Bound: package[0][core:55]
+
+=============================================================
+rank 17 reversed
+rank 20 reversed
+rank 10 reversed
+rank 3 reversed
+rank 13 reversed
+rank 26 reversed
+rank 6 reversed
+rank 62 reversed
+rank 57 reversed
+rank 32 reversed
+rank 39 reversed
+rank 43 reversed
+rank 37 reversed
+rank 38 reversed
+rank 51 reversed
+rank 16 reversed
+rank 42 reversed
+rank 22 reversed
+rank 56 reversed
+rank 34 reversed
+rank 54 reversed
+rank 63 reversed
+rank 44 reversed
+rank 53 reversed
+rank 60 reversed
+rank 52 reversed
+rank 23 reversed
+rank 4 reversed
+rank 11 reversed
+rank 18 reversed
+rank 8 reversed
+rank 28 reversed
+rank 29 reversed
+rank 24 reversed
+rank 30 reversed
+rank 27 reversed
+rank 14 reversed
+rank 36 reversed
+rank 50 reversed
+rank 12 reversed
+rank 5 reversed
+rank 48 reversed
+rank 15 reversed
+rank 19 reversed
+rank 21 reversed
+rank 9 reversed
+rank 55 reversed
+rank 58 reversed
+rank 7 reversed
+rank 1 reversed
+rank 31 reversed
+rank 25 reversed
+rank 2 reversed
+rank 0 reversed
+rank 40 reversed
+rank 46 reversed
+rank 47 reversed
+rank 35 reversed
+rank 49 reversed
+rank 59 reversed
+rank 61 reversed
+rank 45 reversed
+rank 33 reversed
+rank 41 reversed
+Starting Allreduce Timings, PPG 8:
+Size 32 (Per Proc 8, 4, 1): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 4.768372e-07
+LANE MPS FULL MAX ERROR: 4.768372e-07
+LANE MPS MAX ERROR: 4.768372e-07
+STD MPS: 1.229136e-03
+LOC MPS FULL: 5.999159e-03
+LANE MPS FULL: 2.417739e-03
+LANE MPS: 1.296783e-03
+Size 64 (Per Proc 16, 8, 2): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 4.768372e-07
+LANE MPS FULL MAX ERROR: 4.768372e-07
+LANE MPS MAX ERROR: 4.768372e-07
+STD MPS: 1.195780e-03
+LOC MPS FULL: 6.001110e-03
+LANE MPS FULL: 2.421240e-03
+LANE MPS: 1.309535e-03
+Size 128 (Per Proc 32, 16, 4): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 4.768372e-07
+LANE MPS FULL MAX ERROR: 4.768372e-07
+LANE MPS MAX ERROR: 4.768372e-07
+STD MPS: 1.196378e-03
+LOC MPS FULL: 6.003657e-03
+LANE MPS FULL: 2.421163e-03
+LANE MPS: 1.306803e-03
+Size 256 (Per Proc 64, 32, 8): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 4.768372e-07
+LANE MPS FULL MAX ERROR: 4.768372e-07
+LANE MPS MAX ERROR: 4.768372e-07
+STD MPS: 1.195938e-03
+LOC MPS FULL: 6.004681e-03
+LANE MPS FULL: 2.421405e-03
+LANE MPS: 1.307928e-03
+Size 512 (Per Proc 128, 64, 16): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 4.768372e-07
+LANE MPS FULL MAX ERROR: 4.768372e-07
+LANE MPS MAX ERROR: 4.768372e-07
+STD MPS: 1.194512e-03
+LOC MPS FULL: 6.002219e-03
+LANE MPS FULL: 2.427687e-03
+LANE MPS: 1.310673e-03
+Size 1024 (Per Proc 256, 128, 32): STD MPS MAX ERROR: 9.536743e-07
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 1.194543e-03
+LOC MPS FULL: 5.996407e-03
+LANE MPS FULL: 2.427772e-03
+LANE MPS: 1.311824e-03
+Size 2048 (Per Proc 512, 256, 64): STD MPS MAX ERROR: 9.536743e-07
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 1.194826e-03
+LOC MPS FULL: 6.006271e-03
+LANE MPS FULL: 2.425447e-03
+LANE MPS: 1.323664e-03
+Size 4096 (Per Proc 1024, 512, 128): STD MPS MAX ERROR: 9.536743e-07
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 1.193940e-03
+LOC MPS FULL: 6.004119e-03
+LANE MPS FULL: 2.431704e-03
+LANE MPS: 1.341875e-03
+Size 8192 (Per Proc 2048, 1024, 256): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 1.193740e-03
+LOC MPS FULL: 5.999842e-03
+LANE MPS FULL: 2.435713e-03
+LANE MPS: 1.365505e-03
+Size 16384 (Per Proc 4096, 2048, 512): STD MPS MAX ERROR: 9.536743e-07
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 1.195891e-03
+LOC MPS FULL: 6.006283e-03
+LANE MPS FULL: 2.440354e-03
+LANE MPS: 1.426663e-03
+Size 32768 (Per Proc 8192, 4096, 1024): STD MPS MAX ERROR: 9.536743e-07
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 1.199730e-03
+LOC MPS FULL: 6.015683e-03
+LANE MPS FULL: 2.464407e-03
+LANE MPS: 1.464508e-03
+Size 65536 (Per Proc 16384, 8192, 2048): STD MPS MAX ERROR: 9.536743e-07
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 1.211263e-03
+LOC MPS FULL: 6.059193e-03
+LANE MPS FULL: 2.506481e-03
+LANE MPS: 1.629644e-03
+Size 131072 (Per Proc 32768, 16384, 4096): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 1.226960e-03
+LOC MPS FULL: 6.117847e-03
+LANE MPS FULL: 2.592024e-03
+LANE MPS: 1.948676e-03
+Size 262144 (Per Proc 65536, 32768, 8192): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 6.832504e-04
+LOC MPS FULL: 6.405076e-03
+LANE MPS FULL: 1.149919e-03
+LANE MPS: 1.507598e-03
+Size 524288 (Per Proc 131072, 65536, 16384): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 1.313797e-03
+LOC MPS FULL: 5.461580e-03
+LANE MPS FULL: 2.179550e-03
+LANE MPS: 5.500928e-03
+Size 1048576 (Per Proc 262144, 131072, 32768): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 2.465605e-03
+LOC MPS FULL: 2.893715e-03
+LANE MPS FULL: 4.234020e-03
+LANE MPS: 9.110905e-03
+Size 2097152 (Per Proc 524288, 262144, 65536): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 4.952493e-03
+LOC MPS FULL: 4.852978e-03
+LANE MPS FULL: 8.535284e-03
+LANE MPS: 1.590335e-02
+Size 4194304 (Per Proc 1048576, 524288, 131072): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 1.366860e-02
+LOC MPS FULL: 9.711330e-03
+LANE MPS FULL: 2.234783e-02
+LANE MPS: 3.337541e-02
+Size 8388608 (Per Proc 2097152, 1048576, 262144): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 2.801020e-02
+LOC MPS FULL: 2.034961e-02
+LANE MPS FULL: 4.506968e-02
+LANE MPS: 5.040521e-02
+Size 16777216 (Per Proc 4194304, 2097152, 524288): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 5.766788e-02
+LOC MPS FULL: 4.210201e-02
+LANE MPS FULL: 8.977680e-02
+LANE MPS: 9.717548e-02
+Size 33554432 (Per Proc 8388608, 4194304, 1048576): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 1.110433e-01
+LOC MPS FULL: 8.584430e-02
+LANE MPS FULL: 1.753233e-01
+LANE MPS: 1.905760e-01
+Size 67108864 (Per Proc 16777216, 8388608, 2097152): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 2.693048e-01
+LOC MPS FULL: 1.914153e-01
+LANE MPS FULL: 3.715723e-01
+LANE MPS: 3.919489e-01
+Size 134217728 (Per Proc 33554432, 16777216, 4194304): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 5.805315e-01
+LOC MPS FULL: 4.071611e-01
+LANE MPS FULL: 7.020218e-01
+LANE MPS: 7.800874e-01
+
+
+======================   ALLOCATED NODES   ======================
+    gpua020: slots=64 max_slots=0 slots_inuse=0 state=UP
+	Flags: DAEMON_LAUNCHED:LOCATION_VERIFIED:SLOTS_GIVEN
+	aliases: gpua020.delta.ncsa.illinois.edu,gpua020
+    gpua073: slots=64 max_slots=0 slots_inuse=0 state=UP
+	Flags: SLOTS_GIVEN
+	aliases: NONE
+=================================================================
+
+======================   ALLOCATED NODES   ======================
+    gpua020: slots=64 max_slots=0 slots_inuse=0 state=UP
+	Flags: DAEMON_LAUNCHED:LOCATION_VERIFIED:SLOTS_GIVEN
+	aliases: gpua020.delta.ncsa.illinois.edu,gpua020
+    gpua073: slots=64 max_slots=0 slots_inuse=0 state=UP
+	Flags: DAEMON_LAUNCHED:SLOTS_GIVEN
+	aliases: gpua073.delta.ncsa.illinois.edu,172.28.23.73,172.28.86.73,141.142.254.73
+=================================================================
+
+======================   ALLOCATED NODES   ======================
+    gpua020: slots=64 max_slots=0 slots_inuse=0 state=UP
+	Flags: DAEMON_LAUNCHED:LOCATION_VERIFIED:SLOTS_GIVEN
+	aliases: gpua020.delta.ncsa.illinois.edu,gpua020
+    gpua073: slots=64 max_slots=0 slots_inuse=0 state=UP
+	Flags: DAEMON_LAUNCHED:SLOTS_GIVEN
+	aliases: gpua073.delta.ncsa.illinois.edu,172.28.23.73,172.28.86.73,141.142.254.73
+=================================================================
+
+========================   JOB MAP   ========================
+Data for JOB prterun-gpua020-585695@1 offset 0 Total slots allocated 128
+    Mapping policy: BYNUMA:NOOVERSUBSCRIBE  Ranking policy: SLOT Binding policy: CORE
+    Cpu set: N/A  PPR: 16:numa  Cpus-per-rank: N/A  Cpu Type: CORE
+
+
+Data for node: gpua020	Num slots: 64	Max slots: 0	Num procs: 64
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 0 Bound: package[0][core:0]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 1 Bound: package[0][core:1]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 2 Bound: package[0][core:2]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 3 Bound: package[0][core:3]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 4 Bound: package[0][core:4]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 5 Bound: package[0][core:5]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 6 Bound: package[0][core:6]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 7 Bound: package[0][core:7]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 8 Bound: package[0][core:8]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 9 Bound: package[0][core:9]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 10 Bound: package[0][core:10]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 11 Bound: package[0][core:11]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 12 Bound: package[0][core:12]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 13 Bound: package[0][core:13]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 14 Bound: package[0][core:14]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 15 Bound: package[0][core:15]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 16 Bound: package[0][core:16]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 17 Bound: package[0][core:17]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 18 Bound: package[0][core:18]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 19 Bound: package[0][core:19]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 20 Bound: package[0][core:20]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 21 Bound: package[0][core:21]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 22 Bound: package[0][core:22]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 23 Bound: package[0][core:23]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 24 Bound: package[0][core:24]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 25 Bound: package[0][core:25]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 26 Bound: package[0][core:26]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 27 Bound: package[0][core:27]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 28 Bound: package[0][core:28]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 29 Bound: package[0][core:29]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 30 Bound: package[0][core:30]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 31 Bound: package[0][core:31]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 32 Bound: package[0][core:32]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 33 Bound: package[0][core:33]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 34 Bound: package[0][core:34]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 35 Bound: package[0][core:35]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 36 Bound: package[0][core:36]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 37 Bound: package[0][core:37]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 38 Bound: package[0][core:38]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 39 Bound: package[0][core:39]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 40 Bound: package[0][core:40]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 41 Bound: package[0][core:41]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 42 Bound: package[0][core:42]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 43 Bound: package[0][core:43]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 44 Bound: package[0][core:44]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 45 Bound: package[0][core:45]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 46 Bound: package[0][core:46]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 47 Bound: package[0][core:47]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 48 Bound: package[0][core:48]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 49 Bound: package[0][core:49]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 50 Bound: package[0][core:50]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 51 Bound: package[0][core:51]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 52 Bound: package[0][core:52]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 53 Bound: package[0][core:53]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 54 Bound: package[0][core:54]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 55 Bound: package[0][core:55]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 56 Bound: package[0][core:56]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 57 Bound: package[0][core:57]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 58 Bound: package[0][core:58]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 59 Bound: package[0][core:59]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 60 Bound: package[0][core:60]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 61 Bound: package[0][core:61]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 62 Bound: package[0][core:62]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 63 Bound: package[0][core:63]
+
+Data for node: gpua073	Num slots: 64	Max slots: 0	Num procs: 64
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 64 Bound: package[0][core:0]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 65 Bound: package[0][core:1]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 66 Bound: package[0][core:2]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 67 Bound: package[0][core:3]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 68 Bound: package[0][core:4]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 69 Bound: package[0][core:5]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 70 Bound: package[0][core:6]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 71 Bound: package[0][core:7]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 72 Bound: package[0][core:8]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 73 Bound: package[0][core:9]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 74 Bound: package[0][core:10]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 75 Bound: package[0][core:11]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 76 Bound: package[0][core:12]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 77 Bound: package[0][core:13]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 78 Bound: package[0][core:14]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 79 Bound: package[0][core:15]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 80 Bound: package[0][core:16]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 81 Bound: package[0][core:17]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 82 Bound: package[0][core:18]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 83 Bound: package[0][core:19]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 84 Bound: package[0][core:20]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 85 Bound: package[0][core:21]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 86 Bound: package[0][core:22]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 87 Bound: package[0][core:23]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 88 Bound: package[0][core:24]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 89 Bound: package[0][core:25]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 90 Bound: package[0][core:26]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 91 Bound: package[0][core:27]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 92 Bound: package[0][core:28]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 93 Bound: package[0][core:29]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 94 Bound: package[0][core:30]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 95 Bound: package[0][core:31]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 96 Bound: package[0][core:32]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 97 Bound: package[0][core:33]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 98 Bound: package[0][core:34]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 99 Bound: package[0][core:35]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 100 Bound: package[0][core:36]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 101 Bound: package[0][core:37]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 102 Bound: package[0][core:38]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 103 Bound: package[0][core:39]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 104 Bound: package[0][core:40]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 105 Bound: package[0][core:41]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 106 Bound: package[0][core:42]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 107 Bound: package[0][core:43]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 108 Bound: package[0][core:44]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 109 Bound: package[0][core:45]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 110 Bound: package[0][core:46]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 111 Bound: package[0][core:47]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 112 Bound: package[0][core:48]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 113 Bound: package[0][core:49]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 114 Bound: package[0][core:50]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 115 Bound: package[0][core:51]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 116 Bound: package[0][core:52]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 117 Bound: package[0][core:53]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 118 Bound: package[0][core:54]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 119 Bound: package[0][core:55]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 120 Bound: package[0][core:56]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 121 Bound: package[0][core:57]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 122 Bound: package[0][core:58]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 123 Bound: package[0][core:59]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 124 Bound: package[0][core:60]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 125 Bound: package[0][core:61]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 126 Bound: package[0][core:62]
+        Process jobid: prterun-gpua020-585695@1 App: 0 Process rank: 127 Bound: package[0][core:63]
+
+=============================================================
+rank 14 reversed
+rank 108 reversed
+rank 109 reversed
+rank 110 reversed
+rank 83 reversed
+rank 35 reversed
+rank 81 reversed
+rank 126 reversed
+rank 76 reversed
+rank 119 reversed
+rank 115 reversed
+rank 63 reversed
+rank 48 reversed
+rank 95 reversed
+rank 78 reversed
+rank 124 reversed
+rank 73 reversed
+rank 116 reversed
+rank 67 reversed
+rank 51 reversed
+rank 70 reversed
+rank 49 reversed
+rank 6 reversed
+rank 125 reversed
+rank 3 reversed
+rank 47 reversed
+rank 60 reversed
+rank 92 reversed
+rank 85 reversed
+rank 97 reversed
+rank 57 reversed
+rank 16 reversed
+rank 27 reversed
+rank 15 reversed
+rank 103 reversed
+rank 90 reversed
+rank 80 reversed
+rank 106 reversed
+rank 104 reversed
+rank 33 reversed
+rank 22 reversed
+rank 52 reversed
+rank 94 reversed
+rank 9 reversed
+rank 28 reversed
+rank 13 reversed
+rank 96 reversed
+rank 64 reversed
+rank 65 reversed
+rank 79 reversed
+rank 69 reversed
+rank 50 reversed
+rank 32 reversed
+rank 87 reversed
+rank 101 reversed
+rank 102 reversed
+rank 4 reversed
+rank 44 reversed
+rank 2 reversed
+rank 42 reversed
+rank 117 reversed
+rank 112 reversed
+rank 11 reversed
+rank 45 reversed
+rank 59 reversed
+rank 30 reversed
+rank 82 reversed
+rank 113 reversed
+rank 23 reversed
+rank 72 reversed
+rank 25 reversed
+rank 75 reversed
+rank 88 reversed
+rank 127 reversed
+rank 91 reversed
+rank 99 reversed
+rank 18 reversed
+rank 39 reversed
+rank 58 reversed
+rank 21 reversed
+rank 55 reversed
+rank 17 reversed
+rank 53 reversed
+rank 71 reversed
+rank 100 reversed
+rank 111 reversed
+rank 121 reversed
+rank 10 reversed
+rank 36 reversed
+rank 93 reversed
+rank 84 reversed
+rank 89 reversed
+rank 120 reversed
+rank 122 reversed
+rank 123 reversed
+rank 114 reversed
+rank 118 reversed
+rank 43 reversed
+rank 56 reversed
+rank 29 reversed
+rank 34 reversed
+rank 77 reversed
+rank 66 reversed
+rank 68 reversed
+rank 86 reversed
+rank 107 reversed
+rank 105 reversed
+rank 98 reversed
+rank 1 reversed
+rank 8 reversed
+rank 38 reversed
+rank 37 reversed
+rank 40 reversed
+rank 41 reversed
+rank 74 reversed
+rank 12 reversed
+rank 0 reversed
+rank 54 reversed
+rank 5 reversed
+rank 46 reversed
+rank 7 reversed
+rank 61 reversed
+rank 62 reversed
+rank 26 reversed
+rank 24 reversed
+rank 19 reversed
+rank 31 reversed
+rank 20 reversed
+Starting Allreduce Timings, PPG 16:
+Size 64 (Per Proc 16, 4, 1): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 4.768372e-07
+LANE MPS FULL MAX ERROR: 4.768372e-07
+LANE MPS MAX ERROR: 4.768372e-07
+STD MPS: 2.454843e-03
+LOC MPS FULL: 1.201554e-02
+LANE MPS FULL: 6.002457e-03
+LANE MPS: 2.673011e-03
+Size 128 (Per Proc 32, 8, 2): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 4.768372e-07
+LANE MPS FULL MAX ERROR: 4.768372e-07
+LANE MPS MAX ERROR: 4.768372e-07
+STD MPS: 2.398261e-03
+LOC MPS FULL: 1.203089e-02
+LANE MPS FULL: 4.843056e-03
+LANE MPS: 2.630159e-03
+Size 256 (Per Proc 64, 16, 4): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 4.768372e-07
+LANE MPS FULL MAX ERROR: 4.768372e-07
+LANE MPS MAX ERROR: 4.768372e-07
+STD MPS: 2.397321e-03
+LOC MPS FULL: 1.202991e-02
+LANE MPS FULL: 4.842532e-03
+LANE MPS: 2.617881e-03
+Size 512 (Per Proc 128, 32, 8): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 4.768372e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 2.397038e-03
+LOC MPS FULL: 1.202735e-02
+LANE MPS FULL: 4.844386e-03
+LANE MPS: 2.640123e-03
+Size 1024 (Per Proc 256, 64, 16): STD MPS MAX ERROR: 9.536743e-07
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 2.396954e-03
+LOC MPS FULL: 1.204166e-02
+LANE MPS FULL: 4.854425e-03
+LANE MPS: 2.635990e-03
+Size 2048 (Per Proc 512, 128, 32): STD MPS MAX ERROR: 9.536743e-07
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 2.397218e-03
+LOC MPS FULL: 1.202752e-02
+LANE MPS FULL: 4.856770e-03
+LANE MPS: 2.644813e-03
+Size 4096 (Per Proc 1024, 256, 64): STD MPS MAX ERROR: 9.536743e-07
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 2.398349e-03
+LOC MPS FULL: 1.202989e-02
+LANE MPS FULL: 4.858641e-03
+LANE MPS: 2.667591e-03
+Size 8192 (Per Proc 2048, 512, 128): STD MPS MAX ERROR: 9.536743e-07
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 2.399140e-03
+LOC MPS FULL: 1.203263e-02
+LANE MPS FULL: 4.863319e-03
+LANE MPS: 3.370300e-03
+Size 16384 (Per Proc 4096, 1024, 256): STD MPS MAX ERROR: 9.536743e-07
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 2.388337e-03
+LOC MPS FULL: 1.199990e-02
+LANE MPS FULL: 4.851476e-03
+LANE MPS: 2.725176e-03
+Size 32768 (Per Proc 8192, 2048, 512): STD MPS MAX ERROR: 9.536743e-07
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 2.393825e-03
+LOC MPS FULL: 1.202311e-02
+LANE MPS FULL: 4.873201e-03
+LANE MPS: 2.684687e-03
+Size 65536 (Per Proc 16384, 4096, 1024): STD MPS MAX ERROR: 9.536743e-07
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 2.402775e-03
+LOC MPS FULL: 1.204319e-02
+LANE MPS FULL: 4.913825e-03
+LANE MPS: 2.888823e-03
+Size 131072 (Per Proc 32768, 8192, 2048): STD MPS MAX ERROR: 9.536743e-07
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 2.424426e-03
+LOC MPS FULL: 1.211713e-02
+LANE MPS FULL: 5.012182e-03
+LANE MPS: 3.236535e-03
+Size 262144 (Per Proc 65536, 16384, 4096): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 2.482374e-03
+LOC MPS FULL: 1.231538e-02
+LANE MPS FULL: 6.062517e-03
+LANE MPS: 9.436627e-03
+Size 524288 (Per Proc 131072, 32768, 8192): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 1.309449e-03
+LOC MPS FULL: 1.284547e-02
+LANE MPS FULL: 2.423775e-03
+LANE MPS: 6.295950e-03
+Size 1048576 (Per Proc 262144, 65536, 16384): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 2.530253e-03
+LOC MPS FULL: 1.089403e-02
+LANE MPS FULL: 4.420362e-03
+LANE MPS: 1.266085e-02
+Size 2097152 (Per Proc 524288, 131072, 32768): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 5.065593e-03
+LOC MPS FULL: 5.124473e-03
+LANE MPS FULL: 8.636927e-03
+LANE MPS: 1.683528e-02
+Size 4194304 (Per Proc 1048576, 262144, 65536): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 1.002683e-02
+LOC MPS FULL: 9.729098e-03
+LANE MPS FULL: 1.750190e-02
+LANE MPS: 3.204387e-02
+Size 8388608 (Per Proc 2097152, 524288, 131072): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 2.974614e-02
+LOC MPS FULL: 1.945751e-02
+LANE MPS FULL: 4.740518e-02
+LANE MPS: 5.505628e-02
+Size 16777216 (Per Proc 4194304, 1048576, 262144): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 6.076783e-02
+LOC MPS FULL: 3.995995e-02
+LANE MPS FULL: 9.244777e-02
+LANE MPS: 1.047478e-01
+Size 33554432 (Per Proc 8388608, 2097152, 524288): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 1.071878e-01
+LOC MPS FULL: 8.298811e-02
+LANE MPS FULL: 1.811397e-01
+LANE MPS: 1.988333e-01
+Size 67108864 (Per Proc 16777216, 4194304, 1048576): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 2.106465e-01
+LOC MPS FULL: 1.696709e-01
+LANE MPS FULL: 3.715736e-01
+LANE MPS: 4.518941e-01
+Size 134217728 (Per Proc 33554432, 8388608, 2097152): STD MPS MAX ERROR: 0.000000e+00
+LOC MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS FULL MAX ERROR: 9.536743e-07
+LANE MPS MAX ERROR: 9.536743e-07
+STD MPS: 5.376546e-01
+LOC MPS FULL: 3.918040e-01
+LANE MPS FULL: 7.783378e-01
+LANE MPS: 8.363956e-01
+
