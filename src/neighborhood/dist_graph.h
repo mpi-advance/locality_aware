@@ -2,7 +2,7 @@
 #define MPI_ADVANCE_DIST_GRAPH_H
 
 #include "communicator/locality_comm.h"
-#include "communicator/mpix_comm.h"
+#include "communicator/mpil_comm.h"
 #include "mpi.h"
 
 // Declarations of C++ methods
@@ -10,16 +10,16 @@
 extern "C" {
 #endif
 
-int MPIX_Dist_graph_create_adjacent(MPI_Comm comm_old,
+int MPIL_Dist_graph_create_adjacent(MPI_Comm comm_old,
                                     int indegree,
                                     const int sources[],
                                     const int sourceweights[],
                                     int outdegree,
                                     const int destinations[],
                                     const int destweights[],
-                                    MPIX_Info* info,
+                                    MPIL_Info* info,
                                     int reorder,
-                                    MPIX_Comm** comm_dist_graph_ptr);
+                                    MPIL_Comm** comm_dist_graph_ptr);
 
 #ifdef __cplusplus
 }

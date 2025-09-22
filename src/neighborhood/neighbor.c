@@ -9,7 +9,7 @@ NeighborAlltoallvMethod mpix_neighbor_alltoallv_implementation =
     NEIGHBOR_ALLTOALLV_STANDARD;
 
 // Topology object based neighbor alltoallv
-int MPIX_Neighbor_alltoallv_topo(const void* sendbuf,
+int MPIL_Neighbor_alltoallv_topo(const void* sendbuf,
                                  const int sendcounts[],
                                  const int sdispls[],
                                  MPI_Datatype sendtype,
@@ -17,8 +17,8 @@ int MPIX_Neighbor_alltoallv_topo(const void* sendbuf,
                                  const int recvcounts[],
                                  const int rdispls[],
                                  MPI_Datatype recvtype,
-                                 MPIX_Topo* topo,
-                                 MPIX_Comm* comm)
+                                 MPIL_Topo* topo,
+                                 MPIL_Comm* comm)
 {
     int rank;
     MPI_Comm_rank(comm->global_comm, &rank);
@@ -50,7 +50,7 @@ int MPIX_Neighbor_alltoallv_topo(const void* sendbuf,
                   comm);
 }
 
-int MPIX_Neighbor_alltoallv(const void* sendbuffer,
+int MPIL_Neighbor_alltoallv(const void* sendbuffer,
                             const int sendcounts[],
                             const int sdispls[],
                             MPI_Datatype sendtype,
@@ -58,12 +58,12 @@ int MPIX_Neighbor_alltoallv(const void* sendbuffer,
                             const int recvcounts[],
                             const int rdispls[],
                             MPI_Datatype recvtype,
-                            MPIX_Comm* comm)
+                            MPIL_Comm* comm)
 {
-    MPIX_Topo* topo;
-    MPIX_Topo_from_neighbor_comm(comm, &topo);
+    MPIL_Topo* topo;
+    MPIL_Topo_from_neighbor_comm(comm, &topo);
 
-    MPIX_Neighbor_alltoallv_topo(sendbuffer,
+    MPIL_Neighbor_alltoallv_topo(sendbuffer,
                                  sendcounts,
                                  sdispls,
                                  sendtype,
@@ -74,7 +74,7 @@ int MPIX_Neighbor_alltoallv(const void* sendbuffer,
                                  topo,
                                  comm);
 
-    MPIX_Topo_free(&topo);
+    MPIL_Topo_free(&topo);
 
     return MPI_SUCCESS;
 }
@@ -88,11 +88,11 @@ int neighbor_alltoallv_standard(const void* sendbuf,
                                 const int recvcounts[],
                                 const int rdispls[],
                                 MPI_Datatype recvtype,
-                                MPIX_Topo* topo,
-                                MPIX_Comm* comm)
+                                MPIL_Topo* topo,
+                                MPIL_Comm* comm)
 {
     int tag;
-    MPIX_Comm_tag(comm, &tag);
+    MPIL_Comm_tag(comm, &tag);
 
     if (topo->indegree + topo->outdegree == 0)
     {
@@ -101,7 +101,7 @@ int neighbor_alltoallv_standard(const void* sendbuf,
 
     if (comm->n_requests < topo->indegree + topo->outdegree)
     {
-        MPIX_Comm_req_resize(comm, topo->indegree + topo->outdegree);
+        MPIL_Comm_req_resize(comm, topo->indegree + topo->outdegree);
     }
 
     const char* send_buffer = NULL;
@@ -163,8 +163,8 @@ int neighbor_alltoallv_locality(const void* sendbuf,
                                 const int recvcounts[],
                                 const int rdispls[],
                                 MPI_Datatype recvtype,
-                                MPIX_Topo* topo,
-                                MPIX_Comm* comm)
+                                MPIL_Topo* topo,
+                                MPIL_Comm* comm)
 {
     int rank, num_procs;
     MPI_Comm_rank(comm->global_comm, &rank);
@@ -184,8 +184,8 @@ int neighbor_alltoallv_locality(const void* sendbuf,
     int recv_bytes;
     MPI_Type_size(recvtype, &recv_bytes);
 
-    MPIX_Info* xinfo;
-    MPIX_Info_init(&xinfo);
+    MPIL_Info* xinfo;
+    MPIL_Info_init(&xinfo);
 
     alltoallv_crs_personalized(send_nnz,
                                send_size,
@@ -222,12 +222,12 @@ int neighbor_alltoallv_locality(const void* sendbuf,
     }
     free(new_proc_idx);
 
-    MPIX_Info_free(&xinfo);
+    MPIL_Info_free(&xinfo);
 
-    MPIX_Free(src_tmp);
-    MPIX_Free(recvcounts_tmp);
-    MPIX_Free(rdispls_tmp);
-    MPIX_Free(recvvals_tmp);
+    MPIL_Free(src_tmp);
+    MPIL_Free(recvcounts_tmp);
+    MPIL_Free(rdispls_tmp);
+    MPIL_Free(recvvals_tmp);
 
     return MPI_SUCCESS;
 }

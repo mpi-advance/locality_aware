@@ -1,4 +1,4 @@
-#include "mpi_advance.h"
+#include "locality_aware.h"
 #include <mpi.h>
 #include <math.h>
 #include <stdlib.h>
@@ -15,7 +15,7 @@ void compare_neighbor_alltoallv_results(std::vector<int>& pmpi_recv_vals, std::v
     {
         if (pmpi_recv_vals[i] != mpix_recv_vals[i])
         {
-            fprintf(stderr, "PMPI recv != MPIX: position %d, pmpi %d, mpix %d\n", i, 
+            fprintf(stderr, "PMPI recv != MPIL: position %d, pmpi %d, mpix %d\n", i, 
                     pmpi_recv_vals[i], mpix_recv_vals[i]);
             MPI_Abort(MPI_COMM_WORLD, -1);
         }
@@ -33,8 +33,8 @@ int main(int argc, char** argv)
 
     // Initial communication info (standard)
     int local_size = 10000; // Number of variables each rank stores
-    MPIX_Data<int> send_data;
-    MPIX_Data<int> recv_data;
+    MPIL_Data<int> send_data;
+    MPIL_Data<int> recv_data;
     form_initial_communicator(local_size, &send_data, &recv_data);
     std::vector<long> global_send_idx(send_data.size_msgs);
     std::vector<long> global_recv_idx(recv_data.size_msgs);
@@ -65,16 +65,16 @@ int main(int argc, char** argv)
 
     MPI_Comm std_comm;
     MPI_Status status;
-    MPIX_Comm* xcomm;
-    MPIX_Comm_init(&xcomm, MPI_COMM_WORLD);
+    MPIL_Comm* xcomm;
+    MPIL_Comm_init(&xcomm, MPI_COMM_WORLD);
     update_locality(xcomm, 4);
-    MPIX_Request* xrequest;
+    MPIL_Request* xrequest;
 
-    MPIX_Info* xinfo;
-    MPIX_Info_init(&xinfo);
+    MPIL_Info* xinfo;
+    MPIL_Info_init(&xinfo);
 
-    MPIX_Topo* topo;
-    MPIX_Topo_init(recv_data.num_msgs,
+    MPIL_Topo* topo;
+    MPIL_Topo_init(recv_data.num_msgs,
             recv_data.procs.data(), 
             recv_data.counts.data(),
             send_data.num_msgs, 
@@ -120,9 +120,9 @@ int main(int argc, char** argv)
             xcomm, 
             xinfo,
             &xrequest);
-    MPIX_Start(xrequest);
-    MPIX_Wait(xrequest, &status);
-    MPIX_Request_free(&xrequest);
+    MPIL_Start(xrequest);
+    MPIL_Wait(xrequest, &status);
+    MPIL_Request_free(&xrequest);
     compare_neighbor_alltoallv_results(pmpi_recv_vals, mpix_recv_vals, recv_data.size_msgs);
     
 
@@ -142,9 +142,9 @@ int main(int argc, char** argv)
             xcomm, 
             xinfo,
             &xrequest);
-    MPIX_Start(xrequest);
-    MPIX_Wait(xrequest, &status);
-    MPIX_Request_free(&xrequest);
+    MPIL_Start(xrequest);
+    MPIL_Wait(xrequest, &status);
+    MPIL_Request_free(&xrequest);
     compare_neighbor_alltoallv_results(pmpi_recv_vals, mpix_recv_vals, recv_data.size_msgs);
 
 
@@ -162,14 +162,14 @@ int main(int argc, char** argv)
             xcomm, 
             xinfo,
             &xrequest);
-    MPIX_Start(xrequest);
-    MPIX_Wait(xrequest, &status);
-    MPIX_Request_free(&xrequest);
+    MPIL_Start(xrequest);
+    MPIL_Wait(xrequest, &status);
+    MPIL_Request_free(&xrequest);
     compare_neighbor_alltoallv_results(pmpi_recv_vals, mpix_recv_vals, recv_data.size_msgs);
 
-    MPIX_Topo_free(&topo);
-    MPIX_Info_free(&xinfo);
-    MPIX_Comm_free(&xcomm);
+    MPIL_Topo_free(&topo);
+    MPIL_Info_free(&xinfo);
+    MPIL_Comm_free(&xcomm);
     MPI_Comm_free(&std_comm);
 
     if (send_data.counts.data() == NULL)

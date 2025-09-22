@@ -34,7 +34,7 @@ void form_local_comm(const int orig_num_sends,
 void form_global_comm(CommData* local_data,
                       CommData* global_data,
                       std::vector<int>& local_data_nodes,
-                      const MPIX_Comm* mpix_comm,
+                      const MPIL_Comm* mpix_comm,
                       int tag);
 void update_global_comm(LocalityComm* locality);
 void form_global_map(const CommData* map_data, std::map<long, int>& global_map);
@@ -67,8 +67,8 @@ void init_locality(const int n_sends,
                    const long* global_recv_indices,
                    const MPI_Datatype sendtype,
                    const MPI_Datatype recvtype,
-                   MPIX_Comm* mpix_comm,
-                   MPIX_Request* request)
+                   MPIL_Comm* mpix_comm,
+                   MPIL_Request* request)
 {
     // Get MPI Information
     int rank, num_procs;
@@ -185,7 +185,7 @@ void init_locality(const int n_sends,
 }
 
 // Destroy NAPComm* structure
-void destroy_locality(MPIX_Request* request)
+void destroy_locality(MPIL_Request* request)
 {
     destroy_locality_comm(request->locality);
 }
@@ -506,7 +506,7 @@ void form_local_comm(const int orig_num_sends,
 void form_global_comm(CommData* local_data,
                       CommData* global_data,
                       std::vector<int>& local_data_nodes,
-                      const MPIX_Comm* mpix_comm,
+                      const MPIL_Comm* mpix_comm,
                       int tag)
 {
     std::vector<int> tmp_send_indices;
@@ -585,8 +585,8 @@ void update_global_comm(LocalityComm* locality)
     MPI_Request* requests = NULL;
     int* send_buffer      = NULL;
     int send_tag, recv_tag;
-    MPIX_Comm_tag(locality->communicators, &send_tag);
-    MPIX_Comm_tag(locality->communicators, &recv_tag);
+    MPIL_Comm_tag(locality->communicators, &send_tag);
+    MPIL_Comm_tag(locality->communicators, &recv_tag);
     int node, global_proc;
     int num_to_recv;
     MPI_Status recv_status;

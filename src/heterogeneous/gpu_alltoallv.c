@@ -13,7 +13,7 @@ int gpu_aware_alltoallv(alltoallv_ftn f,
                         const int recvcounts[],
                         const int rdispls[],
                         MPI_Datatype recvtype,
-                        MPIX_Comm* comm)
+                        MPIL_Comm* comm)
 {
     return f(sendbuf,
              sendcounts,
@@ -34,7 +34,7 @@ int gpu_aware_alltoallv_pairwise(const void* sendbuf,
                                  const int recvcounts[],
                                  const int rdispls[],
                                  MPI_Datatype recvtype,
-                                 MPIX_Comm* comm)
+                                 MPIL_Comm* comm)
 {
     return gpu_aware_alltoallv(alltoallv_pairwise,
                                sendbuf,
@@ -56,7 +56,7 @@ int gpu_aware_alltoallv_nonblocking(const void* sendbuf,
                                     const int recvcounts[],
                                     const int rdispls[],
                                     MPI_Datatype recvtype,
-                                    MPIX_Comm* comm)
+                                    MPIL_Comm* comm)
 {
     return gpu_aware_alltoallv(alltoallv_nonblocking,
                                sendbuf,
@@ -78,7 +78,7 @@ int gpu_aware_alltoallv_batch(const void* sendbuf,
                               const int recvcounts[],
                               const int rdispls[],
                               MPI_Datatype recvtype,
-                              MPIX_Comm* comm)
+                              MPIL_Comm* comm)
 {
     return gpu_aware_alltoallv(alltoallv_batch,
                                sendbuf,
@@ -100,7 +100,7 @@ int gpu_aware_alltoallv_batch_async(const void* sendbuf,
                                     const int recvcounts[],
                                     const int rdispls[],
                                     MPI_Datatype recvtype,
-                                    MPIX_Comm* comm)
+                                    MPIL_Comm* comm)
 {
     return gpu_aware_alltoallv(alltoallv_batch_async,
                                sendbuf,
@@ -123,7 +123,7 @@ int copy_to_cpu_alltoallv(alltoallv_ftn f,
                           const int recvcounts[],
                           const int rdispls[],
                           MPI_Datatype recvtype,
-                          MPIX_Comm* comm)
+                          MPIL_Comm* comm)
 {
     int ierr = 0;
 
@@ -181,7 +181,7 @@ int copy_to_cpu_alltoallv_pairwise(const void* sendbuf,
                                    const int recvcounts[],
                                    const int rdispls[],
                                    MPI_Datatype recvtype,
-                                   MPIX_Comm* comm)
+                                   MPIL_Comm* comm)
 {
     return copy_to_cpu_alltoallv(alltoallv_pairwise,
                                  sendbuf,
@@ -203,7 +203,7 @@ int copy_to_cpu_alltoallv_nonblocking(const void* sendbuf,
                                       const int recvcounts[],
                                       const int rdispls[],
                                       MPI_Datatype recvtype,
-                                      MPIX_Comm* comm)
+                                      MPIL_Comm* comm)
 {
     return copy_to_cpu_alltoallv(alltoallv_nonblocking,
                                  sendbuf,
@@ -225,7 +225,7 @@ int copy_to_cpu_alltoallv_batch(const void* sendbuf,
                                 const int recvcounts[],
                                 const int rdispls[],
                                 MPI_Datatype recvtype,
-                                MPIX_Comm* comm)
+                                MPIL_Comm* comm)
 {
     return copy_to_cpu_alltoallv(alltoallv_batch,
                                  sendbuf,
@@ -247,7 +247,7 @@ int copy_to_cpu_alltoallv_batch_async(const void* sendbuf,
                                       const int recvcounts[],
                                       const int rdispls[],
                                       MPI_Datatype recvtype,
-                                      MPIX_Comm* comm)
+                                      MPIL_Comm* comm)
 {
     return copy_to_cpu_alltoallv(alltoallv_batch_async,
                                  sendbuf,
@@ -270,7 +270,7 @@ int threaded_alltoallv_pairwise(const void* sendbuf,
                                 const int recvcounts[],
                                 const int rdispls[],
                                 MPI_Datatype recvtype,
-                                MPIX_Comm* comm)
+                                MPIL_Comm* comm)
 {
     int ierr = 0;
 
@@ -309,7 +309,7 @@ int threaded_alltoallv_pairwise(const void* sendbuf,
     {
         MPI_Status status;
         int tag;
-        MPIX_Comm_tag(comm, &tag);
+        MPIL_Comm_tag(comm, &tag);
         int send_proc, recv_proc;
         int send_pos, recv_pos;
 
@@ -377,7 +377,7 @@ int threaded_alltoallv_nonblocking(const void* sendbuf,
                                    const int recvcounts[],
                                    const int rdispls[],
                                    MPI_Datatype recvtype,
-                                   MPIX_Comm* comm)
+                                   MPIL_Comm* comm)
 {
     int ierr = 0;
 
@@ -415,7 +415,7 @@ int threaded_alltoallv_nonblocking(const void* sendbuf,
 #pragma omp parallel shared(cpu_sendbuf, cpu_recvbuf)
     {
         int tag;
-        MPIX_Comm_tag(comm, &tag);
+        MPIL_Comm_tag(comm, &tag);
         int send_proc, recv_proc;
         int send_pos, recv_pos;
 

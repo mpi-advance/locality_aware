@@ -1,4 +1,4 @@
-#include "mpi_advance.h"
+#include "locality_aware.h"
 #include <mpi.h>
 #include <math.h>
 #include <stdlib.h>
@@ -31,8 +31,8 @@ int main(int argc, char* argv[])
     send_displs[0] = 0;
     recv_displs[0] = 0;
 
-    MPIX_Comm* xcomm;
-    MPIX_Comm_init(&xcomm, MPI_COMM_WORLD);
+    MPIL_Comm* xcomm;
+    MPIL_Comm_init(&xcomm, MPI_COMM_WORLD);
 
     for (int i = 0; i < max_i; i++)
     {
@@ -60,7 +60,7 @@ int main(int argc, char* argv[])
                 MPI_DOUBLE,
                 MPI_COMM_WORLD);
 
-        MPIX_Alltoallv(local_data.data(),
+        MPIL_Alltoallv(local_data.data(),
                 send_sizes.data(),
                 send_displs.data(),
                 MPI_DOUBLE,
@@ -114,7 +114,7 @@ int main(int argc, char* argv[])
 
 
         // Time Loc Alltoallv
-        MPIX_Alltoallv(local_data.data(),
+        MPIL_Alltoallv(local_data.data(),
                 send_sizes.data(),
                 send_displs.data(),
                 MPI_DOUBLE,
@@ -127,7 +127,7 @@ int main(int argc, char* argv[])
         t0 = MPI_Wtime();
         for (int k = 0; k < n_iter; k++)
         {
-            MPIX_Alltoallv(local_data.data(),
+            MPIL_Alltoallv(local_data.data(),
                     send_sizes.data(),
                     send_displs.data(),
                     MPI_DOUBLE,
@@ -139,11 +139,11 @@ int main(int argc, char* argv[])
         }
         tfinal = (MPI_Wtime() - t0) / n_iter;
         MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
-        if (rank == 0) printf("MPIX_Alltoallv Time %e\n", t0);
+        if (rank == 0) printf("MPIL_Alltoallv Time %e\n", t0);
 
     }
 
-    MPIX_Comm_free(&xcomm);
+    MPIL_Comm_free(&xcomm);
 
     MPI_Finalize();
     return 0;

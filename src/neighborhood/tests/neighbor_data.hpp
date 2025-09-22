@@ -2,7 +2,7 @@
 #define MPI_ADVANCE_TEST_NEIGHBOR_DATA_HPP
 
 template <typename U>
-struct MPIX_Data
+struct MPIL_Data
 {
     int num_msgs;
     int size_msgs; 
@@ -16,7 +16,7 @@ struct MPIX_Data
 
 // Form random communication
 template <typename U>
-void form_initial_communicator(int local_size, MPIX_Data<U>* send_data, MPIX_Data<U>* recv_data)
+void form_initial_communicator(int local_size, MPIL_Data<U>* send_data, MPIL_Data<U>* recv_data)
 {
     // Get MPI Information
     int rank, num_procs;
@@ -116,7 +116,7 @@ void form_initial_communicator(int local_size, MPIX_Data<U>* send_data, MPIX_Dat
 
 
 template <typename U>
-void form_global_indices(int local_size, MPIX_Data<U> send_data, MPIX_Data<U> recv_data,
+void form_global_indices(int local_size, MPIL_Data<U> send_data, MPIL_Data<U> recv_data,
         std::vector<long>& global_send_idx, std::vector<long>& global_recv_idx)
 {
     int rank, num_procs;

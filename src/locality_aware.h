@@ -7,7 +7,7 @@
 #include "communicator/comm_data.h"
 #include "communicator/comm_pkg.h"
 #include "communicator/locality_comm.h"
-#include "communicator/mpix_comm.h"
+#include "communicator/mpil_comm.h"
 #include "neighborhood/dist_graph.h"
 #include "neighborhood/dist_topo.h"
 #include "neighborhood/neighbor.h"

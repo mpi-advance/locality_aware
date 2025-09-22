@@ -1,4 +1,4 @@
-#include "mpi_advance.h"
+#include "locality_aware.h"
 #include <mpi.h>
 #include <math.h>
 #include <stdlib.h>
@@ -36,13 +36,13 @@ void test_matrix(const char* filename)
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
     
-    MPIX_Comm* xcomm;
-    MPIX_Info* xinfo;
+    MPIL_Comm* xcomm;
+    MPIL_Info* xinfo;
 
-    MPIX_Comm_init(&xcomm, MPI_COMM_WORLD);
-    MPIX_Comm_topo_init(xcomm);
+    MPIL_Comm_init(&xcomm, MPI_COMM_WORLD);
+    MPIL_Comm_topo_init(xcomm);
 
-    MPIX_Info_init(&xinfo);
+    MPIL_Info_init(&xinfo);
 
     // Update so there are 4 PPN rather than what MPI_Comm_split returns
     update_locality(xcomm, 4);
@@ -65,8 +65,8 @@ void test_matrix(const char* filename)
             A.recv_comm.counts.data(), &n_recvs, &src, 1, MPI_INT,
             (void**)&recvvals, xinfo, xcomm);
     compare_alltoall_crs_results(n_recvs, A.send_comm.n_msgs, recvvals, src, proc_counts);
-    MPIX_Free(src);
-    MPIX_Free(recvvals);
+    MPIL_Free(src);
+    MPIL_Free(recvvals);
 
 
     /* TEST PERSONALIZED VERSION */
@@ -75,8 +75,8 @@ void test_matrix(const char* filename)
             A.recv_comm.counts.data(), &n_recvs, &src, 1, MPI_INT,
             (void**)&recvvals, xinfo, xcomm);
     compare_alltoall_crs_results(n_recvs, A.send_comm.n_msgs, recvvals, src, proc_counts);
-    MPIX_Free(src);
-    MPIX_Free(recvvals);
+    MPIL_Free(src);
+    MPIL_Free(recvvals);
 
 
     /* TEST PERSONALIZED LOCALITY VERSION */
@@ -85,8 +85,8 @@ void test_matrix(const char* filename)
             A.recv_comm.counts.data(), &n_recvs, &src, 1, MPI_INT,
             (void**)&recvvals, xinfo, xcomm);
     compare_alltoall_crs_results(n_recvs, A.send_comm.n_msgs, recvvals, src, proc_counts);
-    MPIX_Free(src);
-    MPIX_Free(recvvals);
+    MPIL_Free(src);
+    MPIL_Free(recvvals);
 
     /* TEST NONBLOCKING VERSION */
     n_recvs = -1;
@@ -94,8 +94,8 @@ void test_matrix(const char* filename)
             A.recv_comm.counts.data(), &n_recvs, &src, 1, MPI_INT,
             (void**)&recvvals, xinfo, xcomm);
     compare_alltoall_crs_results(n_recvs, A.send_comm.n_msgs, recvvals, src, proc_counts);
-    MPIX_Free(src);
-    MPIX_Free(recvvals);
+    MPIL_Free(src);
+    MPIL_Free(recvvals);
 
     /* TEST NONBLOCKING LOCALITY VERSION */
     n_recvs = -1;
@@ -103,11 +103,11 @@ void test_matrix(const char* filename)
             A.recv_comm.counts.data(), &n_recvs, &src, 1, MPI_INT,
             (void**)&recvvals, xinfo, xcomm);
     compare_alltoall_crs_results(n_recvs, A.send_comm.n_msgs, recvvals, src, proc_counts);
-    MPIX_Free(src);
-    MPIX_Free(recvvals);
+    MPIL_Free(src);
+    MPIL_Free(recvvals);
 
-    MPIX_Info_free(&xinfo);
-    MPIX_Comm_free(&xcomm);
+    MPIL_Info_free(&xinfo);
+    MPIL_Comm_free(&xcomm);
 }
 
 

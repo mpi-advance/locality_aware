@@ -2,17 +2,17 @@
 #define MPI_ADVANCE_PERSISTENT_H
 
 #include "communicator/locality_comm.h"
-#include "communicator/mpix_comm.h"
+#include "communicator/mpil_comm.h"
 #include "utils/utils.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-struct _MPIX_Request;  // forward declaration
-typedef struct _MPIX_Request MPIX_Request;
+struct _MPIL_Request;  // forward declaration
+typedef struct _MPIL_Request MPIL_Request;
 
-struct _MPIX_Request
+struct _MPIL_Request
 {
     // Message counts
     // Will only use global unless locality-aware
@@ -51,30 +51,30 @@ struct _MPIX_Request
 #endif
 
     // Keep track of which start/wait functions to call for given request
-    int (*start_function)(MPIX_Request* request);
-    int (*wait_function)(MPIX_Request* request, MPI_Status* status);
+    int (*start_function)(MPIL_Request* request);
+    int (*wait_function)(MPIL_Request* request, MPI_Status* status);
 };
 
-typedef int (*mpix_start_ftn)(MPIX_Request* request);
-typedef int (*mpix_wait_ftn)(MPIX_Request* request, MPI_Status* status);
+typedef int (*mpix_start_ftn)(MPIL_Request* request);
+typedef int (*mpix_wait_ftn)(MPIL_Request* request, MPI_Status* status);
 
 // Starting locality-aware requests
 // 1. Start Local_L
 // 2. Start and wait for local_S
 // 3. Start global
-int MPIX_Start(MPIX_Request* request);
+int MPIL_Start(MPIL_Request* request);
 
 // Wait for locality-aware requests
 // 1. Wait for global
 // 2. Start and wait for local_R
 // 3. Wait for local_L
-int MPIX_Wait(MPIX_Request* request, MPI_Status* status);
+int MPIL_Wait(MPIL_Request* request, MPI_Status* status);
 
-int MPIX_Request_free(MPIX_Request** request);
+int MPIL_Request_free(MPIL_Request** request);
 
-void init_request(MPIX_Request** request_ptr);
+void init_request(MPIL_Request** request_ptr);
 void allocate_requests(int n_requests, MPI_Request** request_ptr);
-void destroy_request(MPIX_Request* request);
+void destroy_request(MPIL_Request* request);
 
 #ifdef __cplusplus
 }

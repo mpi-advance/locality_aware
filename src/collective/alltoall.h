@@ -6,7 +6,7 @@
 #include <stdlib.h>
 
 #include "collective.h"
-#include "communicator/mpix_comm.h"
+#include "communicator/mpil_comm.h"
 #include "utils/utils.h"
 
 #ifdef __cplusplus
@@ -30,10 +30,10 @@ enum AlltoallMethod
     ALLTOALL_MULTILEADER_LOCALITY_NONBLOCKING,
     ALLTOALL_PMPI
 };
-extern AlltoallMethod mpix_alltoall_implementation;
+extern enum AlltoallMethod mpil_alltoall_implementation;
 
 typedef int (*alltoall_ftn)(
-    const void*, const int, MPI_Datatype, void*, const int, MPI_Datatype, MPIX_Comm*);
+    const void*, const int, MPI_Datatype, void*, const int, MPI_Datatype, MPIL_Comm*);
 typedef int (*alltoall_helper_ftn)(const void*,
                                    const int,
                                    MPI_Datatype,
@@ -49,14 +49,14 @@ int alltoall_pairwise(const void* sendbuf,
                       void* recvbuf,
                       const int recvcount,
                       MPI_Datatype recvtype,
-                      MPIX_Comm* comm);
+                      MPIL_Comm* comm);
 int alltoall_nonblocking(const void* sendbuf,
                          const int sendcount,
                          MPI_Datatype sendtype,
                          void* recvbuf,
                          const int recvcount,
                          MPI_Datatype recvtype,
-                         MPIX_Comm* comm);
+                         MPIL_Comm* comm);
 
 int alltoall_hierarchical_pairwise(const void* sendbuf,
                                    const int sendcount,
@@ -64,28 +64,28 @@ int alltoall_hierarchical_pairwise(const void* sendbuf,
                                    void* recvbuf,
                                    const int recvcount,
                                    MPI_Datatype recvtype,
-                                   MPIX_Comm* comm);
+                                   MPIL_Comm* comm);
 int alltoall_hierarchical_nonblocking(const void* sendbuf,
                                       const int sendcount,
                                       MPI_Datatype sendtype,
                                       void* recvbuf,
                                       const int recvcount,
                                       MPI_Datatype recvtype,
-                                      MPIX_Comm* comm);
+                                      MPIL_Comm* comm);
 int alltoall_multileader_pairwise(const void* sendbuf,
                                   const int sendcount,
                                   MPI_Datatype sendtype,
                                   void* recvbuf,
                                   const int recvcount,
                                   MPI_Datatype recvtype,
-                                  MPIX_Comm* comm);
+                                  MPIL_Comm* comm);
 int alltoall_multileader_nonblocking(const void* sendbuf,
                                      const int sendcount,
                                      MPI_Datatype sendtype,
                                      void* recvbuf,
                                      const int recvcount,
                                      MPI_Datatype recvtype,
-                                     MPIX_Comm* comm);
+                                     MPIL_Comm* comm);
 
 int alltoall_node_aware_pairwise(const void* sendbuf,
                                  const int sendcount,
@@ -93,28 +93,28 @@ int alltoall_node_aware_pairwise(const void* sendbuf,
                                  void* recvbuf,
                                  const int recvcount,
                                  MPI_Datatype recvtype,
-                                 MPIX_Comm* comm);
+                                 MPIL_Comm* comm);
 int alltoall_node_aware_nonblocking(const void* sendbuf,
                                     const int sendcount,
                                     MPI_Datatype sendtype,
                                     void* recvbuf,
                                     const int recvcount,
                                     MPI_Datatype recvtype,
-                                    MPIX_Comm* comm);
+                                    MPIL_Comm* comm);
 int alltoall_locality_aware_pairwise(const void* sendbuf,
                                      const int sendcount,
                                      MPI_Datatype sendtype,
                                      void* recvbuf,
                                      const int recvcount,
                                      MPI_Datatype recvtype,
-                                     MPIX_Comm* comm);
+                                     MPIL_Comm* comm);
 int alltoall_locality_aware_nonblocking(const void* sendbuf,
                                         const int sendcount,
                                         MPI_Datatype sendtype,
                                         void* recvbuf,
                                         const int recvcount,
                                         MPI_Datatype recvtype,
-                                        MPIX_Comm* comm);
+                                        MPIL_Comm* comm);
 
 int alltoall_multileader_locality_pairwise(const void* sendbuf,
                                            const int sendcount,
@@ -122,14 +122,14 @@ int alltoall_multileader_locality_pairwise(const void* sendbuf,
                                            void* recvbuf,
                                            const int recvcount,
                                            MPI_Datatype recvtype,
-                                           MPIX_Comm* comm);
+                                           MPIL_Comm* comm);
 int alltoall_multileader_locality_nonblocking(const void* sendbuf,
                                               const int sendcount,
                                               MPI_Datatype sendtype,
                                               void* recvbuf,
                                               const int recvcount,
                                               MPI_Datatype recvtype,
-                                              MPIX_Comm* comm);
+                                              MPIL_Comm* comm);
 
 // Calls underlying MPI implementation
 int alltoall_pmpi(const void* sendbuf,
@@ -138,7 +138,7 @@ int alltoall_pmpi(const void* sendbuf,
                   void* recvbuf,
                   const int recvcount,
                   MPI_Datatype recvtype,
-                  MPIX_Comm* comm);
+                  MPIL_Comm* comm);
 
 #ifdef __cplusplus
 }

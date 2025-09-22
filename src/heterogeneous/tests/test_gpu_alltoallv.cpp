@@ -1,4 +1,4 @@
-#include "mpi_advance.h"
+#include "locality_aware.h"
 #include <mpi.h>
 #include <math.h>
 #include <stdlib.h>
@@ -30,9 +30,9 @@ void test_matrix(const char* filename)
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
 
-    MPIX_Comm* xcomm;
-    MPIX_Comm_init(&xcomm, MPI_COMM_WORLD);
-    MPIX_Comm_device_init(xcomm);
+    MPIL_Comm* xcomm;
+    MPIL_Comm_init(&xcomm, MPI_COMM_WORLD);
+    MPIL_Comm_device_init(xcomm);
 
     // Read suitesparse matrix
     ParMat<int> A;
@@ -175,7 +175,7 @@ void test_matrix(const char* filename)
     gpuFree(sendbuf_d);
     gpuFree(recvbuf_d);
 
-    MPIX_Comm_free(&xcomm);
+    MPIL_Comm_free(&xcomm);
 }
 
 int main(int argc, char** argv)

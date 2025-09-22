@@ -2,22 +2,22 @@
 
 #include <string.h>
 
-int MPIX_Topo_init(int indegree,
+int MPIL_Topo_init(int indegree,
                    const int sources[],
                    const int sourceweights[],
                    int outdegree,
                    const int destinations[],
                    const int destweights[],
-                   MPIX_Info* info,
-                   MPIX_Topo** mpix_topo_ptr)
+                   MPIL_Info* info,
+                   MPIL_Topo** mpix_topo_ptr)
 {
-    MPIX_Topo* mpix_topo = (MPIX_Topo*)malloc(sizeof(MPIX_Topo));
+    MPIL_Topo* mpix_topo = (MPIL_Topo*)malloc(sizeof(MPIL_Topo));
 
-    // Copy indegree and outdegree into MPIX_Topo struct
+    // Copy indegree and outdegree into MPIL_Topo struct
     mpix_topo->indegree  = indegree;
     mpix_topo->outdegree = outdegree;
 
-    // Create copy of sources/destinations in MPIX_Topo struct
+    // Create copy of sources/destinations in MPIL_Topo struct
     mpix_topo->sources      = NULL;
     mpix_topo->destinations = NULL;
 
@@ -57,15 +57,15 @@ int MPIX_Topo_init(int indegree,
     return MPI_SUCCESS;
 }
 
-int MPIX_Topo_from_neighbor_comm(MPIX_Comm* comm, MPIX_Topo** mpix_topo_ptr)
+int MPIL_Topo_from_neighbor_comm(MPIL_Comm* comm, MPIL_Topo** mpix_topo_ptr)
 {
-    MPIX_Topo* mpix_topo = (MPIX_Topo*)malloc(sizeof(MPIX_Topo));
+    MPIL_Topo* mpix_topo = (MPIL_Topo*)malloc(sizeof(MPIL_Topo));
 
     int weighted;
     MPI_Dist_graph_neighbors_count(
         comm->neighbor_comm, &(mpix_topo->indegree), &(mpix_topo->outdegree), &weighted);
 
-    // Create copy of sources/destinations in MPIX_Topo struct
+    // Create copy of sources/destinations in MPIL_Topo struct
     mpix_topo->sources      = NULL;
     mpix_topo->destinations = NULL;
 
@@ -108,9 +108,9 @@ int MPIX_Topo_from_neighbor_comm(MPIX_Comm* comm, MPIX_Topo** mpix_topo_ptr)
     return MPI_SUCCESS;
 }
 
-int MPIX_Topo_free(MPIX_Topo** mpix_topo_ptr)
+int MPIL_Topo_free(MPIL_Topo** mpix_topo_ptr)
 {
-    MPIX_Topo* mpix_topo = *mpix_topo_ptr;
+    MPIL_Topo* mpix_topo = *mpix_topo_ptr;
 
     if (mpix_topo->indegree)
     {

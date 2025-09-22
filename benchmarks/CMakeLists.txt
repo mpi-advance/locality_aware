@@ -26,5 +26,5 @@ foreach(src ${CPP_SOURCES})
     add_executable(${exec_name} ${src})
 
     # Link with MPI 
-    target_link_libraries(${exec_name} mpi_advance ${MPI_LIBRARIES})
+    target_link_libraries(${exec_name} locality_aware ${MPI_LIBRARIES})
 endforeach()

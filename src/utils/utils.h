@@ -13,15 +13,15 @@
 extern "C" {
 #endif
 
-// MPIX Info Object
-typedef struct _MPIX_Info
+// MPIL Info Object
+typedef struct _MPIL_Info
 {
     int crs_num_initialized;
     int crs_size_initialized;
-} MPIX_Info;
+} MPIL_Info;
 
-int MPIX_Info_init(MPIX_Info** info);
-int MPIX_Info_free(MPIX_Info** info);
+int MPIL_Info_init(MPIL_Info** info);
+int MPIL_Info_free(MPIL_Info** info);
 
 // If using GPU, specific gpu methods (for either NCCL or HIP)
 #ifdef GPU
@@ -48,8 +48,8 @@ void reverse(void* recvbuf, int n_bytes, int var_bytes);
 void repack(int size_i, int size_j, int size_k, char* sendbuf, char* recvbuf);
 
 // Allocate Vector in MPI
-int MPIX_Alloc(void** pointer, const int bytes);
-int MPIX_Free(void* pointer);
+int MPIL_Alloc(void** pointer, const int bytes);
+int MPIL_Free(void* pointer);
 
 #ifdef __cplusplus
 }

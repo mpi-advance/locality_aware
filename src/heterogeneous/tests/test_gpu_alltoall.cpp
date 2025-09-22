@@ -1,4 +1,4 @@
-#include "mpi_advance.h"
+#include "locality_aware.h"
 #include <mpi.h>
 #include <math.h>
 #include <stdlib.h>
@@ -40,9 +40,9 @@ int main(int argc, char** argv)
     std::vector<int> mpix_alltoall(max_s*num_procs);
     std::vector<int> device_data(max_s*num_procs);
 
-    MPIX_Comm* xcomm;
-    MPIX_Comm_init(&xcomm, MPI_COMM_WORLD);
-    MPIX_Comm_device_init(xcomm);
+    MPIL_Comm* xcomm;
+    MPIL_Comm_init(&xcomm, MPI_COMM_WORLD);
+    MPIL_Comm_device_init(xcomm);
 
     int n_gpus;
     gpuGetDeviceCount(&n_gpus);
@@ -174,7 +174,7 @@ int main(int argc, char** argv)
     gpuFree(local_data_d);
     gpuFree(alltoall_d);
 
-    MPIX_Comm_free(&xcomm);
+    MPIL_Comm_free(&xcomm);
 
     MPI_Finalize();
     return 0;

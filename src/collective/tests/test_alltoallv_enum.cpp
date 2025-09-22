@@ -1,4 +1,4 @@
-#include "mpi_advance.h"
+#include "locality_aware.h"
 #include <mpi.h>
 #include <math.h>
 #include <stdlib.h>
@@ -7,17 +7,17 @@
 #include <vector>
 #include <set>
 
-void compare_alltoallv_results(std::vector<int>& pmpi, std::vector<int>& mpix, int s)
+void compare_alltoallv_results(std::vector<int>& pmpi, std::vector<int>& mpil, int s)
 {
     int num_procs;
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
 
     for (int j = 0; j < s*num_procs; j++)
     {
-        if (pmpi[j] != mpix[j])
+        if (pmpi[j] != mpil[j])
         {
-            fprintf(stderr, "MPIX Alltoallv != PMPI, position %d, pmpi %d, mpix %d\n", 
-                    j, pmpi[j], mpix[j]);
+            fprintf(stderr, "MPIL Alltoallv != PMPI, position %d, pmpi %d, mpil %d\n", 
+                    j, pmpi[j], mpil[j]);
             MPI_Abort(MPI_COMM_WORLD, -1);
         }
     }
@@ -38,13 +38,13 @@ int main(int argc, char** argv)
     std::vector<int> local_data(max_s*num_procs);
 
     std::vector<int> pmpi_alltoallv(max_s*num_procs);
-    std::vector<int> mpix_alltoallv(max_s*num_procs);
+    std::vector<int> mpil_alltoallv(max_s*num_procs);
 
     std::vector<int> sizes(num_procs);
     std::vector<int> displs(num_procs+1);
 
-    MPIX_Comm* xcomm;
-    MPIX_Comm_init(&xcomm, MPI_COMM_WORLD);
+    MPIL_Comm* xcomm;
+    MPIL_Comm_init(&xcomm, MPI_COMM_WORLD);
     update_locality(xcomm, 4);
 
     for (int i = 0; i < max_i; i++)
@@ -72,75 +72,75 @@ int main(int argc, char** argv)
                 MPI_INT,
                 MPI_COMM_WORLD);
 
-        mpix_alltoallv_implementation = ALLTOALLV_PAIRWISE;
-        std::fill(mpix_alltoallv.begin(), mpix_alltoallv.end(), 0);
-        MPIX_Alltoallv(local_data.data(), 
+        mpil_alltoallv_implementation = ALLTOALLV_PAIRWISE;
+        std::fill(mpil_alltoallv.begin(), mpil_alltoallv.end(), 0);
+        MPIL_Alltoallv(local_data.data(), 
                 sizes.data(),
                 displs.data(),
                 MPI_INT, 
-                mpix_alltoallv.data(), 
+                mpil_alltoallv.data(), 
                 sizes.data(),
                 displs.data(),
                 MPI_INT,
                 xcomm);
-        compare_alltoallv_results(pmpi_alltoallv, mpix_alltoallv, s);
+        compare_alltoallv_results(pmpi_alltoallv, mpil_alltoallv, s);
 
-        mpix_alltoallv_implementation = ALLTOALLV_NONBLOCKING;
-        std::fill(mpix_alltoallv.begin(), mpix_alltoallv.end(), 0);
-        MPIX_Alltoallv(local_data.data(), 
+        mpil_alltoallv_implementation = ALLTOALLV_NONBLOCKING;
+        std::fill(mpil_alltoallv.begin(), mpil_alltoallv.end(), 0);
+        MPIL_Alltoallv(local_data.data(), 
                 sizes.data(),
                 displs.data(),
                 MPI_INT, 
-                mpix_alltoallv.data(), 
+                mpil_alltoallv.data(), 
                 sizes.data(),
                 displs.data(),
                 MPI_INT,
                 xcomm);
-        compare_alltoallv_results(pmpi_alltoallv, mpix_alltoallv, s);
+        compare_alltoallv_results(pmpi_alltoallv, mpil_alltoallv, s);
 
-        mpix_alltoallv_implementation = ALLTOALLV_BATCH;
-        std::fill(mpix_alltoallv.begin(), mpix_alltoallv.end(), 0);
-        MPIX_Alltoallv(local_data.data(), 
+        mpil_alltoallv_implementation = ALLTOALLV_BATCH;
+        std::fill(mpil_alltoallv.begin(), mpil_alltoallv.end(), 0);
+        MPIL_Alltoallv(local_data.data(), 
                 sizes.data(),
                 displs.data(),
                 MPI_INT, 
-                mpix_alltoallv.data(), 
+                mpil_alltoallv.data(), 
                 sizes.data(),
                 displs.data(),
                 MPI_INT,
                 xcomm);
-        compare_alltoallv_results(pmpi_alltoallv, mpix_alltoallv, s);
+        compare_alltoallv_results(pmpi_alltoallv, mpil_alltoallv, s);
 
-        mpix_alltoallv_implementation = ALLTOALLV_BATCH_ASYNC;
-        std::fill(mpix_alltoallv.begin(), mpix_alltoallv.end(), 0);
-        MPIX_Alltoallv(local_data.data(), 
+        mpil_alltoallv_implementation = ALLTOALLV_BATCH_ASYNC;
+        std::fill(mpil_alltoallv.begin(), mpil_alltoallv.end(), 0);
+        MPIL_Alltoallv(local_data.data(), 
                 sizes.data(),
                 displs.data(),
                 MPI_INT, 
-                mpix_alltoallv.data(), 
+                mpil_alltoallv.data(), 
                 sizes.data(),
                 displs.data(),
                 MPI_INT,
                 xcomm);
-        compare_alltoallv_results(pmpi_alltoallv, mpix_alltoallv, s);
+        compare_alltoallv_results(pmpi_alltoallv, mpil_alltoallv, s);
 
-        mpix_alltoallv_implementation = ALLTOALLV_PMPI;
-        std::fill(mpix_alltoallv.begin(), mpix_alltoallv.end(), 0);
-        MPIX_Alltoallv(local_data.data(), 
+        mpil_alltoallv_implementation = ALLTOALLV_PMPI;
+        std::fill(mpil_alltoallv.begin(), mpil_alltoallv.end(), 0);
+        MPIL_Alltoallv(local_data.data(), 
                 sizes.data(),
                 displs.data(),
                 MPI_INT, 
-                mpix_alltoallv.data(), 
+                mpil_alltoallv.data(), 
                 sizes.data(),
                 displs.data(),
                 MPI_INT,
                 xcomm);
-        compare_alltoallv_results(pmpi_alltoallv, mpix_alltoallv, s);
+        compare_alltoallv_results(pmpi_alltoallv, mpil_alltoallv, s);
 
     }
 
 
-    MPIX_Comm_free(&xcomm);
+    MPIL_Comm_free(&xcomm);
 
 
     MPI_Finalize();

@@ -10,10 +10,10 @@
 #include "hip/hip_runtime.h"
 #endif
 
-// MPIX Info Object Routines
-int MPIX_Info_init(MPIX_Info** info_ptr)
+// MPIL Info Object Routines
+int MPIL_Info_init(MPIL_Info** info_ptr)
 {
-    MPIX_Info* xinfo            = (MPIX_Info*)malloc(sizeof(MPIX_Info));
+    MPIL_Info* xinfo            = (MPIL_Info*)malloc(sizeof(MPIL_Info));
     xinfo->crs_num_initialized  = 0;
     xinfo->crs_size_initialized = 0;
 
@@ -22,9 +22,9 @@ int MPIX_Info_init(MPIX_Info** info_ptr)
     return MPI_SUCCESS;
 }
 
-int MPIX_Info_free(MPIX_Info** info_ptr)
+int MPIL_Info_free(MPIL_Info** info_ptr)
 {
-    MPIX_Info* xinfo = *info_ptr;
+    MPIL_Info* xinfo = *info_ptr;
     free(xinfo);
 
     return MPI_SUCCESS;
@@ -216,7 +216,7 @@ void get_memcpy_kind(gpuMemoryType send_type,
 }
 #endif
 
-int MPIX_Alloc(void** pointer, const int bytes)
+int MPIL_Alloc(void** pointer, const int bytes)
 {
     if (bytes == 0)
     {
@@ -229,7 +229,7 @@ int MPIX_Alloc(void** pointer, const int bytes)
 
     return MPI_SUCCESS;
 }
-int MPIX_Free(void* pointer)
+int MPIL_Free(void* pointer)
 {
     if (pointer != NULL)
     {

@@ -1,4 +1,4 @@
-#include "mpi_advance.h"
+#include "locality_aware.h"
 #include <mpi.h>
 #include <math.h>
 #include <stdlib.h>
@@ -17,7 +17,7 @@ void compare_neighbor_alltoallv_results(std::vector<int>& pmpi_recv_vals, std::v
     {
         if (pmpi_recv_vals[i] != mpix_recv_vals[i])
         {
-            fprintf(stderr, "PMPI recv != MPIX: position %d, pmpi %d, mpix %d\n", i, 
+            fprintf(stderr, "PMPI recv != MPIL: position %d, pmpi %d, mpix %d\n", i, 
                     pmpi_recv_vals[i], mpix_recv_vals[i]);
             MPI_Abort(MPI_COMM_WORLD, -1);
         }
@@ -70,11 +70,11 @@ void test_matrix(const char* filename)
 
     MPI_Comm std_comm;
     MPI_Status status;
-    MPIX_Comm* neighbor_comm;
-    MPIX_Request* neighbor_request;
-    MPIX_Info* xinfo;
+    MPIL_Comm* neighbor_comm;
+    MPIL_Request* neighbor_request;
+    MPIL_Info* xinfo;
 
-    MPIX_Info_init(&xinfo);
+    MPIL_Info_init(&xinfo);
 
     int* s = A.recv_comm.procs.data();
     if (A.recv_comm.n_msgs == 0)
@@ -117,7 +117,7 @@ void test_matrix(const char* filename)
     compare_neighbor_alltoallv_results(pmpi_recv_vals, mpix_recv_vals, A.recv_comm.size_msgs);
 
 
-    MPIX_Dist_graph_create_adjacent(MPI_COMM_WORLD,
+    MPIL_Dist_graph_create_adjacent(MPI_COMM_WORLD,
             A.recv_comm.n_msgs,
             A.recv_comm.procs.data(), 
             MPI_UNWEIGHTED,
@@ -132,7 +132,7 @@ void test_matrix(const char* filename)
     
 
     // 2. Node-Aware Communication - reorder during first send/recv
-    MPIX_Neighbor_alltoallv_init(alltoallv_send_vals.data(), 
+    MPIL_Neighbor_alltoallv_init(alltoallv_send_vals.data(), 
             A.send_comm.counts.data(),
             A.send_comm.ptr.data(), 
             MPI_INT,
@@ -146,20 +146,20 @@ void test_matrix(const char* filename)
 
     std::fill(mpix_recv_vals.begin(), mpix_recv_vals.end(), 0);
     neighbor_request->reorder = 1;
-    MPIX_Start(neighbor_request);
-    MPIX_Wait(neighbor_request, &status);
+    MPIL_Start(neighbor_request);
+    MPIL_Wait(neighbor_request, &status);
     compare_neighbor_alltoallv_results(pmpi_recv_vals, mpix_recv_vals, A.recv_comm.size_msgs);
 
     // Standard send/recv with reordered recvs
     std::fill(mpix_recv_vals.begin(), mpix_recv_vals.end(), 0);
-    MPIX_Start(neighbor_request);
-    MPIX_Wait(neighbor_request, &status);
-    MPIX_Request_free(&neighbor_request);
+    MPIL_Start(neighbor_request);
+    MPIL_Wait(neighbor_request, &status);
+    MPIL_Request_free(&neighbor_request);
     compare_neighbor_alltoallv_results(pmpi_recv_vals, mpix_recv_vals, A.recv_comm.size_msgs);
 
 
-    MPIX_Info_free(&xinfo);
-    MPIX_Comm_free(&neighbor_comm);
+    MPIL_Info_free(&xinfo);
+    MPIL_Comm_free(&neighbor_comm);
     PMPI_Comm_free(&std_comm);
 }
 

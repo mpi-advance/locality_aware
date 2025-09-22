@@ -1,4 +1,4 @@
-#include "mpi_advance.h"
+#include "locality_aware.h"
 #include "tests/sparse_mat.hpp"
 #include "tests/par_binary_IO.hpp"
 
@@ -75,37 +75,37 @@ int main(int argc, char* argv[])
     // Form Communication Package (A.send_comm, A.recv_comm)
     form_comm(A);
 
-    MPIX_Comm* xcomm;
+    MPIL_Comm* xcomm;
 
-    MPIX_Info* xinfo;
-    MPIX_Info_init(&xinfo);
+    MPIL_Info* xinfo;
+    MPIL_Info_init(&xinfo);
 
-    // Form MPIX_Comm initial communicator (should be cheap)
+    // Form MPIL_Comm initial communicator (should be cheap)
     MPI_Barrier(MPI_COMM_WORLD);
     t0 = MPI_Wtime();
     for (int i = 0; i < n_iter; i++)
     {
-        MPIX_Comm_init(&xcomm, MPI_COMM_WORLD);
-        MPIX_Comm_free(&xcomm);
+        MPIL_Comm_init(&xcomm, MPI_COMM_WORLD);
+        MPIL_Comm_free(&xcomm);
     }
     tfinal = MPI_Wtime() - t0;
     MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
-    if (rank == 0) printf("MPIX_Comm_init time %e\n", t0/n_iter);
-    MPIX_Comm_init(&xcomm, MPI_COMM_WORLD);
+    if (rank == 0) printf("MPIL_Comm_init time %e\n", t0/n_iter);
+    MPIL_Comm_init(&xcomm, MPI_COMM_WORLD);
 
 	// Split node communicator
 	MPI_Barrier(MPI_COMM_WORLD);
     t0 = MPI_Wtime();
     for (int i = 0; i < n_iter; i++)
     {
-        MPIX_Comm_topo_init(xcomm);
-        MPIX_Comm_topo_free(xcomm);
+        MPIL_Comm_topo_init(xcomm);
+        MPIL_Comm_topo_free(xcomm);
     }
     tfinal = MPI_Wtime() - t0;
     MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
-    if (rank == 0) printf("MPIX_Comm_topo_init time %e\n", t0/n_iter);
+    if (rank == 0) printf("MPIL_Comm_topo_init time %e\n", t0/n_iter);
 
-    MPIX_Comm_topo_init(xcomm);
+    MPIL_Comm_topo_init(xcomm);
     update_locality(xcomm, 4);
 
     int n_recvs, s_recvs, proc;
@@ -141,10 +141,10 @@ int main(int argc, char* argv[])
     compare(n_recvs, s_recvs, src, recvcounts, rdispls, recvvals,
             A.send_comm.n_msgs, A.send_comm.size_msgs, proc_count.data(), proc_displs.data(),
             orig_indices.data());
-    MPIX_Free(src);
-    MPIX_Free(recvcounts);
-    MPIX_Free(rdispls);
-    MPIX_Free(recvvals);
+    MPIL_Free(src);
+    MPIL_Free(recvcounts);
+    MPIL_Free(rdispls);
+    MPIL_Free(recvvals);
 
     // Time Nonblocking
     MPI_Barrier(MPI_COMM_WORLD);
@@ -163,10 +163,10 @@ int main(int argc, char* argv[])
     compare(n_recvs, s_recvs, src, recvcounts, rdispls, recvvals,
             A.send_comm.n_msgs, A.send_comm.size_msgs, proc_count.data(), proc_displs.data(),
             orig_indices.data());
-    MPIX_Free(src);
-    MPIX_Free(recvcounts);
-    MPIX_Free(rdispls);
-    MPIX_Free(recvvals);
+    MPIL_Free(src);
+    MPIL_Free(recvcounts);
+    MPIL_Free(rdispls);
+    MPIL_Free(recvvals);
 
     // Time Personalized Locality
     MPI_Barrier(MPI_COMM_WORLD);
@@ -185,10 +185,10 @@ int main(int argc, char* argv[])
     compare(n_recvs, s_recvs, src, recvcounts, rdispls, recvvals,
             A.send_comm.n_msgs, A.send_comm.size_msgs, proc_count.data(), proc_displs.data(),
             orig_indices.data());
-    MPIX_Free(src);
-    MPIX_Free(recvcounts);
-    MPIX_Free(rdispls);
-    MPIX_Free(recvvals);
+    MPIL_Free(src);
+    MPIL_Free(recvcounts);
+    MPIL_Free(rdispls);
+    MPIL_Free(recvvals);
 
     // Time Nonblocking Locality
     MPI_Barrier(MPI_COMM_WORLD);
@@ -207,14 +207,14 @@ int main(int argc, char* argv[])
     compare(n_recvs, s_recvs, src, recvcounts, rdispls, recvvals,
             A.send_comm.n_msgs, A.send_comm.size_msgs, proc_count.data(), proc_displs.data(),
             orig_indices.data());
-    MPIX_Free(src);
-    MPIX_Free(recvcounts);
-    MPIX_Free(rdispls);
-    MPIX_Free(recvvals);
+    MPIL_Free(src);
+    MPIL_Free(recvcounts);
+    MPIL_Free(rdispls);
+    MPIL_Free(recvvals);
 
     
-    MPIX_Info_free(&xinfo);
-    MPIX_Comm_free(&xcomm);
+    MPIL_Info_free(&xinfo);
+    MPIL_Comm_free(&xcomm);
 
     MPI_Finalize();
     return 0;

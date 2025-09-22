@@ -1,6 +1,6 @@
 #include "neighbor_persistent.h"
 
-int neighbor_start(MPIX_Request* request)
+int neighbor_start(MPIL_Request* request)
 {
     if (request == NULL)
     {
@@ -78,7 +78,7 @@ int neighbor_start(MPIX_Request* request)
 // 2. Start and wait for local_R
 // 3. Wait for local_L
 // TODO : Currently ignores the status!
-int neighbor_wait(MPIX_Request* request, MPI_Status* status)
+int neighbor_wait(MPIL_Request* request, MPI_Status* status)
 {
     if (request == NULL)
     {

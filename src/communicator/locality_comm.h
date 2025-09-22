@@ -4,7 +4,7 @@
 #include <mpi.h>
 
 #include "comm_pkg.h"
-#include "mpix_comm.h"
+#include "mpil_comm.h"
 
 // Declarations of C++ methods
 #ifdef __cplusplus
@@ -18,11 +18,11 @@ typedef struct _LocalityComm
     CommPkg* local_R_comm;
     CommPkg* global_comm;
 
-    MPIX_Comm* communicators;
+    MPIL_Comm* communicators;
 } LocalityComm;
 
 void init_locality_comm(LocalityComm** locality_ptr,
-                        MPIX_Comm* comm,
+                        MPIL_Comm* comm,
                         MPI_Datatype sendtype,
                         MPI_Datatype recvtype);
 void finalize_locality_comm(LocalityComm* locality);

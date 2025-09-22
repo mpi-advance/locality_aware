@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.21 FATAL_ERROR)
 cmake_policy(VERSION 3.21.1...3.27)
 
 # Create project
-project(locality_aware LANGUAGES C CXX)
+project(locality_aware VERSION 2.0.0 LANGUAGES C CXX)
 
 # Set C,CXX standards
 set(CMAKE_CXX_STANDARD 11)
@@ -85,7 +85,7 @@ set_source_files_properties(
     ${heterogeneous_SOURCES}
     PROPERTIES LANGUAGE ${locality_aware_LANG})
 
-add_library(mpi_advance
+add_library(locality_aware
     ${utils_SOURCES} ${utils_HEADERS}
     ${communicator_SOURCES} ${communicator_HEADERS}
     ${collective_SOURCES} ${collective_HEADERS}
@@ -94,16 +94,16 @@ add_library(mpi_advance
     ${heterogeneous_SOURCES} ${heterogeneous_HEADERS}
 )
 
-set_target_properties(mpi_advance PROPERTIES PUBLIC_HEADER src/mpi_advance.h)
+set_target_properties(locality_aware PROPERTIES PUBLIC_HEADER src/locality_aware.h)
 
-target_include_directories(mpi_advance PUBLIC 
+target_include_directories(locality_aware PUBLIC 
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
     $<INSTALL_INTERFACE:include>
     )
 
-target_link_libraries(mpi_advance PUBLIC ${EXTERNAL_LIBS})
+target_link_libraries(locality_aware PUBLIC ${EXTERNAL_LIBS})
 
-install(TARGETS mpi_advance)
+install(TARGETS locality_aware)
 
 ### Install all headers that locality_aware exports
 install(FILES ${utils_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/utils)
@@ -113,28 +113,41 @@ install(FILES ${persistent_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/
 install(FILES ${neighborhood_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/neighborhood)
 install(FILES ${heterogeneous_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/heterogeneous)
 
-add_subdirectory(benchmarks)
+ add_subdirectory(benchmarks)
 
 ### Installation Requirements for Spack Package ###
 include(CMakePackageConfigHelpers)
 
 # Install the actual target(s) and register them for export
-install(TARGETS mpi_advance
-        EXPORT mpiadvanceTargets
+install(TARGETS locality_aware
+        EXPORT locality_awareTargets
         DESTINATION lib)
 
-# Export the targets into a CMake package
-install(EXPORT mpiadvanceTargets
-        NAMESPACE MPIAdvance::
-        DESTINATION share/mpiadvance)
 
+
+# Create the configuration file
 configure_package_config_file(
-  "${CMAKE_CURRENT_SOURCE_DIR}/cmake/locality_aware-config.cmake.in"
-  "${CMAKE_CURRENT_BINARY_DIR}/mpiadvance-config.cmake"
-  INSTALL_DESTINATION share/mpiadvance)
+	${CMAKE_CURRENT_SOURCE_DIR}/cmake/locality_aware-config.cmake.in
+	${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
+	INSTALL_DESTINATION share/${PROJECT_NAME}
+)
+
+## Version file
+write_basic_package_version_file(
+	${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config-version.cmake
+	COMPATIBILITY SameMinorVersion
+)
 
 install(FILES
-  "${CMAKE_CURRENT_BINARY_DIR}/mpiadvance-config.cmake"
-  DESTINATION share/mpiadvance)
+	${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config-version.cmake
+	${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
+	DESTINATION share/${PROJECT_NAME}
+)
+
+# Export the targets into a CMake package
+install(EXPORT locality_awareTargets
+        NAMESPACE MPIAdvance::
+        DESTINATION share/${PROJECT_NAME})
+
 ############## End of Spack Section ################
 

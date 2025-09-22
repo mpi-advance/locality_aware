@@ -14,8 +14,8 @@ int alltoall_crs_personalized_loc(int send_nnz,
                                   int recvcount,
                                   MPI_Datatype recvtype,
                                   void* recvvals,
-                                  MPIX_Info* xinfo,
-                                  MPIX_Comm* comm)
+                                  MPIL_Info* xinfo,
+                                  MPIL_Comm* comm)
 {
     int rank, num_procs, local_rank, PPN;
     MPI_Comm_rank(comm->global_comm, &rank);
@@ -23,7 +23,7 @@ int alltoall_crs_personalized_loc(int send_nnz,
 
     if (comm->local_comm == MPI_COMM_NULL)
     {
-        MPIX_Comm_topo_init(comm);
+        MPIL_Comm_topo_init(comm);
     }
 
     MPI_Comm_rank(comm->local_comm, &local_rank);
@@ -40,14 +40,14 @@ int alltoall_crs_personalized_loc(int send_nnz,
 
     if (comm->n_requests < send_nnz)
     {
-        MPIX_Comm_req_resize(comm, send_nnz);
+        MPIL_Comm_req_resize(comm, send_nnz);
     }
 
     MPI_Status recv_status;
     int proc, ctr, start, end;
     int count, n_msgs, n_sends, n_recvs, idx, new_idx;
     int tag;
-    MPIX_Comm_tag(comm, &tag);
+    MPIL_Comm_tag(comm, &tag);
 
     std::vector<char> node_send_buffer;
     std::vector<char> local_send_buffer;
@@ -227,14 +227,14 @@ int alltoall_crs_personalized_loc(int send_nnz,
         displs[i + 1] = displs[i] + msg_counts[i];
     }
 
-    MPIX_Comm_tag(comm, &tag);
+    MPIL_Comm_tag(comm, &tag);
 
     MPI_Allreduce(
         MPI_IN_PLACE, msg_counts.data(), PPN, MPI_INT, MPI_SUM, comm->local_comm);
     int recv_count = msg_counts[local_rank];
     if (PPN > comm->n_requests)
     {
-        MPIX_Comm_req_resize(comm, PPN);
+        MPIL_Comm_req_resize(comm, PPN);
     }
 
     // Send a message to every process that I will need data from
@@ -328,8 +328,8 @@ int alltoall_crs_nonblocking_loc(int send_nnz,
                                  int recvcount,
                                  MPI_Datatype recvtype,
                                  void* recvvals,
-                                 MPIX_Info* xinfo,
-                                 MPIX_Comm* comm)
+                                 MPIL_Info* xinfo,
+                                 MPIL_Comm* comm)
 {
     int rank, num_procs, local_rank, PPN;
     MPI_Comm_rank(comm->global_comm, &rank);
@@ -337,7 +337,7 @@ int alltoall_crs_nonblocking_loc(int send_nnz,
 
     if (comm->local_comm == MPI_COMM_NULL)
     {
-        MPIX_Comm_topo_init(comm);
+        MPIL_Comm_topo_init(comm);
     }
 
     MPI_Comm_rank(comm->local_comm, &local_rank);
@@ -354,7 +354,7 @@ int alltoall_crs_nonblocking_loc(int send_nnz,
 
     if (comm->n_requests < send_nnz)
     {
-        MPIX_Comm_req_resize(comm, send_nnz);
+        MPIL_Comm_req_resize(comm, send_nnz);
     }
 
     MPI_Status recv_status;
@@ -362,7 +362,7 @@ int alltoall_crs_nonblocking_loc(int send_nnz,
     int proc, ctr, flag, ibar, start, end;
     int count, n_msgs, n_sends, n_recvs, idx, new_idx;
     int tag;
-    MPIX_Comm_tag(comm, &tag);
+    MPIL_Comm_tag(comm, &tag);
 
     std::vector<char> node_send_buffer;
     std::vector<char> local_send_buffer;
@@ -558,14 +558,14 @@ int alltoall_crs_nonblocking_loc(int send_nnz,
         displs[i + 1] = displs[i] + msg_counts[i];
     }
 
-    MPIX_Comm_tag(comm, &tag);
+    MPIL_Comm_tag(comm, &tag);
 
     MPI_Allreduce(
         MPI_IN_PLACE, msg_counts.data(), PPN, MPI_INT, MPI_SUM, comm->local_comm);
     int recv_count = msg_counts[local_rank];
     if (PPN > comm->n_requests)
     {
-        MPIX_Comm_req_resize(comm, PPN);
+        MPIL_Comm_req_resize(comm, PPN);
     }
 
     // Send a message to every process that I will need data from
@@ -662,8 +662,8 @@ int alltoallv_crs_personalized_loc(int send_nnz,
                                    int* rdispls,
                                    MPI_Datatype recvtype,
                                    void* recvvals,
-                                   MPIX_Info* xinfo,
-                                   MPIX_Comm* comm)
+                                   MPIL_Info* xinfo,
+                                   MPIL_Comm* comm)
 {
     int rank, num_procs, local_rank, PPN;
     MPI_Comm_rank(comm->global_comm, &rank);
@@ -671,18 +671,18 @@ int alltoallv_crs_personalized_loc(int send_nnz,
 
     if (comm->local_comm == MPI_COMM_NULL)
     {
-        MPIX_Comm_topo_init(comm);
+        MPIL_Comm_topo_init(comm);
     }
     MPI_Comm_rank(comm->local_comm, &local_rank);
     MPI_Comm_size(comm->local_comm, &PPN);
 
     if (comm->n_requests < send_nnz)
     {
-        MPIX_Comm_req_resize(comm, send_nnz);
+        MPIL_Comm_req_resize(comm, send_nnz);
     }
 
     int tag;
-    MPIX_Comm_tag(comm, &tag);
+    MPIL_Comm_tag(comm, &tag);
 
     char* send_buffer = (char*)sendvals;
     char* recv_buffer = (char*)recvvals;
@@ -934,7 +934,7 @@ int alltoallv_crs_personalized_loc(int send_nnz,
     // Tell them which global indices I need from them
     std::vector<MPI_Request> local_req(PPN);
 
-    MPIX_Comm_tag(comm, &tag);
+    MPIL_Comm_tag(comm, &tag);
 
     n_sends = 0;
     for (int i = 0; i < PPN; i++)
@@ -1036,8 +1036,8 @@ int alltoallv_crs_nonblocking_loc(int send_nnz,
                                   int* rdispls,
                                   MPI_Datatype recvtype,
                                   void* recvvals,
-                                  MPIX_Info* xinfo,
-                                  MPIX_Comm* comm)
+                                  MPIL_Info* xinfo,
+                                  MPIL_Comm* comm)
 {
     int rank, num_procs, local_rank, PPN;
     MPI_Comm_rank(comm->global_comm, &rank);
@@ -1045,18 +1045,18 @@ int alltoallv_crs_nonblocking_loc(int send_nnz,
 
     if (comm->local_comm == MPI_COMM_NULL)
     {
-        MPIX_Comm_topo_init(comm);
+        MPIL_Comm_topo_init(comm);
     }
     MPI_Comm_rank(comm->local_comm, &local_rank);
     MPI_Comm_size(comm->local_comm, &PPN);
 
     if (comm->n_requests < send_nnz)
     {
-        MPIX_Comm_req_resize(comm, send_nnz);
+        MPIL_Comm_req_resize(comm, send_nnz);
     }
 
     int tag;
-    MPIX_Comm_tag(comm, &tag);
+    MPIL_Comm_tag(comm, &tag);
 
     char* send_buffer = (char*)sendvals;
     char* recv_buffer = (char*)recvvals;
@@ -1329,7 +1329,7 @@ int alltoallv_crs_nonblocking_loc(int send_nnz,
     // Tell them which global indices I need from them
     std::vector<MPI_Request> local_req(PPN);
 
-    MPIX_Comm_tag(comm, &tag);
+    MPIL_Comm_tag(comm, &tag);
 
     n_sends = 0;
     for (int i = 0; i < PPN; i++)
