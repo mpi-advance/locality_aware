@@ -343,7 +343,12 @@ int main(int argc, char* argv[])
         printf("If these are incorrect, edit the defines at the top of benchmarks/microbenchmarks.cpp\n");
     }
 
-    gpuSetDevice(0);
+    int local_rank;
+    MPI_Comm local_comm;
+    MPI_Comm_split_type(MPI_COMM_WORLD, MPI_COMM_TYPE_SHARED, rank, MPI_INFO_NULL, &local_comm);
+    MPI_Comm_rank(local_comm, &local_rank);
+
+    gpuSetDevice(local_rank % GPN);
 
     char *sendbuf_d, *recvbuf_d;
     char *sendbuf_h, *recvbuf_h;

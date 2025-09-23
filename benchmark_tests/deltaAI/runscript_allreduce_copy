@@ -1,0 +1,38 @@
+#!/bin/bash
+#SBATCH --nodes=2
+#SBATCH --ntasks-per-node=256
+#SBATCH --cpus-per-task=1
+#SBATCH --partition=ghx4
+#SBATCH --time=00:45:00
+#SBATCH --job-name allreduce_copy_n2
+#SBATCH --output allreduce_copy.%j.out
+#SBATCH --error allreduce_copy.%j.err
+#SBATCH --account=bdys-dtai-gh
+#SBATCH --gpus-per-node=4
+#SBATCH --exclusive
+
+module load craype-accel-nvidia90
+module unload gcc-native
+module load gcc-native/12
+export MPICH_GPU_SUPPORT_ENABLED=1
+
+cd $HOME/locality_aware_cleanup/build/benchmarks
+
+srun -n 128 -N 2 ./gpu_microbenchmarks
+
+# Check if THP are enabled
+#cat /sys/kernel/mm/transparent_hugepage/enabled
+
+cd $HOME/MPICCL/build/benchmarks
+
+n_nodes=2
+gpus_per_node=4
+max_cores=64
+
+for ppg in 1 2 4 8; do
+  n_procs=$(( ppg * gpus_per_node * n_nodes ))
+  n_cores=$(( max_cores / ppg ))
+  echo "${ppg} Processes Per GPU, ${gpus_per_node} GPUs Per Node"
+  flux run -N${n_nodes} -n${n_procs} -c${n_cores} --verbose --exclusive\
+       --setopt=mpibind=verbose:2 ./allreduce_copy
+done
