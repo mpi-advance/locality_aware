@@ -1,0 +1,913 @@
+locality_aware
+
+======================   ALLOCATED NODES   ======================
+    gpua023: slots=64 max_slots=0 slots_inuse=0 state=UP
+	Flags: DAEMON_LAUNCHED:LOCATION_VERIFIED:SLOTS_GIVEN
+	aliases: gpua023.delta.ncsa.illinois.edu,gpua023
+    gpua028: slots=64 max_slots=0 slots_inuse=0 state=UP
+	Flags: SLOTS_GIVEN
+	aliases: NONE
+=================================================================
+
+======================   ALLOCATED NODES   ======================
+    gpua023: slots=64 max_slots=0 slots_inuse=0 state=UP
+	Flags: DAEMON_LAUNCHED:LOCATION_VERIFIED:SLOTS_GIVEN
+	aliases: gpua023.delta.ncsa.illinois.edu,gpua023
+    gpua028: slots=64 max_slots=0 slots_inuse=0 state=UP
+	Flags: DAEMON_LAUNCHED:SLOTS_GIVEN
+	aliases: gpua028.delta.ncsa.illinois.edu,172.28.23.28,172.28.86.28,141.142.254.28
+=================================================================
+
+======================   ALLOCATED NODES   ======================
+    gpua023: slots=64 max_slots=0 slots_inuse=0 state=UP
+	Flags: DAEMON_LAUNCHED:LOCATION_VERIFIED:SLOTS_GIVEN
+	aliases: gpua023.delta.ncsa.illinois.edu,gpua023
+    gpua028: slots=64 max_slots=0 slots_inuse=0 state=UP
+	Flags: DAEMON_LAUNCHED:SLOTS_GIVEN
+	aliases: gpua028.delta.ncsa.illinois.edu,172.28.23.28,172.28.86.28,141.142.254.28
+=================================================================
+
+========================   JOB MAP   ========================
+Data for JOB prterun-gpua023-13125@1 offset 0 Total slots allocated 128
+    Mapping policy: BYNUMA:NOOVERSUBSCRIBE  Ranking policy: SLOT Binding policy: CORE
+    Cpu set: N/A  PPR: 16:numa  Cpus-per-rank: N/A  Cpu Type: CORE
+
+
+Data for node: gpua023	Num slots: 64	Max slots: 0	Num procs: 64
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 0 Bound: package[0][core:0]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 1 Bound: package[0][core:1]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 2 Bound: package[0][core:2]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 3 Bound: package[0][core:3]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 4 Bound: package[0][core:4]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 5 Bound: package[0][core:5]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 6 Bound: package[0][core:6]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 7 Bound: package[0][core:7]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 8 Bound: package[0][core:8]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 9 Bound: package[0][core:9]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 10 Bound: package[0][core:10]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 11 Bound: package[0][core:11]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 12 Bound: package[0][core:12]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 13 Bound: package[0][core:13]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 14 Bound: package[0][core:14]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 15 Bound: package[0][core:15]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 16 Bound: package[0][core:16]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 17 Bound: package[0][core:17]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 18 Bound: package[0][core:18]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 19 Bound: package[0][core:19]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 20 Bound: package[0][core:20]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 21 Bound: package[0][core:21]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 22 Bound: package[0][core:22]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 23 Bound: package[0][core:23]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 24 Bound: package[0][core:24]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 25 Bound: package[0][core:25]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 26 Bound: package[0][core:26]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 27 Bound: package[0][core:27]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 28 Bound: package[0][core:28]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 29 Bound: package[0][core:29]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 30 Bound: package[0][core:30]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 31 Bound: package[0][core:31]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 32 Bound: package[0][core:32]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 33 Bound: package[0][core:33]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 34 Bound: package[0][core:34]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 35 Bound: package[0][core:35]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 36 Bound: package[0][core:36]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 37 Bound: package[0][core:37]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 38 Bound: package[0][core:38]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 39 Bound: package[0][core:39]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 40 Bound: package[0][core:40]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 41 Bound: package[0][core:41]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 42 Bound: package[0][core:42]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 43 Bound: package[0][core:43]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 44 Bound: package[0][core:44]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 45 Bound: package[0][core:45]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 46 Bound: package[0][core:46]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 47 Bound: package[0][core:47]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 48 Bound: package[0][core:48]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 49 Bound: package[0][core:49]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 50 Bound: package[0][core:50]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 51 Bound: package[0][core:51]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 52 Bound: package[0][core:52]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 53 Bound: package[0][core:53]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 54 Bound: package[0][core:54]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 55 Bound: package[0][core:55]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 56 Bound: package[0][core:56]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 57 Bound: package[0][core:57]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 58 Bound: package[0][core:58]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 59 Bound: package[0][core:59]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 60 Bound: package[0][core:60]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 61 Bound: package[0][core:61]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 62 Bound: package[0][core:62]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 63 Bound: package[0][core:63]
+
+Data for node: gpua028	Num slots: 64	Max slots: 0	Num procs: 64
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 64 Bound: package[0][core:0]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 65 Bound: package[0][core:1]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 66 Bound: package[0][core:2]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 67 Bound: package[0][core:3]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 68 Bound: package[0][core:4]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 69 Bound: package[0][core:5]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 70 Bound: package[0][core:6]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 71 Bound: package[0][core:7]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 72 Bound: package[0][core:8]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 73 Bound: package[0][core:9]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 74 Bound: package[0][core:10]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 75 Bound: package[0][core:11]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 76 Bound: package[0][core:12]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 77 Bound: package[0][core:13]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 78 Bound: package[0][core:14]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 79 Bound: package[0][core:15]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 80 Bound: package[0][core:16]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 81 Bound: package[0][core:17]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 82 Bound: package[0][core:18]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 83 Bound: package[0][core:19]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 84 Bound: package[0][core:20]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 85 Bound: package[0][core:21]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 86 Bound: package[0][core:22]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 87 Bound: package[0][core:23]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 88 Bound: package[0][core:24]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 89 Bound: package[0][core:25]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 90 Bound: package[0][core:26]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 91 Bound: package[0][core:27]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 92 Bound: package[0][core:28]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 93 Bound: package[0][core:29]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 94 Bound: package[0][core:30]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 95 Bound: package[0][core:31]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 96 Bound: package[0][core:32]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 97 Bound: package[0][core:33]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 98 Bound: package[0][core:34]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 99 Bound: package[0][core:35]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 100 Bound: package[0][core:36]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 101 Bound: package[0][core:37]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 102 Bound: package[0][core:38]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 103 Bound: package[0][core:39]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 104 Bound: package[0][core:40]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 105 Bound: package[0][core:41]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 106 Bound: package[0][core:42]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 107 Bound: package[0][core:43]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 108 Bound: package[0][core:44]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 109 Bound: package[0][core:45]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 110 Bound: package[0][core:46]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 111 Bound: package[0][core:47]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 112 Bound: package[0][core:48]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 113 Bound: package[0][core:49]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 114 Bound: package[0][core:50]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 115 Bound: package[0][core:51]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 116 Bound: package[0][core:52]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 117 Bound: package[0][core:53]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 118 Bound: package[0][core:54]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 119 Bound: package[0][core:55]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 120 Bound: package[0][core:56]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 121 Bound: package[0][core:57]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 122 Bound: package[0][core:58]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 123 Bound: package[0][core:59]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 124 Bound: package[0][core:60]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 125 Bound: package[0][core:61]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 126 Bound: package[0][core:62]
+        Process jobid: prterun-gpua023-13125@1 App: 0 Process rank: 127 Bound: package[0][core:63]
+
+=============================================================
+Inter-CPU Microbenchmarks will be run with the following:
+# Processes per NUMA: 16
+# Processes per socket: 16
+# Processes per node: 64
+# of nodes: 2
+Inter-GPU Microbenchmarks will be run with the following:
+# GPUs per NUMA: 1
+# GPUs per socket: 1
+# GPUs per node: 4
+# Processes per GPU: 16
+If these are incorrect, edit the defines at the top of benchmarks/microbenchmarks.cpp
+GPU-Aware intra-NUMA tests will not be run because GPNUMA is set to 1.
+intra-socket tests will not be run because GPS is set to 1.
+Running standard GPU-Aware benchmarks
+Not measuring GPU-Aware intra-NUMA, because GPNUMA is set to 1
+Not measuring GPU-Aware intra-socket, because GPS is set to 1
+GPU-Aware On-Node, Off-Socket Ping-Pong:
+Size 1: 3.454925e-04
+Size 2: 3.319347e-04
+Size 4: 3.318576e-04
+Size 8: 3.317327e-04
+Size 16: 3.331459e-04
+Size 32: 3.347543e-04
+Size 64: 3.359150e-04
+Size 128: 3.339938e-04
+Size 256: 3.337379e-04
+Size 512: 3.339583e-04
+Size 1024: 3.340165e-04
+Size 2048: 3.353538e-04
+Size 4096: 3.364959e-04
+Size 8192: 3.427550e-04
+Size 16384: 3.493515e-04
+Size 32768: 3.589003e-04
+Size 65536: 3.768652e-04
+Size 131072: 1.232850e-04
+Size 262144: 1.920474e-04
+Size 524288: 3.333720e-04
+Size 1048576: 6.039826e-04
+Size 2097152: 1.090857e-03
+Size 4194304: 1.803055e-03
+Size 8388608: 3.397339e-03
+Size 16777216: 6.676095e-03
+Size 33554432: 2.459875e-02
+Size 67108864: 7.345970e-02
+Size 134217728: 1.772745e-01
+
+GPU-Aware Off-Node Ping-Pong:
+Size 1: 4.553879e-05
+Size 2: 4.561997e-05
+Size 4: 4.559678e-05
+Size 8: 4.560777e-05
+Size 16: 4.639871e-05
+Size 32: 4.632191e-05
+Size 64: 4.654838e-05
+Size 128: 4.775558e-05
+Size 256: 4.811696e-05
+Size 512: 4.812134e-05
+Size 1024: 4.866405e-05
+Size 2048: 4.964728e-05
+Size 4096: 5.093318e-05
+Size 8192: 5.622164e-05
+Size 16384: 6.148962e-05
+Size 32768: 7.059178e-05
+Size 65536: 8.937964e-05
+Size 131072: 1.250022e-04
+Size 262144: 1.927424e-04
+Size 524288: 3.251204e-04
+Size 1048576: 5.904511e-04
+Size 2097152: 1.071260e-03
+Size 4194304: 1.844914e-03
+Size 8388608: 3.423775e-03
+Size 16777216: 6.702642e-03
+Size 33554432: 2.542546e-02
+Size 67108864: 7.477994e-02
+Size 134217728: 1.711163e-01
+
+Running standard Copy-to-CPU benchmarks
+Not measuring GPU-Aware intra-NUMA, because GPNUMA is set to 1
+Not measuring GPU-Aware intra-socket, because GPS is set to 1
+GPU-Aware On-Node, Off-Socket Ping-Pong:
+Size 1: 3.442283e-04
+Size 2: 3.278711e-04
+Size 4: 3.283197e-04
+Size 8: 3.283916e-04
+Size 16: 3.281092e-04
+Size 32: 3.278874e-04
+Size 64: 3.277598e-04
+Size 128: 3.289240e-04
+Size 256: 3.292517e-04
+Size 512: 3.294125e-04
+Size 1024: 3.297378e-04
+Size 2048: 3.304327e-04
+Size 4096: 3.312833e-04
+Size 8192: 3.366986e-04
+Size 16384: 3.417246e-04
+Size 32768: 5.452609e-05
+Size 65536: 6.314653e-05
+Size 131072: 8.081958e-05
+Size 262144: 1.105924e-04
+Size 524288: 1.741412e-04
+Size 1048576: 3.020501e-04
+Size 2097152: 5.576687e-04
+Size 4194304: 1.066901e-03
+Size 8388608: 2.086897e-03
+Size 16777216: 4.124984e-03
+Size 33554432: 8.209659e-03
+Size 67108864: 1.635766e-02
+Size 134217728: 3.272967e-02
+
+GPU-Aware Off-Node Ping-Pong:
+Size 1: 4.017548e-05
+Size 2: 4.060096e-05
+Size 4: 4.190803e-05
+Size 8: 4.188272e-05
+Size 16: 4.193759e-05
+Size 32: 4.198413e-05
+Size 64: 4.196152e-05
+Size 128: 4.330008e-05
+Size 256: 4.359129e-05
+Size 512: 4.356431e-05
+Size 1024: 4.377010e-05
+Size 2048: 4.463213e-05
+Size 4096: 4.446245e-05
+Size 8192: 5.048962e-05
+Size 16384: 5.437264e-05
+Size 32768: 5.666675e-05
+Size 65536: 6.519709e-05
+Size 131072: 8.154965e-05
+Size 262144: 1.145100e-04
+Size 524288: 1.802559e-04
+Size 1048576: 3.114955e-04
+Size 2097152: 5.751357e-04
+Size 4194304: 1.100431e-03
+Size 8388608: 2.152716e-03
+Size 16777216: 4.262430e-03
+Size 33554432: 8.497025e-03
+Size 67108864: 1.694550e-02
+Size 134217728: 3.391974e-02
+
+Running multi-proc GPU-Aware benchmarks
+Off-Node Multiple Processes Per GPU:
+Active Procs: 1
+Size 1: 4.465453e-05
+Size 2: 4.575274e-05
+Size 4: 4.571841e-05
+Size 8: 4.563764e-05
+Size 16: 4.642601e-05
+Size 32: 4.634736e-05
+Size 64: 4.662928e-05
+Size 128: 4.787571e-05
+Size 256: 4.814640e-05
+Size 512: 4.814051e-05
+Size 1024: 4.843353e-05
+Size 2048: 4.970334e-05
+Size 4096: 5.093003e-05
+Size 8192: 5.622737e-05
+Size 16384: 6.160050e-05
+Size 32768: 7.073991e-05
+Size 65536: 8.961334e-05
+Size 131072: 1.253071e-04
+Size 262144: 1.930476e-04
+Size 524288: 3.249990e-04
+Size 1048576: 5.905540e-04
+Size 2097152: 1.064392e-03
+Size 4194304: 1.839215e-03
+Size 8388608: 3.444497e-03
+Size 16777216: 6.729779e-03
+Size 33554432: 2.462143e-02
+Size 67108864: 7.466886e-02
+Size 134217728: 1.670125e-01
+
+Active Procs: 2
+Size 1: 4.690234e-05
+Size 2: 4.692924e-05
+Size 4: 4.694688e-05
+Size 8: 4.689390e-05
+Size 16: 4.761721e-05
+Size 32: 4.765494e-05
+Size 64: 4.766631e-05
+Size 128: 4.900495e-05
+Size 256: 4.952283e-05
+Size 512: 5.001448e-05
+Size 1024: 4.963231e-05
+Size 2048: 5.059488e-05
+Size 4096: 5.190816e-05
+Size 8192: 5.629399e-05
+Size 16384: 6.211939e-05
+Size 32768: 7.231000e-05
+Size 65536: 9.382153e-05
+Size 131072: 1.394502e-04
+Size 262144: 2.319318e-04
+Size 524288: 4.061257e-04
+Size 1048576: 7.384412e-04
+Size 2097152: 1.360302e-03
+Size 4194304: 2.837847e-03
+Size 8388608: 5.625048e-03
+Size 16777216: 1.117233e-02
+Size 33554432: 3.803603e-02
+Size 67108864: 8.793185e-02
+Size 134217728: 1.947780e-01
+
+Active Procs: 4
+Size 1: 4.687750e-05
+Size 2: 4.683523e-05
+Size 4: 4.702872e-05
+Size 8: 4.699147e-05
+Size 16: 4.763622e-05
+Size 32: 4.761886e-05
+Size 64: 4.763419e-05
+Size 128: 4.904127e-05
+Size 256: 4.971567e-05
+Size 512: 5.000449e-05
+Size 1024: 4.973993e-05
+Size 2048: 5.066842e-05
+Size 4096: 5.210767e-05
+Size 8192: 5.644046e-05
+Size 16384: 6.272642e-05
+Size 32768: 7.565495e-05
+Size 65536: 1.086479e-04
+Size 131072: 1.588475e-04
+Size 262144: 2.776874e-04
+Size 524288: 5.404789e-04
+Size 1048576: 9.915985e-03
+Size 2097152: 2.703287e-03
+Size 4194304: 4.568278e-03
+Size 8388608: 8.703189e-03
+Size 16777216: 1.737992e-02
+Size 33554432: 5.459742e-02
+Size 67108864: 1.222512e-01
+Size 134217728: 2.686468e-01
+
+Active Procs: 8
+Size 1: 3.497786e-04
+Size 2: 3.347573e-04
+Size 4: 3.350957e-04
+Size 8: 3.349745e-04
+Size 16: 3.359476e-04
+Size 32: 3.360185e-04
+Size 64: 3.359832e-04
+Size 128: 3.372610e-04
+Size 256: 3.374797e-04
+Size 512: 3.380549e-04
+Size 1024: 3.376390e-04
+Size 2048: 3.393335e-04
+Size 4096: 3.405222e-04
+Size 8192: 3.475431e-04
+Size 16384: 3.507848e-04
+Size 32768: 3.625948e-04
+Size 65536: 3.975166e-04
+Size 131072: 2.628077e-04
+Size 262144: 5.226779e-04
+Size 524288: 1.029801e-03
+Size 1048576: 2.096577e-03
+Size 2097152: 4.363625e-03
+Size 4194304: 8.454406e-03
+Size 8388608: 1.678686e-02
+Size 16777216: 3.213258e-02
+Size 33554432: 9.958753e-02
+Size 67108864: 2.373591e-01
+Size 134217728: 4.570712e-01
+
+Active Procs: 16
+Size 1: 6.229605e-04
+Size 2: 5.945983e-04
+Size 4: 5.945974e-04
+Size 8: 5.947092e-04
+Size 16: 5.947014e-04
+Size 32: 5.946711e-04
+Size 64: 5.946374e-04
+Size 128: 5.947783e-04
+Size 256: 5.947667e-04
+Size 512: 9.166814e-04
+Size 1024: 5.943615e-04
+Size 2048: 5.951321e-04
+Size 4096: 5.957834e-04
+Size 8192: 5.973801e-04
+Size 16384: 5.985710e-04
+Size 32768: 6.037112e-04
+Size 65536: 6.123029e-04
+Size 131072: 5.085132e-04
+Size 262144: 9.668020e-04
+Size 524288: 1.900045e-03
+Size 1048576: 3.838177e-03
+Size 2097152: 7.610364e-03
+Size 4194304: 1.514035e-02
+Size 8388608: 2.966167e-02
+Size 16777216: 5.777794e-02
+Size 33554432: 2.094005e-01
+Size 67108864: 4.456460e-01
+Size 134217728: 1.096957e+00
+
+Off-Node Multiple Processes Per GPU (all GPUs active per node):
+Active Procs: 1
+Size 1: 6.048438e-04
+Size 2: 5.929575e-04
+Size 4: 5.929356e-04
+Size 8: 5.928559e-04
+Size 16: 5.928735e-04
+Size 32: 5.929825e-04
+Size 64: 5.930365e-04
+Size 128: 5.930125e-04
+Size 256: 5.930621e-04
+Size 512: 5.931530e-04
+Size 1024: 5.932162e-04
+Size 2048: 5.934047e-04
+Size 4096: 5.940574e-04
+Size 8192: 5.941556e-04
+Size 16384: 5.970639e-04
+Size 32768: 6.017742e-04
+Size 65536: 6.104796e-04
+Size 131072: 1.265184e-04
+Size 262144: 1.980503e-04
+Size 524288: 3.186909e-04
+Size 1048576: 5.788641e-04
+Size 2097152: 1.079461e-03
+Size 4194304: 1.975504e-03
+Size 8388608: 3.888953e-03
+Size 16777216: 7.767148e-03
+Size 33554432: 4.894192e-02
+Size 67108864: 9.772803e-02
+Size 134217728: 1.944082e-01
+
+Active Procs: 2
+Size 1: 6.158921e-04
+Size 2: 5.934613e-04
+Size 4: 5.934175e-04
+Size 8: 5.935486e-04
+Size 16: 5.935472e-04
+Size 32: 5.929758e-04
+Size 64: 5.940296e-04
+Size 128: 5.941948e-04
+Size 256: 5.942020e-04
+Size 512: 5.943163e-04
+Size 1024: 5.944864e-04
+Size 2048: 5.948032e-04
+Size 4096: 5.952152e-04
+Size 8192: 5.966430e-04
+Size 16384: 5.973312e-04
+Size 32768: 6.019163e-04
+Size 65536: 6.097287e-04
+Size 131072: 1.337331e-04
+Size 262144: 2.223167e-04
+Size 524288: 3.980793e-04
+Size 1048576: 8.148760e-04
+Size 2097152: 1.683830e-03
+Size 4194304: 3.451028e-03
+Size 8388608: 6.929911e-03
+Size 16777216: 1.234087e-02
+Size 33554432: 4.142214e-02
+Size 67108864: 9.323930e-02
+Size 134217728: 2.076008e-01
+
+Active Procs: 4
+Size 1: 6.115945e-04
+Size 2: 5.940355e-04
+Size 4: 5.941590e-04
+Size 8: 5.941448e-04
+Size 16: 5.941646e-04
+Size 32: 5.942097e-04
+Size 64: 5.941283e-04
+Size 128: 5.942214e-04
+Size 256: 5.933089e-04
+Size 512: 5.943257e-04
+Size 1024: 5.945348e-04
+Size 2048: 5.952453e-04
+Size 4096: 5.959443e-04
+Size 8192: 5.973345e-04
+Size 16384: 5.983596e-04
+Size 32768: 6.035126e-04
+Size 65536: 6.109454e-04
+Size 131072: 2.112260e-04
+Size 262144: 4.033060e-04
+Size 524288: 8.571454e-04
+Size 1048576: 1.543434e-03
+Size 2097152: 3.186578e-03
+Size 4194304: 6.265152e-03
+Size 8388608: 1.284341e-02
+Size 16777216: 2.533730e-02
+Size 33554432: 6.694301e-02
+Size 67108864: 1.437495e-01
+Size 134217728: 3.028088e-01
+
+Active Procs: 8
+Size 1: 1.218586e-03
+Size 2: 1.189413e-03
+Size 4: 1.189566e-03
+Size 8: 1.189614e-03
+Size 16: 1.189724e-03
+Size 32: 1.189846e-03
+Size 64: 1.189525e-03
+Size 128: 1.189486e-03
+Size 256: 1.190136e-03
+Size 512: 1.189665e-03
+Size 1024: 1.189928e-03
+Size 2048: 1.190346e-03
+Size 4096: 1.191525e-03
+Size 8192: 1.195042e-03
+Size 16384: 1.197553e-03
+Size 32768: 1.207020e-03
+Size 65536: 1.223316e-03
+Size 131072: 4.002818e-04
+Size 262144: 7.705146e-04
+Size 524288: 1.564131e-03
+Size 1048576: 3.235221e-03
+Size 2097152: 6.380901e-03
+Size 4194304: 1.277924e-02
+Size 8388608: 2.621691e-02
+Size 16777216: 5.390728e-02
+Size 33554432: 1.369026e-01
+Size 67108864: 3.020769e-01
+Size 134217728: 6.168056e-01
+
+Active Procs: 16
+Size 1: 2.387044e-03
+Size 2: 2.388114e-03
+Size 4: 2.389226e-03
+Size 8: 2.512355e-03
+Size 16: 2.390617e-03
+Size 32: 2.391041e-03
+Size 64: 2.389584e-03
+Size 128: 2.395339e-03
+Size 256: 2.391472e-03
+Size 512: 2.390541e-03
+Size 1024: 2.391429e-03
+Size 2048: 2.391671e-03
+Size 4096: 2.394647e-03
+Size 8192: 2.400788e-03
+Size 16384: 2.408333e-03
+Size 32768: 2.429488e-03
+Size 65536: 2.469763e-03
+Size 131072: 8.002729e-04
+Size 262144: 1.584668e-03
+Size 524288: 3.224237e-03
+Size 1048576: 6.465220e-03
+Size 2097152: 1.314048e-02
+Size 4194304: 2.841739e-02
+Size 8388608: 5.557626e-02
+Size 16777216: 1.156181e-01
+Size 33554432: 3.283620e-01
+Size 67108864: 6.926887e-01
+Size 134217728: 1.632349e+00
+
+Running multi-proc Copy-to-CPU benchmarks
+Off-Node Multiple Processes Per GPU:
+Active Procs: 1
+Size 1: 4.015636e-05
+Size 2: 4.199363e-05
+Size 4: 4.197152e-05
+Size 8: 4.206096e-05
+Size 16: 4.199254e-05
+Size 32: 4.208935e-05
+Size 64: 4.202605e-05
+Size 128: 4.330597e-05
+Size 256: 4.352357e-05
+Size 512: 4.372776e-05
+Size 1024: 4.388791e-05
+Size 2048: 4.475633e-05
+Size 4096: 4.457385e-05
+Size 8192: 5.061813e-05
+Size 16384: 5.420396e-05
+Size 32768: 5.732624e-05
+Size 65536: 6.538031e-05
+Size 131072: 1.027249e-04
+Size 262144: 1.146270e-04
+Size 524288: 1.801435e-04
+Size 1048576: 3.115513e-04
+Size 2097152: 5.752450e-04
+Size 4194304: 1.100280e-03
+Size 8388608: 2.151783e-03
+Size 16777216: 4.263837e-03
+Size 33554432: 8.497443e-03
+Size 67108864: 1.694594e-02
+Size 134217728: 3.387139e-02
+
+Active Procs: 2
+Size 1: 4.326853e-05
+Size 2: 4.328294e-05
+Size 4: 4.331733e-05
+Size 8: 4.329700e-05
+Size 16: 4.327307e-05
+Size 32: 4.329517e-05
+Size 64: 4.330684e-05
+Size 128: 4.457338e-05
+Size 256: 4.474640e-05
+Size 512: 4.491292e-05
+Size 1024: 4.517185e-05
+Size 2048: 4.591730e-05
+Size 4096: 4.450926e-05
+Size 8192: 5.053815e-05
+Size 16384: 5.436572e-05
+Size 32768: 5.686930e-05
+Size 65536: 6.576100e-05
+Size 131072: 8.252573e-05
+Size 262144: 1.217064e-04
+Size 524288: 1.949881e-04
+Size 1048576: 3.930430e-04
+Size 2097152: 7.671545e-04
+Size 4194304: 1.202015e-03
+Size 8388608: 2.339862e-03
+Size 16777216: 4.689259e-03
+Size 33554432: 9.371536e-03
+Size 67108864: 1.861505e-02
+Size 134217728: 3.731262e-02
+
+Active Procs: 4
+Size 1: 4.328937e-05
+Size 2: 4.325111e-05
+Size 4: 4.323078e-05
+Size 8: 4.321371e-05
+Size 16: 4.328645e-05
+Size 32: 4.334001e-05
+Size 64: 4.329337e-05
+Size 128: 4.454923e-05
+Size 256: 4.468700e-05
+Size 512: 4.490148e-05
+Size 1024: 4.508004e-05
+Size 2048: 4.588325e-05
+Size 4096: 4.453501e-05
+Size 8192: 5.059247e-05
+Size 16384: 5.508875e-05
+Size 32768: 5.812565e-05
+Size 65536: 6.839257e-05
+Size 131072: 9.054008e-05
+Size 262144: 1.378551e-04
+Size 524288: 2.649296e-04
+Size 1048576: 5.382791e-04
+Size 2097152: 1.062602e-03
+Size 4194304: 2.028327e-03
+Size 8388608: 4.245809e-03
+Size 16777216: 8.466469e-03
+Size 33554432: 1.515248e-02
+Size 67108864: 3.013165e-02
+Size 134217728: 5.946823e-02
+
+Active Procs: 8
+Size 1: 3.441109e-04
+Size 2: 3.316649e-04
+Size 4: 3.322303e-04
+Size 8: 3.322445e-04
+Size 16: 3.322063e-04
+Size 32: 3.322164e-04
+Size 64: 3.322610e-04
+Size 128: 3.333589e-04
+Size 256: 3.333457e-04
+Size 512: 3.334117e-04
+Size 1024: 3.336789e-04
+Size 2048: 3.342443e-04
+Size 4096: 3.350974e-04
+Size 8192: 3.410639e-04
+Size 16384: 3.436905e-04
+Size 32768: 5.895091e-05
+Size 65536: 7.488245e-05
+Size 131072: 1.341307e-04
+Size 262144: 2.654361e-04
+Size 524288: 4.890065e-04
+Size 1048576: 1.025959e-03
+Size 2097152: 2.107854e-03
+Size 4194304: 3.713617e-03
+Size 8388608: 7.068777e-03
+Size 16777216: 1.351903e-02
+Size 33554432: 2.681787e-02
+Size 67108864: 5.440467e-02
+Size 134217728: 1.127058e-01
+
+Active Procs: 16
+Size 1: 6.229857e-04
+Size 2: 5.956139e-04
+Size 4: 5.955882e-04
+Size 8: 5.957479e-04
+Size 16: 5.955936e-04
+Size 32: 5.955926e-04
+Size 64: 5.957452e-04
+Size 128: 5.956370e-04
+Size 256: 5.957057e-04
+Size 512: 5.958025e-04
+Size 1024: 5.926883e-04
+Size 2048: 5.963311e-04
+Size 4096: 5.973395e-04
+Size 8192: 5.981465e-04
+Size 16384: 5.994607e-04
+Size 32768: 6.668097e-05
+Size 65536: 1.348125e-04
+Size 131072: 2.618117e-04
+Size 262144: 5.230505e-04
+Size 524288: 9.578368e-04
+Size 1048576: 2.022308e-03
+Size 2097152: 3.795376e-03
+Size 4194304: 6.732791e-03
+Size 8388608: 1.325664e-02
+Size 16777216: 2.692474e-02
+Size 33554432: 5.350422e-02
+Size 67108864: 1.092619e-01
+Size 134217728: 2.228411e-01
+
+Off-Node Multiple Processes Per GPU (all GPUs active per node):
+Active Procs: 1
+Size 1: 6.127861e-04
+Size 2: 5.953612e-04
+Size 4: 5.955248e-04
+Size 8: 5.955460e-04
+Size 16: 5.954621e-04
+Size 32: 5.955771e-04
+Size 64: 5.955936e-04
+Size 128: 5.955611e-04
+Size 256: 5.956181e-04
+Size 512: 5.956573e-04
+Size 1024: 5.957828e-04
+Size 2048: 5.959243e-04
+Size 4096: 5.968457e-04
+Size 8192: 5.982894e-04
+Size 16384: 5.991283e-04
+Size 32768: 5.570174e-05
+Size 65536: 6.585614e-05
+Size 131072: 8.613985e-05
+Size 262144: 1.290399e-04
+Size 524288: 2.223521e-04
+Size 1048576: 4.099074e-04
+Size 2097152: 7.945231e-04
+Size 4194304: 1.537847e-03
+Size 8388608: 3.032767e-03
+Size 16777216: 6.035990e-03
+Size 33554432: 1.209367e-02
+Size 67108864: 2.458222e-02
+Size 134217728: 4.970426e-02
+
+Active Procs: 2
+Size 1: 6.156041e-04
+Size 2: 5.953950e-04
+Size 4: 5.955175e-04
+Size 8: 5.955550e-04
+Size 16: 5.956028e-04
+Size 32: 5.955614e-04
+Size 64: 5.950964e-04
+Size 128: 5.955195e-04
+Size 256: 5.951109e-04
+Size 512: 5.955065e-04
+Size 1024: 5.957865e-04
+Size 2048: 5.961209e-04
+Size 4096: 5.968229e-04
+Size 8192: 5.983834e-04
+Size 16384: 5.992588e-04
+Size 32768: 5.651048e-05
+Size 65536: 6.669138e-05
+Size 131072: 9.256588e-05
+Size 262144: 1.478049e-04
+Size 524288: 2.762733e-04
+Size 1048576: 5.454044e-04
+Size 2097152: 1.079442e-03
+Size 4194304: 2.240897e-03
+Size 8388608: 4.568723e-03
+Size 16777216: 9.376163e-03
+Size 33554432: 1.921289e-02
+Size 67108864: 3.807281e-02
+Size 134217728: 7.688249e-02
+
+Active Procs: 4
+Size 1: 6.262604e-04
+Size 2: 5.959428e-04
+Size 4: 5.958385e-04
+Size 8: 5.960670e-04
+Size 16: 5.959181e-04
+Size 32: 5.959602e-04
+Size 64: 5.959651e-04
+Size 128: 5.960566e-04
+Size 256: 5.959922e-04
+Size 512: 5.960659e-04
+Size 1024: 5.962252e-04
+Size 2048: 5.963817e-04
+Size 4096: 5.972345e-04
+Size 8192: 5.988713e-04
+Size 16384: 5.995031e-04
+Size 32768: 5.750288e-05
+Size 65536: 7.833189e-05
+Size 131072: 1.392253e-04
+Size 262144: 2.516763e-04
+Size 524288: 5.222721e-04
+Size 1048576: 1.080895e-03
+Size 2097152: 2.218394e-03
+Size 4194304: 4.547626e-03
+Size 8388608: 9.975418e-03
+Size 16777216: 1.827357e-02
+Size 33554432: 3.699985e-02
+Size 67108864: 6.962383e-02
+Size 134217728: 1.517050e-01
+
+Active Procs: 8
+Size 1: 1.210499e-03
+Size 2: 1.190967e-03
+Size 4: 1.191086e-03
+Size 8: 1.187785e-03
+Size 16: 1.191460e-03
+Size 32: 1.191506e-03
+Size 64: 1.191510e-03
+Size 128: 1.191524e-03
+Size 256: 1.191669e-03
+Size 512: 1.191769e-03
+Size 1024: 1.192067e-03
+Size 2048: 1.192424e-03
+Size 4096: 1.193622e-03
+Size 8192: 1.196632e-03
+Size 16384: 1.198478e-03
+Size 32768: 7.286082e-05
+Size 65536: 1.471884e-04
+Size 131072: 2.632064e-04
+Size 262144: 5.224382e-04
+Size 524288: 1.075304e-03
+Size 1048576: 2.232710e-03
+Size 2097152: 4.604092e-03
+Size 4194304: 8.899233e-03
+Size 8388608: 1.878775e-02
+Size 16777216: 3.746316e-02
+Size 33554432: 7.154398e-02
+Size 67108864: 1.454053e-01
+Size 134217728: 3.269402e-01
+
+Active Procs: 16
+Size 1: 2.394448e-03
+Size 2: 2.397869e-03
+Size 4: 2.398663e-03
+Size 8: 2.398949e-03
+Size 16: 2.399079e-03
+Size 32: 2.399083e-03
+Size 64: 2.398816e-03
+Size 128: 2.398951e-03
+Size 256: 2.398509e-03
+Size 512: 2.398808e-03
+Size 1024: 2.399780e-03
+Size 2048: 2.401239e-03
+Size 4096: 2.404395e-03
+Size 8192: 2.404346e-03
+Size 16384: 2.414920e-03
+Size 32768: 1.478122e-04
+Size 65536: 2.762637e-04
+Size 131072: 5.282420e-04
+Size 262144: 1.060491e-03
+Size 524288: 2.161369e-03
+Size 1048576: 4.517513e-03
+Size 2097152: 9.225313e-03
+Size 4194304: 1.833850e-02
+Size 8388608: 3.793660e-02
+Size 16777216: 7.390073e-02
+Size 33554432: 1.527108e-01
+Size 67108864: 3.004722e-01
+Size 134217728: 6.233400e-01
+

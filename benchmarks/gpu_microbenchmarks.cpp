@@ -325,7 +325,7 @@ int main(int argc, char* argv[])
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
 
-    int max_p = 30;
+    int max_p = 28;
     int max_s = 1 << max_p;
 
     if (rank == 0) 
@@ -343,7 +343,12 @@ int main(int argc, char* argv[])
         printf("If these are incorrect, edit the defines at the top of benchmarks/microbenchmarks.cpp\n");
     }
 
-    gpuSetDevice(0);
+    int local_rank;
+    MPI_Comm local_comm;
+    MPI_Comm_split_type(MPI_COMM_WORLD, MPI_COMM_TYPE_SHARED, rank, MPI_INFO_NULL, &local_comm);
+    MPI_Comm_rank(local_comm, &local_rank);
+
+    gpuSetDevice(local_rank % GPN);
 
     char *sendbuf_d, *recvbuf_d;
     char *sendbuf_h, *recvbuf_h;

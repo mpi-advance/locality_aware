@@ -11,7 +11,8 @@
 
 module load gcc
 #module load openmpi/5.0.5+cuda
-module load openmpi/5.0.1+cuda
+module load openmpi/5.0.5+cuda
+#module load openmpi/5.0.1+cuda
 
 export CUDA_VISIBLE_DEVICES=3,2,1,0
 
@@ -20,4 +21,3 @@ cd $HOME/locality_aware/build/benchmarks
 
 mpirun --map-by ppr:16:numa --bind-to core --rank-by slot --display-map --display-allocation --report-bindings ./gpu_microbenchmarks
 
-#mpirun --map-by ppr:16:numa --bind-to core --rank-by slot --display-map --display-allocation --report-bindings ./microbenchmarks
