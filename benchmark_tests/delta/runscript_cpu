@@ -1,0 +1,20 @@
+#!/bin/bash
+#SBATCH --job-name cpu_microbenchmarks
+#SBATCH --output cpu_microbenchmarks.%j.out
+#SBATCH --error cpu_microbenchmarks.%j.err
+#SBATCH -N 2
+#SBATCH --gpus-per-node=4
+#SBATCH --exclusive
+#SBATCH --partition gpuA100x4
+#SBATCH --time 00:40:00
+#SBATCH --account=bdys-delta-gpu
+
+module load gcc
+module load openmpi/5.0.1+cuda
+
+export CUDA_VISIBLE_DEVICES=3,2,1,0
+
+echo "locality_aware"
+cd $HOME/locality_aware/build/benchmarks
+
+mpirun --map-by ppr:16:numa --bind-to core --rank-by slot --display-map --display-allocation --report-bindings ./microbenchmarks
