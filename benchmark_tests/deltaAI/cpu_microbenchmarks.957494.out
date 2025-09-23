@@ -1,0 +1,1108 @@
+Inter-CPU Microbenchmarks will be run with the following:
+# Processes per NUMA: 16
+# Processes per socket: 16
+# Processes per node: 64
+# of nodes: 2
+If these are incorrect, edit the defines at the top of benchmarks/microbenchmarks.cpp
+intra-socket tests will not be run because there is only one NUMA per socket.  The timings will be gathered in inter-NUMA tests.
+
+
+Running standard ping-pongs
+
+On-NUMA Ping-Pong:
+Size 1: 4.568667e-06
+Size 2: 7.081109e-06
+Size 4: 9.341001e-06
+Size 8: 9.303483e-06
+Size 16: 9.307561e-06
+Size 32: 9.577542e-06
+Size 64: 9.838206e-06
+Size 128: 1.003877e-05
+Size 256: 1.004402e-05
+Size 512: 1.012719e-05
+Size 1024: 1.387552e-05
+Size 2048: 1.394647e-05
+Size 4096: 1.396810e-05
+Size 8192: 1.642378e-05
+Size 16384: 2.176140e-05
+Size 32768: 2.252090e-05
+Size 65536: 2.784794e-05
+Size 131072: 3.191183e-05
+Size 262144: 4.003945e-05
+Size 524288: 8.437353e-05
+Size 1048576: 1.393707e-04
+Size 2097152: 2.504864e-04
+Size 4194304: 4.835189e-04
+Size 8388608: 9.768834e-04
+Size 16777216: 1.935764e-03
+Size 33554432: 3.991218e-03
+Size 67108864: 1.203032e-02
+Size 134217728: 2.685168e-02
+Size 268435456: 5.363080e-02
+Size 536870912: 1.071528e-01
+
+Not measuring intra-socket because same as intra-NUMA
+On-Node, Off-Socket Ping-Pong:
+Size 1: 5.551916e-06
+Size 2: 5.535771e-06
+Size 4: 5.525291e-06
+Size 8: 5.516626e-06
+Size 16: 5.529935e-06
+Size 32: 5.566868e-06
+Size 64: 5.597604e-06
+Size 128: 5.613505e-06
+Size 256: 5.604564e-06
+Size 512: 5.640396e-06
+Size 1024: 6.766192e-06
+Size 2048: 6.818386e-06
+Size 4096: 6.903674e-06
+Size 8192: 7.101110e-06
+Size 16384: 7.404139e-06
+Size 32768: 7.981725e-06
+Size 65536: 1.065690e-05
+Size 131072: 1.356881e-05
+Size 262144: 1.966832e-05
+Size 524288: 5.103808e-05
+Size 1048576: 1.057717e-04
+Size 2097152: 2.075588e-04
+Size 4194304: 4.100501e-04
+Size 8388608: 8.183178e-04
+Size 16777216: 1.637511e-03
+Size 33554432: 4.872429e-03
+Size 67108864: 1.089275e-02
+Size 134217728: 2.967255e-02
+Size 268435456: 6.721233e-02
+Size 536870912: 1.349230e-01
+
+Off-Node Ping-Pong:
+Size 1: 9.175559e-06
+Size 2: 9.248578e-06
+Size 4: 9.348884e-06
+Size 8: 9.352066e-06
+Size 16: 9.341420e-06
+Size 32: 9.290810e-06
+Size 64: 8.525659e-06
+Size 128: 9.422602e-06
+Size 256: 1.117200e-05
+Size 512: 1.122820e-05
+Size 1024: 1.147062e-05
+Size 2048: 1.171252e-05
+Size 4096: 1.219252e-05
+Size 8192: 1.289254e-05
+Size 16384: 1.451897e-05
+Size 32768: 2.892074e-05
+Size 65536: 3.347813e-05
+Size 131072: 4.011879e-05
+Size 262144: 5.239313e-05
+Size 524288: 7.458100e-05
+Size 1048576: 1.191737e-04
+Size 2097152: 2.056865e-04
+Size 4194304: 3.790722e-04
+Size 8388608: 7.381540e-04
+Size 16777216: 1.465594e-03
+Size 33554432: 2.898958e-03
+Size 67108864: 5.789787e-03
+Size 134217728: 1.159506e-02
+Size 268435456: 2.314651e-02
+Size 536870912: 4.864486e-02
+
+Running multi-proc ping pongs
+
+On-NUMA MultiProc Ping-Pong:
+Active Procs: 1
+Rank 0 sending to 8
+Size 1: 1.321577e-05
+Size 2: 1.312804e-05
+Size 4: 1.315005e-05
+Size 8: 1.315194e-05
+Size 16: 1.318219e-05
+Size 32: 1.351770e-05
+Size 64: 1.370495e-05
+Size 128: 1.394044e-05
+Size 256: 1.406556e-05
+Size 512: 1.417588e-05
+Size 1024: 2.124342e-05
+Size 2048: 2.128489e-05
+Size 4096: 2.144285e-05
+Size 8192: 2.142960e-05
+Size 16384: 2.190297e-05
+Size 32768: 2.267983e-05
+Size 65536: 2.559571e-05
+Size 131072: 2.844546e-05
+Size 262144: 3.450954e-05
+Size 524288: 6.176459e-05
+Size 1048576: 1.317241e-04
+Size 2097152: 2.494075e-04
+Size 4194304: 4.858144e-04
+Size 8388608: 9.515968e-04
+Size 16777216: 1.874833e-03
+Size 33554432: 4.082805e-03
+Size 67108864: 1.407910e-02
+Size 134217728: 3.268667e-02
+Size 268435456: 7.012274e-02
+Size 536870912: 1.422088e-01
+
+Active Procs: 2
+Rank 0 sending to 8
+Size 1: 1.313364e-05
+Size 2: 1.312698e-05
+Size 4: 1.319130e-05
+Size 8: 1.319185e-05
+Size 16: 1.310771e-05
+Size 32: 1.351296e-05
+Size 64: 1.378216e-05
+Size 128: 1.400682e-05
+Size 256: 1.412737e-05
+Size 512: 1.416616e-05
+Size 1024: 2.114808e-05
+Size 2048: 2.117126e-05
+Size 4096: 2.123642e-05
+Size 8192: 2.131748e-05
+Size 16384: 2.171769e-05
+Size 32768: 2.252803e-05
+Size 65536: 2.676648e-05
+Size 131072: 3.119815e-05
+Size 262144: 3.979656e-05
+Size 524288: 8.993093e-05
+Size 1048576: 1.465625e-04
+Size 2097152: 2.548252e-04
+Size 4194304: 4.939873e-04
+Size 8388608: 9.892523e-04
+Size 16777216: 1.984002e-03
+Size 33554432: 5.920098e-03
+Size 67108864: 1.416299e-02
+Size 134217728: 3.509184e-02
+Size 268435456: 7.306056e-02
+Size 536870912: 1.463074e-01
+
+Active Procs: 4
+Rank 0 sending to 8
+Size 1: 1.315900e-05
+Size 2: 1.315882e-05
+Size 4: 1.313610e-05
+Size 8: 1.314304e-05
+Size 16: 1.318803e-05
+Size 32: 1.351223e-05
+Size 64: 1.372538e-05
+Size 128: 1.398520e-05
+Size 256: 1.412122e-05
+Size 512: 1.418267e-05
+Size 1024: 2.162954e-05
+Size 2048: 2.170956e-05
+Size 4096: 2.181779e-05
+Size 8192: 2.194260e-05
+Size 16384: 2.237468e-05
+Size 32768: 2.315824e-05
+Size 65536: 2.836867e-05
+Size 131072: 3.350959e-05
+Size 262144: 4.416258e-05
+Size 524288: 7.738527e-05
+Size 1048576: 1.436399e-04
+Size 2097152: 2.649258e-04
+Size 4194304: 5.049511e-04
+Size 8388608: 9.883230e-04
+Size 16777216: 2.094404e-03
+Size 33554432: 6.204850e-03
+Size 67108864: 1.548975e-02
+Size 134217728: 3.691848e-02
+Size 268435456: 7.530441e-02
+Size 536870912: 1.475356e-01
+
+Active Procs: 8
+Rank 0 sending to 8
+Size 1: 1.323402e-05
+Size 2: 1.333074e-05
+Size 4: 1.332577e-05
+Size 8: 1.334406e-05
+Size 16: 1.330798e-05
+Size 32: 1.373358e-05
+Size 64: 1.411608e-05
+Size 128: 1.434001e-05
+Size 256: 1.436938e-05
+Size 512: 1.446511e-05
+Size 1024: 2.215052e-05
+Size 2048: 2.228082e-05
+Size 4096: 2.233297e-05
+Size 8192: 2.269873e-05
+Size 16384: 2.302036e-05
+Size 32768: 2.371328e-05
+Size 65536: 2.986455e-05
+Size 131072: 3.574152e-05
+Size 262144: 4.896513e-05
+Size 524288: 8.335342e-05
+Size 1048576: 1.497982e-04
+Size 2097152: 2.756159e-04
+Size 4194304: 5.282117e-04
+Size 8388608: 1.035396e-03
+Size 16777216: 2.854952e-03
+Size 33554432: 6.565398e-03
+Size 67108864: 1.689808e-02
+Size 134217728: 3.780627e-02
+Size 268435456: 7.581851e-02
+Size 536870912: 1.513523e-01
+
+Not measuring multi-proc intra-socket because same as intra-NUMA
+On-Node, Off-Socket MultiProc Ping-Pong:
+Active Procs: 1
+Rank 0 sending to 32
+Size 1: 5.541431e-06
+Size 2: 5.541611e-06
+Size 4: 5.479025e-06
+Size 8: 5.529805e-06
+Size 16: 5.497112e-06
+Size 32: 5.511483e-06
+Size 64: 5.534458e-06
+Size 128: 5.555943e-06
+Size 256: 5.573098e-06
+Size 512: 5.598352e-06
+Size 1024: 6.704517e-06
+Size 2048: 6.747936e-06
+Size 4096: 6.789647e-06
+Size 8192: 6.942095e-06
+Size 16384: 7.276021e-06
+Size 32768: 7.926735e-06
+Size 65536: 9.690666e-06
+Size 131072: 1.258519e-05
+Size 262144: 1.836180e-05
+Size 524288: 4.340357e-05
+Size 1048576: 1.123395e-04
+Size 2097152: 2.231273e-04
+Size 4194304: 4.432156e-04
+Size 8388608: 8.634820e-04
+Size 16777216: 1.806963e-03
+Size 33554432: 4.647468e-03
+Size 67108864: 1.164947e-02
+Size 134217728: 2.696971e-02
+Size 268435456: 5.491888e-02
+Size 536870912: 1.100163e-01
+
+Active Procs: 2
+Rank 0 sending to 32
+Size 1: 5.536647e-06
+Size 2: 5.536568e-06
+Size 4: 5.541575e-06
+Size 8: 5.537095e-06
+Size 16: 5.541110e-06
+Size 32: 5.560519e-06
+Size 64: 5.609552e-06
+Size 128: 6.145922e-06
+Size 256: 6.661910e-06
+Size 512: 6.761115e-06
+Size 1024: 7.583704e-06
+Size 2048: 7.615456e-06
+Size 4096: 7.687113e-06
+Size 8192: 7.836772e-06
+Size 16384: 8.146950e-06
+Size 32768: 8.814364e-06
+Size 65536: 1.211812e-05
+Size 131072: 1.607409e-05
+Size 262144: 2.362659e-05
+Size 524288: 5.112938e-05
+Size 1048576: 1.179025e-04
+Size 2097152: 2.312638e-04
+Size 4194304: 4.461055e-04
+Size 8388608: 8.770246e-04
+Size 16777216: 1.737796e-03
+Size 33554432: 4.558933e-03
+Size 67108864: 1.113140e-02
+Size 134217728: 2.658942e-02
+Size 268435456: 5.563786e-02
+Size 536870912: 1.105549e-01
+
+Active Procs: 4
+Rank 0 sending to 32
+Size 1: 9.285431e-06
+Size 2: 9.286416e-06
+Size 4: 9.295457e-06
+Size 8: 9.300213e-06
+Size 16: 9.309648e-06
+Size 32: 9.594262e-06
+Size 64: 9.877603e-06
+Size 128: 1.005491e-05
+Size 256: 1.029575e-05
+Size 512: 1.045286e-05
+Size 1024: 1.403984e-05
+Size 2048: 1.403764e-05
+Size 4096: 1.427136e-05
+Size 8192: 1.440131e-05
+Size 16384: 1.472386e-05
+Size 32768: 1.557376e-05
+Size 65536: 2.142716e-05
+Size 131072: 2.667039e-05
+Size 262144: 3.701381e-05
+Size 524288: 7.522697e-05
+Size 1048576: 1.322827e-04
+Size 2097152: 2.487357e-04
+Size 4194304: 4.788738e-04
+Size 8388608: 9.383246e-04
+Size 16777216: 2.007358e-03
+Size 33554432: 4.446503e-03
+Size 67108864: 1.131315e-02
+Size 134217728: 3.267940e-02
+Size 268435456: 7.067937e-02
+Size 536870912: 1.416488e-01
+
+Active Procs: 8
+Rank 0 sending to 32
+Size 1: 1.317530e-05
+Size 2: 1.320586e-05
+Size 4: 1.319696e-05
+Size 8: 1.318294e-05
+Size 16: 1.318575e-05
+Size 32: 1.354972e-05
+Size 64: 1.369299e-05
+Size 128: 1.411835e-05
+Size 256: 1.415149e-05
+Size 512: 1.443140e-05
+Size 1024: 2.186114e-05
+Size 2048: 2.214142e-05
+Size 4096: 2.228970e-05
+Size 8192: 2.237096e-05
+Size 16384: 2.278740e-05
+Size 32768: 2.358421e-05
+Size 65536: 3.013931e-05
+Size 131072: 3.456036e-05
+Size 262144: 4.408816e-05
+Size 524288: 7.571435e-05
+Size 1048576: 1.402808e-04
+Size 2097152: 2.644166e-04
+Size 4194304: 5.098279e-04
+Size 8388608: 1.008700e-03
+Size 16777216: 2.277697e-03
+Size 33554432: 5.016490e-03
+Size 67108864: 1.407672e-02
+Size 134217728: 3.285235e-02
+Size 268435456: 7.078043e-02
+Size 536870912: 1.476380e-01
+
+Active Procs: 16
+Rank 0 sending to 32
+Size 1: 1.320510e-05
+Size 2: 1.319883e-05
+Size 4: 1.321111e-05
+Size 8: 1.320807e-05
+Size 16: 1.321557e-05
+Size 32: 1.362071e-05
+Size 64: 1.368909e-05
+Size 128: 1.401583e-05
+Size 256: 1.414859e-05
+Size 512: 1.442922e-05
+Size 1024: 2.239296e-05
+Size 2048: 2.248901e-05
+Size 4096: 2.257121e-05
+Size 8192: 2.279992e-05
+Size 16384: 2.346415e-05
+Size 32768: 2.400607e-05
+Size 65536: 3.619644e-05
+Size 131072: 4.298647e-05
+Size 262144: 5.964219e-05
+Size 524288: 1.021838e-04
+Size 1048576: 1.848248e-04
+Size 2097152: 3.473300e-04
+Size 4194304: 6.692377e-04
+Size 8388608: 1.311962e-03
+Size 16777216: 3.307502e-03
+Size 33554432: 6.871668e-03
+Size 67108864: 1.544799e-02
+Size 134217728: 3.616261e-02
+Size 268435456: 7.701479e-02
+Size 536870912: 1.602702e-01
+
+Active Procs: 32
+Rank 0 sending to 32
+Size 1: 1.350632e-05
+Size 2: 1.347803e-05
+Size 4: 1.349646e-05
+Size 8: 1.348273e-05
+Size 16: 1.349912e-05
+Size 32: 1.392596e-05
+Size 64: 1.422033e-05
+Size 128: 1.449701e-05
+Size 256: 1.451350e-05
+Size 512: 1.474956e-05
+Size 1024: 2.991490e-05
+Size 2048: 3.028334e-05
+Size 4096: 3.044429e-05
+Size 8192: 3.022624e-05
+Size 16384: 3.097325e-05
+Size 32768: 3.153782e-05
+Size 65536: 6.281056e-05
+Size 131072: 7.981332e-05
+Size 262144: 1.123984e-04
+Size 524288: 1.810150e-04
+Size 1048576: 3.177760e-04
+Size 2097152: 5.970763e-04
+Size 4194304: 1.135713e-03
+Size 8388608: 2.296759e-03
+Size 16777216: 5.453001e-03
+Size 33554432: 1.087356e-02
+Size 67108864: 2.177431e-02
+Size 134217728: 4.734170e-02
+Size 268435456: 1.071870e-01
+Size 536870912: 2.044966e-01
+
+Off-Node MultiProc Ping-Pong:
+Active Procs: 1
+Rank 0 sending to 64
+Size 1: 9.276761e-06
+Size 2: 9.308350e-06
+Size 4: 9.388165e-06
+Size 8: 9.387721e-06
+Size 16: 9.413597e-06
+Size 32: 9.354794e-06
+Size 64: 8.728388e-06
+Size 128: 9.464602e-06
+Size 256: 1.119909e-05
+Size 512: 1.129036e-05
+Size 1024: 1.151315e-05
+Size 2048: 1.170775e-05
+Size 4096: 1.224452e-05
+Size 8192: 1.294331e-05
+Size 16384: 1.452092e-05
+Size 32768: 2.920069e-05
+Size 65536: 3.359083e-05
+Size 131072: 4.022438e-05
+Size 262144: 5.242076e-05
+Size 524288: 7.487576e-05
+Size 1048576: 1.175675e-04
+Size 2097152: 2.051203e-04
+Size 4194304: 3.780072e-04
+Size 8388608: 7.360373e-04
+Size 16777216: 1.460260e-03
+Size 33554432: 2.891416e-03
+Size 67108864: 5.777338e-03
+Size 134217728: 1.157861e-02
+Size 268435456: 2.313933e-02
+Size 536870912: 4.877732e-02
+
+Active Procs: 2
+Rank 0 sending to 64
+Size 1: 1.134762e-05
+Size 2: 1.136388e-05
+Size 4: 1.141787e-05
+Size 8: 1.142974e-05
+Size 16: 1.144753e-05
+Size 32: 1.141267e-05
+Size 64: 1.057289e-05
+Size 128: 1.149249e-05
+Size 256: 1.358695e-05
+Size 512: 1.363895e-05
+Size 1024: 1.378741e-05
+Size 2048: 1.406964e-05
+Size 4096: 1.456973e-05
+Size 8192: 1.536017e-05
+Size 16384: 1.689542e-05
+Size 32768: 3.376057e-05
+Size 65536: 4.300499e-05
+Size 131072: 5.978288e-05
+Size 262144: 8.597340e-05
+Size 524288: 1.535082e-04
+Size 1048576: 2.542625e-04
+Size 2097152: 4.837283e-04
+Size 4194304: 9.645741e-04
+Size 8388608: 1.934850e-03
+Size 16777216: 3.943151e-03
+Size 33554432: 7.827149e-03
+Size 67108864: 1.556914e-02
+Size 134217728: 3.051406e-02
+Size 268435456: 6.375617e-02
+Size 536870912: 1.280972e-01
+
+Active Procs: 4
+Rank 0 sending to 64
+Size 1: 1.160856e-05
+Size 2: 1.161949e-05
+Size 4: 1.166399e-05
+Size 8: 1.167670e-05
+Size 16: 1.166704e-05
+Size 32: 1.165170e-05
+Size 64: 1.085260e-05
+Size 128: 1.175392e-05
+Size 256: 1.387023e-05
+Size 512: 1.393804e-05
+Size 1024: 1.410763e-05
+Size 2048: 1.440771e-05
+Size 4096: 1.497236e-05
+Size 8192: 1.591179e-05
+Size 16384: 1.750382e-05
+Size 32768: 4.279001e-05
+Size 65536: 6.229340e-05
+Size 131072: 9.314260e-05
+Size 262144: 1.339866e-04
+Size 524288: 2.789331e-04
+Size 1048576: 5.035921e-04
+Size 2097152: 1.010461e-03
+Size 4194304: 2.182489e-03
+Size 8388608: 4.550472e-03
+Size 16777216: 9.178182e-03
+Size 33554432: 1.795956e-02
+Size 67108864: 3.737808e-02
+Size 134217728: 7.486379e-02
+Size 268435456: 1.422913e-01
+Size 536870912: 2.896356e-01
+
+Active Procs: 8
+Rank 0 sending to 64
+Size 1: 1.196652e-05
+Size 2: 1.197433e-05
+Size 4: 1.201753e-05
+Size 8: 1.201852e-05
+Size 16: 1.202215e-05
+Size 32: 1.200516e-05
+Size 64: 1.141936e-05
+Size 128: 1.203401e-05
+Size 256: 1.443254e-05
+Size 512: 1.449312e-05
+Size 1024: 1.469639e-05
+Size 2048: 1.505399e-05
+Size 4096: 1.566072e-05
+Size 8192: 1.679379e-05
+Size 16384: 1.882003e-05
+Size 32768: 6.021046e-05
+Size 65536: 7.976639e-05
+Size 131072: 1.294689e-04
+Size 262144: 2.136491e-04
+Size 524288: 5.176992e-04
+Size 1048576: 1.168548e-03
+Size 2097152: 2.387841e-03
+Size 4194304: 4.899848e-03
+Size 8388608: 1.001178e-02
+Size 16777216: 1.981257e-02
+Size 33554432: 3.906445e-02
+Size 67108864: 7.650478e-02
+Size 134217728: 1.537413e-01
+Size 268435456: 3.017128e-01
+Size 536870912: 5.965178e-01
+
+Active Procs: 16
+Rank 0 sending to 64
+Size 1: 1.240376e-05
+Size 2: 1.240854e-05
+Size 4: 1.241984e-05
+Size 8: 1.243035e-05
+Size 16: 1.243792e-05
+Size 32: 1.242454e-05
+Size 64: 1.187833e-05
+Size 128: 1.242416e-05
+Size 256: 1.512291e-05
+Size 512: 1.520475e-05
+Size 1024: 1.541858e-05
+Size 2048: 1.586906e-05
+Size 4096: 1.666662e-05
+Size 8192: 1.816656e-05
+Size 16384: 2.035948e-05
+Size 32768: 8.363622e-05
+Size 65536: 1.415916e-04
+Size 131072: 2.210555e-04
+Size 262144: 5.132738e-04
+Size 524288: 1.148822e-03
+Size 1048576: 2.563706e-03
+Size 2097152: 5.096427e-03
+Size 4194304: 1.032098e-02
+Size 8388608: 2.051173e-02
+Size 16777216: 4.071706e-02
+Size 33554432: 8.039783e-02
+Size 67108864: 1.610506e-01
+Size 134217728: 3.100829e-01
+Size 268435456: 6.170096e-01
+Size 536870912: 1.242589e+00
+
+Active Procs: 32
+Rank 0 sending to 64
+Size 1: 1.241070e-05
+Size 2: 1.240639e-05
+Size 4: 1.244137e-05
+Size 8: 1.243863e-05
+Size 16: 1.245137e-05
+Size 32: 1.243713e-05
+Size 64: 1.191847e-05
+Size 128: 1.241607e-05
+Size 256: 1.510155e-05
+Size 512: 1.516884e-05
+Size 1024: 1.539823e-05
+Size 2048: 1.584031e-05
+Size 4096: 1.668335e-05
+Size 8192: 1.819453e-05
+Size 16384: 2.214997e-05
+Size 32768: 8.410942e-05
+Size 65536: 1.389392e-04
+Size 131072: 2.176571e-04
+Size 262144: 5.140010e-04
+Size 524288: 1.145372e-03
+Size 1048576: 2.504961e-03
+Size 2097152: 5.068165e-03
+Size 4194304: 1.027391e-02
+Size 8388608: 2.081288e-02
+Size 16777216: 4.053287e-02
+Size 33554432: 8.069752e-02
+Size 67108864: 1.597825e-01
+Size 134217728: 3.102168e-01
+Size 268435456: 6.191862e-01
+Size 536870912: 1.250284e+00
+
+Active Procs: 64
+Rank 0 sending to 64
+Size 1: 1.241725e-05
+Size 2: 1.241342e-05
+Size 4: 1.242850e-05
+Size 8: 1.244728e-05
+Size 16: 1.244128e-05
+Size 32: 1.242503e-05
+Size 64: 1.190528e-05
+Size 128: 1.243697e-05
+Size 256: 1.512367e-05
+Size 512: 1.518868e-05
+Size 1024: 1.542482e-05
+Size 2048: 1.588137e-05
+Size 4096: 1.674916e-05
+Size 8192: 1.835241e-05
+Size 16384: 2.239138e-05
+Size 32768: 8.226348e-05
+Size 65536: 1.356411e-04
+Size 131072: 2.068617e-04
+Size 262144: 4.781004e-04
+Size 524288: 1.125074e-03
+Size 1048576: 2.603563e-03
+Size 2097152: 5.225063e-03
+Size 4194304: 1.085901e-02
+Size 8388608: 2.199016e-02
+Size 16777216: 4.363709e-02
+Size 33554432: 8.633974e-02
+Size 67108864: 1.702891e-01
+Size 134217728: 3.345048e-01
+Size 268435456: 6.723964e-01
+Size 536870912: 1.342341e+00
+
+On-NUMA MultiProc Ping-Pong, All NUMAs Active:
+Active Procs: 1
+Rank 0 sending to 8
+Size 1: 1.308798e-05
+Size 2: 1.309787e-05
+Size 4: 1.309860e-05
+Size 8: 1.313153e-05
+Size 16: 1.315331e-05
+Size 32: 1.345497e-05
+Size 64: 1.358078e-05
+Size 128: 1.397933e-05
+Size 256: 1.404409e-05
+Size 512: 1.406641e-05
+Size 1024: 2.140199e-05
+Size 2048: 2.144931e-05
+Size 4096: 2.153800e-05
+Size 8192: 2.173176e-05
+Size 16384: 2.217826e-05
+Size 32768: 2.282354e-05
+Size 65536: 2.563201e-05
+Size 131072: 2.857293e-05
+Size 262144: 3.468415e-05
+Size 524288: 6.153732e-05
+Size 1048576: 1.352379e-04
+Size 2097152: 2.541849e-04
+Size 4194304: 4.920605e-04
+Size 8388608: 9.610702e-04
+Size 16777216: 2.098861e-03
+Size 33554432: 5.790110e-03
+Size 67108864: 1.685976e-02
+Size 134217728: 3.732765e-02
+Size 268435456: 7.325725e-02
+Size 536870912: 1.468872e-01
+
+Active Procs: 2
+Rank 0 sending to 8
+Size 1: 1.310172e-05
+Size 2: 1.308545e-05
+Size 4: 1.311254e-05
+Size 8: 1.311474e-05
+Size 16: 1.312078e-05
+Size 32: 1.345635e-05
+Size 64: 1.370005e-05
+Size 128: 1.403135e-05
+Size 256: 1.408504e-05
+Size 512: 1.437131e-05
+Size 1024: 2.208403e-05
+Size 2048: 2.205397e-05
+Size 4096: 2.227200e-05
+Size 8192: 2.242004e-05
+Size 16384: 2.287073e-05
+Size 32768: 2.346808e-05
+Size 65536: 2.568744e-05
+Size 131072: 2.845705e-05
+Size 262144: 3.574788e-05
+Size 524288: 6.438039e-05
+Size 1048576: 1.383251e-04
+Size 2097152: 2.622503e-04
+Size 4194304: 5.091884e-04
+Size 8388608: 1.126869e-03
+Size 16777216: 3.057752e-03
+Size 33554432: 8.464760e-03
+Size 67108864: 1.981597e-02
+Size 134217728: 3.985925e-02
+Size 268435456: 7.687816e-02
+Size 536870912: 1.527453e-01
+
+Active Procs: 4
+Rank 0 sending to 8
+Size 1: 1.329759e-05
+Size 2: 1.329991e-05
+Size 4: 1.330335e-05
+Size 8: 1.331665e-05
+Size 16: 1.332923e-05
+Size 32: 1.356430e-05
+Size 64: 1.377698e-05
+Size 128: 1.406310e-05
+Size 256: 1.431162e-05
+Size 512: 1.444682e-05
+Size 1024: 2.298586e-05
+Size 2048: 2.307878e-05
+Size 4096: 2.317243e-05
+Size 8192: 2.324328e-05
+Size 16384: 2.357423e-05
+Size 32768: 2.443579e-05
+Size 65536: 2.646415e-05
+Size 131072: 2.923763e-05
+Size 262144: 3.642214e-05
+Size 524288: 6.913303e-05
+Size 1048576: 1.451051e-04
+Size 2097152: 2.765482e-04
+Size 4194304: 5.658292e-04
+Size 8388608: 1.639509e-03
+Size 16777216: 4.201182e-03
+Size 33554432: 1.049060e-02
+Size 67108864: 2.119971e-02
+Size 134217728: 4.114368e-02
+Size 268435456: 8.102528e-02
+Size 536870912: 1.586087e-01
+
+Active Procs: 8
+Rank 0 sending to 8
+Size 1: 1.349523e-05
+Size 2: 1.337038e-05
+Size 4: 1.336009e-05
+Size 8: 1.337703e-05
+Size 16: 1.337548e-05
+Size 32: 1.379844e-05
+Size 64: 1.411420e-05
+Size 128: 1.440456e-05
+Size 256: 1.442481e-05
+Size 512: 1.464630e-05
+Size 1024: 3.065642e-05
+Size 2048: 3.072610e-05
+Size 4096: 3.087197e-05
+Size 8192: 3.102245e-05
+Size 16384: 3.132256e-05
+Size 32768: 3.240147e-05
+Size 65536: 3.526659e-05
+Size 131072: 3.772895e-05
+Size 262144: 4.185999e-05
+Size 524288: 7.522708e-05
+Size 1048576: 1.566146e-04
+Size 2097152: 3.016985e-04
+Size 4194304: 7.829919e-04
+Size 8388608: 2.178232e-03
+Size 16777216: 4.932813e-03
+Size 33554432: 1.194450e-02
+Size 67108864: 2.298751e-02
+Size 134217728: 4.359863e-02
+Size 268435456: 8.475214e-02
+Size 536870912: 1.666256e-01
+
+Not measuring multi-proc intra-socket with all numas active, because same as intra-NUMA
+Off-Node MultiProc Ping-Pong, Even NUMA Regions:
+Active Procs: 1
+Rank 0 sending to 64
+Size 1: 1.074820e-05
+Size 2: 1.073511e-05
+Size 4: 1.077217e-05
+Size 8: 1.079902e-05
+Size 16: 1.080156e-05
+Size 32: 1.077689e-05
+Size 64: 1.025749e-05
+Size 128: 1.079282e-05
+Size 256: 1.297438e-05
+Size 512: 1.305486e-05
+Size 1024: 1.323125e-05
+Size 2048: 1.346895e-05
+Size 4096: 1.391708e-05
+Size 8192: 1.471898e-05
+Size 16384: 1.646308e-05
+Size 32768: 3.402770e-05
+Size 65536: 3.938366e-05
+Size 131072: 5.086543e-05
+Size 262144: 6.953674e-05
+Size 524288: 1.132585e-04
+Size 1048576: 2.004938e-04
+Size 2097152: 4.080393e-04
+Size 4194304: 8.280813e-04
+Size 8388608: 1.682544e-03
+Size 16777216: 3.583799e-03
+Size 33554432: 7.084707e-03
+Size 67108864: 1.408150e-02
+Size 134217728: 2.793631e-02
+Size 268435456: 5.530607e-02
+Size 536870912: 1.165631e-01
+
+Active Procs: 2
+Rank 0 sending to 64
+Size 1: 1.146519e-05
+Size 2: 1.146924e-05
+Size 4: 1.151264e-05
+Size 8: 1.151370e-05
+Size 16: 1.151117e-05
+Size 32: 1.149258e-05
+Size 64: 1.059489e-05
+Size 128: 1.154305e-05
+Size 256: 1.359319e-05
+Size 512: 1.366638e-05
+Size 1024: 1.382310e-05
+Size 2048: 1.413310e-05
+Size 4096: 1.467862e-05
+Size 8192: 1.546815e-05
+Size 16384: 1.706545e-05
+Size 32768: 3.525811e-05
+Size 65536: 4.628667e-05
+Size 131072: 6.695207e-05
+Size 262144: 1.071973e-04
+Size 524288: 1.900554e-04
+Size 1048576: 3.444316e-04
+Size 2097152: 7.204229e-04
+Size 4194304: 1.442852e-03
+Size 8388608: 2.958620e-03
+Size 16777216: 6.131511e-03
+Size 33554432: 1.231792e-02
+Size 67108864: 2.457162e-02
+Size 134217728: 4.888150e-02
+Size 268435456: 9.505672e-02
+Size 536870912: 1.877551e-01
+
+Active Procs: 4
+Rank 0 sending to 64
+Size 1: 1.167565e-05
+Size 2: 1.167773e-05
+Size 4: 1.170695e-05
+Size 8: 1.171585e-05
+Size 16: 1.171574e-05
+Size 32: 1.169138e-05
+Size 64: 1.083290e-05
+Size 128: 1.178101e-05
+Size 256: 1.394601e-05
+Size 512: 1.398819e-05
+Size 1024: 1.415890e-05
+Size 2048: 1.448188e-05
+Size 4096: 1.504624e-05
+Size 8192: 1.596475e-05
+Size 16384: 1.793994e-05
+Size 32768: 4.281505e-05
+Size 65536: 6.276032e-05
+Size 131072: 9.133235e-05
+Size 262144: 1.308668e-04
+Size 524288: 3.107544e-04
+Size 1048576: 6.677196e-04
+Size 2097152: 1.368873e-03
+Size 4194304: 2.911470e-03
+Size 8388608: 6.174966e-03
+Size 16777216: 1.251330e-02
+Size 33554432: 2.490717e-02
+Size 67108864: 4.935398e-02
+Size 134217728: 9.655553e-02
+Size 268435456: 1.896783e-01
+Size 536870912: 3.761446e-01
+
+Active Procs: 8
+Rank 0 sending to 64
+Size 1: 1.202653e-05
+Size 2: 1.202734e-05
+Size 4: 1.205287e-05
+Size 8: 1.204831e-05
+Size 16: 1.204883e-05
+Size 32: 1.202986e-05
+Size 64: 1.141168e-05
+Size 128: 1.202988e-05
+Size 256: 1.439172e-05
+Size 512: 1.449058e-05
+Size 1024: 1.469105e-05
+Size 2048: 1.504767e-05
+Size 4096: 1.566725e-05
+Size 8192: 1.687812e-05
+Size 16384: 1.899491e-05
+Size 32768: 6.027854e-05
+Size 65536: 7.967523e-05
+Size 131072: 1.235254e-04
+Size 262144: 2.057556e-04
+Size 524288: 5.344616e-04
+Size 1048576: 1.268737e-03
+Size 2097152: 2.614477e-03
+Size 4194304: 5.441736e-03
+Size 8388608: 1.133408e-02
+Size 16777216: 2.265109e-02
+Size 33554432: 4.503803e-02
+Size 67108864: 8.971707e-02
+Size 134217728: 1.726767e-01
+Size 268435456: 3.451664e-01
+Size 536870912: 6.918809e-01
+
+Active Procs: 16
+Rank 0 sending to 64
+Size 1: 1.241916e-05
+Size 2: 1.242364e-05
+Size 4: 1.245003e-05
+Size 8: 1.244176e-05
+Size 16: 1.245393e-05
+Size 32: 1.244835e-05
+Size 64: 1.191048e-05
+Size 128: 1.242822e-05
+Size 256: 1.509504e-05
+Size 512: 1.519284e-05
+Size 1024: 1.542809e-05
+Size 2048: 1.589987e-05
+Size 4096: 1.676841e-05
+Size 8192: 1.832934e-05
+Size 16384: 2.230578e-05
+Size 32768: 8.177122e-05
+Size 65536: 1.352675e-04
+Size 131072: 2.050516e-04
+Size 262144: 4.769186e-04
+Size 524288: 1.114909e-03
+Size 1048576: 2.616320e-03
+Size 2097152: 5.247744e-03
+Size 4194304: 1.077484e-02
+Size 8388608: 2.186201e-02
+Size 16777216: 4.360130e-02
+Size 33554432: 8.609504e-02
+Size 67108864: 1.689872e-01
+Size 134217728: 3.359802e-01
+Size 268435456: 6.636803e-01
+Size 536870912: 1.349147e+00
+
+Not measuring off-node multiproc with even sockets, because same as even NUMAs
+Not running any matching (queue search) benchmarks.  To run these, edit the #define MATCHING to a nonzero number
+
+MPICH Slingshot Network Summary: 0 network timeouts
+
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries

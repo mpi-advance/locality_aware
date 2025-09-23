@@ -1,0 +1,924 @@
+Inter-CPU Microbenchmarks will be run with the following:
+# Processes per NUMA: 16
+# Processes per socket: 16
+# Processes per node: 64
+# of nodes: 2
+Inter-GPU Microbenchmarks will be run with the following:
+# GPUs per NUMA: 1
+# GPUs per socket: 1
+# GPUs per node: 4
+# Processes per GPU: 16
+If these are incorrect, edit the defines at the top of benchmarks/microbenchmarks.cpp
+GPU-Aware intra-NUMA tests will not be run because GPNUMA is set to 1.
+intra-socket tests will not be run because GPS is set to 1.
+Running standard GPU-Aware benchmarks
+Not measuring GPU-Aware intra-NUMA, because GPNUMA is set to 1
+Not measuring GPU-Aware intra-socket, because GPS is set to 1
+GPU-Aware On-Node, Off-Socket Ping-Pong:
+Size 1: 3.140628e-04
+Size 2: 3.137792e-04
+Size 4: 3.138611e-04
+Size 8: 3.136127e-04
+Size 16: 3.138922e-04
+Size 32: 3.138790e-04
+Size 64: 3.140666e-04
+Size 128: 3.140202e-04
+Size 256: 3.142294e-04
+Size 512: 3.144063e-04
+Size 1024: 2.991938e-04
+Size 2048: 2.992219e-04
+Size 4096: 2.992947e-04
+Size 8192: 2.992329e-04
+Size 16384: 2.992988e-04
+Size 32768: 2.994144e-04
+Size 65536: 2.992756e-04
+Size 131072: 2.994361e-04
+Size 262144: 2.994669e-04
+Size 524288: 2.997590e-04
+Size 1048576: 3.006744e-04
+Size 2097152: 3.011455e-04
+Size 4194304: 3.021251e-04
+Size 8388608: 3.060944e-04
+Size 16777216: 3.293029e-04
+Size 33554432: 3.570178e-04
+Size 67108864: 4.019046e-04
+Size 134217728: 4.911963e-04
+Size 268435456: 6.727353e-04
+Size 536870912: 1.040363e-03
+
+GPU-Aware Off-Node Ping-Pong:
+Size 1: 9.943719e-06
+Size 2: 9.968647e-06
+Size 4: 1.005135e-05
+Size 8: 1.005738e-05
+Size 16: 1.005810e-05
+Size 32: 1.002649e-05
+Size 64: 9.534723e-06
+Size 128: 1.016580e-05
+Size 256: 1.256047e-05
+Size 512: 1.265387e-05
+Size 1024: 1.281774e-05
+Size 2048: 1.306630e-05
+Size 4096: 1.357011e-05
+Size 8192: 1.902551e-05
+Size 16384: 2.106092e-05
+Size 32768: 2.707204e-05
+Size 65536: 2.974032e-05
+Size 131072: 3.533717e-05
+Size 262144: 4.641533e-05
+Size 524288: 6.826008e-05
+Size 1048576: 1.107682e-04
+Size 2097152: 1.971361e-04
+Size 4194304: 3.708662e-04
+Size 8388608: 7.183940e-04
+Size 16777216: 1.422834e-03
+Size 33554432: 2.828899e-03
+Size 67108864: 5.633159e-03
+Size 134217728: 1.124366e-02
+Size 268435456: 2.246891e-02
+Size 536870912: 4.491462e-02
+
+Running standard Copy-to-CPU benchmarks
+Not measuring GPU-Aware intra-NUMA, because GPNUMA is set to 1
+Not measuring GPU-Aware intra-socket, because GPS is set to 1
+GPU-Aware On-Node, Off-Socket Ping-Pong:
+Size 1: 3.142556e-04
+Size 2: 3.141659e-04
+Size 4: 3.149338e-04
+Size 8: 3.178663e-04
+Size 16: 3.185272e-04
+Size 32: 3.155577e-04
+Size 64: 3.148958e-04
+Size 128: 3.172555e-04
+Size 256: 3.146267e-04
+Size 512: 3.180035e-04
+Size 1024: 3.271292e-04
+Size 2048: 3.257105e-04
+Size 4096: 3.294740e-04
+Size 8192: 3.274226e-04
+Size 16384: 3.328201e-04
+Size 32768: 7.938020e-05
+Size 65536: 9.311282e-05
+Size 131072: 1.277428e-04
+Size 262144: 1.815645e-04
+Size 524288: 2.549801e-04
+Size 1048576: 4.786054e-04
+Size 2097152: 8.740509e-04
+Size 4194304: 1.624059e-03
+Size 8388608: 3.153837e-03
+Size 16777216: 6.279471e-03
+Size 33554432: 1.280776e-02
+Size 67108864: 2.244909e-02
+Size 134217728: 4.170521e-02
+Size 268435456: 8.146813e-02
+Size 536870912: 1.663577e-01
+
+GPU-Aware Off-Node Ping-Pong:
+Size 1: 5.500931e-05
+Size 2: 5.360240e-05
+Size 4: 5.377185e-05
+Size 8: 5.392415e-05
+Size 16: 5.409739e-05
+Size 32: 5.369471e-05
+Size 64: 5.344938e-05
+Size 128: 5.444767e-05
+Size 256: 5.526732e-05
+Size 512: 5.560348e-05
+Size 1024: 5.578187e-05
+Size 2048: 5.727883e-05
+Size 4096: 5.856675e-05
+Size 8192: 5.993882e-05
+Size 16384: 6.626877e-05
+Size 32768: 7.345110e-05
+Size 65536: 7.581582e-05
+Size 131072: 8.638684e-05
+Size 262144: 1.054199e-04
+Size 524288: 1.389352e-04
+Size 1048576: 2.115091e-04
+Size 2097152: 3.563729e-04
+Size 4194304: 6.473191e-04
+Size 8388608: 1.219086e-03
+Size 16777216: 2.372633e-03
+Size 33554432: 4.656045e-03
+Size 67108864: 9.132382e-03
+Size 134217728: 1.787770e-02
+Size 268435456: 3.519913e-02
+Size 536870912: 6.990200e-02
+
+Running multi-proc GPU-Aware benchmarks
+Off-Node Multiple Processes Per GPU:
+Active Procs: 1
+Size 1: 8.935968e-06
+Size 2: 8.961609e-06
+Size 4: 9.011666e-06
+Size 8: 9.009848e-06
+Size 16: 9.020801e-06
+Size 32: 8.990440e-06
+Size 64: 8.433613e-06
+Size 128: 9.203341e-06
+Size 256: 1.103822e-05
+Size 512: 1.113041e-05
+Size 1024: 1.129904e-05
+Size 2048: 1.158702e-05
+Size 4096: 1.208438e-05
+Size 8192: 1.522859e-05
+Size 16384: 1.722868e-05
+Size 32768: 2.526820e-05
+Size 65536: 2.786060e-05
+Size 131072: 3.340741e-05
+Size 262144: 4.439223e-05
+Size 524288: 6.622385e-05
+Size 1048576: 1.095303e-04
+Size 2097152: 1.960362e-04
+Size 4194304: 3.693221e-04
+Size 8388608: 7.168040e-04
+Size 16777216: 1.419902e-03
+Size 33554432: 2.826658e-03
+Size 67108864: 5.632295e-03
+Size 134217728: 1.124281e-02
+Size 268435456: 2.246653e-02
+Size 536870912: 4.491886e-02
+
+Active Procs: 2
+Size 1: 1.046317e-05
+Size 2: 1.046530e-05
+Size 4: 1.051508e-05
+Size 8: 1.053960e-05
+Size 16: 1.053455e-05
+Size 32: 1.050838e-05
+Size 64: 1.005670e-05
+Size 128: 1.070030e-05
+Size 256: 1.307027e-05
+Size 512: 1.314542e-05
+Size 1024: 1.339469e-05
+Size 2048: 1.367483e-05
+Size 4096: 1.414602e-05
+Size 8192: 1.602336e-05
+Size 16384: 1.786987e-05
+Size 32768: 2.797725e-05
+Size 65536: 3.121050e-05
+Size 131072: 3.767494e-05
+Size 262144: 5.068826e-05
+Size 524288: 7.321475e-05
+Size 1048576: 1.180820e-04
+Size 2097152: 2.083480e-04
+Size 4194304: 3.867917e-04
+Size 8388608: 7.465037e-04
+Size 16777216: 1.465916e-03
+Size 33554432: 2.905863e-03
+Size 67108864: 5.790498e-03
+Size 134217728: 1.158732e-02
+Size 268435456: 2.327319e-02
+Size 536870912: 4.704412e-02
+
+Active Procs: 4
+Size 1: 1.075001e-05
+Size 2: 1.074096e-05
+Size 4: 1.077995e-05
+Size 8: 1.077953e-05
+Size 16: 1.078612e-05
+Size 32: 1.078294e-05
+Size 64: 1.034055e-05
+Size 128: 1.093125e-05
+Size 256: 1.345167e-05
+Size 512: 1.350101e-05
+Size 1024: 1.374262e-05
+Size 2048: 1.407036e-05
+Size 4096: 1.460921e-05
+Size 8192: 1.691306e-05
+Size 16384: 1.886474e-05
+Size 32768: 2.905042e-05
+Size 65536: 3.275895e-05
+Size 131072: 4.127575e-05
+Size 262144: 5.620922e-05
+Size 524288: 9.027280e-05
+Size 1048576: 1.798376e-04
+Size 2097152: 3.594902e-04
+Size 4194304: 7.191949e-04
+Size 8388608: 1.440141e-03
+Size 16777216: 2.881037e-03
+Size 33554432: 5.764781e-03
+Size 67108864: 1.153835e-02
+Size 134217728: 2.312493e-02
+Size 268435456: 4.649124e-02
+Size 536870912: 9.415566e-02
+
+Active Procs: 8
+Size 1: 1.124608e-05
+Size 2: 1.123980e-05
+Size 4: 1.126854e-05
+Size 8: 1.126980e-05
+Size 16: 1.127441e-05
+Size 32: 1.125634e-05
+Size 64: 1.081402e-05
+Size 128: 1.134572e-05
+Size 256: 1.412773e-05
+Size 512: 1.420248e-05
+Size 1024: 1.441729e-05
+Size 2048: 1.477362e-05
+Size 4096: 1.546958e-05
+Size 8192: 3.386153e-05
+Size 16384: 3.065335e-05
+Size 32768: 3.105053e-05
+Size 65536: 3.621504e-05
+Size 131072: 4.708613e-05
+Size 262144: 9.048616e-05
+Size 524288: 1.800834e-04
+Size 1048576: 3.596394e-04
+Size 2097152: 7.188444e-04
+Size 4194304: 1.439444e-03
+Size 8388608: 2.879351e-03
+Size 16777216: 5.765985e-03
+Size 33554432: 1.152868e-02
+Size 67108864: 2.306083e-02
+Size 134217728: 4.624294e-02
+Size 268435456: 9.296864e-02
+Size 536870912: 1.875702e-01
+
+Active Procs: 16
+Size 1: 1.219424e-05
+Size 2: 1.221604e-05
+Size 4: 1.224428e-05
+Size 8: 1.223377e-05
+Size 16: 1.225687e-05
+Size 32: 1.224470e-05
+Size 64: 1.173886e-05
+Size 128: 1.214130e-05
+Size 256: 1.513139e-05
+Size 512: 1.521054e-05
+Size 1024: 1.542948e-05
+Size 2048: 1.587219e-05
+Size 4096: 1.674721e-05
+Size 8192: 7.477339e-05
+Size 16384: 5.847284e-05
+Size 32768: 3.495701e-05
+Size 65536: 4.588137e-05
+Size 131072: 9.062059e-05
+Size 262144: 1.804825e-04
+Size 524288: 3.600264e-04
+Size 1048576: 7.193969e-04
+Size 2097152: 1.437776e-03
+Size 4194304: 2.879282e-03
+Size 8388608: 5.763429e-03
+Size 16777216: 1.152995e-02
+Size 33554432: 2.304859e-02
+Size 67108864: 4.613331e-02
+Size 134217728: 9.250753e-02
+Size 268435456: 1.857320e-01
+Size 536870912: 3.751521e-01
+
+Off-Node Multiple Processes Per GPU (all GPUs active per node):
+Active Procs: 1
+Size 1: 1.019383e-05
+Size 2: 1.018832e-05
+Size 4: 1.025612e-05
+Size 8: 1.027242e-05
+Size 16: 1.025903e-05
+Size 32: 1.022296e-05
+Size 64: 9.522086e-06
+Size 128: 1.032959e-05
+Size 256: 1.286115e-05
+Size 512: 1.293325e-05
+Size 1024: 1.315298e-05
+Size 2048: 1.342877e-05
+Size 4096: 1.391810e-05
+Size 8192: 4.539408e-05
+Size 16384: 4.517270e-05
+Size 32768: 2.778864e-05
+Size 65536: 3.042016e-05
+Size 131072: 3.600862e-05
+Size 262144: 4.703882e-05
+Size 524288: 6.915937e-05
+Size 1048576: 1.121733e-04
+Size 2097152: 1.991337e-04
+Size 4194304: 3.721302e-04
+Size 8388608: 7.188936e-04
+Size 16777216: 1.423540e-03
+Size 33554432: 2.835512e-03
+Size 67108864: 5.640804e-03
+Size 134217728: 1.125524e-02
+Size 268435456: 2.249111e-02
+Size 536870912: 4.495816e-02
+
+Active Procs: 2
+Size 1: 1.059800e-05
+Size 2: 1.058134e-05
+Size 4: 1.061521e-05
+Size 8: 1.061313e-05
+Size 16: 1.062236e-05
+Size 32: 1.059610e-05
+Size 64: 1.008129e-05
+Size 128: 1.075381e-05
+Size 256: 1.319899e-05
+Size 512: 1.327258e-05
+Size 1024: 1.349711e-05
+Size 2048: 1.380580e-05
+Size 4096: 1.429418e-05
+Size 8192: 4.296166e-05
+Size 16384: 4.220120e-05
+Size 32768: 2.826798e-05
+Size 65536: 3.138151e-05
+Size 131072: 3.773499e-05
+Size 262144: 5.023540e-05
+Size 524288: 7.266051e-05
+Size 1048576: 1.191944e-04
+Size 2097152: 2.083694e-04
+Size 4194304: 3.876381e-04
+Size 8388608: 7.474278e-04
+Size 16777216: 1.466342e-03
+Size 33554432: 2.925238e-03
+Size 67108864: 5.802760e-03
+Size 134217728: 1.159604e-02
+Size 268435456: 2.329937e-02
+Size 536870912: 4.705685e-02
+
+Active Procs: 4
+Size 1: 1.084109e-05
+Size 2: 1.083012e-05
+Size 4: 1.086666e-05
+Size 8: 1.087285e-05
+Size 16: 1.087163e-05
+Size 32: 1.084315e-05
+Size 64: 1.034087e-05
+Size 128: 1.098780e-05
+Size 256: 1.353739e-05
+Size 512: 1.360834e-05
+Size 1024: 1.385376e-05
+Size 2048: 1.411485e-05
+Size 4096: 1.468518e-05
+Size 8192: 4.504313e-05
+Size 16384: 4.395520e-05
+Size 32768: 2.916407e-05
+Size 65536: 3.285182e-05
+Size 131072: 4.079748e-05
+Size 262144: 5.604638e-05
+Size 524288: 9.032662e-05
+Size 1048576: 1.798336e-04
+Size 2097152: 3.595154e-04
+Size 4194304: 7.195608e-04
+Size 8388608: 1.443240e-03
+Size 16777216: 2.884106e-03
+Size 33554432: 5.767546e-03
+Size 67108864: 1.153725e-02
+Size 134217728: 2.312991e-02
+Size 268435456: 4.650387e-02
+Size 536870912: 9.416885e-02
+
+Active Procs: 8
+Size 1: 1.124058e-05
+Size 2: 1.125421e-05
+Size 4: 1.126685e-05
+Size 8: 1.126801e-05
+Size 16: 1.129456e-05
+Size 32: 1.126315e-05
+Size 64: 1.082414e-05
+Size 128: 1.134280e-05
+Size 256: 1.412216e-05
+Size 512: 1.420571e-05
+Size 1024: 1.445099e-05
+Size 2048: 1.477316e-05
+Size 4096: 1.550725e-05
+Size 8192: 1.492118e-04
+Size 16384: 1.368509e-04
+Size 32768: 3.111379e-05
+Size 65536: 3.639527e-05
+Size 131072: 4.712887e-05
+Size 262144: 9.049137e-05
+Size 524288: 1.800831e-04
+Size 1048576: 3.596641e-04
+Size 2097152: 7.190271e-04
+Size 4194304: 1.439814e-03
+Size 8388608: 2.886239e-03
+Size 16777216: 5.783586e-03
+Size 33554432: 1.153326e-02
+Size 67108864: 2.307880e-02
+Size 134217728: 4.624303e-02
+Size 268435456: 9.308020e-02
+Size 536870912: 1.885414e-01
+
+Active Procs: 16
+Size 1: 1.224323e-05
+Size 2: 1.224898e-05
+Size 4: 1.225627e-05
+Size 8: 1.227315e-05
+Size 16: 1.227981e-05
+Size 32: 1.226355e-05
+Size 64: 1.177033e-05
+Size 128: 1.217167e-05
+Size 256: 1.513031e-05
+Size 512: 1.521823e-05
+Size 1024: 1.542231e-05
+Size 2048: 1.588870e-05
+Size 4096: 1.676901e-05
+Size 8192: 2.697511e-04
+Size 16384: 2.553084e-04
+Size 32768: 3.533846e-05
+Size 65536: 4.597526e-05
+Size 131072: 9.065222e-05
+Size 262144: 1.805053e-04
+Size 524288: 3.600652e-04
+Size 1048576: 7.194688e-04
+Size 2097152: 1.438864e-03
+Size 4194304: 2.881928e-03
+Size 8388608: 5.772331e-03
+Size 16777216: 1.152106e-02
+Size 33554432: 2.305569e-02
+Size 67108864: 4.615747e-02
+Size 134217728: 9.252253e-02
+Size 268435456: 1.858804e-01
+Size 536870912: 3.755616e-01
+
+Running multi-proc Copy-to-CPU benchmarks
+Off-Node Multiple Processes Per GPU:
+Active Procs: 1
+Size 1: 5.349185e-05
+Size 2: 5.345357e-05
+Size 4: 5.360147e-05
+Size 8: 5.359419e-05
+Size 16: 5.360962e-05
+Size 32: 5.359466e-05
+Size 64: 5.328232e-05
+Size 128: 5.446260e-05
+Size 256: 5.399461e-05
+Size 512: 5.427529e-05
+Size 1024: 5.521279e-05
+Size 2048: 5.689516e-05
+Size 4096: 5.826221e-05
+Size 8192: 5.957842e-05
+Size 16384: 6.503283e-05
+Size 32768: 7.112848e-05
+Size 65536: 7.557437e-05
+Size 131072: 8.439690e-05
+Size 262144: 1.020805e-04
+Size 524288: 1.381954e-04
+Size 1048576: 2.109904e-04
+Size 2097152: 3.557775e-04
+Size 4194304: 6.450165e-04
+Size 8388608: 1.221202e-03
+Size 16777216: 2.372948e-03
+Size 33554432: 4.646390e-03
+Size 67108864: 9.111233e-03
+Size 134217728: 1.783713e-02
+Size 268435456: 3.516653e-02
+Size 536870912: 6.985900e-02
+
+Active Procs: 2
+Size 1: 5.462211e-05
+Size 2: 5.338429e-05
+Size 4: 5.335358e-05
+Size 8: 5.480089e-05
+Size 16: 5.339497e-05
+Size 32: 5.337032e-05
+Size 64: 5.313127e-05
+Size 128: 5.433221e-05
+Size 256: 5.386116e-05
+Size 512: 5.439300e-05
+Size 1024: 5.531453e-05
+Size 2048: 5.675472e-05
+Size 4096: 5.814990e-05
+Size 8192: 5.933297e-05
+Size 16384: 6.507701e-05
+Size 32768: 7.136977e-05
+Size 65536: 7.618438e-05
+Size 131072: 8.578781e-05
+Size 262144: 1.046139e-04
+Size 524288: 1.461528e-04
+Size 1048576: 2.275024e-04
+Size 2097152: 3.813178e-04
+Size 4194304: 7.036319e-04
+Size 8388608: 1.310378e-03
+Size 16777216: 2.531030e-03
+Size 33554432: 4.932116e-03
+Size 67108864: 9.531086e-03
+Size 134217728: 1.845430e-02
+Size 268435456: 3.655266e-02
+Size 536870912: 7.313125e-02
+
+Active Procs: 4
+Size 1: 5.338204e-05
+Size 2: 5.330865e-05
+Size 4: 5.332807e-05
+Size 8: 5.338051e-05
+Size 16: 5.424970e-05
+Size 32: 5.482667e-05
+Size 64: 5.431632e-05
+Size 128: 5.470366e-05
+Size 256: 5.464138e-05
+Size 512: 5.508265e-05
+Size 1024: 5.542212e-05
+Size 2048: 5.758149e-05
+Size 4096: 5.952595e-05
+Size 8192: 6.049154e-05
+Size 16384: 6.701177e-05
+Size 32768: 7.204016e-05
+Size 65536: 7.690369e-05
+Size 131072: 8.991608e-05
+Size 262144: 1.093765e-04
+Size 524288: 1.586198e-04
+Size 1048576: 2.410618e-04
+Size 2097152: 4.089848e-04
+Size 4194304: 7.995531e-04
+Size 8388608: 1.549937e-03
+Size 16777216: 3.047273e-03
+Size 33554432: 6.042849e-03
+Size 67108864: 1.214966e-02
+Size 134217728: 2.689449e-02
+Size 268435456: 5.393289e-02
+Size 536870912: 1.069335e-01
+
+Active Procs: 8
+Size 1: 3.228902e-04
+Size 2: 3.227604e-04
+Size 4: 3.229028e-04
+Size 8: 3.230619e-04
+Size 16: 3.229828e-04
+Size 32: 3.230355e-04
+Size 64: 3.229721e-04
+Size 128: 3.238168e-04
+Size 256: 3.236059e-04
+Size 512: 3.239820e-04
+Size 1024: 3.245052e-04
+Size 2048: 3.260054e-04
+Size 4096: 3.271233e-04
+Size 8192: 3.281512e-04
+Size 16384: 3.339520e-04
+Size 32768: 7.316753e-05
+Size 65536: 7.921547e-05
+Size 131072: 9.283950e-05
+Size 262144: 1.153041e-04
+Size 524288: 1.852854e-04
+Size 1048576: 3.633853e-04
+Size 2097152: 7.476222e-04
+Size 4194304: 1.524542e-03
+Size 8388608: 3.016847e-03
+Size 16777216: 6.122616e-03
+Size 33554432: 1.217499e-02
+Size 67108864: 2.454626e-02
+Size 134217728: 5.075801e-02
+Size 268435456: 1.072250e-01
+Size 536870912: 2.211015e-01
+
+Active Procs: 16
+Size 1: 5.540121e-04
+Size 2: 5.548637e-04
+Size 4: 5.539355e-04
+Size 8: 5.544846e-04
+Size 16: 5.546902e-04
+Size 32: 5.537179e-04
+Size 64: 5.538182e-04
+Size 128: 5.540525e-04
+Size 256: 5.541840e-04
+Size 512: 5.544843e-04
+Size 1024: 5.546454e-04
+Size 2048: 5.545065e-04
+Size 4096: 5.555912e-04
+Size 8192: 5.560306e-04
+Size 16384: 5.602942e-04
+Size 32768: 7.772670e-05
+Size 65536: 8.590569e-05
+Size 131072: 1.023358e-04
+Size 262144: 1.808233e-04
+Size 524288: 3.842881e-04
+Size 1048576: 7.686068e-04
+Size 2097152: 1.555093e-03
+Size 4194304: 3.130857e-03
+Size 8388608: 6.214785e-03
+Size 16777216: 1.271030e-02
+Size 33554432: 2.469155e-02
+Size 67108864: 5.025719e-02
+Size 134217728: 1.017219e-01
+Size 268435456: 2.031615e-01
+Size 536870912: 4.150803e-01
+
+Off-Node Multiple Processes Per GPU (all GPUs active per node):
+Active Procs: 1
+Size 1: 5.531152e-04
+Size 2: 5.529242e-04
+Size 4: 5.530823e-04
+Size 8: 5.530567e-04
+Size 16: 5.530433e-04
+Size 32: 5.530837e-04
+Size 64: 5.532430e-04
+Size 128: 5.532907e-04
+Size 256: 5.533045e-04
+Size 512: 5.535371e-04
+Size 1024: 5.537625e-04
+Size 2048: 5.535121e-04
+Size 4096: 5.548446e-04
+Size 8192: 5.554102e-04
+Size 16384: 5.594553e-04
+Size 32768: 7.406444e-05
+Size 65536: 8.200220e-05
+Size 131072: 9.042694e-05
+Size 262144: 1.124969e-04
+Size 524288: 1.650711e-04
+Size 1048576: 2.555237e-04
+Size 2097152: 4.251333e-04
+Size 4194304: 7.737930e-04
+Size 8388608: 1.407367e-03
+Size 16777216: 2.638052e-03
+Size 33554432: 5.110819e-03
+Size 67108864: 1.022160e-02
+Size 134217728: 2.263306e-02
+Size 268435456: 4.638865e-02
+Size 536870912: 9.687705e-02
+
+Active Procs: 2
+Size 1: 5.533796e-04
+Size 2: 5.535624e-04
+Size 4: 5.534787e-04
+Size 8: 5.534469e-04
+Size 16: 5.536383e-04
+Size 32: 5.534295e-04
+Size 64: 5.532151e-04
+Size 128: 5.534538e-04
+Size 256: 5.535676e-04
+Size 512: 5.536041e-04
+Size 1024: 5.536225e-04
+Size 2048: 5.536198e-04
+Size 4096: 5.540509e-04
+Size 8192: 5.547712e-04
+Size 16384: 5.587737e-04
+Size 32768: 7.372091e-05
+Size 65536: 7.937697e-05
+Size 131072: 9.097782e-05
+Size 262144: 1.184670e-04
+Size 524288: 1.788755e-04
+Size 1048576: 2.824840e-04
+Size 2097152: 4.918920e-04
+Size 4194304: 8.887272e-04
+Size 8388608: 1.595899e-03
+Size 16777216: 2.998225e-03
+Size 33554432: 5.837011e-03
+Size 67108864: 1.240503e-02
+Size 134217728: 2.455038e-02
+Size 268435456: 5.012551e-02
+Size 536870912: 1.068344e-01
+
+Active Procs: 4
+Size 1: 5.530314e-04
+Size 2: 5.529783e-04
+Size 4: 5.532295e-04
+Size 8: 5.534462e-04
+Size 16: 5.538898e-04
+Size 32: 5.536860e-04
+Size 64: 5.536273e-04
+Size 128: 5.533610e-04
+Size 256: 5.539487e-04
+Size 512: 5.534762e-04
+Size 1024: 5.539570e-04
+Size 2048: 5.543857e-04
+Size 4096: 5.541078e-04
+Size 8192: 5.554470e-04
+Size 16384: 5.589923e-04
+Size 32768: 7.423771e-05
+Size 65536: 8.312984e-05
+Size 131072: 9.513185e-05
+Size 262144: 1.239627e-04
+Size 524288: 1.892672e-04
+Size 1048576: 3.093810e-04
+Size 2097152: 5.481131e-04
+Size 4194304: 1.013843e-03
+Size 8388608: 1.965397e-03
+Size 16777216: 3.817934e-03
+Size 33554432: 7.873621e-03
+Size 67108864: 1.600191e-02
+Size 134217728: 3.429043e-02
+Size 268435456: 7.116339e-02
+Size 536870912: 1.489551e-01
+
+Active Procs: 8
+Size 1: 1.104953e-03
+Size 2: 1.106475e-03
+Size 4: 1.105900e-03
+Size 8: 1.105068e-03
+Size 16: 1.104901e-03
+Size 32: 1.103965e-03
+Size 64: 1.105224e-03
+Size 128: 1.104500e-03
+Size 256: 1.103690e-03
+Size 512: 1.103844e-03
+Size 1024: 1.107429e-03
+Size 2048: 1.104240e-03
+Size 4096: 1.104853e-03
+Size 8192: 1.105944e-03
+Size 16384: 1.117889e-03
+Size 32768: 8.142779e-05
+Size 65536: 8.737814e-05
+Size 131072: 1.041954e-04
+Size 262144: 1.466285e-04
+Size 524288: 2.449757e-04
+Size 1048576: 4.734848e-04
+Size 2097152: 9.567514e-04
+Size 4194304: 1.886144e-03
+Size 8388608: 3.813481e-03
+Size 16777216: 7.632615e-03
+Size 33554432: 1.560574e-02
+Size 67108864: 3.207795e-02
+Size 134217728: 6.771921e-02
+Size 268435456: 1.401967e-01
+Size 536870912: 3.173126e-01
+
+Active Procs: 16
+Size 1: 2.205668e-03
+Size 2: 2.214258e-03
+Size 4: 2.205188e-03
+Size 8: 2.211617e-03
+Size 16: 2.217700e-03
+Size 32: 2.205888e-03
+Size 64: 2.205937e-03
+Size 128: 2.205928e-03
+Size 256: 2.207999e-03
+Size 512: 2.207291e-03
+Size 1024: 2.206991e-03
+Size 2048: 2.207542e-03
+Size 4096: 2.208498e-03
+Size 8192: 2.211144e-03
+Size 16384: 2.227307e-03
+Size 32768: 8.723623e-05
+Size 65536: 9.756475e-05
+Size 131072: 1.322054e-04
+Size 262144: 2.294705e-04
+Size 524288: 4.833664e-04
+Size 1048576: 9.888426e-04
+Size 2097152: 2.018832e-03
+Size 4194304: 4.020839e-03
+Size 8388608: 8.054035e-03
+Size 16777216: 1.600159e-02
+Size 33554432: 3.282558e-02
+Size 67108864: 6.975458e-02
+Size 134217728: 1.459469e-01
+Size 268435456: 2.945003e-01
+Size 536870912: 6.074997e-01
+
+
+MPICH Slingshot Network Summary: 0 network timeouts
+
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries
+[CRAYBLAS_WARNING] Application linked against multiple cray-libsci libraries

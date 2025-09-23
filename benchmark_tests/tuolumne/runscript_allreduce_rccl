@@ -1,0 +1,51 @@
+#!/bin/sh
+#Submit using flux batch <filename>
+
+#flux: --job-name=rccl_ipc_n16
+#flux: --output='test_rccl_ipc_n16.{{id}}.out'
+#flux: --error='test_rccl_ipc_n16.{{id}}.err'
+#flux: -N 4
+#flux: -l # Add task rank prefixes to each line of output.
+#flux: --setattr=thp=always # Enable Transparent Huge Pages (THP)
+#flux: -t 30
+#flux: -q pbatch # other available queues: pdebug
+
+module load rocmcc/6.4.0-magic
+module load cce/19.0.0
+module load cray-mpich/9.0.1
+
+export MPICH_GPU_SUPPORT_ENABLED=1
+export HSA_XNACK=1
+
+export ROCM_PATH=/usr/tce/packages/rocmcc/rocmcc-6.4.0-magic/
+export MPICH_DIR=/usr/tce/packages/cray-mpich/cray-mpich-9.0.1-rocmcc-6.4.0-magic/
+
+MPI_INSTALL_DIR=${MPICH_DIR}
+RCCL_INSTALL_DIR=${ROCM_PATH}
+WORKDIR=${PWD}
+LIBFABRIC_DIR=/opt/cray/libfabric/2.1/lib64
+AWS_OFI_DIR=/g/g14/bienz1/locality_aware_cleanup/benchmark_tests/tuolumne/aws-ofi-rccl/install/lib/
+
+export PATH=${MPI_INSTALL_DIR}/bin:${ROCM_PATH}/bin:$PATH
+export LD_LIBRARY_PATH=${LIBFABRIC_DIR}:${AWS_OFI_DIR}:${RCCL_INSTALL_DIR}/lib:${MPI_INSTALL_DIR}/lib:$CRAY_LD_LIBRARY_PATH:$LD_LIBRARY_PATH
+
+# RCCL settings
+export NCCL_DEBUG=VERSION
+export NCCL_NET_PLUGIN=${AWS_OFI_DIR}/librccl-net.so
+
+# Check if THP are enabled
+#cat /sys/kernel/mm/transparent_hugepage/enabled
+
+cd $HOME/MPICCL/build/benchmarks
+
+n_nodes=4
+gpus_per_node=4
+max_cores=24
+
+for ppg in 1 2 4 8; do
+  n_procs=$(( ppg * gpus_per_node * n_nodes ))
+  n_cores=$(( max_cores / ppg ))
+  echo "${ppg} Processes Per GPU, ${gpus_per_node} GPUs Per Node"
+  flux run -N${n_nodes} -n${n_procs} -c${n_cores} --verbose --exclusive\
+       --setopt=mpibind=verbose:2 ./allreduce
+done

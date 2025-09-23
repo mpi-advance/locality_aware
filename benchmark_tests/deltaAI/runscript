@@ -1,0 +1,21 @@
+#!/bin/bash
+#SBATCH --nodes=2
+#SBATCH --ntasks-per-node=256
+#SBATCH --cpus-per-task=1
+#SBATCH --partition=ghx4
+#SBATCH --time=00:45:00
+#SBATCH --job-name gpu_microbenchmarks
+#SBATCH --output gpu_microbenchmarks.%j.out
+#SBATCH --error gpu_microbenchmarks.%j.err
+#SBATCH --account=bdys-dtai-gh
+#SBATCH --gpus-per-node=4
+#SBATCH --exclusive
+
+module load craype-accel-nvidia90
+module unload gcc-native
+module load gcc-native/12
+export MPICH_GPU_SUPPORT_ENABLED=1
+
+cd $HOME/locality_aware_cleanup/build/benchmarks
+
+srun -n 128 -N 2 ./gpu_microbenchmarks
