@@ -74,6 +74,10 @@ endif()
 
 message(STATUS "Compiling all files as: ${locality_aware_LANG}")
 
+if (ENABLE_UNIT_TESTS)
+    enable_testing()
+endif()
+
 add_subdirectory(src)
 
 set_source_files_properties(
