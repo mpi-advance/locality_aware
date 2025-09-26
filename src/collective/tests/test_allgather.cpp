@@ -13,7 +13,7 @@ void compare_allgather_results(int* pmpi, int* mpix, int s, int rank)
     {
         if (pmpi[i] != mpix[i])
         {
-            fprintf(stderr, "Rank: %d, size: %d, MPIX Allgather != pmpi, pmpi: %d, mpix: %d\n", rank, s, pmpi[i], mpix[i]);
+            fprintf(stderr, "Rank: %d, size: %d, index: %d MPIX Allgather != pmpi, pmpi: %d, mpix: %d\n", rank, s, i, pmpi[i], mpix[i]);
             MPI_Abort(MPI_COMM_WORLD, -1);
         }
     }
@@ -36,8 +36,8 @@ int main(int argc, char** argv)
     MPIX_Comm *locality_comm;
     MPIX_Comm_init(&locality_comm, MPI_COMM_WORLD);
     MPIX_Comm_topo_init(locality_comm);
-    // update_locality(locality_comm, 4);
-    for (int i = 0; i < max_i; i++)
+    MPIX_Comm_leader_init(locality_comm, 4);
+    for (int i = 0; i < 6; i++)
     {
         int s = pow(2, i);
         if (rank == 0)
@@ -56,13 +56,24 @@ int main(int argc, char** argv)
         allgather_multileader(local_data.data(), s, MPI_INT, mpix_allgather, s, MPI_INT, *locality_comm);
         compare_allgather_results(pmpi_allgather, mpix_allgather, s * num_procs, rank);
 
+        if (rank == 0)
+            printf("allgather hierarchical\n");
         allgather_hierarchical(local_data.data(), s, MPI_INT, mpix_allgather, s, MPI_INT, *locality_comm);
         compare_allgather_results(pmpi_allgather, mpix_allgather, s * num_procs, rank);
 
+        if (rank == 0)
+            printf("allgather locality aware\n");
         allgather_locality_aware(local_data.data(), s, MPI_INT, mpix_allgather, s, MPI_INT, *locality_comm);
         compare_allgather_results(pmpi_allgather, mpix_allgather, s * num_procs, rank);
 
+        if (rank == 0)
+            printf("allgather node aware\n");
         allgather_node_aware(local_data.data(), s, MPI_INT, mpix_allgather, s, MPI_INT, *locality_comm);
+        compare_allgather_results(pmpi_allgather, mpix_allgather, s * num_procs, rank);
+
+        if (rank == 0)
+            printf("allgather multileader locality aware\n");
+        allgather_multileader_locality_aware(local_data.data(), s, MPI_INT, mpix_allgather, s, MPI_INT, *locality_comm);
         compare_allgather_results(pmpi_allgather, mpix_allgather, s * num_procs, rank);
 
         free(pmpi_allgather);
