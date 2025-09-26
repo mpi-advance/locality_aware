@@ -430,6 +430,23 @@ plt.add_labels("Message Size Per GPU (Bytes)", "Time (Seconds)")
 plt.set_scale('log', 'log')
 plt.save_plot("gpu_multi_allgpusactive_pergpu.pdf")
 
+# Speedup at max size and max PPG
+max_ppg = max(map(lambda x: gpu_multi_all[x].active_procs, range(len(gpu_multi_all))))
+one_ppg_sizes = None
+one_ppg_times = None
+max_ppg_sizes = None
+max_ppg_times = None
+for i in range(len(gpu_multi_all)):
+    if gpu_multi_all[i].active_procs == 1:
+        one_ppg_sizes = [s*gpu_multi_all[i].active_procs for s in gpu_multi_all[i].sizes]
+        one_ppg_times = gpu_multi_all[i].times
+    elif gpu_multi_all[i].active_procs == max_ppg:
+        max_ppg_sizes = [s*gpu_multi_all[i].active_procs for s in gpu_multi_all[i].sizes]
+        max_ppg_times = gpu_multi_all[i].times
+intersect = set(one_ppg_sizes).intersection(max_ppg_sizes)
+max_size = max(intersect)
+print("gpu_multi_allgpusactive_pergpu: speedup at " + str(max_size) + ": " + str(one_ppg_times[one_ppg_sizes.index(max_size)] / max_ppg_times[max_ppg_sizes.index(max_size)]))
+
 # Multiple Processes Per GPU
 plt.add_luke_options()
 for i in range(len(gpu_multi_all)):
@@ -744,6 +761,22 @@ plt.add_anchored_legend(ncol=3)
 plt.add_labels("Message Size (Bytes)", "Time (Seconds)")
 plt.set_scale('log', 'log')
 plt.save_plot("allreduce_ppg.pdf")
+
+# Speedup at max size
+one_ppg_sizes = allreduce_1ppg[-1].sizes
+one_ppg_times = allreduce_1ppg[-1].times
+max_ppg_sizes = allreduce_2ppg[-1].sizes
+max_ppg_times = allreduce_2ppg[-1].times
+intersect = set(one_ppg_sizes).intersection(max_ppg_sizes)
+max_size = max(intersect)
+print("allreduce_ppg 2 ppg: speedup at " + str(max_size) + ": " + str(one_ppg_times[one_ppg_sizes.index(max_size)] / max_ppg_times[max_ppg_sizes.index(max_size)]))
+one_ppg_sizes = allreduce_1ppg[-1].sizes
+one_ppg_times = allreduce_1ppg[-1].times
+max_ppg_sizes = allreduce_4ppg[-1].sizes
+max_ppg_times = allreduce_4ppg[-1].times
+intersect = set(one_ppg_sizes).intersection(max_ppg_sizes)
+max_size = max(intersect)
+print("allreduce_ppg 4 ppg: speedup at " + str(max_size) + ": " + str(one_ppg_times[one_ppg_sizes.index(max_size)] / max_ppg_times[max_ppg_sizes.index(max_size)]))
 
 # Standard Allreduce Times
 plt.add_luke_options()
