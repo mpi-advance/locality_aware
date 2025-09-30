@@ -79,7 +79,7 @@ void print_allreduces(int max_p,
 
     int my_node, n_nodes;
     MPI_Comm_rank(comm->group_comm, &my_node);
-    MPI_Comm_size(comm->local_comm, &n_nodes);
+    MPI_Comm_size(comm->group_comm, &n_nodes);
 
     int max_s = 1 << max_p;
 
@@ -103,7 +103,7 @@ void print_allreduces(int max_p,
             printf("PMPI: %e\n", time);
         
         // Hierarchical timings
-        // 1. Full hierarchical pairwise allreduce
+        // 1. Full hierarchical allreduce
         time = test_collective(allreduce_hierarchical, true, sendbuf, recvbuf, s, datatype, op, *comm);
         if (rank == 0)
             printf("Hierarchical Allreduce: %e\n", time);
