@@ -1,0 +1,55 @@
+\doxysection{src/neighborhood/tests/neighbor\+\_\+data.hpp File Reference}
+\hypertarget{neighbor__data_8hpp}{}\label{neighbor__data_8hpp}\index{src/neighborhood/tests/neighbor\_data.hpp@{src/neighborhood/tests/neighbor\_data.hpp}}
+This graph shows which files directly or indirectly include this file\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{neighbor__data_8hpp__dep__incl}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structMPIL__Data}{MPIL\+\_\+\+Data$<$ U $>$}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$typename U $>$ }\\void \mbox{\hyperlink{neighbor__data_8hpp_a3ce8b0f89f0b37307f313514a9a41467}{form\+\_\+initial\+\_\+communicator}} (int local\+\_\+size, \mbox{\hyperlink{structMPIL__Data}{MPIL\+\_\+\+Data}}$<$ U $>$ \texorpdfstring{$\ast$}{*}send\+\_\+data, \mbox{\hyperlink{structMPIL__Data}{MPIL\+\_\+\+Data}}$<$ U $>$ \texorpdfstring{$\ast$}{*}recv\+\_\+data)
+\item 
+{\footnotesize template$<$typename U $>$ }\\void \mbox{\hyperlink{neighbor__data_8hpp_ad91df375c33ebaf5260c47c63c5ddc16}{form\+\_\+global\+\_\+indices}} (int local\+\_\+size, \mbox{\hyperlink{structMPIL__Data}{MPIL\+\_\+\+Data}}$<$ U $>$ send\+\_\+data, \mbox{\hyperlink{structMPIL__Data}{MPIL\+\_\+\+Data}}$<$ U $>$ recv\+\_\+data, std\+::vector$<$ long $>$ \&global\+\_\+send\+\_\+idx, std\+::vector$<$ long $>$ \&global\+\_\+recv\+\_\+idx)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Function Documentation}
+\Hypertarget{neighbor__data_8hpp_ad91df375c33ebaf5260c47c63c5ddc16}\label{neighbor__data_8hpp_ad91df375c33ebaf5260c47c63c5ddc16} 
+\index{neighbor\_data.hpp@{neighbor\_data.hpp}!form\_global\_indices@{form\_global\_indices}}
+\index{form\_global\_indices@{form\_global\_indices}!neighbor\_data.hpp@{neighbor\_data.hpp}}
+\doxysubsubsection{\texorpdfstring{form\_global\_indices()}{form\_global\_indices()}}
+{\footnotesize\ttfamily template$<$typename U $>$ \\
+void form\+\_\+global\+\_\+indices (\begin{DoxyParamCaption}\item[{int}]{local\+\_\+size,  }\item[{\mbox{\hyperlink{structMPIL__Data}{MPIL\+\_\+\+Data}}$<$ U $>$}]{send\+\_\+data,  }\item[{\mbox{\hyperlink{structMPIL__Data}{MPIL\+\_\+\+Data}}$<$ U $>$}]{recv\+\_\+data,  }\item[{std\+::vector$<$ long $>$ \&}]{global\+\_\+send\+\_\+idx,  }\item[{std\+::vector$<$ long $>$ \&}]{global\+\_\+recv\+\_\+idx }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=272pt]{neighbor__data_8hpp_ad91df375c33ebaf5260c47c63c5ddc16_icgraph}
+\end{center}
+\end{figure}
+\Hypertarget{neighbor__data_8hpp_a3ce8b0f89f0b37307f313514a9a41467}\label{neighbor__data_8hpp_a3ce8b0f89f0b37307f313514a9a41467} 
+\index{neighbor\_data.hpp@{neighbor\_data.hpp}!form\_initial\_communicator@{form\_initial\_communicator}}
+\index{form\_initial\_communicator@{form\_initial\_communicator}!neighbor\_data.hpp@{neighbor\_data.hpp}}
+\doxysubsubsection{\texorpdfstring{form\_initial\_communicator()}{form\_initial\_communicator()}}
+{\footnotesize\ttfamily template$<$typename U $>$ \\
+void form\+\_\+initial\+\_\+communicator (\begin{DoxyParamCaption}\item[{int}]{local\+\_\+size,  }\item[{\mbox{\hyperlink{structMPIL__Data}{MPIL\+\_\+\+Data}}$<$ U $>$ \texorpdfstring{$\ast$}{*}}]{send\+\_\+data,  }\item[{\mbox{\hyperlink{structMPIL__Data}{MPIL\+\_\+\+Data}}$<$ U $>$ \texorpdfstring{$\ast$}{*}}]{recv\+\_\+data }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=306pt]{neighbor__data_8hpp_a3ce8b0f89f0b37307f313514a9a41467_icgraph}
+\end{center}
+\end{figure}

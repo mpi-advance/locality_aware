@@ -1,0 +1,66 @@
+\doxysection{src/neighborhood/dist\+\_\+topo.c File Reference}
+\hypertarget{dist__topo_8c}{}\label{dist__topo_8c}\index{src/neighborhood/dist\_topo.c@{src/neighborhood/dist\_topo.c}}
+{\ttfamily \#include "{}dist\+\_\+topo.\+h"{}}\newline
+{\ttfamily \#include $<$string.\+h$>$}\newline
+Include dependency graph for dist\+\_\+topo.\+c\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{dist__topo_8c__incl}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{dist__topo_8c_acb88d755d3ba3c1847b075fa8e82abda}{MPIL\+\_\+\+Topo\+\_\+init}} (int indegree, const int sources\mbox{[}$\,$\mbox{]}, const int sourceweights\mbox{[}$\,$\mbox{]}, int outdegree, const int destinations\mbox{[}$\,$\mbox{]}, const int destweights\mbox{[}$\,$\mbox{]}, \mbox{\hyperlink{utils_8h_a517855dd2a7e95505029c3c73dd0d902}{MPIL\+\_\+\+Info}} \texorpdfstring{$\ast$}{*}info, \mbox{\hyperlink{dist__topo_8h_ae79c58aef502f685237bd7d2034fa08f}{MPIL\+\_\+\+Topo}} \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}mpix\+\_\+topo\+\_\+ptr)
+\item 
+int \mbox{\hyperlink{dist__topo_8c_a134b3bae1fc0f418cb1f49fd1f2632d5}{MPIL\+\_\+\+Topo\+\_\+from\+\_\+neighbor\+\_\+comm}} (\mbox{\hyperlink{include_2communicator_2mpil__comm_8h_a4482dc156ccc9cab81c06f17bcfb8645}{MPIL\+\_\+\+Comm}} \texorpdfstring{$\ast$}{*}comm, \mbox{\hyperlink{dist__topo_8h_ae79c58aef502f685237bd7d2034fa08f}{MPIL\+\_\+\+Topo}} \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}mpix\+\_\+topo\+\_\+ptr)
+\item 
+int \mbox{\hyperlink{dist__topo_8c_a7e10dbef8aeeb3fe4fdac2f0eb410e63}{MPIL\+\_\+\+Topo\+\_\+free}} (\mbox{\hyperlink{dist__topo_8h_ae79c58aef502f685237bd7d2034fa08f}{MPIL\+\_\+\+Topo}} \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}mpix\+\_\+topo\+\_\+ptr)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Function Documentation}
+\Hypertarget{dist__topo_8c_a7e10dbef8aeeb3fe4fdac2f0eb410e63}\label{dist__topo_8c_a7e10dbef8aeeb3fe4fdac2f0eb410e63} 
+\index{dist\_topo.c@{dist\_topo.c}!MPIL\_Topo\_free@{MPIL\_Topo\_free}}
+\index{MPIL\_Topo\_free@{MPIL\_Topo\_free}!dist\_topo.c@{dist\_topo.c}}
+\doxysubsubsection{\texorpdfstring{MPIL\_Topo\_free()}{MPIL\_Topo\_free()}}
+{\footnotesize\ttfamily int MPIL\+\_\+\+Topo\+\_\+free (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{dist__topo_8h_ae79c58aef502f685237bd7d2034fa08f}{MPIL\+\_\+\+Topo}} \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{mpix\+\_\+topo\+\_\+ptr }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{dist__topo_8c_a7e10dbef8aeeb3fe4fdac2f0eb410e63_icgraph}
+\end{center}
+\end{figure}
+\Hypertarget{dist__topo_8c_a134b3bae1fc0f418cb1f49fd1f2632d5}\label{dist__topo_8c_a134b3bae1fc0f418cb1f49fd1f2632d5} 
+\index{dist\_topo.c@{dist\_topo.c}!MPIL\_Topo\_from\_neighbor\_comm@{MPIL\_Topo\_from\_neighbor\_comm}}
+\index{MPIL\_Topo\_from\_neighbor\_comm@{MPIL\_Topo\_from\_neighbor\_comm}!dist\_topo.c@{dist\_topo.c}}
+\doxysubsubsection{\texorpdfstring{MPIL\_Topo\_from\_neighbor\_comm()}{MPIL\_Topo\_from\_neighbor\_comm()}}
+{\footnotesize\ttfamily int MPIL\+\_\+\+Topo\+\_\+from\+\_\+neighbor\+\_\+comm (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{include_2communicator_2mpil__comm_8h_a4482dc156ccc9cab81c06f17bcfb8645}{MPIL\+\_\+\+Comm}} \texorpdfstring{$\ast$}{*}}]{comm,  }\item[{\mbox{\hyperlink{dist__topo_8h_ae79c58aef502f685237bd7d2034fa08f}{MPIL\+\_\+\+Topo}} \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{mpix\+\_\+topo\+\_\+ptr }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{dist__topo_8c_a134b3bae1fc0f418cb1f49fd1f2632d5_icgraph}
+\end{center}
+\end{figure}
+\Hypertarget{dist__topo_8c_acb88d755d3ba3c1847b075fa8e82abda}\label{dist__topo_8c_acb88d755d3ba3c1847b075fa8e82abda} 
+\index{dist\_topo.c@{dist\_topo.c}!MPIL\_Topo\_init@{MPIL\_Topo\_init}}
+\index{MPIL\_Topo\_init@{MPIL\_Topo\_init}!dist\_topo.c@{dist\_topo.c}}
+\doxysubsubsection{\texorpdfstring{MPIL\_Topo\_init()}{MPIL\_Topo\_init()}}
+{\footnotesize\ttfamily int MPIL\+\_\+\+Topo\+\_\+init (\begin{DoxyParamCaption}\item[{int}]{indegree,  }\item[{const int}]{sources\mbox{[}$\,$\mbox{]},  }\item[{const int}]{sourceweights\mbox{[}$\,$\mbox{]},  }\item[{int}]{outdegree,  }\item[{const int}]{destinations\mbox{[}$\,$\mbox{]},  }\item[{const int}]{destweights\mbox{[}$\,$\mbox{]},  }\item[{\mbox{\hyperlink{utils_8h_a517855dd2a7e95505029c3c73dd0d902}{MPIL\+\_\+\+Info}} \texorpdfstring{$\ast$}{*}}]{info,  }\item[{\mbox{\hyperlink{dist__topo_8h_ae79c58aef502f685237bd7d2034fa08f}{MPIL\+\_\+\+Topo}} \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{mpix\+\_\+topo\+\_\+ptr }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{dist__topo_8c_acb88d755d3ba3c1847b075fa8e82abda_icgraph}
+\end{center}
+\end{figure}

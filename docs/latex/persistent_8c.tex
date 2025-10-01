@@ -1,0 +1,105 @@
+\doxysection{src/persistent/persistent.c File Reference}
+\hypertarget{persistent_8c}{}\label{persistent_8c}\index{src/persistent/persistent.c@{src/persistent/persistent.c}}
+{\ttfamily \#include "{}persistent.\+h"{}}\newline
+Include dependency graph for persistent.\+c\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{persistent_8c__incl}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{persistent_8c_ade53293e995de4f100e7cf963dc24280}{init\+\_\+request}} (\mbox{\hyperlink{persistent_8h_a60055ce5143505da6e10c397274d40aa}{MPIL\+\_\+\+Request}} \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}request\+\_\+ptr)
+\item 
+void \mbox{\hyperlink{persistent_8c_a9e3ee53eede6934fb080f9dd7b4bf88f}{allocate\+\_\+requests}} (int n\+\_\+requests, MPI\+\_\+\+Request \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}request\+\_\+ptr)
+\item 
+int \mbox{\hyperlink{persistent_8c_ac402b7815a0e502583aa17622a8b38bb}{MPIL\+\_\+\+Start}} (\mbox{\hyperlink{persistent_8h_a60055ce5143505da6e10c397274d40aa}{MPIL\+\_\+\+Request}} \texorpdfstring{$\ast$}{*}request)
+\item 
+int \mbox{\hyperlink{persistent_8c_a5a8d2d5649953243bcd6237ed99dcdc7}{MPIL\+\_\+\+Wait}} (\mbox{\hyperlink{persistent_8h_a60055ce5143505da6e10c397274d40aa}{MPIL\+\_\+\+Request}} \texorpdfstring{$\ast$}{*}request, MPI\+\_\+\+Status \texorpdfstring{$\ast$}{*}status)
+\item 
+int \mbox{\hyperlink{persistent_8c_a059b00260b196858037e35dfe2f7e3ff}{MPIL\+\_\+\+Request\+\_\+free}} (\mbox{\hyperlink{persistent_8h_a60055ce5143505da6e10c397274d40aa}{MPIL\+\_\+\+Request}} \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}request\+\_\+ptr)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Function Documentation}
+\Hypertarget{persistent_8c_a9e3ee53eede6934fb080f9dd7b4bf88f}\label{persistent_8c_a9e3ee53eede6934fb080f9dd7b4bf88f} 
+\index{persistent.c@{persistent.c}!allocate\_requests@{allocate\_requests}}
+\index{allocate\_requests@{allocate\_requests}!persistent.c@{persistent.c}}
+\doxysubsubsection{\texorpdfstring{allocate\_requests()}{allocate\_requests()}}
+{\footnotesize\ttfamily void allocate\+\_\+requests (\begin{DoxyParamCaption}\item[{int}]{n\+\_\+requests,  }\item[{MPI\+\_\+\+Request \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{request\+\_\+ptr }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{persistent_8c_a9e3ee53eede6934fb080f9dd7b4bf88f_icgraph}
+\end{center}
+\end{figure}
+\Hypertarget{persistent_8c_ade53293e995de4f100e7cf963dc24280}\label{persistent_8c_ade53293e995de4f100e7cf963dc24280} 
+\index{persistent.c@{persistent.c}!init\_request@{init\_request}}
+\index{init\_request@{init\_request}!persistent.c@{persistent.c}}
+\doxysubsubsection{\texorpdfstring{init\_request()}{init\_request()}}
+{\footnotesize\ttfamily void init\+\_\+request (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{persistent_8h_a60055ce5143505da6e10c397274d40aa}{MPIL\+\_\+\+Request}} \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{request\+\_\+ptr }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{persistent_8c_ade53293e995de4f100e7cf963dc24280_icgraph}
+\end{center}
+\end{figure}
+\Hypertarget{persistent_8c_a059b00260b196858037e35dfe2f7e3ff}\label{persistent_8c_a059b00260b196858037e35dfe2f7e3ff} 
+\index{persistent.c@{persistent.c}!MPIL\_Request\_free@{MPIL\_Request\_free}}
+\index{MPIL\_Request\_free@{MPIL\_Request\_free}!persistent.c@{persistent.c}}
+\doxysubsubsection{\texorpdfstring{MPIL\_Request\_free()}{MPIL\_Request\_free()}}
+{\footnotesize\ttfamily int MPIL\+\_\+\+Request\+\_\+free (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{persistent_8h_a60055ce5143505da6e10c397274d40aa}{MPIL\+\_\+\+Request}} \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{request\+\_\+ptr }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{persistent_8c_a059b00260b196858037e35dfe2f7e3ff_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{persistent_8c_a059b00260b196858037e35dfe2f7e3ff_icgraph}
+\end{center}
+\end{figure}
+\Hypertarget{persistent_8c_ac402b7815a0e502583aa17622a8b38bb}\label{persistent_8c_ac402b7815a0e502583aa17622a8b38bb} 
+\index{persistent.c@{persistent.c}!MPIL\_Start@{MPIL\_Start}}
+\index{MPIL\_Start@{MPIL\_Start}!persistent.c@{persistent.c}}
+\doxysubsubsection{\texorpdfstring{MPIL\_Start()}{MPIL\_Start()}}
+{\footnotesize\ttfamily int MPIL\+\_\+\+Start (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{persistent_8h_a60055ce5143505da6e10c397274d40aa}{MPIL\+\_\+\+Request}} \texorpdfstring{$\ast$}{*}}]{request }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=334pt]{persistent_8c_ac402b7815a0e502583aa17622a8b38bb_icgraph}
+\end{center}
+\end{figure}
+\Hypertarget{persistent_8c_a5a8d2d5649953243bcd6237ed99dcdc7}\label{persistent_8c_a5a8d2d5649953243bcd6237ed99dcdc7} 
+\index{persistent.c@{persistent.c}!MPIL\_Wait@{MPIL\_Wait}}
+\index{MPIL\_Wait@{MPIL\_Wait}!persistent.c@{persistent.c}}
+\doxysubsubsection{\texorpdfstring{MPIL\_Wait()}{MPIL\_Wait()}}
+{\footnotesize\ttfamily int MPIL\+\_\+\+Wait (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{persistent_8h_a60055ce5143505da6e10c397274d40aa}{MPIL\+\_\+\+Request}} \texorpdfstring{$\ast$}{*}}]{request,  }\item[{MPI\+\_\+\+Status \texorpdfstring{$\ast$}{*}}]{status }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=333pt]{persistent_8c_a5a8d2d5649953243bcd6237ed99dcdc7_icgraph}
+\end{center}
+\end{figure}

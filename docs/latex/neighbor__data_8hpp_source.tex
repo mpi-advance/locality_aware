@@ -1,0 +1,162 @@
+\doxysection{neighbor\+\_\+data.\+hpp}
+\hypertarget{neighbor__data_8hpp_source}{}\label{neighbor__data_8hpp_source}\index{src/neighborhood/tests/neighbor\_data.hpp@{src/neighborhood/tests/neighbor\_data.hpp}}
+\mbox{\hyperlink{neighbor__data_8hpp}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ MPI\_ADVANCE\_TEST\_NEIGHBOR\_DATA\_HPP}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ MPI\_ADVANCE\_TEST\_NEIGHBOR\_DATA\_HPP}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ U>}
+\DoxyCodeLine{00005\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structMPIL__Data}{MPIL\_Data}}}
+\DoxyCodeLine{00006\ \{}
+\DoxyCodeLine{00007\ \ \ \ \ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{structMPIL__Data_aed2a0bfee1c1b9bb1c7c227486abfc50}{num\_msgs}};}
+\DoxyCodeLine{00008\ \ \ \ \ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{structMPIL__Data_a5bbe9b3b6edfef2e2cf8bf90d14556ec}{size\_msgs}};\ }
+\DoxyCodeLine{00009\ \ \ \ \ std::vector<int>\ \mbox{\hyperlink{structMPIL__Data_a7026cfa37a0fd7f1a5f5bb1d994f07f7}{procs}};}
+\DoxyCodeLine{00010\ \ \ \ \ std::vector<int>\ \mbox{\hyperlink{structMPIL__Data_ac473848fa35007ecc48712f9ed66f50a}{counts}};}
+\DoxyCodeLine{00011\ \ \ \ \ std::vector<U>\ \mbox{\hyperlink{structMPIL__Data_abb807829c8ab9106009db6b70cf6ac5f}{indptr}};}
+\DoxyCodeLine{00012\ \ \ \ \ std::vector<int>\ \mbox{\hyperlink{structMPIL__Data_a2445227be669cf2da2e64a13fde7a6b7}{indices}};}
+\DoxyCodeLine{00013\ \ \ \ \ std::vector<MPI\_Request>\ \mbox{\hyperlink{structMPIL__Data_a34a623e10e0ae4e693b57d8d4db4c944}{requests}};}
+\DoxyCodeLine{00014\ \ \ \ \ std::vector<int>\ \mbox{\hyperlink{structMPIL__Data_af7a6e8661999853c8be4449f9fa2eb54}{buffer}};}
+\DoxyCodeLine{00015\ \};}
+\DoxyCodeLine{00016\ }
+\DoxyCodeLine{00017\ \textcolor{comment}{//\ Form\ random\ communication}}
+\DoxyCodeLine{00018\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ U>}
+\DoxyCodeLine{00019\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{neighbor__data_8hpp_a3ce8b0f89f0b37307f313514a9a41467}{form\_initial\_communicator}}(\textcolor{keywordtype}{int}\ local\_size,\ \mbox{\hyperlink{structMPIL__Data}{MPIL\_Data<U>}}*\ send\_data,\ \mbox{\hyperlink{structMPIL__Data}{MPIL\_Data<U>}}*\ recv\_data)}
+\DoxyCodeLine{00020\ \{}
+\DoxyCodeLine{00021\ \ \ \ \ \textcolor{comment}{//\ Get\ MPI\ Information}}
+\DoxyCodeLine{00022\ \ \ \ \ \textcolor{keywordtype}{int}\ rank,\ num\_procs;}
+\DoxyCodeLine{00023\ \ \ \ \ MPI\_Comm\_rank(MPI\_COMM\_WORLD,\ \&rank);}
+\DoxyCodeLine{00024\ \ \ \ \ MPI\_Comm\_size(MPI\_COMM\_WORLD,\ \&num\_procs);}
+\DoxyCodeLine{00025\ }
+\DoxyCodeLine{00026\ \ \ \ \ \textcolor{keywordtype}{int}\ max\_n\ =\ 2;}
+\DoxyCodeLine{00027\ \ \ \ \ \textcolor{keywordtype}{int}\ max\_s\ =\ 2;}
+\DoxyCodeLine{00028\ \ \ \ \ \textcolor{comment}{//\ int\ max\_s\ =\ local\_size;}}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \ \ \ \ \textcolor{comment}{//\ Declare\ Variables}}
+\DoxyCodeLine{00031\ \ \ \ \ srand(49352034\ +\ rank);}
+\DoxyCodeLine{00032\ \ \ \ \ \textcolor{keywordtype}{int}\ n\_sends\ =\ (rand()\ \%\ max\_n)\ +\ 1;\ \textcolor{comment}{//\ Between\ 1\ and\ max\_n\ msgs\ sent}}
+\DoxyCodeLine{00033\ \ \ \ \ \textcolor{keywordtype}{int}\ tag\ =\ 4935;}
+\DoxyCodeLine{00034\ \ \ \ \ \textcolor{keywordtype}{int}\ start,\ end,\ proc;}
+\DoxyCodeLine{00035\ \ \ \ \ \textcolor{keywordtype}{int}\ size,\ ctr;}
+\DoxyCodeLine{00036\ \ \ \ \ std::vector<int>\ comm\_procs(num\_procs,\ 0);}
+\DoxyCodeLine{00037\ \ \ \ \ MPI\_Status\ recv\_status;}
+\DoxyCodeLine{00038\ \ \ \ \ }
+\DoxyCodeLine{00039\ \ \ \ \ \textcolor{comment}{//\ Create\ standard\ communication}}
+\DoxyCodeLine{00040\ \ \ \ \ \textcolor{comment}{//\ Random\ send\ procs\ /\ data}}
+\DoxyCodeLine{00041\ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 0;\ i\ <\ n\_sends;\ i++)}
+\DoxyCodeLine{00042\ \ \ \ \ \{}
+\DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ proc\ =\ rand()\ \%\ num\_procs;}
+\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{while}\ (proc\ ==\ rank\ ||\ comm\_procs[proc]\ ==\ 1)}
+\DoxyCodeLine{00045\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00046\ \ \ \ \ \ \ \ \ \ \ \ \ proc\ =\ rand()\ \%\ num\_procs;\ \ \ \ }
+\DoxyCodeLine{00047\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00048\ \ \ \ \ \ \ \ \ comm\_procs[proc]\ =\ 1;}
+\DoxyCodeLine{00049\ \ \ \ \ \}}
+\DoxyCodeLine{00050\ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 0;\ i\ <\ num\_procs;\ i++)}
+\DoxyCodeLine{00051\ \ \ \ \ \{}
+\DoxyCodeLine{00052\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (comm\_procs[i])}
+\DoxyCodeLine{00053\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00054\ \ \ \ \ \ \ \ \ \ \ \ \ send\_data-\/>\mbox{\hyperlink{structMPIL__Data_a7026cfa37a0fd7f1a5f5bb1d994f07f7}{procs}}.push\_back(i);}
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00056\ \ \ \ \ \}}
+\DoxyCodeLine{00057\ \ \ \ \ send\_data-\/>\mbox{\hyperlink{structMPIL__Data_aed2a0bfee1c1b9bb1c7c227486abfc50}{num\_msgs}}\ =\ send\_data-\/>\mbox{\hyperlink{structMPIL__Data_a7026cfa37a0fd7f1a5f5bb1d994f07f7}{procs}}.size();}
+\DoxyCodeLine{00058\ \ \ \ \ send\_data-\/>\mbox{\hyperlink{structMPIL__Data_ac473848fa35007ecc48712f9ed66f50a}{counts}}.resize(send\_data-\/>\mbox{\hyperlink{structMPIL__Data_aed2a0bfee1c1b9bb1c7c227486abfc50}{num\_msgs}});}
+\DoxyCodeLine{00059\ \ \ \ \ send\_data-\/>\mbox{\hyperlink{structMPIL__Data_abb807829c8ab9106009db6b70cf6ac5f}{indptr}}.resize(send\_data-\/>\mbox{\hyperlink{structMPIL__Data_aed2a0bfee1c1b9bb1c7c227486abfc50}{num\_msgs}}\ +\ 1);}
+\DoxyCodeLine{00060\ \ \ \ \ send\_data-\/>\mbox{\hyperlink{structMPIL__Data_a34a623e10e0ae4e693b57d8d4db4c944}{requests}}.resize(send\_data-\/>\mbox{\hyperlink{structMPIL__Data_aed2a0bfee1c1b9bb1c7c227486abfc50}{num\_msgs}});}
+\DoxyCodeLine{00061\ }
+\DoxyCodeLine{00062\ \ \ \ \ ctr\ =\ 0;}
+\DoxyCodeLine{00063\ \ \ \ \ send\_data-\/>\mbox{\hyperlink{structMPIL__Data_abb807829c8ab9106009db6b70cf6ac5f}{indptr}}[0]\ =\ 0;}
+\DoxyCodeLine{00064\ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 0;\ i\ <\ send\_data-\/>\mbox{\hyperlink{structMPIL__Data_aed2a0bfee1c1b9bb1c7c227486abfc50}{num\_msgs}};\ i++)}
+\DoxyCodeLine{00065\ \ \ \ \ \{}
+\DoxyCodeLine{00066\ \ \ \ \ \ \ \ \ size\ =\ (rand()\ \%\ max\_s)\ +\ 1;}
+\DoxyCodeLine{00067\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ j\ =\ 0;\ j\ <\ size;\ j++)}
+\DoxyCodeLine{00068\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00069\ \ \ \ \ \ \ \ \ \ \ \ \ send\_data-\/>\mbox{\hyperlink{structMPIL__Data_a2445227be669cf2da2e64a13fde7a6b7}{indices}}.push\_back(ctr++);}
+\DoxyCodeLine{00070\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (ctr\ >=\ local\_size)\ ctr\ =\ 0;}
+\DoxyCodeLine{00071\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00072\ \ \ \ \ \ \ \ \ send\_data-\/>\mbox{\hyperlink{structMPIL__Data_abb807829c8ab9106009db6b70cf6ac5f}{indptr}}[i+1]\ =\ (U)(send\_data-\/>\mbox{\hyperlink{structMPIL__Data_a2445227be669cf2da2e64a13fde7a6b7}{indices}}.size());}
+\DoxyCodeLine{00073\ \ \ \ \ \ \ \ \ send\_data-\/>\mbox{\hyperlink{structMPIL__Data_ac473848fa35007ecc48712f9ed66f50a}{counts}}[i]\ =\ (int)(send\_data-\/>\mbox{\hyperlink{structMPIL__Data_abb807829c8ab9106009db6b70cf6ac5f}{indptr}}[i+1]\ -\/\ send\_data-\/>\mbox{\hyperlink{structMPIL__Data_abb807829c8ab9106009db6b70cf6ac5f}{indptr}}[i]);}
+\DoxyCodeLine{00074\ \ \ \ \ \}}
+\DoxyCodeLine{00075\ \ \ \ \ send\_data-\/>\mbox{\hyperlink{structMPIL__Data_a5bbe9b3b6edfef2e2cf8bf90d14556ec}{size\_msgs}}\ =\ send\_data-\/>\mbox{\hyperlink{structMPIL__Data_a2445227be669cf2da2e64a13fde7a6b7}{indices}}.size();}
+\DoxyCodeLine{00076\ \ \ \ \ send\_data-\/>\mbox{\hyperlink{structMPIL__Data_af7a6e8661999853c8be4449f9fa2eb54}{buffer}}.resize(send\_data-\/>\mbox{\hyperlink{structMPIL__Data_a5bbe9b3b6edfef2e2cf8bf90d14556ec}{size\_msgs}});}
+\DoxyCodeLine{00077\ }
+\DoxyCodeLine{00078\ \ \ \ \ \textcolor{comment}{//\ Form\ recv\_data\ (first\ gather\ number\ of\ messages\ sent\ to\ rank)}}
+\DoxyCodeLine{00079\ \ \ \ \ MPI\_Allreduce(MPI\_IN\_PLACE,\ comm\_procs.data(),\ num\_procs,\ MPI\_INT,}
+\DoxyCodeLine{00080\ \ \ \ \ \ \ \ \ \ \ \ \ MPI\_SUM,\ MPI\_COMM\_WORLD);}
+\DoxyCodeLine{00081\ \ \ \ \ recv\_data-\/>\mbox{\hyperlink{structMPIL__Data_aed2a0bfee1c1b9bb1c7c227486abfc50}{num\_msgs}}\ =\ comm\_procs[rank];}
+\DoxyCodeLine{00082\ \ \ \ \ recv\_data-\/>\mbox{\hyperlink{structMPIL__Data_a7026cfa37a0fd7f1a5f5bb1d994f07f7}{procs}}.resize(recv\_data-\/>\mbox{\hyperlink{structMPIL__Data_aed2a0bfee1c1b9bb1c7c227486abfc50}{num\_msgs}});}
+\DoxyCodeLine{00083\ \ \ \ \ recv\_data-\/>\mbox{\hyperlink{structMPIL__Data_ac473848fa35007ecc48712f9ed66f50a}{counts}}.resize(recv\_data-\/>\mbox{\hyperlink{structMPIL__Data_aed2a0bfee1c1b9bb1c7c227486abfc50}{num\_msgs}});}
+\DoxyCodeLine{00084\ \ \ \ \ recv\_data-\/>\mbox{\hyperlink{structMPIL__Data_abb807829c8ab9106009db6b70cf6ac5f}{indptr}}.resize(recv\_data-\/>\mbox{\hyperlink{structMPIL__Data_aed2a0bfee1c1b9bb1c7c227486abfc50}{num\_msgs}}\ +\ 1);}
+\DoxyCodeLine{00085\ \ \ \ \ recv\_data-\/>\mbox{\hyperlink{structMPIL__Data_a34a623e10e0ae4e693b57d8d4db4c944}{requests}}.resize(recv\_data-\/>\mbox{\hyperlink{structMPIL__Data_aed2a0bfee1c1b9bb1c7c227486abfc50}{num\_msgs}});}
+\DoxyCodeLine{00086\ }
+\DoxyCodeLine{00087\ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 0;\ i\ <\ send\_data-\/>\mbox{\hyperlink{structMPIL__Data_aed2a0bfee1c1b9bb1c7c227486abfc50}{num\_msgs}};\ i++)}
+\DoxyCodeLine{00088\ \ \ \ \ \{}
+\DoxyCodeLine{00089\ \ \ \ \ \ \ \ \ proc\ =\ send\_data-\/>\mbox{\hyperlink{structMPIL__Data_a7026cfa37a0fd7f1a5f5bb1d994f07f7}{procs}}[i];}
+\DoxyCodeLine{00090\ \ \ \ \ \ \ \ \ start\ =\ (int)send\_data-\/>\mbox{\hyperlink{structMPIL__Data_abb807829c8ab9106009db6b70cf6ac5f}{indptr}}[i];}
+\DoxyCodeLine{00091\ \ \ \ \ \ \ \ \ end\ =\ (int)send\_data-\/>\mbox{\hyperlink{structMPIL__Data_abb807829c8ab9106009db6b70cf6ac5f}{indptr}}[i+1];}
+\DoxyCodeLine{00092\ \ \ \ \ \ \ \ \ send\_data-\/>\mbox{\hyperlink{structMPIL__Data_af7a6e8661999853c8be4449f9fa2eb54}{buffer}}[i]\ =\ end\ -\/\ start;}
+\DoxyCodeLine{00093\ \ \ \ \ \ \ \ \ MPI\_Isend(\&(send\_data-\/>\mbox{\hyperlink{structMPIL__Data_af7a6e8661999853c8be4449f9fa2eb54}{buffer}}[i]),\ 1,\ MPI\_INT,\ proc,\ tag,\ }
+\DoxyCodeLine{00094\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ MPI\_COMM\_WORLD,\ \&send\_data-\/>\mbox{\hyperlink{structMPIL__Data_a34a623e10e0ae4e693b57d8d4db4c944}{requests}}[i]);}
+\DoxyCodeLine{00095\ \ \ \ \ \}}
+\DoxyCodeLine{00096\ }
+\DoxyCodeLine{00097\ \ \ \ \ recv\_data-\/>\mbox{\hyperlink{structMPIL__Data_abb807829c8ab9106009db6b70cf6ac5f}{indptr}}[0]\ =\ 0;}
+\DoxyCodeLine{00098\ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 0;\ i\ <\ recv\_data-\/>\mbox{\hyperlink{structMPIL__Data_aed2a0bfee1c1b9bb1c7c227486abfc50}{num\_msgs}};\ i++)}
+\DoxyCodeLine{00099\ \ \ \ \ \{}
+\DoxyCodeLine{00100\ \ \ \ \ \ \ \ \ MPI\_Probe(MPI\_ANY\_SOURCE,\ tag,\ MPI\_COMM\_WORLD,\ \&recv\_status);}
+\DoxyCodeLine{00101\ \ \ \ \ \ \ \ \ proc\ =\ recv\_status.MPI\_SOURCE;}
+\DoxyCodeLine{00102\ \ \ \ \ \ \ \ \ MPI\_Recv(\&size,\ 1,\ MPI\_INT,\ proc,\ tag,\ MPI\_COMM\_WORLD,\ \&recv\_status);}
+\DoxyCodeLine{00103\ \ \ \ \ \ \ \ \ recv\_data-\/>\mbox{\hyperlink{structMPIL__Data_a7026cfa37a0fd7f1a5f5bb1d994f07f7}{procs}}[i]\ =\ proc;}
+\DoxyCodeLine{00104\ \ \ \ \ \ \ \ \ recv\_data-\/>\mbox{\hyperlink{structMPIL__Data_abb807829c8ab9106009db6b70cf6ac5f}{indptr}}[i+1]\ =\ recv\_data-\/>\mbox{\hyperlink{structMPIL__Data_abb807829c8ab9106009db6b70cf6ac5f}{indptr}}[i]\ +\ (U)(size);}
+\DoxyCodeLine{00105\ \ \ \ \ \ \ \ \ recv\_data-\/>\mbox{\hyperlink{structMPIL__Data_ac473848fa35007ecc48712f9ed66f50a}{counts}}[i]\ =\ size;}
+\DoxyCodeLine{00106\ \ \ \ \ \}}
+\DoxyCodeLine{00107\ \ \ \ \ recv\_data-\/>\mbox{\hyperlink{structMPIL__Data_a5bbe9b3b6edfef2e2cf8bf90d14556ec}{size\_msgs}}\ =\ (int)(recv\_data-\/>\mbox{\hyperlink{structMPIL__Data_abb807829c8ab9106009db6b70cf6ac5f}{indptr}}[recv\_data-\/>\mbox{\hyperlink{structMPIL__Data_aed2a0bfee1c1b9bb1c7c227486abfc50}{num\_msgs}}]);}
+\DoxyCodeLine{00108\ \ \ \ \ recv\_data-\/>\mbox{\hyperlink{structMPIL__Data_af7a6e8661999853c8be4449f9fa2eb54}{buffer}}.resize(recv\_data-\/>\mbox{\hyperlink{structMPIL__Data_a5bbe9b3b6edfef2e2cf8bf90d14556ec}{size\_msgs}});}
+\DoxyCodeLine{00109\ }
+\DoxyCodeLine{00110\ \ \ \ \ \textcolor{keywordflow}{if}\ (send\_data-\/>\mbox{\hyperlink{structMPIL__Data_aed2a0bfee1c1b9bb1c7c227486abfc50}{num\_msgs}})}
+\DoxyCodeLine{00111\ \ \ \ \ \{}
+\DoxyCodeLine{00112\ \ \ \ \ \ \ \ \ MPI\_Waitall(send\_data-\/>\mbox{\hyperlink{structMPIL__Data_aed2a0bfee1c1b9bb1c7c227486abfc50}{num\_msgs}},\ send\_data-\/>\mbox{\hyperlink{structMPIL__Data_a34a623e10e0ae4e693b57d8d4db4c944}{requests}}.data(),}
+\DoxyCodeLine{00113\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ MPI\_STATUSES\_IGNORE);}
+\DoxyCodeLine{00114\ \ \ \ \ \}}
+\DoxyCodeLine{00115\ \}}
+\DoxyCodeLine{00116\ }
+\DoxyCodeLine{00117\ }
+\DoxyCodeLine{00118\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ U>}
+\DoxyCodeLine{00119\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{neighbor__data_8hpp_ad91df375c33ebaf5260c47c63c5ddc16}{form\_global\_indices}}(\textcolor{keywordtype}{int}\ local\_size,\ \mbox{\hyperlink{structMPIL__Data}{MPIL\_Data<U>}}\ send\_data,\ \mbox{\hyperlink{structMPIL__Data}{MPIL\_Data<U>}}\ recv\_data,}
+\DoxyCodeLine{00120\ \ \ \ \ \ \ \ \ std::vector<long>\&\ global\_send\_idx,\ std::vector<long>\&\ global\_recv\_idx)}
+\DoxyCodeLine{00121\ \{}
+\DoxyCodeLine{00122\ \ \ \ \ \textcolor{keywordtype}{int}\ rank,\ num\_procs;}
+\DoxyCodeLine{00123\ \ \ \ \ MPI\_Comm\_rank(MPI\_COMM\_WORLD,\ \&rank);}
+\DoxyCodeLine{00124\ \ \ \ \ MPI\_Comm\_size(MPI\_COMM\_WORLD,\ \&num\_procs);}
+\DoxyCodeLine{00125\ }
+\DoxyCodeLine{00126\ \ \ \ \ \textcolor{keywordtype}{int}\ first\ =\ local\_size\ *\ rank;}
+\DoxyCodeLine{00127\ \ \ \ \ \textcolor{keywordtype}{int}\ tag\ =\ 29354;}
+\DoxyCodeLine{00128\ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 0;\ i\ <\ send\_data.\mbox{\hyperlink{structMPIL__Data_aed2a0bfee1c1b9bb1c7c227486abfc50}{num\_msgs}};\ i++)}
+\DoxyCodeLine{00129\ \ \ \ \ \{}
+\DoxyCodeLine{00130\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ proc\ =\ send\_data.\mbox{\hyperlink{structMPIL__Data_a7026cfa37a0fd7f1a5f5bb1d994f07f7}{procs}}[i];}
+\DoxyCodeLine{00131\ \ \ \ \ \ \ \ \ U\ start\ =\ send\_data.\mbox{\hyperlink{structMPIL__Data_abb807829c8ab9106009db6b70cf6ac5f}{indptr}}[i];}
+\DoxyCodeLine{00132\ \ \ \ \ \ \ \ \ U\ end\ =\ send\_data.\mbox{\hyperlink{structMPIL__Data_abb807829c8ab9106009db6b70cf6ac5f}{indptr}}[i+1];}
+\DoxyCodeLine{00133\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (U\ j\ =\ start;\ j\ <\ end;\ j++)}
+\DoxyCodeLine{00134\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00135\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ idx\ =\ send\_data.\mbox{\hyperlink{structMPIL__Data_a2445227be669cf2da2e64a13fde7a6b7}{indices}}[j];}
+\DoxyCodeLine{00136\ \ \ \ \ \ \ \ \ \ \ \ \ global\_send\_idx[j]\ =\ first\ +\ idx;}
+\DoxyCodeLine{00137\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00138\ \ \ \ \ \ \ \ \ MPI\_Isend(\&(global\_send\_idx[start]),\ (\textcolor{keywordtype}{int})(end\ -\/\ start),\ MPI\_LONG,\ proc,}
+\DoxyCodeLine{00139\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ tag,\ MPI\_COMM\_WORLD,\ \&(send\_data.\mbox{\hyperlink{structMPIL__Data_a34a623e10e0ae4e693b57d8d4db4c944}{requests}}[i]));}
+\DoxyCodeLine{00140\ \ \ \ \ \}}
+\DoxyCodeLine{00141\ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 0;\ i\ <\ recv\_data.\mbox{\hyperlink{structMPIL__Data_aed2a0bfee1c1b9bb1c7c227486abfc50}{num\_msgs}};\ i++)}
+\DoxyCodeLine{00142\ \ \ \ \ \{}
+\DoxyCodeLine{00143\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ proc\ =\ recv\_data.\mbox{\hyperlink{structMPIL__Data_a7026cfa37a0fd7f1a5f5bb1d994f07f7}{procs}}[i];}
+\DoxyCodeLine{00144\ \ \ \ \ \ \ \ \ U\ start\ =\ recv\_data.\mbox{\hyperlink{structMPIL__Data_abb807829c8ab9106009db6b70cf6ac5f}{indptr}}[i];}
+\DoxyCodeLine{00145\ \ \ \ \ \ \ \ \ U\ end\ =\ recv\_data.\mbox{\hyperlink{structMPIL__Data_abb807829c8ab9106009db6b70cf6ac5f}{indptr}}[i+1];}
+\DoxyCodeLine{00146\ \ \ \ \ \ \ \ \ MPI\_Irecv(\&(global\_recv\_idx[start]),\ (\textcolor{keywordtype}{int})(end\ -\/\ start),\ MPI\_LONG,\ proc,}
+\DoxyCodeLine{00147\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ tag,\ MPI\_COMM\_WORLD,\ \&(recv\_data.\mbox{\hyperlink{structMPIL__Data_a34a623e10e0ae4e693b57d8d4db4c944}{requests}}[i]));}
+\DoxyCodeLine{00148\ \ \ \ \ \}}
+\DoxyCodeLine{00149\ \ \ \ \ \textcolor{keywordflow}{if}\ (send\_data.\mbox{\hyperlink{structMPIL__Data_aed2a0bfee1c1b9bb1c7c227486abfc50}{num\_msgs}})\ MPI\_Waitall(send\_data.\mbox{\hyperlink{structMPIL__Data_aed2a0bfee1c1b9bb1c7c227486abfc50}{num\_msgs}},\ }
+\DoxyCodeLine{00150\ \ \ \ \ \ \ \ \ \ \ \ \ send\_data.\mbox{\hyperlink{structMPIL__Data_a34a623e10e0ae4e693b57d8d4db4c944}{requests}}.data(),\ MPI\_STATUSES\_IGNORE);}
+\DoxyCodeLine{00151\ \ \ \ \ \textcolor{keywordflow}{if}\ (recv\_data.\mbox{\hyperlink{structMPIL__Data_aed2a0bfee1c1b9bb1c7c227486abfc50}{num\_msgs}})\ MPI\_Waitall(recv\_data.\mbox{\hyperlink{structMPIL__Data_aed2a0bfee1c1b9bb1c7c227486abfc50}{num\_msgs}},\ }
+\DoxyCodeLine{00152\ \ \ \ \ \ \ \ \ \ \ \ \ recv\_data.\mbox{\hyperlink{structMPIL__Data_a34a623e10e0ae4e693b57d8d4db4c944}{requests}}.data(),\ MPI\_STATUSES\_IGNORE);}
+\DoxyCodeLine{00153\ \}}
+\DoxyCodeLine{00154\ }
+\DoxyCodeLine{00155\ }
+\DoxyCodeLine{00156\ \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

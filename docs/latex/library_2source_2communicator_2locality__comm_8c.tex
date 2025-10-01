@@ -1,0 +1,49 @@
+\doxysection{library/source/communicator/locality\+\_\+comm.c File Reference}
+\hypertarget{library_2source_2communicator_2locality__comm_8c}{}\label{library_2source_2communicator_2locality__comm_8c}\index{library/source/communicator/locality\_comm.c@{library/source/communicator/locality\_comm.c}}
+{\ttfamily \#include "{}locality\+\_\+comm.\+h"{}}\newline
+Include dependency graph for locality\+\_\+comm.\+c\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=237pt]{library_2source_2communicator_2locality__comm_8c__incl}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{library_2source_2communicator_2locality__comm_8c_a3ff2cd6695899c56e8e04df05ebce186}{init\+\_\+locality\+\_\+comm}} (\mbox{\hyperlink{include_2communicator_2locality__comm_8h_a4936e9f4cbffe13b11c5931c69e0f18b}{Locality\+Comm}} \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}locality\+\_\+ptr, \mbox{\hyperlink{include_2communicator_2mpil__comm_8h_a4482dc156ccc9cab81c06f17bcfb8645}{MPIL\+\_\+\+Comm}} \texorpdfstring{$\ast$}{*}mpix\+\_\+comm, MPI\+\_\+\+Datatype sendtype, MPI\+\_\+\+Datatype recvtype)
+\item 
+void \mbox{\hyperlink{library_2source_2communicator_2locality__comm_8c_ae244bddd928a781c699cc80f83967950}{finalize\+\_\+locality\+\_\+comm}} (\mbox{\hyperlink{include_2communicator_2locality__comm_8h_a4936e9f4cbffe13b11c5931c69e0f18b}{Locality\+Comm}} \texorpdfstring{$\ast$}{*}locality)
+\item 
+void \mbox{\hyperlink{library_2source_2communicator_2locality__comm_8c_aaa616519bf3be7e7d272dae9916b9140}{destroy\+\_\+locality\+\_\+comm}} (\mbox{\hyperlink{include_2communicator_2locality__comm_8h_a4936e9f4cbffe13b11c5931c69e0f18b}{Locality\+Comm}} \texorpdfstring{$\ast$}{*}locality)
+\item 
+void \mbox{\hyperlink{library_2source_2communicator_2locality__comm_8c_a7e2fff00446032baf867ca483399440a}{get\+\_\+local\+\_\+comm\+\_\+data}} (\mbox{\hyperlink{include_2communicator_2locality__comm_8h_a4936e9f4cbffe13b11c5931c69e0f18b}{Locality\+Comm}} \texorpdfstring{$\ast$}{*}locality, int \texorpdfstring{$\ast$}{*}max\+\_\+local\+\_\+num, int \texorpdfstring{$\ast$}{*}max\+\_\+local\+\_\+size, int \texorpdfstring{$\ast$}{*}max\+\_\+non\+\_\+local\+\_\+num, int \texorpdfstring{$\ast$}{*}max\+\_\+non\+\_\+local\+\_\+size)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Function Documentation}
+\Hypertarget{library_2source_2communicator_2locality__comm_8c_aaa616519bf3be7e7d272dae9916b9140}\label{library_2source_2communicator_2locality__comm_8c_aaa616519bf3be7e7d272dae9916b9140} 
+\index{locality\_comm.c@{locality\_comm.c}!destroy\_locality\_comm@{destroy\_locality\_comm}}
+\index{destroy\_locality\_comm@{destroy\_locality\_comm}!locality\_comm.c@{locality\_comm.c}}
+\doxysubsubsection{\texorpdfstring{destroy\_locality\_comm()}{destroy\_locality\_comm()}}
+{\footnotesize\ttfamily void destroy\+\_\+locality\+\_\+comm (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{include_2communicator_2locality__comm_8h_a4936e9f4cbffe13b11c5931c69e0f18b}{Locality\+Comm}} \texorpdfstring{$\ast$}{*}}]{locality }\end{DoxyParamCaption})}
+
+\Hypertarget{library_2source_2communicator_2locality__comm_8c_ae244bddd928a781c699cc80f83967950}\label{library_2source_2communicator_2locality__comm_8c_ae244bddd928a781c699cc80f83967950} 
+\index{locality\_comm.c@{locality\_comm.c}!finalize\_locality\_comm@{finalize\_locality\_comm}}
+\index{finalize\_locality\_comm@{finalize\_locality\_comm}!locality\_comm.c@{locality\_comm.c}}
+\doxysubsubsection{\texorpdfstring{finalize\_locality\_comm()}{finalize\_locality\_comm()}}
+{\footnotesize\ttfamily void finalize\+\_\+locality\+\_\+comm (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{include_2communicator_2locality__comm_8h_a4936e9f4cbffe13b11c5931c69e0f18b}{Locality\+Comm}} \texorpdfstring{$\ast$}{*}}]{locality }\end{DoxyParamCaption})}
+
+\Hypertarget{library_2source_2communicator_2locality__comm_8c_a7e2fff00446032baf867ca483399440a}\label{library_2source_2communicator_2locality__comm_8c_a7e2fff00446032baf867ca483399440a} 
+\index{locality\_comm.c@{locality\_comm.c}!get\_local\_comm\_data@{get\_local\_comm\_data}}
+\index{get\_local\_comm\_data@{get\_local\_comm\_data}!locality\_comm.c@{locality\_comm.c}}
+\doxysubsubsection{\texorpdfstring{get\_local\_comm\_data()}{get\_local\_comm\_data()}}
+{\footnotesize\ttfamily void get\+\_\+local\+\_\+comm\+\_\+data (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{include_2communicator_2locality__comm_8h_a4936e9f4cbffe13b11c5931c69e0f18b}{Locality\+Comm}} \texorpdfstring{$\ast$}{*}}]{locality,  }\item[{int \texorpdfstring{$\ast$}{*}}]{max\+\_\+local\+\_\+num,  }\item[{int \texorpdfstring{$\ast$}{*}}]{max\+\_\+local\+\_\+size,  }\item[{int \texorpdfstring{$\ast$}{*}}]{max\+\_\+non\+\_\+local\+\_\+num,  }\item[{int \texorpdfstring{$\ast$}{*}}]{max\+\_\+non\+\_\+local\+\_\+size }\end{DoxyParamCaption})}
+
+\Hypertarget{library_2source_2communicator_2locality__comm_8c_a3ff2cd6695899c56e8e04df05ebce186}\label{library_2source_2communicator_2locality__comm_8c_a3ff2cd6695899c56e8e04df05ebce186} 
+\index{locality\_comm.c@{locality\_comm.c}!init\_locality\_comm@{init\_locality\_comm}}
+\index{init\_locality\_comm@{init\_locality\_comm}!locality\_comm.c@{locality\_comm.c}}
+\doxysubsubsection{\texorpdfstring{init\_locality\_comm()}{init\_locality\_comm()}}
+{\footnotesize\ttfamily void init\+\_\+locality\+\_\+comm (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{include_2communicator_2locality__comm_8h_a4936e9f4cbffe13b11c5931c69e0f18b}{Locality\+Comm}} \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{locality\+\_\+ptr,  }\item[{\mbox{\hyperlink{include_2communicator_2mpil__comm_8h_a4482dc156ccc9cab81c06f17bcfb8645}{MPIL\+\_\+\+Comm}} \texorpdfstring{$\ast$}{*}}]{mpix\+\_\+comm,  }\item[{MPI\+\_\+\+Datatype}]{sendtype,  }\item[{MPI\+\_\+\+Datatype}]{recvtype }\end{DoxyParamCaption})}
+

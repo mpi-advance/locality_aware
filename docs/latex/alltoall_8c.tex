@@ -1,0 +1,549 @@
+\doxysection{src/collective/alltoall.c File Reference}
+\hypertarget{alltoall_8c}{}\label{alltoall_8c}\index{src/collective/alltoall.c@{src/collective/alltoall.c}}
+{\ttfamily \#include "{}alltoall.\+h"{}}\newline
+{\ttfamily \#include $<$math.\+h$>$}\newline
+{\ttfamily \#include $<$string.\+h$>$}\newline
+Include dependency graph for alltoall.\+c\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=279pt]{alltoall_8c__incl}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{alltoall_8c_a16b214253bbb751e79d2bc525559652e}{MPIL\+\_\+\+Alltoall}} (const void \texorpdfstring{$\ast$}{*}sendbuf, const int sendcount, MPI\+\_\+\+Datatype sendtype, void \texorpdfstring{$\ast$}{*}recvbuf, const int recvcount, MPI\+\_\+\+Datatype recvtype, \mbox{\hyperlink{include_2communicator_2mpil__comm_8h_a4482dc156ccc9cab81c06f17bcfb8645}{MPIL\+\_\+\+Comm}} \texorpdfstring{$\ast$}{*}mpi\+\_\+comm)
+\item 
+int \mbox{\hyperlink{alltoall_8c_a1af2a900976168f59a7b97345fa07410}{pairwise\+\_\+helper}} (const void \texorpdfstring{$\ast$}{*}sendbuf, const int sendcount, MPI\+\_\+\+Datatype sendtype, void \texorpdfstring{$\ast$}{*}recvbuf, const int recvcount, MPI\+\_\+\+Datatype recvtype, MPI\+\_\+\+Comm comm, int tag)
+\item 
+int \mbox{\hyperlink{alltoall_8c_ae0d9c647455b6bed366c1eca36f81de0}{alltoall\+\_\+pairwise}} (const void \texorpdfstring{$\ast$}{*}sendbuf, const int sendcount, MPI\+\_\+\+Datatype sendtype, void \texorpdfstring{$\ast$}{*}recvbuf, const int recvcount, MPI\+\_\+\+Datatype recvtype, \mbox{\hyperlink{include_2communicator_2mpil__comm_8h_a4482dc156ccc9cab81c06f17bcfb8645}{MPIL\+\_\+\+Comm}} \texorpdfstring{$\ast$}{*}comm)
+\item 
+int \mbox{\hyperlink{alltoall_8c_aaa1b9e274512503b5f522f798f37ccaa}{nonblocking\+\_\+helper}} (const void \texorpdfstring{$\ast$}{*}sendbuf, const int sendcount, MPI\+\_\+\+Datatype sendtype, void \texorpdfstring{$\ast$}{*}recvbuf, const int recvcount, MPI\+\_\+\+Datatype recvtype, MPI\+\_\+\+Comm comm, int tag)
+\item 
+int \mbox{\hyperlink{alltoall_8c_a67484069b8ce57a23ca323978d44cacc}{alltoall\+\_\+nonblocking}} (const void \texorpdfstring{$\ast$}{*}sendbuf, const int sendcount, MPI\+\_\+\+Datatype sendtype, void \texorpdfstring{$\ast$}{*}recvbuf, const int recvcount, MPI\+\_\+\+Datatype recvtype, \mbox{\hyperlink{include_2communicator_2mpil__comm_8h_a4482dc156ccc9cab81c06f17bcfb8645}{MPIL\+\_\+\+Comm}} \texorpdfstring{$\ast$}{*}comm)
+\item 
+int \mbox{\hyperlink{alltoall_8c_ae29efc4ca70c7b605a36e7ae0f16469d}{alltoall\+\_\+multileader}} (\mbox{\hyperlink{include_2collective_2alltoall_8h_a9de5cdd0493fe76e8600f9d6a764d34b}{alltoall\+\_\+helper\+\_\+ftn}} f, const void \texorpdfstring{$\ast$}{*}sendbuf, const int sendcount, MPI\+\_\+\+Datatype sendtype, void \texorpdfstring{$\ast$}{*}recvbuf, const int recvcount, MPI\+\_\+\+Datatype recvtype, \mbox{\hyperlink{include_2communicator_2mpil__comm_8h_a4482dc156ccc9cab81c06f17bcfb8645}{MPIL\+\_\+\+Comm}} \texorpdfstring{$\ast$}{*}comm, int n\+\_\+leaders)
+\item 
+int \mbox{\hyperlink{alltoall_8c_a3e84951d11936c92846dfa26f2a62a15}{alltoall\+\_\+hierarchical}} (\mbox{\hyperlink{include_2collective_2alltoall_8h_a9de5cdd0493fe76e8600f9d6a764d34b}{alltoall\+\_\+helper\+\_\+ftn}} f, const void \texorpdfstring{$\ast$}{*}sendbuf, const int sendcount, MPI\+\_\+\+Datatype sendtype, void \texorpdfstring{$\ast$}{*}recvbuf, const int recvcount, MPI\+\_\+\+Datatype recvtype, \mbox{\hyperlink{include_2communicator_2mpil__comm_8h_a4482dc156ccc9cab81c06f17bcfb8645}{MPIL\+\_\+\+Comm}} \texorpdfstring{$\ast$}{*}comm)
+\item 
+int \mbox{\hyperlink{alltoall_8c_a7d8032aad54b8b192b488078166e6705}{alltoall\+\_\+hierarchical\+\_\+pairwise}} (const void \texorpdfstring{$\ast$}{*}sendbuf, const int sendcount, MPI\+\_\+\+Datatype sendtype, void \texorpdfstring{$\ast$}{*}recvbuf, const int recvcount, MPI\+\_\+\+Datatype recvtype, \mbox{\hyperlink{include_2communicator_2mpil__comm_8h_a4482dc156ccc9cab81c06f17bcfb8645}{MPIL\+\_\+\+Comm}} \texorpdfstring{$\ast$}{*}comm)
+\begin{DoxyCompactList}\small\item\em Wrapper around alltoall\+\_\+multileader. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{alltoall_8c_a017846f6fba1791ead2d196d2e0de9d3}{alltoall\+\_\+hierarchical\+\_\+nonblocking}} (const void \texorpdfstring{$\ast$}{*}sendbuf, const int sendcount, MPI\+\_\+\+Datatype sendtype, void \texorpdfstring{$\ast$}{*}recvbuf, const int recvcount, MPI\+\_\+\+Datatype recvtype, \mbox{\hyperlink{include_2communicator_2mpil__comm_8h_a4482dc156ccc9cab81c06f17bcfb8645}{MPIL\+\_\+\+Comm}} \texorpdfstring{$\ast$}{*}comm)
+\begin{DoxyCompactList}\small\item\em feeds nonblocking\+\_\+helper to alltoall\+\_\+hierarchical \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{alltoall_8c_abbf550a0317e09421f8ba1e227348f57}{alltoall\+\_\+multileader\+\_\+pairwise}} (const void \texorpdfstring{$\ast$}{*}sendbuf, const int sendcount, MPI\+\_\+\+Datatype sendtype, void \texorpdfstring{$\ast$}{*}recvbuf, const int recvcount, MPI\+\_\+\+Datatype recvtype, \mbox{\hyperlink{include_2communicator_2mpil__comm_8h_a4482dc156ccc9cab81c06f17bcfb8645}{MPIL\+\_\+\+Comm}} \texorpdfstring{$\ast$}{*}comm)
+\begin{DoxyCompactList}\small\item\em feeds pairswise\+\_\+helper to alltoall\+\_\+multileader \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{alltoall_8c_a80d65f0e7abe3fdf3fe60b41e56a8bab}{alltoall\+\_\+multileader\+\_\+nonblocking}} (const void \texorpdfstring{$\ast$}{*}sendbuf, const int sendcount, MPI\+\_\+\+Datatype sendtype, void \texorpdfstring{$\ast$}{*}recvbuf, const int recvcount, MPI\+\_\+\+Datatype recvtype, \mbox{\hyperlink{include_2communicator_2mpil__comm_8h_a4482dc156ccc9cab81c06f17bcfb8645}{MPIL\+\_\+\+Comm}} \texorpdfstring{$\ast$}{*}comm)
+\item 
+int \mbox{\hyperlink{alltoall_8c_a0e770344cdc148233f7c962bc33b33ef}{alltoall\+\_\+locality\+\_\+aware\+\_\+helper}} (\mbox{\hyperlink{include_2collective_2alltoall_8h_a9de5cdd0493fe76e8600f9d6a764d34b}{alltoall\+\_\+helper\+\_\+ftn}} f, const void \texorpdfstring{$\ast$}{*}sendbuf, const int sendcount, MPI\+\_\+\+Datatype sendtype, void \texorpdfstring{$\ast$}{*}recvbuf, const int recvcount, MPI\+\_\+\+Datatype recvtype, \mbox{\hyperlink{include_2communicator_2mpil__comm_8h_a4482dc156ccc9cab81c06f17bcfb8645}{MPIL\+\_\+\+Comm}} \texorpdfstring{$\ast$}{*}comm, int groups\+\_\+per\+\_\+node, MPI\+\_\+\+Comm local\+\_\+comm, MPI\+\_\+\+Comm group\+\_\+comm, int tag)
+\item 
+int \mbox{\hyperlink{alltoall_8c_aaaf81a741725036a71fb438446d29244}{alltoall\+\_\+locality\+\_\+aware}} (\mbox{\hyperlink{include_2collective_2alltoall_8h_a9de5cdd0493fe76e8600f9d6a764d34b}{alltoall\+\_\+helper\+\_\+ftn}} f, const void \texorpdfstring{$\ast$}{*}sendbuf, const int sendcount, MPI\+\_\+\+Datatype sendtype, void \texorpdfstring{$\ast$}{*}recvbuf, const int recvcount, MPI\+\_\+\+Datatype recvtype, \mbox{\hyperlink{include_2communicator_2mpil__comm_8h_a4482dc156ccc9cab81c06f17bcfb8645}{MPIL\+\_\+\+Comm}} \texorpdfstring{$\ast$}{*}comm, int groups\+\_\+per\+\_\+node)
+\item 
+int \mbox{\hyperlink{alltoall_8c_a947a764be11326b4c92f4c80fc460e46}{alltoall\+\_\+node\+\_\+aware}} (\mbox{\hyperlink{include_2collective_2alltoall_8h_a9de5cdd0493fe76e8600f9d6a764d34b}{alltoall\+\_\+helper\+\_\+ftn}} f, const void \texorpdfstring{$\ast$}{*}sendbuf, const int sendcount, MPI\+\_\+\+Datatype sendtype, void \texorpdfstring{$\ast$}{*}recvbuf, const int recvcount, MPI\+\_\+\+Datatype recvtype, \mbox{\hyperlink{include_2communicator_2mpil__comm_8h_a4482dc156ccc9cab81c06f17bcfb8645}{MPIL\+\_\+\+Comm}} \texorpdfstring{$\ast$}{*}comm)
+\item 
+int \mbox{\hyperlink{alltoall_8c_a0503f659d9dabc64c066fb306c0ec435}{alltoall\+\_\+node\+\_\+aware\+\_\+pairwise}} (const void \texorpdfstring{$\ast$}{*}sendbuf, const int sendcount, MPI\+\_\+\+Datatype sendtype, void \texorpdfstring{$\ast$}{*}recvbuf, const int recvcount, MPI\+\_\+\+Datatype recvtype, \mbox{\hyperlink{include_2communicator_2mpil__comm_8h_a4482dc156ccc9cab81c06f17bcfb8645}{MPIL\+\_\+\+Comm}} \texorpdfstring{$\ast$}{*}comm)
+\item 
+int \mbox{\hyperlink{alltoall_8c_a948c88f0d66244366df9d4676f96e83f}{alltoall\+\_\+node\+\_\+aware\+\_\+nonblocking}} (const void \texorpdfstring{$\ast$}{*}sendbuf, const int sendcount, MPI\+\_\+\+Datatype sendtype, void \texorpdfstring{$\ast$}{*}recvbuf, const int recvcount, MPI\+\_\+\+Datatype recvtype, \mbox{\hyperlink{include_2communicator_2mpil__comm_8h_a4482dc156ccc9cab81c06f17bcfb8645}{MPIL\+\_\+\+Comm}} \texorpdfstring{$\ast$}{*}comm)
+\item 
+int \mbox{\hyperlink{alltoall_8c_aec8b84be8c60f0ec51927f8348f46944}{alltoall\+\_\+locality\+\_\+aware\+\_\+pairwise}} (const void \texorpdfstring{$\ast$}{*}sendbuf, const int sendcount, MPI\+\_\+\+Datatype sendtype, void \texorpdfstring{$\ast$}{*}recvbuf, const int recvcount, MPI\+\_\+\+Datatype recvtype, \mbox{\hyperlink{include_2communicator_2mpil__comm_8h_a4482dc156ccc9cab81c06f17bcfb8645}{MPIL\+\_\+\+Comm}} \texorpdfstring{$\ast$}{*}comm)
+\item 
+int \mbox{\hyperlink{alltoall_8c_a9f906e3449d66447e0e781c1973a0ade}{alltoall\+\_\+locality\+\_\+aware\+\_\+nonblocking}} (const void \texorpdfstring{$\ast$}{*}sendbuf, const int sendcount, MPI\+\_\+\+Datatype sendtype, void \texorpdfstring{$\ast$}{*}recvbuf, const int recvcount, MPI\+\_\+\+Datatype recvtype, \mbox{\hyperlink{include_2communicator_2mpil__comm_8h_a4482dc156ccc9cab81c06f17bcfb8645}{MPIL\+\_\+\+Comm}} \texorpdfstring{$\ast$}{*}comm)
+\item 
+int \mbox{\hyperlink{alltoall_8c_af48cd3c95a320f02511c632012cfc885}{alltoall\+\_\+multileader\+\_\+locality}} (\mbox{\hyperlink{include_2collective_2alltoall_8h_a9de5cdd0493fe76e8600f9d6a764d34b}{alltoall\+\_\+helper\+\_\+ftn}} f, const void \texorpdfstring{$\ast$}{*}sendbuf, const int sendcount, MPI\+\_\+\+Datatype sendtype, void \texorpdfstring{$\ast$}{*}recvbuf, const int recvcount, MPI\+\_\+\+Datatype recvtype, \mbox{\hyperlink{include_2communicator_2mpil__comm_8h_a4482dc156ccc9cab81c06f17bcfb8645}{MPIL\+\_\+\+Comm}} \texorpdfstring{$\ast$}{*}comm)
+\item 
+int \mbox{\hyperlink{alltoall_8c_ad1f70b5b3479a6806122428f48232d82}{alltoall\+\_\+multileader\+\_\+locality\+\_\+pairwise}} (const void \texorpdfstring{$\ast$}{*}sendbuf, const int sendcount, MPI\+\_\+\+Datatype sendtype, void \texorpdfstring{$\ast$}{*}recvbuf, const int recvcount, MPI\+\_\+\+Datatype recvtype, \mbox{\hyperlink{include_2communicator_2mpil__comm_8h_a4482dc156ccc9cab81c06f17bcfb8645}{MPIL\+\_\+\+Comm}} \texorpdfstring{$\ast$}{*}comm)
+\item 
+int \mbox{\hyperlink{alltoall_8c_ad75c3e1da348a1e51e82039449a86a7a}{alltoall\+\_\+multileader\+\_\+locality\+\_\+nonblocking}} (const void \texorpdfstring{$\ast$}{*}sendbuf, const int sendcount, MPI\+\_\+\+Datatype sendtype, void \texorpdfstring{$\ast$}{*}recvbuf, const int recvcount, MPI\+\_\+\+Datatype recvtype, \mbox{\hyperlink{include_2communicator_2mpil__comm_8h_a4482dc156ccc9cab81c06f17bcfb8645}{MPIL\+\_\+\+Comm}} \texorpdfstring{$\ast$}{*}comm)
+\begin{DoxyCompactList}\small\item\em Feeds nonblocking\+\_\+helper to alltoall\+\_\+multileader\+\_\+locality. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{alltoall_8c_a2a626ebfbfcfef32319dedde331d9702}{alltoall\+\_\+pmpi}} (const void \texorpdfstring{$\ast$}{*}sendbuf, const int sendcount, MPI\+\_\+\+Datatype sendtype, void \texorpdfstring{$\ast$}{*}recvbuf, const int recvcount, MPI\+\_\+\+Datatype recvtype, \mbox{\hyperlink{include_2communicator_2mpil__comm_8h_a4482dc156ccc9cab81c06f17bcfb8645}{MPIL\+\_\+\+Comm}} \texorpdfstring{$\ast$}{*}comm)
+\begin{DoxyCompactList}\small\item\em Calls underlying MPI Implementation. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{include_2collective_2alltoall_8h_a458329f198a959d9caab9ac1040656f4}{Alltoall\+Method}} \mbox{\hyperlink{alltoall_8c_a72ee448eed692022c384e49d0b013871}{mpil\+\_\+alltoall\+\_\+implementation}} = \mbox{\hyperlink{include_2collective_2alltoall_8h_a458329f198a959d9caab9ac1040656f4acdaafa3f694cf6912ecf07da0fbcb82e}{ALLTOALL\+\_\+\+PAIRWISE}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Function Documentation}
+\Hypertarget{alltoall_8c_a3e84951d11936c92846dfa26f2a62a15}\label{alltoall_8c_a3e84951d11936c92846dfa26f2a62a15} 
+\index{alltoall.c@{alltoall.c}!alltoall\_hierarchical@{alltoall\_hierarchical}}
+\index{alltoall\_hierarchical@{alltoall\_hierarchical}!alltoall.c@{alltoall.c}}
+\doxysubsubsection{\texorpdfstring{alltoall\_hierarchical()}{alltoall\_hierarchical()}}
+{\footnotesize\ttfamily int alltoall\+\_\+hierarchical (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{include_2collective_2alltoall_8h_a9de5cdd0493fe76e8600f9d6a764d34b}{alltoall\+\_\+helper\+\_\+ftn}}}]{f,  }\item[{const void \texorpdfstring{$\ast$}{*}}]{sendbuf,  }\item[{const int}]{sendcount,  }\item[{MPI\+\_\+\+Datatype}]{sendtype,  }\item[{void \texorpdfstring{$\ast$}{*}}]{recvbuf,  }\item[{const int}]{recvcount,  }\item[{MPI\+\_\+\+Datatype}]{recvtype,  }\item[{\mbox{\hyperlink{include_2communicator_2mpil__comm_8h_a4482dc156ccc9cab81c06f17bcfb8645}{MPIL\+\_\+\+Comm}} \texorpdfstring{$\ast$}{*}}]{comm }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{alltoall_8c_a3e84951d11936c92846dfa26f2a62a15_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{alltoall_8c_a3e84951d11936c92846dfa26f2a62a15_icgraph}
+\end{center}
+\end{figure}
+\Hypertarget{alltoall_8c_a017846f6fba1791ead2d196d2e0de9d3}\label{alltoall_8c_a017846f6fba1791ead2d196d2e0de9d3} 
+\index{alltoall.c@{alltoall.c}!alltoall\_hierarchical\_nonblocking@{alltoall\_hierarchical\_nonblocking}}
+\index{alltoall\_hierarchical\_nonblocking@{alltoall\_hierarchical\_nonblocking}!alltoall.c@{alltoall.c}}
+\doxysubsubsection{\texorpdfstring{alltoall\_hierarchical\_nonblocking()}{alltoall\_hierarchical\_nonblocking()}}
+{\footnotesize\ttfamily int alltoall\+\_\+hierarchical\+\_\+nonblocking (\begin{DoxyParamCaption}\item[{const void \texorpdfstring{$\ast$}{*}}]{sendbuf,  }\item[{const int}]{sendcount,  }\item[{MPI\+\_\+\+Datatype}]{sendtype,  }\item[{void \texorpdfstring{$\ast$}{*}}]{recvbuf,  }\item[{const int}]{recvcount,  }\item[{MPI\+\_\+\+Datatype}]{recvtype,  }\item[{\mbox{\hyperlink{include_2communicator_2mpil__comm_8h_a4482dc156ccc9cab81c06f17bcfb8645}{MPIL\+\_\+\+Comm}} \texorpdfstring{$\ast$}{*}}]{comm }\end{DoxyParamCaption})}
+
+
+
+feeds nonblocking\+\_\+helper to alltoall\+\_\+hierarchical 
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{alltoall_8c_a017846f6fba1791ead2d196d2e0de9d3_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{alltoall_8c_a017846f6fba1791ead2d196d2e0de9d3_icgraph}
+\end{center}
+\end{figure}
+\Hypertarget{alltoall_8c_a7d8032aad54b8b192b488078166e6705}\label{alltoall_8c_a7d8032aad54b8b192b488078166e6705} 
+\index{alltoall.c@{alltoall.c}!alltoall\_hierarchical\_pairwise@{alltoall\_hierarchical\_pairwise}}
+\index{alltoall\_hierarchical\_pairwise@{alltoall\_hierarchical\_pairwise}!alltoall.c@{alltoall.c}}
+\doxysubsubsection{\texorpdfstring{alltoall\_hierarchical\_pairwise()}{alltoall\_hierarchical\_pairwise()}}
+{\footnotesize\ttfamily int alltoall\+\_\+hierarchical\+\_\+pairwise (\begin{DoxyParamCaption}\item[{const void \texorpdfstring{$\ast$}{*}}]{sendbuf,  }\item[{const int}]{sendcount,  }\item[{MPI\+\_\+\+Datatype}]{sendtype,  }\item[{void \texorpdfstring{$\ast$}{*}}]{recvbuf,  }\item[{const int}]{recvcount,  }\item[{MPI\+\_\+\+Datatype}]{recvtype,  }\item[{\mbox{\hyperlink{include_2communicator_2mpil__comm_8h_a4482dc156ccc9cab81c06f17bcfb8645}{MPIL\+\_\+\+Comm}} \texorpdfstring{$\ast$}{*}}]{comm }\end{DoxyParamCaption})}
+
+
+
+Wrapper around alltoall\+\_\+multileader. 
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{alltoall_8c_a7d8032aad54b8b192b488078166e6705_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{alltoall_8c_a7d8032aad54b8b192b488078166e6705_icgraph}
+\end{center}
+\end{figure}
+\Hypertarget{alltoall_8c_aaaf81a741725036a71fb438446d29244}\label{alltoall_8c_aaaf81a741725036a71fb438446d29244} 
+\index{alltoall.c@{alltoall.c}!alltoall\_locality\_aware@{alltoall\_locality\_aware}}
+\index{alltoall\_locality\_aware@{alltoall\_locality\_aware}!alltoall.c@{alltoall.c}}
+\doxysubsubsection{\texorpdfstring{alltoall\_locality\_aware()}{alltoall\_locality\_aware()}}
+{\footnotesize\ttfamily int alltoall\+\_\+locality\+\_\+aware (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{include_2collective_2alltoall_8h_a9de5cdd0493fe76e8600f9d6a764d34b}{alltoall\+\_\+helper\+\_\+ftn}}}]{f,  }\item[{const void \texorpdfstring{$\ast$}{*}}]{sendbuf,  }\item[{const int}]{sendcount,  }\item[{MPI\+\_\+\+Datatype}]{sendtype,  }\item[{void \texorpdfstring{$\ast$}{*}}]{recvbuf,  }\item[{const int}]{recvcount,  }\item[{MPI\+\_\+\+Datatype}]{recvtype,  }\item[{\mbox{\hyperlink{include_2communicator_2mpil__comm_8h_a4482dc156ccc9cab81c06f17bcfb8645}{MPIL\+\_\+\+Comm}} \texorpdfstring{$\ast$}{*}}]{comm,  }\item[{int}]{groups\+\_\+per\+\_\+node }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{alltoall_8c_aaaf81a741725036a71fb438446d29244_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{alltoall_8c_aaaf81a741725036a71fb438446d29244_icgraph}
+\end{center}
+\end{figure}
+\Hypertarget{alltoall_8c_a0e770344cdc148233f7c962bc33b33ef}\label{alltoall_8c_a0e770344cdc148233f7c962bc33b33ef} 
+\index{alltoall.c@{alltoall.c}!alltoall\_locality\_aware\_helper@{alltoall\_locality\_aware\_helper}}
+\index{alltoall\_locality\_aware\_helper@{alltoall\_locality\_aware\_helper}!alltoall.c@{alltoall.c}}
+\doxysubsubsection{\texorpdfstring{alltoall\_locality\_aware\_helper()}{alltoall\_locality\_aware\_helper()}}
+{\footnotesize\ttfamily int alltoall\+\_\+locality\+\_\+aware\+\_\+helper (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{include_2collective_2alltoall_8h_a9de5cdd0493fe76e8600f9d6a764d34b}{alltoall\+\_\+helper\+\_\+ftn}}}]{f,  }\item[{const void \texorpdfstring{$\ast$}{*}}]{sendbuf,  }\item[{const int}]{sendcount,  }\item[{MPI\+\_\+\+Datatype}]{sendtype,  }\item[{void \texorpdfstring{$\ast$}{*}}]{recvbuf,  }\item[{const int}]{recvcount,  }\item[{MPI\+\_\+\+Datatype}]{recvtype,  }\item[{\mbox{\hyperlink{include_2communicator_2mpil__comm_8h_a4482dc156ccc9cab81c06f17bcfb8645}{MPIL\+\_\+\+Comm}} \texorpdfstring{$\ast$}{*}}]{comm,  }\item[{int}]{groups\+\_\+per\+\_\+node,  }\item[{MPI\+\_\+\+Comm}]{local\+\_\+comm,  }\item[{MPI\+\_\+\+Comm}]{group\+\_\+comm,  }\item[{int}]{tag }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{alltoall_8c_a0e770344cdc148233f7c962bc33b33ef_icgraph}
+\end{center}
+\end{figure}
+\Hypertarget{alltoall_8c_a9f906e3449d66447e0e781c1973a0ade}\label{alltoall_8c_a9f906e3449d66447e0e781c1973a0ade} 
+\index{alltoall.c@{alltoall.c}!alltoall\_locality\_aware\_nonblocking@{alltoall\_locality\_aware\_nonblocking}}
+\index{alltoall\_locality\_aware\_nonblocking@{alltoall\_locality\_aware\_nonblocking}!alltoall.c@{alltoall.c}}
+\doxysubsubsection{\texorpdfstring{alltoall\_locality\_aware\_nonblocking()}{alltoall\_locality\_aware\_nonblocking()}}
+{\footnotesize\ttfamily int alltoall\+\_\+locality\+\_\+aware\+\_\+nonblocking (\begin{DoxyParamCaption}\item[{const void \texorpdfstring{$\ast$}{*}}]{sendbuf,  }\item[{const int}]{sendcount,  }\item[{MPI\+\_\+\+Datatype}]{sendtype,  }\item[{void \texorpdfstring{$\ast$}{*}}]{recvbuf,  }\item[{const int}]{recvcount,  }\item[{MPI\+\_\+\+Datatype}]{recvtype,  }\item[{\mbox{\hyperlink{include_2communicator_2mpil__comm_8h_a4482dc156ccc9cab81c06f17bcfb8645}{MPIL\+\_\+\+Comm}} \texorpdfstring{$\ast$}{*}}]{comm }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{alltoall_8c_a9f906e3449d66447e0e781c1973a0ade_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{alltoall_8c_a9f906e3449d66447e0e781c1973a0ade_icgraph}
+\end{center}
+\end{figure}
+\Hypertarget{alltoall_8c_aec8b84be8c60f0ec51927f8348f46944}\label{alltoall_8c_aec8b84be8c60f0ec51927f8348f46944} 
+\index{alltoall.c@{alltoall.c}!alltoall\_locality\_aware\_pairwise@{alltoall\_locality\_aware\_pairwise}}
+\index{alltoall\_locality\_aware\_pairwise@{alltoall\_locality\_aware\_pairwise}!alltoall.c@{alltoall.c}}
+\doxysubsubsection{\texorpdfstring{alltoall\_locality\_aware\_pairwise()}{alltoall\_locality\_aware\_pairwise()}}
+{\footnotesize\ttfamily int alltoall\+\_\+locality\+\_\+aware\+\_\+pairwise (\begin{DoxyParamCaption}\item[{const void \texorpdfstring{$\ast$}{*}}]{sendbuf,  }\item[{const int}]{sendcount,  }\item[{MPI\+\_\+\+Datatype}]{sendtype,  }\item[{void \texorpdfstring{$\ast$}{*}}]{recvbuf,  }\item[{const int}]{recvcount,  }\item[{MPI\+\_\+\+Datatype}]{recvtype,  }\item[{\mbox{\hyperlink{include_2communicator_2mpil__comm_8h_a4482dc156ccc9cab81c06f17bcfb8645}{MPIL\+\_\+\+Comm}} \texorpdfstring{$\ast$}{*}}]{comm }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{alltoall_8c_aec8b84be8c60f0ec51927f8348f46944_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{alltoall_8c_aec8b84be8c60f0ec51927f8348f46944_icgraph}
+\end{center}
+\end{figure}
+\Hypertarget{alltoall_8c_ae29efc4ca70c7b605a36e7ae0f16469d}\label{alltoall_8c_ae29efc4ca70c7b605a36e7ae0f16469d} 
+\index{alltoall.c@{alltoall.c}!alltoall\_multileader@{alltoall\_multileader}}
+\index{alltoall\_multileader@{alltoall\_multileader}!alltoall.c@{alltoall.c}}
+\doxysubsubsection{\texorpdfstring{alltoall\_multileader()}{alltoall\_multileader()}}
+{\footnotesize\ttfamily int alltoall\+\_\+multileader (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{include_2collective_2alltoall_8h_a9de5cdd0493fe76e8600f9d6a764d34b}{alltoall\+\_\+helper\+\_\+ftn}}}]{f,  }\item[{const void \texorpdfstring{$\ast$}{*}}]{sendbuf,  }\item[{const int}]{sendcount,  }\item[{MPI\+\_\+\+Datatype}]{sendtype,  }\item[{void \texorpdfstring{$\ast$}{*}}]{recvbuf,  }\item[{const int}]{recvcount,  }\item[{MPI\+\_\+\+Datatype}]{recvtype,  }\item[{\mbox{\hyperlink{include_2communicator_2mpil__comm_8h_a4482dc156ccc9cab81c06f17bcfb8645}{MPIL\+\_\+\+Comm}} \texorpdfstring{$\ast$}{*}}]{comm,  }\item[{int}]{n\+\_\+leaders }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{alltoall_8c_ae29efc4ca70c7b605a36e7ae0f16469d_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{alltoall_8c_ae29efc4ca70c7b605a36e7ae0f16469d_icgraph}
+\end{center}
+\end{figure}
+\Hypertarget{alltoall_8c_af48cd3c95a320f02511c632012cfc885}\label{alltoall_8c_af48cd3c95a320f02511c632012cfc885} 
+\index{alltoall.c@{alltoall.c}!alltoall\_multileader\_locality@{alltoall\_multileader\_locality}}
+\index{alltoall\_multileader\_locality@{alltoall\_multileader\_locality}!alltoall.c@{alltoall.c}}
+\doxysubsubsection{\texorpdfstring{alltoall\_multileader\_locality()}{alltoall\_multileader\_locality()}}
+{\footnotesize\ttfamily int alltoall\+\_\+multileader\+\_\+locality (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{include_2collective_2alltoall_8h_a9de5cdd0493fe76e8600f9d6a764d34b}{alltoall\+\_\+helper\+\_\+ftn}}}]{f,  }\item[{const void \texorpdfstring{$\ast$}{*}}]{sendbuf,  }\item[{const int}]{sendcount,  }\item[{MPI\+\_\+\+Datatype}]{sendtype,  }\item[{void \texorpdfstring{$\ast$}{*}}]{recvbuf,  }\item[{const int}]{recvcount,  }\item[{MPI\+\_\+\+Datatype}]{recvtype,  }\item[{\mbox{\hyperlink{include_2communicator_2mpil__comm_8h_a4482dc156ccc9cab81c06f17bcfb8645}{MPIL\+\_\+\+Comm}} \texorpdfstring{$\ast$}{*}}]{comm }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{alltoall_8c_af48cd3c95a320f02511c632012cfc885_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{alltoall_8c_af48cd3c95a320f02511c632012cfc885_icgraph}
+\end{center}
+\end{figure}
+\Hypertarget{alltoall_8c_ad75c3e1da348a1e51e82039449a86a7a}\label{alltoall_8c_ad75c3e1da348a1e51e82039449a86a7a} 
+\index{alltoall.c@{alltoall.c}!alltoall\_multileader\_locality\_nonblocking@{alltoall\_multileader\_locality\_nonblocking}}
+\index{alltoall\_multileader\_locality\_nonblocking@{alltoall\_multileader\_locality\_nonblocking}!alltoall.c@{alltoall.c}}
+\doxysubsubsection{\texorpdfstring{alltoall\_multileader\_locality\_nonblocking()}{alltoall\_multileader\_locality\_nonblocking()}}
+{\footnotesize\ttfamily int alltoall\+\_\+multileader\+\_\+locality\+\_\+nonblocking (\begin{DoxyParamCaption}\item[{const void \texorpdfstring{$\ast$}{*}}]{sendbuf,  }\item[{const int}]{sendcount,  }\item[{MPI\+\_\+\+Datatype}]{sendtype,  }\item[{void \texorpdfstring{$\ast$}{*}}]{recvbuf,  }\item[{const int}]{recvcount,  }\item[{MPI\+\_\+\+Datatype}]{recvtype,  }\item[{\mbox{\hyperlink{include_2communicator_2mpil__comm_8h_a4482dc156ccc9cab81c06f17bcfb8645}{MPIL\+\_\+\+Comm}} \texorpdfstring{$\ast$}{*}}]{comm }\end{DoxyParamCaption})}
+
+
+
+Feeds nonblocking\+\_\+helper to alltoall\+\_\+multileader\+\_\+locality. 
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{alltoall_8c_ad75c3e1da348a1e51e82039449a86a7a_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{alltoall_8c_ad75c3e1da348a1e51e82039449a86a7a_icgraph}
+\end{center}
+\end{figure}
+\Hypertarget{alltoall_8c_ad1f70b5b3479a6806122428f48232d82}\label{alltoall_8c_ad1f70b5b3479a6806122428f48232d82} 
+\index{alltoall.c@{alltoall.c}!alltoall\_multileader\_locality\_pairwise@{alltoall\_multileader\_locality\_pairwise}}
+\index{alltoall\_multileader\_locality\_pairwise@{alltoall\_multileader\_locality\_pairwise}!alltoall.c@{alltoall.c}}
+\doxysubsubsection{\texorpdfstring{alltoall\_multileader\_locality\_pairwise()}{alltoall\_multileader\_locality\_pairwise()}}
+{\footnotesize\ttfamily int alltoall\+\_\+multileader\+\_\+locality\+\_\+pairwise (\begin{DoxyParamCaption}\item[{const void \texorpdfstring{$\ast$}{*}}]{sendbuf,  }\item[{const int}]{sendcount,  }\item[{MPI\+\_\+\+Datatype}]{sendtype,  }\item[{void \texorpdfstring{$\ast$}{*}}]{recvbuf,  }\item[{const int}]{recvcount,  }\item[{MPI\+\_\+\+Datatype}]{recvtype,  }\item[{\mbox{\hyperlink{include_2communicator_2mpil__comm_8h_a4482dc156ccc9cab81c06f17bcfb8645}{MPIL\+\_\+\+Comm}} \texorpdfstring{$\ast$}{*}}]{comm }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{alltoall_8c_ad1f70b5b3479a6806122428f48232d82_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{alltoall_8c_ad1f70b5b3479a6806122428f48232d82_icgraph}
+\end{center}
+\end{figure}
+\Hypertarget{alltoall_8c_a80d65f0e7abe3fdf3fe60b41e56a8bab}\label{alltoall_8c_a80d65f0e7abe3fdf3fe60b41e56a8bab} 
+\index{alltoall.c@{alltoall.c}!alltoall\_multileader\_nonblocking@{alltoall\_multileader\_nonblocking}}
+\index{alltoall\_multileader\_nonblocking@{alltoall\_multileader\_nonblocking}!alltoall.c@{alltoall.c}}
+\doxysubsubsection{\texorpdfstring{alltoall\_multileader\_nonblocking()}{alltoall\_multileader\_nonblocking()}}
+{\footnotesize\ttfamily int alltoall\+\_\+multileader\+\_\+nonblocking (\begin{DoxyParamCaption}\item[{const void \texorpdfstring{$\ast$}{*}}]{sendbuf,  }\item[{const int}]{sendcount,  }\item[{MPI\+\_\+\+Datatype}]{sendtype,  }\item[{void \texorpdfstring{$\ast$}{*}}]{recvbuf,  }\item[{const int}]{recvcount,  }\item[{MPI\+\_\+\+Datatype}]{recvtype,  }\item[{\mbox{\hyperlink{include_2communicator_2mpil__comm_8h_a4482dc156ccc9cab81c06f17bcfb8645}{MPIL\+\_\+\+Comm}} \texorpdfstring{$\ast$}{*}}]{comm }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{alltoall_8c_a80d65f0e7abe3fdf3fe60b41e56a8bab_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{alltoall_8c_a80d65f0e7abe3fdf3fe60b41e56a8bab_icgraph}
+\end{center}
+\end{figure}
+\Hypertarget{alltoall_8c_abbf550a0317e09421f8ba1e227348f57}\label{alltoall_8c_abbf550a0317e09421f8ba1e227348f57} 
+\index{alltoall.c@{alltoall.c}!alltoall\_multileader\_pairwise@{alltoall\_multileader\_pairwise}}
+\index{alltoall\_multileader\_pairwise@{alltoall\_multileader\_pairwise}!alltoall.c@{alltoall.c}}
+\doxysubsubsection{\texorpdfstring{alltoall\_multileader\_pairwise()}{alltoall\_multileader\_pairwise()}}
+{\footnotesize\ttfamily int alltoall\+\_\+multileader\+\_\+pairwise (\begin{DoxyParamCaption}\item[{const void \texorpdfstring{$\ast$}{*}}]{sendbuf,  }\item[{const int}]{sendcount,  }\item[{MPI\+\_\+\+Datatype}]{sendtype,  }\item[{void \texorpdfstring{$\ast$}{*}}]{recvbuf,  }\item[{const int}]{recvcount,  }\item[{MPI\+\_\+\+Datatype}]{recvtype,  }\item[{\mbox{\hyperlink{include_2communicator_2mpil__comm_8h_a4482dc156ccc9cab81c06f17bcfb8645}{MPIL\+\_\+\+Comm}} \texorpdfstring{$\ast$}{*}}]{comm }\end{DoxyParamCaption})}
+
+
+
+feeds pairswise\+\_\+helper to alltoall\+\_\+multileader 
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{alltoall_8c_abbf550a0317e09421f8ba1e227348f57_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{alltoall_8c_abbf550a0317e09421f8ba1e227348f57_icgraph}
+\end{center}
+\end{figure}
+\Hypertarget{alltoall_8c_a947a764be11326b4c92f4c80fc460e46}\label{alltoall_8c_a947a764be11326b4c92f4c80fc460e46} 
+\index{alltoall.c@{alltoall.c}!alltoall\_node\_aware@{alltoall\_node\_aware}}
+\index{alltoall\_node\_aware@{alltoall\_node\_aware}!alltoall.c@{alltoall.c}}
+\doxysubsubsection{\texorpdfstring{alltoall\_node\_aware()}{alltoall\_node\_aware()}}
+{\footnotesize\ttfamily int alltoall\+\_\+node\+\_\+aware (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{include_2collective_2alltoall_8h_a9de5cdd0493fe76e8600f9d6a764d34b}{alltoall\+\_\+helper\+\_\+ftn}}}]{f,  }\item[{const void \texorpdfstring{$\ast$}{*}}]{sendbuf,  }\item[{const int}]{sendcount,  }\item[{MPI\+\_\+\+Datatype}]{sendtype,  }\item[{void \texorpdfstring{$\ast$}{*}}]{recvbuf,  }\item[{const int}]{recvcount,  }\item[{MPI\+\_\+\+Datatype}]{recvtype,  }\item[{\mbox{\hyperlink{include_2communicator_2mpil__comm_8h_a4482dc156ccc9cab81c06f17bcfb8645}{MPIL\+\_\+\+Comm}} \texorpdfstring{$\ast$}{*}}]{comm }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{alltoall_8c_a947a764be11326b4c92f4c80fc460e46_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{alltoall_8c_a947a764be11326b4c92f4c80fc460e46_icgraph}
+\end{center}
+\end{figure}
+\Hypertarget{alltoall_8c_a948c88f0d66244366df9d4676f96e83f}\label{alltoall_8c_a948c88f0d66244366df9d4676f96e83f} 
+\index{alltoall.c@{alltoall.c}!alltoall\_node\_aware\_nonblocking@{alltoall\_node\_aware\_nonblocking}}
+\index{alltoall\_node\_aware\_nonblocking@{alltoall\_node\_aware\_nonblocking}!alltoall.c@{alltoall.c}}
+\doxysubsubsection{\texorpdfstring{alltoall\_node\_aware\_nonblocking()}{alltoall\_node\_aware\_nonblocking()}}
+{\footnotesize\ttfamily int alltoall\+\_\+node\+\_\+aware\+\_\+nonblocking (\begin{DoxyParamCaption}\item[{const void \texorpdfstring{$\ast$}{*}}]{sendbuf,  }\item[{const int}]{sendcount,  }\item[{MPI\+\_\+\+Datatype}]{sendtype,  }\item[{void \texorpdfstring{$\ast$}{*}}]{recvbuf,  }\item[{const int}]{recvcount,  }\item[{MPI\+\_\+\+Datatype}]{recvtype,  }\item[{\mbox{\hyperlink{include_2communicator_2mpil__comm_8h_a4482dc156ccc9cab81c06f17bcfb8645}{MPIL\+\_\+\+Comm}} \texorpdfstring{$\ast$}{*}}]{comm }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{alltoall_8c_a948c88f0d66244366df9d4676f96e83f_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{alltoall_8c_a948c88f0d66244366df9d4676f96e83f_icgraph}
+\end{center}
+\end{figure}
+\Hypertarget{alltoall_8c_a0503f659d9dabc64c066fb306c0ec435}\label{alltoall_8c_a0503f659d9dabc64c066fb306c0ec435} 
+\index{alltoall.c@{alltoall.c}!alltoall\_node\_aware\_pairwise@{alltoall\_node\_aware\_pairwise}}
+\index{alltoall\_node\_aware\_pairwise@{alltoall\_node\_aware\_pairwise}!alltoall.c@{alltoall.c}}
+\doxysubsubsection{\texorpdfstring{alltoall\_node\_aware\_pairwise()}{alltoall\_node\_aware\_pairwise()}}
+{\footnotesize\ttfamily int alltoall\+\_\+node\+\_\+aware\+\_\+pairwise (\begin{DoxyParamCaption}\item[{const void \texorpdfstring{$\ast$}{*}}]{sendbuf,  }\item[{const int}]{sendcount,  }\item[{MPI\+\_\+\+Datatype}]{sendtype,  }\item[{void \texorpdfstring{$\ast$}{*}}]{recvbuf,  }\item[{const int}]{recvcount,  }\item[{MPI\+\_\+\+Datatype}]{recvtype,  }\item[{\mbox{\hyperlink{include_2communicator_2mpil__comm_8h_a4482dc156ccc9cab81c06f17bcfb8645}{MPIL\+\_\+\+Comm}} \texorpdfstring{$\ast$}{*}}]{comm }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{alltoall_8c_a0503f659d9dabc64c066fb306c0ec435_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{alltoall_8c_a0503f659d9dabc64c066fb306c0ec435_icgraph}
+\end{center}
+\end{figure}
+\Hypertarget{alltoall_8c_a67484069b8ce57a23ca323978d44cacc}\label{alltoall_8c_a67484069b8ce57a23ca323978d44cacc} 
+\index{alltoall.c@{alltoall.c}!alltoall\_nonblocking@{alltoall\_nonblocking}}
+\index{alltoall\_nonblocking@{alltoall\_nonblocking}!alltoall.c@{alltoall.c}}
+\doxysubsubsection{\texorpdfstring{alltoall\_nonblocking()}{alltoall\_nonblocking()}}
+{\footnotesize\ttfamily int alltoall\+\_\+nonblocking (\begin{DoxyParamCaption}\item[{const void \texorpdfstring{$\ast$}{*}}]{sendbuf,  }\item[{const int}]{sendcount,  }\item[{MPI\+\_\+\+Datatype}]{sendtype,  }\item[{void \texorpdfstring{$\ast$}{*}}]{recvbuf,  }\item[{const int}]{recvcount,  }\item[{MPI\+\_\+\+Datatype}]{recvtype,  }\item[{\mbox{\hyperlink{include_2communicator_2mpil__comm_8h_a4482dc156ccc9cab81c06f17bcfb8645}{MPIL\+\_\+\+Comm}} \texorpdfstring{$\ast$}{*}}]{comm }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=343pt]{alltoall_8c_a67484069b8ce57a23ca323978d44cacc_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{alltoall_8c_a67484069b8ce57a23ca323978d44cacc_icgraph}
+\end{center}
+\end{figure}
+\Hypertarget{alltoall_8c_ae0d9c647455b6bed366c1eca36f81de0}\label{alltoall_8c_ae0d9c647455b6bed366c1eca36f81de0} 
+\index{alltoall.c@{alltoall.c}!alltoall\_pairwise@{alltoall\_pairwise}}
+\index{alltoall\_pairwise@{alltoall\_pairwise}!alltoall.c@{alltoall.c}}
+\doxysubsubsection{\texorpdfstring{alltoall\_pairwise()}{alltoall\_pairwise()}}
+{\footnotesize\ttfamily int alltoall\+\_\+pairwise (\begin{DoxyParamCaption}\item[{const void \texorpdfstring{$\ast$}{*}}]{sendbuf,  }\item[{const int}]{sendcount,  }\item[{MPI\+\_\+\+Datatype}]{sendtype,  }\item[{void \texorpdfstring{$\ast$}{*}}]{recvbuf,  }\item[{const int}]{recvcount,  }\item[{MPI\+\_\+\+Datatype}]{recvtype,  }\item[{\mbox{\hyperlink{include_2communicator_2mpil__comm_8h_a4482dc156ccc9cab81c06f17bcfb8645}{MPIL\+\_\+\+Comm}} \texorpdfstring{$\ast$}{*}}]{comm }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=311pt]{alltoall_8c_ae0d9c647455b6bed366c1eca36f81de0_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{alltoall_8c_ae0d9c647455b6bed366c1eca36f81de0_icgraph}
+\end{center}
+\end{figure}
+\Hypertarget{alltoall_8c_a2a626ebfbfcfef32319dedde331d9702}\label{alltoall_8c_a2a626ebfbfcfef32319dedde331d9702} 
+\index{alltoall.c@{alltoall.c}!alltoall\_pmpi@{alltoall\_pmpi}}
+\index{alltoall\_pmpi@{alltoall\_pmpi}!alltoall.c@{alltoall.c}}
+\doxysubsubsection{\texorpdfstring{alltoall\_pmpi()}{alltoall\_pmpi()}}
+{\footnotesize\ttfamily int alltoall\+\_\+pmpi (\begin{DoxyParamCaption}\item[{const void \texorpdfstring{$\ast$}{*}}]{sendbuf,  }\item[{const int}]{sendcount,  }\item[{MPI\+\_\+\+Datatype}]{sendtype,  }\item[{void \texorpdfstring{$\ast$}{*}}]{recvbuf,  }\item[{const int}]{recvcount,  }\item[{MPI\+\_\+\+Datatype}]{recvtype,  }\item[{\mbox{\hyperlink{include_2communicator_2mpil__comm_8h_a4482dc156ccc9cab81c06f17bcfb8645}{MPIL\+\_\+\+Comm}} \texorpdfstring{$\ast$}{*}}]{comm }\end{DoxyParamCaption})}
+
+
+
+Calls underlying MPI Implementation. 
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{alltoall_8c_a2a626ebfbfcfef32319dedde331d9702_icgraph}
+\end{center}
+\end{figure}
+\Hypertarget{alltoall_8c_a16b214253bbb751e79d2bc525559652e}\label{alltoall_8c_a16b214253bbb751e79d2bc525559652e} 
+\index{alltoall.c@{alltoall.c}!MPIL\_Alltoall@{MPIL\_Alltoall}}
+\index{MPIL\_Alltoall@{MPIL\_Alltoall}!alltoall.c@{alltoall.c}}
+\doxysubsubsection{\texorpdfstring{MPIL\_Alltoall()}{MPIL\_Alltoall()}}
+{\footnotesize\ttfamily int MPIL\+\_\+\+Alltoall (\begin{DoxyParamCaption}\item[{const void \texorpdfstring{$\ast$}{*}}]{sendbuf,  }\item[{const int}]{sendcount,  }\item[{MPI\+\_\+\+Datatype}]{sendtype,  }\item[{void \texorpdfstring{$\ast$}{*}}]{recvbuf,  }\item[{const int}]{recvcount,  }\item[{MPI\+\_\+\+Datatype}]{recvtype,  }\item[{\mbox{\hyperlink{include_2communicator_2mpil__comm_8h_a4482dc156ccc9cab81c06f17bcfb8645}{MPIL\+\_\+\+Comm}} \texorpdfstring{$\ast$}{*}}]{mpi\+\_\+comm }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{alltoall_8c_a16b214253bbb751e79d2bc525559652e_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=237pt]{alltoall_8c_a16b214253bbb751e79d2bc525559652e_icgraph}
+\end{center}
+\end{figure}
+\Hypertarget{alltoall_8c_aaa1b9e274512503b5f522f798f37ccaa}\label{alltoall_8c_aaa1b9e274512503b5f522f798f37ccaa} 
+\index{alltoall.c@{alltoall.c}!nonblocking\_helper@{nonblocking\_helper}}
+\index{nonblocking\_helper@{nonblocking\_helper}!alltoall.c@{alltoall.c}}
+\doxysubsubsection{\texorpdfstring{nonblocking\_helper()}{nonblocking\_helper()}}
+{\footnotesize\ttfamily int nonblocking\+\_\+helper (\begin{DoxyParamCaption}\item[{const void \texorpdfstring{$\ast$}{*}}]{sendbuf,  }\item[{const int}]{sendcount,  }\item[{MPI\+\_\+\+Datatype}]{sendtype,  }\item[{void \texorpdfstring{$\ast$}{*}}]{recvbuf,  }\item[{const int}]{recvcount,  }\item[{MPI\+\_\+\+Datatype}]{recvtype,  }\item[{MPI\+\_\+\+Comm}]{comm,  }\item[{int}]{tag }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{alltoall_8c_aaa1b9e274512503b5f522f798f37ccaa_icgraph}
+\end{center}
+\end{figure}
+\Hypertarget{alltoall_8c_a1af2a900976168f59a7b97345fa07410}\label{alltoall_8c_a1af2a900976168f59a7b97345fa07410} 
+\index{alltoall.c@{alltoall.c}!pairwise\_helper@{pairwise\_helper}}
+\index{pairwise\_helper@{pairwise\_helper}!alltoall.c@{alltoall.c}}
+\doxysubsubsection{\texorpdfstring{pairwise\_helper()}{pairwise\_helper()}}
+{\footnotesize\ttfamily int pairwise\+\_\+helper (\begin{DoxyParamCaption}\item[{const void \texorpdfstring{$\ast$}{*}}]{sendbuf,  }\item[{const int}]{sendcount,  }\item[{MPI\+\_\+\+Datatype}]{sendtype,  }\item[{void \texorpdfstring{$\ast$}{*}}]{recvbuf,  }\item[{const int}]{recvcount,  }\item[{MPI\+\_\+\+Datatype}]{recvtype,  }\item[{MPI\+\_\+\+Comm}]{comm,  }\item[{int}]{tag }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{alltoall_8c_a1af2a900976168f59a7b97345fa07410_icgraph}
+\end{center}
+\end{figure}
+
+
+\doxysubsection{Variable Documentation}
+\Hypertarget{alltoall_8c_a72ee448eed692022c384e49d0b013871}\label{alltoall_8c_a72ee448eed692022c384e49d0b013871} 
+\index{alltoall.c@{alltoall.c}!mpil\_alltoall\_implementation@{mpil\_alltoall\_implementation}}
+\index{mpil\_alltoall\_implementation@{mpil\_alltoall\_implementation}!alltoall.c@{alltoall.c}}
+\doxysubsubsection{\texorpdfstring{mpil\_alltoall\_implementation}{mpil\_alltoall\_implementation}}
+{\footnotesize\ttfamily \mbox{\hyperlink{include_2collective_2alltoall_8h_a458329f198a959d9caab9ac1040656f4}{Alltoall\+Method}} mpil\+\_\+alltoall\+\_\+implementation = \mbox{\hyperlink{include_2collective_2alltoall_8h_a458329f198a959d9caab9ac1040656f4acdaafa3f694cf6912ecf07da0fbcb82e}{ALLTOALL\+\_\+\+PAIRWISE}}}
+

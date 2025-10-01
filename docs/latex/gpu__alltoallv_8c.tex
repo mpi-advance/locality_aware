@@ -1,0 +1,211 @@
+\doxysection{src/heterogeneous/gpu\+\_\+alltoallv.c File Reference}
+\hypertarget{gpu__alltoallv_8c}{}\label{gpu__alltoallv_8c}\index{src/heterogeneous/gpu\_alltoallv.c@{src/heterogeneous/gpu\_alltoallv.c}}
+{\ttfamily \#include "{}gpu\+\_\+alltoallv.\+h"{}}\newline
+{\ttfamily \#include "{}collective/alltoallv.\+h"{}}\newline
+{\ttfamily \#include "{}collective/collective.\+h"{}}\newline
+Include dependency graph for gpu\+\_\+alltoallv.\+c\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{gpu__alltoallv_8c__incl}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{gpu__alltoallv_8c_accd631467827b30432f722c8d27d1f30}{gpu\+\_\+aware\+\_\+alltoallv}} (\mbox{\hyperlink{include_2collective_2alltoallv_8h_ab09e7d12abc3b4faa469f7345635db96}{alltoallv\+\_\+ftn}} f, const void \texorpdfstring{$\ast$}{*}sendbuf, const int sendcounts\mbox{[}$\,$\mbox{]}, const int sdispls\mbox{[}$\,$\mbox{]}, MPI\+\_\+\+Datatype sendtype, void \texorpdfstring{$\ast$}{*}recvbuf, const int recvcounts\mbox{[}$\,$\mbox{]}, const int rdispls\mbox{[}$\,$\mbox{]}, MPI\+\_\+\+Datatype recvtype, \mbox{\hyperlink{include_2communicator_2mpil__comm_8h_a4482dc156ccc9cab81c06f17bcfb8645}{MPIL\+\_\+\+Comm}} \texorpdfstring{$\ast$}{*}comm)
+\item 
+int \mbox{\hyperlink{gpu__alltoallv_8c_adb3930e08ece239da587cfca7316a847}{gpu\+\_\+aware\+\_\+alltoallv\+\_\+pairwise}} (const void \texorpdfstring{$\ast$}{*}sendbuf, const int sendcounts\mbox{[}$\,$\mbox{]}, const int sdispls\mbox{[}$\,$\mbox{]}, MPI\+\_\+\+Datatype sendtype, void \texorpdfstring{$\ast$}{*}recvbuf, const int recvcounts\mbox{[}$\,$\mbox{]}, const int rdispls\mbox{[}$\,$\mbox{]}, MPI\+\_\+\+Datatype recvtype, \mbox{\hyperlink{include_2communicator_2mpil__comm_8h_a4482dc156ccc9cab81c06f17bcfb8645}{MPIL\+\_\+\+Comm}} \texorpdfstring{$\ast$}{*}comm)
+\item 
+int \mbox{\hyperlink{gpu__alltoallv_8c_a3d734ddb0012d2217de8f425b11c4aa4}{gpu\+\_\+aware\+\_\+alltoallv\+\_\+nonblocking}} (const void \texorpdfstring{$\ast$}{*}sendbuf, const int sendcounts\mbox{[}$\,$\mbox{]}, const int sdispls\mbox{[}$\,$\mbox{]}, MPI\+\_\+\+Datatype sendtype, void \texorpdfstring{$\ast$}{*}recvbuf, const int recvcounts\mbox{[}$\,$\mbox{]}, const int rdispls\mbox{[}$\,$\mbox{]}, MPI\+\_\+\+Datatype recvtype, \mbox{\hyperlink{include_2communicator_2mpil__comm_8h_a4482dc156ccc9cab81c06f17bcfb8645}{MPIL\+\_\+\+Comm}} \texorpdfstring{$\ast$}{*}comm)
+\item 
+int \mbox{\hyperlink{gpu__alltoallv_8c_af2477d5ce9310704fce3f6624c0a47e8}{gpu\+\_\+aware\+\_\+alltoallv\+\_\+batch}} (const void \texorpdfstring{$\ast$}{*}sendbuf, const int sendcounts\mbox{[}$\,$\mbox{]}, const int sdispls\mbox{[}$\,$\mbox{]}, MPI\+\_\+\+Datatype sendtype, void \texorpdfstring{$\ast$}{*}recvbuf, const int recvcounts\mbox{[}$\,$\mbox{]}, const int rdispls\mbox{[}$\,$\mbox{]}, MPI\+\_\+\+Datatype recvtype, \mbox{\hyperlink{include_2communicator_2mpil__comm_8h_a4482dc156ccc9cab81c06f17bcfb8645}{MPIL\+\_\+\+Comm}} \texorpdfstring{$\ast$}{*}comm)
+\item 
+int \mbox{\hyperlink{gpu__alltoallv_8c_adb30a179355027853679f20a5f4bd3c7}{gpu\+\_\+aware\+\_\+alltoallv\+\_\+batch\+\_\+async}} (const void \texorpdfstring{$\ast$}{*}sendbuf, const int sendcounts\mbox{[}$\,$\mbox{]}, const int sdispls\mbox{[}$\,$\mbox{]}, MPI\+\_\+\+Datatype sendtype, void \texorpdfstring{$\ast$}{*}recvbuf, const int recvcounts\mbox{[}$\,$\mbox{]}, const int rdispls\mbox{[}$\,$\mbox{]}, MPI\+\_\+\+Datatype recvtype, \mbox{\hyperlink{include_2communicator_2mpil__comm_8h_a4482dc156ccc9cab81c06f17bcfb8645}{MPIL\+\_\+\+Comm}} \texorpdfstring{$\ast$}{*}comm)
+\item 
+int \mbox{\hyperlink{gpu__alltoallv_8c_adb3d47509f7c4d90d22ab2ba391f0cc8}{copy\+\_\+to\+\_\+cpu\+\_\+alltoallv}} (\mbox{\hyperlink{include_2collective_2alltoallv_8h_ab09e7d12abc3b4faa469f7345635db96}{alltoallv\+\_\+ftn}} f, const void \texorpdfstring{$\ast$}{*}sendbuf, const int sendcounts\mbox{[}$\,$\mbox{]}, const int sdispls\mbox{[}$\,$\mbox{]}, MPI\+\_\+\+Datatype sendtype, void \texorpdfstring{$\ast$}{*}recvbuf, const int recvcounts\mbox{[}$\,$\mbox{]}, const int rdispls\mbox{[}$\,$\mbox{]}, MPI\+\_\+\+Datatype recvtype, \mbox{\hyperlink{include_2communicator_2mpil__comm_8h_a4482dc156ccc9cab81c06f17bcfb8645}{MPIL\+\_\+\+Comm}} \texorpdfstring{$\ast$}{*}comm)
+\item 
+int \mbox{\hyperlink{gpu__alltoallv_8c_a596bd32ffc5574fa48930d7ae9f35317}{copy\+\_\+to\+\_\+cpu\+\_\+alltoallv\+\_\+pairwise}} (const void \texorpdfstring{$\ast$}{*}sendbuf, const int sendcounts\mbox{[}$\,$\mbox{]}, const int sdispls\mbox{[}$\,$\mbox{]}, MPI\+\_\+\+Datatype sendtype, void \texorpdfstring{$\ast$}{*}recvbuf, const int recvcounts\mbox{[}$\,$\mbox{]}, const int rdispls\mbox{[}$\,$\mbox{]}, MPI\+\_\+\+Datatype recvtype, \mbox{\hyperlink{include_2communicator_2mpil__comm_8h_a4482dc156ccc9cab81c06f17bcfb8645}{MPIL\+\_\+\+Comm}} \texorpdfstring{$\ast$}{*}comm)
+\item 
+int \mbox{\hyperlink{gpu__alltoallv_8c_af3affcb02c8f9697c791bd43cfdb5f56}{copy\+\_\+to\+\_\+cpu\+\_\+alltoallv\+\_\+nonblocking}} (const void \texorpdfstring{$\ast$}{*}sendbuf, const int sendcounts\mbox{[}$\,$\mbox{]}, const int sdispls\mbox{[}$\,$\mbox{]}, MPI\+\_\+\+Datatype sendtype, void \texorpdfstring{$\ast$}{*}recvbuf, const int recvcounts\mbox{[}$\,$\mbox{]}, const int rdispls\mbox{[}$\,$\mbox{]}, MPI\+\_\+\+Datatype recvtype, \mbox{\hyperlink{include_2communicator_2mpil__comm_8h_a4482dc156ccc9cab81c06f17bcfb8645}{MPIL\+\_\+\+Comm}} \texorpdfstring{$\ast$}{*}comm)
+\item 
+int \mbox{\hyperlink{gpu__alltoallv_8c_a353bbb891d091ed068b9c7bf2535b82b}{copy\+\_\+to\+\_\+cpu\+\_\+alltoallv\+\_\+batch}} (const void \texorpdfstring{$\ast$}{*}sendbuf, const int sendcounts\mbox{[}$\,$\mbox{]}, const int sdispls\mbox{[}$\,$\mbox{]}, MPI\+\_\+\+Datatype sendtype, void \texorpdfstring{$\ast$}{*}recvbuf, const int recvcounts\mbox{[}$\,$\mbox{]}, const int rdispls\mbox{[}$\,$\mbox{]}, MPI\+\_\+\+Datatype recvtype, \mbox{\hyperlink{include_2communicator_2mpil__comm_8h_a4482dc156ccc9cab81c06f17bcfb8645}{MPIL\+\_\+\+Comm}} \texorpdfstring{$\ast$}{*}comm)
+\item 
+int \mbox{\hyperlink{gpu__alltoallv_8c_a31e4dc0b3c32b793bc5adf1d507bb603}{copy\+\_\+to\+\_\+cpu\+\_\+alltoallv\+\_\+batch\+\_\+async}} (const void \texorpdfstring{$\ast$}{*}sendbuf, const int sendcounts\mbox{[}$\,$\mbox{]}, const int sdispls\mbox{[}$\,$\mbox{]}, MPI\+\_\+\+Datatype sendtype, void \texorpdfstring{$\ast$}{*}recvbuf, const int recvcounts\mbox{[}$\,$\mbox{]}, const int rdispls\mbox{[}$\,$\mbox{]}, MPI\+\_\+\+Datatype recvtype, \mbox{\hyperlink{include_2communicator_2mpil__comm_8h_a4482dc156ccc9cab81c06f17bcfb8645}{MPIL\+\_\+\+Comm}} \texorpdfstring{$\ast$}{*}comm)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Function Documentation}
+\Hypertarget{gpu__alltoallv_8c_adb3d47509f7c4d90d22ab2ba391f0cc8}\label{gpu__alltoallv_8c_adb3d47509f7c4d90d22ab2ba391f0cc8} 
+\index{gpu\_alltoallv.c@{gpu\_alltoallv.c}!copy\_to\_cpu\_alltoallv@{copy\_to\_cpu\_alltoallv}}
+\index{copy\_to\_cpu\_alltoallv@{copy\_to\_cpu\_alltoallv}!gpu\_alltoallv.c@{gpu\_alltoallv.c}}
+\doxysubsubsection{\texorpdfstring{copy\_to\_cpu\_alltoallv()}{copy\_to\_cpu\_alltoallv()}}
+{\footnotesize\ttfamily int copy\+\_\+to\+\_\+cpu\+\_\+alltoallv (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{include_2collective_2alltoallv_8h_ab09e7d12abc3b4faa469f7345635db96}{alltoallv\+\_\+ftn}}}]{f,  }\item[{const void \texorpdfstring{$\ast$}{*}}]{sendbuf,  }\item[{const int}]{sendcounts\mbox{[}$\,$\mbox{]},  }\item[{const int}]{sdispls\mbox{[}$\,$\mbox{]},  }\item[{MPI\+\_\+\+Datatype}]{sendtype,  }\item[{void \texorpdfstring{$\ast$}{*}}]{recvbuf,  }\item[{const int}]{recvcounts\mbox{[}$\,$\mbox{]},  }\item[{const int}]{rdispls\mbox{[}$\,$\mbox{]},  }\item[{MPI\+\_\+\+Datatype}]{recvtype,  }\item[{\mbox{\hyperlink{include_2communicator_2mpil__comm_8h_a4482dc156ccc9cab81c06f17bcfb8645}{MPIL\+\_\+\+Comm}} \texorpdfstring{$\ast$}{*}}]{comm }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{gpu__alltoallv_8c_adb3d47509f7c4d90d22ab2ba391f0cc8_icgraph}
+\end{center}
+\end{figure}
+\Hypertarget{gpu__alltoallv_8c_a353bbb891d091ed068b9c7bf2535b82b}\label{gpu__alltoallv_8c_a353bbb891d091ed068b9c7bf2535b82b} 
+\index{gpu\_alltoallv.c@{gpu\_alltoallv.c}!copy\_to\_cpu\_alltoallv\_batch@{copy\_to\_cpu\_alltoallv\_batch}}
+\index{copy\_to\_cpu\_alltoallv\_batch@{copy\_to\_cpu\_alltoallv\_batch}!gpu\_alltoallv.c@{gpu\_alltoallv.c}}
+\doxysubsubsection{\texorpdfstring{copy\_to\_cpu\_alltoallv\_batch()}{copy\_to\_cpu\_alltoallv\_batch()}}
+{\footnotesize\ttfamily int copy\+\_\+to\+\_\+cpu\+\_\+alltoallv\+\_\+batch (\begin{DoxyParamCaption}\item[{const void \texorpdfstring{$\ast$}{*}}]{sendbuf,  }\item[{const int}]{sendcounts\mbox{[}$\,$\mbox{]},  }\item[{const int}]{sdispls\mbox{[}$\,$\mbox{]},  }\item[{MPI\+\_\+\+Datatype}]{sendtype,  }\item[{void \texorpdfstring{$\ast$}{*}}]{recvbuf,  }\item[{const int}]{recvcounts\mbox{[}$\,$\mbox{]},  }\item[{const int}]{rdispls\mbox{[}$\,$\mbox{]},  }\item[{MPI\+\_\+\+Datatype}]{recvtype,  }\item[{\mbox{\hyperlink{include_2communicator_2mpil__comm_8h_a4482dc156ccc9cab81c06f17bcfb8645}{MPIL\+\_\+\+Comm}} \texorpdfstring{$\ast$}{*}}]{comm }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{gpu__alltoallv_8c_a353bbb891d091ed068b9c7bf2535b82b_cgraph}
+\end{center}
+\end{figure}
+\Hypertarget{gpu__alltoallv_8c_a31e4dc0b3c32b793bc5adf1d507bb603}\label{gpu__alltoallv_8c_a31e4dc0b3c32b793bc5adf1d507bb603} 
+\index{gpu\_alltoallv.c@{gpu\_alltoallv.c}!copy\_to\_cpu\_alltoallv\_batch\_async@{copy\_to\_cpu\_alltoallv\_batch\_async}}
+\index{copy\_to\_cpu\_alltoallv\_batch\_async@{copy\_to\_cpu\_alltoallv\_batch\_async}!gpu\_alltoallv.c@{gpu\_alltoallv.c}}
+\doxysubsubsection{\texorpdfstring{copy\_to\_cpu\_alltoallv\_batch\_async()}{copy\_to\_cpu\_alltoallv\_batch\_async()}}
+{\footnotesize\ttfamily int copy\+\_\+to\+\_\+cpu\+\_\+alltoallv\+\_\+batch\+\_\+async (\begin{DoxyParamCaption}\item[{const void \texorpdfstring{$\ast$}{*}}]{sendbuf,  }\item[{const int}]{sendcounts\mbox{[}$\,$\mbox{]},  }\item[{const int}]{sdispls\mbox{[}$\,$\mbox{]},  }\item[{MPI\+\_\+\+Datatype}]{sendtype,  }\item[{void \texorpdfstring{$\ast$}{*}}]{recvbuf,  }\item[{const int}]{recvcounts\mbox{[}$\,$\mbox{]},  }\item[{const int}]{rdispls\mbox{[}$\,$\mbox{]},  }\item[{MPI\+\_\+\+Datatype}]{recvtype,  }\item[{\mbox{\hyperlink{include_2communicator_2mpil__comm_8h_a4482dc156ccc9cab81c06f17bcfb8645}{MPIL\+\_\+\+Comm}} \texorpdfstring{$\ast$}{*}}]{comm }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{gpu__alltoallv_8c_a31e4dc0b3c32b793bc5adf1d507bb603_cgraph}
+\end{center}
+\end{figure}
+\Hypertarget{gpu__alltoallv_8c_af3affcb02c8f9697c791bd43cfdb5f56}\label{gpu__alltoallv_8c_af3affcb02c8f9697c791bd43cfdb5f56} 
+\index{gpu\_alltoallv.c@{gpu\_alltoallv.c}!copy\_to\_cpu\_alltoallv\_nonblocking@{copy\_to\_cpu\_alltoallv\_nonblocking}}
+\index{copy\_to\_cpu\_alltoallv\_nonblocking@{copy\_to\_cpu\_alltoallv\_nonblocking}!gpu\_alltoallv.c@{gpu\_alltoallv.c}}
+\doxysubsubsection{\texorpdfstring{copy\_to\_cpu\_alltoallv\_nonblocking()}{copy\_to\_cpu\_alltoallv\_nonblocking()}}
+{\footnotesize\ttfamily int copy\+\_\+to\+\_\+cpu\+\_\+alltoallv\+\_\+nonblocking (\begin{DoxyParamCaption}\item[{const void \texorpdfstring{$\ast$}{*}}]{sendbuf,  }\item[{const int}]{sendcounts\mbox{[}$\,$\mbox{]},  }\item[{const int}]{sdispls\mbox{[}$\,$\mbox{]},  }\item[{MPI\+\_\+\+Datatype}]{sendtype,  }\item[{void \texorpdfstring{$\ast$}{*}}]{recvbuf,  }\item[{const int}]{recvcounts\mbox{[}$\,$\mbox{]},  }\item[{const int}]{rdispls\mbox{[}$\,$\mbox{]},  }\item[{MPI\+\_\+\+Datatype}]{recvtype,  }\item[{\mbox{\hyperlink{include_2communicator_2mpil__comm_8h_a4482dc156ccc9cab81c06f17bcfb8645}{MPIL\+\_\+\+Comm}} \texorpdfstring{$\ast$}{*}}]{comm }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{gpu__alltoallv_8c_af3affcb02c8f9697c791bd43cfdb5f56_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{gpu__alltoallv_8c_af3affcb02c8f9697c791bd43cfdb5f56_icgraph}
+\end{center}
+\end{figure}
+\Hypertarget{gpu__alltoallv_8c_a596bd32ffc5574fa48930d7ae9f35317}\label{gpu__alltoallv_8c_a596bd32ffc5574fa48930d7ae9f35317} 
+\index{gpu\_alltoallv.c@{gpu\_alltoallv.c}!copy\_to\_cpu\_alltoallv\_pairwise@{copy\_to\_cpu\_alltoallv\_pairwise}}
+\index{copy\_to\_cpu\_alltoallv\_pairwise@{copy\_to\_cpu\_alltoallv\_pairwise}!gpu\_alltoallv.c@{gpu\_alltoallv.c}}
+\doxysubsubsection{\texorpdfstring{copy\_to\_cpu\_alltoallv\_pairwise()}{copy\_to\_cpu\_alltoallv\_pairwise()}}
+{\footnotesize\ttfamily int copy\+\_\+to\+\_\+cpu\+\_\+alltoallv\+\_\+pairwise (\begin{DoxyParamCaption}\item[{const void \texorpdfstring{$\ast$}{*}}]{sendbuf,  }\item[{const int}]{sendcounts\mbox{[}$\,$\mbox{]},  }\item[{const int}]{sdispls\mbox{[}$\,$\mbox{]},  }\item[{MPI\+\_\+\+Datatype}]{sendtype,  }\item[{void \texorpdfstring{$\ast$}{*}}]{recvbuf,  }\item[{const int}]{recvcounts\mbox{[}$\,$\mbox{]},  }\item[{const int}]{rdispls\mbox{[}$\,$\mbox{]},  }\item[{MPI\+\_\+\+Datatype}]{recvtype,  }\item[{\mbox{\hyperlink{include_2communicator_2mpil__comm_8h_a4482dc156ccc9cab81c06f17bcfb8645}{MPIL\+\_\+\+Comm}} \texorpdfstring{$\ast$}{*}}]{comm }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{gpu__alltoallv_8c_a596bd32ffc5574fa48930d7ae9f35317_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{gpu__alltoallv_8c_a596bd32ffc5574fa48930d7ae9f35317_icgraph}
+\end{center}
+\end{figure}
+\Hypertarget{gpu__alltoallv_8c_accd631467827b30432f722c8d27d1f30}\label{gpu__alltoallv_8c_accd631467827b30432f722c8d27d1f30} 
+\index{gpu\_alltoallv.c@{gpu\_alltoallv.c}!gpu\_aware\_alltoallv@{gpu\_aware\_alltoallv}}
+\index{gpu\_aware\_alltoallv@{gpu\_aware\_alltoallv}!gpu\_alltoallv.c@{gpu\_alltoallv.c}}
+\doxysubsubsection{\texorpdfstring{gpu\_aware\_alltoallv()}{gpu\_aware\_alltoallv()}}
+{\footnotesize\ttfamily int gpu\+\_\+aware\+\_\+alltoallv (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{include_2collective_2alltoallv_8h_ab09e7d12abc3b4faa469f7345635db96}{alltoallv\+\_\+ftn}}}]{f,  }\item[{const void \texorpdfstring{$\ast$}{*}}]{sendbuf,  }\item[{const int}]{sendcounts\mbox{[}$\,$\mbox{]},  }\item[{const int}]{sdispls\mbox{[}$\,$\mbox{]},  }\item[{MPI\+\_\+\+Datatype}]{sendtype,  }\item[{void \texorpdfstring{$\ast$}{*}}]{recvbuf,  }\item[{const int}]{recvcounts\mbox{[}$\,$\mbox{]},  }\item[{const int}]{rdispls\mbox{[}$\,$\mbox{]},  }\item[{MPI\+\_\+\+Datatype}]{recvtype,  }\item[{\mbox{\hyperlink{include_2communicator_2mpil__comm_8h_a4482dc156ccc9cab81c06f17bcfb8645}{MPIL\+\_\+\+Comm}} \texorpdfstring{$\ast$}{*}}]{comm }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{gpu__alltoallv_8c_accd631467827b30432f722c8d27d1f30_icgraph}
+\end{center}
+\end{figure}
+\Hypertarget{gpu__alltoallv_8c_af2477d5ce9310704fce3f6624c0a47e8}\label{gpu__alltoallv_8c_af2477d5ce9310704fce3f6624c0a47e8} 
+\index{gpu\_alltoallv.c@{gpu\_alltoallv.c}!gpu\_aware\_alltoallv\_batch@{gpu\_aware\_alltoallv\_batch}}
+\index{gpu\_aware\_alltoallv\_batch@{gpu\_aware\_alltoallv\_batch}!gpu\_alltoallv.c@{gpu\_alltoallv.c}}
+\doxysubsubsection{\texorpdfstring{gpu\_aware\_alltoallv\_batch()}{gpu\_aware\_alltoallv\_batch()}}
+{\footnotesize\ttfamily int gpu\+\_\+aware\+\_\+alltoallv\+\_\+batch (\begin{DoxyParamCaption}\item[{const void \texorpdfstring{$\ast$}{*}}]{sendbuf,  }\item[{const int}]{sendcounts\mbox{[}$\,$\mbox{]},  }\item[{const int}]{sdispls\mbox{[}$\,$\mbox{]},  }\item[{MPI\+\_\+\+Datatype}]{sendtype,  }\item[{void \texorpdfstring{$\ast$}{*}}]{recvbuf,  }\item[{const int}]{recvcounts\mbox{[}$\,$\mbox{]},  }\item[{const int}]{rdispls\mbox{[}$\,$\mbox{]},  }\item[{MPI\+\_\+\+Datatype}]{recvtype,  }\item[{\mbox{\hyperlink{include_2communicator_2mpil__comm_8h_a4482dc156ccc9cab81c06f17bcfb8645}{MPIL\+\_\+\+Comm}} \texorpdfstring{$\ast$}{*}}]{comm }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{gpu__alltoallv_8c_af2477d5ce9310704fce3f6624c0a47e8_cgraph}
+\end{center}
+\end{figure}
+\Hypertarget{gpu__alltoallv_8c_adb30a179355027853679f20a5f4bd3c7}\label{gpu__alltoallv_8c_adb30a179355027853679f20a5f4bd3c7} 
+\index{gpu\_alltoallv.c@{gpu\_alltoallv.c}!gpu\_aware\_alltoallv\_batch\_async@{gpu\_aware\_alltoallv\_batch\_async}}
+\index{gpu\_aware\_alltoallv\_batch\_async@{gpu\_aware\_alltoallv\_batch\_async}!gpu\_alltoallv.c@{gpu\_alltoallv.c}}
+\doxysubsubsection{\texorpdfstring{gpu\_aware\_alltoallv\_batch\_async()}{gpu\_aware\_alltoallv\_batch\_async()}}
+{\footnotesize\ttfamily int gpu\+\_\+aware\+\_\+alltoallv\+\_\+batch\+\_\+async (\begin{DoxyParamCaption}\item[{const void \texorpdfstring{$\ast$}{*}}]{sendbuf,  }\item[{const int}]{sendcounts\mbox{[}$\,$\mbox{]},  }\item[{const int}]{sdispls\mbox{[}$\,$\mbox{]},  }\item[{MPI\+\_\+\+Datatype}]{sendtype,  }\item[{void \texorpdfstring{$\ast$}{*}}]{recvbuf,  }\item[{const int}]{recvcounts\mbox{[}$\,$\mbox{]},  }\item[{const int}]{rdispls\mbox{[}$\,$\mbox{]},  }\item[{MPI\+\_\+\+Datatype}]{recvtype,  }\item[{\mbox{\hyperlink{include_2communicator_2mpil__comm_8h_a4482dc156ccc9cab81c06f17bcfb8645}{MPIL\+\_\+\+Comm}} \texorpdfstring{$\ast$}{*}}]{comm }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{gpu__alltoallv_8c_adb30a179355027853679f20a5f4bd3c7_cgraph}
+\end{center}
+\end{figure}
+\Hypertarget{gpu__alltoallv_8c_a3d734ddb0012d2217de8f425b11c4aa4}\label{gpu__alltoallv_8c_a3d734ddb0012d2217de8f425b11c4aa4} 
+\index{gpu\_alltoallv.c@{gpu\_alltoallv.c}!gpu\_aware\_alltoallv\_nonblocking@{gpu\_aware\_alltoallv\_nonblocking}}
+\index{gpu\_aware\_alltoallv\_nonblocking@{gpu\_aware\_alltoallv\_nonblocking}!gpu\_alltoallv.c@{gpu\_alltoallv.c}}
+\doxysubsubsection{\texorpdfstring{gpu\_aware\_alltoallv\_nonblocking()}{gpu\_aware\_alltoallv\_nonblocking()}}
+{\footnotesize\ttfamily int gpu\+\_\+aware\+\_\+alltoallv\+\_\+nonblocking (\begin{DoxyParamCaption}\item[{const void \texorpdfstring{$\ast$}{*}}]{sendbuf,  }\item[{const int}]{sendcounts\mbox{[}$\,$\mbox{]},  }\item[{const int}]{sdispls\mbox{[}$\,$\mbox{]},  }\item[{MPI\+\_\+\+Datatype}]{sendtype,  }\item[{void \texorpdfstring{$\ast$}{*}}]{recvbuf,  }\item[{const int}]{recvcounts\mbox{[}$\,$\mbox{]},  }\item[{const int}]{rdispls\mbox{[}$\,$\mbox{]},  }\item[{MPI\+\_\+\+Datatype}]{recvtype,  }\item[{\mbox{\hyperlink{include_2communicator_2mpil__comm_8h_a4482dc156ccc9cab81c06f17bcfb8645}{MPIL\+\_\+\+Comm}} \texorpdfstring{$\ast$}{*}}]{comm }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{gpu__alltoallv_8c_a3d734ddb0012d2217de8f425b11c4aa4_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{gpu__alltoallv_8c_a3d734ddb0012d2217de8f425b11c4aa4_icgraph}
+\end{center}
+\end{figure}
+\Hypertarget{gpu__alltoallv_8c_adb3930e08ece239da587cfca7316a847}\label{gpu__alltoallv_8c_adb3930e08ece239da587cfca7316a847} 
+\index{gpu\_alltoallv.c@{gpu\_alltoallv.c}!gpu\_aware\_alltoallv\_pairwise@{gpu\_aware\_alltoallv\_pairwise}}
+\index{gpu\_aware\_alltoallv\_pairwise@{gpu\_aware\_alltoallv\_pairwise}!gpu\_alltoallv.c@{gpu\_alltoallv.c}}
+\doxysubsubsection{\texorpdfstring{gpu\_aware\_alltoallv\_pairwise()}{gpu\_aware\_alltoallv\_pairwise()}}
+{\footnotesize\ttfamily int gpu\+\_\+aware\+\_\+alltoallv\+\_\+pairwise (\begin{DoxyParamCaption}\item[{const void \texorpdfstring{$\ast$}{*}}]{sendbuf,  }\item[{const int}]{sendcounts\mbox{[}$\,$\mbox{]},  }\item[{const int}]{sdispls\mbox{[}$\,$\mbox{]},  }\item[{MPI\+\_\+\+Datatype}]{sendtype,  }\item[{void \texorpdfstring{$\ast$}{*}}]{recvbuf,  }\item[{const int}]{recvcounts\mbox{[}$\,$\mbox{]},  }\item[{const int}]{rdispls\mbox{[}$\,$\mbox{]},  }\item[{MPI\+\_\+\+Datatype}]{recvtype,  }\item[{\mbox{\hyperlink{include_2communicator_2mpil__comm_8h_a4482dc156ccc9cab81c06f17bcfb8645}{MPIL\+\_\+\+Comm}} \texorpdfstring{$\ast$}{*}}]{comm }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{gpu__alltoallv_8c_adb3930e08ece239da587cfca7316a847_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{gpu__alltoallv_8c_adb3930e08ece239da587cfca7316a847_icgraph}
+\end{center}
+\end{figure}

@@ -1,0 +1,295 @@
+\doxysection{par\+\_\+binary\+\_\+\+IO.\+hpp}
+\hypertarget{par__binary__IO_8hpp_source}{}\label{par__binary__IO_8hpp_source}\index{src/tests/par\_binary\_IO.hpp@{src/tests/par\_binary\_IO.hpp}}
+\mbox{\hyperlink{par__binary__IO_8hpp}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ MATRIX\_IO\_H}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ MATRIX\_IO\_H}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#define\ PETSC\_MAT\_CODE\ 1211216}}
+\DoxyCodeLine{00005\ }
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ "{}mpi.h"{}}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ <stdio.h>}}
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ <string.h>}}
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ <stdlib.h>}}
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#include\ <ctype.h>}}
+\DoxyCodeLine{00011\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{sparse__mat_8hpp}{sparse\_mat.hpp}}"{}}}
+\DoxyCodeLine{00012\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00013\ \textcolor{preprocessor}{\#include\ <iostream>}}
+\DoxyCodeLine{00014\ \textcolor{preprocessor}{\#include\ <iterator>}}
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\#include\ <algorithm>}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#include\ <map>}}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{preprocessor}{\#include\ <stdio.h>}}
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ "{}limits.h"{}}}
+\DoxyCodeLine{00020\ }
+\DoxyCodeLine{00021\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{par__binary__IO_8hpp_add91e8ddaf8357786348a3ab5ce21a3f}{little\_endian}}()}
+\DoxyCodeLine{00022\ \{}
+\DoxyCodeLine{00023\ \ \ \ \ \textcolor{keywordtype}{int}\ num\ =\ 1;}
+\DoxyCodeLine{00024\ \ \ \ \ \textcolor{keywordflow}{return}\ (*(\textcolor{keywordtype}{char}\ *)\&num\ ==\ 1);}
+\DoxyCodeLine{00025\ \}}
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00027\ \textcolor{keyword}{template}\ <\textcolor{keyword}{class}\ T>}
+\DoxyCodeLine{00028\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{par__binary__IO_8hpp_ae431450f00149822dd5b8dfeb10888c9}{endian\_swap}}(T\ *objp)}
+\DoxyCodeLine{00029\ \{}
+\DoxyCodeLine{00030\ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ *memp\ =\ \textcolor{keyword}{reinterpret\_cast<}\textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}*\textcolor{keyword}{>}(objp);}
+\DoxyCodeLine{00031\ \ \ std::reverse(memp,\ memp\ +\ \textcolor{keyword}{sizeof}(T));}
+\DoxyCodeLine{00032\ \}}
+\DoxyCodeLine{00033\ }
+\DoxyCodeLine{00034\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ U>}
+\DoxyCodeLine{00035\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{par__binary__IO_8hpp_ac4b18b1be0ae104dbf6edd96c50d1e10}{readParMatrix}}(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ filename,\ \mbox{\hyperlink{structParMat}{ParMat<U>}}\&\ A)}
+\DoxyCodeLine{00036\ \{}
+\DoxyCodeLine{00037\ \ \ \ \ \textcolor{keywordtype}{int}\ rank,\ num\_procs;}
+\DoxyCodeLine{00038\ \ \ \ \ MPI\_Comm\_rank(MPI\_COMM\_WORLD,\ \&rank);}
+\DoxyCodeLine{00039\ \ \ \ \ MPI\_Comm\_size(MPI\_COMM\_WORLD,\ \&num\_procs);}
+\DoxyCodeLine{00040\ }
+\DoxyCodeLine{00041\ }
+\DoxyCodeLine{00042\ \ \ \ \ int64\_t\ pos;}
+\DoxyCodeLine{00043\ \ \ \ \ int32\_t\ code;}
+\DoxyCodeLine{00044\ \ \ \ \ int32\_t\ global\_num\_rows;}
+\DoxyCodeLine{00045\ \ \ \ \ int32\_t\ global\_num\_cols;}
+\DoxyCodeLine{00046\ \ \ \ \ int32\_t\ global\_nnz;}
+\DoxyCodeLine{00047\ \ \ \ \ int32\_t\ idx;}
+\DoxyCodeLine{00048\ \ \ \ \ \textcolor{keywordtype}{int}\ n\_items\_read;}
+\DoxyCodeLine{00049\ \ \ \ \ \textcolor{keywordtype}{double}\ val;}
+\DoxyCodeLine{00050\ }
+\DoxyCodeLine{00051\ \ \ \ \ \textcolor{keywordtype}{int}\ extra;}
+\DoxyCodeLine{00052\ \ \ \ \ \textcolor{keywordtype}{bool}\ is\_little\_endian\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00053\ }
+\DoxyCodeLine{00054\ \ \ \ \ \textcolor{keywordtype}{int}\ ctr,\ size;}
+\DoxyCodeLine{00055\ }
+\DoxyCodeLine{00056\ \ \ \ \ \textcolor{keywordtype}{int}\ sizeof\_dbl\ =\ \textcolor{keyword}{sizeof}(val);}
+\DoxyCodeLine{00057\ \ \ \ \ \textcolor{keywordtype}{int}\ sizeof\_int32\ =\ \textcolor{keyword}{sizeof}(code);}
+\DoxyCodeLine{00058\ }
+\DoxyCodeLine{00059\ \ \ \ \ FILE*\ ifile\ =\ fopen(filename,\ \textcolor{stringliteral}{"{}rb"{}});}
+\DoxyCodeLine{00060\ \ \ \ \ \textcolor{keywordflow}{if}\ (fseek(ifile,\ 0,\ SEEK\_SET))\ printf(\textcolor{stringliteral}{"{}Error\ seeking\ beginning\ of\ file\(\backslash\)n"{}});\ }
+\DoxyCodeLine{00061\ \ \ \ \ }
+\DoxyCodeLine{00062\ \ \ \ \ n\_items\_read\ =\ fread(\&code,\ sizeof\_int32,\ 1,\ ifile);}
+\DoxyCodeLine{00063\ \ \ \ \ \textcolor{keywordflow}{if}\ (n\_items\_read\ ==\ EOF)\ printf(\textcolor{stringliteral}{"{}EOF\ reading\ code\(\backslash\)n"{}});}
+\DoxyCodeLine{00064\ \ \ \ \ \textcolor{keywordflow}{if}\ (ferror(ifile))\ printf(\textcolor{stringliteral}{"{}Error\ reading\ code\(\backslash\)n"{}});}
+\DoxyCodeLine{00065\ \ \ \ \ \textcolor{keywordflow}{if}\ (code\ !=\ \mbox{\hyperlink{par__binary__IO_8hpp_abe372c476b8eb4480719b41532579b6e}{PETSC\_MAT\_CODE}})}
+\DoxyCodeLine{00066\ \ \ \ \ \{}
+\DoxyCodeLine{00067\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{par__binary__IO_8hpp_ae431450f00149822dd5b8dfeb10888c9}{endian\_swap}}(\&code);}
+\DoxyCodeLine{00068\ \ \ \ \ \ \ \ \ is\_little\_endian\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00069\ \ \ \ \ \}}
+\DoxyCodeLine{00070\ }
+\DoxyCodeLine{00071\ }
+\DoxyCodeLine{00072\ \ \ \ \ n\_items\_read\ =\ fread(\&global\_num\_rows,\ sizeof\_int32,\ 1,\ ifile);}
+\DoxyCodeLine{00073\ \ \ \ \ \textcolor{keywordflow}{if}\ (n\_items\_read\ ==\ EOF)\ printf(\textcolor{stringliteral}{"{}EOF\ reading\ code\(\backslash\)n"{}});}
+\DoxyCodeLine{00074\ \ \ \ \ \textcolor{keywordflow}{if}\ (ferror(ifile))\ printf(\textcolor{stringliteral}{"{}Error\ reading\ N\(\backslash\)n"{}});}
+\DoxyCodeLine{00075\ \ \ \ \ n\_items\_read\ =\ fread(\&global\_num\_cols,\ sizeof\_int32,\ 1,\ ifile);}
+\DoxyCodeLine{00076\ \ \ \ \ \textcolor{keywordflow}{if}\ (n\_items\_read\ ==\ EOF)\ printf(\textcolor{stringliteral}{"{}EOF\ reading\ code\(\backslash\)n"{}});}
+\DoxyCodeLine{00077\ \ \ \ \ \textcolor{keywordflow}{if}\ (ferror(ifile))\ printf(\textcolor{stringliteral}{"{}Error\ reading\ M\(\backslash\)n"{}});}
+\DoxyCodeLine{00078\ \ \ \ \ n\_items\_read\ =\ fread(\&global\_nnz,\ sizeof\_int32,\ 1,\ ifile);}
+\DoxyCodeLine{00079\ \ \ \ \ \textcolor{keywordflow}{if}\ (n\_items\_read\ ==\ EOF)\ printf(\textcolor{stringliteral}{"{}EOF\ reading\ code\(\backslash\)n"{}});}
+\DoxyCodeLine{00080\ \ \ \ \ \textcolor{keywordflow}{if}\ (ferror(ifile))\ printf(\textcolor{stringliteral}{"{}Error\ reading\ nnz\(\backslash\)n"{}});}
+\DoxyCodeLine{00081\ }
+\DoxyCodeLine{00082\ \ \ \ \ \textcolor{keywordflow}{if}\ (is\_little\_endian)}
+\DoxyCodeLine{00083\ \ \ \ \ \{}
+\DoxyCodeLine{00084\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{par__binary__IO_8hpp_ae431450f00149822dd5b8dfeb10888c9}{endian\_swap}}(\&global\_num\_rows);}
+\DoxyCodeLine{00085\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{par__binary__IO_8hpp_ae431450f00149822dd5b8dfeb10888c9}{endian\_swap}}(\&global\_num\_cols);}
+\DoxyCodeLine{00086\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{par__binary__IO_8hpp_ae431450f00149822dd5b8dfeb10888c9}{endian\_swap}}(\&global\_nnz);}
+\DoxyCodeLine{00087\ \ \ \ \ \}}
+\DoxyCodeLine{00088\ }
+\DoxyCodeLine{00089\ \ \ \ \ A.\mbox{\hyperlink{structParMat_a108bc7a3979e887a06454d0884465516}{global\_rows}}\ =\ global\_num\_rows;}
+\DoxyCodeLine{00090\ \ \ \ \ A.\mbox{\hyperlink{structParMat_a4dcc11272abcb76cf23385d0bd68e94d}{global\_cols}}\ =\ global\_num\_cols;}
+\DoxyCodeLine{00091\ \ \ \ \ \textcolor{keywordflow}{if}\ (A.\mbox{\hyperlink{structParMat_a108bc7a3979e887a06454d0884465516}{global\_rows}}\ <\ num\_procs\ ||\ A.\mbox{\hyperlink{structParMat_a4dcc11272abcb76cf23385d0bd68e94d}{global\_cols}}\ <\ num\_procs)}
+\DoxyCodeLine{00092\ \ \ \ \ \{}
+\DoxyCodeLine{00093\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (A.\mbox{\hyperlink{structParMat_a108bc7a3979e887a06454d0884465516}{global\_rows}}\ <\ A.\mbox{\hyperlink{structParMat_a4dcc11272abcb76cf23385d0bd68e94d}{global\_cols}})}
+\DoxyCodeLine{00094\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00095\ \ \ \ \ \ \ \ \ \ \ \ \ A.\mbox{\hyperlink{structParMat_aa303fef240ff008425b6296d4493f39f}{local\_rows}}\ =\ 0;}
+\DoxyCodeLine{00096\ \ \ \ \ \ \ \ \ \ \ \ \ extra\ =\ A.\mbox{\hyperlink{structParMat_a108bc7a3979e887a06454d0884465516}{global\_rows}};}
+\DoxyCodeLine{00097\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (extra\ >\ rank)}
+\DoxyCodeLine{00098\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00099\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ A.\mbox{\hyperlink{structParMat_aa303fef240ff008425b6296d4493f39f}{local\_rows}}\ =\ 1;}
+\DoxyCodeLine{00100\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ A.\mbox{\hyperlink{structParMat_ab7364c9562c6568d11e459023c1850a3}{first\_row}}\ =\ rank;}
+\DoxyCodeLine{00101\ \ \ \ \ \ \ \ \ \ \ \ \ \}\ }
+\DoxyCodeLine{00102\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}\ A.\mbox{\hyperlink{structParMat_ab7364c9562c6568d11e459023c1850a3}{first\_row}}\ =\ extra;}
+\DoxyCodeLine{00103\ }
+\DoxyCodeLine{00104\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (A.\mbox{\hyperlink{structParMat_aa303fef240ff008425b6296d4493f39f}{local\_rows}})}
+\DoxyCodeLine{00105\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00106\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ A.\mbox{\hyperlink{structParMat_aa20bb1239ea3e918df042dd0529ef97a}{local\_cols}}\ =\ A.\mbox{\hyperlink{structParMat_a4dcc11272abcb76cf23385d0bd68e94d}{global\_cols}}\ /\ extra;}
+\DoxyCodeLine{00107\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ extra\ =\ A.\mbox{\hyperlink{structParMat_a4dcc11272abcb76cf23385d0bd68e94d}{global\_cols}}\ \%\ extra;}
+\DoxyCodeLine{00108\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ A.\mbox{\hyperlink{structParMat_a7e8315a50832024a7539794170139cbc}{first\_col}}\ =\ A.\mbox{\hyperlink{structParMat_aa20bb1239ea3e918df042dd0529ef97a}{local\_cols}}\ *\ rank;}
+\DoxyCodeLine{00109\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (extra\ >\ rank)}
+\DoxyCodeLine{00110\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00111\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ A.\mbox{\hyperlink{structParMat_aa20bb1239ea3e918df042dd0529ef97a}{local\_cols}}++;}
+\DoxyCodeLine{00112\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ A.\mbox{\hyperlink{structParMat_a7e8315a50832024a7539794170139cbc}{first\_col}}\ +=\ rank;}
+\DoxyCodeLine{00113\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00114\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}\ A.\mbox{\hyperlink{structParMat_a7e8315a50832024a7539794170139cbc}{first\_col}}\ +=\ extra;}
+\DoxyCodeLine{00115\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00116\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00117\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00118\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ A.\mbox{\hyperlink{structParMat_aa20bb1239ea3e918df042dd0529ef97a}{local\_cols}}\ =\ 0;}
+\DoxyCodeLine{00119\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ A.\mbox{\hyperlink{structParMat_a7e8315a50832024a7539794170139cbc}{first\_col}}\ =\ A.\mbox{\hyperlink{structParMat_a4dcc11272abcb76cf23385d0bd68e94d}{global\_cols}};}
+\DoxyCodeLine{00120\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00121\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00122\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00123\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00124\ \ \ \ \ \ \ \ \ \ \ \ \ A.\mbox{\hyperlink{structParMat_aa20bb1239ea3e918df042dd0529ef97a}{local\_cols}}\ =\ 0;}
+\DoxyCodeLine{00125\ \ \ \ \ \ \ \ \ \ \ \ \ extra\ =\ A.\mbox{\hyperlink{structParMat_a4dcc11272abcb76cf23385d0bd68e94d}{global\_cols}};}
+\DoxyCodeLine{00126\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (extra\ >\ rank)}
+\DoxyCodeLine{00127\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00128\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ A.\mbox{\hyperlink{structParMat_aa20bb1239ea3e918df042dd0529ef97a}{local\_cols}}\ =\ 1;}
+\DoxyCodeLine{00129\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ A.\mbox{\hyperlink{structParMat_a7e8315a50832024a7539794170139cbc}{first\_col}}\ =\ rank;}
+\DoxyCodeLine{00130\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00131\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}\ A.\mbox{\hyperlink{structParMat_a7e8315a50832024a7539794170139cbc}{first\_col}}\ =\ extra;}
+\DoxyCodeLine{00132\ }
+\DoxyCodeLine{00133\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (A.\mbox{\hyperlink{structParMat_aa20bb1239ea3e918df042dd0529ef97a}{local\_cols}})}
+\DoxyCodeLine{00134\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00135\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ A.\mbox{\hyperlink{structParMat_aa303fef240ff008425b6296d4493f39f}{local\_rows}}\ =\ A.\mbox{\hyperlink{structParMat_a108bc7a3979e887a06454d0884465516}{global\_rows}}\ /\ extra;}
+\DoxyCodeLine{00136\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ extra\ =\ A.\mbox{\hyperlink{structParMat_a108bc7a3979e887a06454d0884465516}{global\_rows}}\ \%\ extra;}
+\DoxyCodeLine{00137\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ A.\mbox{\hyperlink{structParMat_ab7364c9562c6568d11e459023c1850a3}{first\_row}}\ =\ A.\mbox{\hyperlink{structParMat_aa303fef240ff008425b6296d4493f39f}{local\_rows}}\ *\ rank;}
+\DoxyCodeLine{00138\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (extra\ >\ rank)}
+\DoxyCodeLine{00139\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00140\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ A.\mbox{\hyperlink{structParMat_aa303fef240ff008425b6296d4493f39f}{local\_rows}}++;}
+\DoxyCodeLine{00141\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ A.\mbox{\hyperlink{structParMat_ab7364c9562c6568d11e459023c1850a3}{first\_row}}\ +=\ rank;}
+\DoxyCodeLine{00142\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00143\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}\ A.\mbox{\hyperlink{structParMat_ab7364c9562c6568d11e459023c1850a3}{first\_row}}\ +=\ extra;}
+\DoxyCodeLine{00144\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00145\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00146\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00147\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ A.\mbox{\hyperlink{structParMat_aa303fef240ff008425b6296d4493f39f}{local\_rows}}\ =\ 0;}
+\DoxyCodeLine{00148\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ A.\mbox{\hyperlink{structParMat_ab7364c9562c6568d11e459023c1850a3}{first\_row}}\ =\ A.\mbox{\hyperlink{structParMat_a108bc7a3979e887a06454d0884465516}{global\_rows}};}
+\DoxyCodeLine{00149\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00150\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00151\ \ \ \ \ \}}
+\DoxyCodeLine{00152\ \ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00153\ \ \ \ \ \{}
+\DoxyCodeLine{00154\ \ \ \ \ \ \ \ \ A.\mbox{\hyperlink{structParMat_aa303fef240ff008425b6296d4493f39f}{local\_rows}}\ =\ A.\mbox{\hyperlink{structParMat_a108bc7a3979e887a06454d0884465516}{global\_rows}}\ /\ num\_procs;}
+\DoxyCodeLine{00155\ \ \ \ \ \ \ \ \ extra\ =\ A.\mbox{\hyperlink{structParMat_a108bc7a3979e887a06454d0884465516}{global\_rows}}\ \%\ num\_procs;}
+\DoxyCodeLine{00156\ \ \ \ \ \ \ \ \ A.\mbox{\hyperlink{structParMat_ab7364c9562c6568d11e459023c1850a3}{first\_row}}\ =\ A.\mbox{\hyperlink{structParMat_aa303fef240ff008425b6296d4493f39f}{local\_rows}}\ *\ rank;}
+\DoxyCodeLine{00157\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (extra\ >\ rank)}
+\DoxyCodeLine{00158\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00159\ \ \ \ \ \ \ \ \ \ \ \ \ A.\mbox{\hyperlink{structParMat_aa303fef240ff008425b6296d4493f39f}{local\_rows}}++;}
+\DoxyCodeLine{00160\ \ \ \ \ \ \ \ \ \ \ \ \ A.\mbox{\hyperlink{structParMat_ab7364c9562c6568d11e459023c1850a3}{first\_row}}\ +=\ rank;}
+\DoxyCodeLine{00161\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00162\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}\ A.\mbox{\hyperlink{structParMat_ab7364c9562c6568d11e459023c1850a3}{first\_row}}\ +=\ extra;}
+\DoxyCodeLine{00163\ }
+\DoxyCodeLine{00164\ \ \ \ \ \ \ \ \ A.\mbox{\hyperlink{structParMat_aa20bb1239ea3e918df042dd0529ef97a}{local\_cols}}\ =\ A.\mbox{\hyperlink{structParMat_a4dcc11272abcb76cf23385d0bd68e94d}{global\_cols}}\ /\ num\_procs;}
+\DoxyCodeLine{00165\ \ \ \ \ \ \ \ \ extra\ =\ A.\mbox{\hyperlink{structParMat_a4dcc11272abcb76cf23385d0bd68e94d}{global\_cols}}\ \%\ num\_procs;}
+\DoxyCodeLine{00166\ \ \ \ \ \ \ \ \ A.\mbox{\hyperlink{structParMat_a7e8315a50832024a7539794170139cbc}{first\_col}}\ =\ A.\mbox{\hyperlink{structParMat_aa20bb1239ea3e918df042dd0529ef97a}{local\_cols}}\ *\ rank;}
+\DoxyCodeLine{00167\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (extra\ >\ rank)}
+\DoxyCodeLine{00168\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00169\ \ \ \ \ \ \ \ \ \ \ \ \ A.\mbox{\hyperlink{structParMat_aa20bb1239ea3e918df042dd0529ef97a}{local\_cols}}++;}
+\DoxyCodeLine{00170\ \ \ \ \ \ \ \ \ \ \ \ \ A.\mbox{\hyperlink{structParMat_a7e8315a50832024a7539794170139cbc}{first\_col}}\ +=\ rank;}
+\DoxyCodeLine{00171\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00172\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}\ A.\mbox{\hyperlink{structParMat_a7e8315a50832024a7539794170139cbc}{first\_col}}\ +=\ extra;}
+\DoxyCodeLine{00173\ \ \ \ \ \}}
+\DoxyCodeLine{00174\ }
+\DoxyCodeLine{00175\ \ \ \ \ A.\mbox{\hyperlink{structParMat_a941002f26a3bd110de77cc02d5251b80}{on\_proc}}.\mbox{\hyperlink{structMat_a38bd6e8d3f0c52f7e281f81be50983bc}{n\_rows}}\ =\ A.\mbox{\hyperlink{structParMat_aa303fef240ff008425b6296d4493f39f}{local\_rows}};}
+\DoxyCodeLine{00176\ \ \ \ \ A.\mbox{\hyperlink{structParMat_a941002f26a3bd110de77cc02d5251b80}{on\_proc}}.\mbox{\hyperlink{structMat_a49fba1e685fbfcd8f69f71714bde362a}{n\_cols}}\ =\ A.\mbox{\hyperlink{structParMat_aa20bb1239ea3e918df042dd0529ef97a}{local\_cols}};}
+\DoxyCodeLine{00177\ \ \ \ \ A.\mbox{\hyperlink{structParMat_ac30cb799dacc30f37d9b64da967904a2}{off\_proc}}.\mbox{\hyperlink{structMat_a38bd6e8d3f0c52f7e281f81be50983bc}{n\_rows}}\ =\ A.\mbox{\hyperlink{structParMat_aa303fef240ff008425b6296d4493f39f}{local\_rows}};}
+\DoxyCodeLine{00178\ }
+\DoxyCodeLine{00179\ }
+\DoxyCodeLine{00180\ \ \ \ \ std::vector<int32\_t>\ row\_sizes(A.\mbox{\hyperlink{structParMat_aa303fef240ff008425b6296d4493f39f}{local\_rows}});}
+\DoxyCodeLine{00181\ \ \ \ \ std::vector<int32\_t>\ col\_indices;}
+\DoxyCodeLine{00182\ \ \ \ \ std::vector<double>\ vals;}
+\DoxyCodeLine{00183\ \ \ \ \ std::vector<int>\ proc\_nnz(num\_procs);}
+\DoxyCodeLine{00184\ \ \ \ \ \textcolor{keywordtype}{long}\ nnz\ =\ 0;}
+\DoxyCodeLine{00185\ }
+\DoxyCodeLine{00186\ \ \ \ \ pos\ =\ (4\ +\ A.\mbox{\hyperlink{structParMat_ab7364c9562c6568d11e459023c1850a3}{first\_row}})\ *\ sizeof\_int32;}
+\DoxyCodeLine{00187\ \ \ \ \ \textcolor{keywordflow}{if}\ (fseek(ifile,\ pos,\ SEEK\_SET))\ printf(\textcolor{stringliteral}{"{}Error\ seeking\ pos\(\backslash\)n"{}});\ }
+\DoxyCodeLine{00188\ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 0;\ i\ <\ A.\mbox{\hyperlink{structParMat_aa303fef240ff008425b6296d4493f39f}{local\_rows}};\ i++)}
+\DoxyCodeLine{00189\ \ \ \ \ \{}
+\DoxyCodeLine{00190\ \ \ \ \ \ \ \ \ n\_items\_read\ =\ fread(\&idx,\ sizeof\_int32,\ 1,\ ifile);}
+\DoxyCodeLine{00191\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (n\_items\_read\ ==\ EOF)\ printf(\textcolor{stringliteral}{"{}EOF\ reading\ code\(\backslash\)n"{}});}
+\DoxyCodeLine{00192\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (ferror(ifile))\ printf(\textcolor{stringliteral}{"{}Error\ reading\ row\_size\(\backslash\)n"{}});}
+\DoxyCodeLine{00193\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (is\_little\_endian)\ \mbox{\hyperlink{par__binary__IO_8hpp_ae431450f00149822dd5b8dfeb10888c9}{endian\_swap}}(\&idx);}
+\DoxyCodeLine{00194\ \ \ \ \ \ \ \ \ row\_sizes[i]\ =\ idx;}
+\DoxyCodeLine{00195\ \ \ \ \ \ \ \ \ nnz\ +=\ idx;}
+\DoxyCodeLine{00196\ \ \ \ \ \}}
+\DoxyCodeLine{00197\ }
+\DoxyCodeLine{00198\ \ \ \ \ \textcolor{keywordtype}{long}\ first\_nnz\ =\ 0;}
+\DoxyCodeLine{00199\ \ \ \ \ MPI\_Exscan(\&nnz,\ \&first\_nnz,\ 1,\ MPI\_LONG,\ MPI\_SUM,\ MPI\_COMM\_WORLD);}
+\DoxyCodeLine{00200\ }
+\DoxyCodeLine{00201\ \ \ \ \ col\_indices.resize(nnz);}
+\DoxyCodeLine{00202\ \ \ \ \ vals.resize(nnz);}
+\DoxyCodeLine{00203\ }
+\DoxyCodeLine{00204\ \ \ \ \ pos\ =\ (4\ +\ A.\mbox{\hyperlink{structParMat_a108bc7a3979e887a06454d0884465516}{global\_rows}}\ +\ first\_nnz)\ *\ sizeof\_int32;}
+\DoxyCodeLine{00205\ \ \ \ \ \textcolor{keywordflow}{if}\ (fseek(ifile,\ pos,\ SEEK\_SET))\ printf(\textcolor{stringliteral}{"{}Error\ seeking\ pos\(\backslash\)n"{}});\ }
+\DoxyCodeLine{00206\ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 0;\ i\ <\ nnz;\ i++)}
+\DoxyCodeLine{00207\ \ \ \ \ \{}
+\DoxyCodeLine{00208\ \ \ \ \ \ \ \ \ n\_items\_read\ =\ fread(\&idx,\ sizeof\_int32,\ 1,\ ifile);}
+\DoxyCodeLine{00209\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (n\_items\_read\ ==\ EOF)\ printf(\textcolor{stringliteral}{"{}EOF\ reading\ code\(\backslash\)n"{}});}
+\DoxyCodeLine{00210\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (ferror(ifile))\ printf(\textcolor{stringliteral}{"{}Error\ reading\ col\ idx\(\backslash\)n"{}});}
+\DoxyCodeLine{00211\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (is\_little\_endian)\ \mbox{\hyperlink{par__binary__IO_8hpp_ae431450f00149822dd5b8dfeb10888c9}{endian\_swap}}(\&idx);}
+\DoxyCodeLine{00212\ \ \ \ \ \ \ \ \ col\_indices[i]\ =\ idx;}
+\DoxyCodeLine{00213\ \ \ \ \ \}}
+\DoxyCodeLine{00214\ }
+\DoxyCodeLine{00215\ \ \ \ \ pos\ =\ (4\ +\ A.\mbox{\hyperlink{structParMat_a108bc7a3979e887a06454d0884465516}{global\_rows}}\ +\ global\_nnz)\ *\ sizeof\_int32\ +\ (first\_nnz\ *\ sizeof\_dbl);}
+\DoxyCodeLine{00216\ \ \ \ \ \textcolor{keywordflow}{if}\ (fseek(ifile,\ pos,\ SEEK\_SET))\ printf(\textcolor{stringliteral}{"{}Error\ seeking\ pos\(\backslash\)n"{}});\ }
+\DoxyCodeLine{00217\ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 0;\ i\ <\ nnz;\ i++)}
+\DoxyCodeLine{00218\ \ \ \ \ \{}
+\DoxyCodeLine{00219\ \ \ \ \ \ \ \ \ n\_items\_read\ =\ fread(\&val,\ sizeof\_dbl,\ 1,\ ifile);}
+\DoxyCodeLine{00220\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (n\_items\_read\ ==\ EOF)\ printf(\textcolor{stringliteral}{"{}EOF\ reading\ code\(\backslash\)n"{}});}
+\DoxyCodeLine{00221\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (ferror(ifile))\ printf(\textcolor{stringliteral}{"{}Error\ reading\ value\(\backslash\)n"{}});}
+\DoxyCodeLine{00222\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (is\_little\_endian)\ \mbox{\hyperlink{par__binary__IO_8hpp_ae431450f00149822dd5b8dfeb10888c9}{endian\_swap}}(\&val);}
+\DoxyCodeLine{00223\ \ \ \ \ \ \ \ \ vals[i]\ =\ val;}
+\DoxyCodeLine{00224\ \ \ \ \ \}}
+\DoxyCodeLine{00225\ \ \ \ \ fclose(ifile);}
+\DoxyCodeLine{00226\ }
+\DoxyCodeLine{00227\ \ \ \ \ \textcolor{keywordtype}{int}\ last\_col\ =\ A.\mbox{\hyperlink{structParMat_a7e8315a50832024a7539794170139cbc}{first\_col}}\ +\ A.\mbox{\hyperlink{structParMat_aa20bb1239ea3e918df042dd0529ef97a}{local\_cols}}\ -\/\ 1;}
+\DoxyCodeLine{00228\ \ \ \ \ A.\mbox{\hyperlink{structParMat_a941002f26a3bd110de77cc02d5251b80}{on\_proc}}.\mbox{\hyperlink{structMat_ac7d02ee4f49e58e57d59d7401438db5c}{rowptr}}.resize(A.\mbox{\hyperlink{structParMat_aa303fef240ff008425b6296d4493f39f}{local\_rows}}+1);}
+\DoxyCodeLine{00229\ \ \ \ \ A.\mbox{\hyperlink{structParMat_ac30cb799dacc30f37d9b64da967904a2}{off\_proc}}.\mbox{\hyperlink{structMat_ac7d02ee4f49e58e57d59d7401438db5c}{rowptr}}.resize(A.\mbox{\hyperlink{structParMat_aa303fef240ff008425b6296d4493f39f}{local\_rows}}+1);}
+\DoxyCodeLine{00230\ \ \ \ \ A.\mbox{\hyperlink{structParMat_a941002f26a3bd110de77cc02d5251b80}{on\_proc}}.\mbox{\hyperlink{structMat_ac7d02ee4f49e58e57d59d7401438db5c}{rowptr}}[0]\ =\ 0;}
+\DoxyCodeLine{00231\ \ \ \ \ A.\mbox{\hyperlink{structParMat_ac30cb799dacc30f37d9b64da967904a2}{off\_proc}}.\mbox{\hyperlink{structMat_ac7d02ee4f49e58e57d59d7401438db5c}{rowptr}}[0]\ =\ 0;}
+\DoxyCodeLine{00232\ \ \ \ \ ctr\ =\ 0;}
+\DoxyCodeLine{00233\ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 0;\ i\ <\ A.\mbox{\hyperlink{structParMat_aa303fef240ff008425b6296d4493f39f}{local\_rows}};\ i++)}
+\DoxyCodeLine{00234\ \ \ \ \ \{}
+\DoxyCodeLine{00235\ \ \ \ \ \ \ \ \ size\ =\ row\_sizes[i];}
+\DoxyCodeLine{00236\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ j\ =\ 0;\ j\ <\ size;\ j++)}
+\DoxyCodeLine{00237\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00238\ \ \ \ \ \ \ \ \ \ \ \ \ idx\ =\ col\_indices[ctr];}
+\DoxyCodeLine{00239\ \ \ \ \ \ \ \ \ \ \ \ \ val\ =\ vals[ctr++];}
+\DoxyCodeLine{00240\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ ((\textcolor{keywordtype}{int})idx\ >=\ A.\mbox{\hyperlink{structParMat_a7e8315a50832024a7539794170139cbc}{first\_col}}\ \&\&\ idx\ <=\ last\_col)}
+\DoxyCodeLine{00241\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00242\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ A.\mbox{\hyperlink{structParMat_a941002f26a3bd110de77cc02d5251b80}{on\_proc}}.\mbox{\hyperlink{structMat_aeb06bc3eda0d63a0c23a16a2d34006b5}{col\_idx}}.push\_back(idx\ -\/\ A.\mbox{\hyperlink{structParMat_a7e8315a50832024a7539794170139cbc}{first\_col}});}
+\DoxyCodeLine{00243\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ A.\mbox{\hyperlink{structParMat_a941002f26a3bd110de77cc02d5251b80}{on\_proc}}.\mbox{\hyperlink{structMat_a7d1e4c78387f5f331d783c9f9e1a0d30}{data}}.push\_back(val);}
+\DoxyCodeLine{00244\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00245\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00246\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00247\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ A.\mbox{\hyperlink{structParMat_ac30cb799dacc30f37d9b64da967904a2}{off\_proc}}.\mbox{\hyperlink{structMat_aeb06bc3eda0d63a0c23a16a2d34006b5}{col\_idx}}.push\_back(idx);}
+\DoxyCodeLine{00248\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ A.\mbox{\hyperlink{structParMat_ac30cb799dacc30f37d9b64da967904a2}{off\_proc}}.\mbox{\hyperlink{structMat_a7d1e4c78387f5f331d783c9f9e1a0d30}{data}}.push\_back(val);}
+\DoxyCodeLine{00249\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00250\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00251\ \ \ \ \ \ \ \ \ A.\mbox{\hyperlink{structParMat_a941002f26a3bd110de77cc02d5251b80}{on\_proc}}.\mbox{\hyperlink{structMat_ac7d02ee4f49e58e57d59d7401438db5c}{rowptr}}[i+1]\ =\ A.\mbox{\hyperlink{structParMat_a941002f26a3bd110de77cc02d5251b80}{on\_proc}}.\mbox{\hyperlink{structMat_aeb06bc3eda0d63a0c23a16a2d34006b5}{col\_idx}}.size();}
+\DoxyCodeLine{00252\ \ \ \ \ \ \ \ \ A.\mbox{\hyperlink{structParMat_ac30cb799dacc30f37d9b64da967904a2}{off\_proc}}.\mbox{\hyperlink{structMat_ac7d02ee4f49e58e57d59d7401438db5c}{rowptr}}[i+1]\ =\ A.\mbox{\hyperlink{structParMat_ac30cb799dacc30f37d9b64da967904a2}{off\_proc}}.\mbox{\hyperlink{structMat_aeb06bc3eda0d63a0c23a16a2d34006b5}{col\_idx}}.size();}
+\DoxyCodeLine{00253\ \ \ \ \ \}}
+\DoxyCodeLine{00254\ \ \ \ \ A.\mbox{\hyperlink{structParMat_a941002f26a3bd110de77cc02d5251b80}{on\_proc}}.\mbox{\hyperlink{structMat_acd6e2a54ef05701b15d794040a3816a6}{nnz}}\ =\ A.\mbox{\hyperlink{structParMat_a941002f26a3bd110de77cc02d5251b80}{on\_proc}}.\mbox{\hyperlink{structMat_aeb06bc3eda0d63a0c23a16a2d34006b5}{col\_idx}}.size();}
+\DoxyCodeLine{00255\ \ \ \ \ A.\mbox{\hyperlink{structParMat_ac30cb799dacc30f37d9b64da967904a2}{off\_proc}}.\mbox{\hyperlink{structMat_acd6e2a54ef05701b15d794040a3816a6}{nnz}}\ =\ A.\mbox{\hyperlink{structParMat_ac30cb799dacc30f37d9b64da967904a2}{off\_proc}}.\mbox{\hyperlink{structMat_aeb06bc3eda0d63a0c23a16a2d34006b5}{col\_idx}}.size();}
+\DoxyCodeLine{00256\ }
+\DoxyCodeLine{00257\ \ \ \ \ std::map<long,\ int>\ orig\_to\_new;}
+\DoxyCodeLine{00258\ \ \ \ \ \textcolor{comment}{//for\ (int\ i\ =\ 0;\ i\ <\ A.off\_proc.col\_idx.size();\ i++)}}
+\DoxyCodeLine{00259\ \ \ \ \ \textcolor{comment}{//\ \ \ \ A.off\_proc\_columns.push\_back(A.off\_proc.col\_idx[i]);}}
+\DoxyCodeLine{00260\ \ \ \ \ std::copy(A.\mbox{\hyperlink{structParMat_ac30cb799dacc30f37d9b64da967904a2}{off\_proc}}.\mbox{\hyperlink{structMat_aeb06bc3eda0d63a0c23a16a2d34006b5}{col\_idx}}.begin(),\ A.\mbox{\hyperlink{structParMat_ac30cb799dacc30f37d9b64da967904a2}{off\_proc}}.\mbox{\hyperlink{structMat_aeb06bc3eda0d63a0c23a16a2d34006b5}{col\_idx}}.end(),}
+\DoxyCodeLine{00261\ \ \ \ \ \ \ \ \ \ \ \ \ std::back\_inserter(A.\mbox{\hyperlink{structParMat_af9d45cbc63d9bb8535d67429b7c63917}{off\_proc\_columns}}));}
+\DoxyCodeLine{00262\ \ \ \ \ std::sort(A.\mbox{\hyperlink{structParMat_af9d45cbc63d9bb8535d67429b7c63917}{off\_proc\_columns}}.begin(),\ A.\mbox{\hyperlink{structParMat_af9d45cbc63d9bb8535d67429b7c63917}{off\_proc\_columns}}.end());}
+\DoxyCodeLine{00263\ }
+\DoxyCodeLine{00264\ \ \ \ \ \textcolor{keywordtype}{int}\ prev\_col\ =\ -\/1;}
+\DoxyCodeLine{00265\ \ \ \ \ A.\mbox{\hyperlink{structParMat_a3bb62e0cc58c1acfa27743e3ada1271f}{off\_proc\_num\_cols}}\ =\ 0;}
+\DoxyCodeLine{00266\ \ \ \ \ \textcolor{keywordflow}{for}\ (std::vector<long>::iterator\ it\ =\ A.\mbox{\hyperlink{structParMat_af9d45cbc63d9bb8535d67429b7c63917}{off\_proc\_columns}}.begin();\ }
+\DoxyCodeLine{00267\ \ \ \ \ \ \ \ \ \ \ \ \ it\ !=\ A.\mbox{\hyperlink{structParMat_af9d45cbc63d9bb8535d67429b7c63917}{off\_proc\_columns}}.end();\ ++it)}
+\DoxyCodeLine{00268\ \ \ \ \ \{}
+\DoxyCodeLine{00269\ \ \ \ \ \ \ \ \ \textcolor{comment}{//if\ (rank\ ==\ 0)\ printf("{}*it,\ prev\_col\ \%d,\ \%d\(\backslash\)n"{},\ *it,\ prev\_col);}}
+\DoxyCodeLine{00270\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (*it\ !=\ prev\_col)}
+\DoxyCodeLine{00271\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00272\ \ \ \ \ \ \ \ \ \ \ \ \ orig\_to\_new[*it]\ =\ A.\mbox{\hyperlink{structParMat_a3bb62e0cc58c1acfa27743e3ada1271f}{off\_proc\_num\_cols}};}
+\DoxyCodeLine{00273\ \ \ \ \ \ \ \ \ \ \ \ \ A.\mbox{\hyperlink{structParMat_af9d45cbc63d9bb8535d67429b7c63917}{off\_proc\_columns}}[A.\mbox{\hyperlink{structParMat_a3bb62e0cc58c1acfa27743e3ada1271f}{off\_proc\_num\_cols}}++]\ =\ *it;}
+\DoxyCodeLine{00274\ \ \ \ \ \ \ \ \ \ \ \ \ prev\_col\ =\ *it;}
+\DoxyCodeLine{00275\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00276\ \ \ \ \ \}}
+\DoxyCodeLine{00277\ \ \ \ \ A.\mbox{\hyperlink{structParMat_af9d45cbc63d9bb8535d67429b7c63917}{off\_proc\_columns}}.resize(A.\mbox{\hyperlink{structParMat_a3bb62e0cc58c1acfa27743e3ada1271f}{off\_proc\_num\_cols}});}
+\DoxyCodeLine{00278\ }
+\DoxyCodeLine{00279\ \ \ \ \ \textcolor{keywordflow}{for}\ (std::vector<int>::iterator\ it\ =\ A.\mbox{\hyperlink{structParMat_ac30cb799dacc30f37d9b64da967904a2}{off\_proc}}.\mbox{\hyperlink{structMat_aeb06bc3eda0d63a0c23a16a2d34006b5}{col\_idx}}.begin();}
+\DoxyCodeLine{00280\ \ \ \ \ \ \ \ \ \ \ \ \ it\ !=\ A.\mbox{\hyperlink{structParMat_ac30cb799dacc30f37d9b64da967904a2}{off\_proc}}.\mbox{\hyperlink{structMat_aeb06bc3eda0d63a0c23a16a2d34006b5}{col\_idx}}.end();\ ++it)}
+\DoxyCodeLine{00281\ \ \ \ \ \{}
+\DoxyCodeLine{00282\ \ \ \ \ \ \ \ \ *it\ =\ orig\_to\_new[*it];}
+\DoxyCodeLine{00283\ \ \ \ \ \}}
+\DoxyCodeLine{00284\ }
+\DoxyCodeLine{00285\ \ \ \ \ A.\mbox{\hyperlink{structParMat_ac30cb799dacc30f37d9b64da967904a2}{off\_proc}}.\mbox{\hyperlink{structMat_a49fba1e685fbfcd8f69f71714bde362a}{n\_cols}}\ =\ A.\mbox{\hyperlink{structParMat_a3bb62e0cc58c1acfa27743e3ada1271f}{off\_proc\_num\_cols}};}
+\DoxyCodeLine{00286\ \}}
+\DoxyCodeLine{00287\ }
+\DoxyCodeLine{00288\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00289\ }
+
+\end{DoxyCode}

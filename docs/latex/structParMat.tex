@@ -1,0 +1,144 @@
+\doxysection{Par\+Mat\texorpdfstring{$<$}{<} U \texorpdfstring{$>$}{>} Struct Template Reference}
+\hypertarget{structParMat}{}\label{structParMat}\index{ParMat$<$ U $>$@{ParMat$<$ U $>$}}
+
+
+{\ttfamily \#include $<$sparse\+\_\+mat.\+hpp$>$}
+
+
+
+Collaboration diagram for Par\+Mat\texorpdfstring{$<$}{<} U \texorpdfstring{$>$}{>}\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=163pt]{structParMat__coll__graph}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{structMat}{Mat}} \mbox{\hyperlink{structParMat_a941002f26a3bd110de77cc02d5251b80}{on\+\_\+proc}}
+\item 
+\mbox{\hyperlink{structMat}{Mat}} \mbox{\hyperlink{structParMat_ac30cb799dacc30f37d9b64da967904a2}{off\+\_\+proc}}
+\item 
+int \mbox{\hyperlink{structParMat_a108bc7a3979e887a06454d0884465516}{global\+\_\+rows}}
+\item 
+int \mbox{\hyperlink{structParMat_a4dcc11272abcb76cf23385d0bd68e94d}{global\+\_\+cols}}
+\item 
+int \mbox{\hyperlink{structParMat_aa303fef240ff008425b6296d4493f39f}{local\+\_\+rows}}
+\item 
+int \mbox{\hyperlink{structParMat_aa20bb1239ea3e918df042dd0529ef97a}{local\+\_\+cols}}
+\item 
+int \mbox{\hyperlink{structParMat_ab7364c9562c6568d11e459023c1850a3}{first\+\_\+row}}
+\item 
+int \mbox{\hyperlink{structParMat_a7e8315a50832024a7539794170139cbc}{first\+\_\+col}}
+\item 
+int \mbox{\hyperlink{structParMat_a3bb62e0cc58c1acfa27743e3ada1271f}{off\+\_\+proc\+\_\+num\+\_\+cols}}
+\item 
+std\+::vector$<$ long $>$ \mbox{\hyperlink{structParMat_af9d45cbc63d9bb8535d67429b7c63917}{off\+\_\+proc\+\_\+columns}}
+\item 
+\mbox{\hyperlink{structComm}{Comm}}$<$ U $>$ \mbox{\hyperlink{structParMat_a33e1ad46815158237b9aa2f50ff5eb30}{send\+\_\+comm}}
+\item 
+\mbox{\hyperlink{structComm}{Comm}}$<$ U $>$ \mbox{\hyperlink{structParMat_ae03a0641c56b9fcb40b4291277302b31}{recv\+\_\+comm}}
+\item 
+MPI\+\_\+\+Comm \mbox{\hyperlink{structParMat_a589bf0addf577d9535d80a868d691605}{dist\+\_\+graph\+\_\+comm}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Data Documentation}
+\Hypertarget{structParMat_a589bf0addf577d9535d80a868d691605}\label{structParMat_a589bf0addf577d9535d80a868d691605} 
+\index{ParMat$<$ U $>$@{ParMat$<$ U $>$}!dist\_graph\_comm@{dist\_graph\_comm}}
+\index{dist\_graph\_comm@{dist\_graph\_comm}!ParMat$<$ U $>$@{ParMat$<$ U $>$}}
+\doxysubsubsection{\texorpdfstring{dist\_graph\_comm}{dist\_graph\_comm}}
+{\footnotesize\ttfamily template$<$typename U $>$ \\
+MPI\+\_\+\+Comm \mbox{\hyperlink{structParMat}{Par\+Mat}}$<$ U $>$\+::dist\+\_\+graph\+\_\+comm}
+
+\Hypertarget{structParMat_a7e8315a50832024a7539794170139cbc}\label{structParMat_a7e8315a50832024a7539794170139cbc} 
+\index{ParMat$<$ U $>$@{ParMat$<$ U $>$}!first\_col@{first\_col}}
+\index{first\_col@{first\_col}!ParMat$<$ U $>$@{ParMat$<$ U $>$}}
+\doxysubsubsection{\texorpdfstring{first\_col}{first\_col}}
+{\footnotesize\ttfamily template$<$typename U $>$ \\
+int \mbox{\hyperlink{structParMat}{Par\+Mat}}$<$ U $>$\+::first\+\_\+col}
+
+\Hypertarget{structParMat_ab7364c9562c6568d11e459023c1850a3}\label{structParMat_ab7364c9562c6568d11e459023c1850a3} 
+\index{ParMat$<$ U $>$@{ParMat$<$ U $>$}!first\_row@{first\_row}}
+\index{first\_row@{first\_row}!ParMat$<$ U $>$@{ParMat$<$ U $>$}}
+\doxysubsubsection{\texorpdfstring{first\_row}{first\_row}}
+{\footnotesize\ttfamily template$<$typename U $>$ \\
+int \mbox{\hyperlink{structParMat}{Par\+Mat}}$<$ U $>$\+::first\+\_\+row}
+
+\Hypertarget{structParMat_a4dcc11272abcb76cf23385d0bd68e94d}\label{structParMat_a4dcc11272abcb76cf23385d0bd68e94d} 
+\index{ParMat$<$ U $>$@{ParMat$<$ U $>$}!global\_cols@{global\_cols}}
+\index{global\_cols@{global\_cols}!ParMat$<$ U $>$@{ParMat$<$ U $>$}}
+\doxysubsubsection{\texorpdfstring{global\_cols}{global\_cols}}
+{\footnotesize\ttfamily template$<$typename U $>$ \\
+int \mbox{\hyperlink{structParMat}{Par\+Mat}}$<$ U $>$\+::global\+\_\+cols}
+
+\Hypertarget{structParMat_a108bc7a3979e887a06454d0884465516}\label{structParMat_a108bc7a3979e887a06454d0884465516} 
+\index{ParMat$<$ U $>$@{ParMat$<$ U $>$}!global\_rows@{global\_rows}}
+\index{global\_rows@{global\_rows}!ParMat$<$ U $>$@{ParMat$<$ U $>$}}
+\doxysubsubsection{\texorpdfstring{global\_rows}{global\_rows}}
+{\footnotesize\ttfamily template$<$typename U $>$ \\
+int \mbox{\hyperlink{structParMat}{Par\+Mat}}$<$ U $>$\+::global\+\_\+rows}
+
+\Hypertarget{structParMat_aa20bb1239ea3e918df042dd0529ef97a}\label{structParMat_aa20bb1239ea3e918df042dd0529ef97a} 
+\index{ParMat$<$ U $>$@{ParMat$<$ U $>$}!local\_cols@{local\_cols}}
+\index{local\_cols@{local\_cols}!ParMat$<$ U $>$@{ParMat$<$ U $>$}}
+\doxysubsubsection{\texorpdfstring{local\_cols}{local\_cols}}
+{\footnotesize\ttfamily template$<$typename U $>$ \\
+int \mbox{\hyperlink{structParMat}{Par\+Mat}}$<$ U $>$\+::local\+\_\+cols}
+
+\Hypertarget{structParMat_aa303fef240ff008425b6296d4493f39f}\label{structParMat_aa303fef240ff008425b6296d4493f39f} 
+\index{ParMat$<$ U $>$@{ParMat$<$ U $>$}!local\_rows@{local\_rows}}
+\index{local\_rows@{local\_rows}!ParMat$<$ U $>$@{ParMat$<$ U $>$}}
+\doxysubsubsection{\texorpdfstring{local\_rows}{local\_rows}}
+{\footnotesize\ttfamily template$<$typename U $>$ \\
+int \mbox{\hyperlink{structParMat}{Par\+Mat}}$<$ U $>$\+::local\+\_\+rows}
+
+\Hypertarget{structParMat_ac30cb799dacc30f37d9b64da967904a2}\label{structParMat_ac30cb799dacc30f37d9b64da967904a2} 
+\index{ParMat$<$ U $>$@{ParMat$<$ U $>$}!off\_proc@{off\_proc}}
+\index{off\_proc@{off\_proc}!ParMat$<$ U $>$@{ParMat$<$ U $>$}}
+\doxysubsubsection{\texorpdfstring{off\_proc}{off\_proc}}
+{\footnotesize\ttfamily template$<$typename U $>$ \\
+\mbox{\hyperlink{structMat}{Mat}} \mbox{\hyperlink{structParMat}{Par\+Mat}}$<$ U $>$\+::off\+\_\+proc}
+
+\Hypertarget{structParMat_af9d45cbc63d9bb8535d67429b7c63917}\label{structParMat_af9d45cbc63d9bb8535d67429b7c63917} 
+\index{ParMat$<$ U $>$@{ParMat$<$ U $>$}!off\_proc\_columns@{off\_proc\_columns}}
+\index{off\_proc\_columns@{off\_proc\_columns}!ParMat$<$ U $>$@{ParMat$<$ U $>$}}
+\doxysubsubsection{\texorpdfstring{off\_proc\_columns}{off\_proc\_columns}}
+{\footnotesize\ttfamily template$<$typename U $>$ \\
+std\+::vector$<$long$>$ \mbox{\hyperlink{structParMat}{Par\+Mat}}$<$ U $>$\+::off\+\_\+proc\+\_\+columns}
+
+\Hypertarget{structParMat_a3bb62e0cc58c1acfa27743e3ada1271f}\label{structParMat_a3bb62e0cc58c1acfa27743e3ada1271f} 
+\index{ParMat$<$ U $>$@{ParMat$<$ U $>$}!off\_proc\_num\_cols@{off\_proc\_num\_cols}}
+\index{off\_proc\_num\_cols@{off\_proc\_num\_cols}!ParMat$<$ U $>$@{ParMat$<$ U $>$}}
+\doxysubsubsection{\texorpdfstring{off\_proc\_num\_cols}{off\_proc\_num\_cols}}
+{\footnotesize\ttfamily template$<$typename U $>$ \\
+int \mbox{\hyperlink{structParMat}{Par\+Mat}}$<$ U $>$\+::off\+\_\+proc\+\_\+num\+\_\+cols}
+
+\Hypertarget{structParMat_a941002f26a3bd110de77cc02d5251b80}\label{structParMat_a941002f26a3bd110de77cc02d5251b80} 
+\index{ParMat$<$ U $>$@{ParMat$<$ U $>$}!on\_proc@{on\_proc}}
+\index{on\_proc@{on\_proc}!ParMat$<$ U $>$@{ParMat$<$ U $>$}}
+\doxysubsubsection{\texorpdfstring{on\_proc}{on\_proc}}
+{\footnotesize\ttfamily template$<$typename U $>$ \\
+\mbox{\hyperlink{structMat}{Mat}} \mbox{\hyperlink{structParMat}{Par\+Mat}}$<$ U $>$\+::on\+\_\+proc}
+
+\Hypertarget{structParMat_ae03a0641c56b9fcb40b4291277302b31}\label{structParMat_ae03a0641c56b9fcb40b4291277302b31} 
+\index{ParMat$<$ U $>$@{ParMat$<$ U $>$}!recv\_comm@{recv\_comm}}
+\index{recv\_comm@{recv\_comm}!ParMat$<$ U $>$@{ParMat$<$ U $>$}}
+\doxysubsubsection{\texorpdfstring{recv\_comm}{recv\_comm}}
+{\footnotesize\ttfamily template$<$typename U $>$ \\
+\mbox{\hyperlink{structComm}{Comm}}$<$U$>$ \mbox{\hyperlink{structParMat}{Par\+Mat}}$<$ U $>$\+::recv\+\_\+comm}
+
+\Hypertarget{structParMat_a33e1ad46815158237b9aa2f50ff5eb30}\label{structParMat_a33e1ad46815158237b9aa2f50ff5eb30} 
+\index{ParMat$<$ U $>$@{ParMat$<$ U $>$}!send\_comm@{send\_comm}}
+\index{send\_comm@{send\_comm}!ParMat$<$ U $>$@{ParMat$<$ U $>$}}
+\doxysubsubsection{\texorpdfstring{send\_comm}{send\_comm}}
+{\footnotesize\ttfamily template$<$typename U $>$ \\
+\mbox{\hyperlink{structComm}{Comm}}$<$U$>$ \mbox{\hyperlink{structParMat}{Par\+Mat}}$<$ U $>$\+::send\+\_\+comm}
+
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+src/tests/\mbox{\hyperlink{sparse__mat_8hpp}{sparse\+\_\+mat.\+hpp}}\end{DoxyCompactItemize}

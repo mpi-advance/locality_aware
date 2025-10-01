@@ -1,0 +1,83 @@
+\doxysection{src/neighborhood/tests/test\+\_\+suitesparse\+\_\+alltoall\+\_\+crs.cpp File Reference}
+\hypertarget{test__suitesparse__alltoall__crs_8cpp}{}\label{test__suitesparse__alltoall__crs_8cpp}\index{src/neighborhood/tests/test\_suitesparse\_alltoall\_crs.cpp@{src/neighborhood/tests/test\_suitesparse\_alltoall\_crs.cpp}}
+{\ttfamily \#include "{}locality\+\_\+aware.\+h"{}}\newline
+{\ttfamily \#include $<$mpi.\+h$>$}\newline
+{\ttfamily \#include $<$math.\+h$>$}\newline
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include $<$iostream$>$}\newline
+{\ttfamily \#include $<$assert.\+h$>$}\newline
+{\ttfamily \#include $<$vector$>$}\newline
+{\ttfamily \#include $<$numeric$>$}\newline
+{\ttfamily \#include $<$set$>$}\newline
+{\ttfamily \#include "{}tests/sparse\+\_\+mat.\+hpp"{}}\newline
+{\ttfamily \#include "{}tests/par\+\_\+binary\+\_\+\+IO.\+hpp"{}}\newline
+Include dependency graph for test\+\_\+suitesparse\+\_\+alltoall\+\_\+crs.\+cpp\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{test__suitesparse__alltoall__crs_8cpp__incl}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{test__suitesparse__alltoall__crs_8cpp_a6137c7fc6b970de580c49722c9c7fec3}{compare\+\_\+alltoall\+\_\+crs\+\_\+results}} (int n\+\_\+recvs, int send\+\_\+msgs, int \texorpdfstring{$\ast$}{*}recvvals, int \texorpdfstring{$\ast$}{*}src, std\+::vector$<$ int $>$ \&proc\+\_\+counts)
+\item 
+void \mbox{\hyperlink{test__suitesparse__alltoall__crs_8cpp_a74d6c1a9ccd2b11e762071a878cb3f34}{test\+\_\+matrix}} (const char \texorpdfstring{$\ast$}{*}filename)
+\item 
+int \mbox{\hyperlink{test__suitesparse__alltoall__crs_8cpp_a3c04138a5bfe5d72780bb7e82a18e627}{main}} (int argc, char \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}argv)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Function Documentation}
+\Hypertarget{test__suitesparse__alltoall__crs_8cpp_a6137c7fc6b970de580c49722c9c7fec3}\label{test__suitesparse__alltoall__crs_8cpp_a6137c7fc6b970de580c49722c9c7fec3} 
+\index{test\_suitesparse\_alltoall\_crs.cpp@{test\_suitesparse\_alltoall\_crs.cpp}!compare\_alltoall\_crs\_results@{compare\_alltoall\_crs\_results}}
+\index{compare\_alltoall\_crs\_results@{compare\_alltoall\_crs\_results}!test\_suitesparse\_alltoall\_crs.cpp@{test\_suitesparse\_alltoall\_crs.cpp}}
+\doxysubsubsection{\texorpdfstring{compare\_alltoall\_crs\_results()}{compare\_alltoall\_crs\_results()}}
+{\footnotesize\ttfamily void compare\+\_\+alltoall\+\_\+crs\+\_\+results (\begin{DoxyParamCaption}\item[{int}]{n\+\_\+recvs,  }\item[{int}]{send\+\_\+msgs,  }\item[{int \texorpdfstring{$\ast$}{*}}]{recvvals,  }\item[{int \texorpdfstring{$\ast$}{*}}]{src,  }\item[{std\+::vector$<$ int $>$ \&}]{proc\+\_\+counts }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{test__suitesparse__alltoall__crs_8cpp_a6137c7fc6b970de580c49722c9c7fec3_icgraph}
+\end{center}
+\end{figure}
+\Hypertarget{test__suitesparse__alltoall__crs_8cpp_a3c04138a5bfe5d72780bb7e82a18e627}\label{test__suitesparse__alltoall__crs_8cpp_a3c04138a5bfe5d72780bb7e82a18e627} 
+\index{test\_suitesparse\_alltoall\_crs.cpp@{test\_suitesparse\_alltoall\_crs.cpp}!main@{main}}
+\index{main@{main}!test\_suitesparse\_alltoall\_crs.cpp@{test\_suitesparse\_alltoall\_crs.cpp}}
+\doxysubsubsection{\texorpdfstring{main()}{main()}}
+{\footnotesize\ttfamily int main (\begin{DoxyParamCaption}\item[{int}]{argc,  }\item[{char \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{argv }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{test__suitesparse__alltoall__crs_8cpp_a3c04138a5bfe5d72780bb7e82a18e627_cgraph}
+\end{center}
+\end{figure}
+\Hypertarget{test__suitesparse__alltoall__crs_8cpp_a74d6c1a9ccd2b11e762071a878cb3f34}\label{test__suitesparse__alltoall__crs_8cpp_a74d6c1a9ccd2b11e762071a878cb3f34} 
+\index{test\_suitesparse\_alltoall\_crs.cpp@{test\_suitesparse\_alltoall\_crs.cpp}!test\_matrix@{test\_matrix}}
+\index{test\_matrix@{test\_matrix}!test\_suitesparse\_alltoall\_crs.cpp@{test\_suitesparse\_alltoall\_crs.cpp}}
+\doxysubsubsection{\texorpdfstring{test\_matrix()}{test\_matrix()}}
+{\footnotesize\ttfamily void test\+\_\+matrix (\begin{DoxyParamCaption}\item[{const char \texorpdfstring{$\ast$}{*}}]{filename }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{test__suitesparse__alltoall__crs_8cpp_a74d6c1a9ccd2b11e762071a878cb3f34_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=230pt]{test__suitesparse__alltoall__crs_8cpp_a74d6c1a9ccd2b11e762071a878cb3f34_icgraph}
+\end{center}
+\end{figure}

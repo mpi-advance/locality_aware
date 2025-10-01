@@ -1,0 +1,117 @@
+\doxysection{src/utils/utils.cpp File Reference}
+\hypertarget{utils_8cpp}{}\label{utils_8cpp}\index{src/utils/utils.cpp@{src/utils/utils.cpp}}
+{\ttfamily \#include "{}utils.\+h"{}}\newline
+{\ttfamily \#include $<$algorithm$>$}\newline
+{\ttfamily \#include $<$cstring$>$}\newline
+{\ttfamily \#include "{}mpi.\+h"{}}\newline
+{\ttfamily \#include "{}stdio.\+h"{}}\newline
+Include dependency graph for utils.\+cpp\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{utils_8cpp__incl}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{utils_8cpp_a728aa459dca9c82b0a3f1a7e0632009c}{MPIL\+\_\+\+Info\+\_\+init}} (\mbox{\hyperlink{utils_8h_a517855dd2a7e95505029c3c73dd0d902}{MPIL\+\_\+\+Info}} \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}info\+\_\+ptr)
+\item 
+int \mbox{\hyperlink{utils_8cpp_a1488afcb5b1420e706d907f1a8b5f42b}{MPIL\+\_\+\+Info\+\_\+free}} (\mbox{\hyperlink{utils_8h_a517855dd2a7e95505029c3c73dd0d902}{MPIL\+\_\+\+Info}} \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}info\+\_\+ptr)
+\item 
+void \mbox{\hyperlink{utils_8cpp_a9fccdb1e4f6f875567e55fa44f805972}{sort}} (int n\+\_\+objects, int \texorpdfstring{$\ast$}{*}object\+\_\+indices, int \texorpdfstring{$\ast$}{*}object\+\_\+values)
+\item 
+void \mbox{\hyperlink{utils_8cpp_a0c60fc42293f1f168a15c9e6562adc8c}{rotate}} (void \texorpdfstring{$\ast$}{*}recvbuf, int new\+\_\+first\+\_\+byte, int last\+\_\+byte)
+\item 
+void \mbox{\hyperlink{utils_8cpp_a71d073966e482ed0b0219f65e00c84ba}{reverse}} (void \texorpdfstring{$\ast$}{*}recvbuf, int n\+\_\+bytes, int var\+\_\+bytes)
+\item 
+void \mbox{\hyperlink{utils_8cpp_a5dd769e6d904f6863fd931311d7a27d6}{repack}} (int size\+\_\+i, int size\+\_\+j, int size\+\_\+k, char \texorpdfstring{$\ast$}{*}sendbuf, char \texorpdfstring{$\ast$}{*}recvbuf)
+\item 
+int \mbox{\hyperlink{utils_8cpp_aa3cf61437a68cfb0417f50defc1b3d5a}{MPIL\+\_\+\+Alloc}} (void \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}pointer, const int bytes)
+\item 
+int \mbox{\hyperlink{utils_8cpp_ae5b2be0671ffbc60717357e2578af204}{MPIL\+\_\+\+Free}} (void \texorpdfstring{$\ast$}{*}pointer)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Function Documentation}
+\Hypertarget{utils_8cpp_aa3cf61437a68cfb0417f50defc1b3d5a}\label{utils_8cpp_aa3cf61437a68cfb0417f50defc1b3d5a} 
+\index{utils.cpp@{utils.cpp}!MPIL\_Alloc@{MPIL\_Alloc}}
+\index{MPIL\_Alloc@{MPIL\_Alloc}!utils.cpp@{utils.cpp}}
+\doxysubsubsection{\texorpdfstring{MPIL\_Alloc()}{MPIL\_Alloc()}}
+{\footnotesize\ttfamily int MPIL\+\_\+\+Alloc (\begin{DoxyParamCaption}\item[{void \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{pointer,  }\item[{const int}]{bytes }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{utils_8cpp_aa3cf61437a68cfb0417f50defc1b3d5a_icgraph}
+\end{center}
+\end{figure}
+\Hypertarget{utils_8cpp_ae5b2be0671ffbc60717357e2578af204}\label{utils_8cpp_ae5b2be0671ffbc60717357e2578af204} 
+\index{utils.cpp@{utils.cpp}!MPIL\_Free@{MPIL\_Free}}
+\index{MPIL\_Free@{MPIL\_Free}!utils.cpp@{utils.cpp}}
+\doxysubsubsection{\texorpdfstring{MPIL\_Free()}{MPIL\_Free()}}
+{\footnotesize\ttfamily int MPIL\+\_\+\+Free (\begin{DoxyParamCaption}\item[{void \texorpdfstring{$\ast$}{*}}]{pointer }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{utils_8cpp_ae5b2be0671ffbc60717357e2578af204_icgraph}
+\end{center}
+\end{figure}
+\Hypertarget{utils_8cpp_a1488afcb5b1420e706d907f1a8b5f42b}\label{utils_8cpp_a1488afcb5b1420e706d907f1a8b5f42b} 
+\index{utils.cpp@{utils.cpp}!MPIL\_Info\_free@{MPIL\_Info\_free}}
+\index{MPIL\_Info\_free@{MPIL\_Info\_free}!utils.cpp@{utils.cpp}}
+\doxysubsubsection{\texorpdfstring{MPIL\_Info\_free()}{MPIL\_Info\_free()}}
+{\footnotesize\ttfamily int MPIL\+\_\+\+Info\+\_\+free (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{utils_8h_a517855dd2a7e95505029c3c73dd0d902}{MPIL\+\_\+\+Info}} \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{info\+\_\+ptr }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{utils_8cpp_a1488afcb5b1420e706d907f1a8b5f42b_icgraph}
+\end{center}
+\end{figure}
+\Hypertarget{utils_8cpp_a728aa459dca9c82b0a3f1a7e0632009c}\label{utils_8cpp_a728aa459dca9c82b0a3f1a7e0632009c} 
+\index{utils.cpp@{utils.cpp}!MPIL\_Info\_init@{MPIL\_Info\_init}}
+\index{MPIL\_Info\_init@{MPIL\_Info\_init}!utils.cpp@{utils.cpp}}
+\doxysubsubsection{\texorpdfstring{MPIL\_Info\_init()}{MPIL\_Info\_init()}}
+{\footnotesize\ttfamily int MPIL\+\_\+\+Info\+\_\+init (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{utils_8h_a517855dd2a7e95505029c3c73dd0d902}{MPIL\+\_\+\+Info}} \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{info\+\_\+ptr }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{utils_8cpp_a728aa459dca9c82b0a3f1a7e0632009c_icgraph}
+\end{center}
+\end{figure}
+\Hypertarget{utils_8cpp_a5dd769e6d904f6863fd931311d7a27d6}\label{utils_8cpp_a5dd769e6d904f6863fd931311d7a27d6} 
+\index{utils.cpp@{utils.cpp}!repack@{repack}}
+\index{repack@{repack}!utils.cpp@{utils.cpp}}
+\doxysubsubsection{\texorpdfstring{repack()}{repack()}}
+{\footnotesize\ttfamily void repack (\begin{DoxyParamCaption}\item[{int}]{size\+\_\+i,  }\item[{int}]{size\+\_\+j,  }\item[{int}]{size\+\_\+k,  }\item[{char \texorpdfstring{$\ast$}{*}}]{sendbuf,  }\item[{char \texorpdfstring{$\ast$}{*}}]{recvbuf }\end{DoxyParamCaption})}
+
+\Hypertarget{utils_8cpp_a71d073966e482ed0b0219f65e00c84ba}\label{utils_8cpp_a71d073966e482ed0b0219f65e00c84ba} 
+\index{utils.cpp@{utils.cpp}!reverse@{reverse}}
+\index{reverse@{reverse}!utils.cpp@{utils.cpp}}
+\doxysubsubsection{\texorpdfstring{reverse()}{reverse()}}
+{\footnotesize\ttfamily void reverse (\begin{DoxyParamCaption}\item[{void \texorpdfstring{$\ast$}{*}}]{recvbuf,  }\item[{int}]{n\+\_\+bytes,  }\item[{int}]{var\+\_\+bytes }\end{DoxyParamCaption})}
+
+\Hypertarget{utils_8cpp_a0c60fc42293f1f168a15c9e6562adc8c}\label{utils_8cpp_a0c60fc42293f1f168a15c9e6562adc8c} 
+\index{utils.cpp@{utils.cpp}!rotate@{rotate}}
+\index{rotate@{rotate}!utils.cpp@{utils.cpp}}
+\doxysubsubsection{\texorpdfstring{rotate()}{rotate()}}
+{\footnotesize\ttfamily void rotate (\begin{DoxyParamCaption}\item[{void \texorpdfstring{$\ast$}{*}}]{recvbuf,  }\item[{int}]{new\+\_\+first\+\_\+byte,  }\item[{int}]{last\+\_\+byte }\end{DoxyParamCaption})}
+
+\Hypertarget{utils_8cpp_a9fccdb1e4f6f875567e55fa44f805972}\label{utils_8cpp_a9fccdb1e4f6f875567e55fa44f805972} 
+\index{utils.cpp@{utils.cpp}!sort@{sort}}
+\index{sort@{sort}!utils.cpp@{utils.cpp}}
+\doxysubsubsection{\texorpdfstring{sort()}{sort()}}
+{\footnotesize\ttfamily void sort (\begin{DoxyParamCaption}\item[{int}]{n\+\_\+objects,  }\item[{int \texorpdfstring{$\ast$}{*}}]{object\+\_\+indices,  }\item[{int \texorpdfstring{$\ast$}{*}}]{object\+\_\+values }\end{DoxyParamCaption})}
+

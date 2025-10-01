@@ -1,0 +1,100 @@
+\doxysection{src/tests/par\+\_\+binary\+\_\+\+IO.hpp File Reference}
+\hypertarget{par__binary__IO_8hpp}{}\label{par__binary__IO_8hpp}\index{src/tests/par\_binary\_IO.hpp@{src/tests/par\_binary\_IO.hpp}}
+{\ttfamily \#include "{}mpi.\+h"{}}\newline
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+{\ttfamily \#include $<$string.\+h$>$}\newline
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include $<$ctype.\+h$>$}\newline
+{\ttfamily \#include "{}sparse\+\_\+mat.\+hpp"{}}\newline
+{\ttfamily \#include $<$vector$>$}\newline
+{\ttfamily \#include $<$iostream$>$}\newline
+{\ttfamily \#include $<$iterator$>$}\newline
+{\ttfamily \#include $<$algorithm$>$}\newline
+{\ttfamily \#include $<$map$>$}\newline
+{\ttfamily \#include "{}limits.\+h"{}}\newline
+Include dependency graph for par\+\_\+binary\+\_\+\+IO.\+hpp\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{par__binary__IO_8hpp__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{par__binary__IO_8hpp__dep__incl}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{par__binary__IO_8hpp_abe372c476b8eb4480719b41532579b6e}{PETSC\+\_\+\+MAT\+\_\+\+CODE}}~1211216
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+bool \mbox{\hyperlink{par__binary__IO_8hpp_add91e8ddaf8357786348a3ab5ce21a3f}{little\+\_\+endian}} ()
+\item 
+{\footnotesize template$<$class T $>$ }\\void \mbox{\hyperlink{par__binary__IO_8hpp_ae431450f00149822dd5b8dfeb10888c9}{endian\+\_\+swap}} (T \texorpdfstring{$\ast$}{*}objp)
+\item 
+{\footnotesize template$<$typename U $>$ }\\void \mbox{\hyperlink{par__binary__IO_8hpp_ac4b18b1be0ae104dbf6edd96c50d1e10}{read\+Par\+Matrix}} (const char \texorpdfstring{$\ast$}{*}filename, \mbox{\hyperlink{structParMat}{Par\+Mat}}$<$ U $>$ \&A)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Macro Definition Documentation}
+\Hypertarget{par__binary__IO_8hpp_abe372c476b8eb4480719b41532579b6e}\label{par__binary__IO_8hpp_abe372c476b8eb4480719b41532579b6e} 
+\index{par\_binary\_IO.hpp@{par\_binary\_IO.hpp}!PETSC\_MAT\_CODE@{PETSC\_MAT\_CODE}}
+\index{PETSC\_MAT\_CODE@{PETSC\_MAT\_CODE}!par\_binary\_IO.hpp@{par\_binary\_IO.hpp}}
+\doxysubsubsection{\texorpdfstring{PETSC\_MAT\_CODE}{PETSC\_MAT\_CODE}}
+{\footnotesize\ttfamily \#define PETSC\+\_\+\+MAT\+\_\+\+CODE~1211216}
+
+
+
+\doxysubsection{Function Documentation}
+\Hypertarget{par__binary__IO_8hpp_ae431450f00149822dd5b8dfeb10888c9}\label{par__binary__IO_8hpp_ae431450f00149822dd5b8dfeb10888c9} 
+\index{par\_binary\_IO.hpp@{par\_binary\_IO.hpp}!endian\_swap@{endian\_swap}}
+\index{endian\_swap@{endian\_swap}!par\_binary\_IO.hpp@{par\_binary\_IO.hpp}}
+\doxysubsubsection{\texorpdfstring{endian\_swap()}{endian\_swap()}}
+{\footnotesize\ttfamily template$<$class T $>$ \\
+void endian\+\_\+swap (\begin{DoxyParamCaption}\item[{T \texorpdfstring{$\ast$}{*}}]{objp }\end{DoxyParamCaption})}
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{par__binary__IO_8hpp_ae431450f00149822dd5b8dfeb10888c9_icgraph}
+\end{center}
+\end{figure}
+\Hypertarget{par__binary__IO_8hpp_add91e8ddaf8357786348a3ab5ce21a3f}\label{par__binary__IO_8hpp_add91e8ddaf8357786348a3ab5ce21a3f} 
+\index{par\_binary\_IO.hpp@{par\_binary\_IO.hpp}!little\_endian@{little\_endian}}
+\index{little\_endian@{little\_endian}!par\_binary\_IO.hpp@{par\_binary\_IO.hpp}}
+\doxysubsubsection{\texorpdfstring{little\_endian()}{little\_endian()}}
+{\footnotesize\ttfamily bool little\+\_\+endian (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\Hypertarget{par__binary__IO_8hpp_ac4b18b1be0ae104dbf6edd96c50d1e10}\label{par__binary__IO_8hpp_ac4b18b1be0ae104dbf6edd96c50d1e10} 
+\index{par\_binary\_IO.hpp@{par\_binary\_IO.hpp}!readParMatrix@{readParMatrix}}
+\index{readParMatrix@{readParMatrix}!par\_binary\_IO.hpp@{par\_binary\_IO.hpp}}
+\doxysubsubsection{\texorpdfstring{readParMatrix()}{readParMatrix()}}
+{\footnotesize\ttfamily template$<$typename U $>$ \\
+void read\+Par\+Matrix (\begin{DoxyParamCaption}\item[{const char \texorpdfstring{$\ast$}{*}}]{filename,  }\item[{\mbox{\hyperlink{structParMat}{Par\+Mat}}$<$ U $>$ \&}]{A }\end{DoxyParamCaption})}
+
+Here is the call graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=281pt]{par__binary__IO_8hpp_ac4b18b1be0ae104dbf6edd96c50d1e10_cgraph}
+\end{center}
+\end{figure}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{par__binary__IO_8hpp_ac4b18b1be0ae104dbf6edd96c50d1e10_icgraph}
+\end{center}
+\end{figure}
