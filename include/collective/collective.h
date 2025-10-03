@@ -7,7 +7,7 @@
 // #include <mpt.h>
 #include "alltoall.h"
 #include "alltoallv.h"
-#include "utils/utils.h"
+#include "../utils/utils.h"
 
 #ifdef __cplusplus
 extern "C" {

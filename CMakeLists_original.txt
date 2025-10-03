@@ -78,15 +78,30 @@ if (ENABLE_UNIT_TESTS)
     enable_testing()
 endif()
 
+add_subdirectory(src)
 
+set_source_files_properties(
+    ${utils_SOURCES}
+    ${communicator_SOURCES}
+    ${collective_SOURCES}
+    ${persistent_SOURCES}
+    ${neighborhood_SOURCES}
+    ${heterogeneous_SOURCES}
+    PROPERTIES LANGUAGE ${locality_aware_LANG})
 
-add_library(locality_aware "")
-set_target_properties(locality_aware PROPERTIES PUBLIC_HEADER ..include/locality_aware.h)
-add_subdirectory(library)
+add_library(locality_aware
+    ${utils_SOURCES} ${utils_HEADERS}
+    ${communicator_SOURCES} ${communicator_HEADERS}
+    ${collective_SOURCES} ${collective_HEADERS}
+    ${persistent_SOURCES} ${persistent_HEADERS}
+    ${neighborhood_SOURCES} ${neighborhood_HEADERS}
+    ${heterogeneous_SOURCES} ${heterogeneous_HEADERS}
+)
 
+set_target_properties(locality_aware PROPERTIES PUBLIC_HEADER src/locality_aware.h)
 
 target_include_directories(locality_aware PUBLIC 
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/library>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
     $<INSTALL_INTERFACE:include>
     )
 
@@ -95,13 +110,14 @@ target_link_libraries(locality_aware PUBLIC ${EXTERNAL_LIBS})
 install(TARGETS locality_aware)
 
 ### Install all headers that locality_aware exports
-# install(FILES ${utils_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/utils)
-# install(FILES ${communicator_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/communicator)
-# install(FILES ${collective_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/collective)
-# install(FILES ${persistent_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/persistent)
-# install(FILES ${neighborhood_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/neighborhood)
-# install(FILES ${heterogeneous_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/heterogeneous)
+install(FILES ${utils_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/utils)
+install(FILES ${communicator_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/communicator)
+install(FILES ${collective_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/collective)
+install(FILES ${persistent_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/persistent)
+install(FILES ${neighborhood_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/neighborhood)
+install(FILES ${heterogeneous_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/heterogeneous)
 
+ add_subdirectory(benchmarks)
 
 ### Installation Requirements for Spack Package ###
 include(CMakePackageConfigHelpers)

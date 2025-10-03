@@ -1,9 +1,9 @@
 #ifndef MPI_ADVANCE_PERSISTENT_H
 #define MPI_ADVANCE_PERSISTENT_H
 
-#include "communicator/locality_comm.h"
-#include "communicator/mpil_comm.h"
-#include "utils/utils.h"
+#include "../communicator/locality_comm.h"
+#include "../communicator/mpil_comm.h"
+#include "../utils/utils.h"
 
 #ifdef __cplusplus
 extern "C" {

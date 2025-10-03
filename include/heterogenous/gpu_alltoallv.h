@@ -1,8 +1,8 @@
 #ifndef MPI_ADVANCE_GPU_ALLTOALLV_H
 #define MPI_ADVANCE_GPU_ALLTOALLV_H
 
-#include "collective/alltoallv.h"
-#include "collective/collective.h"
+#include "../collective/alltoallv.h"
+#include "../collective/collective.h"
 
 #ifdef __cplusplus
 extern "C" {

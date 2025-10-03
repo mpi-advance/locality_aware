@@ -5,8 +5,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "collective.h"
-#include "communicator/mpil_comm.h"
+//#include "collective.h"
+#include "../communicator/mpil_comm.h"
 
 #ifdef __cplusplus
 extern "C" {

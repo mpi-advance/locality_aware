@@ -6,8 +6,8 @@
 #include <stdlib.h>
 
 #include "collective.h"
-#include "communicator/mpil_comm.h"
-#include "utils/utils.h"
+#include "../communicator/mpil_comm.h"
+#include "../utils/utils.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -43,6 +43,17 @@ typedef int (*alltoall_helper_ftn)(const void*,
                                    MPI_Comm,
                                    int tag);
 
+
+int pairwise_helper(const void* sendbuf,
+                    const int sendcount,
+                    MPI_Datatype sendtype,
+                    void* recvbuf,
+                    const int recvcount,
+                    MPI_Datatype recvtype,
+                    MPI_Comm comm,
+                    int tag);
+
+/** @brief set tag and call pairwise_helper **/
 int alltoall_pairwise(const void* sendbuf,
                       const int sendcount,
                       MPI_Datatype sendtype,
@@ -50,6 +61,8 @@ int alltoall_pairwise(const void* sendbuf,
                       const int recvcount,
                       MPI_Datatype recvtype,
                       MPIL_Comm* comm);
+
+/** @brief set tag and call pairwise_helper **/
 int alltoall_nonblocking(const void* sendbuf,
                          const int sendcount,
                          MPI_Datatype sendtype,
