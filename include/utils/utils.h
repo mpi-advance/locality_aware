@@ -1,5 +1,5 @@
-#ifndef MPI_ADVANCE_UTILS_H
-#define MPI_ADVANCE_UTILS_H
+#ifndef MPIL_UTILS_H
+#define MPIL_UTILS_H
 
 #ifdef HIP
 #include "utils_hip.h"
@@ -18,43 +18,7 @@
 
 #ifdef __cplusplus
 extern "C" {
-#endif
-
-// MPIL Info Object
-/** @brief MPIL_Info object 
-	\todo why this instead of just an entry in a normal MPI_Info object?
-**/
-typedef struct _MPIL_Info
-{
-    int crs_num_initialized;
-    int crs_size_initialized;
-} MPIL_Info;
-
-/** @brief Constructor of MPIL_Info object, initialized values = 0**/
-int MPIL_Info_init(MPIL_Info** info);
-
-/** @brief deallocate and delete supplied info object **/
-int MPIL_Info_free(MPIL_Info** info);
-
-// If using GPU, specific gpu methods (for either NCCL or HIP)
-#ifdef GPU
-__global__ void device_repack(char* __restrict__ sendbuf,
-                              char* __restrict__ recvbuf,
-                              int size_x,
-                              int size_y,
-                              int size_z);
-void get_mem_types(const void* sendbuf,
-                   const void* recvbuf,
-                   gpuMemoryType* send_type,
-                   gpuMemoryType* recv_type);
-void get_memcpy_kind(gpuMemoryType send_type,
-                     gpuMemoryType recv_type,
-                     gpuMemcpyKind* memcpy_kind);
-void gpu_repack(int size_i, int size_j, int size_k, char* sendbuf, char* recvbuf);
-void gpu_check(int ierr);
-#endif
-
-// General utility methods (that use C++ functions)
+#endif// General utility methods (that use C++ functions)
 
 /** @brief wrapper around std::sort 
 	@param [in] n_objects number of objects to short
@@ -93,12 +57,9 @@ void rotate(void* ref, int new_start_byte, int end_byte);
 **/
 void reverse(void* recvbuf, int n_bytes, int var_bytes);
 
-
 void repack(int size_i, int size_j, int size_k, char* sendbuf, char* recvbuf);
 
-// Allocate Vector in MPI
-int MPIL_Alloc(void** pointer, const int bytes);
-int MPIL_Free(void* pointer);
+
 
 #ifdef __cplusplus
 }

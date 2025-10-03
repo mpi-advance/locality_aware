@@ -8,7 +8,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "../utils/utils.h"
+#include "../utils/MPIL_Alloc.h"
+
+#include <cuda_runtime.h>
+#include "../utils/utils_cuda.h"
+
+#include "../utils/gpu_utils.h"
 
 #ifdef __cplusplus
 extern "C" {

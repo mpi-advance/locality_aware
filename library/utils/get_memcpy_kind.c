@@ -1,3 +1,5 @@
+
+#include "../../include/utils/gpu_utils.h"
 // GPU Method to find where memory was allocated
 #ifdef GPU
 

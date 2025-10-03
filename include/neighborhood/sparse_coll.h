@@ -4,7 +4,8 @@
 #include "../communicator/locality_comm.h"
 #include "../communicator/mpil_comm.h"
 #include "mpi.h"
-#include "../utils/utils.h"
+#include "../utils/MPIL_Info.h"
+//#include "../utils/utils.h"
 
 // Declarations of C++ methods
 #ifdef __cplusplus

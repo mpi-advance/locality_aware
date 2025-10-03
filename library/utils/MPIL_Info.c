@@ -1,5 +1,5 @@
-#include "utils.h"
-#include "mpi.h"
+#include "../../include/utils/MPIL_info.h"
+
 
 / MPIL Info Object Routines
 int MPIL_Info_init(MPIL_Info** info_ptr)

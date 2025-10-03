@@ -59,7 +59,7 @@ if (USE_CUDA)
   set(CMAKE_CUDA_HOST_COMPILER "${MPICXX}")
   set(CMAKE_CUDA_ARCHITECTURES ${CUDA_ARCH})
   enable_language(CUDA)
-  set(locality_aware_LANG CUDA)
+  set(locality_aware_LANG C CXX CUDA)
   message(STATUS "CUDA support enabled: ${CMAKE_CUDA_FLAGS}")
   add_definitions(-DCUDA)
 

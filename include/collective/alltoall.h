@@ -7,7 +7,7 @@
 
 #include "collective.h"
 #include "../communicator/mpil_comm.h"
-#include "../utils/utils.h"
+//#include "../utils/gpu_utils.h"
 
 #ifdef __cplusplus
 extern "C" {

@@ -1,4 +1,4 @@
-#include "utils.h"
+#include "../../include/utils/gpu_utils.h"
 
 // Repack Data on Device
 #ifdef GPU

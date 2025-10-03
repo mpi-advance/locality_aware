@@ -16,10 +16,15 @@
 #include "persistent/neighbor_persistent.h"
 #include "persistent/persistent.h"
 #include "utils/utils.h"
+#include "utils/MPIL_Alloc.h"
+#include "utils/MPIL_Info.h"
+
 
 #ifdef GPU
 #include "heterogeneous/gpu_alltoall.h"
 #include "heterogeneous/gpu_alltoallv.h"
+#include "utils/gpu_utils.h"
 #endif
+
 
 #endif

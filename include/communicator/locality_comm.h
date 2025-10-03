@@ -5,6 +5,7 @@
 
 #include "comm_pkg.h"
 #include "mpil_comm.h"
+#include "../utils/MPIL_Info.h"
 
 // Declarations of C++ methods
 #ifdef __cplusplus
