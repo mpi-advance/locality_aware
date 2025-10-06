@@ -39,13 +39,14 @@ int main(int argc, char** argv)
     MPIX_Comm_leader_init(locality_comm, 4);
     for (int i = 0; i < 6; i++)
     {
+        // int i = 0;
         int s = pow(2, i);
         if (rank == 0)
             printf("*************\nSize: %d\n*************\n", s);
         
         for (int j = 0; j < s; j++)
         {
-            local_data[j] = (j + 1) * (rank + 1);
+            local_data[j] = (j + 1) * (rank + 1) - 1;
         }
 
         // standard Allgather
@@ -53,6 +54,8 @@ int main(int argc, char** argv)
         PMPI_Allgather(local_data.data(), s, MPI_INT, pmpi_allgather, s, MPI_INT, MPI_COMM_WORLD);
 
         int* mpix_allgather = (int*) malloc(s * num_procs * sizeof(int));
+        if (rank == 0)
+            printf("allgather multileader\n");
         allgather_multileader(local_data.data(), s, MPI_INT, mpix_allgather, s, MPI_INT, *locality_comm);
         compare_allgather_results(pmpi_allgather, mpix_allgather, s * num_procs, rank);
 

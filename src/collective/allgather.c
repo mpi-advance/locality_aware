@@ -306,27 +306,29 @@ int allgather_multileader_locality_aware(const void* sendbuf,
     }
 
     // 1. Gather to leaders
-    MPI_Gather(send_buffer, sendcount, sendtype, local_send_buffer, sendcount, sendtype, 0, comm.leader_comm);
+    MPI_Gather(sendbuf, sendcount, sendtype, local_send_buffer, sendcount, sendtype, 0, comm.leader_comm);
 
     // 2. Allgather between leaders
+    MPI_Barrier(comm.global_comm);
     if (leader_rank == 0)
     {
-        MPI_Allgather(local_send_buffer, procs_per_leader * sendcount, sendtype, recv_buffer, procs_per_leader * recvcount, recvtype, comm.group_comm);
+        MPI_Allgather(local_send_buffer, procs_per_leader * sendcount, sendtype, recv_buffer, procs_per_leader * sendcount, sendtype, comm.group_comm);
 
-        MPI_Allgather(recv_buffer, procs_per_leader * leaders_per_node * sendcount, sendtype, local_recv_buffer, procs_per_leader * leaders_per_node * recvcount, recvtype, comm.leader_local_comm); 
+        MPI_Allgather(recv_buffer, procs_per_leader * n_nodes * recvcount, sendtype, local_recv_buffer, procs_per_leader * n_nodes * recvcount, recvtype, comm.leader_local_comm); 
 
         int ctr = 0;
-        if (leader_rank == 0)
+        int ctr_index = 0;
+        for (int node = 0; node < n_nodes; node++)
         {
+            int node_index = node * procs_per_leader * recvcount;
+            int node_offset = node_index * recv_size;
             for (int leader = 0; leader < leaders_per_node; leader++)
             {
-                int leader_offset = leader * procs_per_leader * recvcount * recv_size;
-                for (int node = 0; node < n_nodes; node++)
-                {
-                    int node_offset = node * ppn * recvcount * recv_size;
-                    memcpy(&(recv_buffer[ctr]), &(local_recv_buffer[leader_offset + node_offset]), procs_per_leader * recvcount * recv_size);
-                    ctr += procs_per_leader * recvcount * recv_size;
-                } 
+                int leader_index = n_nodes * leader * procs_per_leader * recvcount;
+                int leader_offset = leader_index * recv_size;
+                memcpy(&(recv_buffer[ctr]), &(local_recv_buffer[leader_offset + node_offset]), procs_per_leader * recvcount * recv_size);
+                ctr += procs_per_leader * recvcount * recv_size;
+                ctr_index += procs_per_leader * recvcount;
             }
         }
     }
