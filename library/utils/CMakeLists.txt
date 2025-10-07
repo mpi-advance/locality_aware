@@ -8,7 +8,7 @@ elseif (USE_HIP)
 	)
 endif()
 
-file(GLOB utils_SOURCES CONFIGURE_DEPENDS "*.cpp")
+file(GLOB utils_SOURCES CONFIGURE_DEPENDS "*.c *.cpp")
 set(utils_SOURCES ${utils_SOURCES} CACHE INTERNAL "All source files for utils directory.")
 
 
@@ -19,3 +19,7 @@ set(utils_HEADERS
     )
 
 target_sources(locality_aware PRIVATE ${utils_SOURCES})
+
+if (USE_CUDA)
+set_source_files_properties( ${utils_SOURCES}	PROPERTIES LANGUAGE CUDA)
+endif()

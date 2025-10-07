@@ -5,7 +5,7 @@
 
 #include "comm_pkg.h"
 #include "mpil_comm.h"
-#include "../utils/MPIL_Info.h"
+#include "MPIL_Info.h"
 
 // Declarations of C++ methods
 #ifdef __cplusplus
@@ -28,7 +28,6 @@ void init_locality_comm(LocalityComm** locality_ptr,
                         MPI_Datatype recvtype);
 void finalize_locality_comm(LocalityComm* locality);
 void destroy_locality_comm(LocalityComm* locality);
-
 void get_local_comm_data(LocalityComm* locality,
                          int* max_local_num,
                          int* max_local_size,

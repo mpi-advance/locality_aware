@@ -4,20 +4,25 @@
 #include "collective/alltoall.h"
 #include "collective/alltoallv.h"
 #include "collective/collective.h"
+
 #include "communicator/comm_data.h"
 #include "communicator/comm_pkg.h"
 #include "communicator/locality_comm.h"
 #include "communicator/mpil_comm.h"
+#include "communicator/MPIL_Info.h"
+
 #include "neighborhood/dist_graph.h"
 #include "neighborhood/dist_topo.h"
 #include "neighborhood/neighbor.h"
 #include "neighborhood/neighbor_init.h"
 #include "neighborhood/sparse_coll.h"
+
 #include "persistent/neighbor_persistent.h"
 #include "persistent/persistent.h"
-#include "utils/utils.h"
+
+//#include "utils/utils.h"
 #include "utils/MPIL_Alloc.h"
-#include "utils/MPIL_Info.h"
+
 
 
 #ifdef GPU

@@ -59,7 +59,7 @@ if (USE_CUDA)
   set(CMAKE_CUDA_HOST_COMPILER "${MPICXX}")
   set(CMAKE_CUDA_ARCHITECTURES ${CUDA_ARCH})
   enable_language(CUDA)
-  set(locality_aware_LANG C CXX CUDA)
+  set(locality_aware_LANG CUDA)
   message(STATUS "CUDA support enabled: ${CMAKE_CUDA_FLAGS}")
   add_definitions(-DCUDA)
 
@@ -78,29 +78,61 @@ if (ENABLE_UNIT_TESTS)
     enable_testing()
 endif()
 
-
-
 add_library(locality_aware "")
-set_target_properties(locality_aware PROPERTIES PUBLIC_HEADER ..include/locality_aware.h)
+set_target_properties(locality_aware PROPERTIES PUBLIC_HEADER include/locality_aware.h)
 add_subdirectory(library)
 
+if (USE_CUDA)
+	get_target_property(CUR_SOURCES locality_aware SOURCES)
+	foreach(file ${CUR_SOURCES})
+		set_source_files_properties(${file} PROPERTIES LANGUAGE CUDA)
+	endforeach()
+endif()
 
 target_include_directories(locality_aware PUBLIC 
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/library>
     $<INSTALL_INTERFACE:include>
     )
 
+
+
+
 target_link_libraries(locality_aware PUBLIC ${EXTERNAL_LIBS})
+
+
 
 install(TARGETS locality_aware)
 
-### Install all headers that locality_aware exports
-# install(FILES ${utils_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/utils)
+
+set_source_files_properties(
+    ${utils_SOURCES}
+    ${communicator_SOURCES}
+    ${collective_SOURCES}
+    ${persistent_SOURCES}
+    ${neighborhood_SOURCES}
+    ${heterogeneous_SOURCES}
+    PROPERTIES LANGUAGE ${locality_aware_LANG})
+
+message (STATUS "CHECK")
+foreach(file ${collective_HEADERS})
+	message (STATUS "copied ${file}" )
+endforeach()
+
+install(DIRECTORY include/communicator/ DESTINATION ${CMAKE_INSTALL_PREFIX}/include/communicator)
+install(DIRECTORY include/collective/   DESTINATION ${CMAKE_INSTALL_PREFIX}/include/collective)
+install(DIRECTORY include/persistent/   DESTINATION ${CMAKE_INSTALL_PREFIX}/include/persistent)
+install(DIRECTORY include/utils/   DESTINATION ${CMAKE_INSTALL_PREFIX}/include/utils)
+install(DIRECTORY include/neighborhood/   DESTINATION ${CMAKE_INSTALL_PREFIX}/include/neighborhood)
+#install(DIRECTORY include/heterogeneous/   DESTINATION ${CMAKE_INSTALL_PREFIX}/include/heterogeneous)
+
+# Install all headers that locality_aware exports
+#install(FILES ${utils_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/utils)
 # install(FILES ${communicator_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/communicator)
 # install(FILES ${collective_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/collective)
 # install(FILES ${persistent_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/persistent)
 # install(FILES ${neighborhood_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/neighborhood)
 # install(FILES ${heterogeneous_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/heterogeneous)
+
 
 
 ### Installation Requirements for Spack Package ###
@@ -110,8 +142,6 @@ include(CMakePackageConfigHelpers)
 install(TARGETS locality_aware
         EXPORT locality_awareTargets
         DESTINATION lib)
-
-
 
 # Create the configuration file
 configure_package_config_file(

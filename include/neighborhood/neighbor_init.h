@@ -154,6 +154,21 @@ void init_locality(const int n_sends,
                    MPIL_Comm* mpix_comm,
                    MPIL_Request* request);
 
+int init_communication(const void* sendbuffer,
+                       int n_sends,
+                       const int* send_procs,
+                       const int* send_ptr,
+                       MPI_Datatype sendtype,
+                       void* recvbuffer,
+                       int n_recvs,
+                       const int* recv_procs,
+                       const int* recv_ptr,
+                       MPI_Datatype recvtype,
+                       int tag,
+                       MPI_Comm comm,
+                       int* n_request_ptr,
+                       MPI_Request** request_ptr);
+
 #ifdef __cplusplus
 }
 #endif

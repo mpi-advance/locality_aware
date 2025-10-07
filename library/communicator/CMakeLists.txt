@@ -5,3 +5,5 @@ set(communicator_HEADERS ${communicator_HEADERS} CACHE INTERNAL "All headers for
 set(communicator_SOURCES ${communicator_SOURCES} CACHE INTERNAL "All source files for communicator directory.")
 
 target_sources(locality_aware PRIVATE ${communicator_SOURCES})
+
+add_subdirectory(MPIL_Comm)

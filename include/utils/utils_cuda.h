@@ -1,5 +1,6 @@
 #ifndef UTILS_CUDA_HPP
 #define UTILS_CUDA_HPP
+#include <cuda_runtime.h>
 
 // Devices
 #define gpuGetDeviceCount cudaGetDeviceCount

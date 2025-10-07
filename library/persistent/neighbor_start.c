@@ -1,6 +1,5 @@
 #include "../../include/persistent/neighbor_persistent.h"
 
-
 int neighbor_start(MPIL_Request* request)
 {
     if (request == NULL)

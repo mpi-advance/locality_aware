@@ -1,20 +1,3 @@
-# add_subdirectory(utils)
-# add_subdirectory(communicator)
-# add_subdirectory(persistent)
-# add_subdirectory(collective)
-# add_subdirectory(neighborhood)
-# if(USE_CUDA OR USE_HIP)
-    # add_subdirectory(heterogeneous)
-# endif()
-
-# if (ENABLE_UNIT_TESTS)
-    # add_subdirectory(collective/tests)
-    # add_subdirectory(neighborhood/tests)
-    # if (USE_GPU)
-        # add_subdirectory(heterogeneous/tests)
-    # endif(USE_GPU)
-# endif()
-
 
 include_directories(utils)
 include_directories(communicator)

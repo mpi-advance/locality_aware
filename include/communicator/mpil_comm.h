@@ -79,6 +79,7 @@ int MPIL_Comm_device_free(MPIL_Comm* xcomm);
 
 int MPIL_Comm_req_resize(MPIL_Comm* xcomm, int n);
 
+/** @brief get current tag and increment tag in the comm.**/
 int MPIL_Comm_tag(MPIL_Comm* comm, int* tag);
 
 int get_node(const MPIL_Comm* data, const int proc);

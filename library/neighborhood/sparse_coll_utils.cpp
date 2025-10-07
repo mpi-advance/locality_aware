@@ -4,7 +4,7 @@
 #include "../../include/neighborhood/sparse_coll.h"
 
 /* Assumes SMP Ordering of ranks across nodes (aggregates ranks 0-PPN) */
-int alltoall_crs_personalized_loc(int send_nnz,
+/* int alltoall_crs_personalized_loc(int send_nnz,
                                   int* dest,
                                   int sendcount,
                                   MPI_Datatype sendtype,
@@ -316,9 +316,9 @@ int alltoall_crs_personalized_loc(int send_nnz,
 
     return MPI_SUCCESS;
 }
-
+ */
 /* Assumes SMP Ordering of ranks across nodes (aggregates ranks 0-PPN) */
-int alltoall_crs_nonblocking_loc(int send_nnz,
+/* int alltoall_crs_nonblocking_loc(int send_nnz,
                                  int* dest,
                                  int sendcount,
                                  MPI_Datatype sendtype,
@@ -647,8 +647,8 @@ int alltoall_crs_nonblocking_loc(int send_nnz,
 
     return MPI_SUCCESS;
 }
-
-int alltoallv_crs_personalized_loc(int send_nnz,
+ */
+/* int alltoallv_crs_personalized_loc(int send_nnz,
                                    int send_size,
                                    int* dest,
                                    int* sendcounts,
@@ -1416,3 +1416,4 @@ int alltoallv_crs_nonblocking_loc(int send_nnz,
 
     return MPI_SUCCESS;
 }
+ */

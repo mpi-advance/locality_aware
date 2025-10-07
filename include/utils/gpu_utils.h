@@ -6,11 +6,9 @@
 
 #endif */
 
-/* #ifdef CUDA
-
+#ifdef CUDA
 #include "utils_cuda.h"
-
-#endif */
+#endif 
 
 #ifdef __cplusplus
 extern "C" {

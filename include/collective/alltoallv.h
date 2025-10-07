@@ -5,7 +5,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-//#include "collective.h"
 #include "../communicator/mpil_comm.h"
 
 #ifdef __cplusplus
@@ -22,6 +21,16 @@ enum AlltoallvMethod
     ALLTOALLV_PMPI
 };
 extern enum AlltoallvMethod mpil_alltoallv_implementation;
+
+int MPIL_Alltoallv(const void* sendbuf,
+                   const int sendcounts[],
+                   const int sdispls[],
+                   MPI_Datatype sendtype,
+                   void* recvbuf,
+                   const int recvcounts[],
+                   const int rdispls[],
+                   MPI_Datatype recvtype,
+                   MPIL_Comm* mpi_comm);
 
 typedef int (*alltoallv_ftn)(const void*,
                              const int*,
