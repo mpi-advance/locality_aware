@@ -5,7 +5,7 @@
 #endif
 
 // Default alltoallv is pairwise
-enum AlltoallvMethod mpil_alltoallv_implementation = ALLTOALLV_PAIRWISE;
+//enum AlltoallvMethod mpil_alltoallv_implementation = ALLTOALLV_PAIRWISE;
 
 /**************************************************
  * Locality-Aware Point-to-Point Alltoallv

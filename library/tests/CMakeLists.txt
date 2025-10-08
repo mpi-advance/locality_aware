@@ -1,3 +1,5 @@
+enable_testing()
+
 ## Grab all .cpp files in test directory
 file(GLOB CPP_SOURCES CONFIGURE_DEPENDS "*.cpp")
 

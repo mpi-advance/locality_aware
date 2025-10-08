@@ -8,7 +8,7 @@
 #include "dist_graph.h"
 #include "dist_topo.h"
 #include "../persistent/persistent.h"
-#include "../utils/utils.h"
+//#include "../utils/utils.h"
 
 // Declarations of C++ methods
 #ifdef __cplusplus

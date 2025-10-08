@@ -3,7 +3,7 @@
 
 #include "../communicator/locality_comm.h"
 #include "../communicator/mpil_comm.h"
-#include "../utils/utils.h"
+#include "../communicator/MPIL_Info.h"
 
 #ifdef __cplusplus
 extern "C" {

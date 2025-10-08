@@ -16,8 +16,8 @@
 #include "neighborhood/neighbor.h"
 #include "neighborhood/neighbor_init.h"
 #include "neighborhood/sparse_coll.h"
+#include "neighborhood/neighbor_persistent.h"
 
-#include "persistent/neighbor_persistent.h"
 #include "persistent/persistent.h"
 
 //#include "utils/utils.h"

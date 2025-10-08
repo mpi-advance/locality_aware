@@ -30,7 +30,7 @@ enum AlltoallMethod
 };
 extern enum AlltoallMethod mpil_alltoall_implementation;
 
-/** @brief wrapper around other options \todo NOT RUN IN TESTS ANYWHERE?!! \todo if gpu support enbled only ever builds gpu_pairwise**/
+/** @brief wrapper around other options**/
 int MPIL_Alltoall(const void* sendbuf,
                   const int sendcount,
                   MPI_Datatype sendtype,

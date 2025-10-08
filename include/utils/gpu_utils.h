@@ -1,10 +1,9 @@
 #ifndef MPIL_GPU_UTILS_H
 #define MPIL_GPU_UTILS_H
 
-/* #ifdef HIP
+/#ifdef HIP
 #include "utils_hip.h"
-
-#endif */
+#endif 
 
 #ifdef CUDA
 #include "utils_cuda.h"

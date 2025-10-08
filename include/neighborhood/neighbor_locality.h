@@ -2,9 +2,9 @@
 #include <map>
 #include <vector>
 
-#include "../../include/neighborhood/neighbor.h"
-#include "../../include/neighborhood/neighbor_init.h"
-#include "../../include/persistent/neighbor_persistent.h"
+#include "neighbor.h"
+#include "neighbor_init.h"
+#include "neighbor_persistent.h"
 
 /******************************************
  ****

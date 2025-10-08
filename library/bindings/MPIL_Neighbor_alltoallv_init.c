@@ -1,7 +1,7 @@
 #include "../../include/neighborhood/neighbor_init.h"
 
 #include "../../include/neighborhood/neighbor.h"
-#include "../../include/persistent/neighbor_persistent.h"
+#include "../../include/neighborhood/neighbor_persistent.h"
 
 // Standard Persistent Neighbor Alltoallv
 

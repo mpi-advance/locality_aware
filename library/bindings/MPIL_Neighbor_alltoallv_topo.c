@@ -2,8 +2,8 @@
 #include "../../include/neighborhood/sparse_coll.h"
 
 // Standard Method is default
-enum NeighborAlltoallvMethod mpix_neighbor_alltoallv_implementation =
-    NEIGHBOR_ALLTOALLV_STANDARD;
+//enum NeighborAlltoallvMethod mpix_neighbor_alltoallv_implementation =
+//    NEIGHBOR_ALLTOALLV_STANDARD;
 
 // Topology object based neighbor alltoallv
 int MPIL_Neighbor_alltoallv_topo(const void* sendbuf,

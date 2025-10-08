@@ -6,7 +6,7 @@
 #endif
 
 // Default alltoall is pairwise
-enum AlltoallMethod mpil_alltoall_implementation = ALLTOALL_PAIRWISE;
+//AlltoallMethod mpil_alltoall_implementation = ALLTOALL_PAIRWISE;
 
 /**************************************************
  * Locality-Aware Point-to-Point Alltoall

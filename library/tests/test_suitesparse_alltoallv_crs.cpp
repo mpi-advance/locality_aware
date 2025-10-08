@@ -1,4 +1,4 @@
-#include "locality_aware.h"
+#include "../../include/locality_aware.h"
 #include <mpi.h>
 #include <math.h>
 #include <stdlib.h>
