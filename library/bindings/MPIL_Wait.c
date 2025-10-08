@@ -1,10 +1,5 @@
 #include "../../include/persistent/persistent.h"
 
-
-
-
-
-
 // Wait for locality-aware requests
 // 1. Wait for global
 // 2. Start and wait for local_R

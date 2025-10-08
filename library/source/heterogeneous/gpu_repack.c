@@ -1,4 +1,4 @@
-#include "../../include/utils/gpu_utils.h"
+#include "../include/utils/gpu_utils.h"
 
 #ifdef GPU
 void gpu_repack(int size_i, int size_j, int size_k, char* sendbuf, char* recvbuf)

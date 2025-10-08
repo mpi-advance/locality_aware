@@ -1,8 +1,5 @@
 #include "../../include/persistent/persistent.h"
 
-
-
-
 int MPIL_Request_free(MPIL_Request** request_ptr)
 {
     MPIL_Request* request = *request_ptr;

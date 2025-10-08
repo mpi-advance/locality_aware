@@ -1,7 +1,7 @@
-#include "../../include/heterogenous/gpu_alltoall.h"
+#include "../../../include/heterogenous/gpu_alltoall.h"
 
-#include "../../include/collective/alltoall.h"
-#include "../../include/collective/collective.h"
+#include "../../../include/collective/alltoall.h"
+#include "../../../include/collective/collective.h"
 
 int gpu_aware_alltoall_pairwise(const void* sendbuf,
                                 const int sendcount,

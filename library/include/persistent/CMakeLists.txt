@@ -1,4 +1,4 @@
 add_subdirectory(bindings)
-add_subdirectory(include)
+include_directories(include)
 add_subdirectory(source)
 add_subdirectory(tests)
