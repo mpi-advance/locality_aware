@@ -5,13 +5,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "../communicator/mpil_comm.h"
+#include "../include/communicator/mpil_comm.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-// TODO : need to add hierarchical/locality-aware methods for alltoallv
+/* // TODO : need to add hierarchical/locality-aware methods for alltoallv
 enum AlltoallvMethod
 {
     ALLTOALLV_PAIRWISE,
@@ -20,9 +20,9 @@ enum AlltoallvMethod
     ALLTOALLV_BATCH_ASYNC,
     ALLTOALLV_PMPI
 };
-extern enum AlltoallvMethod mpil_alltoallv_implementation;
+extern enum AlltoallvMethod mpil_alltoallv_implementation; */
 
-int MPIL_Alltoallv(const void* sendbuf,
+/* int MPIL_Alltoallv(const void* sendbuf,
                    const int sendcounts[],
                    const int sdispls[],
                    MPI_Datatype sendtype,
@@ -30,7 +30,7 @@ int MPIL_Alltoallv(const void* sendbuf,
                    const int recvcounts[],
                    const int rdispls[],
                    MPI_Datatype recvtype,
-                   MPIL_Comm* mpi_comm);
+                   MPIL_Comm* mpi_comm); */
 
 typedef int (*alltoallv_ftn)(const void*,
                              const int*,

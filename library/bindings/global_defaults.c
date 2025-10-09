@@ -1,5 +1,5 @@
-#include "../../include/collective/alltoall.h"
-#include "../../include/collective/alltoallv.h"
+
+#include "../include/collective/collective.h"
 #include "../../include/neighborhood/neighbor.h"
 #include "../../include/neighborhood/neighbor_init.h"
 

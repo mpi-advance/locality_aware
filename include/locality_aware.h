@@ -1,8 +1,8 @@
 #ifndef MPI_ADVANCE_H
 #define MPI_ADVANCE_H
 
-#include "collective/alltoall.h"
-#include "collective/alltoallv.h"
+//#include "collective/alltoall.h"
+//#include "collective/alltoallv.h"
 #include "collective/collective.h"
 
 #include "communicator/comm_data.h"

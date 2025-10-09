@@ -5,13 +5,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "../communicator/mpil_comm.h"
+#include "../../../include/communicator/mpil_comm.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-// TODO : need to add batch/batch asynch as underlying options for Alltoall
+/* // TODO : need to add batch/batch asynch as underlying options for Alltoall
 enum AlltoallMethod
 {
     ALLTOALL_PAIRWISE,
@@ -29,15 +29,15 @@ enum AlltoallMethod
     ALLTOALL_PMPI
 };
 extern enum AlltoallMethod mpil_alltoall_implementation;
-
+ */
 /** @brief wrapper around other options**/
-int MPIL_Alltoall(const void* sendbuf,
+/* int MPIL_Alltoall(const void* sendbuf,
                   const int sendcount,
                   MPI_Datatype sendtype,
                   void* recvbuf,
                   const int recvcount,
                   MPI_Datatype recvtype,
-                  MPIL_Comm* mpi_comm);
+                  MPIL_Comm* mpi_comm); */
 
 typedef int (*alltoall_ftn)(
     const void*, const int, MPI_Datatype, void*, const int, MPI_Datatype, MPIL_Comm*);

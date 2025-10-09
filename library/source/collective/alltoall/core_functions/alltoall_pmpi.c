@@ -1,4 +1,4 @@
-#include "../../../../../include/collective/alltoall.h"
+#include "../../../../include/collective/alltoall.h"
 // Calls underlying MPI implementation
 int alltoall_pmpi(const void* sendbuf,
                   const int sendcount,

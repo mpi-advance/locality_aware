@@ -1,4 +1,4 @@
-#include "../../../../../include/collective/alltoall.h"
+#include "../../../../include/collective/alltoall.h"
 
 int alltoall_multileader_locality_nonblocking(const void* sendbuf,
                                               const int sendcount,

@@ -22,4 +22,4 @@ foreach(src ${CPP_SOURCES})
     add_test(NAME ${exec_name}_Test COMMAND ${MPIRUN} -n 4 ./${exec_name})
 endforeach()
 
-add_subdirectory(Internal)
+

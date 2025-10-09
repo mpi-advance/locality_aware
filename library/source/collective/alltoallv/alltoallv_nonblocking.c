@@ -1,4 +1,4 @@
-#include "../../../../include/collective/alltoallv.h"
+#include "../../../include/collective/alltoallv.h"
 
 #include <math.h>
 #include <string.h>

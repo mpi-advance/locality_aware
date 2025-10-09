@@ -1,4 +1,5 @@
 #include "../../include/collective/collective.h"
+#include "../include/collective/alltoallv.h"
 
 #ifdef GPU
 #include "../../include/heterogenous/gpu_alltoallv.h"

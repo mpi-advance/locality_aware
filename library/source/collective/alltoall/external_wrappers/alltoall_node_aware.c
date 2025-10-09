@@ -1,4 +1,4 @@
-#include "../../../../../include/collective/alltoall.h"
+#include "../../../../include/collective/alltoall.h"
 
 int alltoall_node_aware(alltoall_helper_ftn f,
                         const void* sendbuf,
