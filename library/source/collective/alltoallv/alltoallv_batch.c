@@ -4,7 +4,7 @@
 #include <string.h>
 
 #ifdef GPU
-#include "../../../../include/heterogenous/gpu_alltoall.h"
+#include "../../../include/heterogeneous/gpu_alltoall.h"
 #endif
 
 

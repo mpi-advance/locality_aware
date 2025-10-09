@@ -24,8 +24,8 @@
 
 
 #ifdef GPU
-#include "heterogenous/gpu_alltoall.h"
-#include "heterogenous/gpu_alltoallv.h"
+//#include "heterogenous/gpu_alltoall.h"
+//#include "heterogenous/gpu_alltoallv.h"
 #include "utils/gpu_utils.h"
 #endif
 

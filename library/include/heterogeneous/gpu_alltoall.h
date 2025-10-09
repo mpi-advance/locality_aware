@@ -2,7 +2,7 @@
 #define MPI_ADVANCE_GPU_ALLTOALL_H
 
 #include "../collective/alltoall.h"
-#include "../communicator/mpil_comm.h"
+#include "../../../include/communicator/mpil_comm.h"
 
 #ifdef __cplusplus
 extern "C" {

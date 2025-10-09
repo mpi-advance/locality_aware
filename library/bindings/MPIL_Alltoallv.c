@@ -2,7 +2,7 @@
 #include "../include/collective/alltoallv.h"
 
 #ifdef GPU
-#include "../../include/heterogenous/gpu_alltoallv.h"
+#include "../include/heterogeneous/gpu_alltoallv.h"
 #endif
 
 // Default alltoallv is pairwise

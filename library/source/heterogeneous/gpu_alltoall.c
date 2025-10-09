@@ -1,6 +1,6 @@
-#include "../../../include/heterogenous/gpu_alltoall.h"
+#include "../../include/heterogeneous/gpu_alltoall.h"
 
-#include "../../../include/collective/alltoall.h"
+#include "../../include/collective/alltoall.h"
 #include "../../../include/collective/collective.h"
 
 int copy_to_cpu_alltoall(alltoall_ftn f,

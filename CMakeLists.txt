@@ -123,7 +123,7 @@ install(DIRECTORY include/collective/   DESTINATION ${CMAKE_INSTALL_PREFIX}/incl
 install(DIRECTORY include/persistent/   DESTINATION ${CMAKE_INSTALL_PREFIX}/include/persistent)
 install(DIRECTORY include/utils/   DESTINATION ${CMAKE_INSTALL_PREFIX}/include/utils)
 install(DIRECTORY include/neighborhood/   DESTINATION ${CMAKE_INSTALL_PREFIX}/include/neighborhood)
-install(DIRECTORY include/heterogeneous/   DESTINATION ${CMAKE_INSTALL_PREFIX}/include/heterogeneous)
+#install(DIRECTORY include/heterogeneous/   DESTINATION ${CMAKE_INSTALL_PREFIX}/include/heterogeneous)
 
 # Install all headers that locality_aware exports
 #install(FILES ${utils_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/utils)

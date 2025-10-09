@@ -3,10 +3,6 @@
 #include <math.h>
 #include <string.h>
 
-#ifdef GPU
-#include "../../../../include/heterogenous/gpu_alltoall.h"
-#endif
-
 
 int alltoallv_nonblocking(const void* sendbuf,
                           const int sendcounts[],

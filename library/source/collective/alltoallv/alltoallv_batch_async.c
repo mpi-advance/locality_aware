@@ -3,9 +3,6 @@
 #include <math.h>
 #include <string.h>
 
-#ifdef GPU
-#include "../../../../include/heterogenous/gpu_alltoall.h"
-#endif
 
 
 int alltoallv_batch_async(const void* sendbuf,
