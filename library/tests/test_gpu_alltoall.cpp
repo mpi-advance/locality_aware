@@ -55,19 +55,30 @@ int main(int argc, char** argv)
             max_s*num_procs*sizeof(int));
     gpuMalloc((void**)&alltoall_d, 
             max_s*num_procs*sizeof(int)); 
-
+	std::cout<<"CHECK2"<<std::endl;
     for (int i = 0; i < max_i; i++)
     {
         int s = pow(2, i);
 
+		std::cout<<"CHECK 3 "<<rank<<std::endl;
+		MPI_Barrier(MPI_COMM_WORLD);
+		
         // Will only be clean for up to double digit process counts
         for (int i = 0; i < num_procs; i++)
             for (int j = 0; j < s; j++)
                 local_data[i*s + j] = rank*10000 + i*100 + j;
+		
+
+		std::cout<<"GRID SET "<<rank<<std::endl;
+		MPI_Barrier(MPI_COMM_WORLD);	
+		
         gpuMemcpy(local_data_d, 
                 local_data.data(),
                 s*num_procs*sizeof(int),
                 gpuMemcpyHostToDevice);
+
+		std::cout<<"after first memCPY "<<rank<<std::endl;
+		MPI_Barrier(MPI_COMM_WORLD);	
 
         // Standard Alltoall
         PMPI_Alltoall(local_data.data(), 
@@ -78,10 +89,10 @@ int main(int argc, char** argv)
                 MPI_INT,
                 MPI_COMM_WORLD);
 
-		std::cout<<"AtA RANK "<<rank<<std::endl;
+		std::cout<<"CHECK 5 "<<rank<<std::endl;
 		MPI_Barrier(MPI_COMM_WORLD);
-
-        // Pairwise Alltoall
+        
+		// Pairwise Alltoall
         alltoall_pairwise(local_data.data(), 
                 s,
                 MPI_INT, 
