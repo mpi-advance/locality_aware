@@ -110,7 +110,6 @@ void test_matrix(const char* filename)
     MPIL_Comm_free(&xcomm);
 }
 
-
 int main(int argc, char** argv)
 {
     MPI_Init(&argc, &argv);

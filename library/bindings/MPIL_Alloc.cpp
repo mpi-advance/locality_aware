@@ -1,4 +1,4 @@
-#include "../../include/utils/MPIL_Alloc.h"
+#include "../include/utils/MPIL_Alloc.h"
 #include "mpi.h"
 
 int MPIL_Alloc(void** pointer, const int bytes)

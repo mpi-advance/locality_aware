@@ -5,8 +5,8 @@
 #include <stdlib.h>
 
 #include "../communicator/locality_comm.h"
-#include "dist_graph.h"
-#include "dist_topo.h"
+#include "MPIL_Graph.h"
+#include "MPIL_Topo.h"
 #include "../persistent/MPIL_Request.h"
 
 

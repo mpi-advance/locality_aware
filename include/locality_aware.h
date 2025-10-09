@@ -11,15 +11,14 @@
 #include "communicator/mpil_comm.h"
 #include "communicator/MPIL_Info.h"
 
-#include "neighborhood/dist_graph.h"
-#include "neighborhood/dist_topo.h"
+#include "neighborhood/MPIL_Graph.h"
+#include "neighborhood/MPIL_Topo.h"
 #include "neighborhood/neighbor.h"
 #include "neighborhood/neighbor_init.h"
 #include "neighborhood/sparse_coll.h"
 #include "neighborhood/neighbor_persistent.h"
 
 #include "persistent/MPIL_Request.h"
-
 #include "utils/MPIL_Alloc.h"
 
 
