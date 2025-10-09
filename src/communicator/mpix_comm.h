@@ -64,6 +64,8 @@ int MPIX_Comm_free(MPIX_Comm** xcomm_ptr);
 int MPIX_Comm_topo_init(MPIX_Comm* xcomm);
 int MPIX_Comm_topo_free(MPIX_Comm* xcomm);
 
+int MPIX_Comm_topo_cluster_init(MPIX_Comm* xcomm);
+
 int MPIX_Comm_leader_init(MPIX_Comm* xcomm, int procs_per_leader);
 int MPIX_Comm_leader_free(MPIX_Comm* xcomm);
 

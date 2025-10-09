@@ -95,6 +95,62 @@ int MPIX_Comm_topo_init(MPIX_Comm* xcomm)
     return MPI_SUCCESS;
 }
 
+int MPIX_Comm_topo_cluster_init(MPIX_Comm* xcomm)
+{
+    int rank, num_procs;
+    MPI_Comm_rank(xcomm->global_comm, &rank);
+    MPI_Comm_size(xcomm->global_comm, &num_procs);
+    
+    int send_proc, recv_proc;
+    int num_samples = 5;
+    double* averageDistances = (double*) calloc(num_procs, sizeof(double));
+
+    // how big should the data be?
+    char *sendData = (char*) malloc(1024 * sizeof(char));
+    char *recvData = (char*) malloc(1024 * sizeof(char));
+    int msgTag = 0; // this needs to be initialized better so messages are unique between ranks?
+    MPI_Status status;
+    for (int i = 0; i < num_procs; i++)
+    {
+        send_proc = rank + i;
+        if (send_proc >= num_procs)
+            send_proc -= num_procs;
+        recv_proc = rank - i;
+        if (recv_proc < 0)
+            recv_proc += num_procs;
+
+        // warm-up
+        MPI_Send(sendData, 1024, MPI_CHAR, send_proc, msgTag, xcomm->global_comm);
+        msgTag++;
+
+        MPI_Recv(recvData, 1024, MPI_CHAR, recv_proc, msgTag, xcomm->global_comm, &status);
+        msgTag++;
+
+        for (int j = 0; j < num_samples; j++)
+        {
+            double t0_send = MPI_Wtime();
+            MPI_Send(sendData, 1024, MPI_CHAR, send_proc, msgTag, xcomm->global_comm);
+            msgTag++;
+            double tFinal_send = (MPI_Wtime() - t0_send);
+            averageDistances[send_proc] += tFinal_send;
+
+            double t0_recv = MPI_Wtime();
+            MPI_Recv(recvData, 1024, MPI_CHAR, recv_proc, msgTag, xcomm->global_comm, &status);
+            msgTag++;
+            double tFinal_recv = (MPI_Wtime() - t0_recv);
+            averageDistances[recv_proc] += tFinal_recv;
+        }
+    }
+
+    // we can't do this in the main loop because we count both sends and recvs towards the total.
+    for (int i = 0; i < num_procs; i++)
+    {
+        averageDistances[i] /= 2 * num_samples;
+    }
+
+    return MPI_SUCCESS;
+}
+
 int MPIX_Comm_leader_init(MPIX_Comm* xcomm, int procs_per_leader)
 {
     int rank, num_procs;
