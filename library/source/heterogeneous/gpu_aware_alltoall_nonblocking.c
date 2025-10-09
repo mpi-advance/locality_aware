@@ -1,4 +1,4 @@
-#include "../../../include/heterogeneous/gpu_alltoall.h"
+#include "../../include/heterogeneous/gpu_alltoall.h"
 
 
 int gpu_aware_alltoall_nonblocking(const void* sendbuf,

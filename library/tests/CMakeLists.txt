@@ -24,6 +24,6 @@ endforeach()
 
 add_subdirectory(Internal)
 
-# if(USE_CUDA)
-	# add_subdirectory(gpu_tests)
-# endif()
+if(USE_CUDA)
+	add_subdirectory(gpu_tests)
+endif()

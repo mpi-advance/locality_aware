@@ -1,4 +1,4 @@
-#include "../../../include/heterogeneous/gpu_alltoallv.h"
+#include "../../include/heterogeneous/gpu_alltoallv.h"
 
 #include "../../include/collective/alltoallv.h"
 #include "../../../include/collective/collective.h"
