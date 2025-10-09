@@ -18,9 +18,8 @@
 #include "neighborhood/sparse_coll.h"
 #include "neighborhood/neighbor_persistent.h"
 
-#include "persistent/persistent.h"
+#include "persistent/MPIL_Request.h"
 
-//#include "utils/utils.h"
 #include "utils/MPIL_Alloc.h"
 
 

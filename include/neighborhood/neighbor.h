@@ -7,8 +7,8 @@
 #include "../communicator/locality_comm.h"
 #include "dist_graph.h"
 #include "dist_topo.h"
-#include "../persistent/persistent.h"
-//#include "../utils/utils.h"
+#include "../persistent/MPIL_Request.h"
+
 
 // Declarations of C++ methods
 #ifdef __cplusplus

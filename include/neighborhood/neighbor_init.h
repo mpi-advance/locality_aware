@@ -3,7 +3,7 @@
 
 #include "../communicator/locality_comm.h"
 #include "neighbor.h"
-#include "../persistent/persistent.h"
+#include "../persistent/MPIL_Request.h"
 
 #ifdef __cplusplus
 extern "C" {
