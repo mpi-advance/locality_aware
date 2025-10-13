@@ -19,8 +19,6 @@
 #include "persistent/MPIL_Request.h"
 #include "utils/MPIL_Alloc.h"
 
-
-
 #ifdef GPU
 #include "utils/gpu_utils.h"
 #endif

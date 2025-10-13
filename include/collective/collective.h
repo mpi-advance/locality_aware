@@ -6,9 +6,6 @@
 #include <stdlib.h>
 #include "../communicator/mpil_comm.h"
 
-
-//#include "../utils/utils.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -59,7 +56,6 @@ enum AlltoallMethod
 };
 extern enum AlltoallMethod mpil_alltoall_implementation;
 
-// TODO : need to add hierarchical/locality-aware methods for alltoallv
 enum AlltoallvMethod
 {
     ALLTOALLV_PAIRWISE,
@@ -68,7 +64,16 @@ enum AlltoallvMethod
     ALLTOALLV_BATCH_ASYNC,
     ALLTOALLV_PMPI
 };
+
 extern enum AlltoallvMethod mpil_alltoallv_implementation;
+
+void MPIL_set_alltoall_algorithm(enum AlltoallMethod algorithm);
+void MPIL_set_alltoallv_algorithm(enum AlltoallvMethod algorithm);	
+
+
+
+
+
 
 #ifdef __cplusplus
 }

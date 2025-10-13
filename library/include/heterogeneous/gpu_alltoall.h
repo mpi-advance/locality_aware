@@ -60,6 +60,8 @@ int copy_to_cpu_alltoall_nonblocking(const void* sendbuf,
 
 #ifdef OPENMP
 #include <omp.h>
+
+/**@brief TEST**/
 int threaded_alltoall_pairwise(const void* sendbuf,
                                const int sendcount,
                                MPI_Datatype sendtype,

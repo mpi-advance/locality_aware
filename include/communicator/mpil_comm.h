@@ -18,16 +18,15 @@ extern "C" {
 
 typedef struct _MPIL_Comm
 {
-    MPI_Comm global_comm;
-
-    // For persistent neighborhood collectives
+    MPI_Comm global_comm;  
+	
     MPI_Comm neighbor_comm;
 
-    // For hierarchical collectives
+    //For hierarchical collectives
     MPI_Comm local_comm;
     MPI_Comm group_comm;
 
-    // For multileader hierarchical collectives
+
     MPI_Comm leader_comm;
     MPI_Comm leader_group_comm;
     MPI_Comm leader_local_comm;
@@ -53,6 +52,7 @@ typedef struct _MPIL_Comm
     int* ordered_global_ranks;
 
 #ifdef GPU
+	
     int gpus_per_node;
     int rank_gpu;
     gpuStream_t proc_stream;

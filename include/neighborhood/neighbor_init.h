@@ -15,6 +15,7 @@ enum NeighborAlltoallvInitMethod
     NEIGHBOR_ALLTOALLV_INIT_LOCALITY
 };
 extern enum NeighborAlltoallvInitMethod mpix_neighbor_alltoallv_init_implementation;
+void MPIL_set_alltoallv_neighbor_init_alogorithm(enum NeighborAlltoallvInitMethod algorithm);
 
 typedef int (*neighbor_alltoallv_init_ftn)(const void* sendbuf,
                                            const int sendcounts[],
