@@ -1,8 +1,6 @@
 #ifndef MPI_ADVANCE_H
 #define MPI_ADVANCE_H
 
-//#include "collective/alltoall.h"
-//#include "collective/alltoallv.h"
 #include "collective/collective.h"
 
 #include "communicator/comm_data.h"
@@ -24,8 +22,6 @@
 
 
 #ifdef GPU
-//#include "heterogeneous/gpu_alltoall.h"
-//#include "heterogeneous/gpu_alltoallv.h"
 #include "utils/gpu_utils.h"
 #endif
 

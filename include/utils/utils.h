@@ -1,7 +1,7 @@
 #ifndef MPIL_UTILS_H
 #define MPIL_UTILS_H
 
-#ifdef HIP
+/* #ifdef HIP
 #include "utils_hip.h"
 #endif
 
@@ -13,7 +13,7 @@
 #ifdef HIP
 #include "hip/hip_runtime.h"
 #endif
-////
+//// */
 
 
 #ifdef __cplusplus

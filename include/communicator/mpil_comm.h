@@ -8,10 +8,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-//#include "../utils/MPIL_Alloc.h"
-
-//#include "../utils/utils_cuda.h"
-
 #ifdef GPU
 #include "../utils/gpu_utils.h"
 #endif

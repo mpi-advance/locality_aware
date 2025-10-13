@@ -62,7 +62,7 @@ if (USE_CUDA)
   set(locality_aware_LANG CUDA)
   message(STATUS "CUDA support enabled: ${CMAKE_CUDA_FLAGS}")
   add_definitions(-DCUDA)
-
+  
 elseif (USE_HIP)
   set(CMAKE_HIP_COMPILER "${MPICXX}")
   enable_language(HIP)
@@ -87,6 +87,7 @@ if (USE_CUDA)
 	foreach(file ${CUR_SOURCES})
 		set_source_files_properties(${file} PROPERTIES LANGUAGE CUDA)
 	endforeach()
+	target_compile_definitions(locality_aware PUBLIC CUDA GPU)
 endif()
 
 target_include_directories(locality_aware PUBLIC 

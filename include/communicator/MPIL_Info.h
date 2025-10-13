@@ -2,6 +2,7 @@
 #define MPIL_INFO_H
 
 #include "mpi.h"
+#include <stdlib.h>
 
 #ifdef __cplusplus
 extern "C" {
