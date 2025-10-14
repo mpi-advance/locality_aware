@@ -1,4 +1,5 @@
-#include "../../include/neighborhood/neighbor.h"
+#include "locality_aware.h"
+
 
 #ifdef __cplusplus
 #include <cstring>

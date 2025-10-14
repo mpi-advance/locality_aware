@@ -1,7 +1,6 @@
 #ifndef MPI_ADVANCE_NEIGHBOR_INIT_H
 #define MPI_ADVANCE_NEIGHBOR_INIT_H
 
-#include "../communicator/locality_comm.h"
 #include "neighbor.h"
 #include "../persistent/MPIL_Request.h"
 

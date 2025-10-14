@@ -80,6 +80,7 @@ endif()
 
 add_library(locality_aware "")
 set_target_properties(locality_aware PROPERTIES PUBLIC_HEADER include/locality_aware.h)
+add_subdirectory(include)
 add_subdirectory(library)
 
 if (USE_CUDA)

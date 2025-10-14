@@ -1,5 +1,6 @@
-#include "../../../../include/neighborhood/neighbor_init.h"
+#include "locality_aware.h"
 
+#include "../../../include/neighborhood/neighborhood_init.h"
 #include "../../../../include/neighborhood/neighbor.h"
 #include "../../../../include/neighborhood/neighbor_persistent.h"
 

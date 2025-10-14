@@ -1,11 +1,11 @@
 #ifndef MPI_ADVANCE_H
 #define MPI_ADVANCE_H
-
+#include "mpi.h"
 #include "collective/collective.h"
 
-#include "communicator/comm_data.h"
-#include "communicator/comm_pkg.h"
-#include "communicator/locality_comm.h"
+//#include "communicator/comm_data.h"
+//#include "communicator/comm_pkg.h"
+//#include "communicator/locality_comm.h"
 #include "communicator/mpil_comm.h"
 #include "communicator/MPIL_Info.h"
 

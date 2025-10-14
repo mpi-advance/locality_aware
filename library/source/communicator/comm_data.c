@@ -1,4 +1,4 @@
-#include "../../../include/communicator/comm_data.h"
+#include "../../include/communicator/comm_data.h"
 
 void init_comm_data(CommData** comm_data_ptr, MPI_Datatype datatype)
 {

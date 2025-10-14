@@ -1,4 +1,4 @@
-#include "../../../include/communicator/locality_comm.h"
+#include "../../include/communicator/locality_comm.h"
 
 void init_locality_comm(LocalityComm** locality_ptr,
                         MPIL_Comm* mpix_comm,

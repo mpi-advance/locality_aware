@@ -4,13 +4,14 @@
 #include <mpi.h>
 
 #include "comm_pkg.h"
-#include "mpil_comm.h"
-#include "MPIL_Info.h"
+#include "locality_aware.h"
 
 // Declarations of C++ methods
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+typedef struct _CommPkg CommPkg; 
 
 typedef struct _LocalityComm
 {

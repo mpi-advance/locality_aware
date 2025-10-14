@@ -1,5 +1,5 @@
-#include "../../include/neighborhood/neighbor.h"
-#include "../../include/neighborhood/sparse_coll.h"
+#include "locality_aware.h"
+
 
 // Standard Method is default
 //enum NeighborAlltoallvMethod mpix_neighbor_alltoallv_implementation =

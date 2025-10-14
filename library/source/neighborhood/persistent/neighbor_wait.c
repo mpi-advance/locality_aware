@@ -1,4 +1,5 @@
-#include "../../../../include/neighborhood/neighbor_persistent.h"
+#include "../../../include/neighborhood/neighborhood_init.h"
+#include "../../../include/persistent/MPIL_Request.h"
 
 // Wait for locality-aware requests
 // 1. Wait for global

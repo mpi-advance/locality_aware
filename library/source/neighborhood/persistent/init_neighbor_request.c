@@ -1,7 +1,5 @@
-#include "../../../../include/neighborhood/neighbor_init.h"
-
-#include "../../../../include/neighborhood/neighbor.h"
-#include "../../../../include/neighborhood/neighbor_persistent.h"
+#include "../../../include/neighborhood/neighborhood_init.h"
+#include "../../../include/persistent/MPIL_Request.h"
 
 void init_neighbor_request(MPIL_Request** request_ptr)
 {

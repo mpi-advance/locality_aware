@@ -1,5 +1,5 @@
-#include "../include/utils/MPIL_Alloc.h"
-#include "mpi.h"
+#include "locality_aware.h"
+
 
 int MPIL_Alloc(void** pointer, const int bytes)
 {

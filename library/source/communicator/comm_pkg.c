@@ -1,4 +1,4 @@
-#include "../../../include/communicator/comm_pkg.h"
+#include "../../include/communicator/comm_pkg.h"
 
 void init_comm_pkg(CommPkg** comm_ptr,
                    MPI_Datatype sendtype,

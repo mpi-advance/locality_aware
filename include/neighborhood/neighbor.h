@@ -7,7 +7,6 @@
 
 #include "MPIL_Graph.h"
 #include "MPIL_Topo.h"
-#include "../communicator/locality_comm.h"
 #include "../persistent/MPIL_Request.h"
 
 

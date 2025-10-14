@@ -1,4 +1,4 @@
-#include "../../include/communicator/MPIL_Info.h"
+#include "locality_aware.h"
 
 
 //MPIL Info Object Routines

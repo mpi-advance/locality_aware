@@ -1,10 +1,13 @@
+#ifndef NEIGHBOR_LOCALITY_H
+#define NEIGHBOR_LOCALITY_H
+
 #include <algorithm>
 #include <map>
 #include <vector>
 
-#include "neighbor.h"
-#include "neighbor_init.h"
-#include "neighbor_persistent.h"
+#include "../communicator/locality_comm.h"
+#include "../communicator/comm_data.h"
+#include "../communicator/comm_pkg.h"
 
 /******************************************
  ****
@@ -46,3 +49,6 @@ void remove_duplicates(LocalityComm* locality);
 void update_indices(LocalityComm* locality,
                     std::map<long, int>& send_global_to_local,
                     std::map<long, int>& recv_global_to_local);
+
+
+#endif

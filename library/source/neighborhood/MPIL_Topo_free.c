@@ -1,4 +1,4 @@
-#include "../../../include/neighborhood/MPIL_Topo.h"
+#include "locality_aware.h"
 
 #include <string.h>
 
