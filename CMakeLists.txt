@@ -5,7 +5,7 @@ cmake_policy(VERSION 3.21.1...3.27)
 project(locality_aware VERSION 2.0.0 LANGUAGES C CXX)
 
 # Set C,CXX standards
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_C_STANDARD 99)
 
 # Set default build type
@@ -90,20 +90,14 @@ if (USE_CUDA)
 	target_compile_definitions(locality_aware PUBLIC CUDA GPU)
 endif()
 
-target_include_directories(locality_aware PUBLIC 
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/library>
-    $<INSTALL_INTERFACE:include>
-    )
-
-
-
+# target_include_directories(locality_aware PUBLIC 
+    # $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/library>
+    # $<INSTALL_INTERFACE:include>
+    # )
 
 target_link_libraries(locality_aware PUBLIC ${EXTERNAL_LIBS})
 
-
-
 install(TARGETS locality_aware)
-
 
 set_source_files_properties(
     ${utils_SOURCES}
@@ -114,26 +108,11 @@ set_source_files_properties(
     ${heterogeneous_SOURCES}
     PROPERTIES LANGUAGE ${locality_aware_LANG})
 
-# message (STATUS "CHECK")
-# foreach(file ${collective_HEADERS})
-	# message (STATUS "copied ${file}" )
-# endforeach()
-
 install(DIRECTORY include/communicator/ DESTINATION ${CMAKE_INSTALL_PREFIX}/include/communicator)
 install(DIRECTORY include/collective/   DESTINATION ${CMAKE_INSTALL_PREFIX}/include/collective)
 install(DIRECTORY include/persistent/   DESTINATION ${CMAKE_INSTALL_PREFIX}/include/persistent)
 install(DIRECTORY include/utils/   DESTINATION ${CMAKE_INSTALL_PREFIX}/include/utils)
 install(DIRECTORY include/neighborhood/   DESTINATION ${CMAKE_INSTALL_PREFIX}/include/neighborhood)
-#install(DIRECTORY include/heterogeneous/   DESTINATION ${CMAKE_INSTALL_PREFIX}/include/heterogeneous)
-
-# Install all headers that locality_aware exports
-#install(FILES ${utils_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/utils)
-# install(FILES ${communicator_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/communicator)
-# install(FILES ${collective_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/collective)
-# install(FILES ${persistent_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/persistent)
-# install(FILES ${neighborhood_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/neighborhood)
-# install(FILES ${heterogeneous_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/heterogeneous)
-
 
 
 ### Installation Requirements for Spack Package ###
