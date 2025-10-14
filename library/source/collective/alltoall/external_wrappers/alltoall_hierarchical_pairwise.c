@@ -1,4 +1,4 @@
-#include "../../../../include/collective/alltoall.h"
+#include "collective/alltoall.h"
 
 int alltoall_hierarchical_pairwise(const void* sendbuf,
                                    const int sendcount,

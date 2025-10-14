@@ -1,4 +1,4 @@
-#include "../../../../include/collective/alltoall.h"
+#include "collective/alltoall.h"
 
 int pairwise_helper(const void* sendbuf,
                     const int sendcount,

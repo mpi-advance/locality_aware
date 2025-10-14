@@ -1,4 +1,4 @@
-#include "../../../../include/collective/alltoall.h"
+#include "collective/alltoall.h"
 
 int alltoall_node_aware_nonblocking(const void* sendbuf,
                                     const int sendcount,

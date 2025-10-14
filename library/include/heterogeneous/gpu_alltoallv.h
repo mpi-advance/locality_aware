@@ -1,11 +1,8 @@
 #ifndef MPI_ADVANCE_GPU_ALLTOALLV_H
 #define MPI_ADVANCE_GPU_ALLTOALLV_H
 
-#include "../collective/alltoallv.h"
-#include "../../../include/communicator/mpil_comm.h"
-
-//#include "../../library/include/collective/alltoallv.h"
-//#include "../communicator/mpil_comm.h"
+#include "collective/alltoallv.h"
+#include "locality_aware.h"
 
 #ifdef __cplusplus
 extern "C" {

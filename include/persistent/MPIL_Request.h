@@ -1,14 +1,11 @@
 #ifndef MPI_ADVANCE_PERSISTENT_H
 #define MPI_ADVANCE_PERSISTENT_H
 
-#include "../communicator/mpil_comm.h"
-#include "../communicator/MPIL_Info.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-typedef struct _MPIL_Request MPIL_Request; // forward declaration
+typedef struct MPIL_Request MPIL_Request; // forward declaration
 
 typedef int (*mpix_start_ftn)(MPIL_Request* request);
 typedef int (*mpix_wait_ftn)(MPIL_Request* request, MPI_Status* status);

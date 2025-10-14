@@ -5,9 +5,9 @@
 #include <map>
 #include <vector>
 
-#include "../communicator/locality_comm.h"
-#include "../communicator/comm_data.h"
-#include "../communicator/comm_pkg.h"
+#include "communicator/locality_comm.h"
+#include "communicator/comm_data.h"
+#include "communicator/comm_pkg.h"
 
 /******************************************
  ****

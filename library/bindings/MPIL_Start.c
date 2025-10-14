@@ -1,5 +1,5 @@
 #include "locality_aware.h"
-#include "../include/persistent/MPIL_Request.h"
+#include "persistent/MPIL_Request.h"
 
 // Starting locality-aware requests
 // 1. Start Local_L
