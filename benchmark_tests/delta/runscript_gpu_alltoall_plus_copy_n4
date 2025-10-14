@@ -13,6 +13,9 @@ module load nccl/2.19.3-1
 module load cuda/12.4.0
 module load openmpi/5.0.5+cuda
 
+export NCCL_DIR=${NCCL_HOME}
+export LD_LIBRARY_PATH=${NCCL_DIR}/lib:$LD_LIBRARY_PATH
+
 export CUDA_VISIBLE_DEVICES=3,2,1,0
 
 cd $HOME/MPICCL/build/benchmarks
