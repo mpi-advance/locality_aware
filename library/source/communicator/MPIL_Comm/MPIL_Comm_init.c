@@ -1,4 +1,4 @@
-#include "../../../../include/communicator/mpil_comm.h"
+#include "communicator/MPIL_Comm.h"
 
 int MPIL_Comm_init(MPIL_Comm** xcomm_ptr, MPI_Comm global_comm)
 {

@@ -1,6 +1,6 @@
-#include "../../../../include/neighborhood/neighbor.h"
-#include "../../../../include/neighborhood/sparse_coll.h"
-#include "../../../../include/utils/MPIL_Alloc.h"
+#include "locality_aware.h"
+#include "communicator/MPIL_Comm.h"
+#include "neighborhood/MPIL_Topo.h"
 
 #ifdef __cplusplus
 #include <cstring>

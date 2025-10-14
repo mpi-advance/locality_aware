@@ -1,8 +1,8 @@
 #include <cstring>
 #include <vector>
 
-#include "../../../include/neighborhood/sparse_coll.h"
-
+#include "locality_aware.h"
+#include "communicator/MPIL_Comm.h"
 //Assumes SMP Ordering of ranks across nodes (aggregates ranks 0-PPN)
 int alltoall_crs_personalized_loc(int send_nnz,
                                   int* dest,

@@ -1,8 +1,8 @@
 #include <cstring>
 #include <vector>
 
-#include "../../../../include/neighborhood/sparse_coll.h"
-#include "../../../../include/utils/MPIL_Alloc.h"
+#include "locality_aware.h"
+#include "communicator/MPIL_Comm.h"
 
 int alltoallv_crs_personalized(const int send_nnz,
                                const int send_size,

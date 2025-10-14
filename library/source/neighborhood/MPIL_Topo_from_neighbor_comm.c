@@ -1,4 +1,5 @@
 #include "locality_aware.h"
+#include "communicator/MPIL_Comm.h"
 
 #include <string.h>
 

@@ -2,7 +2,7 @@
 #define MPI_ADVANCE_NEIGHBOR_INIT_H
 
 #include "neighbor.h"
-#include "../persistent/MPIL_Request.h"
+#include "../persistent/persistent.h"
 
 #ifdef __cplusplus
 extern "C" {

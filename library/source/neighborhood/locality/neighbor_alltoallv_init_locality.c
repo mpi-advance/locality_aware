@@ -1,9 +1,7 @@
+
+
 #include "locality_aware.h"
-
-#include "../../../include/neighborhood/neighborhood_init.h"
-#include "../../../../include/neighborhood/neighbor.h"
-#include "../../../../include/neighborhood/neighbor_persistent.h"
-
+#include "communicator/MPIL_Comm.h"
 
 int neighbor_alltoallv_init_locality(const void* sendbuffer,
                                      const int sendcounts[],

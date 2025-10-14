@@ -37,6 +37,9 @@ set(CUDA_ARCH "75" CACHE STRING "CUDA Architecture")
 # Find MPI
 find_package(MPI REQUIRED)
 set(EXTERNAL_LIBS "MPI::MPI_CXX")
+if(${MPI_FOUND})
+	message(STATUS "MPI FOUND")
+endif()
 
 # Find OpenMP (not required)
 find_package(OpenMP)

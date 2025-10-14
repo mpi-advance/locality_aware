@@ -2,7 +2,7 @@
 #define MPIL_REQUEST_H
 
 #include "mpi.h"
-
+#include "locality_aware.h"
 #include "communicator/locality_comm.h"
 
 #ifdef __cplusplus

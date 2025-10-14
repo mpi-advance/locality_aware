@@ -1,5 +1,5 @@
-#include "../../../../include/neighborhood/neighbor.h"
-#include "../../../../include/neighborhood/sparse_coll.h"
+#include "locality_aware.h"
+#include "communicator/MPIL_Comm.h"
 
 #ifdef __cplusplus
 #include <cstring>

@@ -1,7 +1,7 @@
 #ifndef MPI_ADVANCE_DIST_TOPO_H
 #define MPI_ADVANCE_DIST_TOPO_H
 
-#include "../communicator/mpil_comm.h"
+#include "../communicator/comm.h"
 #include "mpi.h"
 
 // Declarations of C++ methods

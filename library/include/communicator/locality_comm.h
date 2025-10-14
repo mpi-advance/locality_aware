@@ -13,7 +13,7 @@ extern "C" {
 
 //typedef struct _CommPkg CommPkg; 
 
-typedef struct _LocalityComm
+typedef struct LocalityComm
 {
     CommPkg* local_L_comm;  /**< ??? **/
     CommPkg* local_S_comm;  /**< ??? **/

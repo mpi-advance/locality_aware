@@ -1,4 +1,4 @@
-#include "../../../../include/communicator/mpil_comm.h"
+#include "communicator/MPIL_Comm.h"
 // For testing purposes
 // Manually update aggregation size (ppn)
 void update_locality(MPIL_Comm* xcomm, int ppn)

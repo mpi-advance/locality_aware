@@ -1,5 +1,5 @@
-#include "../../../include/neighborhood/MPIL_Graph.h"
-#include "../../../include/communicator/mpil_comm.h"
+#include "locality_aware.h"
+#include "communicator/MPIL_Comm.h"
 
 int MPIL_Dist_graph_create_adjacent(MPI_Comm comm_old,
                                     int indegree,

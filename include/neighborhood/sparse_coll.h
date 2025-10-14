@@ -1,7 +1,7 @@
 #ifndef MPI_ADVANCE_SPARSE_COLL_H
 #define MPI_ADVANCE_SPARSE_COLL_H
 
-#include "../communicator/mpil_comm.h"
+#include "../communicator/comm.h"
 #include "mpi.h"
 #include "../communicator/MPIL_Info.h"
 //#include "../utils/utils.h"

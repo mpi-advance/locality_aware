@@ -1,9 +1,8 @@
 #include "locality_aware.h"
+#include "persistent/MPIL_Request.h"
+#include "communicator/MPIL_Comm.h"
+#include "neighborhood/neighborhood_init.h"
 
-#include "../../../include/neighborhood/neighborhood_init.h"
-#include "../../../../include/neighborhood/neighbor.h"
-#include "../../../../include/neighborhood/neighbor_persistent.h"
-#include "../../../include/persistent/MPIL_Request.h"
 
 // Locality-Aware Extension to Persistent Neighbor Alltoallv
 // Needs global indices for each send and receive

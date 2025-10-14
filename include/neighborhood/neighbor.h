@@ -7,7 +7,7 @@
 
 #include "MPIL_Graph.h"
 #include "MPIL_Topo.h"
-#include "../persistent/MPIL_Request.h"
+#include "../persistent/persistent.h"
 
 
 // Declarations of C++ methods

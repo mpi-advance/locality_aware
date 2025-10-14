@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "communicator/mpil_comm.h"
+#include "../communicator/MPIL_Comm.h"
 
 #ifdef __cplusplus
 extern "C" {
