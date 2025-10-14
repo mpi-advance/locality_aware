@@ -3,7 +3,7 @@
 
 
 #include "neighbor.h"
-#include "../persistent/persistent.h"
+#include "persistent/persistent.h"
 
 #ifdef __cplusplus
 extern "C" {

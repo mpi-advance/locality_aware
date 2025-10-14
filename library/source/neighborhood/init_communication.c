@@ -1,10 +1,9 @@
 
+#include "locality_aware.h"
+#include "neighborhood/neighbor_init.h"
+#include "persistent/MPIL_Request.h"
 
-#include "../../../../include/neighborhood/neighbor_init.h"
 
-#include "../../../../include/neighborhood/neighbor.h"
-#include "../../../../include/neighborhood/neighbor_persistent.h"
-#include "../../../include/persistent/MPIL_Request.h"
 
 int init_communication(const void* sendbuffer,
                        int n_sends,
