@@ -32,6 +32,7 @@ int neighbor_alltoallv_init_standard(const void* sendbuf,
                                      MPIL_Comm* comm,
                                      MPIL_Info* info,
                                      MPIL_Request** request_ptr);
+									 
 int neighbor_alltoallv_init_locality(const void* sendbuf,
                                      const int sendcounts[],
                                      const int sdispls[],
