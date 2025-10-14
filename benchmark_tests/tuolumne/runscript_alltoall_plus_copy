@@ -1,0 +1,41 @@
+#!/bin/sh
+#Submit using flux batch <filename>
+
+#flux: --job-name=alltoall_plus_copy_n16
+#flux: --output='alltoall_plus_copy_n16.{{id}}.out'
+#flux: --error='alltoall_plus_copy_n16.{{id}}.err'
+#flux: -N 16
+#flux: -l # Add task rank prefixes to each line of output.
+#flux: --setattr=thp=always # Enable Transparent Huge Pages (THP)
+#flux: -t 30
+#flux: -q pbatch
+
+module load rocmcc/6.4.0-magic
+module load cce/19.0.0
+module load cray-mpich/9.0.1
+
+export MPICH_GPU_SUPPORT_ENABLED=1
+export HSA_XNACK=1
+
+# Check if THP are enabled
+#cat /sys/kernel/mm/transparent_hugepage/enabled
+
+cd $HOME/MPICCL/build/benchmarks
+
+n_nodes=16
+gpus_per_node=4
+max_cores=24
+
+for ppg in 1 2 4 8; do
+  n_procs=$(( ppg * gpus_per_node * n_nodes ))
+  n_cores=$(( max_cores / ppg ))
+  echo "${ppg} Processes Per GPU, ${gpus_per_node} GPUs Per Node"
+  
+  if [ "$ppg" -eq 1 ]; then
+    flux run -N${n_nodes} -n${n_procs} -c${n_cores} --verbose --exclusive\
+        --setopt=mpibind=verbose:2 ./alltoall
+  else
+    flux run -N${n_nodes} -n${n_procs} -c${n_cores} --verbose --exclusive\
+        --setopt=mpibind=verbose:2 ./alltoall_copy
+  fi
+done
