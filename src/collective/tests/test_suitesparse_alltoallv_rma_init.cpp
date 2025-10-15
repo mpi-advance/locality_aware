@@ -10,18 +10,6 @@
 #include "/g/g92/enamug/clean/GPU_locality_aware/locality_aware/src/tests/par_binary_IO.hpp"
 #include "/g/g92/enamug/clean/GPU_locality_aware/locality_aware/src/mpi_advance.h"
 
-// -- Freeing wrappers 
-//MPIX_Info_free
-void mpix_info_free(MPIX_Info*& x) {
-  MPIX_Info_free(&x);   
-  x = nullptr;
-}
-
-//MPIX_Comm_free
- void mpix_comm_free(MPIX_Comm*& x) {
-  MPIX_Comm_free(&x);   
-  x = nullptr;
-}
 
  void test_matrix(const char* filename, int n_iter)
 {
@@ -194,8 +182,12 @@ void mpix_info_free(MPIX_Info*& x) {
 
     MPIX_Request_free(req);
     MPIX_Comm_win_free(xcomm);
-    mpix_info_free(xinfo);
-    mpix_comm_free(xcomm);
+    
+    MPIX_Info_free(&xinfo);
+    xinfo=nullptr;
+   
+     MPIX_Comm_free(&xcomm);
+     xcomm=nullptr;
 }
 
 int main(int argc, char** argv)
