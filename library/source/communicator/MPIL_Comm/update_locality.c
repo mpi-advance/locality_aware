@@ -1,4 +1,6 @@
 #include "communicator/MPIL_Comm.h"
+#include <cstdlib>
+
 // For testing purposes
 // Manually update aggregation size (ppn)
 void update_locality(MPIL_Comm* xcomm, int ppn)

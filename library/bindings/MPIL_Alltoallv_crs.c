@@ -1,4 +1,5 @@
-#include "../../include/neighborhood/sparse_coll.h"
+#include "locality_aware.h"
+#include "neighborhood/alltoall_crs.h"
 
 int MPIL_Alltoallv_crs(const int send_nnz,
                        const int send_size,

@@ -1,11 +1,6 @@
 #ifndef MPI_ADVANCE_COLLECTIVES_H
 #define MPI_ADVANCE_COLLECTIVES_H
 
-#include <mpi.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include "../communicator/comm.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -69,11 +64,6 @@ extern enum AlltoallvMethod mpil_alltoallv_implementation;
 
 void MPIL_set_alltoall_algorithm(enum AlltoallMethod algorithm);
 void MPIL_set_alltoallv_algorithm(enum AlltoallvMethod algorithm);	
-
-
-
-
-
 
 #ifdef __cplusplus
 }

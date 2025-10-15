@@ -1,6 +1,9 @@
 #include "locality_aware.h"
 #include "communicator/MPIL_Comm.h"
 #include "neighborhood/MPIL_Topo.h"
+#include "neighborhood/alltoall_crs.h"
+
+#include <cstdlib>
 
 #ifdef __cplusplus
 #include <cstring>

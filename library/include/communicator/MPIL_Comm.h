@@ -1,12 +1,13 @@
 #ifndef MPIL_COMM_H
 #define MPIL_COMM_H
 
+#include <mpi.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-#include "locality_aware.h"
 
-struct _MPIL_Comm
+typedef struct _MPIL_Comm
 {
     MPI_Comm global_comm;  
 	
@@ -47,7 +48,7 @@ struct _MPIL_Comm
     int rank_gpu;
     gpuStream_t proc_stream;
 #endif
-};
+} MPIL_Comm;
 
 int get_node(const MPIL_Comm* data, const int proc);
 int get_local_proc(const MPIL_Comm* data, const int proc);

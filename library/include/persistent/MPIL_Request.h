@@ -1,15 +1,17 @@
 #ifndef MPIL_REQUEST_H
 #define MPIL_REQUEST_H
 
-#include "mpi.h"
-#include "locality_aware.h"
+#include <mpi.h>
 #include "communicator/locality_comm.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-struct MPIL_Request
+typedef int (*mpix_start_ftn)(MPIL_Request* request);
+typedef int (*mpix_wait_ftn)(MPIL_Request* request, MPI_Status* status);
+
+typedef struct _MPIL_Request
 {
     // Message counts
     // Will only use global unless locality-aware
@@ -50,7 +52,7 @@ struct MPIL_Request
     // Keep track of which start/wait functions to call for given request
     int (*start_function)(MPIL_Request* request);
     int (*wait_function)(MPIL_Request* request, MPI_Status* status);
-}; 
+} MPIL_Request; 
 
 void init_request(MPIL_Request** request_ptr);
 void allocate_requests(int n_requests, MPI_Request** request_ptr);

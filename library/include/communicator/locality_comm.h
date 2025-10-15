@@ -11,8 +11,6 @@
 extern "C" {
 #endif
 
-//typedef struct _CommPkg CommPkg; 
-
 typedef struct LocalityComm
 {
     CommPkg* local_L_comm;  /**< ??? **/

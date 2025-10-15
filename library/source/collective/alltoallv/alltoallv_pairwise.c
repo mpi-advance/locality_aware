@@ -1,10 +1,5 @@
-#include "../../../include/collective/alltoallv.h"
-
-/* #include <math.h>
-#include <string.h> */
-
-
-
+#include "locality_aware.h"
+#include "collective/alltoallv.h"
 
 int alltoallv_pairwise(const void* sendbuf,
                        const int sendcounts[],

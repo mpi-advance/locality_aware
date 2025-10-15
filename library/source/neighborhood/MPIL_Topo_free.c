@@ -1,6 +1,6 @@
 #include "locality_aware.h"
-
-#include <string.h>
+#include "neighborhood/MPIL_Topo.h"
+#include <cstdlib>
 
 int MPIL_Topo_free(MPIL_Topo** mpix_topo_ptr)
 {

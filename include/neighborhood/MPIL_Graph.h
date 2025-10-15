@@ -1,11 +1,6 @@
 #ifndef MPI_ADVANCE_DIST_GRAPH_H
 #define MPI_ADVANCE_DIST_GRAPH_H
 
-
-#include "locality_aware.h"
-
-#include "mpi.h"
-
 // Declarations of C++ methods
 #ifdef __cplusplus
 extern "C" {

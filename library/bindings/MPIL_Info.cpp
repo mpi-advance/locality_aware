@@ -1,5 +1,6 @@
 #include "locality_aware.h"
-
+#include "communicator/MPIL_Info.h"
+#include <cstdlib>
 
 //MPIL Info Object Routines
 int MPIL_Info_init(MPIL_Info** info_ptr)

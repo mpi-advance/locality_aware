@@ -9,17 +9,6 @@
 extern "C" {
 #endif
 
-typedef struct _MPIL_Topo
-{
-    int indegree;
-    int* sources;
-    int* sourceweights;
-    int outdegree;
-    int* destinations;
-    int* destweights;
-    int reorder;
-} MPIL_Topo;
-
 int MPIL_Topo_init(int indegree,
                    const int sources[],
                    const int sourceweights[],

@@ -1,10 +1,6 @@
 #ifndef MPI_ADVANCE_NEIGHBOR_PERSISTENT_H
 #define MPI_ADVANCE_NEIGHBOR_PERSISTENT_H
 
-
-#include "neighbor.h"
-#include "persistent/persistent.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif

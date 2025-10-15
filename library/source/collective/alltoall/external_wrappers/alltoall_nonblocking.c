@@ -1,13 +1,5 @@
+#include "locality_aware.h"
 #include "collective/alltoall.h"
-
-#include <math.h>
-#include <string.h>
-
-/* #ifdef GPU
-#include "../../include/heterogenous/gpu_alltoall.h"
-#endif */
-
-
 
 int alltoall_nonblocking(const void* sendbuf,
                          const int sendcount,

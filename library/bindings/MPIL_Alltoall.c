@@ -1,9 +1,5 @@
-#include "../../include/collective/collective.h"
-#include "../include/collective/alltoall.h"
-
-#ifdef GPU
-#include "../include/heterogeneous/gpu_alltoall.h"
-#endif
+#include "locality_aware.h"
+#include "collective/alltoall.h"
 
 // Default alltoall is pairwise
 //AlltoallMethod mpil_alltoall_implementation = ALLTOALL_PAIRWISE;

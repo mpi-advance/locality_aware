@@ -1,14 +1,7 @@
+#include "locality_aware.h"
 #include "collective/alltoall.h"
 
-#include <math.h>
 #include <string.h>
-
-/* #ifdef GPU
-#include "../../include/heterogenous/gpu_alltoall.h"
-#endif */
-
-
-
 
 int alltoall_locality_aware_helper(alltoall_helper_ftn f,
                                    const void* sendbuf,

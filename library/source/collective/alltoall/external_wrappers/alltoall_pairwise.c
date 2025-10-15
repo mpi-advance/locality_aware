@@ -1,11 +1,5 @@
+#include "locality_aware.h"
 #include "collective/alltoall.h"
-
-#include <math.h>
-#include <string.h>
-
-/* #ifdef GPU
-#include "heterogeneous/gpu_alltoall.h"
-#endif */
 
 int alltoall_pairwise(const void* sendbuf,
                       const int sendcount,

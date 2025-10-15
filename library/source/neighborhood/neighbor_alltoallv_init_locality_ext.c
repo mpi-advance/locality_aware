@@ -1,7 +1,7 @@
-#include "locality_aware.h"
 #include "persistent/MPIL_Request.h"
 #include "communicator/MPIL_Comm.h"
 #include "neighborhood/neighborhood_init.h"
+#include "neighborhood/MPIL_Topo.h"
 
 
 // Locality-Aware Extension to Persistent Neighbor Alltoallv

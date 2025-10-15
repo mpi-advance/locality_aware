@@ -1,7 +1,7 @@
-
-#include "../include/collective/collective.h"
-#include "../../include/neighborhood/neighbor.h"
-#include "../../include/neighborhood/neighbor_init.h"
+#include "locality_aware.h"
+#include "communicator/MPIL_Comm.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 enum AlltoallMethod mpil_alltoall_implementation = ALLTOALL_PAIRWISE;
 
