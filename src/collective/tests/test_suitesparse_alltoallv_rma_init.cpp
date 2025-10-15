@@ -10,17 +10,20 @@
 #include "/g/g92/enamug/clean/GPU_locality_aware/locality_aware/src/tests/par_binary_IO.hpp"
 #include "/g/g92/enamug/clean/GPU_locality_aware/locality_aware/src/mpi_advance.h"
 
-// --- Free wrappers for your mpi_advance (expects **)
-static inline void mpix_info_free(MPIX_Info*& x) {
-  MPIX_Info_free(&x);   // MPIX_Info**
-  x = nullptr;
-}
-static inline void mpix_comm_free(MPIX_Comm*& x) {
-  MPIX_Comm_free(&x);   // MPIX_Comm**
+// -- Freeing wrappers 
+//MPIX_Info_free
+void mpix_info_free(MPIX_Info*& x) {
+  MPIX_Info_free(&x);   
   x = nullptr;
 }
 
-static void test_matrix(const char* filename, int n_iter)
+//MPIX_Comm_free
+ void mpix_comm_free(MPIX_Comm*& x) {
+  MPIX_Comm_free(&x);   
+  x = nullptr;
+}
+
+ void test_matrix(const char* filename, int n_iter)
 {
     int rank, P; MPI_Comm_rank(MPI_COMM_WORLD, &rank); MPI_Comm_size(MPI_COMM_WORLD, &P);
 
@@ -29,7 +32,7 @@ static void test_matrix(const char* filename, int n_iter)
     readParMatrix(filename, A);
     form_comm(A);
 
-    // Payload: rank*1000 + local_row
+    
     std::vector<int> send_vals(A.on_proc.n_rows);
     for (int i = 0; i < A.on_proc.n_rows; ++i) send_vals[i] = rank*1000 + i;
 
@@ -40,7 +43,7 @@ static void test_matrix(const char* filename, int n_iter)
         proc_pos[A.send_comm.procs[i]] = i;
 
     
-    std::vector<int> packed_send(A.send_comm.size_msgs);
+    std::vector<int> packed_send(A.send_comm.size_msgs);//packing actual data to send
     int ctr = 0;
     for (int dest = 0; dest < P; ++dest) {
         int idx = proc_pos[dest];
@@ -53,7 +56,7 @@ static void test_matrix(const char* filename, int n_iter)
             packed_send[ctr++] = send_vals[row];
         }
     }
-   // assert(ctr == (int)packed_send.size());
+   
 
     // counts & displacements
     std::vector<int> sendcounts(P, 0), recvcounts(P, 0);
@@ -69,7 +72,7 @@ static void test_matrix(const char* filename, int n_iter)
         sdispls[p+1] = sdispls[p] + sendcounts[p];
         rdispls[p+1] = rdispls[p] + recvcounts[p];
     }
-   // assert((int)packed_send.size() == sdispls.back());
+   
 
     /***This is the end of the original top sparse pattern ****/
 
@@ -104,12 +107,12 @@ static void test_matrix(const char* filename, int n_iter)
     MPIX_Request* req   = nullptr;
 
     MPIX_Comm_init(&xcomm, MPI_COMM_WORLD);
-    update_locality(xcomm, 4);  // optional
+    update_locality(xcomm, 4);  
     MPIX_Info_init(&xinfo);
 
     std::vector<int> rma_recv(rdispls.back(), 0);
 
-    // measure init+free average (in-loop)
+    // measure init+free average 
     t0 = MPI_Wtime();
     for (int k = 0; k < n_iter; ++k) {
         alltoallv_rma_winfence_init(packed_send.data(),
