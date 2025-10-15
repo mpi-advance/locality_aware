@@ -1,7 +1,7 @@
 #include "../../include/heterogeneous/gpu_alltoallv.h"
 
-#include "../../include/collective/alltoallv.h"
-#include "../../../include/collective/collective.h"
+#include "collective/alltoallv.h"
+#include "locality_aware.h"
 // ASSUMES 1 CPU CORE PER GPU (Standard for applications)
 int gpu_aware_alltoallv(alltoallv_ftn f,
                         const void* sendbuf,

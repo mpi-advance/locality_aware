@@ -1,6 +1,14 @@
 #include "locality_aware.h"
 #include "collective/alltoallv.h"
-
+#ifdef GPU
+	#include "heterogeneous/gpu_alltoallv.h"
+	#ifdef CUDA
+		#include "utils_cuda.h"
+	#endif
+	#ifdef HIP
+		#include "utils_hip.h"
+	#endif
+#endif
 // Default alltoallv is pairwise
 //enum AlltoallvMethod mpil_alltoallv_implementation = ALLTOALLV_PAIRWISE;
 

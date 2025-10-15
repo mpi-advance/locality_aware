@@ -2,10 +2,21 @@
 #define MPIL_COMM_H
 
 #include <mpi.h>
+#ifdef GPU
+	#ifdef CUDA
+		#include "utils_cuda.h"
+	#endif
+	#ifdef HIP
+		#include "utils_hip.h"
+	#endif
+#endif
+
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+
 
 typedef struct _MPIL_Comm
 {

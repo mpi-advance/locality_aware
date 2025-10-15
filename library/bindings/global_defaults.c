@@ -14,7 +14,7 @@ enum AlltoallCRSMethod mpil_alltoall_crs_implementation =
     ALLTOALL_CRS_PERSONALIZED;
 	
 enum AlltoallvCRSMethod mpil_alltoallv_crs_implementation =
-    ALLTOALL_CRS_PERSONALIZED;
+    ALLTOALLV_CRS_PERSONALIZED;
 
 
 void MPIL_set_alltoall_algorithm(enum AlltoallMethod algorithm){

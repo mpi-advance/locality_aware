@@ -2,6 +2,10 @@
 #include "persistent/MPIL_Request.h"
 #include <stdlib.h>
 
+#ifdef GPU
+	#include "heterogeneous/gpu_utils.h"
+#endif
+
 int MPIL_Request_free(MPIL_Request** request_ptr)
 {
     MPIL_Request* request = *request_ptr;

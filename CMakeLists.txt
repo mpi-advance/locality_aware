@@ -99,10 +99,10 @@ endif()
     # $<INSTALL_INTERFACE:include>
     # )
 
-get_target_property(CUR_HEADERS locality_aware INCLUDE_DIRECTORIES)
-foreach(file in ${CUR_HEADERS})
-	message (STATUS "HEADER ${file}")
-endforeach()
+# get_target_property(CUR_HEADERS locality_aware INCLUDE_DIRECTORIES)
+# foreach(file in ${CUR_HEADERS})
+	# message (STATUS "HEADER ${file}")
+# endforeach()
 
 
 target_link_libraries(locality_aware PUBLIC ${EXTERNAL_LIBS})

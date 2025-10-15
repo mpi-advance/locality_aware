@@ -3,7 +3,7 @@
 
 #include "collective/alltoall.h"
 #include "locality_aware.h"
-
+#include "gpu_utils.h"
 
 #ifdef __cplusplus
 extern "C" {
