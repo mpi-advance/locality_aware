@@ -31,17 +31,17 @@ void init_locality(const int n_sends,
                    const long* global_recv_indices,
                    const MPI_Datatype sendtype,
                    const MPI_Datatype recvtype,
-                   MPIL_Comm* mpix_comm,
+                   MPIL_Comm* mpil_comm,
                    MPIL_Request* request)
 {
     // Get MPI Information
     int rank, num_procs;
-    MPI_Comm_rank(mpix_comm->global_comm, &rank);
-    MPI_Comm_size(mpix_comm->global_comm, &num_procs);
+    MPI_Comm_rank(mpil_comm->global_comm, &rank);
+    MPI_Comm_size(mpil_comm->global_comm, &num_procs);
 
     // Initialize structure
     LocalityComm* locality_comm;
-    init_locality_comm(&locality_comm, mpix_comm, sendtype, recvtype);
+    init_locality_comm(&locality_comm, mpil_comm, sendtype, recvtype);
 
     // Find global send nodes
     std::vector<int> send_nodes;
@@ -73,7 +73,7 @@ void init_locality(const int n_sends,
     form_global_comm(locality_comm->local_S_comm->recv_data,
                      locality_comm->global_comm->send_data,
                      recv_idx_nodes,
-                     mpix_comm,
+                     mpil_comm,
                      93284);
 
     // Find global recv nodes
@@ -472,7 +472,7 @@ void form_local_comm(const int orig_num_sends,
 void form_global_comm(CommData* local_data,
                       CommData* global_data,
                       std::vector<int>& local_data_nodes,
-                      const MPIL_Comm* mpix_comm,
+                      const MPIL_Comm* mpil_comm,
                       int tag)
 {
     std::vector<int> tmp_send_indices;
@@ -482,11 +482,11 @@ void form_global_comm(CommData* local_data,
     // Get MPI Information
     int rank, num_procs;
     int local_rank, local_num_procs;
-    MPI_Comm_rank(mpix_comm->global_comm, &rank);
-    MPI_Comm_size(mpix_comm->global_comm, &num_procs);
-    MPI_Comm_rank(mpix_comm->local_comm, &local_rank);
-    MPI_Comm_size(mpix_comm->local_comm, &local_num_procs);
-    int num_nodes = mpix_comm->num_nodes;
+    MPI_Comm_rank(mpil_comm->global_comm, &rank);
+    MPI_Comm_size(mpil_comm->global_comm, &num_procs);
+    MPI_Comm_rank(mpil_comm->local_comm, &local_rank);
+    MPI_Comm_size(mpil_comm->local_comm, &local_num_procs);
+    int num_nodes = mpil_comm->num_nodes;
 
     int node_idx, node;
     int start, end, idx;

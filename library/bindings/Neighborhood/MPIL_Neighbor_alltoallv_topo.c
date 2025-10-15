@@ -1,11 +1,7 @@
 #include "locality_aware.h"
 #include "communicator/MPIL_Comm.h"
+#include "neighborhood/neighbor.h"
 // Standard Method is default
-//enum NeighborAlltoallvMethod mpix_neighbor_alltoallv_implementation =
-//    NEIGHBOR_ALLTOALLV_STANDARD;
-
-
-
 
 // Topology object based neighbor alltoallv
 int MPIL_Neighbor_alltoallv_topo(const void* sendbuf,
@@ -24,7 +20,7 @@ int MPIL_Neighbor_alltoallv_topo(const void* sendbuf,
 
     neighbor_alltoallv_ftn method;
 
-    switch (mpix_neighbor_alltoallv_implementation)
+    switch (mpil_neighbor_alltoallv_implementation)
     {
         case NEIGHBOR_ALLTOALLV_STANDARD:
             method = neighbor_alltoallv_standard;

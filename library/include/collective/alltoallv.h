@@ -11,27 +11,6 @@
 extern "C" {
 #endif
 
-/* // TODO : need to add hierarchical/locality-aware methods for alltoallv
-enum AlltoallvMethod
-{
-    ALLTOALLV_PAIRWISE,
-    ALLTOALLV_NONBLOCKING,
-    ALLTOALLV_BATCH,
-    ALLTOALLV_BATCH_ASYNC,
-    ALLTOALLV_PMPI
-};
-extern enum AlltoallvMethod mpil_alltoallv_implementation; */
-
-/* int MPIL_Alltoallv(const void* sendbuf,
-                   const int sendcounts[],
-                   const int sdispls[],
-                   MPI_Datatype sendtype,
-                   void* recvbuf,
-                   const int recvcounts[],
-                   const int rdispls[],
-                   MPI_Datatype recvtype,
-                   MPIL_Comm* mpi_comm); */
-
 typedef int (*alltoallv_ftn)(const void*,
                              const int*,
                              const int*,
@@ -79,7 +58,6 @@ int alltoallv_batch_async(const void* sendbuf,
                           const int rdispls[],
                           MPI_Datatype recvtype,
                           MPIL_Comm* comm);
-
 int alltoallv_pmpi(const void* sendbuf,
                    const int sendcounts[],
                    const int sdispls[],

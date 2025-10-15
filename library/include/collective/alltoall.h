@@ -11,34 +11,6 @@
 extern "C" {
 #endif
 
-/* // TODO : need to add batch/batch asynch as underlying options for Alltoall
-enum AlltoallMethod
-{
-    ALLTOALL_PAIRWISE,
-    ALLTOALL_NONBLOCKING,
-    ALLTOALL_HIERARCHICAL_PAIRWISE,
-    ALLTOALL_HIERARCHICAL_NONBLOCKING,
-    ALLTOALL_MULTILEADER_PAIRWISE,
-    ALLTOALL_MULTILEADER_NONBLOCKING,
-    ALLTOALL_NODE_AWARE_PAIRWISE,
-    ALLTOALL_NODE_AWARE_NONBLOCKING,
-    ALLTOALL_LOCALITY_AWARE_PAIRWISE,
-    ALLTOALL_LOCALITY_AWARE_NONBLOCKING,
-    ALLTOALL_MULTILEADER_LOCALITY_PAIRWISE,
-    ALLTOALL_MULTILEADER_LOCALITY_NONBLOCKING,
-    ALLTOALL_PMPI
-};
-extern enum AlltoallMethod mpil_alltoall_implementation;
- */
-/** @brief wrapper around other options**/
-/* int MPIL_Alltoall(const void* sendbuf,
-                  const int sendcount,
-                  MPI_Datatype sendtype,
-                  void* recvbuf,
-                  const int recvcount,
-                  MPI_Datatype recvtype,
-                  MPIL_Comm* mpi_comm); */
-
 typedef int (*alltoall_ftn)(
     const void*, const int, MPI_Datatype, void*, const int, MPI_Datatype, MPIL_Comm*);
 typedef int (*alltoall_helper_ftn)(const void*,
@@ -50,7 +22,7 @@ typedef int (*alltoall_helper_ftn)(const void*,
                                    MPI_Comm,
                                    int tag);
 
-//** External Wrappers **//
+//** External Wrappers **//----------------------------------------------------------------------
 /** @brief set tag and call pairwise_helper **/
 int alltoall_pairwise(const void* sendbuf,
                       const int sendcount,
@@ -68,7 +40,6 @@ int alltoall_nonblocking(const void* sendbuf,
                          const int recvcount,
                          MPI_Datatype recvtype,
                          MPIL_Comm* comm);
-
 
 /** @brief call alltoall_hiearchical passing pairwise_helper**/
 int alltoall_hierarchical_pairwise(const void* sendbuf,
@@ -161,7 +132,7 @@ int alltoall_multileader_locality_nonblocking(const void* sendbuf,
                                               MPIL_Comm* comm);
 
 
-//** Intermediate Wrappers **//
+//** Intermediate Wrappers **//-----------------------------------------------------------------
 /** @brief calls alltoall_locality_aware with groups_per_node=1**/
 int alltoall_node_aware(alltoall_helper_ftn f,
                         const void* sendbuf,
@@ -182,9 +153,7 @@ int alltoall_hierarchical(alltoall_helper_ftn f,
                           MPI_Datatype recvtype,
                           MPIL_Comm* comm);
 
-
-
-//** Core Helper functions **//
+//** Core Helper functions **//------------------------------------------------------------------
 /** @brief Uses Sendrecv to do the alltoall**/
 int pairwise_helper(const void* sendbuf,
                     const int sendcount,
@@ -226,7 +195,6 @@ int alltoall_locality_aware(alltoall_helper_ftn f,
                             MPI_Datatype recvtype,
                             MPIL_Comm* comm,
                             int groups_per_node);
-
 
 /** @brief ??? \todo fill**/
 int alltoall_locality_aware_helper(alltoall_helper_ftn f,

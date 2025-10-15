@@ -1,6 +1,6 @@
 
 #include "locality_aware.h"
-#include "neighborhood/init.h"
+#include "neighborhood/neighborhood_init.h"
 #include "persistent/MPIL_Request.h"
 
 int init_communication(const void* sendbuffer,

@@ -1,8 +1,22 @@
-file(GLOB collective_HEADERS CONFIGURE_DEPENDS "*.h")
-file(GLOB collective_SOURCES CONFIGURE_DEPENDS "*.c" "*.cpp")
+target_sources(locality_aware PRIVATE global_defaults.c)
 
-set(collective_HEADERS ${collective_HEADERS} CACHE INTERNAL "All headers for collective files.")
-set(collective_SOURCES ${collective_SOURCES} CACHE INTERNAL "All source files for collective directory.")
+target_sources(locality_aware PRIVATE Collective/MPIL_Alltoall.c)
+target_sources(locality_aware PRIVATE Collective/MPIL_Alltoallv.c)
+
+target_sources(locality_aware PRIVATE CRS/MPIL_Alltoall_crs.c)
+target_sources(locality_aware PRIVATE CRS/MPIL_Alltoallv_crs.c)
+
+target_sources(locality_aware PRIVATE MPIL_Alloc/MPIL_Alloc.cpp)
+target_sources(locality_aware PRIVATE MPIL_Alloc/MPIL_Free.cpp)
+
+target_sources(locality_aware PRIVATE MPIL_Info/MPIL_Info_init.cpp)
+target_sources(locality_aware PRIVATE MPIL_Info/MPIL_Info_free.cpp)
+
+target_sources(locality_aware PRIVATE MPIL_Request/MPIL_Start.c)
+target_sources(locality_aware PRIVATE MPIL_Request/MPIL_Wait.c)
+target_sources(locality_aware PRIVATE MPIL_Request/MPIL_Request_free.c)
+
+add_subdirectory(Neighborhood)
+add_subdirectory(MPIL_Comm)
 
 
-target_sources(locality_aware PRIVATE ${collective_SOURCES})

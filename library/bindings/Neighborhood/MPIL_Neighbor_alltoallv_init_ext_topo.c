@@ -18,7 +18,7 @@ int MPIL_Neighbor_alltoallv_init_ext_topo(const void* sendbuf,
                                           MPIL_Info* info,
                                           MPIL_Request** request_ptr)
 {
-    switch (mpix_neighbor_alltoallv_init_implementation)
+    switch (mpil_neighbor_alltoallv_init_implementation)
     {
         case NEIGHBOR_ALLTOALLV_INIT_STANDARD:
             return neighbor_alltoallv_init_standard(sendbuf,

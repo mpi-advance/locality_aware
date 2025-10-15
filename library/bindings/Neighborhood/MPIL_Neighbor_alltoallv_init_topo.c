@@ -17,7 +17,7 @@ int MPIL_Neighbor_alltoallv_init_topo(const void* sendbuf,
 {
     neighbor_alltoallv_init_ftn method;
 
-    switch (mpix_neighbor_alltoallv_init_implementation)
+    switch (mpil_neighbor_alltoallv_init_implementation)
     {
         case NEIGHBOR_ALLTOALLV_INIT_STANDARD:
             method = neighbor_alltoallv_init_standard;

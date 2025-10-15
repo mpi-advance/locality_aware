@@ -3,26 +3,26 @@
 #include <stdlib.h>
 
 void init_locality_comm(LocalityComm** locality_ptr,
-                        MPIL_Comm* mpix_comm,
+                        MPIL_Comm* mpil_comm,
                         MPI_Datatype sendtype,
                         MPI_Datatype recvtype)
 {
     LocalityComm* locality = (LocalityComm*)malloc(sizeof(LocalityComm));
 
     int tag;
-    MPIL_Comm_tag(mpix_comm, &tag);
+    MPIL_Comm_tag(mpil_comm, &tag);
     init_comm_pkg(&(locality->local_L_comm), sendtype, recvtype, tag);
 
-    MPIL_Comm_tag(mpix_comm, &tag);
+    MPIL_Comm_tag(mpil_comm, &tag);
     init_comm_pkg(&(locality->local_S_comm), sendtype, recvtype, tag);
 
-    MPIL_Comm_tag(mpix_comm, &tag);
+    MPIL_Comm_tag(mpil_comm, &tag);
     init_comm_pkg(&(locality->local_R_comm), recvtype, recvtype, tag);
 
-    MPIL_Comm_tag(mpix_comm, &tag);
+    MPIL_Comm_tag(mpil_comm, &tag);
     init_comm_pkg(&(locality->global_comm), recvtype, recvtype, tag);
 
-    locality->communicators = mpix_comm;
+    locality->communicators = mpil_comm;
 
     *locality_ptr = locality;
 }

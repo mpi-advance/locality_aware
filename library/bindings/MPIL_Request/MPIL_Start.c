@@ -13,6 +13,6 @@ int MPIL_Start(MPIL_Request* request)
         return 0;
     }
 
-    mpix_start_ftn start_function = (mpix_start_ftn)(request->start_function);
+    mpil_start_ftn start_function = (mpil_start_ftn)(request->start_function);
     return start_function(request);
 }

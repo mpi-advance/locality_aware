@@ -20,6 +20,19 @@ int neighbor_wait(MPIL_Request* request, MPI_Status* status);
 
 void init_neighbor_request(MPIL_Request** request_ptr);
 
+typedef int (*neighbor_alltoallv_init_ftn)(const void* sendbuf,
+                                           const int sendcounts[],
+                                           const int sdispls[],
+                                           MPI_Datatype sendtype,
+                                           void* recvbuf,
+                                           const int recvcounts[],
+                                           const int rdispls[],
+                                           MPI_Datatype recvtype,
+                                           MPIL_Topo* topo,
+                                           MPIL_Comm* comm,
+                                           MPIL_Info* info,
+                                           MPIL_Request** request_ptr);
+
 int neighbor_alltoallv_init_standard(const void* sendbuf,
                                      const int sendcounts[],
                                      const int sdispls[],
@@ -73,7 +86,7 @@ void init_locality(const int n_sends,
                    const long* global_recv_indices,
                    const MPI_Datatype sendtype,
                    const MPI_Datatype recvtype,
-                   MPIL_Comm* mpix_comm,
+                   MPIL_Comm* mpil_comm,
                    MPIL_Request* request);
 
 int init_communication(const void* sendbuffer,

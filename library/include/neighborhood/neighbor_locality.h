@@ -37,7 +37,7 @@ void form_local_comm(const int orig_num_sends,
 void form_global_comm(CommData* local_data,
                       CommData* global_data,
                       std::vector<int>& local_data_nodes,
-                      const MPIL_Comm* mpix_comm,
+                      const MPIL_Comm* mpil_comm,
                       int tag);
 void update_global_comm(LocalityComm* locality);
 void form_global_map(const CommData* map_data, std::map<long, int>& global_map);

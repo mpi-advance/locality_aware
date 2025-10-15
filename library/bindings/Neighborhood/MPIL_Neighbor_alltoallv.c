@@ -1,5 +1,5 @@
 #include "locality_aware.h"
-
+#include "neighborhood/MPIL_Topo.h"
 
 #ifdef __cplusplus
 #include <cstring>

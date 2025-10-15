@@ -1,9 +1,5 @@
 #include "locality_aware.h"
-
-
-//enum NeighborAlltoallvInitMethod mpix_neighbor_alltoallv_init_implementation =
-//    NEIGHBOR_ALLTOALLV_INIT_STANDARD;
-
+#include "neighborhood/MPIL_Topo.h"
 
 int MPIL_Neighbor_alltoallv_init_ext(const void* sendbuf,
                                      const int sendcounts[],
