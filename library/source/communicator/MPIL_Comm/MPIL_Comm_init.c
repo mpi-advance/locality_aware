@@ -1,6 +1,6 @@
 #include "locality_aware.h"
 #include "communicator/MPIL_Comm.h"
-#include <cstdlib>
+#include <stdlib.h>
 
 int MPIL_Comm_init(MPIL_Comm** xcomm_ptr, MPI_Comm global_comm)
 {

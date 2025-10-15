@@ -8,9 +8,6 @@
 extern "C" {
 #endif
 
-typedef int (*mpix_start_ftn)(MPIL_Request* request);
-typedef int (*mpix_wait_ftn)(MPIL_Request* request, MPI_Status* status);
-
 typedef struct _MPIL_Request
 {
     // Message counts

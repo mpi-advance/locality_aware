@@ -1,8 +1,7 @@
 #include "locality_aware.h"
 #include "communicator/MPIL_Comm.h"
 #include "neighborhood/MPIL_Topo.h"
-
-#include <cstdlib>
+#include <stdlib.h>
 
 int MPIL_Topo_from_neighbor_comm(MPIL_Comm* comm, MPIL_Topo** mpix_topo_ptr)
 {

@@ -1,5 +1,5 @@
 #include "communicator/MPIL_Comm.h"
-#include <cstdlib>
+#include <stdlib.h>
 
 // For testing purposes
 // Manually update aggregation size (ppn)

@@ -2,7 +2,6 @@
 #include <map>
 #include <vector>
 
-
 #include "locality_aware.h"
 #include "persistent/MPIL_Request.h"
 #include "communicator/MPIL_Comm.h"
@@ -14,6 +13,10 @@
  ****
  ******************************************/
 
+ // Declarations of C++ methods
+#ifdef __cplusplus
+extern "C" {
+#endif
 // Initialize NAPComm* structure, to be used for any number of
 // instances of communication
 void init_locality(const int n_sends,
@@ -144,7 +147,9 @@ void init_locality(const int n_sends,
     request->locality = locality_comm;
     request->tag      = locality_comm->global_comm->tag;
 }
-
+#ifdef __cplusplus
+}
+#endif
 // Destroy NAPComm* structure
 void destroy_locality(MPIL_Request* request)
 {

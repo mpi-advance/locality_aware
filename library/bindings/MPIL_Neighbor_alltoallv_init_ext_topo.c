@@ -3,11 +3,6 @@
 #include "persistent/MPIL_Request.h"
 #include "communicator/MPIL_Comm.h"
 
-
-/* enum NeighborAlltoallvInitMethod mpix_neighbor_alltoallv_init_implementation =
-    NEIGHBOR_ALLTOALLV_INIT_STANDARD;
- */
-
 int MPIL_Neighbor_alltoallv_init_ext_topo(const void* sendbuf,
                                           const int sendcounts[],
                                           const int sdispls[],

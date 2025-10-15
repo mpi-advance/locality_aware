@@ -3,15 +3,8 @@
 #include "neighborhood/MPIL_Topo.h"
 #include "neighborhood/alltoall_crs.h"
 
-#include <cstdlib>
-
-#ifdef __cplusplus
-#include <cstring>
-#endif
-
-#ifndef __cplusplus
-#include "string.h"
-#endif
+#include <string.h>
+#include <stdlib.h>
 
 // Non-persistent, locality-aware == call dynamic version
 int neighbor_alltoallv_locality(const void* sendbuf,

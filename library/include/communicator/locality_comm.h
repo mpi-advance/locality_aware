@@ -4,7 +4,7 @@
 #include <mpi.h>
 
 #include "comm_pkg.h"
-#include "locality_aware.h"
+#include "MPIL_Comm.h"
 
 // Declarations of C++ methods
 #ifdef __cplusplus

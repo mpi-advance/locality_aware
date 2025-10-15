@@ -1,4 +1,6 @@
-#include "../../include/communicator/locality_comm.h"
+#include "locality_aware.h"
+#include "communicator/locality_comm.h"
+#include <stdlib.h>
 
 void init_locality_comm(LocalityComm** locality_ptr,
                         MPIL_Comm* mpix_comm,

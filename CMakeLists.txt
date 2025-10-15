@@ -109,14 +109,14 @@ target_link_libraries(locality_aware PUBLIC ${EXTERNAL_LIBS})
 
 install(TARGETS locality_aware)
 
-set_source_files_properties(
-    ${utils_SOURCES}
-    ${communicator_SOURCES}
-    ${collective_SOURCES}
-    ${persistent_SOURCES}
-    ${neighborhood_SOURCES}
-    ${heterogeneous_SOURCES}
-    PROPERTIES LANGUAGE ${locality_aware_LANG})
+#set_source_files_properties(
+#    ${utils_SOURCES}
+#    ${communicator_SOURCES}
+#    ${collective_SOURCES}
+#    ${persistent_SOURCES}
+#    ${neighborhood_SOURCES}
+#    ${heterogeneous_SOURCES}
+#    PROPERTIES LANGUAGE ${locality_aware_LANG})
 
 install(DIRECTORY include/communicator/ DESTINATION ${CMAKE_INSTALL_PREFIX}/include/communicator)
 install(DIRECTORY include/collective/   DESTINATION ${CMAKE_INSTALL_PREFIX}/include/collective)

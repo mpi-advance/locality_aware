@@ -1,3 +1,4 @@
+#include "locality_aware.h"
 #include "communicator/MPIL_Comm.h"
 
 int MPIL_Comm_leader_free(MPIL_Comm* xcomm)

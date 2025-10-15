@@ -1,4 +1,6 @@
+#include "locality_aware.h" // #TODO -- figure out why this is needed
 #include "persistent/MPIL_Request.h"
+#include <stdlib.h>
 
 void allocate_requests(int n_requests, MPI_Request** request_ptr)
 {

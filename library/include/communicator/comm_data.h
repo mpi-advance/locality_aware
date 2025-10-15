@@ -2,8 +2,6 @@
 #define MPI_ADVANCE_COMM_DATA_H
 
 #include <mpi.h>
-#include <stdio.h>
-#include <stdlib.h>
 
 #ifdef __cplusplus
 extern "C" {

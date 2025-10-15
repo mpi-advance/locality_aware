@@ -1,8 +1,8 @@
+#include "locality_aware.h" // #TODO -- figure out why this is needed
 #include "persistent/MPIL_Request.h"
 #include "communicator/MPIL_Comm.h"
 #include "neighborhood/neighborhood_init.h"
 #include "neighborhood/MPIL_Topo.h"
-
 
 // Locality-Aware Extension to Persistent Neighbor Alltoallv
 // Needs global indices for each send and receive
@@ -30,7 +30,7 @@ int neighbor_alltoallv_init_locality_ext(const void* sendbuffer,
     init_neighbor_request(&request);
 
     // Initialize Locality-Aware Communication Strategy (3-Step)
-    // E.G. Determine which processes talk to eachother at every step
+    // E.G. Determine which processes talk to each other at every step
     // TODO : instead of mpi_comm, use comm
     //        - will need to create local_comm in dist_graph_create_adjacent...
     init_locality(topo->outdegree,
