@@ -149,7 +149,7 @@ void test_matrix(const char* filename)
     compare_neighbor_alltoallv_results(
         pmpi_recv_vals, mpix_recv_vals, A.recv_comm.size_msgs);
 
-    mpix_neighbor_alltoallv_implementation = NEIGHBOR_ALLTOALLV_STANDARD;
+    MPIL_set_alltoallv_neighbor_alogorithm(NEIGHBOR_ALLTOALLV_STANDARD);
     std::fill(mpix_recv_vals.begin(), mpix_recv_vals.end(), 0);
     MPIL_Neighbor_alltoallv_topo(alltoallv_send_vals.data(),
                                  A.send_comm.counts.data(),
@@ -164,7 +164,7 @@ void test_matrix(const char* filename)
     compare_neighbor_alltoallv_results(
         pmpi_recv_vals, mpix_recv_vals, A.recv_comm.size_msgs);
 
-    mpix_neighbor_alltoallv_init_implementation = NEIGHBOR_ALLTOALLV_INIT_STANDARD;
+    MPIL_set_alltoallv_neighbor_init_alogorithm(NEIGHBOR_ALLTOALLV_INIT_STANDARD);
     std::fill(mpix_recv_vals.begin(), mpix_recv_vals.end(), 0);
     MPIL_Neighbor_alltoallv_init_topo(alltoallv_send_vals.data(),
                                       A.send_comm.counts.data(),
@@ -185,7 +185,7 @@ void test_matrix(const char* filename)
     compare_neighbor_alltoallv_results(
         pmpi_recv_vals, mpix_recv_vals, A.recv_comm.size_msgs);
 
-    mpix_neighbor_alltoallv_init_implementation = NEIGHBOR_ALLTOALLV_INIT_LOCALITY;
+    MPIL_set_alltoallv_neighbor_init_alogorithm(NEIGHBOR_ALLTOALLV_INIT_LOCALITY);
     std::fill(mpix_recv_vals.begin(), mpix_recv_vals.end(), 0);
     MPIL_Neighbor_alltoallv_init_topo(alltoallv_send_vals.data(),
                                       A.send_comm.counts.data(),
@@ -207,7 +207,7 @@ void test_matrix(const char* filename)
         pmpi_recv_vals, mpix_recv_vals, A.recv_comm.size_msgs);
 
     // 3. MPI Advance - Optimized Communication
-    mpix_neighbor_alltoallv_init_implementation = NEIGHBOR_ALLTOALLV_INIT_STANDARD;
+    MPIL_set_alltoallv_neighbor_init_alogorithm(NEIGHBOR_ALLTOALLV_INIT_STANDARD);
     std::fill(mpix_recv_vals.begin(), mpix_recv_vals.end(), 0);
     MPIL_Neighbor_alltoallv_init_ext_topo(alltoallv_send_vals.data(),
                                           A.send_comm.counts.data(),
@@ -230,7 +230,7 @@ void test_matrix(const char* filename)
     compare_neighbor_alltoallv_results(
         pmpi_recv_vals, mpix_recv_vals, A.recv_comm.size_msgs);
 
-    mpix_neighbor_alltoallv_init_implementation = NEIGHBOR_ALLTOALLV_INIT_LOCALITY;
+    MPIL_set_alltoallv_neighbor_init_alogorithm(NEIGHBOR_ALLTOALLV_INIT_LOCALITY);
     std::fill(mpix_recv_vals.begin(), mpix_recv_vals.end(), 0);
     MPIL_Neighbor_alltoallv_init_ext_topo(alltoallv_send_vals.data(),
                                           A.send_comm.counts.data(),

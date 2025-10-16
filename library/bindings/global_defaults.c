@@ -23,10 +23,11 @@ void MPIL_set_alltoallv_algorithm(enum AlltoallvMethod algorithm)
     mpil_alltoallv_implementation = (enum AlltoallvMethod)algorithm;
 }
 
-void MPIL_set_alltoall_neighbor_alogorithm(enum NeighborAlltoallvMethod algorithm)
+void MPIL_set_alltoallv_neighbor_alogorithm(enum NeighborAlltoallvMethod algorithm)
 {
     mpil_neighbor_alltoallv_implementation = (enum NeighborAlltoallvMethod)algorithm;
 }
+
 void MPIL_set_alltoallv_neighbor_init_alogorithm(
     enum NeighborAlltoallvInitMethod algorithm)
 {

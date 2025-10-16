@@ -148,7 +148,7 @@ enum NeighborAlltoallvMethod
     NEIGHBOR_ALLTOALLV_LOCALITY
 };
 extern enum NeighborAlltoallvMethod mpil_neighbor_alltoallv_implementation;
-void MPIL_set_alltoall_neighbor_alogorithm(enum NeighborAlltoallvMethod algorithm);
+void MPIL_set_alltoallv_neighbor_alogorithm(enum NeighborAlltoallvMethod algorithm);
 
 int MPIL_Neighbor_alltoallv(const void* sendbuf,
                             const int sendcounts[],
