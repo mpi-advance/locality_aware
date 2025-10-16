@@ -8,13 +8,13 @@
 #flux: -l # Add task rank prefixes to each line of output.
 #flux: --setattr=thp=always # Enable Transparent Huge Pages (THP)
 #flux: -t 30
-#flux: -q pbatch
 
 module load rocmcc/6.4.0-magic
 module load cray-mpich/9.0.1
 
 export ROCM_PATH=/usr/tce/packages/rocmcc/rocmcc-6.4.0-magic/
 
+export HIP_VISIBLE_DEVICES=$(seq -s, 0 23)
 export MPICH_GPU_SUPPORT_ENABLED=1
 export HSA_XNACK=1
 
