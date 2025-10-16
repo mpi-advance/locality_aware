@@ -24,7 +24,7 @@ cd $HOME/MPICCL/build/benchmarks
 
 n_nodes=16
 gpus_per_node=8
-max_cores=16
+max_cores=8
 
 for ppg in 1 2 4 8; do
   n_procs=$(( ppg * gpus_per_node * n_nodes ))
