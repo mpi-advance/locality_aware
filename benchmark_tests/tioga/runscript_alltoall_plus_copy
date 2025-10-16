@@ -23,7 +23,7 @@ export HSA_XNACK=1
 cd $HOME/MPICCL/build/benchmarks
 
 n_nodes=16
-gpus_per_node=4
+gpus_per_node=8
 max_cores=16
 
 for ppg in 1 2 4 8; do
