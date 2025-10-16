@@ -1,6 +1,6 @@
-#include "../../include/utils/utils.h"
 #include <algorithm>
 
+#include "../../include/utils/utils.h"
 
 void reverse(void* recvbuf, int n_bytes, int var_bytes)
 {

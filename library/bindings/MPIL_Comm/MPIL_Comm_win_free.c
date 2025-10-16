@@ -1,5 +1,5 @@
-#include "locality_aware.h"
 #include "communicator/MPIL_Comm.h"
+#include "locality_aware.h"
 
 int MPIL_Comm_win_free(MPIL_Comm* xcomm)
 {

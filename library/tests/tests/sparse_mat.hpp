@@ -1,10 +1,11 @@
 #ifndef MPI_SPARSE_MAT_HPP
 #define MPI_SPARSE_MAT_HPP
 
-#include "mpi.h"
 #include <vector>
 
-struct Mat 
+#include "mpi.h"
+
+struct Mat
 {
     std::vector<int> rowptr;
     std::vector<int> col_idx;
@@ -13,7 +14,6 @@ struct Mat
     int n_cols;
     int nnz;
 };
-
 
 template <typename U>
 struct Comm
@@ -53,18 +53,21 @@ void form_recv_comm(ParMat<U>& A)
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
 
     // Gather first col for all processes into list
-    std::vector<int> first_cols(num_procs+1);
-    MPI_Allgather(&A.first_col, 1, MPI_INT, first_cols.data(), 1, MPI_INT, MPI_COMM_WORLD);
+    std::vector<int> first_cols(num_procs + 1);
+    MPI_Allgather(
+        &A.first_col, 1, MPI_INT, first_cols.data(), 1, MPI_INT, MPI_COMM_WORLD);
     first_cols[num_procs] = A.global_cols;
 
     // Map Columns to Processes
-    int proc = 0;
+    int proc      = 0;
     int prev_proc = -1;
     for (int i = 0; i < A.off_proc_num_cols; i++)
     {
         int global_col = A.off_proc_columns[i];
-        while (first_cols[proc+1] <= global_col)
+        while (first_cols[proc + 1] <= global_col)
+        {
             proc++;
+        }
         if (proc != prev_proc)
         {
             A.recv_comm.procs.push_back(proc);
@@ -75,15 +78,19 @@ void form_recv_comm(ParMat<U>& A)
 
     // Set Recv Sizes
     A.recv_comm.ptr.push_back((U)(A.off_proc_num_cols));
-    A.recv_comm.n_msgs = A.recv_comm.procs.size();
+    A.recv_comm.n_msgs    = A.recv_comm.procs.size();
     A.recv_comm.size_msgs = A.off_proc_num_cols;
     if (A.recv_comm.n_msgs == 0)
+    {
         return;
+    }
 
     A.recv_comm.req.resize(A.recv_comm.n_msgs);
     A.recv_comm.counts.resize(A.recv_comm.n_msgs);
     for (int i = 0; i < A.recv_comm.n_msgs; i++)
-        A.recv_comm.counts[i] = A.recv_comm.ptr[i+1] - A.recv_comm.ptr[i];
+    {
+        A.recv_comm.counts[i] = A.recv_comm.ptr[i + 1] - A.recv_comm.ptr[i];
+    }
 }
 
 // Must Form Recv Comm before Send!
@@ -101,8 +108,11 @@ void form_send_comm_standard(ParMat<U>& A)
 
     // Allreduce to find size of data I will receive
     for (int i = 0; i < A.recv_comm.n_msgs; i++)
-        sizes[A.recv_comm.procs[i]] = A.recv_comm.ptr[i+1] - A.recv_comm.ptr[i];
-    MPI_Allreduce(MPI_IN_PLACE, sizes.data(), num_procs, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
+    {
+        sizes[A.recv_comm.procs[i]] = A.recv_comm.ptr[i + 1] - A.recv_comm.ptr[i];
+    }
+    MPI_Allreduce(
+        MPI_IN_PLACE, sizes.data(), num_procs, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
     A.send_comm.size_msgs = sizes[rank];
 
     // Send a message to every process that I will need data from
@@ -111,8 +121,13 @@ void form_send_comm_standard(ParMat<U>& A)
     for (int i = 0; i < A.recv_comm.n_msgs; i++)
     {
         proc = A.recv_comm.procs[i];
-        MPI_Isend(&(A.off_proc_columns[A.recv_comm.ptr[i]]), A.recv_comm.counts[i], MPI_LONG, proc, msg_tag, 
-                MPI_COMM_WORLD, &(A.recv_comm.req[i]));
+        MPI_Isend(&(A.off_proc_columns[A.recv_comm.ptr[i]]),
+                  A.recv_comm.counts[i],
+                  MPI_LONG,
+                  proc,
+                  msg_tag,
+                  MPI_COMM_WORLD,
+                  &(A.recv_comm.req[i]));
     }
 
     // Wait to receive values
@@ -136,43 +151,53 @@ void form_send_comm_standard(ParMat<U>& A)
         A.send_comm.counts.push_back(count);
 
         // Receive the message, and add local indices to send_comm
-        MPI_Recv(&(recv_buf[ctr]), count, MPI_LONG, proc, msg_tag, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+        MPI_Recv(&(recv_buf[ctr]),
+                 count,
+                 MPI_LONG,
+                 proc,
+                 msg_tag,
+                 MPI_COMM_WORLD,
+                 MPI_STATUS_IGNORE);
         for (int i = 0; i < count; i++)
         {
-            A.send_comm.idx[ctr+i] = (recv_buf[ctr+i] - A.first_col);
+            A.send_comm.idx[ctr + i] = (recv_buf[ctr + i] - A.first_col);
         }
         ctr += count;
         A.send_comm.ptr.push_back((U)(ctr));
     }
-    
+
     // Set send sizes
     A.send_comm.n_msgs = A.send_comm.procs.size();
 
     if (A.send_comm.n_msgs)
+    {
         A.send_comm.req.resize(A.send_comm.n_msgs);
+    }
 
     if (A.recv_comm.n_msgs)
+    {
         MPI_Waitall(A.recv_comm.n_msgs, A.recv_comm.req.data(), MPI_STATUSES_IGNORE);
+    }
 }
-
-
 
 template <typename U>
 void form_comm(ParMat<U>& A)
 {
-    // Form Recv Side 
+    // Form Recv Side
     form_recv_comm(A);
 
     // Form Send Side (Algorithm Options Here!)
     form_send_comm_standard(A);
-    
+
     // TODO: Make MPI_Advance Sparse Alltoallv dynamically allocated MPI buffers
     // Can call it here
-
 }
 
 template <typename U, typename T>
-void communicate3_flip(ParMat<T>& A, std::vector<U>& sendbuf, std::vector<U>& recvbuf, MPI_Datatype type)
+void communicate3_flip(ParMat<T>& A,
+                       std::vector<U>& sendbuf,
+                       std::vector<U>& recvbuf,
+                       MPI_Datatype type)
 {
     int proc;
     T start, end;
@@ -180,158 +205,229 @@ void communicate3_flip(ParMat<T>& A, std::vector<U>& sendbuf, std::vector<U>& re
 
     for (int i = 0; i < A.send_comm.n_msgs; i++)
     {
-        proc = A.send_comm.procs[i];
+        proc  = A.send_comm.procs[i];
         start = A.send_comm.ptr[i];
-        end = A.send_comm.ptr[i+1];
-        MPI_Recv_init(&(sendbuf[start]), (int)(end - start), type, proc, tag, 
-                MPI_COMM_WORLD, &(A.send_comm.req[i]));
+        end   = A.send_comm.ptr[i + 1];
+        MPI_Recv_init(&(sendbuf[start]),
+                      (int)(end - start),
+                      type,
+                      proc,
+                      tag,
+                      MPI_COMM_WORLD,
+                      &(A.send_comm.req[i]));
     }
-    
-    for (int i = 0; i < A.recv_comm.n_msgs; i++)
-    {
-        proc = A.recv_comm.procs[i];
-        start = A.recv_comm.ptr[i];
-        end = A.recv_comm.ptr[i+1];
-        MPI_Send_init(&(recvbuf[start]), (int)(end - start), type, proc, tag,
-                MPI_COMM_WORLD, &(A.recv_comm.req[i]));
-    }
-
-    if (A.send_comm.n_msgs)
-        MPI_Startall(A.send_comm.n_msgs, A.send_comm.req.data());
-    if (A.recv_comm.n_msgs)
-    	MPI_Startall(A.recv_comm.n_msgs, A.recv_comm.req.data());
-    
-    if (A.send_comm.n_msgs)
-    {
-        MPI_Waitall(A.send_comm.n_msgs, A.send_comm.req.data(), MPI_STATUSES_IGNORE);
-	for (int i = 0; i < A.send_comm.n_msgs; i++)
-		MPI_Request_free(&(A.send_comm.req[i]));
-    }
-    if (A.recv_comm.n_msgs)
-    {
-    	MPI_Waitall(A.recv_comm.n_msgs, A.recv_comm.req.data(), MPI_STATUSES_IGNORE);
-	for (int i = 0; i < A.recv_comm.n_msgs; i++)
-		MPI_Request_free(&(A.recv_comm.req[i]));
-    }
-}
-
-template <typename U, typename T>
-void communicate3(ParMat<T>& A, std::vector<U>& sendbuf, std::vector<U>& recvbuf, MPI_Datatype type)
-{
-    int proc;
-    T start, end;
-    int tag = 2948;
 
     for (int i = 0; i < A.recv_comm.n_msgs; i++)
     {
-        proc = A.recv_comm.procs[i];
+        proc  = A.recv_comm.procs[i];
         start = A.recv_comm.ptr[i];
-        end = A.recv_comm.ptr[i+1];
-        MPI_Recv_init(&(recvbuf[start]), (int)(end - start), type, proc, tag,
-                MPI_COMM_WORLD, &(A.recv_comm.req[i]));
+        end   = A.recv_comm.ptr[i + 1];
+        MPI_Send_init(&(recvbuf[start]),
+                      (int)(end - start),
+                      type,
+                      proc,
+                      tag,
+                      MPI_COMM_WORLD,
+                      &(A.recv_comm.req[i]));
     }
 
-    for (int i = 0; i < A.send_comm.n_msgs; i++)
-    {
-        proc = A.send_comm.procs[i];
-        start = A.send_comm.ptr[i];
-        end = A.send_comm.ptr[i+1];
-        MPI_Send_init(&(sendbuf[start]), (int)(end - start), type, proc, tag, 
-                MPI_COMM_WORLD, &(A.send_comm.req[i]));
-    }
-
-    if (A.recv_comm.n_msgs)
-    	MPI_Startall(A.recv_comm.n_msgs, A.recv_comm.req.data());
-    
     if (A.send_comm.n_msgs)
+    {
         MPI_Startall(A.send_comm.n_msgs, A.send_comm.req.data());
-    
+    }
     if (A.recv_comm.n_msgs)
     {
-    	MPI_Waitall(A.recv_comm.n_msgs, A.recv_comm.req.data(), MPI_STATUSES_IGNORE);
-        for (int i = 0; i < A.recv_comm.n_msgs; i++)
-            MPI_Request_free(&(A.recv_comm.req[i]));
+        MPI_Startall(A.recv_comm.n_msgs, A.recv_comm.req.data());
     }
 
     if (A.send_comm.n_msgs)
     {
         MPI_Waitall(A.send_comm.n_msgs, A.send_comm.req.data(), MPI_STATUSES_IGNORE);
         for (int i = 0; i < A.send_comm.n_msgs; i++)
+        {
             MPI_Request_free(&(A.send_comm.req[i]));
+        }
     }
-
+    if (A.recv_comm.n_msgs)
+    {
+        MPI_Waitall(A.recv_comm.n_msgs, A.recv_comm.req.data(), MPI_STATUSES_IGNORE);
+        for (int i = 0; i < A.recv_comm.n_msgs; i++)
+        {
+            MPI_Request_free(&(A.recv_comm.req[i]));
+        }
+    }
 }
 
 template <typename U, typename T>
-void communicate2(ParMat<T>& A, std::vector<U>& sendbuf, std::vector<U>& recvbuf, MPI_Datatype type)
+void communicate3(ParMat<T>& A,
+                  std::vector<U>& sendbuf,
+                  std::vector<U>& recvbuf,
+                  MPI_Datatype type)
 {
     int proc;
     T start, end;
     int tag = 2948;
-    
+
     for (int i = 0; i < A.recv_comm.n_msgs; i++)
     {
-        proc = A.recv_comm.procs[i];
+        proc  = A.recv_comm.procs[i];
         start = A.recv_comm.ptr[i];
-        end = A.recv_comm.ptr[i+1];
-        MPI_Irecv(&(recvbuf[start]), (int)(end - start), type, proc, tag,
-                MPI_COMM_WORLD, &(A.recv_comm.req[i]));
+        end   = A.recv_comm.ptr[i + 1];
+        MPI_Recv_init(&(recvbuf[start]),
+                      (int)(end - start),
+                      type,
+                      proc,
+                      tag,
+                      MPI_COMM_WORLD,
+                      &(A.recv_comm.req[i]));
     }
-    
+
     for (int i = 0; i < A.send_comm.n_msgs; i++)
     {
-        proc = A.send_comm.procs[i];
+        proc  = A.send_comm.procs[i];
         start = A.send_comm.ptr[i];
-        end = A.send_comm.ptr[i+1];
-        MPI_Isend(&(sendbuf[start]), (int)(end - start), type, proc, tag, 
-                MPI_COMM_WORLD, &(A.send_comm.req[i]));
+        end   = A.send_comm.ptr[i + 1];
+        MPI_Send_init(&(sendbuf[start]),
+                      (int)(end - start),
+                      type,
+                      proc,
+                      tag,
+                      MPI_COMM_WORLD,
+                      &(A.send_comm.req[i]));
     }
 
     if (A.recv_comm.n_msgs)
-    	MPI_Waitall(A.recv_comm.n_msgs, A.recv_comm.req.data(), MPI_STATUSES_IGNORE);
+    {
+        MPI_Startall(A.recv_comm.n_msgs, A.recv_comm.req.data());
+    }
+
     if (A.send_comm.n_msgs)
+    {
+        MPI_Startall(A.send_comm.n_msgs, A.send_comm.req.data());
+    }
+
+    if (A.recv_comm.n_msgs)
+    {
+        MPI_Waitall(A.recv_comm.n_msgs, A.recv_comm.req.data(), MPI_STATUSES_IGNORE);
+        for (int i = 0; i < A.recv_comm.n_msgs; i++)
+        {
+            MPI_Request_free(&(A.recv_comm.req[i]));
+        }
+    }
+
+    if (A.send_comm.n_msgs)
+    {
         MPI_Waitall(A.send_comm.n_msgs, A.send_comm.req.data(), MPI_STATUSES_IGNORE);
+        for (int i = 0; i < A.send_comm.n_msgs; i++)
+        {
+            MPI_Request_free(&(A.send_comm.req[i]));
+        }
+    }
 }
 
 template <typename U, typename T>
-void communicate(ParMat<T>& A, std::vector<U>& data, std::vector<U>& recvbuf, MPI_Datatype type)
+void communicate2(ParMat<T>& A,
+                  std::vector<U>& sendbuf,
+                  std::vector<U>& recvbuf,
+                  MPI_Datatype type)
 {
     int proc;
     T start, end;
     int tag = 2948;
-    
+
     for (int i = 0; i < A.recv_comm.n_msgs; i++)
     {
-        proc = A.recv_comm.procs[i];
+        proc  = A.recv_comm.procs[i];
         start = A.recv_comm.ptr[i];
-        end = A.recv_comm.ptr[i+1];
-        MPI_Irecv(&(recvbuf[start]), (int)(end - start), type, proc, tag,
-                MPI_COMM_WORLD, &(A.recv_comm.req[i]));
+        end   = A.recv_comm.ptr[i + 1];
+        MPI_Irecv(&(recvbuf[start]),
+                  (int)(end - start),
+                  type,
+                  proc,
+                  tag,
+                  MPI_COMM_WORLD,
+                  &(A.recv_comm.req[i]));
     }
-    
-    std::vector<U> sendbuf;
-    if (A.send_comm.size_msgs)
-        sendbuf.resize(A.send_comm.size_msgs);
+
     for (int i = 0; i < A.send_comm.n_msgs; i++)
     {
-        proc = A.send_comm.procs[i];
+        proc  = A.send_comm.procs[i];
         start = A.send_comm.ptr[i];
-        end = A.send_comm.ptr[i+1];
+        end   = A.send_comm.ptr[i + 1];
+        MPI_Isend(&(sendbuf[start]),
+                  (int)(end - start),
+                  type,
+                  proc,
+                  tag,
+                  MPI_COMM_WORLD,
+                  &(A.send_comm.req[i]));
+    }
+
+    if (A.recv_comm.n_msgs)
+    {
+        MPI_Waitall(A.recv_comm.n_msgs, A.recv_comm.req.data(), MPI_STATUSES_IGNORE);
+    }
+    if (A.send_comm.n_msgs)
+    {
+        MPI_Waitall(A.send_comm.n_msgs, A.send_comm.req.data(), MPI_STATUSES_IGNORE);
+    }
+}
+
+template <typename U, typename T>
+void communicate(ParMat<T>& A,
+                 std::vector<U>& data,
+                 std::vector<U>& recvbuf,
+                 MPI_Datatype type)
+{
+    int proc;
+    T start, end;
+    int tag = 2948;
+
+    for (int i = 0; i < A.recv_comm.n_msgs; i++)
+    {
+        proc  = A.recv_comm.procs[i];
+        start = A.recv_comm.ptr[i];
+        end   = A.recv_comm.ptr[i + 1];
+        MPI_Irecv(&(recvbuf[start]),
+                  (int)(end - start),
+                  type,
+                  proc,
+                  tag,
+                  MPI_COMM_WORLD,
+                  &(A.recv_comm.req[i]));
+    }
+
+    std::vector<U> sendbuf;
+    if (A.send_comm.size_msgs)
+    {
+        sendbuf.resize(A.send_comm.size_msgs);
+    }
+    for (int i = 0; i < A.send_comm.n_msgs; i++)
+    {
+        proc  = A.send_comm.procs[i];
+        start = A.send_comm.ptr[i];
+        end   = A.send_comm.ptr[i + 1];
         for (T j = start; j < end; j++)
         {
             sendbuf[j] = data[A.send_comm.idx[j]];
         }
-        MPI_Isend(&(sendbuf[start]), (int)(end - start), type, proc, tag, 
-                MPI_COMM_WORLD, &(A.send_comm.req[i]));
+        MPI_Isend(&(sendbuf[start]),
+                  (int)(end - start),
+                  type,
+                  proc,
+                  tag,
+                  MPI_COMM_WORLD,
+                  &(A.send_comm.req[i]));
     }
 
-
     if (A.send_comm.n_msgs)
+    {
         MPI_Waitall(A.send_comm.n_msgs, A.send_comm.req.data(), MPI_STATUSES_IGNORE);
+    }
     if (A.recv_comm.n_msgs)
-    	MPI_Waitall(A.recv_comm.n_msgs, A.recv_comm.req.data(), MPI_STATUSES_IGNORE);
+    {
+        MPI_Waitall(A.recv_comm.n_msgs, A.recv_comm.req.data(), MPI_STATUSES_IGNORE);
+    }
 }
-
-
 
 #endif

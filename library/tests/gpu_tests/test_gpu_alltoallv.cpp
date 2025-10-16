@@ -1,25 +1,32 @@
-#include "../../../include/locality_aware.h"
-#include "../../include/heterogeneous/gpu_alltoallv.h"
-#include <mpi.h>
-#include <math.h>
-#include <stdlib.h>
-#include <iostream>
 #include <assert.h>
-#include <vector>
+#include <math.h>
+#include <mpi.h>
+#include <stdlib.h>
+
+#include <iostream>
 #include <numeric>
 #include <set>
+#include <vector>
 
-#include "../tests/sparse_mat.hpp"
+#include "../../../include/locality_aware.h"
+#include "../../include/heterogeneous/gpu_alltoallv.h"
 #include "../tests/par_binary_IO.hpp"
+#include "../tests/sparse_mat.hpp"
 
-void compare_alltoallv_results(std::vector<int>& pmpi_alltoall, std::vector<int>& mpix_alltoall, int s)
+void compare_alltoallv_results(std::vector<int>& pmpi_alltoall,
+                               std::vector<int>& mpix_alltoall,
+                               int s)
 {
     for (int i = 0; i < s; i++)
     {
         if (pmpi_alltoall[i] != mpix_alltoall[i])
         {
-            fprintf(stderr, "Alltoallv ERROR: position s=%d, %d, pmpi %d, mpix %d\n", 
-                    s, i, pmpi_alltoall[i], mpix_alltoall[i]);
+            fprintf(stderr,
+                    "Alltoallv ERROR: position s=%d, %d, pmpi %d, mpix %d\n",
+                    s,
+                    i,
+                    pmpi_alltoall[i],
+                    mpix_alltoall[i]);
             MPI_Abort(MPI_COMM_WORLD, -1);
         }
     }
@@ -31,10 +38,11 @@ void test_matrix(const char* filename)
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
 
-	if(rank == 0){
-		std::cout<<"1 SIZE: "<<rank<<std::endl;
-	}
-	
+    if (rank == 0)
+    {
+        std::cout << "1 SIZE: " << rank << std::endl;
+    }
+
     MPIL_Comm* xcomm;
     MPIL_Comm_init(&xcomm, MPI_COMM_WORLD);
     MPIL_Comm_device_init(xcomm);
@@ -47,12 +55,16 @@ void test_matrix(const char* filename)
     std::vector<int> send_vals(A.on_proc.n_rows);
     std::iota(send_vals.begin(), send_vals.end(), 0);
     for (int i = 0; i < A.on_proc.n_rows; i++)
-        send_vals[i] += (rank*1000);
+    {
+        send_vals[i] += (rank * 1000);
+    }
 
     // Alltoallv_send_vals must be ordered (dest 0 to num_procs-1)
     std::vector<int> proc_pos(num_procs, -1);
     for (int i = 0; i < A.send_comm.n_msgs; i++)
+    {
         proc_pos[A.send_comm.procs[i]] = i;
+    }
 
     std::vector<int> alltoallv_send_vals(A.send_comm.size_msgs);
     int start, end, idx;
@@ -60,172 +72,197 @@ void test_matrix(const char* filename)
     for (int i = 0; i < num_procs; i++)
     {
         idx = proc_pos[i];
-        if (proc_pos[i] < 0) continue;
+        if (proc_pos[i] < 0)
+        {
+            continue;
+        }
 
         start = A.send_comm.ptr[idx];
-        end = A.send_comm.ptr[idx+1];
+        end   = A.send_comm.ptr[idx + 1];
         for (int j = start; j < end; j++)
         {
             alltoallv_send_vals[ctr++] = send_vals[A.send_comm.idx[j]];
         }
     }
 
-    std::vector<int> sendcounts(num_procs, 0); 
-    std::vector<int> sdispls(num_procs+1);
+    std::vector<int> sendcounts(num_procs, 0);
+    std::vector<int> sdispls(num_procs + 1);
     std::vector<int> recvcounts(num_procs, 0);
-    std::vector<int> rdispls(num_procs+1);
+    std::vector<int> rdispls(num_procs + 1);
 
     for (int i = 0; i < A.send_comm.n_msgs; i++)
-        sendcounts[A.send_comm.procs[i]] = A.send_comm.ptr[i+1] - A.send_comm.ptr[i];
+    {
+        sendcounts[A.send_comm.procs[i]] = A.send_comm.ptr[i + 1] - A.send_comm.ptr[i];
+    }
     for (int i = 0; i < A.recv_comm.n_msgs; i++)
-        recvcounts[A.recv_comm.procs[i]] = A.recv_comm.ptr[i+1] - A.recv_comm.ptr[i];
+    {
+        recvcounts[A.recv_comm.procs[i]] = A.recv_comm.ptr[i + 1] - A.recv_comm.ptr[i];
+    }
 
     sdispls[0] = 0;
     rdispls[0] = 0;
     for (int i = 0; i < num_procs; i++)
     {
-        sdispls[i+1] = sdispls[i] + sendcounts[i];
-        rdispls[i+1] = rdispls[i] + recvcounts[i];
+        sdispls[i + 1] = sdispls[i] + sendcounts[i];
+        rdispls[i + 1] = rdispls[i] + recvcounts[i];
     }
 
     int n_gpus;
     gpuGetDeviceCount(&n_gpus);
     gpuSetDevice(xcomm->rank_gpu);
 
-	MPI_Barrier(MPI_COMM_WORLD);
+    MPI_Barrier(MPI_COMM_WORLD);
     int *sendbuf_d, *recvbuf_d;
-    gpuMalloc((void**)&sendbuf_d,A.send_comm.size_msgs*sizeof(int));
-    gpuMalloc((void**)&recvbuf_d,A.recv_comm.size_msgs*sizeof(int));
-    gpuMemcpy(sendbuf_d, alltoallv_send_vals.data(), A.send_comm.size_msgs*sizeof(int),
-            gpuMemcpyHostToDevice);
+    gpuMalloc((void**)&sendbuf_d, A.send_comm.size_msgs * sizeof(int));
+    gpuMalloc((void**)&recvbuf_d, A.recv_comm.size_msgs * sizeof(int));
+    gpuMemcpy(sendbuf_d,
+              alltoallv_send_vals.data(),
+              A.send_comm.size_msgs * sizeof(int),
+              gpuMemcpyHostToDevice);
 
     std::vector<int> pmpi_recv_vals(A.recv_comm.size_msgs);
     std::vector<int> gpu_recv_vals(A.recv_comm.size_msgs);
-	
-	if(rank == 0){
-		std::cout<<"GPU"<<std::endl;
-		for(int msg : gpu_recv_vals){
-			std::cout<<msg<<" , ";
-		}
-		std::cout<<std::endl;
-		////////////////////////////////////////
-		std::cout<<"RECV"<<std::endl;
-		for(int msg : pmpi_recv_vals){
-			std::cout<<msg<<" , ";
-		}
-		std::cout<<std::endl;
-	}
-	MPI_Barrier(MPI_COMM_WORLD);
-	
 
-	
+    if (rank == 0)
+    {
+        std::cout << "GPU" << std::endl;
+        for (int msg : gpu_recv_vals)
+        {
+            std::cout << msg << " , ";
+        }
+        std::cout << std::endl;
+        ////////////////////////////////////////
+        std::cout << "RECV" << std::endl;
+        for (int msg : pmpi_recv_vals)
+        {
+            std::cout << msg << " , ";
+        }
+        std::cout << std::endl;
+    }
+    MPI_Barrier(MPI_COMM_WORLD);
+
     // Inter-CPU Alltoallv
-    PMPI_Alltoallv(alltoallv_send_vals.data(), 
-            sendcounts.data(),
-            sdispls.data(),
-            MPI_INT,
-            pmpi_recv_vals.data(),
-            recvcounts.data(),
-            rdispls.data(),
-            MPI_INT,
-            xcomm->global_comm);
+    PMPI_Alltoallv(alltoallv_send_vals.data(),
+                   sendcounts.data(),
+                   sdispls.data(),
+                   MPI_INT,
+                   pmpi_recv_vals.data(),
+                   recvcounts.data(),
+                   rdispls.data(),
+                   MPI_INT,
+                   xcomm->global_comm);
 
     // Inter-GPU Alltoallv
-    PMPI_Alltoallv(sendbuf_d, 
-            sendcounts.data(),
-            sdispls.data(),
-            MPI_INT, 
-            recvbuf_d,
-            recvcounts.data(),
-            rdispls.data(),
-            MPI_INT,
-            xcomm->global_comm);
-			
-	if(rank == 0){
-		std::cout<<"buf_d 2"<<std::endl;
-		for(int i=0; i<*recvcounts.data(); i++){
-			std::cout<<recvbuf_d[i]<<" , ";
-		}
-		std::cout<<std::endl;
-		////////////////////////////////////////
-		std::cout<<"RECV 2"<<std::endl;
-		for(int msg : pmpi_recv_vals){
-			std::cout<<msg<<" , ";
-		}
-		std::cout<<std::endl;
-	}
-	MPI_Barrier(MPI_COMM_WORLD);
-			
-	gpuMemcpy(gpu_recv_vals.data(), recvbuf_d, A.recv_comm.size_msgs*sizeof(int), gpuMemcpyDeviceToHost);
-    compare_alltoallv_results(pmpi_recv_vals, gpu_recv_vals, A.recv_comm.size_msgs);
-    gpuMemset(recvbuf_d, 0, A.recv_comm.size_msgs*sizeof(int));
+    PMPI_Alltoallv(sendbuf_d,
+                   sendcounts.data(),
+                   sdispls.data(),
+                   MPI_INT,
+                   recvbuf_d,
+                   recvcounts.data(),
+                   rdispls.data(),
+                   MPI_INT,
+                   xcomm->global_comm);
 
-	std::cout<<"1 RANK: "<<rank<<std::endl;
-	MPI_Barrier(MPI_COMM_WORLD);
+    if (rank == 0)
+    {
+        std::cout << "buf_d 2" << std::endl;
+        for (int i = 0; i < *recvcounts.data(); i++)
+        {
+            std::cout << recvbuf_d[i] << " , ";
+        }
+        std::cout << std::endl;
+        ////////////////////////////////////////
+        std::cout << "RECV 2" << std::endl;
+        for (int msg : pmpi_recv_vals)
+        {
+            std::cout << msg << " , ";
+        }
+        std::cout << std::endl;
+    }
+    MPI_Barrier(MPI_COMM_WORLD);
+
+    gpuMemcpy(gpu_recv_vals.data(),
+              recvbuf_d,
+              A.recv_comm.size_msgs * sizeof(int),
+              gpuMemcpyDeviceToHost);
+    compare_alltoallv_results(pmpi_recv_vals, gpu_recv_vals, A.recv_comm.size_msgs);
+    gpuMemset(recvbuf_d, 0, A.recv_comm.size_msgs * sizeof(int));
+
+    std::cout << "1 RANK: " << rank << std::endl;
+    MPI_Barrier(MPI_COMM_WORLD);
 
     gpu_aware_alltoallv_pairwise(sendbuf_d,
-            sendcounts.data(),
-            sdispls.data(),
-            MPI_INT,
-            recvbuf_d,
-            recvcounts.data(),
-            rdispls.data(),
-            MPI_INT,
-            xcomm);
-    gpuMemcpy(gpu_recv_vals.data(), recvbuf_d, A.recv_comm.size_msgs*sizeof(int), gpuMemcpyDeviceToHost);
+                                 sendcounts.data(),
+                                 sdispls.data(),
+                                 MPI_INT,
+                                 recvbuf_d,
+                                 recvcounts.data(),
+                                 rdispls.data(),
+                                 MPI_INT,
+                                 xcomm);
+    gpuMemcpy(gpu_recv_vals.data(),
+              recvbuf_d,
+              A.recv_comm.size_msgs * sizeof(int),
+              gpuMemcpyDeviceToHost);
     compare_alltoallv_results(pmpi_recv_vals, gpu_recv_vals, A.recv_comm.size_msgs);
-    gpuMemset(recvbuf_d, 0, A.recv_comm.size_msgs*sizeof(int));
+    gpuMemset(recvbuf_d, 0, A.recv_comm.size_msgs * sizeof(int));
 
-	std::cout<<"2 RANK: "<<rank<<std::endl;
-	MPI_Barrier(MPI_COMM_WORLD);
-
+    std::cout << "2 RANK: " << rank << std::endl;
+    MPI_Barrier(MPI_COMM_WORLD);
 
     gpu_aware_alltoallv_nonblocking(sendbuf_d,
-            sendcounts.data(),
-            sdispls.data(),
-            MPI_INT,
-            recvbuf_d,
-            recvcounts.data(),
-            rdispls.data(),
-            MPI_INT,
-            xcomm);
-    gpuMemcpy(gpu_recv_vals.data(), recvbuf_d, A.recv_comm.size_msgs*sizeof(int), gpuMemcpyDeviceToHost);
+                                    sendcounts.data(),
+                                    sdispls.data(),
+                                    MPI_INT,
+                                    recvbuf_d,
+                                    recvcounts.data(),
+                                    rdispls.data(),
+                                    MPI_INT,
+                                    xcomm);
+    gpuMemcpy(gpu_recv_vals.data(),
+              recvbuf_d,
+              A.recv_comm.size_msgs * sizeof(int),
+              gpuMemcpyDeviceToHost);
     compare_alltoallv_results(pmpi_recv_vals, gpu_recv_vals, A.recv_comm.size_msgs);
-    gpuMemset(recvbuf_d, 0, A.recv_comm.size_msgs*sizeof(int));
+    gpuMemset(recvbuf_d, 0, A.recv_comm.size_msgs * sizeof(int));
 
-	std::cout<<"3 RANK: "<<rank<<std::endl;
-	MPI_Barrier(MPI_COMM_WORLD);
-
+    std::cout << "3 RANK: " << rank << std::endl;
+    MPI_Barrier(MPI_COMM_WORLD);
 
     copy_to_cpu_alltoallv_pairwise(sendbuf_d,
-            sendcounts.data(),
-            sdispls.data(),
-            MPI_INT,
-            recvbuf_d,
-            recvcounts.data(),
-            rdispls.data(),
-            MPI_INT,
-            xcomm);
-    gpuMemcpy(gpu_recv_vals.data(), recvbuf_d, A.recv_comm.size_msgs*sizeof(int), gpuMemcpyDeviceToHost);
+                                   sendcounts.data(),
+                                   sdispls.data(),
+                                   MPI_INT,
+                                   recvbuf_d,
+                                   recvcounts.data(),
+                                   rdispls.data(),
+                                   MPI_INT,
+                                   xcomm);
+    gpuMemcpy(gpu_recv_vals.data(),
+              recvbuf_d,
+              A.recv_comm.size_msgs * sizeof(int),
+              gpuMemcpyDeviceToHost);
     compare_alltoallv_results(pmpi_recv_vals, gpu_recv_vals, A.recv_comm.size_msgs);
-    gpuMemset(recvbuf_d, 0, A.recv_comm.size_msgs*sizeof(int));
+    gpuMemset(recvbuf_d, 0, A.recv_comm.size_msgs * sizeof(int));
 
-	std::cout<<"4 RANK: "<<rank<<std::endl;
-	MPI_Barrier(MPI_COMM_WORLD);
-
+    std::cout << "4 RANK: " << rank << std::endl;
+    MPI_Barrier(MPI_COMM_WORLD);
 
     copy_to_cpu_alltoallv_nonblocking(sendbuf_d,
-            sendcounts.data(),
-            sdispls.data(),
-            MPI_INT,
-            recvbuf_d,
-            recvcounts.data(),
-            rdispls.data(),
-            MPI_INT,
-            xcomm);
-    gpuMemcpy(gpu_recv_vals.data(), recvbuf_d, A.recv_comm.size_msgs*sizeof(int), gpuMemcpyDeviceToHost);
+                                      sendcounts.data(),
+                                      sdispls.data(),
+                                      MPI_INT,
+                                      recvbuf_d,
+                                      recvcounts.data(),
+                                      rdispls.data(),
+                                      MPI_INT,
+                                      xcomm);
+    gpuMemcpy(gpu_recv_vals.data(),
+              recvbuf_d,
+              A.recv_comm.size_msgs * sizeof(int),
+              gpuMemcpyDeviceToHost);
     compare_alltoallv_results(pmpi_recv_vals, gpu_recv_vals, A.recv_comm.size_msgs);
-    gpuMemset(recvbuf_d, 0, A.recv_comm.size_msgs*sizeof(int));
+    gpuMemset(recvbuf_d, 0, A.recv_comm.size_msgs * sizeof(int));
 
     gpuFree(sendbuf_d);
     gpuFree(recvbuf_d);
@@ -242,7 +279,4 @@ int main(int argc, char** argv)
     test_matrix("../../../../test_data/ww_36_pmec_36.pm");
     MPI_Finalize();
     return 0;
-} // end of main() //
-
-
-
+}  // end of main() //

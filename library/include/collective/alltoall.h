@@ -22,7 +22,8 @@ typedef int (*alltoall_helper_ftn)(const void*,
                                    MPI_Comm,
                                    int tag);
 
-//** External Wrappers **//----------------------------------------------------------------------
+//** External Wrappers
+//**//----------------------------------------------------------------------
 /** @brief set tag and call pairwise_helper **/
 int alltoall_pairwise(const void* sendbuf,
                       const int sendcount,
@@ -67,8 +68,8 @@ int alltoall_multileader_pairwise(const void* sendbuf,
                                   const int recvcount,
                                   MPI_Datatype recvtype,
                                   MPIL_Comm* comm);
-								  
-/** @brief call alltoall_hiearchical passing nonblocking_helper, nleaders=4**/							  
+
+/** @brief call alltoall_hiearchical passing nonblocking_helper, nleaders=4**/
 int alltoall_multileader_nonblocking(const void* sendbuf,
                                      const int sendcount,
                                      MPI_Datatype sendtype,
@@ -131,8 +132,8 @@ int alltoall_multileader_locality_nonblocking(const void* sendbuf,
                                               MPI_Datatype recvtype,
                                               MPIL_Comm* comm);
 
-
-//** Intermediate Wrappers **//-----------------------------------------------------------------
+//** Intermediate Wrappers
+//**//-----------------------------------------------------------------
 /** @brief calls alltoall_locality_aware with groups_per_node=1**/
 int alltoall_node_aware(alltoall_helper_ftn f,
                         const void* sendbuf,
@@ -153,7 +154,8 @@ int alltoall_hierarchical(alltoall_helper_ftn f,
                           MPI_Datatype recvtype,
                           MPIL_Comm* comm);
 
-//** Core Helper functions **//------------------------------------------------------------------
+//** Core Helper functions
+//**//------------------------------------------------------------------
 /** @brief Uses Sendrecv to do the alltoall**/
 int pairwise_helper(const void* sendbuf,
                     const int sendcount,

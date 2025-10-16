@@ -1,8 +1,8 @@
-#include "locality_aware.h" // #TODO -- figure out why this is needed
-#include "persistent/MPIL_Request.h"
 #include "communicator/MPIL_Comm.h"
-#include "neighborhood/neighborhood_init.h"
+#include "locality_aware.h"  // #TODO -- figure out why this is needed
 #include "neighborhood/MPIL_Topo.h"
+#include "neighborhood/neighborhood_init.h"
+#include "persistent/MPIL_Request.h"
 
 // Locality-Aware Extension to Persistent Neighbor Alltoallv
 // Needs global indices for each send and receive

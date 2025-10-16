@@ -1,16 +1,16 @@
-#include "locality_aware.h"
 #include "collective/alltoall.h"
+#include "locality_aware.h"
 #ifdef GPU
-	#include "heterogeneous/gpu_alltoall.h"
-	#ifdef USE_CUDA
-		#include "utils_cuda.h"
-	#endif
-	#ifdef USE_HIP
-		#include "utils_hip.h"
-	#endif
+#include "heterogeneous/gpu_alltoall.h"
+#ifdef USE_CUDA
+#include "utils_cuda.h"
+#endif
+#ifdef USE_HIP
+#include "utils_hip.h"
+#endif
 #endif
 // Default alltoall is pairwise
-//AlltoallMethod mpil_alltoall_implementation = ALLTOALL_PAIRWISE;
+// AlltoallMethod mpil_alltoall_implementation = ALLTOALL_PAIRWISE;
 
 /**************************************************
  * Locality-Aware Point-to-Point Alltoall
@@ -26,8 +26,8 @@
  *      on-node so that each process holds
  *      the correct final data
  *************************************************/
- 
- int MPIL_Alltoall(const void* sendbuf,
+
+int MPIL_Alltoall(const void* sendbuf,
                   const int sendcount,
                   MPI_Datatype sendtype,
                   void* recvbuf,

@@ -1,24 +1,31 @@
-#include "locality_aware.h"
-#include "../../include/heterogeneous/gpu_alltoall.h"
-#include <mpi.h>
-#include <math.h>
-#include <stdlib.h>
-#include <iostream>
 #include <assert.h>
-#include <vector>
-#include <set>
+#include <math.h>
+#include <mpi.h>
+#include <stdlib.h>
 
-void compare_alltoall_results(std::vector<int>& pmpi_alltoall, std::vector<int>& mpix_alltoall, int s)
+#include <iostream>
+#include <set>
+#include <vector>
+
+#include "../../include/heterogeneous/gpu_alltoall.h"
+#include "locality_aware.h"
+
+void compare_alltoall_results(std::vector<int>& pmpi_alltoall,
+                              std::vector<int>& mpix_alltoall,
+                              int s)
 {
     int num_procs;
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
 
-    for (int i = 0; i < s*num_procs; i++)
+    for (int i = 0; i < s * num_procs; i++)
     {
         if (pmpi_alltoall[i] != mpix_alltoall[i])
         {
-            fprintf(stderr, "Alltoall ERROR: position %d, pmpi %d, mpix %d\n", 
-                    i, pmpi_alltoall[i], mpix_alltoall[i]);
+            fprintf(stderr,
+                    "Alltoall ERROR: position %d, pmpi %d, mpix %d\n",
+                    i,
+                    pmpi_alltoall[i],
+                    mpix_alltoall[i]);
             MPI_Abort(MPI_COMM_WORLD, -1);
         }
     }
@@ -36,10 +43,10 @@ int main(int argc, char** argv)
     int max_i = 10;
     int max_s = pow(2, max_i);
     srand(time(NULL));
-    std::vector<int> local_data(max_s*num_procs);
-    std::vector<int> pmpi_alltoall(max_s*num_procs);
-    std::vector<int> mpix_alltoall(max_s*num_procs);
-    std::vector<int> device_data(max_s*num_procs);
+    std::vector<int> local_data(max_s * num_procs);
+    std::vector<int> pmpi_alltoall(max_s * num_procs);
+    std::vector<int> mpix_alltoall(max_s * num_procs);
+    std::vector<int> device_data(max_s * num_procs);
 
     MPIL_Comm* xcomm;
     MPIL_Comm_init(&xcomm, MPI_COMM_WORLD);
@@ -51,10 +58,8 @@ int main(int argc, char** argv)
 
     int* local_data_d;
     int* alltoall_d;
-    gpuMalloc((void**)&local_data_d, 
-            max_s*num_procs*sizeof(int));
-    gpuMalloc((void**)&alltoall_d, 
-            max_s*num_procs*sizeof(int)); 
+    gpuMalloc((void**)&local_data_d, max_s * num_procs * sizeof(int));
+    gpuMalloc((void**)&alltoall_d, max_s * num_procs * sizeof(int));
 
     for (int i = 0; i < max_i; i++)
     {
@@ -62,114 +67,79 @@ int main(int argc, char** argv)
 
         // Will only be clean for up to double digit process counts
         for (int i = 0; i < num_procs; i++)
+        {
             for (int j = 0; j < s; j++)
-                local_data[i*s + j] = rank*10000 + i*100 + j;
-        gpuMemcpy(local_data_d, 
-                local_data.data(),
-                s*num_procs*sizeof(int),
-                gpuMemcpyHostToDevice);
+            {
+                local_data[i * s + j] = rank * 10000 + i * 100 + j;
+            }
+        }
+        gpuMemcpy(local_data_d,
+                  local_data.data(),
+                  s * num_procs * sizeof(int),
+                  gpuMemcpyHostToDevice);
 
         // Standard Alltoall
-        PMPI_Alltoall(local_data.data(), 
-                s,
-                MPI_INT, 
-                pmpi_alltoall.data(), 
-                s, 
-                MPI_INT,
-                MPI_COMM_WORLD);
-
+        PMPI_Alltoall(local_data.data(),
+                      s,
+                      MPI_INT,
+                      pmpi_alltoall.data(),
+                      s,
+                      MPI_INT,
+                      MPI_COMM_WORLD);
 
         // Pairwise Alltoall
-        alltoall_pairwise(local_data.data(), 
-                s,
-                MPI_INT, 
-                mpix_alltoall.data(), 
-                s, 
-                MPI_INT,
-                xcomm);
+        alltoall_pairwise(
+            local_data.data(), s, MPI_INT, mpix_alltoall.data(), s, MPI_INT, xcomm);
         compare_alltoall_results(pmpi_alltoall, mpix_alltoall, s);
 
-
         // Standard GPU Alltoall
-        PMPI_Alltoall(local_data_d,
-                s, 
-                MPI_INT,
-                alltoall_d,
-                s,
-                MPI_INT,
-                MPI_COMM_WORLD);
-        gpuMemcpy(device_data.data(), 
-                alltoall_d, 
-                s*num_procs*sizeof(int), 
-                gpuMemcpyDeviceToHost);
+        PMPI_Alltoall(local_data_d, s, MPI_INT, alltoall_d, s, MPI_INT, MPI_COMM_WORLD);
+        gpuMemcpy(device_data.data(),
+                  alltoall_d,
+                  s * num_procs * sizeof(int),
+                  gpuMemcpyDeviceToHost);
         compare_alltoall_results(pmpi_alltoall, device_data, s);
-        gpuMemset(alltoall_d, 0, s*num_procs*sizeof(int));
+        gpuMemset(alltoall_d, 0, s * num_procs * sizeof(int));
 
         // GPU-Aware Pairwise Alltoall
         gpu_aware_alltoall_pairwise(
-                local_data_d, 
-                s, 
-                MPI_INT,
-                alltoall_d,
-                s, 
-                MPI_INT,
-                xcomm);
-        gpuMemcpy(device_data.data(), 
-                alltoall_d, 
-                s*num_procs*sizeof(int), 
-                gpuMemcpyDeviceToHost);
+            local_data_d, s, MPI_INT, alltoall_d, s, MPI_INT, xcomm);
+        gpuMemcpy(device_data.data(),
+                  alltoall_d,
+                  s * num_procs * sizeof(int),
+                  gpuMemcpyDeviceToHost);
         compare_alltoall_results(pmpi_alltoall, device_data, s);
-        gpuMemset(alltoall_d, 0, s*num_procs*sizeof(int));
-
+        gpuMemset(alltoall_d, 0, s * num_procs * sizeof(int));
 
         // GPU-Aware Nonblocking Alltoall
         gpu_aware_alltoall_nonblocking(
-                local_data_d,
-                s,
-                MPI_INT,
-                alltoall_d,
-                s,
-                MPI_INT,
-                xcomm);
+            local_data_d, s, MPI_INT, alltoall_d, s, MPI_INT, xcomm);
         gpuMemcpy(device_data.data(),
-                alltoall_d,
-                s*num_procs*sizeof(int),
-                gpuMemcpyDeviceToHost);
+                  alltoall_d,
+                  s * num_procs * sizeof(int),
+                  gpuMemcpyDeviceToHost);
         compare_alltoall_results(pmpi_alltoall, device_data, s);
-        gpuMemset(alltoall_d, 0, s*num_procs*sizeof(int));
-
+        gpuMemset(alltoall_d, 0, s * num_procs * sizeof(int));
 
         // Copy-to-CPU Pairwise Alltoall
         copy_to_cpu_alltoall_pairwise(
-                local_data_d, 
-                s, 
-                MPI_INT,
-                alltoall_d,
-                s, 
-                MPI_INT,
-                xcomm);
-        gpuMemcpy(device_data.data(), 
-                alltoall_d, 
-                s*num_procs*sizeof(int), 
-                gpuMemcpyDeviceToHost);
+            local_data_d, s, MPI_INT, alltoall_d, s, MPI_INT, xcomm);
+        gpuMemcpy(device_data.data(),
+                  alltoall_d,
+                  s * num_procs * sizeof(int),
+                  gpuMemcpyDeviceToHost);
         compare_alltoall_results(pmpi_alltoall, device_data, s);
-        gpuMemset(alltoall_d, 0, s*num_procs*sizeof(int));
+        gpuMemset(alltoall_d, 0, s * num_procs * sizeof(int));
 
         // Copy-to-CPU Nonblocking Alltoall
         copy_to_cpu_alltoall_nonblocking(
-                local_data_d,
-                s,
-                MPI_INT,
-                alltoall_d,
-                s,
-                MPI_INT,
-                xcomm);
+            local_data_d, s, MPI_INT, alltoall_d, s, MPI_INT, xcomm);
         gpuMemcpy(device_data.data(),
-                alltoall_d,
-                s*num_procs*sizeof(int),
-                gpuMemcpyDeviceToHost);
+                  alltoall_d,
+                  s * num_procs * sizeof(int),
+                  gpuMemcpyDeviceToHost);
         compare_alltoall_results(pmpi_alltoall, device_data, s);
-        gpuMemset(alltoall_d, 0, s*num_procs*sizeof(int));
+        gpuMemset(alltoall_d, 0, s * num_procs * sizeof(int));
     }
 
     gpuFree(local_data_d);
@@ -179,7 +149,4 @@ int main(int argc, char** argv)
 
     MPI_Finalize();
     return 0;
-} // end of main() //
-
-
-
+}  // end of main() //

@@ -1,20 +1,30 @@
-#include "locality_aware.h"
-#include "communicator/MPIL_Comm.h"
-#include <mpi.h>
-#include <math.h>
-#include <stdlib.h>
-#include <iostream>
 #include <assert.h>
-#include <vector>
+#include <math.h>
+#include <mpi.h>
+#include <stdlib.h>
+
+#include <iostream>
 #include <numeric>
 #include <set>
+#include <vector>
 
-#include "tests/sparse_mat.hpp"
+#include "communicator/MPIL_Comm.h"
+#include "locality_aware.h"
 #include "tests/par_binary_IO.hpp"
+#include "tests/sparse_mat.hpp"
 
-void compare_alltoallv_crs_results(int n_recvs, int send_msgs, int s_recvs, int send_size,
-       int* src, std::vector<int>& proc_counts, int* recvcounts, std::vector<int>& proc_displs,
-       std::vector<int>& send_idx, int* rdispls, long* recvvals, int first_col) 
+void compare_alltoallv_crs_results(int n_recvs,
+                                   int send_msgs,
+                                   int s_recvs,
+                                   int send_size,
+                                   int* src,
+                                   std::vector<int>& proc_counts,
+                                   int* recvcounts,
+                                   std::vector<int>& proc_displs,
+                                   std::vector<int>& send_idx,
+                                   int* rdispls,
+                                   long* recvvals,
+                                   int first_col)
 {
     if (n_recvs != send_msgs)
     {
@@ -31,16 +41,26 @@ void compare_alltoallv_crs_results(int n_recvs, int send_msgs, int s_recvs, int 
         int proc = src[i];
         if (recvcounts[i] != proc_counts[proc])
         {
-            fprintf(stderr, "Incorrect count at position %d, process %d, recvcounts %d, should be %d\n", 
-                    i, proc, recvcounts[i], proc_counts[proc]);
+            fprintf(stderr,
+                    "Incorrect count at position %d, process %d, recvcounts %d, should "
+                    "be %d\n",
+                    i,
+                    proc,
+                    recvcounts[i],
+                    proc_counts[proc]);
             MPI_Abort(MPI_COMM_WORLD, -1);
         }
         for (int j = 0; j < recvcounts[i]; j++)
         {
             if (recvvals[rdispls[i] + j] - first_col != send_idx[proc_displs[proc] + j])
             {
-                fprintf(stderr, "Incorrect recvval from proc %d, position %d, getting %ld, should be %d\n", 
-                        proc, j, recvvals[rdispls[i] + j] - first_col, send_idx[proc_displs[proc] + j]);
+                fprintf(stderr,
+                        "Incorrect recvval from proc %d, position %d, getting %ld, "
+                        "should be %d\n",
+                        proc,
+                        j,
+                        recvvals[rdispls[i] + j] - first_col,
+                        send_idx[proc_displs[proc] + j]);
                 MPI_Abort(MPI_COMM_WORLD, -1);
             }
         }
@@ -52,7 +72,7 @@ void test_matrix(const char* filename)
     int rank, num_procs;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
-    
+
     MPIL_Comm* xcomm;
     MPIL_Comm_init(&xcomm, MPI_COMM_WORLD);
     MPIL_Comm_topo_init(xcomm);
@@ -71,23 +91,45 @@ void test_matrix(const char* filename)
     std::vector<int> proc_displs(num_procs, 0);
     for (int i = 0; i < A.send_comm.n_msgs; i++)
     {
-        int proc = A.send_comm.procs[i];
+        int proc          = A.send_comm.procs[i];
         proc_counts[proc] = A.send_comm.counts[i];
         proc_displs[proc] = A.send_comm.ptr[i];
     }
 
     int n_recvs, s_recvs;
     int *src, *recvcounts, *rdispls;
-    long *recvvals;
+    long* recvvals;
 
     /* TEST PERSONALIZED VERSION */
     s_recvs = -1;
-    alltoallv_crs_personalized(A.recv_comm.n_msgs, A.recv_comm.size_msgs, A.recv_comm.procs.data(),
-            A.recv_comm.counts.data(), A.recv_comm.ptr.data(), MPI_LONG,
-            A.off_proc_columns.data(), 
-            &n_recvs, &s_recvs, &src, &recvcounts, &rdispls, MPI_LONG, (void**)&recvvals, xinfo, xcomm);
-    compare_alltoallv_crs_results(n_recvs, A.send_comm.n_msgs, s_recvs, A.send_comm.size_msgs, src,
-            proc_counts, recvcounts, proc_displs, A.send_comm.idx, rdispls, recvvals, A.first_col);
+    alltoallv_crs_personalized(A.recv_comm.n_msgs,
+                               A.recv_comm.size_msgs,
+                               A.recv_comm.procs.data(),
+                               A.recv_comm.counts.data(),
+                               A.recv_comm.ptr.data(),
+                               MPI_LONG,
+                               A.off_proc_columns.data(),
+                               &n_recvs,
+                               &s_recvs,
+                               &src,
+                               &recvcounts,
+                               &rdispls,
+                               MPI_LONG,
+                               (void**)&recvvals,
+                               xinfo,
+                               xcomm);
+    compare_alltoallv_crs_results(n_recvs,
+                                  A.send_comm.n_msgs,
+                                  s_recvs,
+                                  A.send_comm.size_msgs,
+                                  src,
+                                  proc_counts,
+                                  recvcounts,
+                                  proc_displs,
+                                  A.send_comm.idx,
+                                  rdispls,
+                                  recvvals,
+                                  A.first_col);
     MPIL_Free(src);
     MPIL_Free(recvcounts);
     MPIL_Free(rdispls);
@@ -95,12 +137,34 @@ void test_matrix(const char* filename)
 
     /* TEST NONBLOCKING VERSION */
     s_recvs = -1;
-    alltoallv_crs_nonblocking(A.recv_comm.n_msgs, A.recv_comm.size_msgs, A.recv_comm.procs.data(),
-            A.recv_comm.counts.data(), A.recv_comm.ptr.data(), MPI_LONG,
-            A.off_proc_columns.data(), 
-            &n_recvs, &s_recvs, &src, &recvcounts, &rdispls, MPI_LONG, (void**)&recvvals, xinfo, xcomm);
-    compare_alltoallv_crs_results(n_recvs, A.send_comm.n_msgs, s_recvs, A.send_comm.size_msgs, src,
-            proc_counts, recvcounts, proc_displs, A.send_comm.idx, rdispls, recvvals, A.first_col);
+    alltoallv_crs_nonblocking(A.recv_comm.n_msgs,
+                              A.recv_comm.size_msgs,
+                              A.recv_comm.procs.data(),
+                              A.recv_comm.counts.data(),
+                              A.recv_comm.ptr.data(),
+                              MPI_LONG,
+                              A.off_proc_columns.data(),
+                              &n_recvs,
+                              &s_recvs,
+                              &src,
+                              &recvcounts,
+                              &rdispls,
+                              MPI_LONG,
+                              (void**)&recvvals,
+                              xinfo,
+                              xcomm);
+    compare_alltoallv_crs_results(n_recvs,
+                                  A.send_comm.n_msgs,
+                                  s_recvs,
+                                  A.send_comm.size_msgs,
+                                  src,
+                                  proc_counts,
+                                  recvcounts,
+                                  proc_displs,
+                                  A.send_comm.idx,
+                                  rdispls,
+                                  recvvals,
+                                  A.first_col);
     MPIL_Free(src);
     MPIL_Free(recvcounts);
     MPIL_Free(rdispls);
@@ -108,12 +172,34 @@ void test_matrix(const char* filename)
 
     /* TEST PERSONALIZED LOCALITY VERSION */
     s_recvs = -1;
-    alltoallv_crs_personalized_loc(A.recv_comm.n_msgs, A.recv_comm.size_msgs, A.recv_comm.procs.data(),
-            A.recv_comm.counts.data(), A.recv_comm.ptr.data(), MPI_LONG,
-            A.off_proc_columns.data(), 
-            &n_recvs, &s_recvs, &src, &recvcounts, &rdispls, MPI_LONG, (void**)&recvvals, xinfo, xcomm);
-    compare_alltoallv_crs_results(n_recvs, A.send_comm.n_msgs, s_recvs, A.send_comm.size_msgs, src,
-            proc_counts, recvcounts, proc_displs, A.send_comm.idx, rdispls, recvvals, A.first_col);
+    alltoallv_crs_personalized_loc(A.recv_comm.n_msgs,
+                                   A.recv_comm.size_msgs,
+                                   A.recv_comm.procs.data(),
+                                   A.recv_comm.counts.data(),
+                                   A.recv_comm.ptr.data(),
+                                   MPI_LONG,
+                                   A.off_proc_columns.data(),
+                                   &n_recvs,
+                                   &s_recvs,
+                                   &src,
+                                   &recvcounts,
+                                   &rdispls,
+                                   MPI_LONG,
+                                   (void**)&recvvals,
+                                   xinfo,
+                                   xcomm);
+    compare_alltoallv_crs_results(n_recvs,
+                                  A.send_comm.n_msgs,
+                                  s_recvs,
+                                  A.send_comm.size_msgs,
+                                  src,
+                                  proc_counts,
+                                  recvcounts,
+                                  proc_displs,
+                                  A.send_comm.idx,
+                                  rdispls,
+                                  recvvals,
+                                  A.first_col);
     MPIL_Free(src);
     MPIL_Free(recvcounts);
     MPIL_Free(rdispls);
@@ -121,21 +207,42 @@ void test_matrix(const char* filename)
 
     /* TEST PERSONALIZED LOCALITY VERSION */
     s_recvs = -1;
-    alltoallv_crs_nonblocking_loc(A.recv_comm.n_msgs, A.recv_comm.size_msgs, A.recv_comm.procs.data(),
-            A.recv_comm.counts.data(), A.recv_comm.ptr.data(), MPI_LONG,
-            A.off_proc_columns.data(), 
-            &n_recvs, &s_recvs, &src, &recvcounts, &rdispls, MPI_LONG, (void**)&recvvals, xinfo, xcomm);
-    compare_alltoallv_crs_results(n_recvs, A.send_comm.n_msgs, s_recvs, A.send_comm.size_msgs, src,
-            proc_counts, recvcounts, proc_displs, A.send_comm.idx, rdispls, recvvals, A.first_col);
+    alltoallv_crs_nonblocking_loc(A.recv_comm.n_msgs,
+                                  A.recv_comm.size_msgs,
+                                  A.recv_comm.procs.data(),
+                                  A.recv_comm.counts.data(),
+                                  A.recv_comm.ptr.data(),
+                                  MPI_LONG,
+                                  A.off_proc_columns.data(),
+                                  &n_recvs,
+                                  &s_recvs,
+                                  &src,
+                                  &recvcounts,
+                                  &rdispls,
+                                  MPI_LONG,
+                                  (void**)&recvvals,
+                                  xinfo,
+                                  xcomm);
+    compare_alltoallv_crs_results(n_recvs,
+                                  A.send_comm.n_msgs,
+                                  s_recvs,
+                                  A.send_comm.size_msgs,
+                                  src,
+                                  proc_counts,
+                                  recvcounts,
+                                  proc_displs,
+                                  A.send_comm.idx,
+                                  rdispls,
+                                  recvvals,
+                                  A.first_col);
     MPIL_Free(src);
     MPIL_Free(recvcounts);
     MPIL_Free(rdispls);
     MPIL_Free(recvvals);
-    
+
     MPIL_Info_free(&xinfo);
     MPIL_Comm_free(&xcomm);
 }
-
 
 int main(int argc, char** argv)
 {
@@ -161,6 +268,4 @@ int main(int argc, char** argv)
     test_matrix("../../../test_data/lp_sctap2.pm");
     MPI_Finalize();
     return 0;
-} // end of main() //
-
-
+}  // end of main() //

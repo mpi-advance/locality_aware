@@ -1,6 +1,5 @@
 #include "collective/alltoall.h"
 
-
 int alltoall_locality_aware_nonblocking(const void* sendbuf,
                                         const int sendcount,
                                         MPI_Datatype sendtype,

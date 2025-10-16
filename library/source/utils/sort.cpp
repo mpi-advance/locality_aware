@@ -1,6 +1,6 @@
-#include "../../include/utils/utils.h"
 #include <algorithm>
 
+#include "../../include/utils/utils.h"
 
 void sort(int n_objects, int* object_indices, int* object_values)
 {

@@ -1,7 +1,6 @@
 #include "locality_aware.h"
 #include "neighborhood/neighborhood_init.h"
 
-
 int MPIL_Neighbor_alltoallv_init_topo(const void* sendbuf,
                                       const int sendcounts[],
                                       const int sdispls[],

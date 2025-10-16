@@ -1,9 +1,9 @@
 #include <cstring>
 #include <vector>
 
-#include "locality_aware.h"
 #include "communicator/MPIL_Comm.h"
-//Assumes SMP Ordering of ranks across nodes (aggregates ranks 0-PPN)
+#include "locality_aware.h"
+// Assumes SMP Ordering of ranks across nodes (aggregates ranks 0-PPN)
 int alltoall_crs_personalized_loc(int send_nnz,
                                   int* dest,
                                   int sendcount,
@@ -317,7 +317,7 @@ int alltoall_crs_personalized_loc(int send_nnz,
     return MPI_SUCCESS;
 }
 
-//Assumes SMP Ordering of ranks across nodes (aggregates ranks 0-PPN)
+// Assumes SMP Ordering of ranks across nodes (aggregates ranks 0-PPN)
 int alltoall_crs_nonblocking_loc(int send_nnz,
                                  int* dest,
                                  int sendcount,

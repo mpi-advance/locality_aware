@@ -3,7 +3,6 @@
 
 // Standard Persistent Neighbor Alltoallv
 
-
 // Standard Persistent Neighbor Alltoallv
 // Extension takes array of requests instead of single request
 // 'requests' must be of size indegree+outdegree!

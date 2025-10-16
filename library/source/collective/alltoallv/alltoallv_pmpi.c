@@ -1,7 +1,5 @@
 #include "collective/alltoallv.h"
 
-
-
 // Calls underlying MPI implementation
 int alltoallv_pmpi(const void* sendbuf,
                    const int sendcounts[],

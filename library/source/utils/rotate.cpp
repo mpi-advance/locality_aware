@@ -1,6 +1,6 @@
-#include "../../include/utils/utils.h"
 #include <algorithm>
 
+#include "../../include/utils/utils.h"
 
 void rotate(void* recvbuf, int new_first_byte, int last_byte)
 {

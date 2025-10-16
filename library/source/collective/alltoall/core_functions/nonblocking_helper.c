@@ -1,7 +1,7 @@
-#include "collective/alltoall.h"
-
 #include <math.h>
 #include <string.h>
+
+#include "collective/alltoall.h"
 
 int nonblocking_helper(const void* sendbuf,
                        const int sendcount,

@@ -1,7 +1,7 @@
-#include "locality_aware.h"
 #include "communicator/MPIL_Comm.h"
+#include "locality_aware.h"
 #ifdef GPU
-	#include "heterogeneous/gpu_utils.h"
+#include "heterogeneous/gpu_utils.h"
 #endif
 
 int MPIL_Comm_device_init(MPIL_Comm* xcomm)

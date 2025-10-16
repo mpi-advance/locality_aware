@@ -1,8 +1,6 @@
 #include "communicator/MPIL_Comm.h"
 #include "locality_aware.h"
 
-
-
 int MPIL_Comm_win_init(MPIL_Comm* xcomm, int bytes, int type_bytes)
 {
     int rank, num_procs;

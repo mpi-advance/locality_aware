@@ -1,7 +1,8 @@
-#include "locality_aware.h"
-#include "neighborhood/MPIL_Topo.h"
 #include <stdlib.h>
 #include <string.h>
+
+#include "locality_aware.h"
+#include "neighborhood/MPIL_Topo.h"
 
 int MPIL_Topo_init(int indegree,
                    const int sources[],

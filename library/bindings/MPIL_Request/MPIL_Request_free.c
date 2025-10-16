@@ -1,9 +1,10 @@
-#include "locality_aware.h"
-#include "persistent/MPIL_Request.h"
 #include <stdlib.h>
 
+#include "locality_aware.h"
+#include "persistent/MPIL_Request.h"
+
 #ifdef GPU
-	#include "heterogeneous/gpu_utils.h"
+#include "heterogeneous/gpu_utils.h"
 #endif
 
 int MPIL_Request_free(MPIL_Request** request_ptr)

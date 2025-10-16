@@ -1,5 +1,5 @@
-#include "locality_aware.h"
 #include "collective/alltoallv.h"
+#include "locality_aware.h"
 
 int alltoallv_pairwise(const void* sendbuf,
                        const int sendcounts[],

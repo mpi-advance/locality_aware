@@ -15,4 +15,3 @@ int get_global_proc(const MPIL_Comm* data, const int node, const int local_proc)
 {
     return data->ordered_global_ranks[local_proc + (node * data->ppn)];
 }
-

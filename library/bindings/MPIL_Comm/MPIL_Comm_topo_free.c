@@ -1,6 +1,7 @@
-#include "locality_aware.h"
-#include "communicator/MPIL_Comm.h"
 #include <stdlib.h>
+
+#include "communicator/MPIL_Comm.h"
+#include "locality_aware.h"
 
 int MPIL_Comm_topo_free(MPIL_Comm* xcomm)
 {

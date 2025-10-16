@@ -1,10 +1,10 @@
 #include <cstring>
 #include <vector>
 
-#include "locality_aware.h"
 #include "communicator/MPIL_Comm.h"
+#include "locality_aware.h"
 
- // Declarations of C++ methods
+// Declarations of C++ methods
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -227,7 +227,7 @@ int alltoallv_crs_nonblocking(const int send_nnz,
     MPIL_Alloc((void**)recvcounts_ptr, recvcounts.size() * sizeof(int));
     MPIL_Alloc((void**)rdispls_ptr, rdispls.size() * sizeof(int));
     MPIL_Alloc((void**)recvvals_ptr, recvvals.size());
-   
+
     memcpy((*src_ptr), src.data(), src.size() * sizeof(int));
     memcpy((*recvcounts_ptr), recvcounts.data(), recvcounts.size() * sizeof(int));
     memcpy((*rdispls_ptr), rdispls.data(), rdispls.size() * sizeof(int));
@@ -474,7 +474,6 @@ void local_redistribute(int n_recvs,
     MPIL_Alloc((void**)recvcounts_ptr, recvcounts.size() * sizeof(int));
     MPIL_Alloc((void**)rdispls_ptr, rdispls.size() * sizeof(int));
     MPIL_Alloc(recvvals_ptr, recvvals.size());
-  
 
     memcpy((*src_ptr), src.data(), src.size() * sizeof(int));
     memcpy((*recvcounts_ptr), recvcounts.data(), recvcounts.size() * sizeof(int));

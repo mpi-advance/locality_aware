@@ -1,7 +1,5 @@
 #include "collective/alltoall.h"
 
-
-
 int alltoall_node_aware_pairwise(const void* sendbuf,
                                  const int sendcount,
                                  MPI_Datatype sendtype,

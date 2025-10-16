@@ -1,10 +1,10 @@
 #ifndef MPI_ADVANCE_NEIGHBOR_INIT2_H
 #define MPI_ADVANCE_NEIGHBOR_INIT2_H
 
-#include "persistent/MPIL_Request.h"
 #include "MPIL_Topo.h"
 #include "communicator/MPIL_Comm.h"
 #include "communicator/MPIL_Info.h"
+#include "persistent/MPIL_Request.h"
 
 // Starting locality-aware requests
 // 1. Start Local_L
@@ -45,7 +45,7 @@ int neighbor_alltoallv_init_standard(const void* sendbuf,
                                      MPIL_Comm* comm,
                                      MPIL_Info* info,
                                      MPIL_Request** request_ptr);
-									 
+
 int neighbor_alltoallv_init_locality(const void* sendbuf,
                                      const int sendcounts[],
                                      const int sdispls[],

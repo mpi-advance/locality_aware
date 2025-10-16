@@ -3,16 +3,15 @@
 
 #ifdef HIP
 #include "utils_hip.h"
-#endif 
+#endif
 
 #ifdef CUDA
 #include "utils_cuda.h"
-#endif 
+#endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
 
 // If using GPU, specific gpu methods (for either NCCL or HIP)
 #ifdef GPU
@@ -34,8 +33,6 @@ void gpu_check(int ierr);
 void repack(int size_i, int size_j, int size_k, char* sendbuf, char* recvbuf);
 
 #endif
-
-
 
 #ifdef __cplusplus
 }

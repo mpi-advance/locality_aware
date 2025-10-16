@@ -1,10 +1,10 @@
-#include "locality_aware.h"
+#include <stdlib.h>
+#include <string.h>
+
 #include "communicator/MPIL_Comm.h"
+#include "locality_aware.h"
 #include "neighborhood/MPIL_Topo.h"
 #include "neighborhood/alltoall_crs.h"
-
-#include <string.h>
-#include <stdlib.h>
 
 // Non-persistent, locality-aware == call dynamic version
 int neighbor_alltoallv_locality(const void* sendbuf,

@@ -1,12 +1,12 @@
 
 
-#include "locality_aware.h"
-#include "communicator/MPIL_Comm.h"
-#include "communicator/MPIL_Info.h"
-
 #include <cstdlib>
 #include <cstring>
 #include <vector>
+
+#include "communicator/MPIL_Comm.h"
+#include "communicator/MPIL_Info.h"
+#include "locality_aware.h"
 
 int alltoall_crs_rma(const int send_nnz,
                      const int* dest,
@@ -95,7 +95,7 @@ int alltoall_crs_rma(const int send_nnz,
     *recv_nnz_ptr = src.size();
     MPIL_Alloc((void**)src_ptr, src.size() * sizeof(int));
     MPIL_Alloc(recvvals_ptr, recv_buffer.size());
-    
+
     memcpy((*src_ptr), src.data(), src.size() * sizeof(int));
     memcpy((*recvvals_ptr), recv_buffer.data(), recv_buffer.size());
 
@@ -154,7 +154,7 @@ int alltoall_crs_personalized(const int send_nnz,
     char* recvvals;
     MPIL_Alloc((void**)&src, *recv_nnz * sizeof(int));
     MPIL_Alloc((void**)&recvvals, *recv_nnz * recv_bytes);
-  
+
     if (comm->n_requests < send_nnz)
     {
         MPIL_Comm_req_resize(comm, send_nnz);
@@ -295,7 +295,7 @@ int alltoall_crs_nonblocking(const int send_nnz,
     *recv_nnz = src.size();
     MPIL_Alloc((void**)src_ptr, src.size() * sizeof(int));
     MPIL_Alloc(recvvals_ptr, recv_buffer.size());
-  
+
     memcpy((*src_ptr), src.data(), src.size() * sizeof(int));
     memcpy((*recvvals_ptr), recv_buffer.data(), recv_buffer.size());
 
