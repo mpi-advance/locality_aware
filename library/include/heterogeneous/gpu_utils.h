@@ -2,12 +2,10 @@
 #define MPIL_GPU_UTILS_H
 
 #ifdef HIP
-//#include "../library/include/utils/utils_hip.h"
 #include "utils_hip.h"
 #endif 
 
 #ifdef CUDA
-//#include "../library/include/utils/utils_cuda.h"
 #include "utils_cuda.h"
 #endif 
 

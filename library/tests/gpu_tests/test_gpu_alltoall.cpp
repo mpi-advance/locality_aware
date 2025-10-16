@@ -1,4 +1,4 @@
-#include "../../../include/locality_aware.h"
+#include "locality_aware.h"
 #include "../../include/heterogeneous/gpu_alltoall.h"
 #include <mpi.h>
 #include <math.h>

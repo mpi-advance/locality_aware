@@ -1,5 +1,4 @@
-#include "../../include/heterogeneous/gpu_alltoall.h"
-
+#include "include/heterogeneous/gpu_alltoall.h"
 #include "collective/alltoall.h"
 #include "communicator/MPIL_Comm.h"
 
