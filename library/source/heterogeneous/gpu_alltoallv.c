@@ -1,4 +1,4 @@
-#include "../../include/heterogeneous/gpu_alltoallv.h"
+#include "heterogeneous/gpu_alltoallv.h"
 
 #include "collective/alltoallv.h"
 #include "locality_aware.h"

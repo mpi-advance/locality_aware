@@ -1,4 +1,5 @@
-#include "../../include/utils/utils.h"
+#include "utils/utils.h"
+#include "heterogeneous/gpu_utils.h"
 #include <cstring>
 
 // Repack Method (calls device if on GPU)

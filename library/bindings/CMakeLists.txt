@@ -16,7 +16,17 @@ target_sources(locality_aware PRIVATE MPIL_Request/MPIL_Start.c)
 target_sources(locality_aware PRIVATE MPIL_Request/MPIL_Wait.c)
 target_sources(locality_aware PRIVATE MPIL_Request/MPIL_Request_free.c)
 
+#for directories with several files 
 add_subdirectory(Neighborhood)
 add_subdirectory(MPIL_Comm)
 
+#add any sources that utilize GPU specfic commands to global list for later conversion. 
+if(USE_CUDA)
+	get_property(CUDA_SOURCES GLOBAL PROPERTY CUDA_SOURCES_GLOBAL)
+	set_property(GLOBAL APPEND PROPERTY CUDA_SOURCES_GLOBAL  "${CMAKE_CURRENT_SOURCE_DIR}/Collective/MPIL_Alltoall.c")
+	set_property(GLOBAL APPEND PROPERTY CUDA_SOURCES_GLOBAL  "${CMAKE_CURRENT_SOURCE_DIR}/Collective/MPIL_Alltoallv.c")
+	set_property(GLOBAL APPEND PROPERTY CUDA_SOURCES_GLOBAL  "${CMAKE_CURRENT_SOURCE_DIR}/MPIL_Comm/MPIL_Comm_device_init.c")
+	set_property(GLOBAL APPEND PROPERTY CUDA_SOURCES_GLOBAL  "${CMAKE_CURRENT_SOURCE_DIR}/MPIL_Comm/MPIL_Comm_device_free.c")
+	set_property(GLOBAL APPEND PROPERTY CUDA_SOURCES_GLOBAL  "${CMAKE_CURRENT_SOURCE_DIR}/MPIL_Request/MPIL_Request_free.c")
+endif()
 

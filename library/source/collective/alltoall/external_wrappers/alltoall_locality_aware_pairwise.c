@@ -3,12 +3,6 @@
 #include <math.h>
 #include <string.h>
 
-/* #ifdef GPU
-#include "../../include/heterogenous/gpu_alltoall.h"
-#endif */
-
-
-
 int alltoall_locality_aware_pairwise(const void* sendbuf,
                                      const int sendcount,
                                      MPI_Datatype sendtype,

@@ -32,6 +32,9 @@ void get_memcpy_kind(gpuMemoryType send_type,
                      gpuMemcpyKind* memcpy_kind);
 void gpu_repack(int size_i, int size_j, int size_k, char* sendbuf, char* recvbuf);
 void gpu_check(int ierr);
+
+void repack(int size_i, int size_j, int size_k, char* sendbuf, char* recvbuf);
+
 #endif
 
 

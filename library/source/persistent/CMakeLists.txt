@@ -1,7 +1,7 @@
-file(GLOB persistent_HEADERS CONFIGURE_DEPENDS "*.h")
-file(GLOB persistent_SOURCES CONFIGURE_DEPENDS "*.c")
+if (USE_CUDA)
+		set_source_files_properties(init_request.c PROPERTIES LANGUAGE CUDA)
+endif()
 
-set(persistent_HEADERS ${persistent_HEADERS} CACHE INTERNAL "All headers for persistent files.")
-set(persistent_SOURCES ${persistent_SOURCES} CACHE INTERNAL "All source files for persistent directory.")
 
-target_sources(locality_aware PRIVATE ${persistent_SOURCES})
+target_sources(locality_aware PRIVATE init_request.c)
+target_sources(locality_aware PRIVATE allocate_requests.c)

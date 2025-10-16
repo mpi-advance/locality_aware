@@ -2,10 +2,10 @@
 #include "collective/alltoall.h"
 #ifdef GPU
 	#include "heterogeneous/gpu_alltoall.h"
-	#ifdef CUDA
+	#ifdef USE_CUDA
 		#include "utils_cuda.h"
 	#endif
-	#ifdef HIP
+	#ifdef USE_HIP
 		#include "utils_hip.h"
 	#endif
 #endif

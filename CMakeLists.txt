@@ -65,6 +65,9 @@ if (USE_CUDA)
   set(locality_aware_LANG CUDA)
   message(STATUS "CUDA support enabled: ${CMAKE_CUDA_FLAGS}")
   add_definitions(-DCUDA)
+  define_property(GLOBAL PROPERTY CUDA_SOURCES_GLOBAL)
+  set_property(GLOBAL PROPERTY CUDA_SOURCES_GLOBAL "")
+ 
   
 elseif (USE_HIP)
   set(CMAKE_HIP_COMPILER "${MPICXX}")
@@ -75,7 +78,7 @@ elseif (USE_HIP)
 endif()
 endif()
 
-message(STATUS "Compiling all files as: ${locality_aware_LANG}")
+#message(STATUS "Compiling all files as: ${locality_aware_LANG}")
 
 if (ENABLE_UNIT_TESTS)
     enable_testing()
@@ -85,11 +88,19 @@ add_library(locality_aware "")
 set_target_properties(locality_aware PROPERTIES PUBLIC_HEADER include/locality_aware.h)
 add_subdirectory(include)
 add_subdirectory(library)
+target_link_libraries(locality_aware PUBLIC ${EXTERNAL_LIBS})
 
 if (USE_CUDA)
-	get_target_property(CUR_SOURCES locality_aware SOURCES)
-	foreach(file ${CUR_SOURCES})
-		set_source_files_properties(${file} PROPERTIES LANGUAGE CUDA)
+	#Find each source that needs to be converted in 
+	get_property(CUDA_SOURCES GLOBAL PROPERTY CUDA_SOURCES_GLOBAL)
+	get_target_property(ALL_SOURCES locality_aware SOURCES)
+	foreach( item IN LISTS CUDA_SOURCES)
+		list(FIND CUDA_SOURCES "${item}" index)
+		if(NOT "${index}" STREQUAL "-1")
+			set_source_files_properties(${item} PROPERTIES LANGUAGE CUDA)
+			get_source_file_property(_lang ${item} LANGUAGE)
+			message("${item} language set as ${_lang}")
+		endif()
 	endforeach()
 	target_compile_definitions(locality_aware PUBLIC CUDA GPU)
 endif()
@@ -105,7 +116,7 @@ endif()
 # endforeach()
 
 
-target_link_libraries(locality_aware PUBLIC ${EXTERNAL_LIBS})
+
 
 install(TARGETS locality_aware)
 
