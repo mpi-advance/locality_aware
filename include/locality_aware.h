@@ -55,18 +55,18 @@ enum NeighborAlltoallvInitMethod
 enum AlltoallCRSMethod
 {
     ALLTOALL_CRS_RMA,
-	ALLTOALL_CRS_NONBLOCKING,
-	ALLTOALL_CRS_NONBLOCKING_LOC,
-	ALLTOALL_CRS_PERSONALIZED,
-	ALLTOALL_CRS_PERSONALIZED_LOC
+    ALLTOALL_CRS_NONBLOCKING,
+    ALLTOALL_CRS_NONBLOCKING_LOC,
+    ALLTOALL_CRS_PERSONALIZED,
+    ALLTOALL_CRS_PERSONALIZED_LOC
 };
 
-enum AlltoallvCRSMethod 
+enum AlltoallvCRSMethod
 {
-	ALLTOALLV_CRS_NONBLOCKING,
-	ALLTOALLV_CRS_NONBLOCKING_LOC,
-	ALLTOALLV_CRS_PERSONALIZED,
-	ALLTOALLV_CRS_PERSONALIZED_LOC
+    ALLTOALLV_CRS_NONBLOCKING,
+    ALLTOALLV_CRS_NONBLOCKING_LOC,
+    ALLTOALLV_CRS_PERSONALIZED,
+    ALLTOALLV_CRS_PERSONALIZED_LOC
 };
 
 /* Create global variables for algorithm selection. */
@@ -81,11 +81,12 @@ extern enum AlltoallvCRSMethod mpil_alltoallv_crs_implementation;
 int MPIL_set_alltoall_algorithm(enum AlltoallMethod algorithm);
 int MPIL_set_alltoallv_algorithm(enum AlltoallvMethod algorithm);
 int MPIL_set_alltoallv_neighbor_alogorithm(enum NeighborAlltoallvMethod algorithm);
-int MPIL_set_alltoallv_neighbor_init_alogorithm(enum NeighborAlltoallvInitMethod algorithm);
+int MPIL_set_alltoallv_neighbor_init_alogorithm(
+    enum NeighborAlltoallvInitMethod algorithm);
 int MPIL_set_alltoall_crs(enum AlltoallCRSMethod algorithm);
 int MPIL_set_alltoallv_crs(enum AlltoallvCRSMethod algorithm);
 
-//Functions to control various versions of the MPIL_Comm object---------------------
+// Functions to control various versions of the MPIL_Comm object---------------------
 int MPIL_Comm_init(MPIL_Comm** xcomm_ptr, MPI_Comm global_comm);
 int MPIL_Comm_free(MPIL_Comm** xcomm_ptr);
 
@@ -104,13 +105,13 @@ int MPIL_Comm_device_free(MPIL_Comm* xcomm);
 int MPIL_Comm_req_resize(MPIL_Comm* xcomm, int n);
 
 /** @brief get current tag and increment tag in the comm.**/
-//int MPIL_Comm_tag(MPIL_Comm* comm, int* tag);
+// int MPIL_Comm_tag(MPIL_Comm* comm, int* tag);
 
-//Functions to initialize and free the MPI_Info object
+// Functions to initialize and free the MPI_Info object
 int MPIL_Info_init(MPIL_Info** info);
 int MPIL_Info_free(MPIL_Info** info);
 
-//Functions to control the MPIL_Topo object
+// Functions to control the MPIL_Topo object
 int MPIL_Topo_init(int indegree,
                    const int sources[],
                    const int sourceweights[],
@@ -122,7 +123,7 @@ int MPIL_Topo_init(int indegree,
 int MPIL_Topo_from_neighbor_comm(MPIL_Comm* comm, MPIL_Topo** mpil_topo_ptr);
 int MPIL_Topo_free(MPIL_Topo** topo);
 
-//Functions to control the MPIL_Request object 
+// Functions to control the MPIL_Request object
 int MPIL_Start(MPIL_Request* request);
 int MPIL_Wait(MPIL_Request* request, MPI_Status* status);
 int MPIL_Request_free(MPIL_Request** request);
@@ -256,7 +257,7 @@ int MPIL_Alltoallv_crs(const int send_nnz,
                        MPIL_Info* xinfo,
                        MPIL_Comm* comm);
 
-//Utility functions (used in some of the crs tests, may move internal
+// Utility functions (used in some of the crs tests, may move internal
 int MPIL_Alloc(void** pointer, const int bytes);
 int MPIL_Free(void* pointer);
 void update_locality(MPIL_Comm* xcomm, int ppn);

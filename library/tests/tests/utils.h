@@ -1,7 +1,6 @@
 #ifndef MPIL_UTILS_H
 #define MPIL_UTILS_H
 
-
 #ifdef __cplusplus
 extern "C" {
 #endif  // General utility methods (that use C++ functions)

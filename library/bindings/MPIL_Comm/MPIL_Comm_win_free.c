@@ -1,6 +1,7 @@
+#include <stdlib.h>  // For NULL
+
 #include "communicator/MPIL_Comm.h"
 #include "locality_aware.h"
-#include <stdlib.h> // For NULL
 
 int MPIL_Comm_win_free(MPIL_Comm* xcomm)
 {

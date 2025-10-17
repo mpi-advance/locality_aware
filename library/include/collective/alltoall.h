@@ -2,8 +2,9 @@
 #define MPI_ADVANCE_ALLTOALL_H
 
 #include <mpi.h>
-#include "communicator/MPIL_Comm.h"
 #include <stdlib.h>
+
+#include "communicator/MPIL_Comm.h"
 
 #ifdef __cplusplus
 extern "C" {

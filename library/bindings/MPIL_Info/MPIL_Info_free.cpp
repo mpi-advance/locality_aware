@@ -1,6 +1,7 @@
-#include "locality_aware.h"
-#include "communicator/MPIL_Info.h"
 #include <cstdlib>
+
+#include "communicator/MPIL_Info.h"
+#include "locality_aware.h"
 
 int MPIL_Info_free(MPIL_Info** info_ptr)
 {

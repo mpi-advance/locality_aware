@@ -1,5 +1,4 @@
 
-#include "locality_aware.h"
 #include "neighborhood/neighborhood_init.h"
 #include "persistent/MPIL_Request.h"
 

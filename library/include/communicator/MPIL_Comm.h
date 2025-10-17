@@ -45,8 +45,8 @@ typedef struct _MPIL_Comm
 
     int gpus_per_node;
     int rank_gpu;
-	//actual type is gpuStream_t, changed to void* to assist compiling. 
-    void* proc_stream; 
+    // actual type is gpuStream_t, changed to void* to assist compiling.
+    void* proc_stream;
 #endif
 } MPIL_Comm;
 

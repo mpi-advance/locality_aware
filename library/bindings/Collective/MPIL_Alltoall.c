@@ -1,5 +1,5 @@
+#include "collective/alltoall.h"
 #include "locality_aware.h"
-#include "collective/alltoall.h" 
 #ifdef GPU
 #include "heterogeneous/gpu_alltoall.h"
 #endif

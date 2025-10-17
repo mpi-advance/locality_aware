@@ -1,7 +1,8 @@
 #include "heterogeneous/gpu_alltoall.h"
-#include "heterogeneous/gpu_alltoallv.h"
+
 #include "collective/alltoall.h"
 #include "communicator/MPIL_Comm.h"
+#include "heterogeneous/gpu_alltoallv.h"
 
 // ASSUMES 1 CPU CORE PER GPU (Standard for applications)
 int gpu_aware_alltoall(alltoall_ftn f,

@@ -3,7 +3,6 @@
 #include "collective/alltoall.h"
 #include "locality_aware.h"
 
-
 int alltoall_locality_aware_helper(alltoall_helper_ftn f,
                                    const void* sendbuf,
                                    const int sendcount,

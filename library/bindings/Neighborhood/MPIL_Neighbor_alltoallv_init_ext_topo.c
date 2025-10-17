@@ -1,5 +1,5 @@
-#include "locality_aware.h"
 #include "communicator/MPIL_Comm.h"
+#include "locality_aware.h"
 #include "neighborhood/neighborhood_init.h"
 
 int MPIL_Neighbor_alltoallv_init_ext_topo(const void* sendbuf,
