@@ -2,14 +2,10 @@
 #define MPIL_COMM_H
 
 #include <mpi.h>
-#ifdef GPU
-#ifdef CUDA
-#include "utils_cuda.h"
-#endif
-#ifdef HIP
-#include "utils_hip.h"
-#endif
-#endif
+
+//#ifdef GPU
+//#include "heterogeneous/gpu_utils.h"
+//#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -53,7 +49,8 @@ typedef struct _MPIL_Comm
 
     int gpus_per_node;
     int rank_gpu;
-    gpuStream_t proc_stream;
+	//actual type is gpuStream_t, changed to void* to assist compiling. 
+    void* proc_stream; 
 #endif
 } MPIL_Comm;
 

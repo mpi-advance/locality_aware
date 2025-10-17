@@ -19,7 +19,7 @@ int MPIL_Comm_device_init(MPIL_Comm* xcomm)
     if (xcomm->gpus_per_node)
     {
         xcomm->rank_gpu = local_rank;
-        ierr            = gpuStreamCreate(&(xcomm->proc_stream));
+        ierr            = gpuStreamCreate((gpuStream_t*)&(xcomm->proc_stream));
         gpu_check(ierr);
     }
 #endif

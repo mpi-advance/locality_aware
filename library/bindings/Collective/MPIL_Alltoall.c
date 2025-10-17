@@ -2,12 +2,6 @@
 #include "locality_aware.h"
 #ifdef GPU
 #include "heterogeneous/gpu_alltoall.h"
-#ifdef USE_CUDA
-#include "utils_cuda.h"
-#endif
-#ifdef USE_HIP
-#include "utils_hip.h"
-#endif
 #endif
 // Default alltoall is pairwise
 // AlltoallMethod mpil_alltoall_implementation = ALLTOALL_PAIRWISE;

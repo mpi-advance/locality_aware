@@ -30,16 +30,12 @@ option(USE_HIP "Enable AMD HIP support" OFF)
 option(GPU_AWARE "Use GPU-Aware MPI, if GPU support is enabled" ON)
 option(ENABLE_UNIT_TESTS "Enable unit testing" ON)
 
-set(MPICXX "mpicxx" CACHE STRING "MPICXX command")
+
 set(MPIRUN "mpirun" CACHE STRING "MPIRUN command")
-set(CUDA_ARCH "75" CACHE STRING "CUDA Architecture")
 
 # Find MPI
 find_package(MPI REQUIRED)
 set(EXTERNAL_LIBS "MPI::MPI_CXX")
-if(${MPI_FOUND})
-	message(STATUS "MPI FOUND")
-endif()
 
 # Find OpenMP (not required)
 find_package(OpenMP)
@@ -50,72 +46,48 @@ endif()
 
 # Set default language of .cpp files
 set(locality_aware_LANG CXX)
+add_library(locality_aware "")
 
 if (USE_CUDA OR USE_HIP)
-  if (GPU_AWARE)
-      add_definitions(-DGPU_AWARE)
-      message(STATUS "Code will be compiled assuming GPU-Aware support.  If your compiler doesn't not support this, set GPU_AWARE to OFF")
-  endif()
-  set(USE_GPU ON)
-  add_definitions(-DGPU)
-if (USE_CUDA)
-  set(CMAKE_CUDA_HOST_COMPILER "${MPICXX}")
-  set(CMAKE_CUDA_ARCHITECTURES ${CUDA_ARCH})
-  enable_language(CUDA)
-  set(locality_aware_LANG CUDA)
-  message(STATUS "CUDA support enabled: ${CMAKE_CUDA_FLAGS}")
-  add_definitions(-DCUDA)
-  define_property(GLOBAL PROPERTY CUDA_SOURCES_GLOBAL)
-  set_property(GLOBAL PROPERTY CUDA_SOURCES_GLOBAL "")
- 
+	if (GPU_AWARE)
+	  add_definitions(-DGPU_AWARE)
+	  message(STATUS "Code will be compiled assuming GPU-Aware support.  If your compiler doesn't not support this, set GPU_AWARE to OFF")
+	endif()
+	set(USE_GPU ON)
+	target_compile_definitions(locality_aware PUBLIC GPU)
+	define_property(GLOBAL PROPERTY CUDA_SOURCES_GLOBAL)
+	set_property(GLOBAL PROPERTY GPU_SOURCES_GLOBAL "")
   
-elseif (USE_HIP)
-  set(CMAKE_HIP_COMPILER "${MPICXX}")
-  enable_language(HIP)
-  set(locality_aware_LANG HIP)
-  message(STATUS "HIP support enabled")
-  add_definitions(-DHIP)
+	if (USE_CUDA)
+	  enable_language(CUDA)
+	  set(locality_aware_LANG CUDA)
+	  message(STATUS "CUDA support enabled: ${CMAKE_CUDA_FLAGS}")
+	  target_compile_definitions(locality_aware PUBLIC CUDA)
+	 
+	elseif (USE_HIP)
+	  enable_language(HIP)
+	  set(locality_aware_LANG HIP)
+	  message(STATUS "HIP support enabled")
+	  target_compile_definitions(locality_aware PUBLIC HIP)
+	endif()
 endif()
-endif()
-
-#message(STATUS "Compiling all files as: ${locality_aware_LANG}")
 
 if (ENABLE_UNIT_TESTS)
     enable_testing()
 endif()
 
-add_library(locality_aware "")
 set_target_properties(locality_aware PROPERTIES PUBLIC_HEADER include/locality_aware.h)
 add_subdirectory(include)
 add_subdirectory(library)
 target_link_libraries(locality_aware PUBLIC ${EXTERNAL_LIBS})
 
-if (USE_CUDA)
-	#Find each source that needs to be converted in 
-	get_property(CUDA_SOURCES GLOBAL PROPERTY CUDA_SOURCES_GLOBAL)
-	get_target_property(ALL_SOURCES locality_aware SOURCES)
-	foreach( item IN LISTS CUDA_SOURCES)
-		list(FIND CUDA_SOURCES "${item}" index)
-		if(NOT "${index}" STREQUAL "-1")
-			set_source_files_properties(${item} PROPERTIES LANGUAGE CUDA)
-			get_source_file_property(_lang ${item} LANGUAGE)
-			message("${item} language set as ${_lang}")
-		endif()
-	endforeach()
-	target_compile_definitions(locality_aware PUBLIC CUDA GPU)
+if (USE_GPU)
+	get_property(GPU_SOURCES_GLOBAL GLOBAL PROPERTY CUDA_SOURCES_GLOBAL)
+	set_source_files_properties(${GPU_SOURCES_GLOBAL} PROPERTIES LANGUAGE ${locality_aware_LANG})
+
 endif()
 
-
-
-
 install(TARGETS locality_aware)
-
-# install(DIRECTORY include/communicator/ DESTINATION ${CMAKE_INSTALL_PREFIX}/include/communicator)
-# install(DIRECTORY include/collective/   DESTINATION ${CMAKE_INSTALL_PREFIX}/include/collective)
-# install(DIRECTORY include/persistent/   DESTINATION ${CMAKE_INSTALL_PREFIX}/include/persistent)
-# install(DIRECTORY include/utils/   DESTINATION ${CMAKE_INSTALL_PREFIX}/include/utils)
-# install(DIRECTORY include/neighborhood/   DESTINATION ${CMAKE_INSTALL_PREFIX}/include/neighborhood)
-
 
 ### Installation Requirements for Spack Package ###
 include(CMakePackageConfigHelpers)

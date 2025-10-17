@@ -11,7 +11,7 @@ int MPIL_Comm_device_free(MPIL_Comm* xcomm)
     int ierr = gpuSuccess;
     if (xcomm->gpus_per_node)
     {
-        ierr = gpuStreamDestroy(xcomm->proc_stream);
+        ierr = gpuStreamDestroy((gpuStream_t)xcomm->proc_stream);
     }
     gpu_check(ierr);
 #endif
