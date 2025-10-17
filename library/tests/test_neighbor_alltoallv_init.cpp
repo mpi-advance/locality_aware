@@ -32,6 +32,7 @@ void compare_neighbor_alltoallv_results(std::vector<int>& pmpi_recv_vals,
 int main(int argc, char** argv)
 {
     MPI_Init(&argc, &argv);
+
     // Get MPI Information
     int rank, num_procs;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -47,9 +48,8 @@ int main(int argc, char** argv)
     form_global_indices(
         local_size, send_data, recv_data, global_send_idx, global_recv_idx);
 
-    // Test correctness of communication
-    std::vector<int> mpix_recv_vals(recv_data.size_msgs);
     std::vector<int> pmpi_recv_vals(recv_data.size_msgs);
+    std::vector<int> mpix_recv_vals(recv_data.size_msgs);
 
     std::vector<int> send_vals(local_size);
     int val = local_size * rank;
@@ -57,11 +57,23 @@ int main(int argc, char** argv)
     {
         send_vals[i] = val++;
     }
-
     std::vector<int> alltoallv_send_vals(send_data.size_msgs);
     for (int i = 0; i < send_data.size_msgs; i++)
     {
         alltoallv_send_vals[i] = send_vals[send_data.indices[i]];
+    }
+
+    // Some MPI versions require sendcounts and recvcounts
+    // to be non-NULL
+    int* send_counts = send_data.counts.data();
+    if (send_data.counts.data() == NULL)
+    {
+        send_counts = new int[1];
+    }
+    int* recv_counts = recv_data.counts.data();
+    if (recv_data.counts.data() == NULL)
+    {
+        recv_counts = new int[1];
     }
 
     MPI_Comm std_comm;
@@ -95,21 +107,10 @@ int main(int argc, char** argv)
                                     xinfo,
                                     0,
                                     &xcomm);
-
     // Update Locality : 4 PPN (for single-node tests)
     update_locality(xcomm, 4);
 
     // Standard MPI Implementation of Alltoallv
-    int* send_counts = send_data.counts.data();
-    if (send_data.counts.data() == NULL)
-    {
-        send_counts = new int[1];
-    }
-    int* recv_counts = recv_data.counts.data();
-    if (recv_data.counts.data() == NULL)
-    {
-        recv_counts = new int[1];
-    }
     MPI_Neighbor_alltoallv(alltoallv_send_vals.data(),
                            send_counts,
                            send_data.indptr.data(),
@@ -119,16 +120,10 @@ int main(int argc, char** argv)
                            recv_data.indptr.data(),
                            MPI_INT,
                            std_comm);
-    if (send_data.counts.data() == NULL)
-    {
-        delete[] send_counts;
-    }
-    if (recv_data.counts.data() == NULL)
-    {
-        delete[] recv_counts;
-    }
 
     // Simple Persistent MPI Advance Implementation
+    MPIL_set_alltoallv_neighbor_init_alogorithm(NEIGHBOR_ALLTOALLV_INIT_STANDARD);
+    std::fill(mpix_recv_vals.begin(), mpix_recv_vals.end(), 0);
     MPIL_Neighbor_alltoallv_init(alltoallv_send_vals.data(),
                                  send_data.counts.data(),
                                  send_data.indptr.data(),
@@ -140,26 +135,85 @@ int main(int argc, char** argv)
                                  xcomm,
                                  xinfo,
                                  &xrequest);
-
-    // Reorder during first send/recv
-    std::fill(mpix_recv_vals.begin(), mpix_recv_vals.end(), 0);
-    xrequest->reorder = 1;
     MPIL_Start(xrequest);
     MPIL_Wait(xrequest, &status);
-    compare_neighbor_alltoallv_results(
-        pmpi_recv_vals, mpix_recv_vals, recv_data.size_msgs);
-
-    // Standard send/recv with reordered recvs
-    std::fill(mpix_recv_vals.begin(), mpix_recv_vals.end(), 0);
-    MPIL_Start(xrequest);
-    MPIL_Wait(xrequest, &status);
-    compare_neighbor_alltoallv_results(
-        pmpi_recv_vals, mpix_recv_vals, recv_data.size_msgs);
-
     MPIL_Request_free(&xrequest);
+    compare_neighbor_alltoallv_results(
+        pmpi_recv_vals, mpix_recv_vals, recv_data.size_msgs);
+
+    MPIL_set_alltoallv_neighbor_init_alogorithm(NEIGHBOR_ALLTOALLV_INIT_LOCALITY);
+    std::fill(mpix_recv_vals.begin(), mpix_recv_vals.end(), 0);
+    MPIL_Neighbor_alltoallv_init(alltoallv_send_vals.data(),
+                                 send_data.counts.data(),
+                                 send_data.indptr.data(),
+                                 MPI_INT,
+                                 mpix_recv_vals.data(),
+                                 recv_data.counts.data(),
+                                 recv_data.indptr.data(),
+                                 MPI_INT,
+                                 xcomm,
+                                 xinfo,
+                                 &xrequest);
+    MPIL_Start(xrequest);
+    MPIL_Wait(xrequest, &status);
+    MPIL_Request_free(&xrequest);
+    compare_neighbor_alltoallv_results(
+        pmpi_recv_vals, mpix_recv_vals, recv_data.size_msgs);
+
+    MPIL_set_alltoallv_neighbor_init_alogorithm(NEIGHBOR_ALLTOALLV_INIT_STANDARD);
+    std::fill(mpix_recv_vals.begin(), mpix_recv_vals.end(), 0);
+    MPIL_Neighbor_alltoallv_init_ext(alltoallv_send_vals.data(),
+                                     send_data.counts.data(),
+                                     send_data.indptr.data(),
+                                     global_send_idx.data(),
+                                     MPI_INT,
+                                     mpix_recv_vals.data(),
+                                     recv_data.counts.data(),
+                                     recv_data.indptr.data(),
+                                     global_recv_idx.data(),
+                                     MPI_INT,
+                                     xcomm,
+                                     xinfo,
+                                     &xrequest);
+    MPIL_Start(xrequest);
+    MPIL_Wait(xrequest, &status);
+    MPIL_Request_free(&xrequest);
+    compare_neighbor_alltoallv_results(
+        pmpi_recv_vals, mpix_recv_vals, recv_data.size_msgs);
+
+    MPIL_set_alltoallv_neighbor_init_alogorithm(NEIGHBOR_ALLTOALLV_INIT_LOCALITY);
+    std::fill(mpix_recv_vals.begin(), mpix_recv_vals.end(), 0);
+    MPIL_Neighbor_alltoallv_init_ext(alltoallv_send_vals.data(),
+                                     send_data.counts.data(),
+                                     send_data.indptr.data(),
+                                     global_send_idx.data(),
+                                     MPI_INT,
+                                     mpix_recv_vals.data(),
+                                     recv_data.counts.data(),
+                                     recv_data.indptr.data(),
+                                     global_recv_idx.data(),
+                                     MPI_INT,
+                                     xcomm,
+                                     xinfo,
+                                     &xrequest);
+    MPIL_Start(xrequest);
+    MPIL_Wait(xrequest, &status);
+    MPIL_Request_free(&xrequest);
+    compare_neighbor_alltoallv_results(
+        pmpi_recv_vals, mpix_recv_vals, recv_data.size_msgs);
+
     MPIL_Info_free(&xinfo);
     MPIL_Comm_free(&xcomm);
     MPI_Comm_free(&std_comm);
+
+    if (send_data.counts.data() == NULL)
+    {
+        delete[] send_counts;
+    }
+    if (recv_data.counts.data() == NULL)
+    {
+        delete[] recv_counts;
+    }
 
     MPI_Finalize();
     return 0;

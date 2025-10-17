@@ -105,35 +105,16 @@ if (USE_CUDA)
 	target_compile_definitions(locality_aware PUBLIC CUDA GPU)
 endif()
 
-# target_include_directories(locality_aware PUBLIC 
-    # $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/library>
-    # $<INSTALL_INTERFACE:include>
-    # )
-
-# get_target_property(CUR_HEADERS locality_aware INCLUDE_DIRECTORIES)
-# foreach(file in ${CUR_HEADERS})
-	# message (STATUS "HEADER ${file}")
-# endforeach()
-
 
 
 
 install(TARGETS locality_aware)
 
-#set_source_files_properties(
-#    ${utils_SOURCES}
-#    ${communicator_SOURCES}
-#    ${collective_SOURCES}
-#    ${persistent_SOURCES}
-#    ${neighborhood_SOURCES}
-#    ${heterogeneous_SOURCES}
-#    PROPERTIES LANGUAGE ${locality_aware_LANG})
-
-install(DIRECTORY include/communicator/ DESTINATION ${CMAKE_INSTALL_PREFIX}/include/communicator)
-install(DIRECTORY include/collective/   DESTINATION ${CMAKE_INSTALL_PREFIX}/include/collective)
-install(DIRECTORY include/persistent/   DESTINATION ${CMAKE_INSTALL_PREFIX}/include/persistent)
-install(DIRECTORY include/utils/   DESTINATION ${CMAKE_INSTALL_PREFIX}/include/utils)
-install(DIRECTORY include/neighborhood/   DESTINATION ${CMAKE_INSTALL_PREFIX}/include/neighborhood)
+# install(DIRECTORY include/communicator/ DESTINATION ${CMAKE_INSTALL_PREFIX}/include/communicator)
+# install(DIRECTORY include/collective/   DESTINATION ${CMAKE_INSTALL_PREFIX}/include/collective)
+# install(DIRECTORY include/persistent/   DESTINATION ${CMAKE_INSTALL_PREFIX}/include/persistent)
+# install(DIRECTORY include/utils/   DESTINATION ${CMAKE_INSTALL_PREFIX}/include/utils)
+# install(DIRECTORY include/neighborhood/   DESTINATION ${CMAKE_INSTALL_PREFIX}/include/neighborhood)
 
 
 ### Installation Requirements for Spack Package ###

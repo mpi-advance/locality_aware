@@ -1,5 +1,5 @@
-#include "include/heterogeneous/gpu_alltoall.h"
-
+#include "heterogeneous/gpu_alltoall.h"
+#include "heterogeneous/gpu_alltoallv.h"
 #include "collective/alltoall.h"
 #include "communicator/MPIL_Comm.h"
 
