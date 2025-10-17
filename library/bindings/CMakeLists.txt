@@ -18,9 +18,9 @@ add_subdirectory(Neighborhood)
 add_subdirectory(MPIL_Comm)
 
 #add any sources that utilize GPU specific commands to global list for later conversion. 
-if(USE_CUDA)
-	get_property(CUDA_SOURCES GLOBAL PROPERTY CUDA_SOURCES_GLOBAL)
-	set_property(GLOBAL APPEND PROPERTY CUDA_SOURCES_GLOBAL  
+if(USE_GPU)
+	get_property(GPU_SOURCES GLOBAL PROPERTY GPU_SOURCES_GLOBAL)
+	set_property(GLOBAL APPEND PROPERTY GPU_SOURCES_GLOBAL  
 		"${CMAKE_CURRENT_SOURCE_DIR}/Collective/MPIL_Alltoall.c"
 		"${CMAKE_CURRENT_SOURCE_DIR}/Collective/MPIL_Alltoallv.c"
 		"${CMAKE_CURRENT_SOURCE_DIR}/Collective/MPIL_Alltoall_crs.c"

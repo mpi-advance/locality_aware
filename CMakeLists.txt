@@ -6,7 +6,7 @@ project(locality_aware VERSION 2.0.0 LANGUAGES C CXX)
 
 # Set C,CXX standards
 set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_C_STANDARD 99)
+set(CMAKE_C_STANDARD 11)
 
 # Set default build type
 if(NOT CMAKE_BUILD_TYPE)
@@ -37,11 +37,13 @@ set(MPIRUN "mpirun" CACHE STRING "MPIRUN command")
 find_package(MPI REQUIRED)
 set(EXTERNAL_LIBS "MPI::MPI_CXX")
 
-# Find OpenMP (not required)
-find_package(OpenMP)
-if (${OpenMP_CXX_FOUND})
-  list(APPEND EXTERNAL_LIBS "OpenMP::OpenMP_CXX")
-  add_definitions(-DOPENMP)
+if(NOT USE_HIP)
+	# Find OpenMP (not required)
+	find_package(OpenMP)
+	if (${OpenMP_CXX_FOUND})
+	  list(APPEND EXTERNAL_LIBS "OpenMP::OpenMP_CXX")
+  	  add_definitions(-DOPENMP)
+	endif()
 endif()
 
 # Set default language of .cpp files
@@ -82,7 +84,7 @@ add_subdirectory(library)
 target_link_libraries(locality_aware PUBLIC ${EXTERNAL_LIBS})
 
 if (USE_GPU)
-	get_property(GPU_SOURCES_GLOBAL GLOBAL PROPERTY CUDA_SOURCES_GLOBAL)
+	get_property(GPU_SOURCES_GLOBAL GLOBAL PROPERTY GPU_SOURCES_GLOBAL)
 	set_source_files_properties(${GPU_SOURCES_GLOBAL} PROPERTIES LANGUAGE ${locality_aware_LANG})
 
 endif()

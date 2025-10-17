@@ -4,7 +4,7 @@ int MPIL_Alloc(void** pointer, const int bytes)
 {
     if (bytes == 0)
     {
-        *pointer = NULL;
+        *pointer = nullptr;
     }
     else
     {

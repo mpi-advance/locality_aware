@@ -1,6 +1,7 @@
 #include "locality_aware.h"  // #TODO -- figure out why this is needed
 #include "neighborhood/neighborhood_init.h"
 #include "persistent/MPIL_Request.h"
+#include <stdlib.h> // For NULL
 
 // Wait for locality-aware requests
 // 1. Wait for global

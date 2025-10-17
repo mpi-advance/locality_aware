@@ -2,7 +2,7 @@
 
 int MPIL_Free(void* pointer)
 {
-    if (pointer != NULL)
+    if (pointer != nullptr)
     {
         char* char_ptr = (char*)pointer;
         delete[] char_ptr;

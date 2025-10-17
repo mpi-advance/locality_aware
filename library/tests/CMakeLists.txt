@@ -16,7 +16,7 @@ foreach(src ${CPP_SOURCES})
     add_executable(${exec_name} ${src})
 
     # Link with MPI 
-    target_link_libraries(${exec_name} locality_aware ${MPI_LIBRARIES})
+    target_link_libraries(${exec_name} locality_aware ${EXTERNAL_LIBS})
 
     # Add to CTEST
     add_test(NAME ${exec_name}_Test COMMAND ${MPIRUN} -n 4 ./${exec_name})
