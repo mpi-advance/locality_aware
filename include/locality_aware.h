@@ -16,17 +16,6 @@ typedef struct _MPIL_Request MPIL_Request;
 typedef int (*mpil_start_ftn)(MPIL_Request* request);
 typedef int (*mpil_wait_ftn)(MPIL_Request* request, MPI_Status* status);
 
-//Basic override for MPI_Alltoallv
-int MPI_Alltoallv(const void* sendbuf,
-                  const int sendcounts[],
-                  const int sdispls[],
-                  MPI_Datatype sendtype,
-                  void* recvbuf,
-                  const int recvcounts[],
-                  const int rdispls[],
-                  MPI_Datatype recvtype,
-                  MPI_Comm comm); 
-
 //Functions to control various versions of the MPIL_Comm object---------------------
 int MPIL_Comm_init(MPIL_Comm** xcomm_ptr, MPI_Comm global_comm);
 int MPIL_Comm_free(MPIL_Comm** xcomm_ptr);
