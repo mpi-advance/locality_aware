@@ -5,7 +5,6 @@
 #define __HIP_PLATFORM_AMD__ 1
 #endif
 
-// #include "hip/hip_runtime_api.h"
 #include "hip/hip_runtime.h"
 
 // Devices

@@ -3,10 +3,6 @@
 
 #include <mpi.h>
 
-//#ifdef GPU
-//#include "heterogeneous/gpu_utils.h"
-//#endif
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -60,6 +56,8 @@ int get_global_proc(const MPIL_Comm* data, const int node, const int local_proc)
 
 // For testing purposes (manually set PPN)
 // void update_locality(MPIL_Comm* xcomm, int ppn);
+
+int MPIL_Comm_tag(MPIL_Comm* xcomm, int* tag);
 
 #ifdef __cplusplus
 }

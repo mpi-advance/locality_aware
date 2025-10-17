@@ -9,12 +9,6 @@
 #include "communicator/comm_pkg.h"
 #include "communicator/locality_comm.h"
 
-/******************************************
- ****
- **** Helper Methods
- ****
- ******************************************/
-
 void map_procs_to_nodes(LocalityComm* locality,
                         const int orig_num_msgs,
                         const int* orig_procs,

@@ -1,7 +1,6 @@
 #include <cstring>
 
 #include "heterogeneous/gpu_utils.h"
-#include "utils/utils.h"
 
 // Repack Method (calls device if on GPU)
 void repack(int size_i, int size_j, int size_k, char* sendbuf, char* recvbuf)

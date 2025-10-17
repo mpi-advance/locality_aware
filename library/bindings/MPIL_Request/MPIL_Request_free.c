@@ -1,8 +1,6 @@
-#include <stdlib.h>
-
 #include "locality_aware.h"
 #include "persistent/MPIL_Request.h"
-
+#include <stdlib.h>
 #ifdef GPU
 #include "heterogeneous/gpu_utils.h"
 #endif

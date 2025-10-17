@@ -1,11 +1,6 @@
 #include "locality_aware.h"
 #include "neighborhood/MPIL_Topo.h"
 
-// Standard Persistent Neighbor Alltoallv
-
-// Standard Persistent Neighbor Alltoallv
-// Extension takes array of requests instead of single request
-// 'requests' must be of size indegree+outdegree!
 int MPIL_Neighbor_alltoallv_init(const void* sendbuf,
                                  const int sendcounts[],
                                  const int sdispls[],

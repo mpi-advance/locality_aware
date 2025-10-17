@@ -1,9 +1,6 @@
 #include "communicator/MPIL_Comm.h"
 #include "locality_aware.h"
 #include "neighborhood/neighbor.h"
-// Standard Method is default
-
-// Topology object based neighbor alltoallv
 int MPIL_Neighbor_alltoallv_topo(const void* sendbuf,
                                  const int sendcounts[],
                                  const int sdispls[],

@@ -1,25 +1,8 @@
-#include "collective/alltoall.h"
 #include "locality_aware.h"
+#include "collective/alltoall.h" 
 #ifdef GPU
 #include "heterogeneous/gpu_alltoall.h"
 #endif
-// Default alltoall is pairwise
-// AlltoallMethod mpil_alltoall_implementation = ALLTOALL_PAIRWISE;
-
-/**************************************************
- * Locality-Aware Point-to-Point Alltoall
- *  - Aggregates messages locally to reduce
- *      non-local communication
- *  - First redistributes on-node so that each
- *      process holds all data for a subset
- *      of other nodes
- *  - Then, performs inter-node communication
- *      during which each process exchanges
- *      data with their assigned subset of nodes
- *  - Finally, redistribute received data
- *      on-node so that each process holds
- *      the correct final data
- *************************************************/
 
 int MPIL_Alltoall(const void* sendbuf,
                   const int sendcount,

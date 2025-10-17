@@ -1,30 +1,9 @@
-#include "collective/alltoallv.h"
 #include "locality_aware.h"
+#include "collective/alltoallv.h"
 #ifdef GPU
 #include "heterogeneous/gpu_alltoallv.h"
 #endif
-// Default alltoallv is pairwise
-// enum AlltoallvMethod mpil_alltoallv_implementation = ALLTOALLV_PAIRWISE;
 
-/**************************************************
- * Locality-Aware Point-to-Point Alltoallv
- * Same as PMPI_Alltoall (no load balancing)
- *  - Aggregates messages locally to reduce
- *      non-local communciation
- *  - First redistributes on-node so that each
- *      process holds all data for a subset
- *      of other nodes
- *  - Then, performs inter-node communication
- *      during which each process exchanges
- *      data with their assigned subset of nodes
- *  - Finally, redistribute received data
- *      on-node so that each process holds
- *      the correct final data
- *  - To be used when sizes are relatively balanced
- *  - For load balacing, use persistent version
- *      - Load balacing is too expensive for
- *          non-persistent Alltoallv
- *************************************************/
 int MPIL_Alltoallv(const void* sendbuf,
                    const int sendcounts[],
                    const int sdispls[],

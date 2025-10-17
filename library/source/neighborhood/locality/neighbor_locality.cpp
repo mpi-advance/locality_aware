@@ -3,17 +3,15 @@
 #include <algorithm>
 #include <map>
 #include <vector>
-
 #include "communicator/MPIL_Comm.h"
-#include "locality_aware.h"
 #include "persistent/MPIL_Request.h"
+
 
 /******************************************
  ****
  **** Main Methods
  ****
  ******************************************/
-
 // Declarations of C++ methods
 #ifdef __cplusplus
 extern "C" {

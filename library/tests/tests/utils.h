@@ -1,19 +1,6 @@
 #ifndef MPIL_UTILS_H
 #define MPIL_UTILS_H
 
-/* #ifdef HIP
-#include "utils_hip.h"
-#endif
-
-#ifdef CUDA
-#include "utils_cuda.h"
-#endif
-
-////---why was this in the .cpp file?
-#ifdef HIP
-#include "hip/hip_runtime.h"
-#endif
-//// */
 
 #ifdef __cplusplus
 extern "C" {

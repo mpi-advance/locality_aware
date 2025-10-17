@@ -6,18 +6,8 @@
 #include "communicator/MPIL_Info.h"
 #include "persistent/MPIL_Request.h"
 
-// Starting locality-aware requests
-// 1. Start Local_L
-// 2. Start and wait for local_S
-// 3. Start global
 int neighbor_start(MPIL_Request* request);
-
-// Wait for locality-aware requests
-// 1. Wait for global
-// 2. Start and wait for local_R
-// 3. Wait for local_L
 int neighbor_wait(MPIL_Request* request, MPI_Status* status);
-
 void init_neighbor_request(MPIL_Request** request_ptr);
 
 typedef int (*neighbor_alltoallv_init_ftn)(const void* sendbuf,
