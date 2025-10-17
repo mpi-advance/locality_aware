@@ -1,7 +1,7 @@
 #include <stdlib.h>
 
 #include "communicator/MPIL_Comm.h"
-#include "locality_aware.h"  // #TODO -- figure out why this is needed
+#include "locality_aware.h"
 #include "neighborhood/MPIL_Topo.h"
 #include "neighborhood/neighborhood_init.h"
 
