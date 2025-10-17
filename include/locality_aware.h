@@ -13,9 +13,6 @@ typedef struct _MPIL_Info MPIL_Info;
 typedef struct _MPIL_Topo MPIL_Topo;
 typedef struct _MPIL_Request MPIL_Request;
 
-typedef int (*mpil_start_ftn)(MPIL_Request* request);
-typedef int (*mpil_wait_ftn)(MPIL_Request* request, MPI_Status* status);
-
 //Functions to control various versions of the MPIL_Comm object---------------------
 int MPIL_Comm_init(MPIL_Comm** xcomm_ptr, MPI_Comm global_comm);
 int MPIL_Comm_free(MPIL_Comm** xcomm_ptr);

@@ -15,6 +15,5 @@ int MPIL_Wait(MPIL_Request* request, MPI_Status* status)
         return 0;
     }
 
-    mpil_wait_ftn wait_function = (mpil_wait_ftn)(request->wait_function);
-    return wait_function(request, status);
+    return (request->wait_function)(request, status);
 }

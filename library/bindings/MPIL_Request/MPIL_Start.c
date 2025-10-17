@@ -14,6 +14,5 @@ int MPIL_Start(MPIL_Request* request)
         return 0;
     }
 
-    mpil_start_ftn start_function = (mpil_start_ftn)(request->start_function);
-    return start_function(request);
+    return (request->start_function)(request);
 }
