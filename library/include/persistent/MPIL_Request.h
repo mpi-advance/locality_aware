@@ -48,8 +48,8 @@ typedef struct _MPIL_Request
 #endif
 
     // Keep track of which start/wait functions to call for given request
-    int (*start_function)(MPIL_Request* request);
-    int (*wait_function)(MPIL_Request* request, MPI_Status* status);
+    int (*start_function)(struct _MPIL_Request* request);
+    int (*wait_function)(struct _MPIL_Request* request, MPI_Status* status);
 } MPIL_Request;
 
 void init_request(MPIL_Request** request_ptr);
