@@ -6,6 +6,11 @@
 #include "communicator/MPIL_Info.h"
 #include "persistent/MPIL_Request.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
 int neighbor_start(MPIL_Request* request);
 int neighbor_wait(MPIL_Request* request, MPI_Status* status);
 void init_neighbor_request(MPIL_Request** request_ptr);
@@ -93,5 +98,10 @@ int init_communication(const void* sendbuffer,
                        MPI_Comm comm,
                        int* n_request_ptr,
                        MPI_Request** request_ptr);
+
+#ifdef __cplusplus
+}
+#endif
+
 
 #endif

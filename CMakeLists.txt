@@ -88,11 +88,6 @@ if (USE_GPU)
 	set_source_files_properties(${GPU_SOURCES_GLOBAL} PROPERTIES LANGUAGE ${locality_aware_LANG})
 endif()
 
-get_target_property(sources locality_aware SOURCES)
-foreach(file ${sources})
-	message(${file})
-endforeach()
-
 install(TARGETS locality_aware)
 
 ### Installation Requirements for Spack Package ###
