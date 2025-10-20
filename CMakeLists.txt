@@ -76,6 +76,13 @@ endif()
 
 if (ENABLE_UNIT_TESTS)
     enable_testing()
+	function(make_test file count)
+		#get file name for unique handle
+		get_filename_component(exec_name ${file} NAME_WE)
+		add_executable(${exec_name} ${file})
+		target_link_libraries(${exec_name} locality_aware ${EXTERNAL_LIBS})
+		add_test(NAME ${exec_name}_Test COMMAND ${MPIRUN} -n ${count} ./${exec_name})
+	endfunction()
 endif()
 
 set_target_properties(locality_aware PROPERTIES PUBLIC_HEADER include/locality_aware.h)
