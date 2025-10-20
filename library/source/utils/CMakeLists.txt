@@ -1,0 +1,1 @@
+target_sources(locality_aware PRIVATE utils.c)
