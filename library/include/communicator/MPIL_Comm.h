@@ -55,7 +55,7 @@ int get_local_proc(const MPIL_Comm* data, const int proc);
 int get_global_proc(const MPIL_Comm* data, const int node, const int local_proc);
 
 // For testing purposes (manually set PPN)
-// void update_locality(MPIL_Comm* xcomm, int ppn);
+void update_locality(MPIL_Comm* xcomm, int ppn);
 
 int MPIL_Comm_tag(MPIL_Comm* xcomm, int* tag);
 

@@ -260,7 +260,6 @@ int MPIL_Alltoallv_crs(const int send_nnz,
 // Utility functions (used in some of the crs tests, may move internal
 int MPIL_Alloc(void** pointer, const int bytes);
 int MPIL_Free(void* pointer);
-void update_locality(MPIL_Comm* xcomm, int ppn);
 
 #ifdef __cplusplus
 }
