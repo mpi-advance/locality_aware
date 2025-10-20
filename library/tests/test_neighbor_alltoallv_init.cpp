@@ -10,7 +10,7 @@
 #include "communicator/MPIL_Comm.h"
 #include "locality_aware.h"
 #include "neighbor_data.hpp"
-//#include "neighborhood/alltoall_crs.h"
+#include "neighborhood/neighborhood_init.h"
 #include "neighborhood/neighbor.h"
 
 void compare_neighbor_alltoallv_results(std::vector<int>& pmpi_recv_vals,

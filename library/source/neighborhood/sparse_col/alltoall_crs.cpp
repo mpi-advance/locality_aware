@@ -6,7 +6,9 @@
 #include "communicator/MPIL_Info.h"
 #include "locality_aware.h"
 
-
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 int alltoall_crs_rma(const int send_nnz,
                      const int* dest,
@@ -865,4 +867,6 @@ int alltoall_crs_nonblocking_loc(const int send_nnz,
 
     return MPI_SUCCESS;
 }
-
+#ifdef __cplusplus
+}
+#endif

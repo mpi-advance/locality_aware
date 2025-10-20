@@ -5,6 +5,9 @@
 #include "locality_aware.h"
 
 // Declarations of C++ methods
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 int alltoallv_crs_personalized(const int send_nnz,
                                const int send_size,
@@ -873,3 +876,6 @@ int alltoallv_crs_nonblocking_loc(const int send_nnz,
 
     return MPI_SUCCESS;
 }
+#ifdef __cplusplus
+}
+#endif
