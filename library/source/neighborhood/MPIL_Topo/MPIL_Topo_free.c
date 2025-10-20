@@ -1,6 +1,5 @@
 #include <stdlib.h>
-
-#include "mpi.h"
+#include <mpi.h>
 #include "neighborhood/MPIL_Topo.h"
 
 int MPIL_Topo_free(MPIL_Topo** mpil_topo_ptr)

@@ -1,8 +1,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <mpi.h>
 #include "communicator/MPIL_Info.h"
-#include "mpi.h"
 #include "neighborhood/MPIL_Topo.h"
 
 int MPIL_Topo_init(int indegree,

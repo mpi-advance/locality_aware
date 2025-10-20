@@ -1,8 +1,6 @@
 #include "neighborhood/neighbor_locality.h"
 
 #include <algorithm>
-#include <map>
-#include <vector>
 
 #include "communicator/MPIL_Comm.h"
 #include "persistent/MPIL_Request.h"

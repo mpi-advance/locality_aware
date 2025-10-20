@@ -1,7 +1,6 @@
 #ifndef NEIGHBOR_LOCALITY_H
 #define NEIGHBOR_LOCALITY_H
 
-#include <algorithm>
 #include <map>
 #include <vector>
 

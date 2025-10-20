@@ -13,9 +13,9 @@
 #include <iterator>
 #include <map>
 #include <vector>
+#include <mpi.h>
 
 #include "limits.h"
-#include "mpi.h"
 #include "sparse_mat.hpp"
 
 bool little_endian()

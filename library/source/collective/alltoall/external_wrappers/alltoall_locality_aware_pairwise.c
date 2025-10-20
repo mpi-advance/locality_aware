@@ -1,6 +1,3 @@
-#include <math.h>
-#include <string.h>
-
 #include "collective/alltoall.h"
 
 int alltoall_locality_aware_pairwise(const void* sendbuf,

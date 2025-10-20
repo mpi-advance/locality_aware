@@ -1,6 +1,9 @@
 #ifndef MPI_ADVANCE_NEIGHBOR_COLL_H
 #define MPI_ADVANCE_NEIGHBOR_COLL_H
 
+#include "neighborhood/MPIL_Topo.h"
+#include "communicator/MPIL_Comm.h"
+
 // Declarations of C++ methods
 #ifdef __cplusplus
 extern "C" {
