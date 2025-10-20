@@ -1,2 +1,23 @@
-add_subdirectory(core_functions)
-add_subdirectory(external_wrappers)
+target_sources(locality_aware PRIVATE 
+	alltoall_hierarchical.c
+	alltoall_hierarchical_nonblocking.c
+	alltoall_hierarchical_pairwise.c
+	alltoall_locality_aware.c
+	alltoall_locality_aware_helper.c
+	alltoall_locality_aware_nonblocking.c
+	alltoall_locality_aware_pairwise.c
+	alltoall_multileader.c
+	alltoall_multileader_locality.c
+	alltoall_multileader_locality_nonblocking.c
+	alltoall_multileader_locality_pairwise.c
+	alltoall_multileader_nonblocking.c
+	alltoall_multileader_pairwise.c
+	alltoall_node_aware.c
+	alltoall_node_aware_nonblocking.c
+	alltoall_node_aware_pairwise.c
+	alltoall_nonblocking.c
+	alltoall_pairwise.c
+	alltoall_pmpi.c
+	nonblocking_helper.c
+	pairwise_helper.c
+)
