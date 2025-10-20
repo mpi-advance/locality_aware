@@ -105,7 +105,7 @@ int MPIL_Comm_device_free(MPIL_Comm* xcomm);
 int MPIL_Comm_req_resize(MPIL_Comm* xcomm, int n);
 
 /** @brief get current tag and increment tag in the comm.**/
-// int MPIL_Comm_tag(MPIL_Comm* comm, int* tag);
+int MPIL_Comm_tag(MPIL_Comm* comm, int* tag);
 
 // Functions to initialize and free the MPI_Info object
 int MPIL_Info_init(MPIL_Info** info);

@@ -10,7 +10,7 @@ int alltoall_pairwise(const void* sendbuf,
                       MPIL_Comm* comm)
 {
     int tag;
-    MPIL_Comm_tag(comm, &tag);
+    get_tag(comm, &tag);
 
     return pairwise_helper(sendbuf,
                            sendcount,

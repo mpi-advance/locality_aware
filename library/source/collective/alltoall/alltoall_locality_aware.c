@@ -16,7 +16,7 @@ int alltoall_locality_aware(alltoall_helper_ftn f,
     MPI_Comm_size(comm->global_comm, &num_procs);
 
     int tag;
-    MPIL_Comm_tag(comm, &tag);
+    get_tag(comm, &tag);
 
     if (comm->local_comm == MPI_COMM_NULL)
     {

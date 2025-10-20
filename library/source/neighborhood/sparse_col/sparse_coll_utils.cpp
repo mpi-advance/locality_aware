@@ -47,7 +47,7 @@ int alltoall_crs_personalized_loc(int send_nnz,
     int proc, ctr, start, end;
     int count, n_msgs, n_sends, n_recvs, idx, new_idx;
     int tag;
-    MPIL_Comm_tag(comm, &tag);
+    get_tag(comm, &tag);
 
     std::vector<char> node_send_buffer;
     std::vector<char> local_send_buffer;
@@ -227,7 +227,7 @@ int alltoall_crs_personalized_loc(int send_nnz,
         displs[i + 1] = displs[i] + msg_counts[i];
     }
 
-    MPIL_Comm_tag(comm, &tag);
+    get_tag(comm, &tag);
 
     MPI_Allreduce(
         MPI_IN_PLACE, msg_counts.data(), PPN, MPI_INT, MPI_SUM, comm->local_comm);
@@ -362,7 +362,7 @@ int alltoall_crs_nonblocking_loc(int send_nnz,
     int proc, ctr, flag, ibar, start, end;
     int count, n_msgs, n_sends, n_recvs, idx, new_idx;
     int tag;
-    MPIL_Comm_tag(comm, &tag);
+    get_tag(comm, &tag);
 
     std::vector<char> node_send_buffer;
     std::vector<char> local_send_buffer;
@@ -558,7 +558,7 @@ int alltoall_crs_nonblocking_loc(int send_nnz,
         displs[i + 1] = displs[i] + msg_counts[i];
     }
 
-    MPIL_Comm_tag(comm, &tag);
+    get_tag(comm, &tag);
 
     MPI_Allreduce(
         MPI_IN_PLACE, msg_counts.data(), PPN, MPI_INT, MPI_SUM, comm->local_comm);
@@ -682,7 +682,7 @@ int alltoallv_crs_personalized_loc(int send_nnz,
     }
 
     int tag;
-    MPIL_Comm_tag(comm, &tag);
+    get_tag(comm, &tag);
 
     char* send_buffer = (char*)sendvals;
     char* recv_buffer = (char*)recvvals;
@@ -934,7 +934,7 @@ int alltoallv_crs_personalized_loc(int send_nnz,
     // Tell them which global indices I need from them
     std::vector<MPI_Request> local_req(PPN);
 
-    MPIL_Comm_tag(comm, &tag);
+    get_tag(comm, &tag);
 
     n_sends = 0;
     for (int i = 0; i < PPN; i++)
@@ -1056,7 +1056,7 @@ int alltoallv_crs_nonblocking_loc(int send_nnz,
     }
 
     int tag;
-    MPIL_Comm_tag(comm, &tag);
+    get_tag(comm, &tag);
 
     char* send_buffer = (char*)sendvals;
     char* recv_buffer = (char*)recvvals;
@@ -1329,7 +1329,7 @@ int alltoallv_crs_nonblocking_loc(int send_nnz,
     // Tell them which global indices I need from them
     std::vector<MPI_Request> local_req(PPN);
 
-    MPIL_Comm_tag(comm, &tag);
+    get_tag(comm, &tag);
 
     n_sends = 0;
     for (int i = 0; i < PPN; i++)

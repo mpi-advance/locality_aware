@@ -33,7 +33,7 @@ int alltoallv_crs_personalized(const int send_nnz,
     MPI_Status recv_status;
     int proc, ctr, count;
     int tag;
-    MPIL_Comm_tag(comm, &tag);
+    get_tag(comm, &tag);
 
     char* send_buffer = (char*)sendvals;
     int send_bytes, recv_bytes;
@@ -150,7 +150,7 @@ int alltoallv_crs_nonblocking(const int send_nnz,
     MPI_Status recv_status;
     MPI_Request bar_req;
     int tag;
-    MPIL_Comm_tag(comm, &tag);
+    get_tag(comm, &tag);
 
     if (comm->n_requests < send_nnz)
     {
@@ -378,7 +378,7 @@ void local_redistribute(int n_recvs,
     // Tell them which global indices I need from them
     std::vector<MPI_Request> local_req(PPN);
 
-    MPIL_Comm_tag(comm, &tag);
+    get_tag(comm, &tag);
 
     n_sends = 0;
     for (int i = 0; i < PPN; i++)
@@ -516,7 +516,7 @@ int alltoallv_crs_personalized_loc(const int send_nnz,
     }
 
     int tag;
-    MPIL_Comm_tag(comm, &tag);
+    get_tag(comm, &tag);
 
     char* send_buffer = (char*)sendvals;
     int send_bytes, recv_bytes, int_bytes;
@@ -703,7 +703,7 @@ int alltoallv_crs_nonblocking_loc(const int send_nnz,
     }
 
     int tag;
-    MPIL_Comm_tag(comm, &tag);
+    get_tag(comm, &tag);
 
     char* send_buffer = (char*)sendvals;
     int send_bytes, recv_bytes, int_bytes;

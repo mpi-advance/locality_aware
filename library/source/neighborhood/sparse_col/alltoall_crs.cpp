@@ -124,7 +124,7 @@ int alltoall_crs_personalized(const int send_nnz,
     MPI_Status recv_status;
     int proc, ctr;
     int tag;
-    MPIL_Comm_tag(comm, &tag);
+    get_tag(comm, &tag);
 
     char* send_buffer;
     if (send_nnz)
@@ -234,7 +234,7 @@ int alltoall_crs_nonblocking(const int send_nnz,
     MPI_Status recv_status;
     MPI_Request bar_req;
     int tag;
-    MPIL_Comm_tag(comm, &tag);
+    get_tag(comm, &tag);
 
     std::vector<int> src;
     std::vector<char> recv_buffer;
@@ -387,7 +387,7 @@ void local_redistribute(int node_recv_size,
     }
 
     int tag;
-    MPIL_Comm_tag(comm, &tag);
+    get_tag(comm, &tag);
 
     MPI_Allreduce(
         MPI_IN_PLACE, msg_counts.data(), PPN, MPI_INT, MPI_SUM, comm->local_comm);
@@ -528,7 +528,7 @@ int alltoall_crs_personalized_loc(const int send_nnz,
     int proc, ctr, start, end;
     int count, n_msgs, n_sends;
     int tag;
-    MPIL_Comm_tag(comm, &tag);
+    get_tag(comm, &tag);
 
     std::vector<char> node_send_buffer;
     std::vector<char> local_send_buffer;
@@ -713,7 +713,7 @@ int alltoall_crs_nonblocking_loc(const int send_nnz,
     int proc, ctr, flag, ibar, start, end;
     int count, n_msgs, n_sends;
     int tag;
-    MPIL_Comm_tag(comm, &tag);
+    get_tag(comm, &tag);
 
     std::vector<char> node_send_buffer;
     std::vector<char> local_send_buffer;

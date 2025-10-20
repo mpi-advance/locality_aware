@@ -31,7 +31,7 @@ int alltoallv_batch(const void* sendbuf,
     }
 
     int tag;
-    MPIL_Comm_tag(comm, &tag);
+    get_tag(comm, &tag);
 
     int ctr;
     int send_proc, recv_proc;

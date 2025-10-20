@@ -10,7 +10,7 @@ int alltoall_nonblocking(const void* sendbuf,
                          MPIL_Comm* comm)
 {
     int tag;
-    MPIL_Comm_tag(comm, &tag);
+    get_tag(comm, &tag);
 
     return nonblocking_helper(sendbuf,
                               sendcount,

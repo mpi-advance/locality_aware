@@ -29,7 +29,7 @@ int alltoallv_nonblocking(const void* sendbuf,
     }
 
     int tag;
-    MPIL_Comm_tag(comm, &tag);
+    get_tag(comm, &tag);
 
     int send_proc, recv_proc;
     int send_pos, recv_pos;

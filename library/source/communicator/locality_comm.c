@@ -12,16 +12,16 @@ void init_locality_comm(LocalityComm** locality_ptr,
     LocalityComm* locality = (LocalityComm*)malloc(sizeof(LocalityComm));
 
     int tag;
-    MPIL_Comm_tag(mpil_comm, &tag);
+    get_tag(mpil_comm, &tag);
     init_comm_pkg(&(locality->local_L_comm), sendtype, recvtype, tag);
 
-    MPIL_Comm_tag(mpil_comm, &tag);
+    get_tag(mpil_comm, &tag);
     init_comm_pkg(&(locality->local_S_comm), sendtype, recvtype, tag);
 
-    MPIL_Comm_tag(mpil_comm, &tag);
+    get_tag(mpil_comm, &tag);
     init_comm_pkg(&(locality->local_R_comm), recvtype, recvtype, tag);
 
-    MPIL_Comm_tag(mpil_comm, &tag);
+    get_tag(mpil_comm, &tag);
     init_comm_pkg(&(locality->global_comm), recvtype, recvtype, tag);
 
     locality->communicators = mpil_comm;

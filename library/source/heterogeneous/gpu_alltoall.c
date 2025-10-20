@@ -188,7 +188,7 @@ int threaded_alltoall_pairwise(const void* sendbuf,
     {
         MPI_Status status;
         int tag;
-        MPIL_Comm_tag(comm, &tag);
+        get_tag(comm, &tag);
         int send_proc, recv_proc;
         int send_pos, recv_pos;
 
@@ -282,7 +282,7 @@ int threaded_alltoall_nonblocking(const void* sendbuf,
 #pragma omp parallel shared(cpu_sendbuf, cpu_recvbuf)
     {
         int tag;
-        MPIL_Comm_tag(comm, &tag);
+        get_tag(comm, &tag);
         int send_proc, recv_proc;
         int send_pos, recv_pos;
 

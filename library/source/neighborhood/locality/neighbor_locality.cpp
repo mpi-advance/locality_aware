@@ -548,8 +548,8 @@ void update_global_comm(LocalityComm* locality)
     MPI_Request* requests = NULL;
     int* send_buffer      = NULL;
     int send_tag, recv_tag;
-    MPIL_Comm_tag(locality->communicators, &send_tag);
-    MPIL_Comm_tag(locality->communicators, &recv_tag);
+    get_tag(locality->communicators, &send_tag);
+    get_tag(locality->communicators, &recv_tag);
     int node, global_proc;
     int num_to_recv;
     MPI_Status recv_status;

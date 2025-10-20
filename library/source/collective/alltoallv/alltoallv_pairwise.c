@@ -16,7 +16,7 @@ int alltoallv_pairwise(const void* sendbuf,
     MPI_Comm_size(comm->global_comm, &num_procs);
 
     int tag;
-    MPIL_Comm_tag(comm, &tag);
+    get_tag(comm, &tag);
 
     int send_proc, recv_proc;
     int send_pos, recv_pos;
