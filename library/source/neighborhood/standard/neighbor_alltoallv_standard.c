@@ -2,16 +2,7 @@
 #include "neighborhood/neighbor.h"
 #include "locality_aware.h"
 
-#ifdef __cplusplus
-#include <cstring>
-extern "C" {
-#endif
-
-#ifndef __cplusplus
 #include "string.h"
-#endif
-
-
 
 // Standard, non-persistent neighbor collective
 int neighbor_alltoallv_standard(const void* sendbuf,

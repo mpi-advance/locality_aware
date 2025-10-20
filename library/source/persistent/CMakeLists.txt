@@ -1,2 +1,4 @@
-target_sources(locality_aware PRIVATE init_request.c)
-target_sources(locality_aware PRIVATE allocate_requests.c)
+target_sources(locality_aware PRIVATE 
+	init_request.c
+	allocate_requests.c
+)

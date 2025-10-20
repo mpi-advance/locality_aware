@@ -1,8 +1,7 @@
 #include "heterogeneous/gpu_utils.h"
 #include "stdio.h"
-// Repack Data on Device
-#ifdef GPU
 
+// Repack Data on Device
 void gpu_check(int ierr)
 {
     if (ierr != gpuSuccess)
@@ -10,4 +9,4 @@ void gpu_check(int ierr)
         printf("Error in Device Function!\n");
     }
 }
-#endif
+

@@ -1,6 +1,8 @@
-target_sources(locality_aware PRIVATE update_locality.c)
-target_sources(locality_aware PRIVATE topology_functions.c)
-target_sources(locality_aware PRIVATE comm_data.c)
-target_sources(locality_aware PRIVATE comm_pkg.c)
-target_sources(locality_aware PRIVATE locality_comm.c)
-target_sources(locality_aware PRIVATE get_tag.c)
+target_sources(locality_aware PRIVATE 
+	update_locality.c
+	topology_functions.c
+	comm_data.c
+	comm_pkg.c
+	locality_comm.c
+	get_tag.c
+)
