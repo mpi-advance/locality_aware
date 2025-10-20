@@ -12,6 +12,8 @@
 #include "locality_aware.h"
 #include "tests/par_binary_IO.hpp"
 #include "tests/sparse_mat.hpp"
+#include "neighborhood/neighborhood_init.h"
+#include "neighborhood/neighbor.h"
 
 void compare_neighbor_alltoallv_results(std::vector<int>& pmpi_recv_vals,
                                         std::vector<int>& mpix_recv_vals,
@@ -79,8 +81,8 @@ void test_matrix(const char* filename)
 
     MPI_Comm std_comm;
     MPI_Status status;
-    MPIL_Comm* neighbor_comm;
-    MPIL_Request* neighbor_request;
+    MPIL_Comm* xcomm;
+    MPIL_Request* xrequest;
     MPIL_Info* xinfo;
 
     MPIL_Info_init(&xinfo);
@@ -146,40 +148,59 @@ void test_matrix(const char* filename)
                                     MPI_UNWEIGHTED,
                                     xinfo,
                                     0,
-                                    &neighbor_comm);
+                                    &xcomm);
 
-    update_locality(neighbor_comm, 4);
-
-    // 2. Node-Aware Communication - reorder during first send/recv
-    MPIL_Neighbor_alltoallv_init(alltoallv_send_vals.data(),
-                                 A.send_comm.counts.data(),
-                                 A.send_comm.ptr.data(),
-                                 MPI_INT,
-                                 mpix_recv_vals.data(),
-                                 A.recv_comm.counts.data(),
-                                 A.recv_comm.ptr.data(),
-                                 MPI_INT,
-                                 neighbor_comm,
-                                 xinfo,
-                                 &neighbor_request);
+    update_locality(xcomm, 4);
 
     std::fill(mpix_recv_vals.begin(), mpix_recv_vals.end(), 0);
-    neighbor_request->reorder = 1;
-    MPIL_Start(neighbor_request);
-    MPIL_Wait(neighbor_request, &status);
+    MPIL_Neighbor_alltoallv(alltoallv_send_vals.data(),
+                            A.send_comm.counts.data(),
+                            A.send_comm.ptr.data(),
+                            MPI_INT,
+                            mpix_recv_vals.data(),
+                            A.recv_comm.counts.data(),
+                            A.recv_comm.ptr.data(),
+                            MPI_INT,
+                            xcomm);
     compare_neighbor_alltoallv_results(
         pmpi_recv_vals, mpix_recv_vals, A.recv_comm.size_msgs);
 
-    // Standard send/recv with reordered recvs
+    MPIL_Topo* topo;
+    MPIL_Topo_from_neighbor_comm(xcomm, &topo);
+
+    // 2. Node-Aware Communication
     std::fill(mpix_recv_vals.begin(), mpix_recv_vals.end(), 0);
-    MPIL_Start(neighbor_request);
-    MPIL_Wait(neighbor_request, &status);
-    MPIL_Request_free(&neighbor_request);
+    neighbor_alltoallv_standard(alltoallv_send_vals.data(),
+                                A.send_comm.counts.data(),
+                                A.send_comm.ptr.data(),
+                                MPI_INT,
+                                mpix_recv_vals.data(),
+                                A.recv_comm.counts.data(),
+                                A.recv_comm.ptr.data(),
+                                MPI_INT,
+                                topo,
+                                xcomm);
     compare_neighbor_alltoallv_results(
         pmpi_recv_vals, mpix_recv_vals, A.recv_comm.size_msgs);
 
+    // 3. MPI Advance - Optimized Communication
+    std::fill(mpix_recv_vals.begin(), mpix_recv_vals.end(), 0);
+    neighbor_alltoallv_locality(alltoallv_send_vals.data(),
+                                A.send_comm.counts.data(),
+                                A.send_comm.ptr.data(),
+                                MPI_INT,
+                                mpix_recv_vals.data(),
+                                A.recv_comm.counts.data(),
+                                A.recv_comm.ptr.data(),
+                                MPI_INT,
+                                topo,
+                                xcomm);
+    compare_neighbor_alltoallv_results(
+        pmpi_recv_vals, mpix_recv_vals, A.recv_comm.size_msgs);
+
+    MPIL_Topo_free(&topo);
     MPIL_Info_free(&xinfo);
-    MPIL_Comm_free(&neighbor_comm);
+    MPIL_Comm_free(&xcomm);
     PMPI_Comm_free(&std_comm);
 }
 

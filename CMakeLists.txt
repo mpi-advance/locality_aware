@@ -86,8 +86,12 @@ target_link_libraries(locality_aware PUBLIC ${EXTERNAL_LIBS})
 if (USE_GPU)
 	get_property(GPU_SOURCES_GLOBAL GLOBAL PROPERTY GPU_SOURCES_GLOBAL)
 	set_source_files_properties(${GPU_SOURCES_GLOBAL} PROPERTIES LANGUAGE ${locality_aware_LANG})
-
 endif()
+
+get_target_property(sources locality_aware SOURCES)
+foreach(file ${sources})
+	message(${file})
+endforeach()
 
 install(TARGETS locality_aware)
 

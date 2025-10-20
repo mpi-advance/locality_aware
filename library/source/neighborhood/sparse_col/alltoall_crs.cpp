@@ -1,4 +1,3 @@
-
 #include <cstdlib>
 #include <cstring>
 #include <vector>
@@ -6,6 +5,8 @@
 #include "communicator/MPIL_Comm.h"
 #include "communicator/MPIL_Info.h"
 #include "locality_aware.h"
+
+
 
 int alltoall_crs_rma(const int send_nnz,
                      const int* dest,
@@ -864,3 +865,4 @@ int alltoall_crs_nonblocking_loc(const int send_nnz,
 
     return MPI_SUCCESS;
 }
+

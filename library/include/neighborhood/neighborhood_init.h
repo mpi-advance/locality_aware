@@ -1,5 +1,5 @@
-#ifndef MPI_ADVANCE_NEIGHBOR_INIT2_H
-#define MPI_ADVANCE_NEIGHBOR_INIT2_H
+#ifndef MPI_ADVANCE_NEIGHBOR_INIT_H
+#define MPI_ADVANCE_NEIGHBOR_INIT_H
 
 #include "MPIL_Topo.h"
 #include "communicator/MPIL_Comm.h"

@@ -6,6 +6,11 @@
 #include "communicator/MPIL_Comm.h"
 #include "communicator/MPIL_Info.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
 typedef int (*alltoall_crs_ftn)(const int send_nnz,
                                 const int* dest,
                                 const int sendcount,
@@ -168,5 +173,10 @@ int alltoallv_crs_nonblocking_loc(const int send_nnz,
                                   void** recvvals_ptr,
                                   MPIL_Info* xinfo,
                                   MPIL_Comm* comm);
+
+#ifdef __cplusplus
+}
+#endif
+
 
 #endif

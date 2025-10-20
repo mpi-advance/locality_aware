@@ -1,6 +1,6 @@
-target_sources(locality_aware PRIVATE CRS/alltoall_crs.cpp)
-target_sources(locality_aware PRIVATE CRS/alltoallv_crs.cpp)
-target_sources(locality_aware PRIVATE CRS/sparse_coll_utils.cpp)
+target_sources(locality_aware PRIVATE sparse_col/alltoall_crs.cpp)
+target_sources(locality_aware PRIVATE sparse_col/alltoallv_crs.cpp)
+target_sources(locality_aware PRIVATE sparse_col/sparse_coll_utils.cpp)
 
 target_sources(locality_aware PRIVATE MPIL_Topo/MPIL_Topo_free.c)
 target_sources(locality_aware PRIVATE MPIL_Topo/MPIL_Topo_from_neighbor_comm.c)

@@ -12,6 +12,7 @@
 #include "locality_aware.h"
 #include "tests/par_binary_IO.hpp"
 #include "tests/sparse_mat.hpp"
+#include "neighborhood/alltoall_crs.h"
 
 void compare_alltoallv_crs_results(int n_recvs,
                                    int send_msgs,

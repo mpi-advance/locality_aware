@@ -7,8 +7,8 @@
 #include <set>
 #include <vector>
 
-#include "../../../include/locality_aware.h"
-#include "../../include/collective/alltoallv.h"
+#include "locality_aware.h"
+#include "collective/alltoallv.h"
 
 void compare_alltoallv_results(std::vector<int>& pmpi, std::vector<int>& mpil, int s)
 {

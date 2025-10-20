@@ -8,10 +8,13 @@
 #include <set>
 #include <vector>
 
-#include "../../../include/locality_aware.h"
-#include "../../include/collective/alltoallv.h"
-#include "../tests/par_binary_IO.hpp"
-#include "../tests/sparse_mat.hpp"
+#include "locality_aware.h"
+#include "collective/alltoallv.h"
+#include "tests/par_binary_IO.hpp"
+#include "tests/sparse_mat.hpp"
+#include "neighborhood/neighborhood_init.h"
+#include "neighborhood/neighbor.h"
+
 
 void compare_alltoallv_results(std::vector<int>& pmpi, std::vector<int>& mpil, int s)
 {
@@ -182,9 +185,9 @@ int main(int argc, char** argv)
 {
     MPI_Init(&argc, &argv);
 
-    test_matrix("../../../../test_data/dwt_162.pm");
-    test_matrix("../../../../test_data/odepa400.pm");
-    test_matrix("../../../../test_data/ww_36_pmec_36.pm");
+    test_matrix("../../../test_data/dwt_162.pm");
+    test_matrix("../../../test_data/odepa400.pm");
+    test_matrix("../../../test_data/ww_36_pmec_36.pm");
 
     MPI_Finalize();
     return 0;
