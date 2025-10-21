@@ -206,7 +206,7 @@ void standard_ping_pong(int max_p, char* sendbuf, char* recvbuf)
 
     if (rank == 0)
     {
-        printf("On-NUMA Ping-Pong:\n");
+        printf("On-NUMA Ping-Pong: \n");
     }
     rank0 = 0;
     rank1 = PPNUMA / 2;

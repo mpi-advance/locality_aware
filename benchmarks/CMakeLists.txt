@@ -16,6 +16,9 @@ endif()
 ## All should be compiled appropriately (cxx vs nvcc vs hipcc)
 set_source_files_properties(${CPP_SOURCES} PROPERTIES LANGUAGE ${locality_aware_LANG})
 
+## Assign a matrix file for testing. 
+set(TEST_MATRIX_FILE "${CMAKE_CURRENT_SOURCE_DIR}/../test_data/bcsstk01.pm")
+
 ## Go through each CPP file
 foreach(src ${CPP_SOURCES})
    
@@ -24,15 +27,16 @@ foreach(src ${CPP_SOURCES})
 
 
     ## Create executable
-    add_executable(${exec_name}.exe ${src})
+    add_executable(${exec_name} ${src})
 
     # Link with MPI 
-    target_link_libraries(${exec_name}.exe locality_aware ${MPI_LIBRARIES})
-	#
-	install(TARGETS ${exec_name}.exe DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
+    target_link_libraries(${exec_name} locality_aware ${MPI_LIBRARIES})
+	
+	#install in bin
+	install(TARGETS ${exec_name} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
 	
 	if(ENABLE_UNIT_TESTS)
-		make_test(${src} 4)
+		add_test(NAME ${exec_name}_Test COMMAND ${MPIRUN} -n 4 ./${exec_name} ${TEST_MATRIX_FILE})
 	endif()
 
 endforeach()

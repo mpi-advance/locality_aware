@@ -90,14 +90,14 @@ int main(int argc, char* argv[])
             printf("Pass Matrix Filename as Command Line Arg!\n");
         }
         MPI_Finalize();
-        return 0;
+        return 1;
     }
     char* filename = argv[1];
 
     // Read suitesparse matrix
     ParMat<int> A;
-    readParMatrix(filename, A);
-
+    int not_found = readParMatrix(filename, A);
+	if(not_found){return 1;}
     // Form Communication Package (A.send_comm, A.recv_comm)
     form_comm(A);
 

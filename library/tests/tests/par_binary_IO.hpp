@@ -32,7 +32,7 @@ void endian_swap(T* objp)
 }
 
 template <typename U>
-void readParMatrix(const char* filename, ParMat<U>& A)
+int readParMatrix(const char* filename, ParMat<U>& A)
 {
     int rank, num_procs;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -56,6 +56,11 @@ void readParMatrix(const char* filename, ParMat<U>& A)
     int sizeof_int32 = sizeof(code);
 
     FILE* ifile = fopen(filename, "rb");
+	if (ifile == NULL)
+	{
+		printf("Error openning file\n");
+		return 1;
+	}
     if (fseek(ifile, 0, SEEK_SET))
     {
         printf("Error seeking beginning of file\n");
@@ -364,6 +369,8 @@ void readParMatrix(const char* filename, ParMat<U>& A)
     }
 
     A.off_proc.n_cols = A.off_proc_num_cols;
+	
+	return 0;
 }
 
 #endif
