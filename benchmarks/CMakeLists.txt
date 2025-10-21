@@ -18,15 +18,21 @@ set_source_files_properties(${CPP_SOURCES} PROPERTIES LANGUAGE ${locality_aware_
 
 ## Go through each CPP file
 foreach(src ${CPP_SOURCES})
-
+   
     ## Grab the name without full path or extension
     get_filename_component(exec_name ${src} NAME_WE)
 
+
     ## Create executable
-    add_executable(${exec_name} ${src})
+    add_executable(${exec_name}.exe ${src})
 
     # Link with MPI 
-    target_link_libraries(${exec_name} locality_aware ${MPI_LIBRARIES})
+    target_link_libraries(${exec_name}.exe locality_aware ${MPI_LIBRARIES})
+	#
+	install(TARGETS ${exec_name}.exe DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
 	
-	add_test(NAME ${exec_name}_Test COMMAND ${MPIRUN} -n 16 ./${exec_name})
+	if(ENABLE_UNIT_TESTS)
+		make_test(${src} 4)
+	endif()
+
 endforeach()

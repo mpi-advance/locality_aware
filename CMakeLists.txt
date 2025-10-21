@@ -84,10 +84,10 @@ if (ENABLE_UNIT_TESTS)
 		target_link_libraries(${exec_name} locality_aware ${EXTERNAL_LIBS})
 		add_test(NAME ${exec_name}_Test COMMAND ${MPIRUN} -n ${count} ./${exec_name})
 	endfunction()
-	if (BENCHMARKS)
-		add_subdirectory(benchmarks)
-	endif()
-	
+endif()
+
+if (BENCHMARKS)
+	add_subdirectory(benchmarks)
 endif()
 
 
