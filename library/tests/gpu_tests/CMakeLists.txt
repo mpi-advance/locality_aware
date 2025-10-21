@@ -6,7 +6,7 @@ set_source_files_properties(${CPP_SOURCES} PROPERTIES LANGUAGE ${locality_aware_
 
 ## Go through each CPP file
 foreach(src ${CPP_SOURCES})
-    make_test(${src} 4)
+    make_test(${src} 16)
 endforeach()
 
 
