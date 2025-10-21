@@ -1,4 +1,4 @@
-#always add to gpu language converision list. 
+#always add to gpu language conversion list. 
 get_property(GPU_SOURCES GLOBAL PROPERTY GPU_SOURCES_GLOBAL)
 set_property(GLOBAL APPEND PROPERTY GPU_SOURCES_GLOBAL  
 	${CMAKE_CURRENT_SOURCE_DIR}/get_mem_types.c
