@@ -14,16 +14,39 @@ int MPIL_Alltoall_crs(const int send_nnz,
                       MPIL_Info* xinfo,
                       MPIL_Comm* xcomm)
 {
-    return alltoall_crs_personalized(send_nnz,
-                                     dest,
-                                     sendcount,
-                                     sendtype,
-                                     sendvals,
-                                     recv_nnz,
-                                     src_ptr,
-                                     recvcount,
-                                     recvtype,
-                                     recvvals_ptr,
-                                     xinfo,
-                                     xcomm);
+	alltoall_crs_ftn method;
+	switch (mpil_alltoall_crs_implementation)
+    {
+		case ALLTOALL_CRS_PERSONALIZED:
+			method = alltoall_crs_personalized;
+			break;
+		case ALLTOALL_CRS_PERSONALIZED_LOC:
+			method = alltoall_crs_personalized_loc;
+			break;
+		case ALLTOALL_CRS_RMA:
+			method = alltoall_crs_rma;
+			break;
+		case ALLTOALL_CRS_NONBLOCKING:
+			method = alltoall_crs_nonblocking;
+			break;
+		case ALLTOALL_CRS_NONBLOCKING_LOC:
+			method = alltoall_crs_nonblocking_loc;
+			break;
+		default:
+			method = alltoall_crs_personalized;
+			break;
+	}
+	return method(send_nnz,
+					dest,
+					 sendcount,
+					 sendtype,
+					 sendvals,
+					 recv_nnz,
+					 src_ptr,
+					 recvcount,
+					 recvtype,
+					 recvvals_ptr,
+					 xinfo,
+					 xcomm
+				);
 }

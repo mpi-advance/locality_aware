@@ -29,7 +29,7 @@ option(USE_CUDA "Enable NVIDIA CUDA support" OFF)
 option(USE_HIP "Enable AMD HIP support" OFF)
 option(GPU_AWARE "Use GPU-Aware MPI, if GPU support is enabled" ON)
 option(ENABLE_UNIT_TESTS "Enable unit testing" ON)
-
+option(BENCHMARKS "Enable benchmark tests" ON)
 
 set(MPIRUN "mpirun" CACHE STRING "MPIRUN command")
 
@@ -45,6 +45,7 @@ if(NOT USE_HIP)
   	  add_definitions(-DOPENMP)
 	endif()
 endif()
+
 
 # Set default language of .cpp files
 set(locality_aware_LANG CXX)
@@ -83,7 +84,13 @@ if (ENABLE_UNIT_TESTS)
 		target_link_libraries(${exec_name} locality_aware ${EXTERNAL_LIBS})
 		add_test(NAME ${exec_name}_Test COMMAND ${MPIRUN} -n ${count} ./${exec_name})
 	endfunction()
+	if (BENCHMARKS)
+		add_subdirectory(benchmarks)
+	endif()
+	
 endif()
+
+
 
 set_target_properties(locality_aware PROPERTIES PUBLIC_HEADER include/locality_aware.h)
 add_subdirectory(include)

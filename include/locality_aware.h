@@ -29,6 +29,13 @@ enum AlltoallMethod
     ALLTOALL_MULTILEADER_LOCALITY_PAIRWISE,
     ALLTOALL_MULTILEADER_LOCALITY_NONBLOCKING,
     ALLTOALL_PMPI
+	#ifdef USE_GPU
+	, ALLTOLL_COPYTOCPU,
+	ALLTOALL_GPU_PAIRWISE,
+	ALLTOALL_GPU_NONBLOCKING,
+	ALLTOALL_CTC_PAIRWISE,
+	ALLTOALL_CTC_NONBLOCKING
+	#endif
 };
 
 enum AlltoallvMethod
@@ -69,6 +76,7 @@ enum AlltoallvCRSMethod
     ALLTOALLV_CRS_PERSONALIZED_LOC
 };
 
+
 /* Create global variables for algorithm selection. */
 extern enum AlltoallMethod mpil_alltoall_implementation;
 extern enum AlltoallvMethod mpil_alltoallv_implementation;
@@ -103,6 +111,7 @@ int MPIL_Comm_device_init(MPIL_Comm* xcomm);
 int MPIL_Comm_device_free(MPIL_Comm* xcomm);
 
 int MPIL_Comm_req_resize(MPIL_Comm* xcomm, int n);
+int MPIL_Comm_update_locality(MPIL_Comm* xcomm, int ppn);
 
 /** @brief get current tag and increment tag in the comm.**/
 int MPIL_Comm_tag(MPIL_Comm* comm, int* tag);

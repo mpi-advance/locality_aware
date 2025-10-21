@@ -4,7 +4,7 @@
 
 // For testing purposes
 // Manually update aggregation size (ppn)
-void update_locality(MPIL_Comm* xcomm, int ppn)
+int update_locality(MPIL_Comm* xcomm, int ppn)
 {
     int rank, num_procs;
     MPI_Comm_rank(xcomm->global_comm, &rank);
@@ -63,4 +63,6 @@ void update_locality(MPIL_Comm* xcomm, int ppn)
     MPI_Comm_size(xcomm->local_comm, &(xcomm->ppn));
     xcomm->num_nodes = ((num_procs - 1) / xcomm->ppn) + 1;
     xcomm->rank_node = get_node(xcomm, rank);
+	
+	return MPI_SUCCESS;
 }
