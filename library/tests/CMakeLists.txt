@@ -5,7 +5,7 @@ foreach(src ${CPP_SOURCES})
 	make_test(${src} 16)
 endforeach()
 
-if(USE_CUDA)
+if(USE_GPU)
 	add_subdirectory(gpu_tests)
 endif()
 
