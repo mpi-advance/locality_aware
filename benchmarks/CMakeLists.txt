@@ -36,7 +36,7 @@ foreach(src ${CPP_SOURCES})
 	install(TARGETS ${exec_name} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
 	
 	if(ENABLE_UNIT_TESTS)
-		add_test(NAME ${exec_name}_Test COMMAND ${MPIRUN} -n ${TEST_PROCS} ./${exec_name} ${TEST_MATRIX_FILE})
+		add_test(NAME ${exec_name}_Benchmark COMMAND ${MPIRUN} -n ${TEST_PROCS} ./${exec_name} ${TEST_MATRIX_FILE})
 	endif()
 
 endforeach()
