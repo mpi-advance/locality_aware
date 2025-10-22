@@ -237,7 +237,7 @@ int alltoallv_crs_nonblocking(const int send_nnz,
     return MPI_SUCCESS;
 }
 
-void local_redistribute(int n_recvs,
+void local_redistributev(int n_recvs,
                         std::vector<int>& origins,
                         std::vector<int>& origin_displs,
                         std::vector<char>& recv_buf,
@@ -652,7 +652,7 @@ int alltoallv_crs_personalized_loc(const int send_nnz,
 
     MPI_Waitall(n_sends, comm->requests, MPI_STATUSES_IGNORE);
 
-    local_redistribute(n_recvs,
+    local_redistributev(n_recvs,
                        origins,
                        origin_displs,
                        recv_buf,
@@ -860,7 +860,7 @@ int alltoallv_crs_nonblocking_loc(const int send_nnz,
         }
     }
 
-    local_redistribute(n_recvs,
+    local_redistributev(n_recvs,
                        origins,
                        origin_displs,
                        recv_buf,
