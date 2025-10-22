@@ -2,7 +2,7 @@
 file(GLOB CPP_SOURCES CONFIGURE_DEPENDS "*.cpp" ".c")
 
 foreach(src ${CPP_SOURCES})
-	make_test(${src} 16)
+	make_test(${src})
 endforeach()
 
 if(USE_GPU)

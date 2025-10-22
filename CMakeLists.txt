@@ -77,12 +77,13 @@ endif()
 
 if (ENABLE_UNIT_TESTS)
     enable_testing()
-	function(make_test file count)
+	set(TEST_PROCS "16" CACHE STRING "Description of MY_VARIABLE")
+	function(make_test file)
 		#get file name for unique handle
 		get_filename_component(exec_name ${file} NAME_WE)
 		add_executable(${exec_name} ${file})
 		target_link_libraries(${exec_name} locality_aware ${EXTERNAL_LIBS})
-		add_test(NAME ${exec_name}_Test COMMAND ${MPIRUN} -n ${count} ./${exec_name})
+		add_test(NAME ${exec_name}_Test COMMAND ${MPIRUN} -n ${TEST_PROCS} ./${exec_name})
 	endfunction()
 endif()
 

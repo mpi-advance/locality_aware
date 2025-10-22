@@ -96,8 +96,11 @@ int main(int argc, char* argv[])
 
     // Read suitesparse matrix
     ParMat<int> A;
-    int not_found = readParMatrix(filename, A);
-	if(not_found){return 1;}
+    int file_error = readParMatrix(filename, A);
+	if(file_error)
+	{
+		return 1;
+	}
     // Form Communication Package (A.send_comm, A.recv_comm)
     form_comm(A);
 
