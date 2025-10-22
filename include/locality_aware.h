@@ -88,13 +88,13 @@ extern enum AlltoallCRSMethod mpil_alltoall_crs_implementation;
 extern enum AlltoallvCRSMethod mpil_alltoallv_crs_implementation;
 
 /* Algorithm selection functions. */
-int MPIL_set_alltoall_algorithm(enum AlltoallMethod algorithm);
-int MPIL_set_alltoallv_algorithm(enum AlltoallvMethod algorithm);
-int MPIL_set_alltoallv_neighbor_alogorithm(enum NeighborAlltoallvMethod algorithm);
-int MPIL_set_alltoallv_neighbor_init_alogorithm(
+int MPIL_Set_alltoall_algorithm(enum AlltoallMethod algorithm);
+int MPIL_Set_alltoallv_algorithm(enum AlltoallvMethod algorithm);
+int MPIL_Set_alltoallv_neighbor_alogorithm(enum NeighborAlltoallvMethod algorithm);
+int MPIL_Set_alltoallv_neighbor_init_alogorithm(
     enum NeighborAlltoallvInitMethod algorithm);
-int MPIL_set_alltoall_crs(enum AlltoallCRSMethod algorithm);
-int MPIL_set_alltoallv_crs(enum AlltoallvCRSMethod algorithm);
+int MPIL_Set_alltoall_crs(enum AlltoallCRSMethod algorithm);
+int MPIL_Set_alltoallv_crs(enum AlltoallvCRSMethod algorithm);
 
 // Functions to control various versions of the MPIL_Comm object---------------------
 int MPIL_Comm_init(MPIL_Comm** xcomm_ptr, MPI_Comm global_comm);

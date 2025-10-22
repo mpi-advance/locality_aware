@@ -61,8 +61,8 @@ int main(int argc, char* argv[])
 
     // Read suitesparse matrix
     ParMat<int> A;
-    int found = readParMatrix(filename, A);
-	if(found)
+    int file_error = readParMatrix(filename, A);
+	if(file_error)
 	{
 		return 1; 
 	}
@@ -137,7 +137,7 @@ int main(int argc, char* argv[])
 
     // Time RMA
     MPI_Barrier(MPI_COMM_WORLD);
-	MPIL_set_alltoall_crs(ALLTOALL_CRS_RMA);
+	MPIL_Set_alltoall_crs(ALLTOALL_CRS_RMA);
     t0 = MPI_Wtime();
     for (int i = 0; i < n_iter; i++)
     {
@@ -167,7 +167,7 @@ int main(int argc, char* argv[])
 
     // Time Personalized
     MPI_Barrier(MPI_COMM_WORLD);
-	MPIL_set_alltoall_crs(ALLTOALL_CRS_PERSONALIZED);
+	MPIL_Set_alltoall_crs(ALLTOALL_CRS_PERSONALIZED);
 	
     t0 = MPI_Wtime();
     for (int i = 0; i < n_iter; i++)
@@ -198,7 +198,7 @@ int main(int argc, char* argv[])
 
     // Time Nonblocking
     MPI_Barrier(MPI_COMM_WORLD);
-	MPIL_set_alltoall_crs(ALLTOALL_CRS_NONBLOCKING);
+	MPIL_Set_alltoall_crs(ALLTOALL_CRS_NONBLOCKING);
     t0 = MPI_Wtime();
     for (int i = 0; i < n_iter; i++)
     {
@@ -228,7 +228,7 @@ int main(int argc, char* argv[])
 
     // Time Personalized Locality
     MPI_Barrier(MPI_COMM_WORLD);
-	MPIL_set_alltoall_crs(ALLTOALL_CRS_PERSONALIZED_LOC);
+	MPIL_Set_alltoall_crs(ALLTOALL_CRS_PERSONALIZED_LOC);
     t0 = MPI_Wtime();
     for (int i = 0; i < n_iter; i++)
     {
@@ -258,7 +258,7 @@ int main(int argc, char* argv[])
 
     // Time Nonblocking Locality
     MPI_Barrier(MPI_COMM_WORLD);
-	MPIL_set_alltoall_crs(ALLTOALL_CRS_NONBLOCKING_LOC);
+	MPIL_Set_alltoall_crs(ALLTOALL_CRS_NONBLOCKING_LOC);
     t0 = MPI_Wtime();
     for (int i = 0; i < n_iter; i++)
     {

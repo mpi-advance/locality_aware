@@ -160,7 +160,7 @@ int main(int argc, char* argv[])
 
     // Time Personalized
     MPI_Barrier(MPI_COMM_WORLD);
-	MPIL_set_alltoallv_crs(ALLTOALLV_CRS_PERSONALIZED);
+	MPIL_Set_alltoallv_crs(ALLTOALLV_CRS_PERSONALIZED);
     t0 = MPI_Wtime();
     for (int i = 0; i < n_iter; i++)
     {
@@ -206,7 +206,7 @@ int main(int argc, char* argv[])
 
     // Time Nonblocking
     MPI_Barrier(MPI_COMM_WORLD);
-	MPIL_set_alltoallv_crs(ALLTOALLV_CRS_NONBLOCKING);
+	MPIL_Set_alltoallv_crs(ALLTOALLV_CRS_NONBLOCKING);
     t0 = MPI_Wtime();
     for (int i = 0; i < n_iter; i++)
     {
@@ -252,7 +252,7 @@ int main(int argc, char* argv[])
 
     // Time Personalized Locality
     MPI_Barrier(MPI_COMM_WORLD);
-	MPIL_set_alltoallv_crs(ALLTOALLV_CRS_PERSONALIZED_LOC);
+	MPIL_Set_alltoallv_crs(ALLTOALLV_CRS_PERSONALIZED_LOC);
     t0 = MPI_Wtime();
     for (int i = 0; i < n_iter; i++)
     {
@@ -298,7 +298,7 @@ int main(int argc, char* argv[])
 
     // Time Nonblocking Locality
     MPI_Barrier(MPI_COMM_WORLD);
-	MPIL_set_alltoallv_crs(ALLTOALLV_CRS_NONBLOCKING_LOC);
+	MPIL_Set_alltoallv_crs(ALLTOALLV_CRS_NONBLOCKING_LOC);
     t0 = MPI_Wtime();
     for (int i = 0; i < n_iter; i++)
     {
