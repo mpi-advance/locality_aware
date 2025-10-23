@@ -8,7 +8,6 @@
 #include <set>
 #include <vector>
 
-#include "communicator/MPIL_Comm.h"
 #include "locality_aware.h"
 #include "tests/par_binary_IO.hpp"
 #include "tests/sparse_mat.hpp"
@@ -83,7 +82,7 @@ void test_matrix(const char* filename)
     MPIL_Request* xrequest;
     MPIL_Comm* xcomm;
     MPIL_Comm_init(&xcomm, MPI_COMM_WORLD);
-    update_locality(xcomm, 4);
+    MPIL_Comm_update_locality(xcomm, 4);
     MPIL_Info* xinfo;
     MPIL_Info_init(&xinfo);
 

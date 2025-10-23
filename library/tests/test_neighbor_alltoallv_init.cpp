@@ -1,17 +1,14 @@
-#include <assert.h>
-#include <math.h>
-#include <mpi.h>
-#include <stdlib.h>
-
-#include <iostream>
-#include <set>
-#include <vector>
-
-#include "communicator/MPIL_Comm.h"
 #include "locality_aware.h"
+#include <mpi.h>
+#include <math.h>
+#include <stdlib.h>
+#include <iostream>
+#include <assert.h>
+#include <vector>
+#include <set>
+
 #include "neighbor_data.hpp"
-#include "neighborhood/neighborhood_init.h"
-#include "neighborhood/neighbor.h"
+
 
 void compare_neighbor_alltoallv_results(std::vector<int>& pmpi_recv_vals, std::vector<int>& mpix_recv_vals, int s)
 {
@@ -70,22 +67,12 @@ int main(int argc, char** argv)
     MPI_Comm std_comm;
     MPI_Status status;
     MPIL_Comm* xcomm;
-    MPIL_Comm_init(&xcomm, MPI_COMM_WORLD);
-    update_locality(xcomm, 4);
     MPIL_Request* xrequest;
 
     MPIL_Info* xinfo;
     MPIL_Info_init(&xinfo);
 
-    MPIL_Topo* topo;
-    MPIL_Topo_init(recv_data.num_msgs,
-            recv_data.procs.data(), 
-            recv_data.counts.data(),
-            send_data.num_msgs, 
-            send_data.procs.data(),
-            send_data.counts.data(),
-            xinfo, 
-            &topo);
+
 
     // Standard MPI Dist Graph Create
     MPI_Dist_graph_create_adjacent(MPI_COMM_WORLD,
@@ -98,6 +85,22 @@ int main(int argc, char** argv)
             MPI_INFO_NULL, 
             0, 
             &std_comm);
+
+    // MPI Advance Dist Graph Create
+    MPIL_Dist_graph_create_adjacent(MPI_COMM_WORLD,
+            recv_data.num_msgs, 
+            recv_data.procs.data(), 
+            recv_data.counts.data(),
+            send_data.num_msgs, 
+            send_data.procs.data(),
+            send_data.counts.data(),
+            xinfo, 
+            0, 
+            &xcomm);
+    // Update Locality : 4 PPN (for single-node tests)
+    MPIL_Comm_update_locality(xcomm, 4);
+
+
 
     // Standard MPI Implementation of Alltoallv
     MPI_Neighbor_alltoallv(alltoallv_send_vals.data(), 
@@ -112,7 +115,9 @@ int main(int argc, char** argv)
 
 
     // Simple Persistent MPI Advance Implementation
-    neighbor_alltoallv_init_standard(alltoallv_send_vals.data(), 
+    MPIL_Set_alltoallv_neighbor_init_alogorithm(NEIGHBOR_ALLTOALLV_INIT_STANDARD);
+    std::fill(mpix_recv_vals.begin(), mpix_recv_vals.end(), 0);
+    MPIL_Neighbor_alltoallv_init(alltoallv_send_vals.data(), 
             send_data.counts.data(),
             send_data.indptr.data(), 
             MPI_INT,
@@ -120,7 +125,6 @@ int main(int argc, char** argv)
             recv_data.counts.data(),
             recv_data.indptr.data(), 
             MPI_INT,
-            topo,
             xcomm, 
             xinfo,
             &xrequest);
@@ -130,9 +134,31 @@ int main(int argc, char** argv)
     compare_neighbor_alltoallv_results(pmpi_recv_vals, mpix_recv_vals, recv_data.size_msgs);
     
 
-    // Locality-Aware MPI Advance Implementation
+    MPIL_Set_alltoallv_neighbor_init_alogorithm(NEIGHBOR_ALLTOALLV_INIT_LOCALITY);
     std::fill(mpix_recv_vals.begin(), mpix_recv_vals.end(), 0);
-    neighbor_alltoallv_init_locality_ext(alltoallv_send_vals.data(), 
+    MPIL_Neighbor_alltoallv_init(alltoallv_send_vals.data(), 
+            send_data.counts.data(),
+            send_data.indptr.data(), 
+            MPI_INT,
+            mpix_recv_vals.data(), 
+            recv_data.counts.data(),
+            recv_data.indptr.data(), 
+            MPI_INT,
+            xcomm, 
+            xinfo,
+            &xrequest);
+    MPIL_Start(xrequest);
+    MPIL_Wait(xrequest, &status);
+    MPIL_Request_free(&xrequest);
+    compare_neighbor_alltoallv_results(pmpi_recv_vals, mpix_recv_vals, recv_data.size_msgs);
+
+
+
+
+
+    MPIL_Set_alltoallv_neighbor_init_alogorithm(NEIGHBOR_ALLTOALLV_INIT_STANDARD);
+    std::fill(mpix_recv_vals.begin(), mpix_recv_vals.end(), 0);
+    MPIL_Neighbor_alltoallv_init_ext(alltoallv_send_vals.data(), 
             send_data.counts.data(),
             send_data.indptr.data(), 
             global_send_idx.data(),
@@ -142,7 +168,6 @@ int main(int argc, char** argv)
             recv_data.indptr.data(), 
             global_recv_idx.data(),
             MPI_INT,
-            topo,
             xcomm, 
             xinfo,
             &xrequest);
@@ -150,19 +175,20 @@ int main(int argc, char** argv)
     MPIL_Wait(xrequest, &status);
     MPIL_Request_free(&xrequest);
     compare_neighbor_alltoallv_results(pmpi_recv_vals, mpix_recv_vals, recv_data.size_msgs);
+    
 
-
-    // Partial Locality-Aware MPI Advance Implementation
+    MPIL_Set_alltoallv_neighbor_init_alogorithm(NEIGHBOR_ALLTOALLV_INIT_LOCALITY);
     std::fill(mpix_recv_vals.begin(), mpix_recv_vals.end(), 0);
-    neighbor_alltoallv_init_locality(alltoallv_send_vals.data(), 
+    MPIL_Neighbor_alltoallv_init_ext(alltoallv_send_vals.data(), 
             send_data.counts.data(),
             send_data.indptr.data(), 
+            global_send_idx.data(),
             MPI_INT,
             mpix_recv_vals.data(), 
             recv_data.counts.data(),
             recv_data.indptr.data(), 
+            global_recv_idx.data(),
             MPI_INT,
-            topo,
             xcomm, 
             xinfo,
             &xrequest);
@@ -171,7 +197,7 @@ int main(int argc, char** argv)
     MPIL_Request_free(&xrequest);
     compare_neighbor_alltoallv_results(pmpi_recv_vals, mpix_recv_vals, recv_data.size_msgs);
 
-    MPIL_Topo_free(&topo);
+
     MPIL_Info_free(&xinfo);
     MPIL_Comm_free(&xcomm);
     MPI_Comm_free(&std_comm);
@@ -180,6 +206,7 @@ int main(int argc, char** argv)
         delete[] send_counts;
     if (recv_data.counts.data() == NULL)
         delete[] recv_counts;
+
 
     MPI_Finalize();
     return 0;

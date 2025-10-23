@@ -7,7 +7,7 @@
 #include <set>
 #include <vector>
 
-#include "communicator/MPIL_Comm.h"
+//#include "communicator/MPIL_Comm.h"
 #include "locality_aware.h"
 
 void compare_alltoall_results(std::vector<int>& pmpi, std::vector<int>& mpil, int s)
@@ -48,7 +48,7 @@ int main(int argc, char** argv)
 
     MPIL_Comm* locality_comm;
     MPIL_Comm_init(&locality_comm, MPI_COMM_WORLD);
-    update_locality(locality_comm, 4);
+    MPIL_Comm_update_locality(locality_comm, 4);
 
     for (int i = 0; i < max_i; i++)
     {

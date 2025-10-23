@@ -8,12 +8,9 @@
 #include <set>
 #include <vector>
 
-#include "communicator/MPIL_Comm.h"
 #include "locality_aware.h"
 #include "tests/par_binary_IO.hpp"
 #include "tests/sparse_mat.hpp"
-#include "neighborhood/neighborhood_init.h"
-#include "neighborhood/neighbor.h"
 
 void compare_neighbor_alltoallv_results(std::vector<int>& pmpi_recv_vals,
                                         std::vector<int>& mpix_recv_vals,
@@ -150,7 +147,7 @@ void test_matrix(const char* filename)
                                     0,
                                     &xcomm);
 
-    update_locality(xcomm, 4);
+    MPIL_Comm_update_locality(xcomm, 4);
 
     std::fill(mpix_recv_vals.begin(), mpix_recv_vals.end(), 0);
     MPIL_Neighbor_alltoallv(alltoallv_send_vals.data(),
@@ -165,12 +162,11 @@ void test_matrix(const char* filename)
     compare_neighbor_alltoallv_results(
         pmpi_recv_vals, mpix_recv_vals, A.recv_comm.size_msgs);
 
-    MPIL_Topo* topo;
-    MPIL_Topo_from_neighbor_comm(xcomm, &topo);
 
     // 2. Node-Aware Communication
     std::fill(mpix_recv_vals.begin(), mpix_recv_vals.end(), 0);
-    neighbor_alltoallv_standard(alltoallv_send_vals.data(),
+	MPIL_Set_alltoallv_neighbor_alogorithm(NEIGHBOR_ALLTOALLV_STANDARD);
+	MPIL_Neighbor_alltoallv(alltoallv_send_vals.data(),
                                 A.send_comm.counts.data(),
                                 A.send_comm.ptr.data(),
                                 MPI_INT,
@@ -178,27 +174,28 @@ void test_matrix(const char* filename)
                                 A.recv_comm.counts.data(),
                                 A.recv_comm.ptr.data(),
                                 MPI_INT,
-                                topo,
                                 xcomm);
+
     compare_neighbor_alltoallv_results(
         pmpi_recv_vals, mpix_recv_vals, A.recv_comm.size_msgs);
 
     // 3. MPI Advance - Optimized Communication
     std::fill(mpix_recv_vals.begin(), mpix_recv_vals.end(), 0);
-    neighbor_alltoallv_locality(alltoallv_send_vals.data(),
-                                A.send_comm.counts.data(),
-                                A.send_comm.ptr.data(),
-                                MPI_INT,
-                                mpix_recv_vals.data(),
-                                A.recv_comm.counts.data(),
-                                A.recv_comm.ptr.data(),
-                                MPI_INT,
-                                topo,
-                                xcomm);
+	MPIL_Set_alltoallv_neighbor_alogorithm(NEIGHBOR_ALLTOALLV_LOCALITY);
+	MPIL_Neighbor_alltoallv(alltoallv_send_vals.data(),
+							A.send_comm.counts.data(),
+							A.send_comm.ptr.data(),
+							MPI_INT,
+							mpix_recv_vals.data(),
+							A.recv_comm.counts.data(),
+							A.recv_comm.ptr.data(),
+							MPI_INT,
+							xcomm);
+
     compare_neighbor_alltoallv_results(
         pmpi_recv_vals, mpix_recv_vals, A.recv_comm.size_msgs);
 
-    MPIL_Topo_free(&topo);
+    //MPIL_Topo_free(&topo);
     MPIL_Info_free(&xinfo);
     MPIL_Comm_free(&xcomm);
     PMPI_Comm_free(&std_comm);

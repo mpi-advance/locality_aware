@@ -8,7 +8,6 @@
 #include <vector>
 
 #include "locality_aware.h"
-#include "collective/alltoallv.h"
 
 void compare_alltoallv_results(std::vector<int>& pmpi, std::vector<int>& mpil, int s)
 {
@@ -51,7 +50,7 @@ int main(int argc, char** argv)
 
     MPIL_Comm* xcomm;
     MPIL_Comm_init(&xcomm, MPI_COMM_WORLD);
-    update_locality(xcomm, 4);
+    MPIL_Comm_update_locality(xcomm, 4);
 
     for (int i = 0; i < max_i; i++)
     {
@@ -92,7 +91,8 @@ int main(int argc, char** argv)
         compare_alltoallv_results(pmpi_alltoallv, mpil_alltoallv, s);
 
         std::fill(mpil_alltoallv.begin(), mpil_alltoallv.end(), 0);
-        alltoallv_pairwise(local_data.data(),
+		MPIL_Set_alltoallv_algorithm(ALLTOALLV_PAIRWISE);
+        MPIL_Alltoallv(local_data.data(),
                            sizes.data(),
                            displs.data(),
                            MPI_INT,
@@ -104,7 +104,8 @@ int main(int argc, char** argv)
         compare_alltoallv_results(pmpi_alltoallv, mpil_alltoallv, s);
 
         std::fill(mpil_alltoallv.begin(), mpil_alltoallv.end(), 0);
-        alltoallv_nonblocking(local_data.data(),
+		MPIL_Set_alltoallv_algorithm(ALLTOALLV_NONBLOCKING);
+        MPIL_Alltoallv(local_data.data(),
                               sizes.data(),
                               displs.data(),
                               MPI_INT,
@@ -116,7 +117,8 @@ int main(int argc, char** argv)
         compare_alltoallv_results(pmpi_alltoallv, mpil_alltoallv, s);
 
         std::fill(mpil_alltoallv.begin(), mpil_alltoallv.end(), 0);
-        alltoallv_batch(local_data.data(),
+		MPIL_Set_alltoallv_algorithm(ALLTOALLV_BATCH);
+        MPIL_Alltoallv(local_data.data(),
                         sizes.data(),
                         displs.data(),
                         MPI_INT,
@@ -128,7 +130,8 @@ int main(int argc, char** argv)
         compare_alltoallv_results(pmpi_alltoallv, mpil_alltoallv, s);
 
         std::fill(mpil_alltoallv.begin(), mpil_alltoallv.end(), 0);
-        alltoallv_batch_async(local_data.data(),
+		MPIL_Set_alltoallv_algorithm(ALLTOALLV_BATCH_ASYNC);
+        MPIL_Alltoallv(local_data.data(),
                               sizes.data(),
                               displs.data(),
                               MPI_INT,

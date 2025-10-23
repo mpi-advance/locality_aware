@@ -8,8 +8,7 @@
 #include <set>
 #include <vector>
 
-#include "../../include/locality_aware.h"
-#include "communicator/MPIL_Comm.h"
+#include "locality_aware.h"
 #include "tests/par_binary_IO.hpp"
 #include "tests/sparse_mat.hpp"
 
@@ -148,7 +147,7 @@ void test_matrix(const char* filename)
                                     0,
                                     &xcomm);
 
-    update_locality(xcomm, 4);
+    MPIL_Comm_update_locality(xcomm, 4);
 
     MPIL_Set_alltoallv_neighbor_alogorithm(NEIGHBOR_ALLTOALLV_STANDARD);
     std::fill(mpix_recv_vals.begin(), mpix_recv_vals.end(), 0);

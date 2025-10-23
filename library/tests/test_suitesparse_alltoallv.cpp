@@ -9,12 +9,8 @@
 #include <vector>
 
 #include "locality_aware.h"
-#include "collective/alltoallv.h"
 #include "tests/par_binary_IO.hpp"
 #include "tests/sparse_mat.hpp"
-#include "neighborhood/neighborhood_init.h"
-#include "neighborhood/neighbor.h"
-
 
 void compare_alltoallv_results(std::vector<int>& pmpi, std::vector<int>& mpil, int s)
 {
@@ -40,7 +36,7 @@ void test_matrix(const char* filename)
 
     MPIL_Comm* xcomm;
     MPIL_Comm_init(&xcomm, MPI_COMM_WORLD);
-    update_locality(xcomm, 4);
+    MPIL_Comm_update_locality(xcomm, 4);
 
     // Read suitesparse matrix
     ParMat<int> A;
@@ -131,7 +127,8 @@ void test_matrix(const char* filename)
     compare_alltoallv_results(pmpi_recv_vals, mpil_recv_vals, A.recv_comm.size_msgs);
 
     std::fill(mpil_recv_vals.begin(), mpil_recv_vals.end(), 0);
-    alltoallv_pairwise(alltoallv_send_vals.data(),
+	MPIL_Set_alltoallv_algorithm(ALLTOALLV_PAIRWISE);
+    MPIL_Alltoallv(alltoallv_send_vals.data(),
                        sendcounts.data(),
                        sdispls.data(),
                        MPI_INT,
@@ -143,7 +140,8 @@ void test_matrix(const char* filename)
     compare_alltoallv_results(pmpi_recv_vals, mpil_recv_vals, A.recv_comm.size_msgs);
 
     std::fill(mpil_recv_vals.begin(), mpil_recv_vals.end(), 0);
-    alltoallv_nonblocking(alltoallv_send_vals.data(),
+	MPIL_Set_alltoallv_algorithm(ALLTOALLV_NONBLOCKING);
+    MPIL_Alltoallv(alltoallv_send_vals.data(),
                           sendcounts.data(),
                           sdispls.data(),
                           MPI_INT,
@@ -155,7 +153,8 @@ void test_matrix(const char* filename)
     compare_alltoallv_results(pmpi_recv_vals, mpil_recv_vals, A.recv_comm.size_msgs);
 
     std::fill(mpil_recv_vals.begin(), mpil_recv_vals.end(), 0);
-    alltoallv_batch(alltoallv_send_vals.data(),
+	MPIL_Set_alltoallv_algorithm(ALLTOALLV_BATCH);
+    MPIL_Alltoallv(alltoallv_send_vals.data(),
                     sendcounts.data(),
                     sdispls.data(),
                     MPI_INT,
@@ -167,7 +166,8 @@ void test_matrix(const char* filename)
     compare_alltoallv_results(pmpi_recv_vals, mpil_recv_vals, A.recv_comm.size_msgs);
 
     std::fill(mpil_recv_vals.begin(), mpil_recv_vals.end(), 0);
-    alltoallv_batch_async(alltoallv_send_vals.data(),
+	MPIL_Set_alltoallv_algorithm(ALLTOALLV_BATCH_ASYNC);
+    MPIL_Alltoallv(alltoallv_send_vals.data(),
                           sendcounts.data(),
                           sdispls.data(),
                           MPI_INT,

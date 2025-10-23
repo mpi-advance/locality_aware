@@ -5,7 +5,6 @@
 #include <stdlib.h>
 
 #include "locality_aware.h"
-#include "communicator/MPIL_Comm.h"
 
 void compare_alltoall_results(int* pmpi, int* mpil, int s)
 {

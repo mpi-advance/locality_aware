@@ -7,7 +7,7 @@
 #include <set>
 #include <vector>
 
-#include "persistent/MPIL_Request.h"
+//#include "persistent/MPIL_Request.h"
 #include "locality_aware.h"
 #include "neighbor_data.hpp"
 
@@ -97,7 +97,7 @@ int main(int argc, char** argv)
                                     &xcomm);
 
     // Update Locality : 4 PPN (for single-node tests)
-    update_locality(xcomm, 4);
+    MPIL_Comm_update_locality(xcomm, 4);
 
     // Standard MPI Implementation of Alltoallv
     int* send_counts = send_data.counts.data();
@@ -143,7 +143,7 @@ int main(int argc, char** argv)
 
     // Reorder during first send/recv
     std::fill(mpix_recv_vals.begin(), mpix_recv_vals.end(), 0);
-    xrequest->reorder = 1;
+    MPIL_Request_reorder(xrequest, 1);
     MPIL_Start(xrequest);
     MPIL_Wait(xrequest, &status);
     compare_neighbor_alltoallv_results(

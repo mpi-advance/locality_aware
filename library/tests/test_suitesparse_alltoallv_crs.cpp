@@ -8,11 +8,9 @@
 #include <set>
 #include <vector>
 
-#include "communicator/MPIL_Comm.h"
 #include "locality_aware.h"
 #include "tests/par_binary_IO.hpp"
 #include "tests/sparse_mat.hpp"
-#include "neighborhood/alltoall_crs.h"
 
 void compare_alltoallv_crs_results(int n_recvs,
                                    int send_msgs,
@@ -82,7 +80,7 @@ void test_matrix(const char* filename)
     MPIL_Info_init(&xinfo);
 
     // Update so there are 4 PPN rather than what MPI_Comm_split returns
-    update_locality(xcomm, 4);
+    MPIL_Comm_update_locality(xcomm, 4);
 
     // Read suitesparse matrix
     ParMat<int> A;
@@ -103,7 +101,8 @@ void test_matrix(const char* filename)
 
     /* TEST PERSONALIZED VERSION */
     s_recvs = -1;
-    alltoallv_crs_personalized(A.recv_comm.n_msgs,
+	MPIL_Set_alltoallv_crs(ALLTOALLV_CRS_PERSONALIZED);
+    MPIL_Alltoallv_crs(A.recv_comm.n_msgs,
                                A.recv_comm.size_msgs,
                                A.recv_comm.procs.data(),
                                A.recv_comm.counts.data(),
@@ -138,7 +137,8 @@ void test_matrix(const char* filename)
 
     /* TEST NONBLOCKING VERSION */
     s_recvs = -1;
-    alltoallv_crs_nonblocking(A.recv_comm.n_msgs,
+	MPIL_Set_alltoallv_crs(ALLTOALLV_CRS_NONBLOCKING);
+    MPIL_Alltoallv_crs(A.recv_comm.n_msgs,
                               A.recv_comm.size_msgs,
                               A.recv_comm.procs.data(),
                               A.recv_comm.counts.data(),
@@ -173,7 +173,8 @@ void test_matrix(const char* filename)
 
     /* TEST PERSONALIZED LOCALITY VERSION */
     s_recvs = -1;
-    alltoallv_crs_personalized_loc(A.recv_comm.n_msgs,
+	MPIL_Set_alltoallv_crs(ALLTOALLV_CRS_PERSONALIZED_LOC);
+    MPIL_Alltoallv_crs(A.recv_comm.n_msgs,
                                    A.recv_comm.size_msgs,
                                    A.recv_comm.procs.data(),
                                    A.recv_comm.counts.data(),
@@ -208,7 +209,8 @@ void test_matrix(const char* filename)
 
     /* TEST PERSONALIZED LOCALITY VERSION */
     s_recvs = -1;
-    alltoallv_crs_nonblocking_loc(A.recv_comm.n_msgs,
+	MPIL_Set_alltoallv_crs(ALLTOALLV_CRS_NONBLOCKING_LOC);
+    MPIL_Alltoallv_crs(A.recv_comm.n_msgs,
                                   A.recv_comm.size_msgs,
                                   A.recv_comm.procs.data(),
                                   A.recv_comm.counts.data(),

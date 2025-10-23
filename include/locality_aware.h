@@ -16,6 +16,14 @@ typedef struct _MPIL_Request MPIL_Request;
 /* Enums for listing of implemented algorithms */
 enum AlltoallMethod
 {
+	#ifdef GPU
+	#ifdef GPU_AWARE
+	ALLTOALL_GPU_PAIRWISE,
+	ALLTOALL_GPU_NONBLOCKING,
+	ALLTOALL_CTC_PAIRWISE,
+	ALLTOALL_CTC_NONBLOCKING,
+	#endif
+	#endif
     ALLTOALL_PAIRWISE,
     ALLTOALL_NONBLOCKING,
     ALLTOALL_HIERARCHICAL_PAIRWISE,
@@ -29,15 +37,7 @@ enum AlltoallMethod
     ALLTOALL_MULTILEADER_LOCALITY_PAIRWISE,
     ALLTOALL_MULTILEADER_LOCALITY_NONBLOCKING,
     ALLTOALL_PMPI
-	#ifdef GPU
-	#ifdef GPU_AWARE
-	,
-	ALLTOALL_GPU_PAIRWISE,
-	ALLTOALL_GPU_NONBLOCKING,
-	ALLTOALL_CTC_PAIRWISE,
-	ALLTOALL_CTC_NONBLOCKING
-	#endif
-	#endif
+
 };
 
 enum AlltoallvMethod
@@ -138,6 +138,7 @@ int MPIL_Topo_free(MPIL_Topo** topo);
 int MPIL_Start(MPIL_Request* request);
 int MPIL_Wait(MPIL_Request* request, MPI_Status* status);
 int MPIL_Request_free(MPIL_Request** request);
+int MPIL_Request_reorder(MPIL_Request* request, int value);
 
 int MPIL_Dist_graph_create_adjacent(MPI_Comm comm_old,
                                     int indegree,

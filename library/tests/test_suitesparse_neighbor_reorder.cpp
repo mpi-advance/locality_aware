@@ -8,11 +8,8 @@
 #include <set>
 #include <vector>
 
-#include "communicator/MPIL_Comm.h"
 #include "locality_aware.h"
 #include "tests/par_binary_IO.hpp"
-#include "tests/sparse_mat.hpp"
-#include "persistent/MPIL_Request.h"
 
 void compare_neighbor_alltoallv_results(std::vector<int>& pmpi_recv_vals,
                                         std::vector<int>& mpix_recv_vals,
@@ -149,7 +146,7 @@ void test_matrix(const char* filename)
                                     0,
                                     &neighbor_comm);
 
-    update_locality(neighbor_comm, 4);
+    MPIL_Comm_update_locality(neighbor_comm, 4);
 
     // 2. Node-Aware Communication - reorder during first send/recv
     MPIL_Neighbor_alltoallv_init(alltoallv_send_vals.data(),
@@ -165,7 +162,7 @@ void test_matrix(const char* filename)
                                  &neighbor_request);
 
     std::fill(mpix_recv_vals.begin(), mpix_recv_vals.end(), 0);
-    neighbor_request->reorder = 1;
+	MPIL_Request_reorder(neighbor_request, 1);
     MPIL_Start(neighbor_request);
     MPIL_Wait(neighbor_request, &status);
     compare_neighbor_alltoallv_results(
