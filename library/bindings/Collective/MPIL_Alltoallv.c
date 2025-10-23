@@ -14,23 +14,26 @@ int MPIL_Alltoallv(const void* sendbuf,
                    MPI_Datatype recvtype,
                    MPIL_Comm* mpi_comm)
 {
-#ifdef GPU
-#ifdef GPU_AWARE
-    return gpu_aware_alltoallv_pairwise(sendbuf,
-                                        sendcounts,
-                                        sdispls,
-                                        sendtype,
-                                        recvbuf,
-                                        recvcounts,
-                                        rdispls,
-                                        recvtype,
-                                        mpi_comm);
-#endif
-#endif
-    alltoallv_ftn method;
-
-    switch (mpil_alltoallv_implementation)
+	alltoallv_ftn method;
+	switch (mpil_alltoallv_implementation)
     {
+	#ifdef GPU
+	#ifdef GPU_AWARE
+		case ALLTOALLV_GPU_PAIRWISE:
+			method = gpu_aware_alltoallv_pairwise;
+			break;
+		case ALLTOALLV_GPU_NONBLOCKING:
+			method = gpu_aware_alltoallv_nonblocking;
+			break;
+		case ALLTOALLV_CTC_PAIRWISE:
+			method = copy_to_cpu_alltoallv_pairwise;
+			break;
+		case ALLTOALLV_CTC_NONBLOCKING:
+			method = copy_to_cpu_alltoallv_nonblocking;
+			break;
+	#endif
+	#endif
+    
         case ALLTOALLV_PAIRWISE:
             method = alltoallv_pairwise;
             break;

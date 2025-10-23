@@ -9,9 +9,9 @@ list(APPEND CPP_SOURCES "p2p_alltoall.cpp")
 list(APPEND CPP_SOURCES "p2p_alltoallv.cpp")
 
 ## But some need special requirements
-if(USE_GPU)
-    list(APPEND CPP_SOURCES "gpu_alltoall.cpp")
-endif()
+# if(USE_GPU)
+    # list(APPEND CPP_SOURCES "gpu_alltoall.cpp")
+# endif()
 
 ## All should be compiled appropriately (cxx vs nvcc vs hipcc)
 set_source_files_properties(${CPP_SOURCES} PROPERTIES LANGUAGE ${locality_aware_LANG})
