@@ -13,7 +13,28 @@ typedef struct _MPIL_Info MPIL_Info;
 typedef struct _MPIL_Topo MPIL_Topo;
 typedef struct _MPIL_Request MPIL_Request;
 
+/** defgroup alg_enum Algorithm enumerations
+    @brief Enumerations of implemented algorithms 
+	for various alltoall functions. Each member has
+	one or more discriptors after the main function
+	that change the underlying algorithm. 
+	When supplied to the algorithm selection function.  
+		STANDARD
+		PAIRWISE
+		NONBLOCKING
+		HIERARCHICAL
+		MULTILEADER
+		LOCALITY_AWARE | LOCALITY | LOC 
+		NODE_AWARE
+		BATCH
+		ASYNC
+		GPU
+		CTC
+		INIT
+**/
+
 /* Enums for listing of implemented algorithms */
+/** @brief Enumeration of implemented alltoall algorithms**/
 enum AlltoallMethod
 {
 #if defined(GPU) && defined(GPU_AWARE)
@@ -83,6 +104,8 @@ enum AlltoallvCRSMethod
 };
 
 /* Create global variables for algorithm selection. */
+/** defgroup globals global varibles used to select which algorithms to use. 
+*/
 extern enum AlltoallMethod mpil_alltoall_implementation;
 extern enum AlltoallvMethod mpil_alltoallv_implementation;
 extern enum NeighborAlltoallvMethod mpil_neighbor_alltoallv_implementation;
@@ -91,6 +114,8 @@ extern enum AlltoallCRSMethod mpil_alltoall_crs_implementation;
 extern enum AlltoallvCRSMethod mpil_alltoallv_crs_implementation;
 
 /* Algorithm selection functions. */
+/** defgroup global_setters functions to set global variables to a chosen algorithm
+*/
 int MPIL_Set_alltoall_algorithm(enum AlltoallMethod algorithm);
 int MPIL_Set_alltoallv_algorithm(enum AlltoallvMethod algorithm);
 int MPIL_Set_alltoallv_neighbor_alogorithm(enum NeighborAlltoallvMethod algorithm);
