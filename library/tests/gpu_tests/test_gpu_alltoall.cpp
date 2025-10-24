@@ -7,7 +7,7 @@
 #include <set>
 #include <vector>
 
-#include "../../include/heterogeneous/gpu_utils.h"
+#include "heterogeneous/gpu_utils.h"
 #include "communicator/MPIL_Comm.h"
 #include "locality_aware.h"
 

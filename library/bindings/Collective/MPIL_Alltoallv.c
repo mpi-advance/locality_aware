@@ -17,8 +17,7 @@ int MPIL_Alltoallv(const void* sendbuf,
     alltoallv_ftn method;
     switch (mpil_alltoallv_implementation)
     {
-#ifdef GPU
-#ifdef GPU_AWARE
+#if defined(GPU) && defined(GPU_AWARE)
         case ALLTOALLV_GPU_PAIRWISE:
             method = gpu_aware_alltoallv_pairwise;
             break;
@@ -32,8 +31,6 @@ int MPIL_Alltoallv(const void* sendbuf,
             method = copy_to_cpu_alltoallv_nonblocking;
             break;
 #endif
-#endif
-
         case ALLTOALLV_PAIRWISE:
             method = alltoallv_pairwise;
             break;

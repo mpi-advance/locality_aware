@@ -8,8 +8,8 @@
 #include <set>
 #include <vector>
 
-#include "../tests/par_binary_IO.hpp"
-#include "../tests/sparse_mat.hpp"
+#include "par_binary_IO.hpp"
+#include "sparse_mat.hpp"
 #include "communicator/MPIL_Comm.h"
 #include "heterogeneous/gpu_utils.h"
 #include "locality_aware.h"
