@@ -95,7 +95,7 @@ function(make_executable filename flag)
 	endif()
 
 	if(ENABLE_UNIT_TESTS)
-		add_test(NAME ${locality_test_name} COMMAND ${MPIRUN} -n ${TEST_PROCS} --oversubscribe ./${exec_name} ${TEST_MATRIX_FILE})
+		add_test(NAME ${locality_test_name} COMMAND ${MPIRUN} -n ${TEST_PROCS} ./${exec_name} ${TEST_MATRIX_FILE})
 	endif()
 
 endfunction()
