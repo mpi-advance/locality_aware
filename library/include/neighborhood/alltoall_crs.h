@@ -1,0 +1,180 @@
+#ifndef ALLTOALL_CRS_H
+#define ALLTOALL_CRS_H
+
+#include <mpi.h>
+
+#include "communicator/MPIL_Comm.h"
+#include "communicator/MPIL_Info.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+typedef int (*alltoall_crs_ftn)(const int send_nnz,
+                                const int* dest,
+                                const int sendcount,
+                                MPI_Datatype sendtype,
+                                const void* sendvals,
+                                int* recv_nnz,
+                                int** src,
+                                int recvcount,
+                                MPI_Datatype recvtype,
+                                void** recvvals,
+                                MPIL_Info* xinfo,
+                                MPIL_Comm* comm);
+
+int alltoall_crs_rma(const int send_nnz,
+                     const int* dest,
+                     const int sendcount,
+                     MPI_Datatype sendtype,
+                     const void* sendvals,
+                     int* recv_nnz,
+                     int** src,
+                     int recvcount,
+                     MPI_Datatype recvtype,
+                     void** recvvals,
+                     MPIL_Info* xinfo,
+                     MPIL_Comm* comm);
+
+int alltoall_crs_personalized(const int send_nnz,
+                              const int* dest,
+                              const int sendcount,
+                              MPI_Datatype sendtype,
+                              const void* sendvals,
+                              int* recv_nnz,
+                              int** src,
+                              int recvcount,
+                              MPI_Datatype recvtype,
+                              void** recvvals,
+                              MPIL_Info* xinfo,
+                              MPIL_Comm* comm);
+
+int alltoall_crs_personalized_loc(const int send_nnz,
+                                  const int* dest,
+                                  const int sendcount,
+                                  MPI_Datatype sendtype,
+                                  const void* sendvals,
+                                  int* recv_nnz,
+                                  int** src,
+                                  int recvcount,
+                                  MPI_Datatype recvtype,
+                                  void** recvvals,
+                                  MPIL_Info* xinfo,
+                                  MPIL_Comm* comm);
+
+int alltoall_crs_nonblocking(const int send_nnz,
+                             const int* dest,
+                             const int sendcount,
+                             MPI_Datatype sendtype,
+                             const void* sendvals,
+                             int* recv_nnz,
+                             int** src,
+                             int recvcount,
+                             MPI_Datatype recvtype,
+                             void** recvvals,
+                             MPIL_Info* xinfo,
+                             MPIL_Comm* comm);
+
+int alltoall_crs_nonblocking_loc(const int send_nnz,
+                                 const int* dest,
+                                 const int sendcount,
+                                 MPI_Datatype sendtype,
+                                 const void* sendvals,
+                                 int* recv_nnz,
+                                 int** src,
+                                 int recvcount,
+                                 MPI_Datatype recvtype,
+                                 void** recvvals,
+                                 MPIL_Info* xinfo,
+                                 MPIL_Comm* comm);
+
+typedef int (*alltoallv_crs_ftn)(const int send_nnz,
+                                 const int send_size,
+                                 const int* dest,
+                                 const int* sendcounts,
+                                 const int* sdispls,
+                                 MPI_Datatype sendtype,
+                                 const void* sendvals,
+                                 int* recv_nnz,
+                                 int* recv_size,
+                                 int** src_ptr,
+                                 int** recvcounts_ptr,
+                                 int** rdispls_ptr,
+                                 MPI_Datatype recvtype,
+                                 void** recvvals_ptr,
+                                 MPIL_Info* xinfo,
+                                 MPIL_Comm* comm);
+
+int alltoallv_crs_personalized(const int send_nnz,
+                               const int send_size,
+                               const int* dest,
+                               const int* sendcounts,
+                               const int* sdispls,
+                               MPI_Datatype sendtype,
+                               const void* sendvals,
+                               int* recv_nnz,
+                               int* recv_size,
+                               int** src_ptr,
+                               int** recvcounts_ptr,
+                               int** rdispls_ptr,
+                               MPI_Datatype recvtype,
+                               void** recvvals_ptr,
+                               MPIL_Info* xinfo,
+                               MPIL_Comm* comm);
+
+int alltoallv_crs_personalized_loc(const int send_nnz,
+                                   const int send_size,
+                                   const int* dest,
+                                   const int* sendcounts,
+                                   const int* sdispls,
+                                   MPI_Datatype sendtype,
+                                   const void* sendvals,
+                                   int* recv_nnz,
+                                   int* recv_size,
+                                   int** src_ptr,
+                                   int** recvcounts_ptr,
+                                   int** rdispls_ptr,
+                                   MPI_Datatype recvtype,
+                                   void** recvvals_ptr,
+                                   MPIL_Info* xinfo,
+                                   MPIL_Comm* comm);
+
+int alltoallv_crs_nonblocking(const int send_nnz,
+                              const int send_size,
+                              const int* dest,
+                              const int* sendcounts,
+                              const int* sdispls,
+                              MPI_Datatype sendtype,
+                              const void* sendvals,
+                              int* recv_nnz,
+                              int* recv_size,
+                              int** src_ptr,
+                              int** recvcounts_ptr,
+                              int** rdispls_ptr,
+                              MPI_Datatype recvtype,
+                              void** recvvals_ptr,
+                              MPIL_Info* xinfo,
+                              MPIL_Comm* comm);
+
+int alltoallv_crs_nonblocking_loc(const int send_nnz,
+                                  const int send_size,
+                                  const int* dest,
+                                  const int* sendcounts,
+                                  const int* sdispls,
+                                  MPI_Datatype sendtype,
+                                  const void* sendvals,
+                                  int* recv_nnz,
+                                  int* recv_size,
+                                  int** src_ptr,
+                                  int** recvcounts_ptr,
+                                  int** rdispls_ptr,
+                                  MPI_Datatype recvtype,
+                                  void** recvvals_ptr,
+                                  MPIL_Info* xinfo,
+                                  MPIL_Comm* comm);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif

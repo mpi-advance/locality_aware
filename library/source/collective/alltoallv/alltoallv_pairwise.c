@@ -1,0 +1,65 @@
+#include "collective/alltoallv.h"
+#include "locality_aware.h"
+
+int alltoallv_pairwise(const void* sendbuf,
+                       const int sendcounts[],
+                       const int sdispls[],
+                       MPI_Datatype sendtype,
+                       void* recvbuf,
+                       const int recvcounts[],
+                       const int rdispls[],
+                       MPI_Datatype recvtype,
+                       MPIL_Comm* comm)
+{
+    int rank, num_procs;
+    MPI_Comm_rank(comm->global_comm, &rank);
+    MPI_Comm_size(comm->global_comm, &num_procs);
+
+    int tag;
+    get_tag(comm, &tag);
+
+    int send_proc, recv_proc;
+    int send_pos, recv_pos;
+    MPI_Status status;
+
+    int send_size, recv_size;
+    MPI_Type_size(sendtype, &send_size);
+    MPI_Type_size(recvtype, &recv_size);
+
+    char* send_buffer = (char*)sendbuf;
+    char* recv_buffer = (char*)recvbuf;
+
+    // Send to rank + i
+    // Recv from rank - i
+    for (int i = 0; i < num_procs; i++)
+    {
+        send_proc = rank + i;
+        if (send_proc >= num_procs)
+        {
+            send_proc -= num_procs;
+        }
+        recv_proc = rank - i;
+        if (recv_proc < 0)
+        {
+            recv_proc += num_procs;
+        }
+
+        send_pos = sdispls[send_proc] * send_size;
+        recv_pos = rdispls[recv_proc] * recv_size;
+
+        MPI_Sendrecv(send_buffer + send_pos,
+                     sendcounts[send_proc],
+                     sendtype,
+                     send_proc,
+                     tag,
+                     recv_buffer + recv_pos,
+                     recvcounts[recv_proc],
+                     recvtype,
+                     recv_proc,
+                     tag,
+                     comm->global_comm,
+                     &status);
+    }
+
+    return 0;
+}
