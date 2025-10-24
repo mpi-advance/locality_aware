@@ -718,25 +718,32 @@ int cmpfunc(const void* a, const void* b)
 void remove_duplicates(CommData* comm_pkg)
 {
     int start, end;
+    int has_data = comm_pkg->size_msgs;
 
     for (int i = 0; i < comm_pkg->num_msgs; i++)
     {
         start = comm_pkg->indptr[i];
         end   = comm_pkg->indptr[i + 1];
-        std::sort(comm_pkg->indices + start, comm_pkg->indices + end);
+        if (has_data)
+        {
+            std::sort(comm_pkg->indices + start, comm_pkg->indices + end);
+        }
     }
 
     comm_pkg->size_msgs = 0;
     start               = comm_pkg->indptr[0];
     for (int i = 0; i < comm_pkg->num_msgs; i++)
     {
-        end                                      = comm_pkg->indptr[i + 1];
-        comm_pkg->indices[comm_pkg->size_msgs++] = comm_pkg->indices[start];
-        for (int j = start; j < end - 1; j++)
+        end = comm_pkg->indptr[i + 1];
+        if (has_data)
         {
-            if (comm_pkg->indices[j + 1] != comm_pkg->indices[j])
+            comm_pkg->indices[comm_pkg->size_msgs++] = comm_pkg->indices[start];
+            for (int j = start; j < end - 1; j++)
             {
-                comm_pkg->indices[comm_pkg->size_msgs++] = comm_pkg->indices[j + 1];
+                if (comm_pkg->indices[j + 1] != comm_pkg->indices[j])
+                {
+                    comm_pkg->indices[comm_pkg->size_msgs++] = comm_pkg->indices[j + 1];
+                }
             }
         }
         start                   = end;
