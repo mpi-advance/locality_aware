@@ -4,7 +4,6 @@
 #include "collective/alltoallv.h"
 #include "gpu_utils.h"
 
-
 #ifdef __cplusplus
 extern "C" {
 #endif

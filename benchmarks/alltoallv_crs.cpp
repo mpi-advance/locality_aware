@@ -97,10 +97,10 @@ int main(int argc, char* argv[])
     // Read suitesparse matrix
     ParMat<int> A;
     int file_error = readParMatrix(filename, A);
-	if(file_error)
-	{
-		return 1;
-	}
+    if (file_error)
+    {
+        return 1;
+    }
     // Form Communication Package (A.send_comm, A.recv_comm)
     form_comm(A);
 
@@ -163,27 +163,27 @@ int main(int argc, char* argv[])
 
     // Time Personalized
     MPI_Barrier(MPI_COMM_WORLD);
-	MPIL_Set_alltoallv_crs(ALLTOALLV_CRS_PERSONALIZED);
+    MPIL_Set_alltoallv_crs(ALLTOALLV_CRS_PERSONALIZED);
     t0 = MPI_Wtime();
     for (int i = 0; i < n_iter; i++)
     {
         s_recvs = -1;
         MPIL_Alltoallv_crs(A.recv_comm.n_msgs,
-						   A.recv_comm.size_msgs,
-						   A.recv_comm.procs.data(),
-						   A.recv_comm.counts.data(),
-						   A.recv_comm.ptr.data(),
-						   MPI_LONG,
-						   A.off_proc_columns.data(),
-						   &n_recvs,
-						   &s_recvs,
-						   &src,
-						   &recvcounts,
-						   &rdispls,
-						   MPI_LONG,
-						   (void**)&recvvals,
-						   xinfo,
-						   xcomm);
+                           A.recv_comm.size_msgs,
+                           A.recv_comm.procs.data(),
+                           A.recv_comm.counts.data(),
+                           A.recv_comm.ptr.data(),
+                           MPI_LONG,
+                           A.off_proc_columns.data(),
+                           &n_recvs,
+                           &s_recvs,
+                           &src,
+                           &recvcounts,
+                           &rdispls,
+                           MPI_LONG,
+                           (void**)&recvvals,
+                           xinfo,
+                           xcomm);
     }
     tfinal = MPI_Wtime() - t0;
     MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
@@ -209,27 +209,27 @@ int main(int argc, char* argv[])
 
     // Time Nonblocking
     MPI_Barrier(MPI_COMM_WORLD);
-	MPIL_Set_alltoallv_crs(ALLTOALLV_CRS_NONBLOCKING);
+    MPIL_Set_alltoallv_crs(ALLTOALLV_CRS_NONBLOCKING);
     t0 = MPI_Wtime();
     for (int i = 0; i < n_iter; i++)
     {
         s_recvs = -1;
         MPIL_Alltoallv_crs(A.recv_comm.n_msgs,
-                                  A.recv_comm.size_msgs,
-                                  A.recv_comm.procs.data(),
-                                  A.recv_comm.counts.data(),
-                                  A.recv_comm.ptr.data(),
-                                  MPI_LONG,
-                                  A.off_proc_columns.data(),
-                                  &n_recvs,
-                                  &s_recvs,
-                                  &src,
-                                  &recvcounts,
-                                  &rdispls,
-                                  MPI_LONG,
-                                  (void**)&recvvals,
-                                  xinfo,
-                                  xcomm);
+                           A.recv_comm.size_msgs,
+                           A.recv_comm.procs.data(),
+                           A.recv_comm.counts.data(),
+                           A.recv_comm.ptr.data(),
+                           MPI_LONG,
+                           A.off_proc_columns.data(),
+                           &n_recvs,
+                           &s_recvs,
+                           &src,
+                           &recvcounts,
+                           &rdispls,
+                           MPI_LONG,
+                           (void**)&recvvals,
+                           xinfo,
+                           xcomm);
     }
     tfinal = MPI_Wtime() - t0;
     MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
@@ -255,27 +255,27 @@ int main(int argc, char* argv[])
 
     // Time Personalized Locality
     MPI_Barrier(MPI_COMM_WORLD);
-	MPIL_Set_alltoallv_crs(ALLTOALLV_CRS_PERSONALIZED_LOC);
+    MPIL_Set_alltoallv_crs(ALLTOALLV_CRS_PERSONALIZED_LOC);
     t0 = MPI_Wtime();
     for (int i = 0; i < n_iter; i++)
     {
         s_recvs = -1;
         MPIL_Alltoallv_crs(A.recv_comm.n_msgs,
-						   A.recv_comm.size_msgs,
-						   A.recv_comm.procs.data(),
-						   A.recv_comm.counts.data(),
-						   A.recv_comm.ptr.data(),
-						   MPI_LONG,
-						   A.off_proc_columns.data(),
-						   &n_recvs,
-						   &s_recvs,
-						   &src,
-						   &recvcounts,
-						   &rdispls,
-						   MPI_LONG,
-						   (void**)&recvvals,
-						   xinfo,
-						   xcomm);
+                           A.recv_comm.size_msgs,
+                           A.recv_comm.procs.data(),
+                           A.recv_comm.counts.data(),
+                           A.recv_comm.ptr.data(),
+                           MPI_LONG,
+                           A.off_proc_columns.data(),
+                           &n_recvs,
+                           &s_recvs,
+                           &src,
+                           &recvcounts,
+                           &rdispls,
+                           MPI_LONG,
+                           (void**)&recvvals,
+                           xinfo,
+                           xcomm);
     }
     tfinal = MPI_Wtime() - t0;
     MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
@@ -301,27 +301,27 @@ int main(int argc, char* argv[])
 
     // Time Nonblocking Locality
     MPI_Barrier(MPI_COMM_WORLD);
-	MPIL_Set_alltoallv_crs(ALLTOALLV_CRS_NONBLOCKING_LOC);
+    MPIL_Set_alltoallv_crs(ALLTOALLV_CRS_NONBLOCKING_LOC);
     t0 = MPI_Wtime();
     for (int i = 0; i < n_iter; i++)
     {
         s_recvs = -1;
         MPIL_Alltoallv_crs(A.recv_comm.n_msgs,
-						  A.recv_comm.size_msgs,
-						  A.recv_comm.procs.data(),
-						  A.recv_comm.counts.data(),
-						  A.recv_comm.ptr.data(),
-						  MPI_LONG,
-						  A.off_proc_columns.data(),
-						  &n_recvs,
-						  &s_recvs,
-						  &src,
-						  &recvcounts,
-						  &rdispls,
-						  MPI_LONG,
-						  (void**)&recvvals,
-						  xinfo,
-						  xcomm);
+                           A.recv_comm.size_msgs,
+                           A.recv_comm.procs.data(),
+                           A.recv_comm.counts.data(),
+                           A.recv_comm.ptr.data(),
+                           MPI_LONG,
+                           A.off_proc_columns.data(),
+                           &n_recvs,
+                           &s_recvs,
+                           &src,
+                           &recvcounts,
+                           &rdispls,
+                           MPI_LONG,
+                           (void**)&recvvals,
+                           xinfo,
+                           xcomm);
     }
     tfinal = MPI_Wtime() - t0;
     MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);

@@ -127,55 +127,55 @@ void test_matrix(const char* filename)
     compare_alltoallv_results(pmpi_recv_vals, mpil_recv_vals, A.recv_comm.size_msgs);
 
     std::fill(mpil_recv_vals.begin(), mpil_recv_vals.end(), 0);
-	MPIL_Set_alltoallv_algorithm(ALLTOALLV_PAIRWISE);
+    MPIL_Set_alltoallv_algorithm(ALLTOALLV_PAIRWISE);
     MPIL_Alltoallv(alltoallv_send_vals.data(),
-                       sendcounts.data(),
-                       sdispls.data(),
-                       MPI_INT,
-                       mpil_recv_vals.data(),
-                       recvcounts.data(),
-                       rdispls.data(),
-                       MPI_INT,
-                       xcomm);
+                   sendcounts.data(),
+                   sdispls.data(),
+                   MPI_INT,
+                   mpil_recv_vals.data(),
+                   recvcounts.data(),
+                   rdispls.data(),
+                   MPI_INT,
+                   xcomm);
     compare_alltoallv_results(pmpi_recv_vals, mpil_recv_vals, A.recv_comm.size_msgs);
 
     std::fill(mpil_recv_vals.begin(), mpil_recv_vals.end(), 0);
-	MPIL_Set_alltoallv_algorithm(ALLTOALLV_NONBLOCKING);
+    MPIL_Set_alltoallv_algorithm(ALLTOALLV_NONBLOCKING);
     MPIL_Alltoallv(alltoallv_send_vals.data(),
-                          sendcounts.data(),
-                          sdispls.data(),
-                          MPI_INT,
-                          mpil_recv_vals.data(),
-                          recvcounts.data(),
-                          rdispls.data(),
-                          MPI_INT,
-                          xcomm);
+                   sendcounts.data(),
+                   sdispls.data(),
+                   MPI_INT,
+                   mpil_recv_vals.data(),
+                   recvcounts.data(),
+                   rdispls.data(),
+                   MPI_INT,
+                   xcomm);
     compare_alltoallv_results(pmpi_recv_vals, mpil_recv_vals, A.recv_comm.size_msgs);
 
     std::fill(mpil_recv_vals.begin(), mpil_recv_vals.end(), 0);
-	MPIL_Set_alltoallv_algorithm(ALLTOALLV_BATCH);
+    MPIL_Set_alltoallv_algorithm(ALLTOALLV_BATCH);
     MPIL_Alltoallv(alltoallv_send_vals.data(),
-                    sendcounts.data(),
-                    sdispls.data(),
-                    MPI_INT,
-                    mpil_recv_vals.data(),
-                    recvcounts.data(),
-                    rdispls.data(),
-                    MPI_INT,
-                    xcomm);
+                   sendcounts.data(),
+                   sdispls.data(),
+                   MPI_INT,
+                   mpil_recv_vals.data(),
+                   recvcounts.data(),
+                   rdispls.data(),
+                   MPI_INT,
+                   xcomm);
     compare_alltoallv_results(pmpi_recv_vals, mpil_recv_vals, A.recv_comm.size_msgs);
 
     std::fill(mpil_recv_vals.begin(), mpil_recv_vals.end(), 0);
-	MPIL_Set_alltoallv_algorithm(ALLTOALLV_BATCH_ASYNC);
+    MPIL_Set_alltoallv_algorithm(ALLTOALLV_BATCH_ASYNC);
     MPIL_Alltoallv(alltoallv_send_vals.data(),
-                          sendcounts.data(),
-                          sdispls.data(),
-                          MPI_INT,
-                          mpil_recv_vals.data(),
-                          recvcounts.data(),
-                          rdispls.data(),
-                          MPI_INT,
-                          xcomm);
+                   sendcounts.data(),
+                   sdispls.data(),
+                   MPI_INT,
+                   mpil_recv_vals.data(),
+                   recvcounts.data(),
+                   rdispls.data(),
+                   MPI_INT,
+                   xcomm);
     compare_alltoallv_results(pmpi_recv_vals, mpil_recv_vals, A.recv_comm.size_msgs);
 
     MPIL_Comm_free(&xcomm);

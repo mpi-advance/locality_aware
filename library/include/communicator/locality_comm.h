@@ -13,10 +13,10 @@ extern "C" {
 
 typedef struct LocalityComm
 {
-    CommPkg* local_L_comm; 
-    CommPkg* local_S_comm; 
-    CommPkg* local_R_comm; 
-    CommPkg* global_comm;  
+    CommPkg* local_L_comm;
+    CommPkg* local_S_comm;
+    CommPkg* local_R_comm;
+    CommPkg* global_comm;
 
     MPIL_Comm* communicators;
 } LocalityComm;

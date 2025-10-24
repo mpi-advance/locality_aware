@@ -8,7 +8,7 @@ list(APPEND CPP_SOURCES "microbenchmarks.cpp")
 list(APPEND CPP_SOURCES "p2p_alltoall.cpp")
 list(APPEND CPP_SOURCES "p2p_alltoallv.cpp")
 
-## But some need special requirements
+## But some need special requirements -- removed until necessary parameters obtained. 
 # if(USE_GPU)
     # list(APPEND CPP_SOURCES "gpu_alltoall.cpp")
 # endif()
@@ -21,22 +21,12 @@ set(TEST_MATRIX_FILE "${CMAKE_CURRENT_SOURCE_DIR}/../test_data/bcsstk01.pm")
 
 ## Go through each CPP file
 foreach(src ${CPP_SOURCES})
-   
-    ## Grab the name without full path or extension
     get_filename_component(exec_name ${src} NAME_WE)
-
-
-    ## Create executable
     add_executable(${exec_name} ${src})
-
-    # Link with MPI 
     target_link_libraries(${exec_name} locality_aware ${MPI_LIBRARIES})
-	
-	#install in bin
 	install(TARGETS ${exec_name} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
 	
 	if(ENABLE_UNIT_TESTS)
 		add_test(NAME ${exec_name}_Benchmark COMMAND ${MPIRUN} -n ${TEST_PROCS} ./${exec_name} ${TEST_MATRIX_FILE})
 	endif()
-
 endforeach()

@@ -16,14 +16,14 @@ typedef struct _MPIL_Request MPIL_Request;
 /* Enums for listing of implemented algorithms */
 enum AlltoallMethod
 {
-	#ifdef GPU
-	#ifdef GPU_AWARE
-	ALLTOALL_GPU_PAIRWISE,
-	ALLTOALL_GPU_NONBLOCKING,
-	ALLTOALL_CTC_PAIRWISE,
-	ALLTOALL_CTC_NONBLOCKING,
-	#endif
-	#endif
+#ifdef GPU
+#ifdef GPU_AWARE
+    ALLTOALL_GPU_PAIRWISE,
+    ALLTOALL_GPU_NONBLOCKING,
+    ALLTOALL_CTC_PAIRWISE,
+    ALLTOALL_CTC_NONBLOCKING,
+#endif
+#endif
     ALLTOALL_PAIRWISE,
     ALLTOALL_NONBLOCKING,
     ALLTOALL_HIERARCHICAL_PAIRWISE,
@@ -41,15 +41,15 @@ enum AlltoallMethod
 };
 
 enum AlltoallvMethod
-{	
-	#ifdef GPU
-	#ifdef GPU_AWARE
-	ALLTOALLV_GPU_PAIRWISE,
-	ALLTOALLV_GPU_NONBLOCKING,
-	ALLTOALLV_CTC_PAIRWISE,
-	ALLTOALLV_CTC_NONBLOCKING,
-	#endif
-	#endif
+{
+#ifdef GPU
+#ifdef GPU_AWARE
+    ALLTOALLV_GPU_PAIRWISE,
+    ALLTOALLV_GPU_NONBLOCKING,
+    ALLTOALLV_CTC_PAIRWISE,
+    ALLTOALLV_CTC_NONBLOCKING,
+#endif
+#endif
     ALLTOALLV_PAIRWISE,
     ALLTOALLV_NONBLOCKING,
     ALLTOALLV_BATCH,
@@ -85,7 +85,6 @@ enum AlltoallvCRSMethod
     ALLTOALLV_CRS_PERSONALIZED,
     ALLTOALLV_CRS_PERSONALIZED_LOC
 };
-
 
 /* Create global variables for algorithm selection. */
 extern enum AlltoallMethod mpil_alltoall_implementation;

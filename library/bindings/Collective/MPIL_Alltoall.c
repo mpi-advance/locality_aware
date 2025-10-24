@@ -12,29 +12,28 @@ int MPIL_Alltoall(const void* sendbuf,
                   MPI_Datatype recvtype,
                   MPIL_Comm* mpi_comm)
 {
-	alltoall_ftn method;
+    alltoall_ftn method;
 
     switch (mpil_alltoall_implementation)
     {
-	
-	#ifdef GPU
-	#ifdef GPU_AWARE
+#ifdef GPU
+#ifdef GPU_AWARE
 
-		case ALLTOALL_GPU_PAIRWISE:
-			method = gpu_aware_alltoall_pairwise;
-			break;
-		case ALLTOALL_GPU_NONBLOCKING:
-			method = gpu_aware_alltoall_nonblocking;
-			break;
-		case ALLTOALL_CTC_PAIRWISE:
-			method = copy_to_cpu_alltoall_pairwise;
-			break;
-		case ALLTOALL_CTC_NONBLOCKING:
-			method = copy_to_cpu_alltoall_nonblocking;
-			break;
-	#endif
-	#endif
- 
+        case ALLTOALL_GPU_PAIRWISE:
+            method = gpu_aware_alltoall_pairwise;
+            break;
+        case ALLTOALL_GPU_NONBLOCKING:
+            method = gpu_aware_alltoall_nonblocking;
+            break;
+        case ALLTOALL_CTC_PAIRWISE:
+            method = copy_to_cpu_alltoall_pairwise;
+            break;
+        case ALLTOALL_CTC_NONBLOCKING:
+            method = copy_to_cpu_alltoall_nonblocking;
+            break;
+#endif
+#endif
+
         case ALLTOALL_PAIRWISE:
             method = alltoall_pairwise;
             break;

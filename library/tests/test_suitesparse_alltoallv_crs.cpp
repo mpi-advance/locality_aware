@@ -101,23 +101,23 @@ void test_matrix(const char* filename)
 
     /* TEST PERSONALIZED VERSION */
     s_recvs = -1;
-	MPIL_Set_alltoallv_crs(ALLTOALLV_CRS_PERSONALIZED);
+    MPIL_Set_alltoallv_crs(ALLTOALLV_CRS_PERSONALIZED);
     MPIL_Alltoallv_crs(A.recv_comm.n_msgs,
-                               A.recv_comm.size_msgs,
-                               A.recv_comm.procs.data(),
-                               A.recv_comm.counts.data(),
-                               A.recv_comm.ptr.data(),
-                               MPI_LONG,
-                               A.off_proc_columns.data(),
-                               &n_recvs,
-                               &s_recvs,
-                               &src,
-                               &recvcounts,
-                               &rdispls,
-                               MPI_LONG,
-                               (void**)&recvvals,
-                               xinfo,
-                               xcomm);
+                       A.recv_comm.size_msgs,
+                       A.recv_comm.procs.data(),
+                       A.recv_comm.counts.data(),
+                       A.recv_comm.ptr.data(),
+                       MPI_LONG,
+                       A.off_proc_columns.data(),
+                       &n_recvs,
+                       &s_recvs,
+                       &src,
+                       &recvcounts,
+                       &rdispls,
+                       MPI_LONG,
+                       (void**)&recvvals,
+                       xinfo,
+                       xcomm);
     compare_alltoallv_crs_results(n_recvs,
                                   A.send_comm.n_msgs,
                                   s_recvs,
@@ -137,23 +137,23 @@ void test_matrix(const char* filename)
 
     /* TEST NONBLOCKING VERSION */
     s_recvs = -1;
-	MPIL_Set_alltoallv_crs(ALLTOALLV_CRS_NONBLOCKING);
+    MPIL_Set_alltoallv_crs(ALLTOALLV_CRS_NONBLOCKING);
     MPIL_Alltoallv_crs(A.recv_comm.n_msgs,
-                              A.recv_comm.size_msgs,
-                              A.recv_comm.procs.data(),
-                              A.recv_comm.counts.data(),
-                              A.recv_comm.ptr.data(),
-                              MPI_LONG,
-                              A.off_proc_columns.data(),
-                              &n_recvs,
-                              &s_recvs,
-                              &src,
-                              &recvcounts,
-                              &rdispls,
-                              MPI_LONG,
-                              (void**)&recvvals,
-                              xinfo,
-                              xcomm);
+                       A.recv_comm.size_msgs,
+                       A.recv_comm.procs.data(),
+                       A.recv_comm.counts.data(),
+                       A.recv_comm.ptr.data(),
+                       MPI_LONG,
+                       A.off_proc_columns.data(),
+                       &n_recvs,
+                       &s_recvs,
+                       &src,
+                       &recvcounts,
+                       &rdispls,
+                       MPI_LONG,
+                       (void**)&recvvals,
+                       xinfo,
+                       xcomm);
     compare_alltoallv_crs_results(n_recvs,
                                   A.send_comm.n_msgs,
                                   s_recvs,
@@ -173,23 +173,23 @@ void test_matrix(const char* filename)
 
     /* TEST PERSONALIZED LOCALITY VERSION */
     s_recvs = -1;
-	MPIL_Set_alltoallv_crs(ALLTOALLV_CRS_PERSONALIZED_LOC);
+    MPIL_Set_alltoallv_crs(ALLTOALLV_CRS_PERSONALIZED_LOC);
     MPIL_Alltoallv_crs(A.recv_comm.n_msgs,
-                                   A.recv_comm.size_msgs,
-                                   A.recv_comm.procs.data(),
-                                   A.recv_comm.counts.data(),
-                                   A.recv_comm.ptr.data(),
-                                   MPI_LONG,
-                                   A.off_proc_columns.data(),
-                                   &n_recvs,
-                                   &s_recvs,
-                                   &src,
-                                   &recvcounts,
-                                   &rdispls,
-                                   MPI_LONG,
-                                   (void**)&recvvals,
-                                   xinfo,
-                                   xcomm);
+                       A.recv_comm.size_msgs,
+                       A.recv_comm.procs.data(),
+                       A.recv_comm.counts.data(),
+                       A.recv_comm.ptr.data(),
+                       MPI_LONG,
+                       A.off_proc_columns.data(),
+                       &n_recvs,
+                       &s_recvs,
+                       &src,
+                       &recvcounts,
+                       &rdispls,
+                       MPI_LONG,
+                       (void**)&recvvals,
+                       xinfo,
+                       xcomm);
     compare_alltoallv_crs_results(n_recvs,
                                   A.send_comm.n_msgs,
                                   s_recvs,
@@ -209,23 +209,23 @@ void test_matrix(const char* filename)
 
     /* TEST PERSONALIZED LOCALITY VERSION */
     s_recvs = -1;
-	MPIL_Set_alltoallv_crs(ALLTOALLV_CRS_NONBLOCKING_LOC);
+    MPIL_Set_alltoallv_crs(ALLTOALLV_CRS_NONBLOCKING_LOC);
     MPIL_Alltoallv_crs(A.recv_comm.n_msgs,
-                                  A.recv_comm.size_msgs,
-                                  A.recv_comm.procs.data(),
-                                  A.recv_comm.counts.data(),
-                                  A.recv_comm.ptr.data(),
-                                  MPI_LONG,
-                                  A.off_proc_columns.data(),
-                                  &n_recvs,
-                                  &s_recvs,
-                                  &src,
-                                  &recvcounts,
-                                  &rdispls,
-                                  MPI_LONG,
-                                  (void**)&recvvals,
-                                  xinfo,
-                                  xcomm);
+                       A.recv_comm.size_msgs,
+                       A.recv_comm.procs.data(),
+                       A.recv_comm.counts.data(),
+                       A.recv_comm.ptr.data(),
+                       MPI_LONG,
+                       A.off_proc_columns.data(),
+                       &n_recvs,
+                       &s_recvs,
+                       &src,
+                       &recvcounts,
+                       &rdispls,
+                       MPI_LONG,
+                       (void**)&recvvals,
+                       xinfo,
+                       xcomm);
     compare_alltoallv_crs_results(n_recvs,
                                   A.send_comm.n_msgs,
                                   s_recvs,

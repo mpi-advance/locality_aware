@@ -10,7 +10,6 @@
 extern "C" {
 #endif
 
-
 int neighbor_start(MPIL_Request* request);
 int neighbor_wait(MPIL_Request* request, MPI_Status* status);
 void init_neighbor_request(MPIL_Request** request_ptr);
@@ -102,6 +101,5 @@ int init_communication(const void* sendbuffer,
 #ifdef __cplusplus
 }
 #endif
-
 
 #endif

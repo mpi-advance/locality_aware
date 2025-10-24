@@ -9,4 +9,3 @@ void gpu_check(int ierr)
         printf("Error in Device Function!\n");
     }
 }
-

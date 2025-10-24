@@ -4,6 +4,7 @@
 #define PETSC_MAT_CODE 1211216
 
 #include <ctype.h>
+#include <mpi.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -13,7 +14,6 @@
 #include <iterator>
 #include <map>
 #include <vector>
-#include <mpi.h>
 
 #include "limits.h"
 #include "sparse_mat.hpp"
@@ -56,11 +56,11 @@ int readParMatrix(const char* filename, ParMat<U>& A)
     int sizeof_int32 = sizeof(code);
 
     FILE* ifile = fopen(filename, "rb");
-	if (ifile == NULL)
-	{
-		printf("Error openning file\n");
-		return 1;
-	}
+    if (ifile == NULL)
+    {
+        printf("Error openning file\n");
+        return 1;
+    }
     if (fseek(ifile, 0, SEEK_SET))
     {
         printf("Error seeking beginning of file\n");
@@ -369,8 +369,8 @@ int readParMatrix(const char* filename, ParMat<U>& A)
     }
 
     A.off_proc.n_cols = A.off_proc_num_cols;
-	
-	return 0;
+
+    return 0;
 }
 
 #endif

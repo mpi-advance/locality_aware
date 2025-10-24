@@ -89,7 +89,7 @@ int main(int argc, char** argv)
                       MPI_COMM_WORLD);
 
         // Pairwise Alltoall
-		MPIL_Set_alltoall_algorithm(ALLTOALL_PAIRWISE);
+        MPIL_Set_alltoall_algorithm(ALLTOALL_PAIRWISE);
         MPIL_Alltoall(
             local_data.data(), s, MPI_INT, mpix_alltoall.data(), s, MPI_INT, xcomm);
         compare_alltoall_results(pmpi_alltoall, mpix_alltoall, s);
@@ -104,9 +104,8 @@ int main(int argc, char** argv)
         gpuMemset(alltoall_d, 0, s * num_procs * sizeof(int));
 
         // GPU-Aware Pairwise Alltoall
-		MPIL_Set_alltoall_algorithm(ALLTOALL_GPU_PAIRWISE);
-        MPIL_Alltoall(
-            local_data_d, s, MPI_INT, alltoall_d, s, MPI_INT, xcomm);
+        MPIL_Set_alltoall_algorithm(ALLTOALL_GPU_PAIRWISE);
+        MPIL_Alltoall(local_data_d, s, MPI_INT, alltoall_d, s, MPI_INT, xcomm);
         gpuMemcpy(device_data.data(),
                   alltoall_d,
                   s * num_procs * sizeof(int),
@@ -115,9 +114,8 @@ int main(int argc, char** argv)
         gpuMemset(alltoall_d, 0, s * num_procs * sizeof(int));
 
         // GPU-Aware Nonblocking Alltoall
-		MPIL_Set_alltoall_algorithm(ALLTOALL_GPU_NONBLOCKING);
-        MPIL_Alltoall(
-            local_data_d, s, MPI_INT, alltoall_d, s, MPI_INT, xcomm);
+        MPIL_Set_alltoall_algorithm(ALLTOALL_GPU_NONBLOCKING);
+        MPIL_Alltoall(local_data_d, s, MPI_INT, alltoall_d, s, MPI_INT, xcomm);
         gpuMemcpy(device_data.data(),
                   alltoall_d,
                   s * num_procs * sizeof(int),
@@ -126,9 +124,8 @@ int main(int argc, char** argv)
         gpuMemset(alltoall_d, 0, s * num_procs * sizeof(int));
 
         // Copy-to-CPU Pairwise Alltoall
-		MPIL_Set_alltoall_algorithm(ALLTOALL_CTC_PAIRWISE);
-        MPIL_Alltoall(
-            local_data_d, s, MPI_INT, alltoall_d, s, MPI_INT, xcomm);
+        MPIL_Set_alltoall_algorithm(ALLTOALL_CTC_PAIRWISE);
+        MPIL_Alltoall(local_data_d, s, MPI_INT, alltoall_d, s, MPI_INT, xcomm);
         gpuMemcpy(device_data.data(),
                   alltoall_d,
                   s * num_procs * sizeof(int),
@@ -138,8 +135,7 @@ int main(int argc, char** argv)
 
         // Copy-to-CPU Nonblocking Alltoall
         MPIL_Set_alltoall_algorithm(ALLTOALL_CTC_NONBLOCKING);
-        MPIL_Alltoall(
-            local_data_d, s, MPI_INT, alltoall_d, s, MPI_INT, xcomm);
+        MPIL_Alltoall(local_data_d, s, MPI_INT, alltoall_d, s, MPI_INT, xcomm);
         gpuMemcpy(device_data.data(),
                   alltoall_d,
                   s * num_procs * sizeof(int),

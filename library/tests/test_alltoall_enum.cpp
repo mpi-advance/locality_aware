@@ -7,7 +7,7 @@
 #include <set>
 #include <vector>
 
-//#include "communicator/MPIL_Comm.h"
+// #include "communicator/MPIL_Comm.h"
 #include "locality_aware.h"
 
 void compare_alltoall_results(std::vector<int>& pmpi, std::vector<int>& mpil, int s)

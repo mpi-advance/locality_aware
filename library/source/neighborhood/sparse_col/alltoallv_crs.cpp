@@ -238,18 +238,18 @@ int alltoallv_crs_nonblocking(const int send_nnz,
 }
 
 void local_redistributev(int n_recvs,
-                        std::vector<int>& origins,
-                        std::vector<int>& origin_displs,
-                        std::vector<char>& recv_buf,
-                        int* recv_nnz,
-                        int* recv_size,
-                        int** src_ptr,
-                        int** recvcounts_ptr,
-                        int** rdispls_ptr,
-                        MPI_Datatype recvtype,
-                        void** recvvals_ptr,
-                        MPIL_Info* xinfo,
-                        MPIL_Comm* comm)
+                         std::vector<int>& origins,
+                         std::vector<int>& origin_displs,
+                         std::vector<char>& recv_buf,
+                         int* recv_nnz,
+                         int* recv_size,
+                         int** src_ptr,
+                         int** recvcounts_ptr,
+                         int** rdispls_ptr,
+                         MPI_Datatype recvtype,
+                         void** recvvals_ptr,
+                         MPIL_Info* xinfo,
+                         MPIL_Comm* comm)
 {
     int rank, num_procs, local_rank, PPN;
     MPI_Comm_rank(comm->global_comm, &rank);
@@ -653,18 +653,18 @@ int alltoallv_crs_personalized_loc(const int send_nnz,
     MPI_Waitall(n_sends, comm->requests, MPI_STATUSES_IGNORE);
 
     local_redistributev(n_recvs,
-                       origins,
-                       origin_displs,
-                       recv_buf,
-                       recv_nnz,
-                       recv_size,
-                       src_ptr,
-                       recvcounts_ptr,
-                       rdispls_ptr,
-                       recvtype,
-                       recvvals_ptr,
-                       xinfo,
-                       comm);
+                        origins,
+                        origin_displs,
+                        recv_buf,
+                        recv_nnz,
+                        recv_size,
+                        src_ptr,
+                        recvcounts_ptr,
+                        rdispls_ptr,
+                        recvtype,
+                        recvvals_ptr,
+                        xinfo,
+                        comm);
 
     return MPI_SUCCESS;
 }
@@ -861,18 +861,18 @@ int alltoallv_crs_nonblocking_loc(const int send_nnz,
     }
 
     local_redistributev(n_recvs,
-                       origins,
-                       origin_displs,
-                       recv_buf,
-                       recv_nnz,
-                       recv_size,
-                       src_ptr,
-                       recvcounts_ptr,
-                       rdispls_ptr,
-                       recvtype,
-                       recvvals_ptr,
-                       xinfo,
-                       comm);
+                        origins,
+                        origin_displs,
+                        recv_buf,
+                        recv_nnz,
+                        recv_size,
+                        src_ptr,
+                        recvcounts_ptr,
+                        rdispls_ptr,
+                        recvtype,
+                        recvvals_ptr,
+                        xinfo,
+                        comm);
 
     return MPI_SUCCESS;
 }

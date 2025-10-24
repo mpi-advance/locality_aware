@@ -91,55 +91,55 @@ int main(int argc, char** argv)
         compare_alltoallv_results(pmpi_alltoallv, mpil_alltoallv, s);
 
         std::fill(mpil_alltoallv.begin(), mpil_alltoallv.end(), 0);
-		MPIL_Set_alltoallv_algorithm(ALLTOALLV_PAIRWISE);
+        MPIL_Set_alltoallv_algorithm(ALLTOALLV_PAIRWISE);
         MPIL_Alltoallv(local_data.data(),
-                           sizes.data(),
-                           displs.data(),
-                           MPI_INT,
-                           mpil_alltoallv.data(),
-                           sizes.data(),
-                           displs.data(),
-                           MPI_INT,
-                           xcomm);
+                       sizes.data(),
+                       displs.data(),
+                       MPI_INT,
+                       mpil_alltoallv.data(),
+                       sizes.data(),
+                       displs.data(),
+                       MPI_INT,
+                       xcomm);
         compare_alltoallv_results(pmpi_alltoallv, mpil_alltoallv, s);
 
         std::fill(mpil_alltoallv.begin(), mpil_alltoallv.end(), 0);
-		MPIL_Set_alltoallv_algorithm(ALLTOALLV_NONBLOCKING);
+        MPIL_Set_alltoallv_algorithm(ALLTOALLV_NONBLOCKING);
         MPIL_Alltoallv(local_data.data(),
-                              sizes.data(),
-                              displs.data(),
-                              MPI_INT,
-                              mpil_alltoallv.data(),
-                              sizes.data(),
-                              displs.data(),
-                              MPI_INT,
-                              xcomm);
+                       sizes.data(),
+                       displs.data(),
+                       MPI_INT,
+                       mpil_alltoallv.data(),
+                       sizes.data(),
+                       displs.data(),
+                       MPI_INT,
+                       xcomm);
         compare_alltoallv_results(pmpi_alltoallv, mpil_alltoallv, s);
 
         std::fill(mpil_alltoallv.begin(), mpil_alltoallv.end(), 0);
-		MPIL_Set_alltoallv_algorithm(ALLTOALLV_BATCH);
+        MPIL_Set_alltoallv_algorithm(ALLTOALLV_BATCH);
         MPIL_Alltoallv(local_data.data(),
-                        sizes.data(),
-                        displs.data(),
-                        MPI_INT,
-                        mpil_alltoallv.data(),
-                        sizes.data(),
-                        displs.data(),
-                        MPI_INT,
-                        xcomm);
+                       sizes.data(),
+                       displs.data(),
+                       MPI_INT,
+                       mpil_alltoallv.data(),
+                       sizes.data(),
+                       displs.data(),
+                       MPI_INT,
+                       xcomm);
         compare_alltoallv_results(pmpi_alltoallv, mpil_alltoallv, s);
 
         std::fill(mpil_alltoallv.begin(), mpil_alltoallv.end(), 0);
-		MPIL_Set_alltoallv_algorithm(ALLTOALLV_BATCH_ASYNC);
+        MPIL_Set_alltoallv_algorithm(ALLTOALLV_BATCH_ASYNC);
         MPIL_Alltoallv(local_data.data(),
-                              sizes.data(),
-                              displs.data(),
-                              MPI_INT,
-                              mpil_alltoallv.data(),
-                              sizes.data(),
-                              displs.data(),
-                              MPI_INT,
-                              xcomm);
+                       sizes.data(),
+                       displs.data(),
+                       MPI_INT,
+                       mpil_alltoallv.data(),
+                       sizes.data(),
+                       displs.data(),
+                       MPI_INT,
+                       xcomm);
         compare_alltoallv_results(pmpi_alltoallv, mpil_alltoallv, s);
     }
 

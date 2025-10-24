@@ -162,7 +162,7 @@ void test_matrix(const char* filename)
                                  &neighbor_request);
 
     std::fill(mpix_recv_vals.begin(), mpix_recv_vals.end(), 0);
-	MPIL_Request_reorder(neighbor_request, 1);
+    MPIL_Request_reorder(neighbor_request, 1);
     MPIL_Start(neighbor_request);
     MPIL_Wait(neighbor_request, &status);
     compare_neighbor_alltoallv_results(

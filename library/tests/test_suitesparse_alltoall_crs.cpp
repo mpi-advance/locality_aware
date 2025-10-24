@@ -69,95 +69,95 @@ void test_matrix(const char* filename)
 
     /* TEST RMA VERSION */
     n_recvs = -1;
-	MPIL_Set_alltoall_crs(ALLTOALL_CRS_RMA);
+    MPIL_Set_alltoall_crs(ALLTOALL_CRS_RMA);
     MPIL_Alltoall_crs(A.recv_comm.n_msgs,
-                     A.recv_comm.procs.data(),
-                     1,
-                     MPI_INT,
-                     A.recv_comm.counts.data(),
-                     &n_recvs,
-                     &src,
-                     1,
-                     MPI_INT,
-                     (void**)&recvvals,
-                     xinfo,
-                     xcomm);
+                      A.recv_comm.procs.data(),
+                      1,
+                      MPI_INT,
+                      A.recv_comm.counts.data(),
+                      &n_recvs,
+                      &src,
+                      1,
+                      MPI_INT,
+                      (void**)&recvvals,
+                      xinfo,
+                      xcomm);
     compare_alltoall_crs_results(n_recvs, A.send_comm.n_msgs, recvvals, src, proc_counts);
     MPIL_Free(src);
     MPIL_Free(recvvals);
 
     /* TEST PERSONALIZED VERSION */
     n_recvs = -1;
-	MPIL_Set_alltoall_crs(ALLTOALL_CRS_PERSONALIZED);
+    MPIL_Set_alltoall_crs(ALLTOALL_CRS_PERSONALIZED);
     MPIL_Alltoall_crs(A.recv_comm.n_msgs,
-					  A.recv_comm.procs.data(),
-					  1,
-					  MPI_INT,
-					  A.recv_comm.counts.data(),
-					  &n_recvs,
-					  &src,
-					  1,
-					  MPI_INT,
-					  (void**)&recvvals,
-					  xinfo,
-					  xcomm);
+                      A.recv_comm.procs.data(),
+                      1,
+                      MPI_INT,
+                      A.recv_comm.counts.data(),
+                      &n_recvs,
+                      &src,
+                      1,
+                      MPI_INT,
+                      (void**)&recvvals,
+                      xinfo,
+                      xcomm);
     compare_alltoall_crs_results(n_recvs, A.send_comm.n_msgs, recvvals, src, proc_counts);
     MPIL_Free(src);
     MPIL_Free(recvvals);
 
     /* TEST PERSONALIZED LOCALITY VERSION */
     n_recvs = -1;
-	MPIL_Set_alltoall_crs(ALLTOALL_CRS_PERSONALIZED_LOC);
+    MPIL_Set_alltoall_crs(ALLTOALL_CRS_PERSONALIZED_LOC);
     MPIL_Alltoall_crs(A.recv_comm.n_msgs,
-					  A.recv_comm.procs.data(),
-					  1,
-					  MPI_INT,
-					  A.recv_comm.counts.data(),
-					  &n_recvs,
-					  &src,
-					  1,
-					  MPI_INT,
-					  (void**)&recvvals,
-					  xinfo,
-					  xcomm);
+                      A.recv_comm.procs.data(),
+                      1,
+                      MPI_INT,
+                      A.recv_comm.counts.data(),
+                      &n_recvs,
+                      &src,
+                      1,
+                      MPI_INT,
+                      (void**)&recvvals,
+                      xinfo,
+                      xcomm);
     compare_alltoall_crs_results(n_recvs, A.send_comm.n_msgs, recvvals, src, proc_counts);
     MPIL_Free(src);
     MPIL_Free(recvvals);
 
     /* TEST NONBLOCKING VERSION */
     n_recvs = -1;
-	MPIL_Set_alltoall_crs(ALLTOALL_CRS_NONBLOCKING);
+    MPIL_Set_alltoall_crs(ALLTOALL_CRS_NONBLOCKING);
     MPIL_Alltoall_crs(A.recv_comm.n_msgs,
-						 A.recv_comm.procs.data(),
-						 1,
-						 MPI_INT,
-						 A.recv_comm.counts.data(),
-						 &n_recvs,
-						 &src,
-						 1,
-						 MPI_INT,
-						 (void**)&recvvals,
-						 xinfo,
-						 xcomm);
+                      A.recv_comm.procs.data(),
+                      1,
+                      MPI_INT,
+                      A.recv_comm.counts.data(),
+                      &n_recvs,
+                      &src,
+                      1,
+                      MPI_INT,
+                      (void**)&recvvals,
+                      xinfo,
+                      xcomm);
     compare_alltoall_crs_results(n_recvs, A.send_comm.n_msgs, recvvals, src, proc_counts);
     MPIL_Free(src);
     MPIL_Free(recvvals);
 
     /* TEST NONBLOCKING LOCALITY VERSION */
     n_recvs = -1;
-	MPIL_Set_alltoall_crs(ALLTOALL_CRS_NONBLOCKING_LOC);
+    MPIL_Set_alltoall_crs(ALLTOALL_CRS_NONBLOCKING_LOC);
     MPIL_Alltoall_crs(A.recv_comm.n_msgs,
-					 A.recv_comm.procs.data(),
-					 1,
-					 MPI_INT,
-					 A.recv_comm.counts.data(),
-					 &n_recvs,
-					 &src,
-					 1,
-					 MPI_INT,
-					 (void**)&recvvals,
-					 xinfo,
-					 xcomm);
+                      A.recv_comm.procs.data(),
+                      1,
+                      MPI_INT,
+                      A.recv_comm.counts.data(),
+                      &n_recvs,
+                      &src,
+                      1,
+                      MPI_INT,
+                      (void**)&recvvals,
+                      xinfo,
+                      xcomm);
     compare_alltoall_crs_results(n_recvs, A.send_comm.n_msgs, recvvals, src, proc_counts);
     MPIL_Free(src);
     MPIL_Free(recvvals);

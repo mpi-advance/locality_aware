@@ -6,7 +6,7 @@ project(locality_aware VERSION 2.0.0 LANGUAGES C CXX)
 
 # Set C,CXX standards
 set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_C_STANDARD 11)
+set(CMAKE_C_STANDARD 99)
 
 # Set default build type
 if(NOT CMAKE_BUILD_TYPE)
@@ -29,7 +29,7 @@ option(USE_CUDA "Enable NVIDIA CUDA support" OFF)
 option(USE_HIP "Enable AMD HIP support" OFF)
 option(GPU_AWARE "Use GPU-Aware MPI, if GPU support is enabled" ON)
 option(ENABLE_UNIT_TESTS "Enable unit testing" ON)
-option(BENCHMARKS "Enable benchmark tests" ON)
+option(BENCHMARKS "Enable benchmarks" ON)
 
 set(MPIRUN "mpirun" CACHE STRING "MPIRUN command")
 

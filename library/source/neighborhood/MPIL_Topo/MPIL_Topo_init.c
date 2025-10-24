@@ -1,7 +1,7 @@
+#include <mpi.h>
 #include <stdlib.h>
 #include <string.h>
 
-#include <mpi.h>
 #include "communicator/MPIL_Info.h"
 #include "neighborhood/MPIL_Topo.h"
 

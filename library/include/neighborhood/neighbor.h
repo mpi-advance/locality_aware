@@ -2,9 +2,9 @@
 #define MPI_ADVANCE_NEIGHBOR_COLL_H
 
 #include <mpi.h>
-#include "neighborhood/MPIL_Topo.h"
-#include "communicator/MPIL_Comm.h"
 
+#include "communicator/MPIL_Comm.h"
+#include "neighborhood/MPIL_Topo.h"
 
 // Declarations of C++ methods
 #ifdef __cplusplus

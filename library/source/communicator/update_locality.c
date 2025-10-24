@@ -63,6 +63,6 @@ int update_locality(MPIL_Comm* xcomm, int ppn)
     MPI_Comm_size(xcomm->local_comm, &(xcomm->ppn));
     xcomm->num_nodes = ((num_procs - 1) / xcomm->ppn) + 1;
     xcomm->rank_node = get_node(xcomm, rank);
-	
-	return MPI_SUCCESS;
+
+    return MPI_SUCCESS;
 }

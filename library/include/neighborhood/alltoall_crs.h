@@ -10,7 +10,6 @@
 extern "C" {
 #endif
 
-
 typedef int (*alltoall_crs_ftn)(const int send_nnz,
                                 const int* dest,
                                 const int sendcount,
@@ -177,6 +176,5 @@ int alltoallv_crs_nonblocking_loc(const int send_nnz,
 #ifdef __cplusplus
 }
 #endif
-
 
 #endif

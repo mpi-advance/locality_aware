@@ -1,7 +1,6 @@
 #include "communicator/MPIL_Comm.h"
-#include "neighborhood/neighbor.h"
 #include "locality_aware.h"
-
+#include "neighborhood/neighbor.h"
 #include "string.h"
 
 // Standard, non-persistent neighbor collective

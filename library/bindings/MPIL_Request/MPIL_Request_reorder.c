@@ -3,6 +3,6 @@
 
 int MPIL_Request_reorder(MPIL_Request* request, int value)
 {
-	request->reorder = value;
-	return MPI_SUCCESS;
+    request->reorder = value;
+    return MPI_SUCCESS;
 }

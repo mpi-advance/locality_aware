@@ -3,5 +3,5 @@
 
 int MPIL_Comm_tag(MPIL_Comm* comm, int* tag)
 {
-	return get_tag(comm, tag);
+    return get_tag(comm, tag);
 }

@@ -1,8 +1,9 @@
 #ifndef MPI_SPARSE_MAT_HPP
 #define MPI_SPARSE_MAT_HPP
 
-#include <vector>
 #include <mpi.h>
+
+#include <vector>
 
 struct Mat
 {

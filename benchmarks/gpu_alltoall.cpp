@@ -7,9 +7,9 @@
 #include <set>
 #include <vector>
 
-#include "locality_aware.h"
-#include "heterogeneous/gpu_utils.h"
 #include "communicator/MPIL_Comm.h"
+#include "heterogeneous/gpu_utils.h"
+#include "locality_aware.h"
 
 int main(int argc, char* argv[])
 {
@@ -66,9 +66,8 @@ int main(int argc, char* argv[])
         gpuMemset(recv_data_d, 0, s * num_procs * sizeof(int));
 
         // MPI Advance : GPU-Aware Pairwise Exchange
-		MPIL_Set_alltoall_algorithm(ALLTOALL_GPU_PAIRWISE);
-        MPIL_Alltoall(
-            send_data_d, s, MPI_DOUBLE, recv_data_d, s, MPI_DOUBLE, xcomm);
+        MPIL_Set_alltoall_algorithm(ALLTOALL_GPU_PAIRWISE);
+        MPIL_Alltoall(send_data_d, s, MPI_DOUBLE, recv_data_d, s, MPI_DOUBLE, xcomm);
         gpuMemcpy(mpix_alltoall.data(),
                   recv_data_d,
                   s * num_procs * sizeof(double),
@@ -90,9 +89,8 @@ int main(int argc, char* argv[])
         }
 
         // MPI Advance : GPU-Aware Nonblocking (P2P)
-		MPIL_Set_alltoall_algorithm(ALLTOALL_GPU_NONBLOCKING);
-        MPIL_Alltoall(
-            send_data_d, s, MPI_DOUBLE, recv_data_d, s, MPI_DOUBLE, xcomm);
+        MPIL_Set_alltoall_algorithm(ALLTOALL_GPU_NONBLOCKING);
+        MPIL_Alltoall(send_data_d, s, MPI_DOUBLE, recv_data_d, s, MPI_DOUBLE, xcomm);
         gpuMemcpy(mpix_alltoall.data(),
                   recv_data_d,
                   s * num_procs * sizeof(double),
@@ -114,9 +112,8 @@ int main(int argc, char* argv[])
         }
 
         // MPI Advance : Copy to CPU Pairwise Exchange
-		MPIL_Set_alltoall_algorithm(ALLTOALL_CTC_PAIRWISE);
-        MPIL_Alltoall(
-            send_data_d, s, MPI_DOUBLE, recv_data_d, s, MPI_DOUBLE, xcomm);
+        MPIL_Set_alltoall_algorithm(ALLTOALL_CTC_PAIRWISE);
+        MPIL_Alltoall(send_data_d, s, MPI_DOUBLE, recv_data_d, s, MPI_DOUBLE, xcomm);
         gpuMemcpy(mpix_alltoall.data(),
                   recv_data_d,
                   s * num_procs * sizeof(double),
@@ -138,9 +135,8 @@ int main(int argc, char* argv[])
         }
 
         // MPI Advance : Copy To CPU Nonblocking (P2P)
-		MPIL_Set_alltoall_algorithm(ALLTOALL_CTC_NONBLOCKING);
-        MPIL_Alltoall(
-            send_data_d, s, MPI_DOUBLE, recv_data_d, s, MPI_DOUBLE, xcomm);
+        MPIL_Set_alltoall_algorithm(ALLTOALL_CTC_NONBLOCKING);
+        MPIL_Alltoall(send_data_d, s, MPI_DOUBLE, recv_data_d, s, MPI_DOUBLE, xcomm);
         gpuMemcpy(mpix_alltoall.data(),
                   recv_data_d,
                   s * num_procs * sizeof(double),
@@ -201,17 +197,15 @@ int main(int argc, char* argv[])
 
         // Time GPU-Aware Pairwise Exchange
         // 1. Warm Up
-        MPIL_Alltoall(
-            send_data_d, s, MPI_DOUBLE, recv_data_d, s, MPI_DOUBLE, xcomm);
+        MPIL_Alltoall(send_data_d, s, MPI_DOUBLE, recv_data_d, s, MPI_DOUBLE, xcomm);
 
         // 2. Calculate n_iter (tfinal ~ 1 sec)
         gpuDeviceSynchronize();
         MPI_Barrier(MPI_COMM_WORLD);
-		MPIL_Set_alltoall_algorithm(ALLTOALL_GPU_PAIRWISE);
+        MPIL_Set_alltoall_algorithm(ALLTOALL_GPU_PAIRWISE);
         t0 = MPI_Wtime();
-		
-        MPIL_Alltoall(
-            send_data_d, s, MPI_DOUBLE, recv_data_d, s, MPI_DOUBLE, xcomm);
+
+        MPIL_Alltoall(send_data_d, s, MPI_DOUBLE, recv_data_d, s, MPI_DOUBLE, xcomm);
         tfinal = MPI_Wtime() - t0;
         MPI_Allreduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
         if (t0 >= 1.0)
@@ -226,12 +220,11 @@ int main(int argc, char* argv[])
         // 3. Measure Timing
         gpuDeviceSynchronize();
         MPI_Barrier(MPI_COMM_WORLD);
-		MPIL_Set_alltoall_algorithm(ALLTOALL_GPU_PAIRWISE);
+        MPIL_Set_alltoall_algorithm(ALLTOALL_GPU_PAIRWISE);
         t0 = MPI_Wtime();
         for (int k = 0; k < n_iter; k++)
         {
-            MPIL_Alltoall(
-                send_data_d, s, MPI_DOUBLE, recv_data_d, s, MPI_DOUBLE, xcomm);
+            MPIL_Alltoall(send_data_d, s, MPI_DOUBLE, recv_data_d, s, MPI_DOUBLE, xcomm);
         }
         tfinal = (MPI_Wtime() - t0) / n_iter;
         MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
@@ -242,16 +235,14 @@ int main(int argc, char* argv[])
 
         // Time GPU-Aware Nonblocking
         // 1. Warm-Up
-		MPIL_Set_alltoall_algorithm(ALLTOALL_GPU_NONBLOCKING);
-        MPIL_Alltoall(
-            send_data_d, s, MPI_DOUBLE, recv_data_d, s, MPI_DOUBLE, xcomm);
+        MPIL_Set_alltoall_algorithm(ALLTOALL_GPU_NONBLOCKING);
+        MPIL_Alltoall(send_data_d, s, MPI_DOUBLE, recv_data_d, s, MPI_DOUBLE, xcomm);
 
         // 2. Calculate n_iter (tfinal ~ 1 sec)
         gpuDeviceSynchronize();
         MPI_Barrier(MPI_COMM_WORLD);
         t0 = MPI_Wtime();
-        MPIL_Alltoall(
-            send_data_d, s, MPI_DOUBLE, recv_data_d, s, MPI_DOUBLE, xcomm);
+        MPIL_Alltoall(send_data_d, s, MPI_DOUBLE, recv_data_d, s, MPI_DOUBLE, xcomm);
         tfinal = MPI_Wtime() - t0;
         MPI_Allreduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
         if (t0 >= 1.0)
@@ -269,8 +260,7 @@ int main(int argc, char* argv[])
         t0 = MPI_Wtime();
         for (int k = 0; k < n_iter; k++)
         {
-			MPIL_Alltoall(
-                send_data_d, s, MPI_DOUBLE, recv_data_d, s, MPI_DOUBLE, xcomm);
+            MPIL_Alltoall(send_data_d, s, MPI_DOUBLE, recv_data_d, s, MPI_DOUBLE, xcomm);
         }
         tfinal = (MPI_Wtime() - t0) / n_iter;
         MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
@@ -281,9 +271,8 @@ int main(int argc, char* argv[])
 
         // Time Copy-to-CPU Pairwise Exchange
         // 1. Warm-Up
-		MPIL_Set_alltoall_algorithm(ALLTOALL_CTC_PAIRWISE);
-        MPIL_Alltoall(
-            send_data_d, s, MPI_DOUBLE, recv_data_d, s, MPI_DOUBLE, xcomm);
+        MPIL_Set_alltoall_algorithm(ALLTOALL_CTC_PAIRWISE);
+        MPIL_Alltoall(send_data_d, s, MPI_DOUBLE, recv_data_d, s, MPI_DOUBLE, xcomm);
         gpuDeviceSynchronize();
         MPI_Barrier(MPI_COMM_WORLD);
 
@@ -291,8 +280,7 @@ int main(int argc, char* argv[])
         gpuDeviceSynchronize();
         MPI_Barrier(MPI_COMM_WORLD);
         t0 = MPI_Wtime();
-        MPIL_Alltoall(
-            send_data_d, s, MPI_DOUBLE, recv_data_d, s, MPI_DOUBLE, xcomm);
+        MPIL_Alltoall(send_data_d, s, MPI_DOUBLE, recv_data_d, s, MPI_DOUBLE, xcomm);
         tfinal = MPI_Wtime() - t0;
         MPI_Allreduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
         if (t0 >= 1.0)
@@ -310,8 +298,7 @@ int main(int argc, char* argv[])
         t0 = MPI_Wtime();
         for (int k = 0; k < n_iter; k++)
         {
-            MPIL_Alltoall(
-                send_data_d, s, MPI_DOUBLE, recv_data_d, s, MPI_DOUBLE, xcomm);
+            MPIL_Alltoall(send_data_d, s, MPI_DOUBLE, recv_data_d, s, MPI_DOUBLE, xcomm);
         }
         tfinal = (MPI_Wtime() - t0) / n_iter;
         MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
@@ -322,16 +309,14 @@ int main(int argc, char* argv[])
 
         // Time Copy-to-CPU Nonblocking
         // 1. Warm-Up
-		MPIL_Set_alltoall_algorithm(ALLTOALL_CTC_NONBLOCKING);
-        MPIL_Alltoall(
-            send_data_d, s, MPI_DOUBLE, recv_data_d, s, MPI_DOUBLE, xcomm);
+        MPIL_Set_alltoall_algorithm(ALLTOALL_CTC_NONBLOCKING);
+        MPIL_Alltoall(send_data_d, s, MPI_DOUBLE, recv_data_d, s, MPI_DOUBLE, xcomm);
 
         // 2. Calculate n_iter (tfinal ~ 1 sec)
         gpuDeviceSynchronize();
         MPI_Barrier(MPI_COMM_WORLD);
         t0 = MPI_Wtime();
-        MPIL_Alltoall(
-            send_data_d, s, MPI_DOUBLE, recv_data_d, s, MPI_DOUBLE, xcomm);
+        MPIL_Alltoall(send_data_d, s, MPI_DOUBLE, recv_data_d, s, MPI_DOUBLE, xcomm);
         tfinal = MPI_Wtime() - t0;
         MPI_Allreduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
         if (t0 >= 1.0)
@@ -349,8 +334,7 @@ int main(int argc, char* argv[])
         t0 = MPI_Wtime();
         for (int k = 0; k < n_iter; k++)
         {
-            MPIL_Alltoall(
-                send_data_d, s, MPI_DOUBLE, recv_data_d, s, MPI_DOUBLE, xcomm);
+            MPIL_Alltoall(send_data_d, s, MPI_DOUBLE, recv_data_d, s, MPI_DOUBLE, xcomm);
         }
         tfinal = (MPI_Wtime() - t0) / n_iter;
         MPI_Reduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);

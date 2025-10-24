@@ -15,9 +15,9 @@ int MPIL_Neighbor_alltoallv_init_ext(const void* sendbuf,
                                      MPIL_Info* info,
                                      MPIL_Request** request_ptr)
 {
-	MPIL_Topo* topo;
+    MPIL_Topo* topo;
     MPIL_Topo_from_neighbor_comm(comm, &topo);
-	
+
     MPIL_Neighbor_alltoallv_init_ext_topo(sendbuf,
                                           sendcounts,
                                           sdispls,
