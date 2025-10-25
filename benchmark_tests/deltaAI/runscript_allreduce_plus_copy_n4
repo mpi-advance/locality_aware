@@ -1,0 +1,36 @@
+#!/bin/bash
+#SBATCH --job-name allreduce_plus_copy_n4
+#SBATCH --output allreduce_plus_copy_n4.%j.out
+#SBATCH --error allreduce_plus_copy_n4.%j.err
+#SBATCH -N 4
+#SBATCH --mem 0
+#SBATCH --gpus-per-node=4
+#SBATCH --exclusive
+#SBATCH --partition ghx4
+#SBATCH --time 00:40:00
+#SBATCH --account=bebi-dtai-gh
+
+module load craype-accel-nvidia90
+module unload gcc-native
+module load gcc-native/12
+export MPICH_GPU_SUPPORT_ENABLED=1
+
+export NCCL_HOME=/opt/nvidia/hpc_sdk/Linux_aarch64/24.3/comm_libs/nccl/
+export NCCL_DIR=${NCCL_HOME}
+export LD_LIBRARY_PATH=${NCCL_DIR}/lib:$LD_LIBRARY_PATH
+
+cd $HOME/MPICCL/build/benchmarks
+
+n_nodes=4
+gpus_per_node=4
+
+for ppg in 1 2 4 8 16; do
+  n_procs=$(( ppg * gpus_per_node * n_nodes ))
+  echo "${ppg} Processes Per GPU, ${gpus_per_node} GPUs Per Node"
+  
+  if [ "$ppg" -eq 1 ]; then
+    srun -n ${n_procs} -N ${n_nodes} ./allreduce
+  else
+    srun -n ${n_procs} -N ${n_nodes} ./allreduce_copy
+  fi
+done
