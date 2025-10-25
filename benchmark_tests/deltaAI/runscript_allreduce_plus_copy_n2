@@ -1,8 +1,9 @@
 #!/bin/bash
-#SBATCH --job-name gpu_alltoall_plus_copy_n2
-#SBATCH --output gpu_alltoall_plus_copy_n2.%j.out
-#SBATCH --error gpu_alltoall_plus_copy_n2.%j.err
+#SBATCH --job-name allreduce_plus_copy_n2
+#SBATCH --output allreduce_plus_copy_n2.%j.out
+#SBATCH --error allreduce_plus_copy_n2.%j.err
 #SBATCH -N 2
+#SBATCH --mem 0
 #SBATCH --gpus-per-node=4
 #SBATCH --exclusive
 #SBATCH --partition ghx4
@@ -28,8 +29,8 @@ for ppg in 1 2 4 8 16; do
   echo "${ppg} Processes Per GPU, ${gpus_per_node} GPUs Per Node"
   
   if [ "$ppg" -eq 1 ]; then
-    srun -n ${n_procs} -N ${n_nodes} ./alltoall
+    srun -n ${n_procs} -N ${n_nodes} ./allreduce
   else
-    srun -n ${n_procs} -N ${n_nodes} ./alltoall_copy
+    srun -n ${n_procs} -N ${n_nodes} ./allreduce_copy
   fi
 done
