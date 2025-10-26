@@ -21,7 +21,7 @@
     form_comm(A);
 
     
-    std::vector<int> send_vals(A.on_proc.n_rows);
+    std::vector<double> send_vals(A.on_proc.n_rows);
     for (int i = 0; i < A.on_proc.n_rows; ++i) send_vals[i] = rank*1000 + i;
 
     
@@ -31,7 +31,7 @@
         proc_pos[A.send_comm.procs[i]] = i;
 
     
-    std::vector<int> packed_send(A.send_comm.size_msgs);//packing actual data to send
+    std::vector<double> packed_send(A.send_comm.size_msgs);//packing actual data to send
     int ctr = 0;
     for (int dest = 0; dest < P; ++dest) {
         int idx = proc_pos[dest];
@@ -70,14 +70,14 @@
     }
 
     // ----- PMPI baseline alltoallv--------
-    std::vector<int> recv_vals(rdispls.back(), 0);
+    std::vector<double> recv_vals(rdispls.back(), 0);
     MPI_Barrier(MPI_COMM_WORLD);
     double t0 = MPI_Wtime();
     for (int k = 0; k < n_iter; ++k) {
         PMPI_Alltoallv(packed_send.data(),
-                       sendcounts.data(), sdispls.data(), MPI_INT,
+                       sendcounts.data(), sdispls.data(), MPI_DOUBLE,
                        recv_vals.data(),
-                       recvcounts.data(), rdispls.data(), MPI_INT,
+                       recvcounts.data(), rdispls.data(), MPI_DOUBLE,
                        MPI_COMM_WORLD);
     }
     double pmpi_avg = (MPI_Wtime() - t0) / n_iter, pmpi_max = 0.0;
@@ -98,15 +98,15 @@
     update_locality(xcomm, 4);  
     MPIX_Info_init(&xinfo);
 
-    std::vector<int> rma_recv(rdispls.back(), 0);
+    std::vector<double> rma_recv(rdispls.back(), 0);
 
     // measure init+free average 
     t0 = MPI_Wtime();
     for (int k = 0; k < n_iter; ++k) {
         alltoallv_rma_winfence_init(packed_send.data(),
-                                    sendcounts.data(), sdispls.data(), MPI_INT,
+                                    sendcounts.data(), sdispls.data(), MPI_DOUBLE,
                                     rma_recv.data(),
-                                    recvcounts.data(), rdispls.data(), MPI_INT,
+                                    recvcounts.data(), rdispls.data(), MPI_DOUBLE,
                                     xcomm, xinfo, &req);
         MPIX_Request_free(req);
     }
@@ -118,9 +118,9 @@
 
     // persistent request once
     alltoallv_rma_winfence_init(packed_send.data(),
-                                sendcounts.data(), sdispls.data(), MPI_INT,
+                                sendcounts.data(), sdispls.data(), MPI_DOUBLE,
                                 rma_recv.data(),
-                                recvcounts.data(), rdispls.data(), MPI_INT,
+                                recvcounts.data(), rdispls.data(), MPI_DOUBLE,
                                 xcomm, xinfo, &req);
 
     MPI_Barrier(xcomm->global_comm);
@@ -147,12 +147,12 @@
             MPI_Abort(MPI_COMM_WORLD, 1);
         }
     }
-
+/*
     // -------- RMA winlock persistent --------
     alltoallv_rma_lock_init(packed_send.data(),
-                            sendcounts.data(), sdispls.data(), MPI_INT,
+                            sendcounts.data(), sdispls.data(), MPI_DOUBLE,
                             rma_recv.data(),
-                            recvcounts.data(), rdispls.data(), MPI_INT,
+                            recvcounts.data(), rdispls.data(), MPI_DOUBLE,
                             xcomm, xinfo, &req);
 
     MPI_Barrier(xcomm->global_comm);
@@ -179,7 +179,7 @@
             MPI_Abort(MPI_COMM_WORLD, 1);
         }
     }
-
+*/
     MPIX_Request_free(req);
     MPIX_Comm_win_free(xcomm);
     
