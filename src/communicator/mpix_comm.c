@@ -97,194 +97,193 @@ int MPIX_Comm_topo_init(MPIX_Comm* xcomm)
     return MPI_SUCCESS;
 }
 
-void balancedBellmanFord(double* adjacencyMatrix, 
-                         int* clusterMembership, 
-                         int* centerRanks, 
-                         double* distances, 
-                         int* predecessors, 
-                         int* numPredecessors, 
-                         int* clusterSizes,
-                         int tBFMax,
-                         int numProcs,
-                         int numClusters)
-{
-    int t = 0;
-    int done = 1;
-    while (t < tBFMax && !done)
-    {
-        for (int i = 0; i < numProcs; i++)
-        {
-            for (int j = 0; j < numProcs; j++)
-            {
-                int clusterISize = clusterSizes[clusterMembership[i]];
-                int clusterJSize = clusterSizes[clusterMembership[j]];
-                int swithClusters = 0;
-                if (distances[i] + adjacencyMatrix[i * numProcs + j] < distances[j])
-                    swithClusters = 1;
-                else if (distanes[i] + adjacencyMatrix[i * numProcs + j] = distances[j])
-                {
-                    if (clusterISize + 1 < clusterJSize)
-                        swithClusters = true;
-                }
+// void balancedBellmanFord(double* adjacencyMatrix, 
+//                          int* clusterMembership, 
+//                          int* centerRanks, 
+//                          double* distances, 
+//                          int* predecessors, 
+//                          int* numPredecessors, 
+//                          int* clusterSizes,
+//                          int tBFMax,
+//                          int numProcs,
+//                          int numClusters)
+// {
+//     int t = 0;
+//     int done = 1;
+//     while (t < tBFMax && !done)
+//     {
+//         for (int i = 0; i < numProcs; i++)
+//         {
+//             for (int j = 0; j < numProcs; j++)
+//             {
+//                 int clusterISize = clusterSizes[clusterMembership[i]];
+//                 int clusterJSize = clusterSizes[clusterMembership[j]];
+//                 int swithClusters = 0;
+//                 if (distances[i] + adjacencyMatrix[i * numProcs + j] < distances[j])
+//                     swithClusters = 1;
+//                 else if (distanes[i] + adjacencyMatrix[i * numProcs + j] = distances[j])
+//                 {
+//                     if (clusterISize + 1 < clusterJSize)
+//                         swithClusters = true;
+//                 }
 
-                if (swithClusters)
-                {
-                    clusterSizes[clusterMembership[i]] = clusterISize + 1;
-                    clusterSizes[clusterMembership[j]] = clusterJSize - 1;
-                    clusterMembership[j] = clusterMembership[i];
-                    distances[j] = distances[i] + adjacencyMatrix[i * numProcs + j];
-                    numPredecessors[i] += 1;
-                    numPredecessors[predecessors[j]] -= 1;
-                    predecessors[j] = i;
-                    done = false;
-                }
-            }
-        }
+//                 if (swithClusters)
+//                 {
+//                     clusterSizes[clusterMembership[i]] = clusterISize + 1;
+//                     clusterSizes[clusterMembership[j]] = clusterJSize - 1;
+//                     clusterMembership[j] = clusterMembership[i];
+//                     distances[j] = distances[i] + adjacencyMatrix[i * numProcs + j];
+//                     numPredecessors[i] += 1;
+//                     numPredecessors[predecessors[j]] -= 1;
+//                     predecessors[j] = i;
+//                     done = false;
+//                 }
+//             }
+//         }
 
-        t += 1;
-    }
-}
+//         t += 1;
+//     }
+// }
 
-void clusteredFloydWarshall(double* adjacencyMatrix, 
-                            int* clusterMembership, 
-                            int clusterSize,
-                            int* cluster,
-                            double** shortestPathDistances,
-                            int** predecessors,
-                            int numProcs)
-{
-    for (int i = 0; i < clusterSize; i++)
-    {
-        int start = cluster[i];
-        for (int j = 0; j < clusterSizer; j++)
-        {
-            int end = cluster[j];
-            if (i == j)
-            {
-                shortestPathDistnaces[start][end] = 0;
-                predecessors[start][start] = start;
-            }
-            else if (adjacencyMatrix[start * numProcs + end] > 0)
-            {
-                shortestPathDistances[start][end] = adjacencyMatrix[start * numProcs + end];
-                predecessors[start][end] = start;
-            }
-            else
-            {
-                // this should never happen
-                shortestPathDistances[start][end] = INFINITY;
-                predecessors[start][end] = -1;
-            }
-        }
-    }
+// void clusteredFloydWarshall(double* adjacencyMatrix, 
+//                             int* clusterMembership, 
+//                             int clusterSize,
+//                             int* cluster,
+//                             double** shortestPathDistances,
+//                             int** predecessors,
+//                             int numProcs)
+// {
+//     for (int i = 0; i < clusterSize; i++)
+//     {
+//         int start = cluster[i];
+//         for (int j = 0; j < clusterSizer; j++)
+//         {
+//             int end = cluster[j];
+//             if (i == j)
+//             {
+//                 shortestPathDistnaces[start][end] = 0;
+//                 predecessors[start][start] = start;
+//             }
+//             else if (adjacencyMatrix[start * numProcs + end] > 0)
+//             {
+//                 shortestPathDistances[start][end] = adjacencyMatrix[start * numProcs + end];
+//                 predecessors[start][end] = start;
+//             }
+//             else
+//             {
+//                 // this should never happen
+//                 shortestPathDistances[start][end] = INFINITY;
+//                 predecessors[start][end] = -1;
+//             }
+//         }
+//     }
 
 
-    // I don't think we actually need this second step, since we can assume each cluster is fully connected.
-    // However, for completeness, and the possibility that going through another process might be fast, if 
-    // that's reasonable
-    for (int k = 0; k < clusterSize; k++)
-    {
-        for (int i = 0; i < clusterSize; i++)
-        {
-            for (int j = 0; j < clusterSize; j++)
-            {
-                if (i != k && j != k)
-                {
-                    double dist_ik = shortestPathDistances[cluster[i]][cluster[k]];
-                    double dist_kj = shortestPathDistances[cluster[k]][cluster[j]];
-                    if (dist_ik < dist_kj)
-                    {
-                        shortestPathDistances[cluster[i]][cluster[j]] = dist_ik + dist_kj;
-                        predecessors[cluster[i]][cluster[j]] = predecessors[cluster[k], cluster[j]];
-                    }
-                }
-            }
-        }
-    }
-}
+//     // I don't think we actually need this second step, since we can assume each cluster is fully connected.
+//     // However, for completeness, and the possibility that going through another process might be fast, if 
+//     // that's reasonable
+//     for (int k = 0; k < clusterSize; k++)
+//     {
+//         for (int i = 0; i < clusterSize; i++)
+//         {
+//             for (int j = 0; j < clusterSize; j++)
+//             {
+//                 if (i != k && j != k)
+//                 {
+//                     double dist_ik = shortestPathDistances[cluster[i]][cluster[k]];
+//                     double dist_kj = shortestPathDistances[cluster[k]][cluster[j]];
+//                     if (dist_ik < dist_kj)
+//                     {
+//                         shortestPathDistances[cluster[i]][cluster[j]] = dist_ik + dist_kj;
+//                         predecessors[cluster[i]][cluster[j]] = predecessors[cluster[k], cluster[j]];
+//                     }
+//                 }
+//             }
+//         }
+//     }
+// }
 
-void centerNodes(double* adjacencyMatrix, 
-                 int* clusterMembership,
-                 int* centerNodes,
-                 double* shortestPathDistancesToCenter,
-                 int* predecessorsShortestPath,
-                 int* predecessorCounts,
-                 double* shortestPathDistances,
-                 int* predecessors,
-                 int numProcs,
-                 int numClusters)
-{
+// void centerNodes(double* adjacencyMatrix, 
+//                  int* clusterMembership,
+//                  int* centerNodes,
+//                  double* shortestPathDistancesToCenter,
+//                  int* predecessorsShortestPath,
+//                  int* predecessorCounts,
+//                  double* shortestPathDistances,
+//                  int* predecessors,
+//                  int numProcs,
+//                  int numClusters)
+// {
 
-}
+// }
 
-void balancedLloydClustering(double* adjancencyMatrix, int* centerRanks, int numProcs, int numClusters, int tMax, int tBFMax)
-{
-    // balanced initialization
-    int* clusterMembership = (int*) malloc(numProcs * sizeof(int));
-    double* distances = (double*) malloc(numProcs * sizeof(double));
-    int** predecessors = (int**) malloc(numProcs * sizeof(int*));
-    int* numPredecessors = (int*) malloc(numProcs * sizeof(int));
-    for (int i = 0; i < numProcs; i++)
-    {
-        clusterMembership[i] = 0;
-        distances[i] = INFINITY;
-        predecessors[i] = (int*) calloc(numProcs, sizeof(int));
-        numPredecessors = 0;
-    }
+// void balancedLloydClustering(double* adjancencyMatrix, int* centerRanks, int numProcs, int numClusters, int tMax, int tBFMax)
+// {
+//     // balanced initialization
+//     int* clusterMembership = (int*) malloc(numProcs * sizeof(int));
+//     double* distances = (double*) malloc(numProcs * sizeof(double));
+//     int** predecessors = (int**) malloc(numProcs * sizeof(int*));
+//     int* numPredecessors = (int*) malloc(numProcs * sizeof(int));
+//     for (int i = 0; i < numProcs; i++)
+//     {
+//         clusterMembership[i] = 0;
+//         distances[i] = INFINITY;
+//         predecessors[i] = (int*) calloc(numProcs, sizeof(int));
+//         numPredecessors = 0;
+//     }
 
-    int* clusterSizes = (int*) malloc(numClusters * sizeof(int));
-    memset(clusterSizes, 1, numClusters);
-    srand(time(NULL));
+//     int* clusterSizes = (int*) malloc(numClusters * sizeof(int));
+//     memset(clusterSizes, 1, numClusters);
+//     srand(time(NULL));
 
-    for (int clusterIndex = 0; clusterIndex < numClusters; clusterIndex++)
-    {
-        centerRanks[clusterIndex] = rand() % numProcs;
-        int nodeIndex = clusterCenters[clusterIndex];
-        distances[nodeIndex] = 0;
-        clusterMembership[nodeIndex] = clusterIndex;
-        predecessors[nodeIndex] = nodeIndex;
-        numPredecessors[nodeIndex] = 1;
-    }    
+//     for (int clusterIndex = 0; clusterIndex < numClusters; clusterIndex++)
+//     {
+//         centerRanks[clusterIndex] = rand() % numProcs;
+//         int nodeIndex = clusterCenters[clusterIndex];
+//         distances[nodeIndex] = 0;
+//         clusterMembership[nodeIndex] = clusterIndex;
+//         predecessors[nodeIndex] = nodeIndex;
+//         numPredecessors[nodeIndex] = 1;
+//     }    
 
-    int t = 0;
-    while (t < tMax) // need to add other condition (m, c, d, p, n, s don't change)
-    {
-        balancedBellmanFord(adjancencyMatrix, 
-                            clusterMembership,
-                            centerRanks,
-                            distances,
-                            predecessors,   
-                            numPredecessors,
-                            clusterSizes,
-                            tBFMax,
-                            numProcs,
-                            numClusters);
+//     int t = 0;
+//     while (t < tMax) // need to add other condition (m, c, d, p, n, s don't change)
+//     {
+//         balancedBellmanFord(adjancencyMatrix, 
+//                             clusterMembership,
+//                             centerRanks,
+//                             distances,
+//                             predecessors,   
+//                             numPredecessors,
+//                             clusterSizes,
+//                             tBFMax,
+//                             numProcs,
+//                             numClusters);
         
-        for (int i = 0; i < numClusters; i++)
-        {
-            clusteredFloydWarshall(adjancencyMatrix, 
-                                   clusterMembership,
-                                   clusterSizes[i],
-                                   cluster[i],
-                                   distances,
-                                   predecessors,
-                                   numProcs);
-        }
+//         for (int i = 0; i < numClusters; i++)
+//         {
+//             clusteredFloydWarshall(adjancencyMatrix, 
+//                                    clusterMembership,
+//                                    clusterSizes[i],
+//                                    cluster[i],
+//                                    distances,
+//                                    predecessors,
+//                                    numProcs);
+//         }
         
-    }
-}
+//     }
+// }
 
-double* network_discovery(MPIX_Comm* xcomm, int size, int tag)
+double* network_discovery(MPIX_Comm* xcomm, int size, int tag, int num_iterations)
 {
     int rank, num_procs;
     MPI_Comm_rank(xcomm->global_comm, &rank);
     MPI_Comm_size(xcomm->global_comm, &num_procs);
     
-    int send_proc, recv_proc;
     double* averageDistances = (double*) calloc(num_procs, sizeof(double));
 
-    char* sendData = (char*) malloc(num_procs * size * sizeof(char));
-    char* recvData = (char*) malloc(num_procs * size * sizeof(char));
+    char* send_buffer = (char*) malloc(num_procs * size * sizeof(char));
+    char* recv_buffer = (char*) malloc(num_procs * size * sizeof(char));
 
     int send_proc, recv_proc;
     int send_pos, recv_pos;
@@ -297,7 +296,7 @@ double* network_discovery(MPIX_Comm* xcomm, int size, int tag)
             send_proc -= num_procs;
         
         recv_proc = rank - i;
-        if (recv_proc <= 0)
+        if (recv_proc < 0)
             recv_proc += num_procs;
 
         send_pos = send_proc * sizeof(char);
@@ -314,10 +313,10 @@ double* network_discovery(MPIX_Comm* xcomm, int size, int tag)
                      MPI_CHAR,
                      recv_proc,
                      tag,
-                     comm->gobal_comm,
+                     xcomm->global_comm,
                      &status);
 
-        MPI_SendRecv(send_buffer + recv_pos,
+        MPI_Sendrecv(send_buffer + recv_pos,
                      1,
                      MPI_CHAR,
                      recv_proc,
@@ -327,40 +326,44 @@ double* network_discovery(MPIX_Comm* xcomm, int size, int tag)
                      MPI_CHAR,
                      send_proc,
                      tag,
-                     comm->global_comm, 
+                     xcomm->global_comm, 
                      &status);
 
         double t0 = MPI_Wtime();
-        MPI_Sendrecv(send_buffer + send_pos,
-                     1,
-                     MPI_CHAR, 
-                     send_proc,
-                     tag,
-                     recv_buffer + recv_pos,
-                     1,
-                     MPI_CHAR,
-                     recv_proc,
-                     tag,
-                     comm->gobal_comm,
-                     &status);
+        for (int i = 0; i < num_iterations; i++)
+        {
+            MPI_Sendrecv(send_buffer + send_pos,
+                        1,
+                        MPI_CHAR, 
+                        send_proc,
+                        tag,
+                        recv_buffer + recv_pos,
+                        1,
+                        MPI_CHAR,
+                        recv_proc,
+                        tag,
+                        xcomm->global_comm,
+                        &status);
 
-        MPI_SendRecv(send_buffer + recv_pos,
-                     1,
-                     MPI_CHAR,
-                     recv_proc,
-                     tag,
-                     recv_buffer + send_pos,
-                     1,
-                     MPI_CHAR,
-                     send_proc,
-                     tag,
-                     comm->global_comm, 
-                     &status);
-        averageDistances[send_proc] = averageDistances[recv_proc] = (MPI_Wtime() - t0) / 2.;
+            MPI_Sendrecv(send_buffer + recv_pos,
+                        1,
+                        MPI_CHAR,
+                        recv_proc,
+                        tag,
+                        recv_buffer + send_pos,
+                        1,
+                        MPI_CHAR,
+                        send_proc,
+                        tag,
+                        xcomm->global_comm, 
+                        &status);
+        }
+
+        averageDistances[send_proc] = averageDistances[recv_proc] = (MPI_Wtime() - t0) / (2. * (double) num_iterations);
     }
 
     double* adjacencyMatrix = (double*) malloc(num_procs * num_procs * sizeof(double));
-    MPI_Allgather(averageDistances, num_procs, MPI_DOUBLE, adjacencyMatrix, num_procs, MPI_DOUBLE, comm->global_comm);
+    MPI_Allgather(averageDistances, num_procs, MPI_DOUBLE, adjacencyMatrix, num_procs, MPI_DOUBLE, xcomm->global_comm);
 
     return adjacencyMatrix;
 }
@@ -368,8 +371,8 @@ double* network_discovery(MPIX_Comm* xcomm, int size, int tag)
 int MPIX_Comm_topo_cluster_init(MPIX_Comm* xcomm)
 {
     int tag;
-    MPIX_Comm_tag(comm, &tag);
-    double* adjacencyMatrix = network_discovery(xcomm, 2, tag, adjacencyMatrix);
+    MPIX_Comm_tag(xcomm, &tag);
+    double* adjacencyMatrix = network_discovery(xcomm, 2, tag, 1);
     return MPI_SUCCESS;
 }
 

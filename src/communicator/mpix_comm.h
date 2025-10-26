@@ -64,7 +64,7 @@ int MPIX_Comm_free(MPIX_Comm** xcomm_ptr);
 int MPIX_Comm_topo_init(MPIX_Comm* xcomm);
 int MPIX_Comm_topo_free(MPIX_Comm* xcomm);
 
-double* network_discovery(MPIX_Comm* xcomm, int size, int tag);
+double* network_discovery(MPIX_Comm* xcomm, int size, int tag, int num_iterations); // This is only exposed temporarily for some scaling studies
 int MPIX_Comm_topo_cluster_init(MPIX_Comm* xcomm);
 
 int MPIX_Comm_leader_init(MPIX_Comm* xcomm, int procs_per_leader);
