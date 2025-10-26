@@ -55,7 +55,7 @@ int allreduce_multileader(const void *sendbuf,
                           MPIX_Comm comm)
 {
     int rank, num_procs;
-    MPI_Comm_rank(comm.leader_comm, &rank);
+    MPI_Comm_rank(comm.global_comm, &rank);
     MPI_Comm_size(comm.global_comm, &num_procs);
 
     int tag = 10242;
