@@ -1,17 +1,17 @@
 #!/bin/bash
   
-#SBATCH --output=alltoalls_n32.%j.out
-#SBATCH --error=alltoalls_n32.%j.err
-#SBATCH --nodes=32
+#SBATCH --output=alltoalls_n2.%j.out
+#SBATCH --error=alltoalls_n2.%j.err
+#SBATCH --nodes=2
 #SBATCH --ntasks-per-node=112
 #SBATCH --cpus-per-task=1
-#SBATCH --time=01:00:00
-#SBATCH --partition=pbatch
+#SBATCH --time=00:20:00
+#SBATCH --partition=pdebug
 
 module load gcc
 module load openmpi
 
 cd ${HOME}/locality_alltoalls/build/benchmarks
 
-srun -n 3584 ./alltoall_topology
+srun -n 224 ./alltoall_topology
 

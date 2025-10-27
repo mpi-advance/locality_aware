@@ -658,7 +658,7 @@ int alltoall_multileader_locality(
         const int recvcount,
         MPI_Datatype recvtype,
         MPIX_Comm* comm,
-        int leaders_per_node)
+        int groups_per_node)
 {
     int rank, num_procs;
     MPI_Comm_rank(comm->global_comm, &rank);
@@ -674,33 +674,29 @@ int alltoall_multileader_locality(
     MPI_Comm_rank(comm->local_comm, &local_rank);
     MPI_Comm_size(comm->local_comm, &ppn);
 
-    int procs_per_leader = ppn / leaders_per_node;
-
     // Everyone is a leader, just run node-aware
-    if (ppn <= leaders_per_node)
+    if (ppn <= groups_per_node)
     {
+if (rank == 0) printf("Calling alltoall node aware instead of multileader loc\n");
         return alltoall_node_aware(f, sendbuf, sendcount, sendtype,
                 recvbuf, recvcount, recvtype, comm);
     }
-    else
-    {
-        // If leader comm is not correct size, free it
-        if (comm->leader_comm != MPI_COMM_NULL)
-        {
-            int ppg;
-            MPI_Comm_size(comm->leader_comm, &ppg);
-            if (ppg != leaders_per_node)
-                MPIX_Comm_leader_free(comm);
-        }
+    int procs_per_group = ppn / groups_per_node;
 
-        // If leader comm does not exist, create it
-        if (comm->leader_comm == MPI_COMM_NULL)
-        {
-            MPIX_Comm_leader_init(comm, procs_per_leader);
-        }
+    if (comm->leader_comm != MPI_COMM_NULL)
+    {
+        int ppg;
+        MPI_Comm_size(comm->leader_comm, &ppg);
+        if (ppg != procs_per_group)
+            MPIX_Comm_leader_free(comm);
     }
-    
-    int leader_rank;
+    if (comm->leader_comm == MPI_COMM_NULL)
+    {
+if (rank == 0) printf("Creating new leader comm in multileader loc\n");
+        MPIX_Comm_leader_init(comm, procs_per_group);
+    }
+
+    int procs_per_leader, leader_rank;
     MPI_Comm_rank(comm->leader_comm, &leader_rank);
     MPI_Comm_size(comm->leader_comm, &procs_per_leader);
 
@@ -717,9 +713,6 @@ int alltoall_multileader_locality(
     int n_nodes = num_procs / ppn;
     int n_leaders = num_procs / procs_per_leader;
  
-    MPI_Comm_size(comm->leader_local_comm, &leaders_per_node);
-
-
     char* local_send_buffer = NULL;
     char* local_recv_buffer = NULL;
     if (leader_rank == 0)
@@ -763,7 +756,7 @@ int alltoall_multileader_locality(
 
         // Re-Pack for exchange between local leaders
         ctr = 0;
-        for (int local_leader = 0; local_leader < leaders_per_node; local_leader++)
+        for (int local_leader = 0; local_leader < groups_per_node; local_leader++)
         {
             int leader_start = local_leader*procs_per_leader*procs_per_leader*sendcount*send_size;
             for (int dest_node = 0; dest_node < n_nodes; dest_node++)
@@ -788,7 +781,7 @@ int alltoall_multileader_locality(
             {
                 int orig_node_start = orig_node*procs_per_leader*procs_per_leader*recvcount*recv_size;
 
-                for (int orig_leader = 0; orig_leader < leaders_per_node; orig_leader++)
+                for (int orig_leader = 0; orig_leader < groups_per_node; orig_leader++)
                 {
                     int orig_leader_start = orig_leader*n_nodes*procs_per_leader*procs_per_leader*recvcount*recv_size;
                     for (int orig_proc = 0; orig_proc < procs_per_leader; orig_proc++)
