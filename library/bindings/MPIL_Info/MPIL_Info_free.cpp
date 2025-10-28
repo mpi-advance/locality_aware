@@ -3,6 +3,7 @@
 #include "communicator/MPIL_Info.h"
 #include "locality_aware.h"
 
+/** \todo why the intermediate pointer **/
 int MPIL_Info_free(MPIL_Info** info_ptr)
 {
     MPIL_Info* xinfo = *info_ptr;

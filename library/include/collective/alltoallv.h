@@ -21,7 +21,6 @@ typedef int (*alltoallv_ftn)(const void*,
                              MPI_Datatype,
                              MPIL_Comm*);
 
-// Helper Functions
 int alltoallv_pairwise(const void* sendbuf,
                        const int sendcounts[],
                        const int sdispls[],

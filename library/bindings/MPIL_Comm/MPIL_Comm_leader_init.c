@@ -1,6 +1,7 @@
 #include "communicator/MPIL_Comm.h"
 #include "locality_aware.h"
 
+/** \todo why is split the way it is?**/
 int MPIL_Comm_leader_init(MPIL_Comm* xcomm, int procs_per_leader)
 {
     int rank, num_procs;

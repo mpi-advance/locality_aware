@@ -12,6 +12,7 @@ extern "C" {
 
 typedef int (*alltoall_ftn)(
     const void*, const int, MPI_Datatype, void*, const int, MPI_Datatype, MPIL_Comm*);
+
 typedef int (*alltoall_helper_ftn)(const void*,
                                    const int,
                                    MPI_Datatype,
