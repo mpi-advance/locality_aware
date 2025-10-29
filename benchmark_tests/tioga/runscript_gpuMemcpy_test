@@ -20,7 +20,7 @@ export HSA_XNACK=1
 # Check if THP are enabled
 #cat /sys/kernel/mm/transparent_hugepage/enabled
 
-cd $HOME/MPICCL/build/benchmarks
+cd $HOME/MPICCL/build_tioga/benchmarks
 
 n_nodes=2
 n_procs=2
