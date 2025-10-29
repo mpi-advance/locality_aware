@@ -1,0 +1,690 @@
+0: 1 Processes Per GPU, 4 GPUs Per Node
+0: Only 1 GPU Visible, But GPN is 4.  Assuming 4 gpus per node.  If GPN is not correct, rerun cmake with -DARCH_GPUS_PER_NODE=Correct#
+0: .my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: Size 1 (Per Proc 1)
+0: STD: 1.138124e-05
+0: PW: 2.229229e-05
+0: NB: 1.043204e-05
+0: Size 2 (Per Proc 2)
+0: STD: 1.115453e-05
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: PW: 2.223446e-05
+0: NB: 1.045453e-05
+0: Size 4 (Per Proc 4)
+0: STD: 1.160094e-05
+0: PW: 2.373492e-05
+0: NB: 1.134655e-05
+0: Size 8 (Per Proc 8)
+0: STD: 1.197394e-05
+0: PW: 2.368709e-05
+0: NB: 1.142795e-05
+0: Size 16 (Per Proc 16)
+0: STD: 1.209563e-05
+0: PW: 2.332745e-05
+0: NB: 1.172934e-05
+0: Size 32 (Per Proc 32)
+0: STD: 1.506888e-05
+0: PW: 3.059388e-05
+0: NB: 1.495923e-05
+0: Size 64 (Per Proc 64)
+0: STD: 1.934244e-05
+0: PW: 3.823851e-05
+0: NB: 1.623314e-05
+0: Size 128 (Per Proc 128)
+0: STD: 2.756028e-05
+0: PW: 4.182316e-05
+0: NB: 1.844330e-05
+0: Size 256 (Per Proc 256)
+0: STD: 3.588935e-05
+0: PW: 5.176486e-05
+0: NB: 2.621112e-05
+0: Size 512 (Per Proc 512)
+0: STD: 3.609226e-05
+0: PW: 5.238643e-05
+0: NB: 2.674202e-05
+0: Size 1024 (Per Proc 1024)
+0: STD: 3.642118e-05
+0: PW: 5.415194e-05
+0: NB: 2.711779e-05
+0: Size 2048 (Per Proc 2048)
+0: STD: 5.300617e-05
+0: PW: 6.970475e-05
+0: NB: 4.164726e-05
+0: Size 4096 (Per Proc 4096)
+0: STD: 5.376953e-05
+0: PW: 7.464350e-05
+0: NB: 4.178891e-05
+0: Size 8192 (Per Proc 8192)
+0: STD: 5.436209e-05
+0: PW: 1.044735e-04
+0: NB: 4.575344e-05
+0: Size 16384 (Per Proc 16384)
+0: STD: 5.674566e-05
+0: PW: 1.171241e-04
+0: NB: 4.973106e-05
+0: Size 32768 (Per Proc 32768)
+0: STD: 6.206883e-05
+0: PW: 1.405077e-04
+0: NB: 5.515467e-05
+0: Size 65536 (Per Proc 65536)
+0: STD: 8.554599e-05
+0: PW: 1.839309e-04
+0: NB: 6.597233e-05
+0: Size 131072 (Per Proc 131072)
+0: STD: 2.125312e-04
+0: PW: 2.674901e-04
+0: NB: 1.118078e-04
+0: Size 262144 (Per Proc 262144)
+0: STD: 3.638512e-04
+0: PW: 4.346625e-04
+0: NB: 2.032168e-04
+0: Size 524288 (Per Proc 524288)
+0: STD: 6.360377e-04
+0: PW: 7.579955e-04
+0: NB: 3.819929e-04
+0: Size 1048576 (Per Proc 1048576)
+0: STD: 1.181283e-03
+0: PW: 1.415706e-03
+0: NB: 7.414804e-04
+0: Size 2097152 (Per Proc 2097152)
+0: STD: 2.274804e-03
+0: PW: 2.736487e-03
+0: NB: 1.461838e-03
+0: Size 4194304 (Per Proc 4194304)
+0: STD: 4.474555e-03
+0: PW: 6.594824e-03
+0: NB: 2.910748e-03
+0: Size 8388608 (Per Proc 8388608)
+0: STD: 8.894677e-03
+0: PW: 1.412419e-02
+0: NB: 6.466455e-03
+0: Size 16777216 (Per Proc 16777216)
+0: STD: 1.770069e-02
+0: PW: 2.805320e-02
+0: NB: 1.279976e-02
+0: Size 33554432 (Per Proc 33554432)
+0: STD: 3.534966e-02
+0: PW: 5.555394e-02
+0: NB: 2.474899e-02
+0: Size 67108864 (Per Proc 67108864)
+0: STD: 7.068739e-02
+0: PW: 1.086741e-01
+0: NB: 4.811076e-02
+0: 
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: 2 Processes Per GPU, 4 GPUs Per Node
+0: Only 1 GPU Visible, But GPN is 4.  Assuming 4 gpus per node.  If GPN is not correct, rerun cmake with -DARCH_GPUS_PER_NODE=Correct#
+0: .my_gpu 0, node_size 8, gpu_size 2, gpuspernode 4
+0: Size 2 (Per Proc 1)
+0: STD MPS COPY: 5.497602e-05
+0: PW SPLIT MPS COPY: 6.927208e-05
+0: NB SPLIT MPS COPY: 5.536472e-05
+0: PW MPS COPY: 6.082077e-05
+0: NB MPS COPY: 5.034681e-05
+0: Size 4 (Per Proc 2)
+0: STD MPS COPY: 5.570304e-05
+0: PW SPLIT MPS COPY: 6.939209e-05
+0: NB SPLIT MPS COPY: 5.472252e-05
+0: PW MPS COPY: 6.057511e-05
+0: NB MPS COPY: 5.012058e-05
+0: Size 8 (Per Proc 4)
+0: STD MPS COPY: 5.573590e-05
+0: PW SPLIT MPS COPY: 7.027324e-05
+0: NB SPLIT MPS COPY: 5.449827e-05
+0: PW MPS COPY: 6.025216e-05
+0: NB MPS COPY: 4.999102e-05
+0: Size 16 (Per Proc 8)
+0: STD MPS COPY: 5.591504e-05
+0: PW SPLIT MPS COPY: 7.016504e-05
+0: NB SPLIT MPS COPY: 5.573208e-05
+0: PW MPS COPY: 6.031897e-05
+0: NB MPS COPY: 5.007384e-05
+0: Size 32 (Per Proc 16)
+0: STD MPS COPY: 5.570241e-05
+0: PW SPLIT MPS COPY: 7.036727e-05
+0: NB SPLIT MPS COPY: 5.519223e-05
+0: PW MPS COPY: 6.189913e-05
+0: NB MPS COPY: 5.062340e-05
+0: Size 64 (Per Proc 32)
+0: STD MPS COPY: 6.024738e-05
+0: PW SPLIT MPS COPY: 7.774854e-05
+0: NB SPLIT MPS COPY: 5.949162e-05
+0: PW MPS COPY: 6.897475e-05
+0: NB MPS COPY: 5.174648e-05
+0: Size 128 (Per Proc 64)
+0: STD MPS COPY: 6.358193e-05
+0: PW SPLIT MPS COPY: 8.461717e-05
+0: NB SPLIT MPS COPY: 6.314092e-05
+0: PW MPS COPY: 6.895437e-05
+0: NB MPS COPY: 5.168410e-05
+0: Size 256 (Per Proc 128)
+0: STD MPS COPY: 7.279699e-05
+0: PW SPLIT MPS COPY: 8.710928e-05
+0: NB SPLIT MPS COPY: 6.063413e-05
+0: PW MPS COPY: 7.038104e-05
+0: NB MPS COPY: 5.871585e-05
+0: Size 512 (Per Proc 256)
+0: STD MPS COPY: 8.402594e-05
+0: PW SPLIT MPS COPY: 1.008357e-04
+0: NB SPLIT MPS COPY: 7.512873e-05
+0: PW MPS COPY: 7.155472e-05
+0: NB MPS COPY: 5.920683e-05
+0: Size 1024 (Per Proc 512)
+0: STD MPS COPY: 8.513215e-05
+0: PW SPLIT MPS COPY: 1.022370e-04
+0: NB SPLIT MPS COPY: 7.727039e-05
+0: PW MPS COPY: 7.202213e-05
+0: NB MPS COPY: 5.964812e-05
+0: Size 2048 (Per Proc 1024)
+0: STD MPS COPY: 8.612382e-05
+0: PW SPLIT MPS COPY: 1.043019e-04
+0: NB SPLIT MPS COPY: 7.792882e-05
+0: PW MPS COPY: 7.268357e-05
+0: NB MPS COPY: 6.283338e-05
+0: Size 4096 (Per Proc 2048)
+0: STD MPS COPY: 1.111343e-04
+0: PW SPLIT MPS COPY: 1.216083e-04
+0: NB SPLIT MPS COPY: 9.494246e-05
+0: PW MPS COPY: 7.595368e-05
+0: NB MPS COPY: 6.201918e-05
+0: Size 8192 (Per Proc 4096)
+0: STD MPS COPY: 1.131052e-04
+0: PW SPLIT MPS COPY: 1.270953e-04
+0: NB SPLIT MPS COPY: 1.003902e-04
+0: PW MPS COPY: 9.891253e-05
+0: NB MPS COPY: 6.547834e-05
+0: Size 16384 (Per Proc 8192)
+0: STD MPS COPY: 1.138311e-04
+0: PW SPLIT MPS COPY: 1.615142e-04
+0: NB SPLIT MPS COPY: 1.008817e-04
+0: PW MPS COPY: 1.053046e-04
+0: NB MPS COPY: 7.085110e-05
+0: Size 32768 (Per Proc 16384)
+0: STD MPS COPY: 1.178285e-04
+0: PW SPLIT MPS COPY: 1.777071e-04
+0: NB SPLIT MPS COPY: 1.042076e-04
+0: PW MPS COPY: 1.195791e-04
+0: NB MPS COPY: 8.745800e-05
+0: Size 65536 (Per Proc 32768)
+0: STD MPS COPY: 1.271086e-04
+0: PW SPLIT MPS COPY: 2.133741e-04
+0: NB SPLIT MPS COPY: 1.330714e-04
+0: PW MPS COPY: 1.479234e-04
+0: NB MPS COPY: 1.158190e-04
+0: Size 131072 (Per Proc 65536)
+0: STD MPS COPY: 1.687153e-04
+0: PW SPLIT MPS COPY: 2.808941e-04
+0: NB SPLIT MPS COPY: 1.512118e-04
+0: PW MPS COPY: 2.121172e-04
+0: NB MPS COPY: 1.684342e-04
+0: Size 262144 (Per Proc 131072)
+0: STD MPS COPY: 3.362534e-04
+0: PW SPLIT MPS COPY: 4.033869e-04
+0: NB SPLIT MPS COPY: 2.621886e-04
+0: PW MPS COPY: 3.364412e-04
+0: NB MPS COPY: 2.723630e-04
+0: Size 524288 (Per Proc 262144)
+0: STD MPS COPY: 6.125283e-04
+0: PW SPLIT MPS COPY: 6.646251e-04
+0: NB SPLIT MPS COPY: 4.656671e-04
+0: PW MPS COPY: 5.853909e-04
+0: NB MPS COPY: 4.688388e-04
+0: Size 1048576 (Per Proc 524288)
+0: STD MPS COPY: 1.154638e-03
+0: PW SPLIT MPS COPY: 1.394309e-03
+0: NB SPLIT MPS COPY: 8.726735e-04
+0: PW MPS COPY: 1.086971e-03
+0: NB MPS COPY: 9.025319e-04
+0: Size 2097152 (Per Proc 1048576)
+0: STD MPS COPY: 2.241742e-03
+0: PW SPLIT MPS COPY: 2.628807e-03
+0: NB SPLIT MPS COPY: 1.695562e-03
+0: PW MPS COPY: 2.059642e-03
+0: NB MPS COPY: 1.796371e-03
+0: Size 4194304 (Per Proc 2097152)
+0: STD MPS COPY: 4.438364e-03
+0: PW SPLIT MPS COPY: 5.166883e-03
+0: NB SPLIT MPS COPY: 3.317313e-03
+0: PW MPS COPY: 4.222806e-03
+0: NB MPS COPY: 3.495411e-03
+0: Size 8388608 (Per Proc 4194304)
+0: STD MPS COPY: 8.752484e-03
+0: PW SPLIT MPS COPY: 1.046573e-02
+0: NB SPLIT MPS COPY: 6.489425e-03
+0: PW MPS COPY: 8.785621e-03
+0: NB MPS COPY: 6.853353e-03
+0: Size 16777216 (Per Proc 8388608)
+0: STD MPS COPY: 1.747642e-02
+0: PW SPLIT MPS COPY: 2.105897e-02
+0: NB SPLIT MPS COPY: 1.264489e-02
+0: PW MPS COPY: 1.788725e-02
+0: NB MPS COPY: 1.418118e-02
+0: Size 33554432 (Per Proc 16777216)
+0: STD MPS COPY: 3.498071e-02
+0: PW SPLIT MPS COPY: 4.109663e-02
+0: NB SPLIT MPS COPY: 2.493018e-02
+0: PW MPS COPY: 3.472734e-02
+0: NB MPS COPY: 2.747635e-02
+0: Size 67108864 (Per Proc 33554432)
+0: STD MPS COPY: 6.952067e-02
+0: my_gpu 0, node_size 8, gpu_size 2, gpuspernode 4
+0: PW SPLIT MPS COPY: 8.146165e-02
+0: NB SPLIT MPS COPY: 4.944865e-02
+0: PW MPS COPY: 6.670138e-02
+0: NB MPS COPY: 5.298082e-02
+0: 
+0: my_gpu 0, node_size 8, gpu_size 2, gpuspernode 4
+0: my_gpu 0, node_size 8, gpu_size 2, gpuspernode 4
+0: my_gpu 0, node_size 8, gpu_size 2, gpuspernode 4
+0: my_gpu 0, node_size 8, gpu_size 2, gpuspernode 4
+0: my_gpu 0, node_size 8, gpu_size 2, gpuspernode 4
+0: my_gpu 0, node_size 8, gpu_size 2, gpuspernode 4
+0: my_gpu 0, node_size 8, gpu_size 2, gpuspernode 4
+0: my_gpu 0, node_size 8, gpu_size 2, gpuspernode 4
+0: my_gpu 0, node_size 8, gpu_size 2, gpuspernode 4
+0: my_gpu 0, node_size 8, gpu_size 2, gpuspernode 4
+0: my_gpu 0, node_size 8, gpu_size 2, gpuspernode 4
+0: my_gpu 0, node_size 8, gpu_size 2, gpuspernode 4
+0: my_gpu 0, node_size 8, gpu_size 2, gpuspernode 4
+0: my_gpu 0, node_size 8, gpu_size 2, gpuspernode 4
+0: 4 Processes Per GPU, 4 GPUs Per Node
+0: Only 1 GPU Visible, But GPN is 4.  Assuming 4 gpus per node.  If GPN is not correct, rerun cmake with -DARCH_GPUS_PER_NODE=Correct#
+0: .my_gpu 0, node_size 16, gpu_size 4, gpuspernode 4
+0: Size 4 (Per Proc 1)
+0: STD MPS COPY: 1.875853e-04
+0: PW SPLIT MPS COPY: 1.938972e-04
+0: NB SPLIT MPS COPY: 1.900441e-04
+0: PW MPS COPY: 1.615313e-04
+0: NB MPS COPY: 1.578488e-04
+0: Size 8 (Per Proc 2)
+0: STD MPS COPY: 1.883883e-04
+0: PW SPLIT MPS COPY: 1.935254e-04
+0: NB SPLIT MPS COPY: 1.895280e-04
+0: PW MPS COPY: 1.617113e-04
+0: NB MPS COPY: 1.580056e-04
+0: Size 16 (Per Proc 4)
+0: STD MPS COPY: 1.886948e-04
+0: PW SPLIT MPS COPY: 1.971813e-04
+0: NB SPLIT MPS COPY: 1.901304e-04
+0: PW MPS COPY: 1.623561e-04
+0: NB MPS COPY: 1.578121e-04
+0: Size 32 (Per Proc 8)
+0: STD MPS COPY: 1.904463e-04
+0: PW SPLIT MPS COPY: 1.978751e-04
+0: NB SPLIT MPS COPY: 1.913843e-04
+0: PW MPS COPY: 1.650129e-04
+0: NB MPS COPY: 1.601370e-04
+0: Size 64 (Per Proc 16)
+0: STD MPS COPY: 1.908394e-04
+0: PW SPLIT MPS COPY: 1.955336e-04
+0: NB SPLIT MPS COPY: 1.922750e-04
+0: PW MPS COPY: 1.739183e-04
+0: NB MPS COPY: 1.660720e-04
+0: Size 128 (Per Proc 32)
+0: STD MPS COPY: 1.885116e-04
+0: PW SPLIT MPS COPY: 2.017440e-04
+0: NB SPLIT MPS COPY: 1.875244e-04
+0: PW MPS COPY: 1.791935e-04
+0: NB MPS COPY: 1.745860e-04
+0: Size 256 (Per Proc 64)
+0: STD MPS COPY: 1.798487e-04
+0: PW SPLIT MPS COPY: 2.080648e-04
+0: NB SPLIT MPS COPY: 1.872252e-04
+0: PW MPS COPY: 1.820435e-04
+0: NB MPS COPY: 1.845188e-04
+0: Size 512 (Per Proc 128)
+0: STD MPS COPY: 2.062914e-04
+0: PW SPLIT MPS COPY: 2.204496e-04
+0: NB SPLIT MPS COPY: 1.941966e-04
+0: PW MPS COPY: 1.334579e-04
+0: NB MPS COPY: 1.606272e-04
+0: Size 1024 (Per Proc 256)
+0: STD MPS COPY: 2.144398e-04
+0: PW SPLIT MPS COPY: 2.282921e-04
+0: NB SPLIT MPS COPY: 2.052315e-04
+0: PW MPS COPY: 1.333215e-04
+0: NB MPS COPY: 1.592623e-04
+0: Size 2048 (Per Proc 512)
+0: STD MPS COPY: 1.506423e-04
+0: PW SPLIT MPS COPY: 1.686133e-04
+0: NB SPLIT MPS COPY: 1.403815e-04
+0: PW MPS COPY: 1.359856e-04
+0: NB MPS COPY: 1.438860e-04
+0: Size 4096 (Per Proc 1024)
+0: STD MPS COPY: 1.554133e-04
+0: PW SPLIT MPS COPY: 1.749309e-04
+0: NB SPLIT MPS COPY: 1.449123e-04
+0: PW MPS COPY: 1.340290e-04
+0: NB MPS COPY: 1.416375e-04
+0: Size 8192 (Per Proc 2048)
+0: STD MPS COPY: 2.050137e-04
+0: PW SPLIT MPS COPY: 2.269347e-04
+0: NB SPLIT MPS COPY: 1.721632e-04
+0: PW MPS COPY: 1.353535e-04
+0: NB MPS COPY: 1.323994e-04
+0: Size 16384 (Per Proc 4096)
+0: STD MPS COPY: 2.083516e-04
+0: PW SPLIT MPS COPY: 2.344484e-04
+0: NB SPLIT MPS COPY: 1.784136e-04
+0: PW MPS COPY: 1.416969e-04
+0: NB MPS COPY: 1.328577e-04
+0: Size 32768 (Per Proc 8192)
+0: STD MPS COPY: 2.103025e-04
+0: PW SPLIT MPS COPY: 2.624720e-04
+0: NB SPLIT MPS COPY: 1.852147e-04
+0: PW MPS COPY: 1.477744e-04
+0: NB MPS COPY: 1.308126e-04
+0: Size 65536 (Per Proc 16384)
+0: STD MPS COPY: 2.174671e-04
+0: PW SPLIT MPS COPY: 2.818505e-04
+0: NB SPLIT MPS COPY: 1.904188e-04
+0: PW MPS COPY: 1.682887e-04
+0: NB MPS COPY: 1.503707e-04
+0: Size 131072 (Per Proc 32768)
+0: STD MPS COPY: 2.331836e-04
+0: PW SPLIT MPS COPY: 3.193896e-04
+0: NB SPLIT MPS COPY: 2.266364e-04
+0: PW MPS COPY: 2.205991e-04
+0: NB MPS COPY: 2.018436e-04
+0: Size 262144 (Per Proc 65536)
+0: STD MPS COPY: 3.059159e-04
+0: PW SPLIT MPS COPY: 4.038099e-04
+0: NB SPLIT MPS COPY: 3.073510e-04
+0: PW MPS COPY: 3.249525e-04
+0: NB MPS COPY: 3.135556e-04
+0: Size 524288 (Per Proc 131072)
+0: STD MPS COPY: 5.773283e-04
+0: PW SPLIT MPS COPY: 6.207111e-04
+0: NB SPLIT MPS COPY: 4.806734e-04
+0: PW MPS COPY: 5.666467e-04
+0: NB MPS COPY: 5.505181e-04
+0: Size 1048576 (Per Proc 262144)
+0: STD MPS COPY: 1.104875e-03
+0: PW SPLIT MPS COPY: 1.110627e-03
+0: NB SPLIT MPS COPY: 9.178353e-04
+0: PW MPS COPY: 1.090031e-03
+0: NB MPS COPY: 1.071319e-03
+0: Size 2097152 (Per Proc 524288)
+0: STD MPS COPY: 2.114753e-03
+0: PW SPLIT MPS COPY: 2.174791e-03
+0: NB SPLIT MPS COPY: 1.726230e-03
+0: PW MPS COPY: 1.837395e-03
+0: NB MPS COPY: 1.839023e-03
+0: Size 4194304 (Per Proc 1048576)
+0: STD MPS COPY: 4.104030e-03
+0: PW SPLIT MPS COPY: 4.247100e-03
+0: NB SPLIT MPS COPY: 3.339532e-03
+0: PW MPS COPY: 3.558310e-03
+0: NB MPS COPY: 3.473603e-03
+0: Size 8388608 (Per Proc 2097152)
+0: STD MPS COPY: 8.152725e-03
+0: PW SPLIT MPS COPY: 8.222300e-03
+0: NB SPLIT MPS COPY: 6.407954e-03
+0: PW MPS COPY: 7.197590e-03
+0: NB MPS COPY: 6.698322e-03
+0: Size 16777216 (Per Proc 4194304)
+0: STD MPS COPY: 1.631209e-02
+0: PW SPLIT MPS COPY: 1.634120e-02
+0: NB SPLIT MPS COPY: 1.249431e-02
+0: PW MPS COPY: 1.455294e-02
+0: NB MPS COPY: 1.329053e-02
+0: Size 33554432 (Per Proc 8388608)
+0: STD MPS COPY: 3.305805e-02
+0: PW SPLIT MPS COPY: 3.291985e-02
+0: NB SPLIT MPS COPY: 2.477210e-02
+0: PW MPS COPY: 2.837946e-02
+0: NB MPS COPY: 2.601790e-02
+0: Size 67108864 (Per Proc 16777216)
+0: STD MPS COPY: 6.563060e-02
+0: PW SPLIT MPS COPY: 6.494918e-02
+0: NB SPLIT MPS COPY: 4.957768e-02
+0: PW MPS COPY: 5.729655e-02
+0: NB MPS COPY: 5.319455e-02
+0: 
+0: my_gpu 0, node_size 16, gpu_size 4, gpuspernode 4
+0: my_gpu 0, node_size 16, gpu_size 4, gpuspernode 4
+0: my_gpu 0, node_size 16, gpu_size 4, gpuspernode 4
+0: my_gpu 0, node_size 16, gpu_size 4, gpuspernode 4
+0: my_gpu 0, node_size 16, gpu_size 4, gpuspernode 4
+0: my_gpu 0, node_size 16, gpu_size 4, gpuspernode 4
+0: my_gpu 0, node_size 16, gpu_size 4, gpuspernode 4
+0: my_gpu 0, node_size 16, gpu_size 4, gpuspernode 4
+0: my_gpu 0, node_size 16, gpu_size 4, gpuspernode 4
+0: my_gpu 0, node_size 16, gpu_size 4, gpuspernode 4
+0: my_gpu 0, node_size 16, gpu_size 4, gpuspernode 4
+0: my_gpu 0, node_size 16, gpu_size 4, gpuspernode 4
+0: my_gpu 0, node_size 16, gpu_size 4, gpuspernode 4
+0: my_gpu 0, node_size 16, gpu_size 4, gpuspernode 4
+0: my_gpu 0, node_size 16, gpu_size 4, gpuspernode 4
+0: my_gpu 0, node_size 16, gpu_size 4, gpuspernode 4
+0: my_gpu 0, node_size 16, gpu_size 4, gpuspernode 4
+0: my_gpu 0, node_size 16, gpu_size 4, gpuspernode 4
+0: my_gpu 0, node_size 16, gpu_size 4, gpuspernode 4
+0: my_gpu 0, node_size 16, gpu_size 4, gpuspernode 4
+0: my_gpu 0, node_size 16, gpu_size 4, gpuspernode 4
+0: my_gpu 0, node_size 16, gpu_size 4, gpuspernode 4
+0: my_gpu 0, node_size 16, gpu_size 4, gpuspernode 4
+0: my_gpu 0, node_size 16, gpu_size 4, gpuspernode 4
+0: my_gpu 0, node_size 16, gpu_size 4, gpuspernode 4
+0: my_gpu 0, node_size 16, gpu_size 4, gpuspernode 4
+0: my_gpu 0, node_size 16, gpu_size 4, gpuspernode 4
+0: my_gpu 0, node_size 16, gpu_size 4, gpuspernode 4
+0: my_gpu 0, node_size 16, gpu_size 4, gpuspernode 4
+0: my_gpu 0, node_size 16, gpu_size 4, gpuspernode 4
+0: my_gpu 0, node_size 16, gpu_size 4, gpuspernode 4
+0: 8 Processes Per GPU, 4 GPUs Per Node
+0: Only 1 GPU Visible, But GPN is 4.  Assuming 4 gpus per node.  If GPN is not correct, rerun cmake with -DARCH_GPUS_PER_NODE=Correct#
+0: .my_gpu 0, node_size 32, gpu_size 8, gpuspernode 4
+0: Size 8 (Per Proc 1)
+0: STD MPS COPY: 2.462766e-04
+0: PW SPLIT MPS COPY: 2.531828e-04
+0: NB SPLIT MPS COPY: 2.455816e-04
+0: PW MPS COPY: 2.435951e-04
+0: NB MPS COPY: 2.438733e-04
+0: Size 16 (Per Proc 2)
+0: STD MPS COPY: 2.459039e-04
+0: PW SPLIT MPS COPY: 2.535345e-04
+0: NB SPLIT MPS COPY: 2.459354e-04
+0: PW MPS COPY: 2.437867e-04
+0: NB MPS COPY: 2.446132e-04
+0: Size 32 (Per Proc 4)
+0: STD MPS COPY: 2.466293e-04
+0: PW SPLIT MPS COPY: 2.548044e-04
+0: NB SPLIT MPS COPY: 2.465316e-04
+0: PW MPS COPY: 2.444223e-04
+0: NB MPS COPY: 2.450569e-04
+0: Size 64 (Per Proc 8)
+0: STD MPS COPY: 2.463116e-04
+0: PW SPLIT MPS COPY: 2.546284e-04
+0: NB SPLIT MPS COPY: 2.462129e-04
+0: PW MPS COPY: 2.444423e-04
+0: NB MPS COPY: 2.453957e-04
+0: Size 128 (Per Proc 16)
+0: STD MPS COPY: 2.463520e-04
+0: PW SPLIT MPS COPY: 2.551249e-04
+0: NB SPLIT MPS COPY: 2.467497e-04
+0: PW MPS COPY: 2.446442e-04
+0: NB MPS COPY: 2.448603e-04
+0: Size 256 (Per Proc 32)
+0: STD MPS COPY: 2.487366e-04
+0: PW SPLIT MPS COPY: 2.629586e-04
+0: NB SPLIT MPS COPY: 2.502898e-04
+0: PW MPS COPY: 2.452169e-04
+0: NB MPS COPY: 2.427787e-04
+0: Size 512 (Per Proc 64)
+0: STD MPS COPY: 2.517053e-04
+0: PW SPLIT MPS COPY: 2.719045e-04
+0: NB SPLIT MPS COPY: 2.510976e-04
+0: PW MPS COPY: 2.401835e-04
+0: NB MPS COPY: 2.441488e-04
+0: Size 1024 (Per Proc 128)
+0: STD MPS COPY: 2.718783e-04
+0: PW SPLIT MPS COPY: 2.863189e-04
+0: NB SPLIT MPS COPY: 2.594522e-04
+0: PW MPS COPY: 2.412431e-04
+0: NB MPS COPY: 2.415771e-04
+0: Size 2048 (Per Proc 256)
+0: STD MPS COPY: 2.832130e-04
+0: PW SPLIT MPS COPY: 2.981511e-04
+0: NB SPLIT MPS COPY: 2.693838e-04
+0: PW MPS COPY: 2.448025e-04
+0: NB MPS COPY: 2.455538e-04
+0: Size 4096 (Per Proc 512)
+0: STD MPS COPY: 2.804360e-04
+0: PW SPLIT MPS COPY: 2.985227e-04
+0: NB SPLIT MPS COPY: 2.697794e-04
+0: PW MPS COPY: 2.647850e-04
+0: NB MPS COPY: 2.658637e-04
+0: Size 8192 (Per Proc 1024)
+0: STD MPS COPY: 2.815580e-04
+0: PW SPLIT MPS COPY: 3.005580e-04
+0: NB SPLIT MPS COPY: 2.702166e-04
+0: PW MPS COPY: 2.638462e-04
+0: NB MPS COPY: 2.651284e-04
+0: Size 16384 (Per Proc 2048)
+0: STD MPS COPY: 3.947857e-04
+0: PW SPLIT MPS COPY: 4.527176e-04
+0: NB SPLIT MPS COPY: 3.500180e-04
+0: PW MPS COPY: 2.601839e-04
+0: NB MPS COPY: 2.603045e-04
+0: Size 32768 (Per Proc 4096)
+0: STD MPS COPY: 4.009454e-04
+0: PW SPLIT MPS COPY: 4.620577e-04
+0: NB SPLIT MPS COPY: 3.591915e-04
+0: PW MPS COPY: 2.555755e-04
+0: NB MPS COPY: 2.558914e-04
+0: Size 65536 (Per Proc 8192)
+0: STD MPS COPY: 4.054492e-04
+0: PW SPLIT MPS COPY: 4.904558e-04
+0: NB SPLIT MPS COPY: 3.570892e-04
+0: PW MPS COPY: 2.608579e-04
+0: NB MPS COPY: 2.614978e-04
+0: Size 131072 (Per Proc 16384)
+0: STD MPS COPY: 4.192250e-04
+0: PW SPLIT MPS COPY: 5.105758e-04
+0: NB SPLIT MPS COPY: 3.779240e-04
+0: PW MPS COPY: 2.876192e-04
+0: NB MPS COPY: 2.871952e-04
+0: Size 262144 (Per Proc 32768)
+0: STD MPS COPY: 4.450008e-04
+0: PW SPLIT MPS COPY: 5.575158e-04
+0: NB SPLIT MPS COPY: 4.280767e-04
+0: PW MPS COPY: 4.206463e-04
+0: NB MPS COPY: 4.204187e-04
+0: Size 524288 (Per Proc 65536)
+0: STD MPS COPY: 5.739264e-04
+0: PW SPLIT MPS COPY: 6.744668e-04
+0: NB SPLIT MPS COPY: 5.477305e-04
+0: PW MPS COPY: 6.600655e-04
+0: NB MPS COPY: 6.611413e-04
+0: Size 1048576 (Per Proc 131072)
+0: STD MPS COPY: 1.109629e-03
+0: PW SPLIT MPS COPY: 1.018093e-03
+0: NB SPLIT MPS COPY: 9.288501e-04
+0: PW MPS COPY: 1.163617e-03
+0: NB MPS COPY: 1.169004e-03
+0: Size 2097152 (Per Proc 262144)
+0: STD MPS COPY: 2.089157e-03
+0: PW SPLIT MPS COPY: 1.890906e-03
+0: NB SPLIT MPS COPY: 1.712952e-03
+0: PW MPS COPY: 2.079437e-03
+0: NB MPS COPY: 2.062911e-03
+0: Size 4194304 (Per Proc 524288)
+0: STD MPS COPY: 4.054607e-03
+0: PW SPLIT MPS COPY: 3.754697e-03
+0: NB SPLIT MPS COPY: 3.364030e-03
+0: PW MPS COPY: 3.779460e-03
+0: NB MPS COPY: 3.714335e-03
+0: Size 8388608 (Per Proc 1048576)
+0: STD MPS COPY: 7.973489e-03
+0: PW SPLIT MPS COPY: 7.447888e-03
+0: NB SPLIT MPS COPY: 6.601800e-03
+0: PW MPS COPY: 7.134453e-03
+0: NB MPS COPY: 7.036160e-03
+0: Size 16777216 (Per Proc 2097152)
+0: STD MPS COPY: 1.582058e-02
+0: PW SPLIT MPS COPY: 1.455305e-02
+0: NB SPLIT MPS COPY: 1.272579e-02
+0: PW MPS COPY: 1.401451e-02
+0: NB MPS COPY: 1.401563e-02
+0: Size 33554432 (Per Proc 4194304)
+0: STD MPS COPY: 3.162399e-02
+0: PW SPLIT MPS COPY: 2.866111e-02
+0: NB SPLIT MPS COPY: 2.471215e-02
+0: PW MPS COPY: 2.795086e-02
+0: NB MPS COPY: 2.748620e-02
+0: Size 67108864 (Per Proc 8388608)
+0: STD MPS COPY: 6.362738e-02
+0: PW SPLIT MPS COPY: 5.671994e-02
+0: NB SPLIT MPS COPY: 4.943175e-02
+0: PW MPS COPY: 5.446237e-02
+0: NB MPS COPY: 5.456573e-02
+0: 
+0: my_gpu 0, node_size 32, gpu_size 8, gpuspernode 4
+0: my_gpu 0, node_size 32, gpu_size 8, gpuspernode 4
+0: my_gpu 0, node_size 32, gpu_size 8, gpuspernode 4
+0: my_gpu 0, node_size 32, gpu_size 8, gpuspernode 4
+0: my_gpu 0, node_size 32, gpu_size 8, gpuspernode 4
+0: my_gpu 0, node_size 32, gpu_size 8, gpuspernode 4
+0: my_gpu 0, node_size 32, gpu_size 8, gpuspernode 4
+0: my_gpu 0, node_size 32, gpu_size 8, gpuspernode 4
+0: my_gpu 0, node_size 32, gpu_size 8, gpuspernode 4
+0: my_gpu 0, node_size 32, gpu_size 8, gpuspernode 4
+0: my_gpu 0, node_size 32, gpu_size 8, gpuspernode 4
+0: my_gpu 0, node_size 32, gpu_size 8, gpuspernode 4
+0: my_gpu 0, node_size 32, gpu_size 8, gpuspernode 4
+0: my_gpu 0, node_size 32, gpu_size 8, gpuspernode 4
+0: my_gpu 0, node_size 32, gpu_size 8, gpuspernode 4
+0: my_gpu 0, node_size 32, gpu_size 8, gpuspernode 4
+0: my_gpu 0, node_size 32, gpu_size 8, gpuspernode 4
+0: my_gpu 0, node_size 32, gpu_size 8, gpuspernode 4
+0: my_gpu 0, node_size 32, gpu_size 8, gpuspernode 4
+0: my_gpu 0, node_size 32, gpu_size 8, gpuspernode 4
+0: my_gpu 0, node_size 32, gpu_size 8, gpuspernode 4
+0: my_gpu 0, node_size 32, gpu_size 8, gpuspernode 4
+0: my_gpu 0, node_size 32, gpu_size 8, gpuspernode 4
+0: my_gpu 0, node_size 32, gpu_size 8, gpuspernode 4
+0: my_gpu 0, node_size 32, gpu_size 8, gpuspernode 4
+0: my_gpu 0, node_size 32, gpu_size 8, gpuspernode 4
+0: my_gpu 0, node_size 32, gpu_size 8, gpuspernode 4
+0: my_gpu 0, node_size 32, gpu_size 8, gpuspernode 4
+0: my_gpu 0, node_size 32, gpu_size 8, gpuspernode 4
+0: my_gpu 0, node_size 32, gpu_size 8, gpuspernode 4
+0: my_gpu 0, node_size 32, gpu_size 8, gpuspernode 4
+0: my_gpu 0, node_size 32, gpu_size 8, gpuspernode 4
+0: my_gpu 0, node_size 32, gpu_size 8, gpuspernode 4
+0: my_gpu 0, node_size 32, gpu_size 8, gpuspernode 4
+0: my_gpu 0, node_size 32, gpu_size 8, gpuspernode 4
+0: my_gpu 0, node_size 32, gpu_size 8, gpuspernode 4
+0: my_gpu 0, node_size 32, gpu_size 8, gpuspernode 4
+0: my_gpu 0, node_size 32, gpu_size 8, gpuspernode 4
+0: my_gpu 0, node_size 32, gpu_size 8, gpuspernode 4
+0: my_gpu 0, node_size 32, gpu_size 8, gpuspernode 4
+0: my_gpu 0, node_size 32, gpu_size 8, gpuspernode 4
+0: my_gpu 0, node_size 32, gpu_size 8, gpuspernode 4
+0: my_gpu 0, node_size 32, gpu_size 8, gpuspernode 4
+0: my_gpu 0, node_size 32, gpu_size 8, gpuspernode 4
+0: my_gpu 0, node_size 32, gpu_size 8, gpuspernode 4
+0: my_gpu 0, node_size 32, gpu_size 8, gpuspernode 4
+0: my_gpu 0, node_size 32, gpu_size 8, gpuspernode 4
+0: my_gpu 0, node_size 32, gpu_size 8, gpuspernode 4
+0: my_gpu 0, node_size 32, gpu_size 8, gpuspernode 4
+0: my_gpu 0, node_size 32, gpu_size 8, gpuspernode 4
+0: my_gpu 0, node_size 32, gpu_size 8, gpuspernode 4
+0: my_gpu 0, node_size 32, gpu_size 8, gpuspernode 4
+0: my_gpu 0, node_size 32, gpu_size 8, gpuspernode 4
+0: my_gpu 0, node_size 32, gpu_size 8, gpuspernode 4
+0: my_gpu 0, node_size 32, gpu_size 8, gpuspernode 4
+0: my_gpu 0, node_size 32, gpu_size 8, gpuspernode 4
+0: my_gpu 0, node_size 32, gpu_size 8, gpuspernode 4
+0: my_gpu 0, node_size 32, gpu_size 8, gpuspernode 4
+0: my_gpu 0, node_size 32, gpu_size 8, gpuspernode 4
+0: my_gpu 0, node_size 32, gpu_size 8, gpuspernode 4
+0: my_gpu 0, node_size 32, gpu_size 8, gpuspernode 4
+0: my_gpu 0, node_size 32, gpu_size 8, gpuspernode 4
+0: my_gpu 0, node_size 32, gpu_size 8, gpuspernode 4
