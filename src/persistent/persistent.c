@@ -45,10 +45,12 @@ int allocate_requests(int n_requests, MPI_Request** request_ptr)
 
 int MPIX_Start(MPIX_Request* request)
 {
+   
     if (request == NULL)
         return 0;
 
     mpix_start_ftn start_function = (mpix_start_ftn)(request->start_function);
+
     return start_function(request);
 }
 
@@ -297,37 +299,52 @@ int rma_start(MPIX_Request* request)
 
     MPI_Comm_rank(request->xcomm->global_comm, &rank);  // Get the rank of the process
     
-    char* send_buffer = (char*)(request->sendbuf);
-    char* recv_buffer = (char*)(request->recvbuf);
-         printf("Process %d entering rma_start\n", rank);
+    const char*  send_buffer = (const char* )(request->sendbuf);
+    const char*  recv_buffer = (const char* )(request->recvbuf);
+    //     printf("Process %d entering rma_start\n", rank);
 
-    MPI_Barrier(request->xcomm->global_comm);  // synchronized before proceeding.
+    MPI_Barrier(request->xcomm->global_comm);  
 
-    int puts_done = 0;//just want to see which processes actually do the puts
+    //int puts_done = 0;//just want to see which processes actually do the puts
 
-    MPI_Win_fence(MPI_MODE_NOSTORE|MPI_MODE_NOPRECEDE, request->xcomm->win);
+
+    MPI_Win_fence(MPI_MODE_NOPRECEDE, request->xcomm->win);
+    for (int i = 0; i < request->n_puts; ++i) {
+        int nbytes = request->send_sizes[i];      // bytes iam sending to i
+        if (nbytes == 0) continue;
+
+        MPI_Put((const void*)((const char*)request->sendbuf + request->sdispls[i]),
+                nbytes, MPI_BYTE,
+                i, (MPI_Aint)request->put_displs[i],
+                nbytes, MPI_BYTE,
+                request->xcomm->win);
+    }
+
+    //MPI_Win_fence(MPI_MODE_NOSTORE|MPI_MODE_NOPRECEDE, request->xcomm->win);
+   /* MPI_Win_fence(MPI_MODE_NOPRECEDE, request->xcomm->win);
     for (int i = 0; i < request->n_puts; i++)
     {
-     
-    
-
-	    
+        
          // Skip if no data to send to this target
     if (request->send_sizes[i] == 0 || request->recv_sizes[i] == 0)
     continue;
 
-printf("Rank %d: sending %d bytes to Rank %d; Rank %d expects %d bytes from Rank %d\n",
-       rank, request->send_sizes[i], i,
-       i, request->recv_sizes[i], i);
+//printf("Rank %d: sending %d bytes to Rank %d; Rank %d expects %d bytes from Rank %d\n",
+  //     rank, request->send_sizes[i], i,
+    //   i, request->recv_sizes[i], i);
 
 
          // printf("Process %d starts puts in winfence's rma_start\n", rank);
-         MPI_Put(&(send_buffer[request->sdispls[i]]), request->send_sizes[i], MPI_CHAR,
-                 i, request->put_displs[i], request->recv_sizes[i], MPI_CHAR, request->xcomm->win);
-    }   
+         MPI_Put(&(send_buffer[request->sdispls[i]]), request->send_sizes[i], MPI_BYTE,
+                 i, request->put_displs[i], request->recv_sizes[i], MPI_BYTE, request->xcomm->win);
+
+
+                  
+    }   */
+
 
   
-        printf("Process %d leaving rma_start\n", rank);  
+  //      printf("Process %d leaving rma_start\n", rank);  
 
     return MPI_SUCCESS;
 }
@@ -335,16 +352,18 @@ printf("Rank %d: sending %d bytes to Rank %d; Rank %d expects %d bytes from Rank
 
 int rma_wait(MPIX_Request* request, MPI_Status* status)
 {
-   int rank;
+    int rank;
 
     MPI_Comm_rank(request->xcomm->global_comm, &rank);  // Get the rank of the process
 
 
-   MPI_Barrier(request->xcomm->global_comm);
-printf("[rma_wait] Rank %d entering fence\n", rank); fflush(stdout);
+   //MPI_Barrier(request->xcomm->global_comm);
+//printf("[rma_wait] Rank %d entering fence\n", rank); fflush(stdout);
 
-    MPI_Win_fence(MPI_MODE_NOPUT|MPI_MODE_NOSUCCEED, request->xcomm->win);
-printf("[rma_wait] Rank %d leaving fence\n", rank); fflush(stdout);
+    //MPI_Win_fence(MPI_MODE_NOPUT|MPI_MODE_NOSUCCEED, request->xcomm->win);
+    MPI_Win_fence(MPI_MODE_NOSUCCEED, request->xcomm->win);
+    
+//printf("[rma_wait] Rank %d leaving fence\n", rank); fflush(stdout);
    
 
     return MPI_SUCCESS;
@@ -354,12 +373,13 @@ printf("[rma_wait] Rank %d leaving fence\n", rank); fflush(stdout);
 int rma_lock_start(MPIX_Request* request)
 {
     int rank;
-    //printf("*************hey just entered rma_lock_start");
-    //fflush(stdout);
+    
     MPI_Comm_rank(request->xcomm->global_comm, &rank);  // Get the rank of the process
+    printf("Process %d entering rma_lock_start\n", rank);
+    fflush(stdout);
 
-    char* send_buffer = (char*)(request->sendbuf);
-    char* recv_buffer = (char*)(request->recvbuf); 
+    const char*  send_buffer = (const char* )(request->sendbuf);
+    const char*  recv_buffer = (const char* )(request->recvbuf); 
     //printf("*************329");
     //fflush(stdout);
     MPI_Win_unlock(rank, request->xcomm->win); // MGFD: Release Local Exclusive Lock, this allows other process to safely put data. 
@@ -367,24 +387,28 @@ int rma_lock_start(MPIX_Request* request)
     //printf("******************333");
    // fflush(stdout);
        // Lock the window for all processes
+    for (int i = 0; i < request->n_puts; ++i)
+        request->global_requests[i] = MPI_REQUEST_NULL;
+    
+       
     MPI_Win_lock_all(0, request->xcomm->win);
    
         
-    int request_count = 0;
+    //int request_count = 0;
    // printf("*************after MPI_Win_lock_all***");
    // fflush(stdout);
 
     //  non-blocking MPI_Rput 
-    
+    /*
     for (int i = 0; i < request->n_puts; i++) {
         if (request->send_sizes[i] > 0) {
             MPI_Rput(&request->sendbuf[request->sdispls[i]],
                 request->send_sizes[i], 
-                MPI_CHAR,
+                 MPI_BYTE,
                 i,
                 request->put_displs[i], 
                 request->send_sizes[i],
-                MPI_CHAR,
+                 MPI_BYTE,
                 request->xcomm->win,
                 &(request->global_requests[request_count++]));
         }
@@ -393,23 +417,41 @@ int rma_lock_start(MPIX_Request* request)
 
 
 MPI_Waitall(request->global_n_msgs, request->global_requests, MPI_STATUSES_IGNORE);
-    
-/*
+    // start MPI_Put
+
     for (int i = 0; i < request->n_puts; i++) {
         if (request->send_sizes[i] > 0) {
             MPI_Put(&request->sendbuf[request->sdispls[i]],
-                    request->send_sizes[i],
-                    MPI_CHAR,
-                    i,
-                    request->put_displs[i],
+                  request->send_sizes[i],
+                   MPI_CHAR,
+                   i,
+                   request->put_displs[i],
                     request->send_sizes[i],
                     MPI_CHAR,
                     request->xcomm->win);
         }
     }
-    // tracking 0 requests now
-    request->global_n_msgs = 0;
+ // end MPI_Put-previous put-temporarily commented out, to try the modified version with arithmatic pointers
 */
+
+
+//MPI_Aint is large enough to store any valid memory address, so it won’t overflow on 64-bit systems.
+
+
+
+    for (int i = 0; i < request->n_puts; ++i) {
+    int nbytes = request->send_sizes[i];      // bytes iam sending to i
+    if (nbytes == 0) continue;
+
+    MPI_Put((const void*)((const char*)request->sendbuf + request->sdispls[i]),
+            nbytes, MPI_BYTE,
+            i, (MPI_Aint)request->put_displs[i],
+            nbytes, MPI_BYTE,
+            request->xcomm->win);
+    }
+     //tracking 0 requests now
+    //request->global_n_msgs = 0; 
+
 
    // printf("lock_start nputs=%d, request count= %d\n",request->n_puts, request_count);
     //fflush(stdout);
@@ -417,24 +459,28 @@ MPI_Waitall(request->global_n_msgs, request->global_requests, MPI_STATUSES_IGNOR
     //printf("*************after Rputs***");
     //fflush(stdout);
     // Waiting for all non-blocking operations to complete 
-    /*newly added */
+    
    
 
-   // printf("*************after MPI_Waitall***");
-   // fflush(stdout);    
+    printf("Process %d leaving rma_lock_start\n", rank);
+    fflush(stdout);    
     
     return MPI_SUCCESS;
 }
+
+
 
     
      
 int rma_lock_wait(MPIX_Request* request, MPI_Status* status)
 {
-   
     int rank;  // MGFD: We should really save this off at init, but we need this here for the exclusive lock.
+    
     MPI_Comm_rank(request->xcomm->global_comm, &rank);
     
    
+    printf("Process %d entering rma_lock_wait\n", rank);
+
     MPI_Win_unlock_all(request->xcomm->win);
     
     //MPI_Win_flush_all(request->xcomm->win); //MGFD: We're already doing the unlock and lock below so the flush is not needed
@@ -444,7 +490,7 @@ int rma_lock_wait(MPIX_Request* request, MPI_Status* status)
 
         MPI_Request_free(&request->global_requests[i]);
       
-      }
+    }
       
       
     
@@ -452,16 +498,19 @@ int rma_lock_wait(MPIX_Request* request, MPI_Status* status)
     //printf("******************14");
     //fflush(stdout);
 
-    /*newly commented out */
+    
     MPI_Win_lock(MPI_LOCK_EXCLUSIVE, rank, 0, request->xcomm->win); // MGFD: this makes the buffer go into an consistent state, and therefore is safe to access by the user.
     
     //printf("******************15");
     //fflush(stdout);
-    //memcpy(recv_buffer, request->xcomm->win_array, request->recv_size);
+
+     printf("Process %d leaving rma_lock_wait\n", rank);
+    
 
     return MPI_SUCCESS;
 }
-
-
   
 
+
+
+ 
