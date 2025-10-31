@@ -1,6 +1,8 @@
 #include "mpix_comm.h"
 #include <math.h>
 #include <time.h>
+#include <stdbool.h>
+#include <stdlib.h>
 
 int MPIX_Comm_init(MPIX_Comm** xcomm_ptr, MPI_Comm global_comm)
 {
@@ -203,20 +205,213 @@ int MPIX_Comm_topo_init(MPIX_Comm* xcomm)
 //     }
 // }
 
-// void centerNodes(double* adjacencyMatrix, 
-//                  int* clusterMembership,
-//                  int* centerNodes,
-//                  double* shortestPathDistancesToCenter,
-//                  int* predecessorsShortestPath,
-//                  int* predecessorCounts,
-//                  double* shortestPathDistances,
-//                  int* predecessors,
-//                  int numProcs,
-//                  int numClusters)
-// {
+void centerNodes(double* adjacencyMatrix, 
+                 int* clusterMembership,
+                 int* centerNodes,
+                 double* shortestPathDistancesToCenter,
+                 int* predecessorsShortestPath,
+                 int* predecessorCounts,
+                 double* shortestPathDistances,
+                 int* predecessors,
+                 int* clusterSizes,
+                 int** clusters,
+                 int numProcs,
+                 int numClusters)
+{
+    for (int i = 0; i < numClusters; i++)
+    {
+    
+    }
+}
 
-// }
 
+
+void markUnavailable(int clusterIndex, 
+                     int* clusterMembership, 
+                     bool* clusterModifiable, 
+                     double* adjacencyMatrix, 
+                     int* clusterNodes,
+                     int clusterSize,
+                     int numProcs)
+{
+    clusterModifiable[clusterIndex] = false;
+    for (int i = 0; i < clusterSize; i++)
+    {
+        for (int j = 0; j < numProcs; j++)
+        {
+            if (adjacencyMatrix[i * numProcs + j] > 0.0)
+            {
+                clusterModifiable[clusterMembership[j]] = false;
+            }
+        }
+    }
+}
+
+void splitImprovementForCluster(int* clusterMembers,
+                                double* shortestPathToCenters,
+                                int numProcs,
+                                double* shortestPathWithinCluster,
+                                int clusterSize,
+                                double *energyImprovement,
+                                int* newCenter1,
+                                int* newCenter2)
+{
+    *energyImprovement = INFINITY;
+    for (int i = 0; i < clusterSize; i++)
+    {
+        for (int j = 0; j < clusterSize; j++)
+        {
+            double newEnergy = 0;
+            for (int k = 0; k < clusterSize; k++)
+            {
+                if (shortestPathWithinCluster[i * numProcs + k] < shortestPathWithinCluster[j * numProcs + k])
+                {
+                    newEnergy += pow(shortestPathWithinCluster[i * numProcs + k], 2.0);
+                }
+                else
+                {
+                    newEnergy += pow(shortestPathWithinCluster[j * numProcs + k], 2.0);
+                }
+            }
+
+            if (newEnergy < *energyImprovement)
+            {
+                *energyImprovement = newEnergy;
+                *newCenter1 = i;
+                *newCenter2 = j;
+            }
+        }
+    }
+
+    double energy = 0;
+    for (int i = 0; i < clusterSize; i++)
+    {
+        energy += pow(shortestPathToCenters[i], 2.0);
+    }
+
+    energy -= *energyImprovement;
+    *energyImprovement = energy;
+}
+
+double eliminationPenaltyForCluster(double *adjacencyMatrix, 
+                                    int numProcs,
+                                    int* clusterMembers,
+                                    int clusterSize,
+                                    double* shortestPathToCenters,
+                                    double* shortestPathWithinCluster)
+{
+    double energyIncrease = 0;
+    double currentEnergy = 0;
+    for (int i = 0; i < clusterSize; i++)
+    {
+        currentEnergy += pow(shortestPathToCenters[i], 2.0);
+        double minDistanceToCenter = INFINITY;
+        for (int j = 0; j < clusterSize; j++)
+        {
+            for (int k = 0; k < numProcs; k++)
+            {
+                if (k != j && shortestPathToCenters[k] + adjacencyMatrix[k * numProcs + j] + shortestPathWithinCluster[j * numProcs + i] < minDistanceToCenter)
+                {
+                    minDistanceToCenter = shortestPathToCenters[k] + adjacencyMatrix[k * numProcs + j] + shortestPathWithinCluster[j * numProcs + i];
+                }
+            }
+        }
+
+        energyIncrease += minDistanceToCenter * minDistanceToCenter;
+    }
+
+    energyIncrease -= currentEnergy;
+
+    return energyIncrease;
+}
+
+int compareArgSortable(const void* arg1, const void* arg2)
+{
+    ArgSortable* a1 = (ArgSortable*) arg1;
+    ArgSortable* a2 = (ArgSortable*) arg2;
+    if (a1->value < a2->value)
+        return -1;
+    else if ((a1->value > a2->value))
+        return 1;
+    else
+        return 0;
+}
+
+void rebalance(double* adjacencyMatrix,
+               int numProcs,
+               int* clusterMembership,
+               int** clusters,
+               int* clusterSizes,
+               int numClusters,
+               int* clusterCenters,
+               double* shortestPathToCenters,
+               int* predecessors,
+               double* shortestPathWithinCluster)
+{
+    ArgSortable* eliminationPenalties = (ArgSortable*) malloc(numClusters * sizeof(ArgSortable));
+    ArgSortable* energyImprovements = (ArgSortable*) malloc(numClusters * sizeof(ArgSortable));
+    int* newCenters1 = (int*) malloc(numClusters * sizeof(int));
+    int* newCenters2 = (int*) malloc(numClusters * sizeof(int)); 
+    bool* clusterModifiable = (bool*) malloc(numClusters * sizeof(bool));
+    for (int a = 0; a < numClusters; a++)
+    {
+        eliminationPenalties[a].index = a;
+        eliminationPenalties[a].value = eliminationPenaltyForCluster(adjacencyMatrix,
+                                                               numProcs,
+                                                               clusters[a],
+                                                               clusterSizes[a],
+                                                               shortestPathToCenters,
+                                                               shortestPathWithinCluster);
+        energyImprovements[a].index = a;
+        splitImprovementForCluster(clusters[a],
+                                   shortestPathToCenters,
+                                   numProcs,
+                                   shortestPathWithinCluster,
+                                   clusterSizes[a],
+                                   &energyImprovements[a].value,
+                                   &newCenters1[a],
+                                   &newCenters2[a]);
+        clusterModifiable[a] = true;
+    }
+
+    qsort(eliminationPenalties, numClusters, sizeof(ArgSortable), compareArgSortable);
+    qsort(energyImprovements, numClusters, sizeof(ArgSortable), compareArgSortable);
+
+    int eliminateIndex = 0;
+    int splitIndex = numClusters - 1;
+    while (eliminateIndex < numClusters && splitIndex >= 0)
+    {
+        int eliminateCluster = eliminationPenalties[eliminateIndex].index;
+        int splitCluster = energyImprovements[splitIndex].index;
+        if (!clusterModifiable[eliminateCluster] || eliminateCluster == splitCluster)
+        {
+            eliminateCluster++;
+        }
+        else if (!clusterModifiable[splitCluster])
+        {
+            splitCluster--;
+        }
+        else if (energyImprovements[splitCluster].value < eliminationPenalties[eliminateCluster].value)
+        {
+            markUnavailable(eliminateCluster, 
+                            clusterMembership, 
+                            clusterModifiable, 
+                            adjacencyMatrix, 
+                            clusters[eliminateCluster], 
+                            clusterSizes[eliminateCluster], 
+                            numProcs);            
+            markUnavailable(splitCluster, 
+                            clusterMembership,
+                            clusterModifiable,
+                            adjacencyMatrix,
+                            clusters[splitCluster],
+                            clusterSizes[splitCluster],
+                            numProcs);
+            clusterCenters[eliminateIndex] = newCenters1[splitCluster];
+            clusterCenters[splitCluster] = newCenters2[splitCluster];
+        }
+    } 
+}
 // void balancedLloydClustering(double* adjancencyMatrix, int* centerRanks, int numProcs, int numClusters, int tMax, int tBFMax)
 // {
 //     // balanced initialization

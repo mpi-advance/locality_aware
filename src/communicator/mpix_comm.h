@@ -58,6 +58,13 @@ typedef struct _MPIX_Comm
 #endif
 } MPIX_Comm;
 
+// TODO - move clustering to it's own header/implementation
+typedef struct 
+{
+    double value;
+    int index;
+} ArgSortable;
+
 int MPIX_Comm_init(MPIX_Comm** xcomm_ptr, MPI_Comm global_comm);
 int MPIX_Comm_free(MPIX_Comm** xcomm_ptr);
 

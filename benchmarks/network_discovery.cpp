@@ -28,7 +28,7 @@ int main(int argc, char* argv[])
             {
                 for (int j = 0; j < num_procs; j++)
                 {
-                    printf("%.6lf\t", adjacencyMatrix[i * num_procs + j]);            
+                    printf("%.10lf\t", adjacencyMatrix[i * num_procs + j]);            
                 }
                 printf("\n");
             }
