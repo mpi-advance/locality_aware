@@ -3,7 +3,7 @@
 #include <stdlib.h>
 
 #include "locality_aware.h"
-
+/** \todo LocalityComm confuses me **/ 
 void init_locality_comm(LocalityComm** locality_ptr,
                         MPIL_Comm* mpil_comm,
                         MPI_Datatype sendtype,

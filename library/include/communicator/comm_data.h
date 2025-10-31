@@ -6,7 +6,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
+/** @brief structure containing meta data about a comm_pkg**/
 typedef struct _CommData
 {
     int num_msgs;
@@ -18,10 +18,16 @@ typedef struct _CommData
     char* buffer;
 } CommData;
 
+/**@brief allocates commData with handle at comm_data_ptr, sets datatype_size to size of supplied datatype**/
 void init_comm_data(CommData** comm_data_ptr, MPI_Datatype datatype);
 void destroy_comm_data(CommData* data);
 void init_num_msgs(CommData* data, int num_msgs);
 void init_size_msgs(CommData* data, int size_msgs);
+
+/** @brief allocates buffer 
+ *  @details 
+ *	mallocs enough space for size_msgs of the datatype
+**/
 void finalize_comm_data(CommData* data);
 
 #ifdef __cplusplus

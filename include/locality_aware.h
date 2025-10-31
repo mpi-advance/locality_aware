@@ -177,6 +177,18 @@ int MPIL_Comm_topo_init(MPIL_Comm* xcomm);
 */
 int MPIL_Comm_topo_free(MPIL_Comm* xcomm);
 
+/** @brief uses MPI neighbor functions to setup MPIL_Topo
+ * @details called by MPIL_Comm_free
+ *    Uses neighbor_comm inside xcomm to generate MPIL_Topo object. 
+ *    calls MPI_Dist_graph_neighbors_count and MPI_Dist_graph_neighbors. 
+ *		
+ *    MPI_Dist_graph_neighbors
+ * @param [in] xcomm MPIL_comm object with set neighbor_comm 
+ * @param [out] mpil_topo_ptr pointer to generated MPIL_Topo struct
+ * @return MPI_Success upon successful completion. 
+*/
+int MPIL_Topo_from_neighbor_comm(MPIL_Comm* comm, MPIL_Topo** mpil_topo_ptr);
+
 /** @brief Create disjoint subcomms of maximum size procs_per_leader from xcomm->global_comm
  * @details
  *     splits global comm into subcoms of maximum size proc_per_leader
@@ -254,7 +266,9 @@ int MPIL_Topo_init(int indegree,
 int MPIL_Topo_free(MPIL_Topo** topo);
 
 // Functions to control the MPIL_Request object
+/**@brief wrapper that calls MPI_start or neighbor start **/
 int MPIL_Start(MPIL_Request* request);
+/**@brief wrapper that calls MPI_wait or neighbor wait **/
 int MPIL_Wait(MPIL_Request* request, MPI_Status* status);
 int MPIL_Request_free(MPIL_Request** request);
 int MPIL_Request_reorder(MPIL_Request* request, int value);
