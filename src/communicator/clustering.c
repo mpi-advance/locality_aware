@@ -1,5 +1,8 @@
 #include "clustering.h"
 #include <math.h>
+#include <stdbool.h>
+#include <time.h>
+#include <stdlib.h>
 
 double* network_discovery(MPIX_Comm* xcomm, int size, int tag, int num_iterations)
 {
@@ -95,87 +98,98 @@ double* network_discovery(MPIX_Comm* xcomm, int size, int tag, int num_iteration
     return adjacencyMatrix;
 }
 
-void balancedBellmanFord(double* adjacencyMatrix, 
+bool balancedBellmanFord(double* adjacencyMatrix, 
                          int* clusterMembership, 
-                         int* centerRanks, 
-                         double* distances, 
-                         int* predecessors, 
-                         int* numPredecessors, 
+                         int* centerNodes, 
+                         double* shortestPathToCenter,
+                         int* predecessorsInCluster, 
+                         int* numAsPredecessor, 
                          int* clusterSizes,
-                         int tBFMax,
                          int numProcs,
-                         int numClusters)
+                         int numClusters,
+                         int maxIterations)
 {
+    int changed = false;
+
     int t = 0;
-    int done = 1;
-    while (t < tBFMax && !done)
-    {
+    bool done;
+    do {
+        done = true;
         for (int i = 0; i < numProcs; i++)
         {
             for (int j = 0; j < numProcs; j++)
             {
-                int clusterISize = clusterSizes[clusterMembership[i]];
-                int clusterJSize = clusterSizes[clusterMembership[j]];
-                int swithClusters = 0;
-                if (distances[i] + adjacencyMatrix[i * numProcs + j] < distances[j])
-                    swithClusters = 1;
-                else if (distances[i] + adjacencyMatrix[i * numProcs + j] == distances[j])
+                int iClusterSize= clusterSizes[clusterMembership[i]];
+                int jClusterSize = clusterSizes[clusterMembership[j]];
+                bool shouldSwitch = false;
+                if (shortestPathToCenter[i] + adjacencyMatrix[i * numProcs + j] < shortestPathToCenter[j])
+                    shouldSwitch = true;
+                
+                // the algorithm says similar, should we use approximate equals here? what would the tolerance be?
+                if (shortestPathToCenter[i] + adjacencyMatrix[i * numProcs + j] == shortestPathToCenter[j]) 
                 {
-                    if (clusterISize + 1 < clusterJSize)
-                        swithClusters = true;
+                    if (iClusterSize + 1 < jClusterSize && numAsPredecessor[j] == 0)
+                        shouldSwitch = true;
                 }
 
-                if (swithClusters)
+                if (shouldSwitch)
                 {
-                    clusterSizes[clusterMembership[i]] = clusterISize + 1;
-                    clusterSizes[clusterMembership[j]] = clusterJSize - 1;
+                    clusterSizes[clusterMembership[i]] = iClusterSize + 1;
+                    clusterSizes[clusterMembership[j]] = jClusterSize - 1;
                     clusterMembership[j] = clusterMembership[i];
-                    distances[j] = distances[i] + adjacencyMatrix[i * numProcs + j];
-                    numPredecessors[i] += 1;
-                    numPredecessors[predecessors[j]] -= 1;
-                    predecessors[j] = i;
+                    shortestPathToCenter[j] = shortestPathToCenter[i] + adjacencyMatrix[i * numProcs + j];
+                    numAsPredecessor[i] += 1;
+                    numAsPredecessor[predecessorsInCluster[j]] -= 1;
+                    predecessorsInCluster[j] = i;
+                    changed = true;
                     done = false;
                 }
             }
         }
-
-        t += 1;
-    }
+    } 
+    while (t < maxIterations || done);
+    
+    return changed;
 }
 
 void clusteredFloydWarshall(double* adjacencyMatrix, 
                             int* clusterMembership, 
-                            int clusterSize,
-                            int* cluster,
-                            double** shortestPathDistances,
-                            int** predecessors,
+                            int* clusterSizes,
+                            int** clusters,
+                            int numClusters,
+                            double* shortestPathDistances,
+                            int* predecessors,
                             int numProcs)
 {
-    for (int i = 0; i < clusterSize; i++)
+    for (int a = 0; a <numClusters; a++)
     {
-        int start = cluster[i];
-        for (int j = 0; j < clusterSize; j++)
+        for (int i = 0; i < clusterSizes[a]; i++)
         {
-            int end = cluster[j];
-            if (i == j)
+            int start = clusters[a][i];
+            for (int j = 0; j < clusterSizes[a]; j++)
             {
-                shortestPathDistances[start][end] = 0;
-                predecessors[start][start] = start;
+                int end = clusters[a][j];
+                if (adjacencyMatrix[start * numProcs + end] > 0)
+                {
+                    shortestPathDistances[start * numProcs + end] = adjacencyMatrix[start * numProcs + end];
+                    predecessors[start * numProcs + end] = start;
+                }
+                else if (start == end)
+                {
+                    // if the adjacency matrix properly sets the distance to self as 0, then this is 
+                    // the same as the previous case.
+                    shortestPathDistances[start * numProcs + start] = 0.0;
+                    predecessors[start * numProcs + end] = start;
+                }
+                else
+                {
+                    // this should never happen on a fully connected graph
+                    shortestPathDistances[start * numProcs + end] = INFINITY;
+                    predecessors[start * numProcs + end] = -1;
+                }
             }
-            else if (adjacencyMatrix[start * numProcs + end] > 0)
-            {
-                shortestPathDistances[start][end] = adjacencyMatrix[start * numProcs + end];
-                predecessors[start][end] = start;
-            }
-            else
-            {
-                // this should never happen
-                shortestPathDistances[start][end] = INFINITY;
-                predecessors[start][end] = -1;
-            }
-        }
+        }        
     }
-
 
     // // I don't think we actually need this second step, since we can assume each cluster is fully connected.
     // // However, for completeness, and the possibility that going through another process might be fast, if 
@@ -188,12 +202,12 @@ void clusteredFloydWarshall(double* adjacencyMatrix,
     //         {
     //             if (i != k && j != k)
     //             {
-    //                 double dist_ik = shortestPathDistances[cluster[i]][cluster[k]];
-    //                 double dist_kj = shortestPathDistances[cluster[k]][cluster[j]];
+    //                 double dist_ik = shortestPathDistances[cluster[i] * numProcs + cluster[k]];
+    //                 double dist_kj = shortestPathDistances[cluster[k] * numProcs + cluster[j]];
     //                 if (dist_ik < dist_kj)
     //                 {
-    //                     shortestPathDistances[cluster[i]][cluster[j]] = dist_ik + dist_kj;
-    //                     predecessors[cluster[i]][cluster[j]] = predecessors[cluster[k], cluster[j]];
+    //                     shortestPathDistances[cluster[i] * numProcs + cluster[j]] = dist_ik + dist_kj;
+    //                     predecessors[cluster[i] * numProcs + cluster[j]] = predecessors[cluster[k] * numProcs + cluster[j]];
     //                 }
     //             }
     //         }
@@ -201,6 +215,167 @@ void clusteredFloydWarshall(double* adjacencyMatrix,
     // }
 }
 
+bool centerNodes(double* adjacencyMatrix, 
+                 int numProcs,
+                 int* clusterMembership,
+                 int numClusters,
+                 int* clusterCenters,
+                 double* shortestPathToCenter,
+                 int* clusterCenterPredecessors,
+                 int* numAsPredecessor,
+                 double* shortestPathWithinCluster,
+                 int* predecessors,
+                 int** clusters,
+                 int* clusterSizes)
+{
+    bool changed = false;
+    for (int a = 0; a < numClusters; a++)
+    {
+        double* sumSquaredDists = (double*) malloc(clusterSizes[a] * sizeof(double));
+        double centerSumSquaredDists = 0.0;
+        for (int i = 0; i < clusterSizes[a]; i++)
+        {
+            int procI = clusters[a][i];
+            for (int j = 0; j < clusterSizes[a]; j++)
+            {
+                int procJ = clusters[a][j];
+                if (shortestPathToCenter[i * numProcs + j] > 0.0)
+                {
+                    sumSquaredDists[i] += pow(shortestPathToCenter[procI * numProcs + procJ], 2.0);
+                }
+            }
+
+            if (procI == clusterCenters[a])
+                centerSumSquaredDists = sumSquaredDists[i];
+
+            int potentialCenter = clusterCenters[a];
+            for (int j = 0; j < clusterSizes[a]; j++)
+            {
+                if (sumSquaredDists[j] < centerSumSquaredDists)
+                {
+                    potentialCenter = j;
+                    centerSumSquaredDists = sumSquaredDists[j];
+                }   
+            }
+
+            if (potentialCenter != clusterCenters[a])
+            {
+                clusterCenters[a] = potentialCenter;
+                for (int j = 0; j < clusterSizes[a]; j++)
+                {
+                    numAsPredecessor[clusters[a][j]] = 0;
+                }
+
+                for (int j = 0; j < clusterSizes[a]; j++)
+                {
+                    shortestPathToCenter[j] = shortestPathWithinCluster[potentialCenter * numProcs + j];
+                    clusterCenterPredecessors[j] = predecessors[i * numProcs + j];
+                    numAsPredecessor[clusterCenterPredecessors[j]] += 1;
+                }
+
+                changed = true;
+            }
+        }
+
+        free(sumSquaredDists);
+    }
+    
+    return changed;
+}
+
+void balancedLloydClustering(double* adjacencyMatrix,
+                             int *clusterCenters,
+                             int* clusterMembership,
+                             int maxIterations,
+                             int maxBellmanFordIterations,
+                             int numProcs,
+                             int numClusters)
+{
+    // balanced initialization
+    clusterMembership = (int*) malloc(numProcs * sizeof(int));
+    double* shortestPathToCenter = (double*) malloc(numProcs * sizeof(double));
+    int* predecessorInCluster = (int*) malloc(numProcs * sizeof(int));
+    int* numAsPredecessor = (int*) malloc(numProcs * sizeof(int));
+    for (int i = 0; i < numProcs; i++)
+    {
+        clusterMembership[i] = -1;
+        shortestPathToCenter[i] = INFINITY;
+        predecessorInCluster[i] = -1;
+        numAsPredecessor[i] = 0;
+    }
+
+    int* clusterSizes = (int*) malloc(numClusters * sizeof(int));
+    clusterCenters = (int*) malloc(numClusters * sizeof(int));
+    srand(time(NULL));
+    for (int a = 0; a < numClusters; a++)
+    {
+        clusterCenters[a] = rand() % numProcs;
+        int nodeIndex = clusterCenters[a];
+        shortestPathToCenter[a] = 0;
+        clusterMembership[nodeIndex] = a;
+        predecessorInCluster[nodeIndex] = nodeIndex;
+        numAsPredecessor[nodeIndex] = 1;
+    }
+
+    int iteration = 0;
+    bool changed = true;
+    do 
+    {
+        changed = balancedBellmanFord(adjacencyMatrix, 
+                                      clusterMembership, 
+                                      clusterCenters, 
+                                      shortestPathToCenter,
+                                      predecessorInCluster,
+                                      numAsPredecessor, 
+                                      clusterSizes,
+                                      numProcs,
+                                      numClusters,
+                                      maxIterations);
+
+        int** clusters = (int**) malloc(numClusters * sizeof(int*));
+        int positionInCluster[numClusters];
+        for (int a = 0; a < numClusters; a++)
+        {
+            clusters[a] = (int*) malloc(clusterSizes[a] * sizeof(int));
+            positionInCluster[a] = 0;
+        }
+
+        for (int i = 0; i < numProcs; i++)
+        {
+            int cluster = clusterMembership[i];
+            clusters[cluster][positionInCluster[cluster]] = i;
+            positionInCluster[cluster]++;
+        }
+
+        clusteredFloydWarshall(adjacencyMatrix, 
+                               clusterMembership, 
+                               clusterSizes,
+                               clusters,
+                               numClusters,
+                               shortestPathToCenter,
+                               predecessorInCluster,
+                               numProcs);
+
+        changed |= centerNodes(adjacencyMatrix, 
+                               numProcs,
+                               clusterMembership,
+                               numClusters,
+                               clusterCenters,
+                               shortestPathToCenter,
+                               predecessorInCluster,
+                               numAsPredecessor,
+                               shortestPathToCenter,
+                               predecessorInCluster,
+                               clusters,
+                               clusterSizes);
+
+        iteration++;
+    } while (iteration < maxIterations && changed);
+}
+
+/////////////////////////////////////////////////////////
+// BEGIN REBALANCING CODE - FOR FUTURE IMPLEMENTATIONS //
+/////////////////////////////////////////////////////////
 void markUnavailable(int clusterIndex, 
                      int* clusterMembership, 
                      bool* clusterModifiable, 
@@ -387,123 +562,6 @@ void rebalance(double* adjacencyMatrix,
         }
     } 
 }
-
-void centerNodes(double* adjacencyMatrix, 
-                 int numProcs,
-                 int* clusterMembership,
-                 int numClusters,
-                 int* clusterCenters,
-                 double* shortestPathToCenter,
-                 int* clusterCenterPredecessors,
-                 int* numAsPredecessor,
-                 double* shortestPathWithinCluster,
-                 int* predecessors,
-                 int** clusters,
-                 int* clusterSizes)
-{
-    for (int a = 0; a < numClusters; a++)
-    {
-        double* sumSquaredDists = (double*) malloc(clusterSizes[a] * sizeof(double));
-        double centerSumSquaredDists = 0.0;
-        for (int i = 0; i < clusterSizes[a]; i++)
-        {
-            int procI = clusters[a][i];
-            for (int j = 0; j < clusterSizes[a]; j++)
-            {
-                int procJ = clusters[a][j];
-                if (shortestPathToCenter[i * numProcs + j] > 0.0)
-                {
-                    sumSquaredDists[i] += pow(shortestPathToCenter[procI * numProcs + procJ], 2.0);
-                }
-            }
-
-            if (procI == clusterCenters[a])
-                centerSumSquaredDists = sumSquaredDists[i];
-
-            int potentialCenter = clusterCenters[a];
-            for (int j = 0; j < clusterSizes[a]; j++)
-            {
-                if (sumSquaredDists[j] < centerSumSquaredDists)
-                {
-                    potentialCenter = j;
-                    centerSumSquaredDists = sumSquaredDists[j];
-                }   
-            }
-
-            if (potentialCenter != clusterCenters[a])
-            {
-                clusterCenters[a] = potentialCenter;
-                for (int j = 0; j < clusterSizes[a]; j++)
-                {
-                    numAsPredecessor[clusters[a][j]] = 0;
-                }
-
-                for (int j = 0; j < clusterSizes[a]; j++)
-                {
-                    shortestPathToCenter[j] = shortestPathWithinCluster[potentialCenter * numProcs + j];
-                    clusterCenterPredecessors[j] = predecessors[i * numProcs + j];
-                    numAsPredecessor[clusterCenterPredecessors[j]] += 1;
-                }
-            }
-        }
-
-        free(sumSquaredDists);
-    }
-}
-
-// void balancedLloydClustering(double* adjancencyMatrix, int* centerRanks, int numProcs, int numClusters, int tMax, int tBFMax)
-// {
-//     // balanced initialization
-//     int* clusterMembership = (int*) malloc(numProcs * sizeof(int));
-//     double* distances = (double*) malloc(numProcs * sizeof(double));
-//     int** predecessors = (int**) malloc(numProcs * sizeof(int*));
-//     int* numPredecessors = (int*) malloc(numProcs * sizeof(int));
-//     for (int i = 0; i < numProcs; i++)
-//     {
-//         clusterMembership[i] = 0;
-//         distances[i] = INFINITY;
-//         predecessors[i] = (int*) calloc(numProcs, sizeof(int));
-//         numPredecessors = 0;
-//     }
-
-//     int* clusterSizes = (int*) malloc(numClusters * sizeof(int));
-//     memset(clusterSizes, 1, numClusters);
-//     srand(time(NULL));
-
-//     for (int clusterIndex = 0; clusterIndex < numClusters; clusterIndex++)
-//     {
-//         centerRanks[clusterIndex] = rand() % numProcs;
-//         int nodeIndex = clusterCenters[clusterIndex];
-//         distances[nodeIndex] = 0;
-//         clusterMembership[nodeIndex] = clusterIndex;
-//         predecessors[nodeIndex] = nodeIndex;
-//         numPredecessors[nodeIndex] = 1;
-//     }    
-
-//     int t = 0;
-//     while (t < tMax) // need to add other condition (m, c, d, p, n, s don't change)
-//     {
-//         balancedBellmanFord(adjancencyMatrix, 
-//                             clusterMembership,
-//                             centerRanks,
-//                             distances,
-//                             predecessors,   
-//                             numPredecessors,
-//                             clusterSizes,
-//                             tBFMax,
-//                             numProcs,
-//                             numClusters);
-        
-//         for (int i = 0; i < numClusters; i++)
-//         {
-//             clusteredFloydWarshall(adjancencyMatrix, 
-//                                    clusterMembership,
-//                                    clusterSizes[i],
-//                                    cluster[i],
-//                                    distances,
-//                                    predecessors,
-//                                    numProcs);
-//         }
-        
-//     }
-// }
+//////////////////////////
+// END REBALANCING CODE //
+/////////////////////////
