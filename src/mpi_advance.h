@@ -7,6 +7,7 @@
 #include "communicator/comm_pkg.h"
 #include "communicator/locality_comm.h"
 #include "communicator/mpix_comm.h"
+#include "communicator/clustering.h"
 
 #include "persistent/persistent.h"
 #include "persistent/neighbor_persistent.h"
