@@ -1,3 +1,6 @@
+#ifndef MPI_ADVANCE_TEST_COMPARE_HPP
+#define MPI_ADVANCE_TEST_COMPARE_HPP
+
 #include <assert.h>
 #include <math.h>
 #include <mpi.h>
@@ -87,3 +90,5 @@ void compare(int n_recvs,
         }
     }
 }
+
+#endif

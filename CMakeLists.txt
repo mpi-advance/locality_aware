@@ -77,21 +77,32 @@ endif()
 
 if (ENABLE_UNIT_TESTS)
     enable_testing()
-	set(TEST_PROCS "16" CACHE STRING "Number of processes to use when making ctests")
-	function(make_test file)
-		#get file name for unique handle
-		get_filename_component(exec_name ${file} NAME_WE)
-		add_executable(${exec_name} ${file})
-		target_link_libraries(${exec_name} locality_aware ${EXTERNAL_LIBS})
-		add_test(NAME ${exec_name}_Test COMMAND ${MPIRUN} -n ${TEST_PROCS} ./${exec_name})
-	endfunction()
+	set(TEST_PROCS "16" CACHE STRING "Number of processes to use when running ctests")
 endif()
+
+# Flag == TRUE means TEST
+# Flag == FALSE means BENCHMARK
+function(make_executable filename flag)
+	get_filename_component(exec_name ${filename} NAME_WE)
+	add_executable(${exec_name} ${filename})
+	target_link_libraries(${exec_name} locality_aware ${EXTERNAL_LIBS})
+	
+	if(${flag})
+		set(locality_test_name ${exec_name}_Test)
+	else()
+		set(locality_test_name ${exec_name}_Benchmark)
+		install(TARGETS ${exec_name} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
+	endif()
+
+	if(ENABLE_UNIT_TESTS)
+		add_test(NAME ${locality_test_name} COMMAND ${MPIRUN} -n ${TEST_PROCS} ./${exec_name} ${TEST_MATRIX_FILE})
+	endif()
+
+endfunction()
 
 if (BENCHMARKS)
 	add_subdirectory(benchmarks)
 endif()
-
-
 
 set_target_properties(locality_aware PROPERTIES PUBLIC_HEADER include/locality_aware.h)
 add_subdirectory(include)
