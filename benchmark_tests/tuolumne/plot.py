@@ -789,8 +789,6 @@ plt.set_scale('linear', 'log')
 plt.set_xticks(nodes, nodes)
 plt.save_plot("allreduce_ppg_nodes.pdf")
 
-
-
 active_method = False
 ccl_allreduce_1ppg = PingPong(1)
 ccl_allreduce_2ppg = PingPong(1)
@@ -817,6 +815,227 @@ for line in file:
 
 file.close()
 
+# Standard Allreduce Times
+plt.add_luke_options()
+plt.line_plot(allreduce_1ppg[-1].times, allreduce_1ppg[-1].sizes, color='r', label = "MPI: 1 PPG")
+plt.line_plot(allreduce_2ppg[-1].times, allreduce_2ppg[-1].sizes, color='b', label = "MPI: 2 PPG")
+plt.line_plot(allreduce_4ppg[-1].times, allreduce_4ppg[-1].sizes, color='g', label = "MPI: 4 PPG")
+plt.line_plot(ccl_allreduce_1ppg.times, ccl_allreduce_1ppg.sizes, color='black', label = "RCCL")
+plt.add_anchored_legend(ncol=2)
+plt.add_labels("Message Size (Bytes)", "Time (Seconds)")
+plt.set_scale('log', 'log')
+plt.save_plot("allreduce_mpi_vs_rccl.pdf")
+
+active_method = False
+curr_ppg = -1
+nodes = [2,4,8,16,32]
+allreduce_1ppg = list() 
+allreduce_2ppg = list()
+allreduce_4ppg = list()
+
+for n in nodes:
+
+    allreduce_1ppg.append(PingPong(1))
+    allreduce_2ppg.append(PingPong(1))
+    allreduce_4ppg.append(PingPong(1))
+
+    files = glob.glob("allreduce_copy_n%d.*.out"%n)
+    print(files)
+    for fn in files:
+        file = open(fn, 'r')
+        for line in file:
+
+            if "Processes Per GPU" in line:
+                active_method = True
+                if "1 Processes Per GPU" in line:
+                    method = allreduce_1ppg[-1]
+                    curr_ppg = 1
+                elif "2 Processes Per GPU" in line:
+                    method = allreduce_2ppg[-1]
+                    curr_ppg = 2
+                elif "4 Processes Per GPU" in line:
+                    method = allreduce_4ppg[-1]
+                    curr_ppg = 4
+                else:
+                    active_method = False
+                    curr_ppg = -1
+
+            elif active_method and "Size" in line:
+                if curr_ppg == 1:
+                    continue
+                splitting = line.split(':')
+                size = (int)(splitting[1].rsplit(' ')[-1])
+                time = (float)(splitting[-1].split('\n')[0])
+                method.add_timing(size, time/2.0) # Adding time / 2 (ping + pong)
+
+        file.close()
+
+    files = glob.glob("allreduce_ipc_n%d.*.out"%n)
+    print(files)
+    for fn in files:
+        file = open(fn, 'r')
+        for line in file:
+
+            if "Processes Per GPU" in line:
+                active_method = True
+                if "1 Processes Per GPU" in line:
+                    method = allreduce_1ppg[-1]
+                    curr_ppg = 1
+                elif "2 Processes Per GPU" in line:
+                    method = allreduce_2ppg[-1]
+                    curr_ppg = 2
+                elif "4 Processes Per GPU" in line:
+                    method = allreduce_4ppg[-1]
+                    curr_ppg = 4
+                else:
+                    active_method = False
+                    curr_ppg = -1
+
+            elif active_method and "Size" in line:
+                if curr_ppg != 1:
+                    continue
+                splitting = line.split(':')
+                size = (int)(splitting[1].rsplit(' ')[-1])
+                time = (float)(splitting[-1].split('\n')[0])
+                method.add_timing(size, time/2.0) # Adding time / 2 (ping + pong)
+
+        file.close()
+
+# Standard Allreduce Times
+plt.add_luke_options()
+plt.line_plot(allreduce_1ppg[-1].times, allreduce_1ppg[-1].sizes, color='r', label = "1 PPG")
+plt.line_plot(allreduce_2ppg[-1].times, allreduce_2ppg[-1].sizes, color='b', label = "2 PPG")
+plt.line_plot(allreduce_4ppg[-1].times, allreduce_4ppg[-1].sizes, color='g', label = "4 PPG")
+plt.add_anchored_legend(ncol=3)
+plt.add_labels("Message Size (Bytes)", "Time (Seconds)")
+plt.set_scale('log', 'log')
+plt.save_plot("allreduceandcopyold_ppg.pdf")
+
+# Speedup at max size
+one_ppg_sizes = allreduce_1ppg[-1].sizes
+one_ppg_times = allreduce_1ppg[-1].times
+max_ppg_sizes = allreduce_2ppg[-1].sizes
+max_ppg_times = allreduce_2ppg[-1].times
+intersect = set(one_ppg_sizes).intersection(max_ppg_sizes)
+max_size = max(intersect)
+print("allreduceandcopyold_ppg 2 ppg: speedup at " + str(max_size) + ": " + str(one_ppg_times[one_ppg_sizes.index(max_size)] / max_ppg_times[max_ppg_sizes.index(max_size)]))
+one_ppg_sizes = allreduce_1ppg[-1].sizes
+one_ppg_times = allreduce_1ppg[-1].times
+max_ppg_sizes = allreduce_4ppg[-1].sizes
+max_ppg_times = allreduce_4ppg[-1].times
+intersect = set(one_ppg_sizes).intersection(max_ppg_sizes)
+max_size = max(intersect)
+print("allreduceandcopyold_ppg 4 ppg: speedup at " + str(max_size) + ": " + str(one_ppg_times[one_ppg_sizes.index(max_size)] / max_ppg_times[max_ppg_sizes.index(max_size)]))
+
+# Standard Allreduce Times
+plt.add_luke_options()
+plt.line_plot([allreduce_1ppg[i].times[-1] for i in range(len(nodes))], nodes, color='r', label = "1 PPG")
+plt.line_plot([allreduce_2ppg[i].times[-1] for i in range(len(nodes))], nodes, color='b', label = "2 PPG")
+plt.line_plot([allreduce_4ppg[i].times[-1] for i in range(len(nodes))], nodes, color='g', label = "4 PPG")
+plt.add_anchored_legend(ncol=3)
+plt.add_labels("Nodes", "Time (Seconds)")
+plt.set_scale('linear', 'log')
+plt.set_xticks(nodes, nodes)
+plt.save_plot("allreduceandcopyold_ppg_nodes.pdf")
+
+# Standard Allreduce Times
+plt.add_luke_options()
+plt.line_plot(allreduce_1ppg[-1].times, allreduce_1ppg[-1].sizes, color='r', label = "MPI: 1 PPG")
+plt.line_plot(allreduce_2ppg[-1].times, allreduce_2ppg[-1].sizes, color='b', label = "MPI: 2 PPG")
+plt.line_plot(allreduce_4ppg[-1].times, allreduce_4ppg[-1].sizes, color='g', label = "MPI: 4 PPG")
+plt.line_plot(ccl_allreduce_1ppg.times, ccl_allreduce_1ppg.sizes, color='black', label = "RCCL")
+plt.add_anchored_legend(ncol=2)
+plt.add_labels("Message Size (Bytes)", "Time (Seconds)")
+plt.set_scale('log', 'log')
+plt.save_plot("mpi_allreduceandcopyold_vs_rccl.pdf")
+
+active_method = False
+curr_ppg = -1
+curr_size = -1
+nodes = [2,4,8]
+allreduce_1ppg = list() 
+allreduce_2ppg = list()
+allreduce_4ppg = list()
+
+for n in nodes:
+
+    allreduce_1ppg.append(PingPong(1))
+    allreduce_2ppg.append(PingPong(1))
+    allreduce_4ppg.append(PingPong(1))
+
+    files = glob.glob("allreduce_plus_copy_n%d.*.out"%n)
+    print(files)
+    for fn in files:
+        file = open(fn, 'r')
+        for line in file:
+
+            if "Processes Per GPU" in line:
+                active_method = True
+                if "1 Processes Per GPU" in line:
+                    method = allreduce_1ppg[-1]
+                    curr_ppg = 1
+                    curr_size = -1
+                elif "2 Processes Per GPU" in line:
+                    method = allreduce_2ppg[-1]
+                    curr_ppg = 2
+                    curr_size = -1
+                elif "4 Processes Per GPU" in line:
+                    method = allreduce_4ppg[-1]
+                    curr_ppg = 4
+                    curr_size = -1
+                else:
+                    active_method = False
+                    curr_ppg = -1
+                    curr_size = -1
+
+            elif active_method and "Size" in line:
+                splitting = line.split(' (Per')
+                curr_size = (int)(splitting[0].rsplit(' ')[-1])
+            elif active_method and curr_size != -1:
+                if "STD MPS COPY:" in line or "STD:" in line:
+                    splitting = line.split(": ")
+                    time = (float)(splitting[-1].split('\n')[0])
+                    method.add_timing(curr_size, time)
+
+        file.close()
+
+# Standard Allreduce Times
+plt.add_luke_options()
+plt.line_plot(allreduce_1ppg[-1].times, allreduce_1ppg[-1].sizes, color='r', label = "1 PPG")
+plt.line_plot(allreduce_2ppg[-1].times, allreduce_2ppg[-1].sizes, color='b', label = "2 PPG")
+plt.line_plot(allreduce_4ppg[-1].times, allreduce_4ppg[-1].sizes, color='g', label = "4 PPG")
+plt.add_anchored_legend(ncol=3)
+plt.add_labels("Message Size (Bytes)", "Time (Seconds)")
+plt.set_scale('log', 'log')
+plt.save_plot("allreduce_plus_copy_ppg.pdf")
+
+# Speedup at max size
+one_ppg_sizes = allreduce_1ppg[-1].sizes
+one_ppg_times = allreduce_1ppg[-1].times
+max_ppg_sizes = allreduce_2ppg[-1].sizes
+max_ppg_times = allreduce_2ppg[-1].times
+intersect = set(one_ppg_sizes).intersection(max_ppg_sizes)
+max_size = max(intersect)
+print("allreduce_plus_copy_ppg 2 ppg: speedup at " + str(max_size) + ": " + str(one_ppg_times[one_ppg_sizes.index(max_size)] / max_ppg_times[max_ppg_sizes.index(max_size)]))
+one_ppg_sizes = allreduce_1ppg[-1].sizes
+one_ppg_times = allreduce_1ppg[-1].times
+max_ppg_sizes = allreduce_4ppg[-1].sizes
+max_ppg_times = allreduce_4ppg[-1].times
+intersect = set(one_ppg_sizes).intersection(max_ppg_sizes)
+max_size = max(intersect)
+print("allreduce_plus_copy_ppg 4 ppg: speedup at " + str(max_size) + ": " + str(one_ppg_times[one_ppg_sizes.index(max_size)] / max_ppg_times[max_ppg_sizes.index(max_size)]))
+
+# Standard Allreduce Times
+plt.add_luke_options()
+plt.line_plot([allreduce_1ppg[i].times[-1] for i in range(len(nodes))], nodes, color='r', label = "1 PPG")
+plt.line_plot([allreduce_2ppg[i].times[-1] for i in range(len(nodes))], nodes, color='b', label = "2 PPG")
+plt.line_plot([allreduce_4ppg[i].times[-1] for i in range(len(nodes))], nodes, color='g', label = "4 PPG")
+plt.add_anchored_legend(ncol=3)
+plt.add_labels("Nodes", "Time (Seconds)")
+plt.set_scale('linear', 'log')
+plt.set_xticks(nodes, nodes)
+plt.save_plot("allreduce_plus_copy_ppg_nodes.pdf")
+
 
 # Standard Allreduce Times
 plt.add_luke_options()
@@ -837,6 +1056,6 @@ plt.line_plot(ccl_allreduce_1ppg.times, ccl_allreduce_1ppg.sizes, color='black',
 plt.add_anchored_legend(ncol=2)
 plt.add_labels("Message Size (Bytes)", "Time (Seconds)")
 plt.set_scale('log', 'log')
-plt.save_plot("allreduce_mpi_vs_rccl.pdf")
+plt.save_plot("mpi_allreduce_plus_copy_vs_rccl.pdf")
 
 
