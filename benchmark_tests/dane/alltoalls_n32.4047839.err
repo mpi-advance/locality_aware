@@ -1,0 +1,1425 @@
+
+Lmod is automatically replacing "intel-classic/2021.6.0-magic" with
+"gcc/10.3.1-magic".
+
+
+Due to MODULEPATH changes, the following have been reloaded:
+  1) mvapich2/2.3.7
+
+
+Lmod is automatically replacing "mvapich2/2.3.7" with "openmpi/4.1.2".
+
+[dane233:1166154:0:1166154] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+[dane357:2279930:0:2279930] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+[dane220:808456:0:808456] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+[dane700:1358739:0:1358739] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+[dane841:1819904:0:1819904] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+[dane222:2067926:0:2067926] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+[dane1070:2758422:0:2758422] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+[dane1039:3707412:0:3707412] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+[dane500:1986750:0:1986750] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+[dane1045:321520:0:321520] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+[dane238:3887531:0:3887531] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+[dane174:2921217:0:2921217] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+[dane170:3142333:0:3142333] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+[dane194:1999534:0:1999534] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+[dane405:1367174:0:1367174] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+[dane1120:2933160:0:2933160] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+[dane125:2287197:0:2287197] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+[dane1489:2824874:0:2824874] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+[dane432:1243340:0:1243340] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+[dane586:1098612:0:1098612] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+[dane287:2434668:0:2434668] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+[dane206:2576555:0:2576555] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+[dane1300:1864474:0:1864474] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+[dane1478:1463808:0:1463808] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+[dane364:2320557:0:2320557] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+[dane1096:1893129:0:1893129] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+[dane1364:1520648:0:1520648] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+[dane961:3221196:0:3221196] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+[dane453:2290481:0:2290481] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+[dane434:1255909:0:1255909] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+[dane1335:2701731:0:2701731] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+[dane610:1609161:0:1609161] Caught signal 11 (Segmentation fault: address not mapped to object at address (nil))
+==== backtrace (tid:3707412) ====
+==== backtrace (tid:2067926) ====
+ 0  /lib64/libucs.so.0(ucs_handle_error+0x2dc) [0x15555003f07c]
+ 0  /lib64/libucs.so.0(ucs_handle_error+0x2dc) [0x15555003f07c]
+ 1  /lib64/libucs.so.0(+0x3125c) [0x15555003f25c]
+ 1  /lib64/libucs.so.0(+0x3125c) [0x15555003f25c]
+==== backtrace (tid:1819904) ====
+ 2  /lib64/libucs.so.0(+0x3142a) [0x15555003f42a]
+ 0  /lib64/libucs.so.0(ucs_handle_error+0x2dc) [0x15555003f07c]
+ 2  /lib64/libucs.so.0(+0x3142a) [0x15555003f42a]
+ 3  /lib64/libc.so.6(+0xde9d2) [0x1555542a49d2]
+==== backtrace (tid: 808456) ====
+==== backtrace (tid:2287197) ====
+ 3  /lib64/libc.so.6(+0xde9d2) [0x1555542a49d2]
+ 0  /lib64/libucs.so.0(ucs_handle_error+0x2dc) [0x15555003f07c]
+==== backtrace (tid:1358739) ====
+ 1  /lib64/libucs.so.0(+0x3125c) [0x15555003f25c]
+==== backtrace (tid:1463808) ====
+ 4  /usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/libopen-pal.so.40(+0x46721) [0x155553e9c721]
+ 4  /usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/libopen-pal.so.40(+0x46721) [0x155553e9c721]
+==== backtrace (tid:1609161) ====
+ 0  /lib64/libucs.so.0(ucs_handle_error+0x2dc) [0x15555003f07c]
+==== backtrace (tid:1893129) ====
+ 0  /lib64/libucs.so.0(ucs_handle_error+0x2dc) [0x15555003f07c]
+ 0  /lib64/libucs.so.0(ucs_handle_error+0x2dc) [0x15555003f07c]
+ 5  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_datatype_sndrcv+0x4da) [0x15555545205a]
+ 0  /lib64/libucs.so.0(ucs_handle_error+0x2dc) [0x15555003f07c]
+ 1  /lib64/libucs.so.0(+0x3125c) [0x15555003f25c]
+ 2  /lib64/libucs.so.0(+0x3142a) [0x15555003f42a]
+ 5  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_datatype_sndrcv+0x4da) [0x15555545205a]
+ 1  /lib64/libucs.so.0(+0x3125c) [0x15555003f25c]
+ 6  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_coll_base_gather_intra_binomial+0x2fe) [0x15555549de9e]
+ 0  /lib64/libucs.so.0(ucs_handle_error+0x2dc) [0x15555003f07c]
+ 6  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_coll_base_gather_intra_binomial+0x2fe) [0x15555549de9e]
+ 3  /lib64/libc.so.6(+0xde9d2) [0x1555542a49d2]
+ 1  /lib64/libucs.so.0(+0x3125c) [0x15555003f25c]
+ 2  /lib64/libucs.so.0(+0x3142a) [0x15555003f42a]
+ 1  /lib64/libucs.so.0(+0x3125c) [0x15555003f25c]
+ 1  /lib64/libucs.so.0(+0x3125c) [0x15555003f25c]
+ 2  /lib64/libucs.so.0(+0x3142a) [0x15555003f42a]
+ 4  /usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/libopen-pal.so.40(+0x46721) [0x155553e9c721]
+ 7  ///////////////////////////////////////////////////////////////////////////////////////////////////usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/openmpi/mca_coll_tuned.so(ompi_coll_tuned_gather_intra_dec_fixed+0x81) [0x155550c8aff1]
+==== backtrace (tid:1243340) ====
+ 2  /lib64/libucs.so.0(+0x3142a) [0x15555003f42a]
+ 7  ///////////////////////////////////////////////////////////////////////////////////////////////////usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/openmpi/mca_coll_tuned.so(ompi_coll_tuned_gather_intra_dec_fixed+0x81) [0x155550c8aff1]
+ 1  /lib64/libucs.so.0(+0x3125c) [0x15555003f25c]
+==== backtrace (tid:3887531) ====
+ 3  /lib64/libc.so.6(+0xde9d2) [0x1555542a49d2]
+ 2  /lib64/libucs.so.0(+0x3142a) [0x15555003f42a]
+ 3  /lib64/libc.so.6(+0xde9d2) [0x1555542a49d2]
+ 5  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_datatype_sndrcv+0x4da) [0x15555545205a]
+ 2  /lib64/libucs.so.0(+0x3142a) [0x15555003f42a]
+ 8  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(PMPI_Gather+0x152) [0x1555554660b2]
+ 0  /lib64/libucs.so.0(ucs_handle_error+0x2dc) [0x15555003f07c]
+ 4  /usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/libopen-pal.so.40(+0x46721) [0x155553e9c721]
+ 8  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(PMPI_Gather+0x152) [0x1555554660b2]
+ 2  /lib64/libucs.so.0(+0x3142a) [0x15555003f42a]
+ 0  /lib64/libucs.so.0(ucs_handle_error+0x2dc) [0x15555003f07c]
+ 3  /lib64/libc.so.6(+0xde9d2) [0x1555542a49d2]
+ 3  /lib64/libc.so.6(+0xde9d2) [0x1555542a49d2]
+ 6  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_coll_base_gather_intra_binomial+0x2fe) [0x15555549de9e]
+ 4  /usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/libopen-pal.so.40(+0x46721) [0x155553e9c721]
+ 3  /lib64/libc.so.6(+0xde9d2) [0x1555542a49d2]
+ 9  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408a5d]
+==== backtrace (tid:3221196) ====
+ 4  /usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/libopen-pal.so.40(+0x46721) [0x155553e9c721]
+ 5  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_datatype_sndrcv+0x4da) [0x15555545205a]
+ 4  /usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/libopen-pal.so.40(+0x46721) [0x155553e9c721]
+ 4  /usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/libopen-pal.so.40(+0x46721) [0x155553e9c721]
+ 9  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408a5d]
+ 3  /lib64/libc.so.6(+0xde9d2) [0x1555542a49d2]
+ 1  /lib64/libucs.so.0(+0x3125c) [0x15555003f25c]
+==== backtrace (tid:1986750) ====
+ 1  /lib64/libucs.so.0(+0x3125c) [0x15555003f25c]
+ 7  ///////////////////////////////////////////////////////////////////////////////////////////////////usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/openmpi/mca_coll_tuned.so(ompi_coll_tuned_gather_intra_dec_fixed+0x81) [0x155550c8aff1]
+ 5  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_datatype_sndrcv+0x4da) [0x15555545205a]
+ 5  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_datatype_sndrcv+0x4da) [0x15555545205a]
+ 5  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_datatype_sndrcv+0x4da) [0x15555545205a]
+ 5  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_datatype_sndrcv+0x4da) [0x15555545205a]
+10  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408cd2]
+ 0  /lib64/libucs.so.0(ucs_handle_error+0x2dc) [0x15555003f07c]
+ 4  /usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/libopen-pal.so.40(+0x46721) [0x155553e9c721]
+ 0  /lib64/libucs.so.0(ucs_handle_error+0x2dc) [0x15555003f07c]
+==== backtrace (tid:2933160) ====
+ 2  /lib64/libucs.so.0(+0x3142a) [0x15555003f42a]
+==== backtrace (tid:1166154) ====
+ 6  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_coll_base_gather_intra_binomial+0x2fe) [0x15555549de9e]
+ 8  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(PMPI_Gather+0x152) [0x1555554660b2]
+10  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408cd2]
+==== backtrace (tid: 321520) ====
+ 2  /lib64/libucs.so.0(+0x3142a) [0x15555003f42a]
+==== backtrace (tid:2290481) ====
+==== backtrace (tid:3142333) ====
+ 6  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_coll_base_gather_intra_binomial+0x2fe) [0x15555549de9e]
+ 6  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_coll_base_gather_intra_binomial+0x2fe) [0x15555549de9e]
+11  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408d22]
+==== backtrace (tid:2758422) ====
+11  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408d22]
+ 5  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_datatype_sndrcv+0x4da) [0x15555545205a]
+ 3  /lib64/libc.so.6(+0xde9d2) [0x1555542a49d2]
+ 1  /lib64/libucs.so.0(+0x3125c) [0x15555003f25c]
+ 6  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_coll_base_gather_intra_binomial+0x2fe) [0x15555549de9e]
+ 0  /lib64/libucs.so.0(ucs_handle_error+0x2dc) [0x15555003f07c]
+ 0  /lib64/libucs.so.0(ucs_handle_error+0x2dc) [0x15555003f07c]
+ 3  /lib64/libc.so.6(+0xde9d2) [0x1555542a49d2]
+ 0  /lib64/libucs.so.0(ucs_handle_error+0x2dc) [0x15555003f07c]
+ 7  ///////////////////////////////////////////////////////////////////////////////////////////////////usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/openmpi/mca_coll_tuned.so(ompi_coll_tuned_gather_intra_dec_fixed+0x81) [0x155550c8aff1]
+ 6  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_coll_base_gather_intra_binomial+0x2fe) [0x15555549de9e]
+ 9  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408a5d]
+ 1  /lib64/libucs.so.0(+0x3125c) [0x15555003f25c]
+ 0  /lib64/libucs.so.0(ucs_handle_error+0x2dc) [0x15555003f07c]
+ 0  /lib64/libucs.so.0(ucs_handle_error+0x2dc) [0x15555003f07c]
+ 0  /lib64/libucs.so.0(ucs_handle_error+0x2dc) [0x15555003f07c]
+ 6  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_coll_base_gather_intra_binomial+0x2fe) [0x15555549de9e]
+ 7  ///////////////////////////////////////////////////////////////////////////////////////////////////usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/openmpi/mca_coll_tuned.so(ompi_coll_tuned_gather_intra_dec_fixed+0x81) [0x155550c8aff1]
+ 4  /usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/libopen-pal.so.40(+0x46721) [0x155553e9c721]
+ 7  ///////////////////////////////////////////////////////////////////////////////////////////////////usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/openmpi/mca_coll_tuned.so(ompi_coll_tuned_gather_intra_dec_fixed+0x81) [0x155550c8aff1]
+ 8  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(PMPI_Gather+0x152) [0x1555554660b2]
+ 7  ///////////////////////////////////////////////////////////////////////////////////////////////////usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/openmpi/mca_coll_tuned.so(ompi_coll_tuned_gather_intra_dec_fixed+0x81) [0x155550c8aff1]
+12  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x405bfb]
+ 1  /lib64/libucs.so.0(+0x3125c) [0x15555003f25c]
+ 4  /usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/libopen-pal.so.40(+0x46721) [0x155553e9c721]
+ 7  ///////////////////////////////////////////////////////////////////////////////////////////////////usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/openmpi/mca_coll_tuned.so(ompi_coll_tuned_gather_intra_dec_fixed+0x81) [0x155550c8aff1]
+ 1  /lib64/libucs.so.0(+0x3125c) [0x15555003f25c]
+==== backtrace (tid:1098612) ====
+ 1  /lib64/libucs.so.0(+0x3125c) [0x15555003f25c]
+10  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408cd2]
+==== backtrace (tid:1864474) ====
+12  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x405bfb]
+ 2  /lib64/libucs.so.0(+0x3142a) [0x15555003f42a]
+ 1  /lib64/libucs.so.0(+0x3125c) [0x15555003f25c]
+ 8  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(PMPI_Gather+0x152) [0x1555554660b2]
+ 8  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(PMPI_Gather+0x152) [0x1555554660b2]
+ 2  /lib64/libucs.so.0(+0x3142a) [0x15555003f42a]
+ 1  /lib64/libucs.so.0(+0x3125c) [0x15555003f25c]
+ 5  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_datatype_sndrcv+0x4da) [0x15555545205a]
+ 0  /lib64/libucs.so.0(ucs_handle_error+0x2dc) [0x15555003f07c]
+ 9  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408a5d]
+ 8  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(PMPI_Gather+0x152) [0x1555554660b2]
+13  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x4048ba]
+ 1  /lib64/libucs.so.0(+0x3125c) [0x15555003f25c]
+13  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x4048ba]
+ 7  ///////////////////////////////////////////////////////////////////////////////////////////////////usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/openmpi/mca_coll_tuned.so(ompi_coll_tuned_gather_intra_dec_fixed+0x81) [0x155550c8aff1]
+ 5  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_datatype_sndrcv+0x4da) [0x15555545205a]
+==== backtrace (tid:1520648) ====
+==== backtrace (tid:1255909) ====
+ 8  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(PMPI_Gather+0x152) [0x1555554660b2]
+==== backtrace (tid:1367174) ====
+ 2  /lib64/libucs.so.0(+0x3142a) [0x15555003f42a]
+ 2  /lib64/libucs.so.0(+0x3142a) [0x15555003f42a]
+11  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408d22]
+ 0  /lib64/libucs.so.0(ucs_handle_error+0x2dc) [0x15555003f07c]
+ 2  /lib64/libucs.so.0(+0x3142a) [0x15555003f42a]
+ 3  /lib64/libc.so.6(+0xde9d2) [0x1555542a49d2]
+ 2  /lib64/libucs.so.0(+0x3142a) [0x15555003f42a]
+ 9  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408a5d]
+ 6  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_coll_base_gather_intra_binomial+0x2fe) [0x15555549de9e]
+ 1  /lib64/libucs.so.0(+0x3125c) [0x15555003f25c]
+10  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408cd2]
+==== backtrace (tid:2576555) ====
+ 9  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408a5d]
+ 9  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408a5d]
+ 2  /lib64/libucs.so.0(+0x3142a) [0x15555003f42a]
+14  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x402a10]
+ 3  /lib64/libc.so.6(+0xde9d2) [0x1555542a49d2]
+ 8  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(PMPI_Gather+0x152) [0x1555554660b2]
+ 6  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_coll_base_gather_intra_binomial+0x2fe) [0x15555549de9e]
+ 0  /lib64/libucs.so.0(ucs_handle_error+0x2dc) [0x15555003f07c]
+ 4  /usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/libopen-pal.so.40(+0x46721) [0x155553e9c721]
+ 2  /lib64/libucs.so.0(+0x3142a) [0x15555003f42a]
+ 0  /lib64/libucs.so.0(ucs_handle_error+0x2dc) [0x15555003f07c]
+ 9  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408a5d]
+ 3  /lib64/libc.so.6(+0xde9d2) [0x1555542a49d2]
+ 0  /lib64/libucs.so.0(ucs_handle_error+0x2dc) [0x15555003f07c]
+ 3  /lib64/libc.so.6(+0xde9d2) [0x1555542a49d2]
+ 3  /lib64/libc.so.6(+0xde9d2) [0x1555542a49d2]
+10  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408cd2]
+12  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x405bfb]
+14  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x402a10]
+ 3  /lib64/libc.so.6(+0xde9d2) [0x1555542a49d2]
+ 4  /usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/libopen-pal.so.40(+0x46721) [0x155553e9c721]
+ 9  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408a5d]
+ 3  /lib64/libc.so.6(+0xde9d2) [0x1555542a49d2]
+ 5  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_datatype_sndrcv+0x4da) [0x15555545205a]
+ 3  /lib64/libc.so.6(+0xde9d2) [0x1555542a49d2]
+ 4  /usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/libopen-pal.so.40(+0x46721) [0x155553e9c721]
+ 4  /usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/libopen-pal.so.40(+0x46721) [0x155553e9c721]
+10  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408cd2]
+ 7  ///////////////////////////////////////////////////////////////////////////////////////////////////usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/openmpi/mca_coll_tuned.so(ompi_coll_tuned_gather_intra_dec_fixed+0x81) [0x155550c8aff1]
+ 4  /usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/libopen-pal.so.40(+0x46721) [0x155553e9c721]
+11  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408d22]
+ 0  /lib64/libucs.so.0(ucs_handle_error+0x2dc) [0x15555003f07c]
+ 1  /lib64/libucs.so.0(+0x3125c) [0x15555003f25c]
+10  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408cd2]
+15  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x402570]
+15  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x402570]
+ 5  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_datatype_sndrcv+0x4da) [0x15555545205a]
+ 4  /usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/libopen-pal.so.40(+0x46721) [0x155553e9c721]
+ 7  ///////////////////////////////////////////////////////////////////////////////////////////////////usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/openmpi/mca_coll_tuned.so(ompi_coll_tuned_gather_intra_dec_fixed+0x81) [0x155550c8aff1]
+ 1  /lib64/libucs.so.0(+0x3125c) [0x15555003f25c]
+ 1  /lib64/libucs.so.0(+0x3125c) [0x15555003f25c]
+10  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408cd2]
+ 1  /lib64/libucs.so.0(+0x3125c) [0x15555003f25c]
+ 5  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_datatype_sndrcv+0x4da) [0x15555545205a]
+11  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408d22]
+ 8  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(PMPI_Gather+0x152) [0x1555554660b2]
+ 2  /lib64/libucs.so.0(+0x3142a) [0x15555003f42a]
+ 5  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_datatype_sndrcv+0x4da) [0x15555545205a]
+12  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x405bfb]
+11  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408d22]
+13  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x4048ba]
+ 2  /lib64/libucs.so.0(+0x3142a) [0x15555003f42a]
+11  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408d22]
+ 4  /usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/libopen-pal.so.40(+0x46721) [0x155553e9c721]
+16  /lib64/libc.so.6(__libc_start_main+0xe5) [0x1555542007e5]
+ 6  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_coll_base_gather_intra_binomial+0x2fe) [0x15555549de9e]
+10  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408cd2]
+ 5  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_datatype_sndrcv+0x4da) [0x15555545205a]
+ 8  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(PMPI_Gather+0x152) [0x1555554660b2]
+ 6  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_coll_base_gather_intra_binomial+0x2fe) [0x15555549de9e]
+ 4  /usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/libopen-pal.so.40(+0x46721) [0x155553e9c721]
+11  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408d22]
+ 5  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_datatype_sndrcv+0x4da) [0x15555545205a]
+ 2  /lib64/libucs.so.0(+0x3142a) [0x15555003f42a]
+ 6  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_coll_base_gather_intra_binomial+0x2fe) [0x15555549de9e]
+ 3  /lib64/libc.so.6(+0xde9d2) [0x1555542a49d2]
+ 1  /lib64/libucs.so.0(+0x3125c) [0x15555003f25c]
+12  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x405bfb]
+14  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x402a10]
+ 3  /lib64/libc.so.6(+0xde9d2) [0x1555542a49d2]
+12  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x405bfb]
+16  /lib64/libc.so.6(__libc_start_main+0xe5) [0x1555542007e5]
+ 5  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_datatype_sndrcv+0x4da) [0x15555545205a]
+17  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x40229e]
+ 7  ///////////////////////////////////////////////////////////////////////////////////////////////////usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/openmpi/mca_coll_tuned.so(ompi_coll_tuned_gather_intra_dec_fixed+0x81) [0x155550c8aff1]
+ 6  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_coll_base_gather_intra_binomial+0x2fe) [0x15555549de9e]
+ 2  /lib64/libucs.so.0(+0x3142a) [0x15555003f42a]
+ 7  ///////////////////////////////////////////////////////////////////////////////////////////////////usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/openmpi/mca_coll_tuned.so(ompi_coll_tuned_gather_intra_dec_fixed+0x81) [0x155550c8aff1]
+ 5  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_datatype_sndrcv+0x4da) [0x15555545205a]
+ 2  /lib64/libucs.so.0(+0x3142a) [0x15555003f42a]
+12  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x405bfb]
+ 9  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408a5d]
+ 4  /usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/libopen-pal.so.40(+0x46721) [0x155553e9c721]
+ 6  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_coll_base_gather_intra_binomial+0x2fe) [0x15555549de9e]
+13  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x4048ba]
+ 2  /lib64/libucs.so.0(+0x3142a) [0x15555003f42a]
+17  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x40229e]
+ 6  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_coll_base_gather_intra_binomial+0x2fe) [0x15555549de9e]
+=================================
+11  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408d22]
+ 9  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408a5d]
+ 3  /lib64/libc.so.6(+0xde9d2) [0x1555542a49d2]
+ 8  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(PMPI_Gather+0x152) [0x1555554660b2]
+ 6  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_coll_base_gather_intra_binomial+0x2fe) [0x15555549de9e]
+ 3  /lib64/libc.so.6(+0xde9d2) [0x1555542a49d2]
+12  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x405bfb]
+ 6  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_coll_base_gather_intra_binomial+0x2fe) [0x15555549de9e]
+ 3  /lib64/libc.so.6(+0xde9d2) [0x1555542a49d2]
+ 7  ///////////////////////////////////////////////////////////////////////////////////////////////////usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/openmpi/mca_coll_tuned.so(ompi_coll_tuned_gather_intra_dec_fixed+0x81) [0x155550c8aff1]
+13  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x4048ba]
+10  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408cd2]
+ 5  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_datatype_sndrcv+0x4da) [0x15555545205a]
+ 7  ///////////////////////////////////////////////////////////////////////////////////////////////////usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/openmpi/mca_coll_tuned.so(ompi_coll_tuned_gather_intra_dec_fixed+0x81) [0x155550c8aff1]
+14  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x402a10]
+13  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x4048ba]
+15  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x402570]
+ 4  /usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/libopen-pal.so.40(+0x46721) [0x155553e9c721]
+13  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x4048ba]
+=================================
+ 8  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(PMPI_Gather+0x152) [0x1555554660b2]
+12  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x405bfb]
+ 7  ///////////////////////////////////////////////////////////////////////////////////////////////////usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/openmpi/mca_coll_tuned.so(ompi_coll_tuned_gather_intra_dec_fixed+0x81) [0x155550c8aff1]
+10  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408cd2]
+ 4  /usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/libopen-pal.so.40(+0x46721) [0x155553e9c721]
+ 4  /usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/libopen-pal.so.40(+0x46721) [0x155553e9c721]
+13  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x4048ba]
+ 7  ///////////////////////////////////////////////////////////////////////////////////////////////////usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/openmpi/mca_coll_tuned.so(ompi_coll_tuned_gather_intra_dec_fixed+0x81) [0x155550c8aff1]
+ 4  /usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/libopen-pal.so.40(+0x46721) [0x155553e9c721]
+14  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x402a10]
+11  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408d22]
+ 8  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(PMPI_Gather+0x152) [0x1555554660b2]
+15  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x402570]
+ 3  /lib64/libc.so.6(+0xde9d2) [0x1555542a49d2]
+14  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x402a10]
+16  /lib64/libc.so.6(__libc_start_main+0xe5) [0x1555542007e5]
+ 5  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_datatype_sndrcv+0x4da) [0x15555545205a]
+14  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x402a10]
+[dane222:2067926] *** Process received signal ***
+ 7  ///////////////////////////////////////////////////////////////////////////////////////////////////usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/openmpi/mca_coll_tuned.so(ompi_coll_tuned_gather_intra_dec_fixed+0x81) [0x155550c8aff1]
+[dane1039:3707412] *** Process received signal ***
+ 9  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408a5d]
+13  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x4048ba]
+11  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408d22]
+ 5  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_datatype_sndrcv+0x4da) [0x15555545205a]
+ 9  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408a5d]
+ 7  ///////////////////////////////////////////////////////////////////////////////////////////////////usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/openmpi/mca_coll_tuned.so(ompi_coll_tuned_gather_intra_dec_fixed+0x81) [0x155550c8aff1]
+ 5  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_datatype_sndrcv+0x4da) [0x15555545205a]
+14  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x402a10]
+ 8  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(PMPI_Gather+0x152) [0x1555554660b2]
+ 5  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_datatype_sndrcv+0x4da) [0x15555545205a]
+ 8  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(PMPI_Gather+0x152) [0x1555554660b2]
+15  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x402570]
+ 6  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_coll_base_gather_intra_binomial+0x2fe) [0x15555549de9e]
+ 9  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408a5d]
+16  /lib64/libc.so.6(__libc_start_main+0xe5) [0x1555542007e5]
+ 4  /usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/libopen-pal.so.40(+0x46721) [0x155553e9c721]
+15  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x402570]
+17  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x40229e]
+ 6  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_coll_base_gather_intra_binomial+0x2fe) [0x15555549de9e]
+15  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x402570]
+[dane222:2067926] Signal: Segmentation fault (11)
+[dane222:2067926] Signal code:  (-6)
+[dane222:2067926] Failing at address: 0xb2a2001f8dd6
+ 8  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(PMPI_Gather+0x152) [0x1555554660b2]
+[dane1039:3707412] Signal: Segmentation fault (11)
+[dane1039:3707412] Signal code:  (-6)
+[dane1039:3707412] Failing at address: 0xb2a200389214
+10  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408cd2]
+14  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x402a10]
+ 8  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(PMPI_Gather+0x152) [0x1555554660b2]
+12  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x405bfb]
+10  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408cd2]
+ 8  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(PMPI_Gather+0x152) [0x1555554660b2]
+ 6  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_coll_base_gather_intra_binomial+0x2fe) [0x15555549de9e]
+15  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x402570]
+ 9  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408a5d]
+ 6  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_coll_base_gather_intra_binomial+0x2fe) [0x15555549de9e]
+ 9  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408a5d]
+12  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x405bfb]
+ 7  ///////////////////////////////////////////////////////////////////////////////////////////////////usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/openmpi/mca_coll_tuned.so(ompi_coll_tuned_gather_intra_dec_fixed+0x81) [0x155550c8aff1]
+17  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x40229e]
+ 5  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_datatype_sndrcv+0x4da) [0x15555545205a]
+16  /lib64/libc.so.6(__libc_start_main+0xe5) [0x1555542007e5]
+=================================
+ 7  ///////////////////////////////////////////////////////////////////////////////////////////////////usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/openmpi/mca_coll_tuned.so(ompi_coll_tuned_gather_intra_dec_fixed+0x81) [0x155550c8aff1]
+16  /lib64/libc.so.6(__libc_start_main+0xe5) [0x1555542007e5]
+ 9  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408a5d]
+ 9  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408a5d]
+ 6  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_coll_base_gather_intra_binomial+0x2fe) [0x15555549de9e]
+11  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408d22]
+ 9  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408a5d]
+ 7  ///////////////////////////////////////////////////////////////////////////////////////////////////usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/openmpi/mca_coll_tuned.so(ompi_coll_tuned_gather_intra_dec_fixed+0x81) [0x155550c8aff1]
+10  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408cd2]
+ 7  ///////////////////////////////////////////////////////////////////////////////////////////////////usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/openmpi/mca_coll_tuned.so(ompi_coll_tuned_gather_intra_dec_fixed+0x81) [0x155550c8aff1]
+10  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408cd2]
+16  /lib64/libc.so.6(__libc_start_main+0xe5) [0x1555542007e5]
+13  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x4048ba]
+10  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408cd2]
+ 6  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_coll_base_gather_intra_binomial+0x2fe) [0x15555549de9e]
+ 8  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(PMPI_Gather+0x152) [0x1555554660b2]
+10  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408cd2]
+11  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408d22]
+15  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x402570]
+10  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408cd2]
+13  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x4048ba]
+ 7  ///////////////////////////////////////////////////////////////////////////////////////////////////usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/openmpi/mca_coll_tuned.so(ompi_coll_tuned_gather_intra_dec_fixed+0x81) [0x155550c8aff1]
+16  /lib64/libc.so.6(__libc_start_main+0xe5) [0x1555542007e5]
+11  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408d22]
+17  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x40229e]
+14  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x402a10]
+ 8  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(PMPI_Gather+0x152) [0x1555554660b2]
+11  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408d22]
+=================================
+ 7  ///////////////////////////////////////////////////////////////////////////////////////////////////usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/openmpi/mca_coll_tuned.so(ompi_coll_tuned_gather_intra_dec_fixed+0x81) [0x155550c8aff1]
+17  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x40229e]
+[dane841:1819904] *** Process received signal ***
+17  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x40229e]
+[dane222:2067926] [ 0] /lib64/libpthread.so.0(+0x12990)[0x1555545af990]
+[dane1039:3707412] [ 0] /lib64/libpthread.so.0(+0x12990)[0x1555545af990]
+12  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x405bfb]
+16  /lib64/libc.so.6(__libc_start_main+0xe5) [0x1555542007e5]
+11  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408d22]
+14  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x402a10]
+ 8  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(PMPI_Gather+0x152) [0x1555554660b2]
+12  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x405bfb]
+10  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408cd2]
+ 8  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(PMPI_Gather+0x152) [0x1555554660b2]
+17  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x40229e]
+11  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408d22]
+ 8  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(PMPI_Gather+0x152) [0x1555554660b2]
+=================================
+15  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x402570]
+ 9  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408a5d]
+[dane220:808456] *** Process received signal ***
+ 8  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(PMPI_Gather+0x152) [0x1555554660b2]
+=================================
+[dane841:1819904] Signal: Segmentation fault (11)
+[dane841:1819904] Signal code:  (-6)
+[dane841:1819904] Failing at address: 0xb2a2001bc500
+ 9  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408a5d]
+=================================
+11  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408d22]
+13  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x4048ba]
+17  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x40229e]
+15  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x402570]
+ 9  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408a5d]
+13  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x4048ba]
+11  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408d22]
+ 9  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408a5d]
+=================================
+12  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x405bfb]
+ 9  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408a5d]
+12  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x405bfb]
+10  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408cd2]
+12  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x405bfb]
+10  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408cd2]
+12  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x405bfb]
+14  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x402a10]
+=================================
+12  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x405bfb]
+16  /lib64/libc.so.6(__libc_start_main+0xe5) [0x1555542007e5]
+14  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x402a10]
+12  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x405bfb]
+10  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408cd2]
+[dane610:1609161] *** Process received signal ***
+13  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x4048ba]
+10  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408cd2]
+13  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x4048ba]
+[dane125:2287197] *** Process received signal ***
+16  /lib64/libc.so.6(__libc_start_main+0xe5) [0x1555542007e5]
+11  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408d22]
+13  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x4048ba]
+[dane220:808456] Signal: Segmentation fault (11)
+[dane220:808456] Signal code:  (-6)
+[dane220:808456] Failing at address: 0xb2a2000c5608
+ 9  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408a5d]
+[dane700:1358739] *** Process received signal ***
+11  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408d22]
+[dane1478:1463808] *** Process received signal ***
+[dane1039:3707412] [ 1] /lib64/libc.so.6(+0xde9d2)[0x1555542a49d2]
+13  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x4048ba]
+17  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x40229e]
+10  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408cd2]
+13  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x4048ba]
+14  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x402a10]
+17  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x40229e]
+14  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x402a10]
+10  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408cd2]
+[dane700:1358739] Signal: Segmentation fault (11)
+[dane700:1358739] Signal code:  (-6)
+[dane700:1358739] Failing at address: 0xb2a20014bb93
+[dane841:1819904] [ 0] /lib64/libpthread.so.0(+0x12990)[0x1555545af990]
+[dane1478:1463808] Signal: Segmentation fault (11)
+[dane1478:1463808] Signal code:  (-6)
+[dane1478:1463808] Failing at address: 0xb2a200165600
+[dane222:2067926] [ 1] /lib64/libc.so.6(+0xde9d2)[0x1555542a49d2]
+13  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x4048ba]
+15  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x402570]
+[dane1096:1893129] *** Process received signal ***
+=================================
+11  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408d22]
+15  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x402570]
+11  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408d22]
+[dane610:1609161] Signal: Segmentation fault (11)
+[dane610:1609161] Signal code:  (-6)
+[dane610:1609161] Failing at address: 0xb2a200188dc9
+14  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x402a10]
+11  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408d22]
+[dane125:2287197] Signal: Segmentation fault (11)
+[dane125:2287197] Signal code:  (-6)
+[dane125:2287197] Failing at address: 0xb2a20022e65d
+=================================
+12  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x405bfb]
+15  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x402570]
+11  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408d22]
+12  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x405bfb]
+14  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x402a10]
+16  /lib64/libc.so.6(__libc_start_main+0xe5) [0x1555542007e5]
+[dane1096:1893129] Signal: Segmentation fault (11)
+[dane1096:1893129] Signal code:  (-6)
+[dane1096:1893129] Failing at address: 0xb2a2001ce309
+14  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x402a10]
+12  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x405bfb]
+16  /lib64/libc.so.6(__libc_start_main+0xe5) [0x1555542007e5]
+14  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x402a10]
+12  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x405bfb]
+15  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x402570]
+12  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x405bfb]
+15  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x402570]
+13  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x4048ba]
+[dane220:808456] [ 0] /lib64/libpthread.so.0(+0x12990)[0x1555545af990]
+13  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x4048ba]
+15  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x402570]
+[dane1039:3707412] [ 2] /usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/libopen-pal.so.40(+0x46721)[0x155553e9c721]
+17  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x40229e]
+15  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x402570]
+[dane238:3887531] *** Process received signal ***
+17  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x40229e]
+15  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x402570]
+13  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x4048ba]
+16  /lib64/libc.so.6(__libc_start_main+0xe5) [0x1555542007e5]
+[dane432:1243340] *** Process received signal ***
+16  /lib64/libc.so.6(__libc_start_main+0xe5) [0x1555542007e5]
+12  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x405bfb]
+[dane700:1358739] [ 0] /lib64/libpthread.so.0(+0x12990)[0x1555545af990]
+[dane841:1819904] [ 1] /lib64/libc.so.6(+0xde9d2)[0x1555542a49d2]
+[dane222:2067926] [ 2] /usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/libopen-pal.so.40(+0x46721)[0x155553e9c721]
+16  /lib64/libc.so.6(__libc_start_main+0xe5) [0x1555542007e5]
+13  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x4048ba]
+=================================
+[dane610:1609161] [ 0] /lib64/libpthread.so.0(+0x12990)[0x1555545af990]
+16  /lib64/libc.so.6(__libc_start_main+0xe5) [0x1555542007e5]
+13  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x4048ba]
+17  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x40229e]
+[dane125:2287197] [ 0] /lib64/libpthread.so.0(+0x12990)[0x1555545af990]
+14  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x402a10]
+17  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x40229e]
+14  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x402a10]
+[dane1478:1463808] [ 0] /lib64/libpthread.so.0(+0x12990)[0x1555545af990]
+16  /lib64/libc.so.6(__libc_start_main+0xe5) [0x1555542007e5]
+=================================
+17  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x40229e]
+[dane238:3887531] Signal: Segmentation fault (11)
+[dane238:3887531] Signal code:  (-6)
+[dane238:3887531] Failing at address: 0xb2a2003b51ab
+16  /lib64/libc.so.6(__libc_start_main+0xe5) [0x1555542007e5]
+14  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x402a10]
+17  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x40229e]
+14  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x402a10]
+[dane432:1243340] Signal: Segmentation fault (11)
+[dane432:1243340] Signal code:  (-6)
+[dane432:1243340] Failing at address: 0xb2a20012f8cc
+13  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x4048ba]
+17  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x40229e]
+[dane1096:1893129] [ 0] /lib64/libpthread.so.0(+0x12990)[0x1555545af990]
+=================================
+14  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x402a10]
+[dane961:3221196] *** Process received signal ***
+17  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x40229e]
+=================================
+=================================
+15  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x402570]
+=================================
+[dane220:808456] [ 1] /lib64/libc.so.6(+0xde9d2)[0x1555542a49d2]
+15  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x402570]
+[dane222:2067926] [ 3] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_datatype_sndrcv+0x4da)[0x15555545205a]
+=================================
+[dane1039:3707412] [ 3] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_datatype_sndrcv+0x4da)[0x15555545205a]
+[dane500:1986750] *** Process received signal ***
+15  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x402570]
+=================================
+15  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x402570]
+15  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x402570]
+16  /lib64/libc.so.6(__libc_start_main+0xe5) [0x1555542007e5]
+14  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x402a10]
+[dane841:1819904] [ 2] /usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/libopen-pal.so.40(+0x46721)[0x155553e9c721]
+16  /lib64/libc.so.6(__libc_start_main+0xe5) [0x1555542007e5]
+[dane961:3221196] Signal: Segmentation fault (11)
+[dane961:3221196] Signal code:  (-6)
+[dane961:3221196] Failing at address: 0xb2a2003126cc
+[dane610:1609161] [ 1] /lib64/libc.so.6(+0xde9d2)[0x1555542a49d2]
+[dane170:3142333] *** Process received signal ***
+[dane1120:2933160] *** Process received signal ***
+[dane125:2287197] [ 1] /lib64/libc.so.6(+0xde9d2)[0x1555542a49d2]
+[dane233:1166154] *** Process received signal ***
+[dane700:1358739] [ 1] /lib64/libc.so.6(+0xde9d2)[0x1555542a49d2]
+17  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x40229e]
+[dane500:1986750] Signal: Segmentation fault (11)
+[dane500:1986750] Signal code:  (-6)
+[dane500:1986750] Failing at address: 0xb2a2001e50be
+[dane1045:321520] *** Process received signal ***
+[dane238:3887531] [ 0] /lib64/libpthread.so.0(+0x12990)[0x1555545af990]
+16  /lib64/libc.so.6(__libc_start_main+0xe5) [0x1555542007e5]
+16  /lib64/libc.so.6(__libc_start_main+0xe5) [0x1555542007e5]
+16  /lib64/libc.so.6(__libc_start_main+0xe5) [0x1555542007e5]
+[dane432:1243340] [ 0] /lib64/libpthread.so.0(+0x12990)[0x1555545af990]
+17  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x40229e]
+15  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x402570]
+[dane1478:1463808] [ 1] /lib64/libc.so.6(+0xde9d2)[0x1555542a49d2]
+[dane1070:2758422] *** Process received signal ***
+[dane1039:3707412] [ 4] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_coll_base_gather_intra_binomial+0x2fe)[0x15555549de9e]
+[dane1096:1893129] [ 1] /lib64/libc.so.6(+0xde9d2)[0x1555542a49d2]
+17  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x40229e]
+[dane453:2290481] *** Process received signal ***
+17  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x40229e]
+[dane170:3142333] Signal: Segmentation fault (11)
+[dane170:3142333] Signal code:  (-6)
+[dane170:3142333] Failing at address: 0xb2a2002ff2bd
+17  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x40229e]
+[dane1120:2933160] Signal: Segmentation fault (11)
+[dane1120:2933160] Signal code:  (-6)
+[dane1120:2933160] Failing at address: 0xb2a2002cc1a8
+=================================
+[dane233:1166154] Signal: Segmentation fault (11)
+[dane233:1166154] Signal code:  (-6)
+[dane233:1166154] Failing at address: 0xb2a20011cb4a
+[dane220:808456] [ 2] /usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/libopen-pal.so.40(+0x46721)[0x155553e9c721]
+16  /lib64/libc.so.6(__libc_start_main+0xe5) [0x1555542007e5]
+=================================
+[dane222:2067926] [ 4] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_coll_base_gather_intra_binomial+0x2fe)[0x15555549de9e]
+[dane1045:321520] Signal: Segmentation fault (11)
+[dane1045:321520] Signal code:  (-6)
+[dane1045:321520] Failing at address: 0xb2a20004e7f0
+[dane453:2290481] Signal: Segmentation fault (11)
+[dane453:2290481] Signal code:  (-6)
+[dane453:2290481] Failing at address: 0xb2a20022f331
+=================================
+17  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x40229e]
+[dane841:1819904] [ 3] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_datatype_sndrcv+0x4da)[0x15555545205a]
+[dane1070:2758422] Signal: Segmentation fault (11)
+[dane1070:2758422] Signal code:  (-6)
+[dane1070:2758422] Failing at address: 0xb2a2002a1716
+[dane961:3221196] [ 0] /lib64/libpthread.so.0(+0x12990)[0x1555545af990]
+[dane610:1609161] [ 2] /usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/libopen-pal.so.40(+0x46721)[0x155553e9c721]
+[dane586:1098612] *** Process received signal ***
+[dane700:1358739] [ 2] /usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/libopen-pal.so.40(+0x46721)[0x155553e9c721]
+[dane1478:1463808] [ 2] /usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/libopen-pal.so.40(+0x46721)[0x155553e9c721]
+[dane500:1986750] [ 0] /lib64/libpthread.so.0(+0x12990)[0x1555545af990]
+=================================
+=================================
+[dane125:2287197] [ 2] /usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/libopen-pal.so.40(+0x46721)[0x155553e9c721]
+=================================
+[dane1300:1864474] *** Process received signal ***
+[dane1096:1893129] [ 2] /usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/libopen-pal.so.40(+0x46721)[0x155553e9c721]
+[dane238:3887531] [ 1] /lib64/libc.so.6(+0xde9d2)[0x1555542a49d2]
+[dane434:1255909] *** Process received signal ***
+[dane432:1243340] [ 1] /lib64/libc.so.6(+0xde9d2)[0x1555542a49d2]
+[dane1039:3707412] [ 5] ///////////////////////////////////////////////////////////////////////////////////////////////////usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/openmpi/mca_coll_tuned.so(ompi_coll_tuned_gather_intra_dec_fixed+0x81)[0x155550c8aff1]
+[dane222:2067926] [ 5] ///////////////////////////////////////////////////////////////////////////////////////////////////usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/openmpi/mca_coll_tuned.so(ompi_coll_tuned_gather_intra_dec_fixed+0x81)[0x155550c8aff1]
+[dane170:3142333] [ 0] /lib64/libpthread.so.0(+0x12990)[0x1555545af990]
+[dane220:808456] [ 3] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_datatype_sndrcv+0x4da)[0x15555545205a]
+[dane586:1098612] Signal: Segmentation fault (11)
+[dane586:1098612] Signal code:  (-6)
+[dane586:1098612] Failing at address: 0xb2a20010c374
+[dane434:1255909] Signal: Segmentation fault (11)
+[dane434:1255909] Signal code:  (-6)
+[dane434:1255909] Failing at address: 0xb2a2001329e5
+[dane405:1367174] *** Process received signal ***
+[dane1045:321520] [ 0] /lib64/libpthread.so.0(+0x12990)[0x1555545af990]
+[dane1364:1520648] *** Process received signal ***
+[dane1120:2933160] [ 0] /lib64/libpthread.so.0(+0x12990)[0x1555545af990]
+[dane233:1166154] [ 0] /lib64/libpthread.so.0(+0x12990)[0x1555545af990]
+[dane206:2576555] *** Process received signal ***
+[dane841:1819904] [ 4] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_coll_base_gather_intra_binomial+0x2fe)[0x15555549de9e]
+[dane1300:1864474] Signal: Segmentation fault (11)
+[dane1300:1864474] Signal code:  (-6)
+[dane1300:1864474] Failing at address: 0xb2a2001c731a
+[dane1070:2758422] [ 0] /lib64/libpthread.so.0(+0x12990)[0x1555545af990]
+[dane453:2290481] [ 0] /lib64/libpthread.so.0(+0x12990)[0x1555545af990]
+[dane610:1609161] [ 3] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_datatype_sndrcv+0x4da)[0x15555545205a]
+[dane405:1367174] Signal: Segmentation fault (11)
+[dane405:1367174] Signal code:  (-6)
+[dane405:1367174] Failing at address: 0xb2a20014dc86
+[dane125:2287197] [ 3] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_datatype_sndrcv+0x4da)[0x15555545205a]
+[dane700:1358739] [ 3] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_datatype_sndrcv+0x4da)[0x15555545205a]
+[dane1478:1463808] [ 3] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_datatype_sndrcv+0x4da)[0x15555545205a]
+[dane1364:1520648] Signal: Segmentation fault (11)
+[dane1364:1520648] Signal code:  (-6)
+[dane1364:1520648] Failing at address: 0xb2a200173408
+[dane961:3221196] [ 1] /lib64/libc.so.6(+0xde9d2)[0x1555542a49d2]
+[dane206:2576555] Signal: Segmentation fault (11)
+[dane206:2576555] Signal code:  (-6)
+[dane206:2576555] Failing at address: 0xb2a2002750ab
+[dane1039:3707412] [ 6] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(PMPI_Gather+0x152)[0x1555554660b2]
+[dane500:1986750] [ 1] /lib64/libc.so.6(+0xde9d2)[0x1555542a49d2]
+[dane1096:1893129] [ 3] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_datatype_sndrcv+0x4da)[0x15555545205a]
+[dane238:3887531] [ 2] /usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/libopen-pal.so.40(+0x46721)[0x155553e9c721]
+[dane432:1243340] [ 2] /usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/libopen-pal.so.40(+0x46721)[0x155553e9c721]
+[dane220:808456] [ 4] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_coll_base_gather_intra_binomial+0x2fe)[0x15555549de9e]
+[dane170:3142333] [ 1] /lib64/libc.so.6(+0xde9d2)[0x1555542a49d2]
+[dane222:2067926] [ 6] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(PMPI_Gather+0x152)[0x1555554660b2]
+[dane1045:321520] [ 1] /lib64/libc.so.6(+0xde9d2)[0x1555542a49d2]
+[dane586:1098612] [ 0] /lib64/libpthread.so.0(+0x12990)[0x1555545af990]
+[dane1120:2933160] [ 1] /lib64/libc.so.6(+0xde9d2)[0x1555542a49d2]
+[dane233:1166154] [ 1] /lib64/libc.so.6(+0xde9d2)[0x1555542a49d2]
+[dane841:1819904] [ 5] ///////////////////////////////////////////////////////////////////////////////////////////////////usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/openmpi/mca_coll_tuned.so(ompi_coll_tuned_gather_intra_dec_fixed+0x81)[0x155550c8aff1]
+[dane1300:1864474] [ 0] /lib64/libpthread.so.0(+0x12990)[0x1555545af990]
+[dane453:2290481] [ 1] /lib64/libc.so.6(+0xde9d2)[0x1555542a49d2]
+[dane610:1609161] [ 4] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_coll_base_gather_intra_binomial+0x2fe)[0x15555549de9e]
+[dane1070:2758422] [ 1] /lib64/libc.so.6(+0xde9d2)[0x1555542a49d2]
+[dane961:3221196] [ 2] /usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/libopen-pal.so.40(+0x46721)[0x155553e9c721]
+[dane434:1255909] [ 0] /lib64/libpthread.so.0(+0x12990)[0x1555545af990]
+[dane700:1358739] [ 4] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_coll_base_gather_intra_binomial+0x2fe)[0x15555549de9e]
+[dane125:2287197] [ 4] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_coll_base_gather_intra_binomial+0x2fe)[0x15555549de9e]
+[dane405:1367174] [ 0] /lib64/libpthread.so.0(+0x12990)[0x1555545af990]
+[dane1478:1463808] [ 4] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_coll_base_gather_intra_binomial+0x2fe)[0x15555549de9e]
+[dane500:1986750] [ 2] /usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/libopen-pal.so.40(+0x46721)[0x155553e9c721]
+[dane238:3887531] [ 3] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_datatype_sndrcv+0x4da)[0x15555545205a]
+[dane1364:1520648] [ 0] /lib64/libpthread.so.0(+0x12990)[0x1555545af990]
+[dane1039:3707412] [ 7] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408a5d]
+[dane1096:1893129] [ 4] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_coll_base_gather_intra_binomial+0x2fe)[0x15555549de9e]
+[dane432:1243340] [ 3] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_datatype_sndrcv+0x4da)[0x15555545205a]
+[dane220:808456] [ 5] ///////////////////////////////////////////////////////////////////////////////////////////////////usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/openmpi/mca_coll_tuned.so(ompi_coll_tuned_gather_intra_dec_fixed+0x81)[0x155550c8aff1]
+[dane206:2576555] [ 0] /lib64/libpthread.so.0(+0x12990)[0x1555545af990]
+[dane170:3142333] [ 2] /usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/libopen-pal.so.40(+0x46721)[0x155553e9c721]
+[dane222:2067926] [ 7] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408a5d]
+[dane1045:321520] [ 2] /usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/libopen-pal.so.40(+0x46721)[0x155553e9c721]
+[dane586:1098612] [ 1] /lib64/libc.so.6(+0xde9d2)[0x1555542a49d2]
+[dane1120:2933160] [ 2] /usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/libopen-pal.so.40(+0x46721)[0x155553e9c721]
+[dane841:1819904] [ 6] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(PMPI_Gather+0x152)[0x1555554660b2]
+[dane1300:1864474] [ 1] /lib64/libc.so.6(+0xde9d2)[0x1555542a49d2]
+[dane1070:2758422] [ 2] /usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/libopen-pal.so.40(+0x46721)[0x155553e9c721]
+[dane453:2290481] [ 2] /usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/libopen-pal.so.40(+0x46721)[0x155553e9c721]
+[dane434:1255909] [ 1] /lib64/libc.so.6(+0xde9d2)[0x1555542a49d2]
+[dane610:1609161] [ 5] ///////////////////////////////////////////////////////////////////////////////////////////////////usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/openmpi/mca_coll_tuned.so(ompi_coll_tuned_gather_intra_dec_fixed+0x81)[0x155550c8aff1]
+[dane233:1166154] [ 2] /usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/libopen-pal.so.40(+0x46721)[0x155553e9c721]
+[dane700:1358739] [ 5] ///////////////////////////////////////////////////////////////////////////////////////////////////usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/openmpi/mca_coll_tuned.so(ompi_coll_tuned_gather_intra_dec_fixed+0x81)[0x155550c8aff1]
+[dane961:3221196] [ 3] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_datatype_sndrcv+0x4da)[0x15555545205a]
+[dane125:2287197] [ 5] ///////////////////////////////////////////////////////////////////////////////////////////////////usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/openmpi/mca_coll_tuned.so(ompi_coll_tuned_gather_intra_dec_fixed+0x81)[0x155550c8aff1]
+[dane1478:1463808] [ 5] ///////////////////////////////////////////////////////////////////////////////////////////////////usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/openmpi/mca_coll_tuned.so(ompi_coll_tuned_gather_intra_dec_fixed+0x81)[0x155550c8aff1]
+[dane500:1986750] [ 3] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_datatype_sndrcv+0x4da)[0x15555545205a]
+[dane1364:1520648] [ 1] /lib64/libc.so.6(+0xde9d2)[0x1555542a49d2]
+[dane1039:3707412] [ 8] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408cd2]
+[dane1096:1893129] [ 5] ///////////////////////////////////////////////////////////////////////////////////////////////////usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/openmpi/mca_coll_tuned.so(ompi_coll_tuned_gather_intra_dec_fixed+0x81)[0x155550c8aff1]
+[dane405:1367174] [ 1] /lib64/libc.so.6(+0xde9d2)[0x1555542a49d2]
+[dane222:2067926] [ 8] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408cd2]
+[dane238:3887531] [ 4] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_coll_base_gather_intra_binomial+0x2fe)[0x15555549de9e]
+[dane170:3142333] [ 3] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_datatype_sndrcv+0x4da)[0x15555545205a]
+[dane220:808456] [ 6] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(PMPI_Gather+0x152)[0x1555554660b2]
+[dane206:2576555] [ 1] /lib64/libc.so.6(+0xde9d2)[0x1555542a49d2]
+[dane432:1243340] [ 4] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_coll_base_gather_intra_binomial+0x2fe)[0x15555549de9e]
+[dane1045:321520] [ 3] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_datatype_sndrcv+0x4da)[0x15555545205a]
+[dane586:1098612] [ 2] /usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/libopen-pal.so.40(+0x46721)[0x155553e9c721]
+[dane841:1819904] [ 7] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408a5d]
+[dane233:1166154] [ 3] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_datatype_sndrcv+0x4da)[0x15555545205a]
+[dane1300:1864474] [ 2] /usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/libopen-pal.so.40(+0x46721)[0x155553e9c721]
+[dane1070:2758422] [ 3] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_datatype_sndrcv+0x4da)[0x15555545205a]
+[dane434:1255909] [ 2] /usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/libopen-pal.so.40(+0x46721)[0x155553e9c721]
+[dane610:1609161] [ 6] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(PMPI_Gather+0x152)[0x1555554660b2]
+[dane1120:2933160] [ 3] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_datatype_sndrcv+0x4da)[0x15555545205a]
+[dane961:3221196] [ 4] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_coll_base_gather_intra_binomial+0x2fe)[0x15555549de9e]
+[dane453:2290481] [ 3] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_datatype_sndrcv+0x4da)[0x15555545205a]
+[dane700:1358739] [ 6] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(PMPI_Gather+0x152)[0x1555554660b2]
+[dane125:2287197] [ 6] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(PMPI_Gather+0x152)[0x1555554660b2]
+[dane1478:1463808] [ 6] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(PMPI_Gather+0x152)[0x1555554660b2]
+[dane1039:3707412] [ 9] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408d22]
+[dane500:1986750] [ 4] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_coll_base_gather_intra_binomial+0x2fe)[0x15555549de9e]
+[dane1096:1893129] [ 6] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(PMPI_Gather+0x152)[0x1555554660b2]
+[dane238:3887531] [ 5] ///////////////////////////////////////////////////////////////////////////////////////////////////usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/openmpi/mca_coll_tuned.so(ompi_coll_tuned_gather_intra_dec_fixed+0x81)[0x155550c8aff1]
+[dane220:808456] [ 7] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408a5d]
+[dane222:2067926] [ 9] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408d22]
+[dane1364:1520648] [ 2] /usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/libopen-pal.so.40(+0x46721)[0x155553e9c721]
+[dane405:1367174] [ 2] /usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/libopen-pal.so.40(+0x46721)[0x155553e9c721]
+[dane432:1243340] [ 5] ///////////////////////////////////////////////////////////////////////////////////////////////////usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/openmpi/mca_coll_tuned.so(ompi_coll_tuned_gather_intra_dec_fixed+0x81)[0x155550c8aff1]
+[dane206:2576555] [ 2] /usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/libopen-pal.so.40(+0x46721)[0x155553e9c721]
+[dane170:3142333] [ 4] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_coll_base_gather_intra_binomial+0x2fe)[0x15555549de9e]
+[dane610:1609161] [ 7] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408a5d]
+[dane1045:321520] [ 4] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_coll_base_gather_intra_binomial+0x2fe)[0x15555549de9e]
+[dane586:1098612] [ 3] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_datatype_sndrcv+0x4da)[0x15555545205a]
+[dane233:1166154] [ 4] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_coll_base_gather_intra_binomial+0x2fe)[0x15555549de9e]
+[dane841:1819904] [ 8] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408cd2]
+[dane1120:2933160] [ 4] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_coll_base_gather_intra_binomial+0x2fe)[0x15555549de9e]
+[dane700:1358739] [ 7] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408a5d]
+[dane1300:1864474] [ 3] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_datatype_sndrcv+0x4da)[0x15555545205a]
+[dane453:2290481] [ 4] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_coll_base_gather_intra_binomial+0x2fe)[0x15555549de9e]
+[dane434:1255909] [ 3] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_datatype_sndrcv+0x4da)[0x15555545205a]
+[dane1478:1463808] [ 7] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408a5d]
+[dane1070:2758422] [ 4] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_coll_base_gather_intra_binomial+0x2fe)[0x15555549de9e]
+[dane1039:3707412] [10] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x405bfb]
+[dane1096:1893129] [ 7] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408a5d]
+[dane961:3221196] [ 5] ///////////////////////////////////////////////////////////////////////////////////////////////////usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/openmpi/mca_coll_tuned.so(ompi_coll_tuned_gather_intra_dec_fixed+0x81)[0x155550c8aff1]
+[dane125:2287197] [ 7] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408a5d]
+[dane500:1986750] [ 5] ///////////////////////////////////////////////////////////////////////////////////////////////////usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/openmpi/mca_coll_tuned.so(ompi_coll_tuned_gather_intra_dec_fixed+0x81)[0x155550c8aff1]
+[dane405:1367174] [ 3] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_datatype_sndrcv+0x4da)[0x15555545205a]
+[dane220:808456] [ 8] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408cd2]
+[dane222:2067926] [10] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x405bfb]
+[dane238:3887531] [ 6] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(PMPI_Gather+0x152)[0x1555554660b2]
+[dane432:1243340] [ 6] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(PMPI_Gather+0x152)[0x1555554660b2]
+[dane1364:1520648] [ 3] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_datatype_sndrcv+0x4da)[0x15555545205a]
+[dane170:3142333] [ 5] ///////////////////////////////////////////////////////////////////////////////////////////////////usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/openmpi/mca_coll_tuned.so(ompi_coll_tuned_gather_intra_dec_fixed+0x81)[0x155550c8aff1]
+[dane206:2576555] [ 3] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_datatype_sndrcv+0x4da)[0x15555545205a]
+[dane610:1609161] [ 8] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408cd2]
+[dane841:1819904] [ 9] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408d22]
+[dane1045:321520] [ 5] ///////////////////////////////////////////////////////////////////////////////////////////////////usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/openmpi/mca_coll_tuned.so(ompi_coll_tuned_gather_intra_dec_fixed+0x81)[0x155550c8aff1]
+[dane1120:2933160] [ 5] ///////////////////////////////////////////////////////////////////////////////////////////////////usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/openmpi/mca_coll_tuned.so(ompi_coll_tuned_gather_intra_dec_fixed+0x81)[0x155550c8aff1]
+[dane700:1358739] [ 8] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408cd2]
+[dane434:1255909] [ 4] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_coll_base_gather_intra_binomial+0x2fe)[0x15555549de9e]
+[dane586:1098612] [ 4] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_coll_base_gather_intra_binomial+0x2fe)[0x15555549de9e]
+[dane233:1166154] [ 5] ///////////////////////////////////////////////////////////////////////////////////////////////////usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/openmpi/mca_coll_tuned.so(ompi_coll_tuned_gather_intra_dec_fixed+0x81)[0x155550c8aff1]
+[dane1300:1864474] [ 4] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_coll_base_gather_intra_binomial+0x2fe)[0x15555549de9e]
+[dane1070:2758422] [ 5] ///////////////////////////////////////////////////////////////////////////////////////////////////usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/openmpi/mca_coll_tuned.so(ompi_coll_tuned_gather_intra_dec_fixed+0x81)[0x155550c8aff1]
+[dane1039:3707412] [11] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x4048ba]
+[dane453:2290481] [ 5] ///////////////////////////////////////////////////////////////////////////////////////////////////usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/openmpi/mca_coll_tuned.so(ompi_coll_tuned_gather_intra_dec_fixed+0x81)[0x155550c8aff1]
+[dane125:2287197] [ 8] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408cd2]
+[dane1478:1463808] [ 8] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408cd2]
+[dane222:2067926] [11] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x4048ba]
+[dane961:3221196] [ 6] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(PMPI_Gather+0x152)[0x1555554660b2]
+[dane220:808456] [ 9] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408d22]
+[dane500:1986750] [ 6] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(PMPI_Gather+0x152)[0x1555554660b2]
+[dane1096:1893129] [ 8] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408cd2]
+[dane238:3887531] [ 7] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408a5d]
+[dane405:1367174] [ 4] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_coll_base_gather_intra_binomial+0x2fe)[0x15555549de9e]
+[dane1364:1520648] [ 4] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_coll_base_gather_intra_binomial+0x2fe)[0x15555549de9e]
+[dane610:1609161] [ 9] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408d22]
+[dane170:3142333] [ 6] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(PMPI_Gather+0x152)[0x1555554660b2]
+[dane432:1243340] [ 7] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408a5d]
+[dane206:2576555] [ 4] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_coll_base_gather_intra_binomial+0x2fe)[0x15555549de9e]
+[dane841:1819904] [10] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x405bfb]
+[dane1045:321520] [ 6] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(PMPI_Gather+0x152)[0x1555554660b2]
+[dane586:1098612] [ 5] ///////////////////////////////////////////////////////////////////////////////////////////////////usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/openmpi/mca_coll_tuned.so(ompi_coll_tuned_gather_intra_dec_fixed+0x81)[0x155550c8aff1]
+[dane700:1358739] [ 9] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408d22]
+[dane1120:2933160] [ 6] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(PMPI_Gather+0x152)[0x1555554660b2]
+[dane233:1166154] [ 6] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(PMPI_Gather+0x152)[0x1555554660b2]
+[dane1300:1864474] [ 5] ///////////////////////////////////////////////////////////////////////////////////////////////////usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/openmpi/mca_coll_tuned.so(ompi_coll_tuned_gather_intra_dec_fixed+0x81)[0x155550c8aff1]
+[dane1070:2758422] [ 6] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(PMPI_Gather+0x152)[0x1555554660b2]
+[dane1039:3707412] [12] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x402a10]
+[dane961:3221196] [ 7] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408a5d]
+[dane453:2290481] [ 6] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(PMPI_Gather+0x152)[0x1555554660b2]
+[dane434:1255909] [ 5] ///////////////////////////////////////////////////////////////////////////////////////////////////usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/openmpi/mca_coll_tuned.so(ompi_coll_tuned_gather_intra_dec_fixed+0x81)[0x155550c8aff1]
+[dane125:2287197] [ 9] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408d22]
+[dane1478:1463808] [ 9] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408d22]
+[dane222:2067926] [12] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x402a10]
+[dane500:1986750] [ 7] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408a5d]
+[dane1096:1893129] [ 9] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408d22]
+[dane238:3887531] [ 8] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408cd2]
+[dane220:808456] [10] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x405bfb]
+[dane405:1367174] [ 5] ///////////////////////////////////////////////////////////////////////////////////////////////////usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/openmpi/mca_coll_tuned.so(ompi_coll_tuned_gather_intra_dec_fixed+0x81)[0x155550c8aff1]
+[dane1364:1520648] [ 5] ///////////////////////////////////////////////////////////////////////////////////////////////////usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/openmpi/mca_coll_tuned.so(ompi_coll_tuned_gather_intra_dec_fixed+0x81)[0x155550c8aff1]
+[dane610:1609161] [10] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x405bfb]
+[dane170:3142333] [ 7] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408a5d]
+[dane432:1243340] [ 8] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408cd2]
+[dane206:2576555] [ 5] ///////////////////////////////////////////////////////////////////////////////////////////////////usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/openmpi/mca_coll_tuned.so(ompi_coll_tuned_gather_intra_dec_fixed+0x81)[0x155550c8aff1]
+[dane841:1819904] [11] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x4048ba]
+[dane700:1358739] [10] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x405bfb]
+[dane1045:321520] [ 7] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408a5d]
+[dane1120:2933160] [ 7] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408a5d]
+[dane434:1255909] [ 6] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(PMPI_Gather+0x152)[0x1555554660b2]
+[dane586:1098612] [ 6] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(PMPI_Gather+0x152)[0x1555554660b2]
+[dane233:1166154] [ 7] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408a5d]
+[dane1300:1864474] [ 6] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(PMPI_Gather+0x152)[0x1555554660b2]
+[dane1070:2758422] [ 7] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408a5d]
+[dane1039:3707412] [13] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x402570]
+[dane961:3221196] [ 8] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408cd2]
+[dane453:2290481] [ 7] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408a5d]
+[dane125:2287197] [10] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x405bfb]
+[dane220:808456] [11] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x4048ba]
+[dane1478:1463808] [10] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x405bfb]
+[dane222:2067926] [13] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x402570]
+[dane500:1986750] [ 8] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408cd2]
+[dane1096:1893129] [10] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x405bfb]
+[dane238:3887531] [ 9] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408d22]
+[dane432:1243340] [ 9] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408d22]
+[dane610:1609161] [11] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x4048ba]
+[dane170:3142333] [ 8] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408cd2]
+[dane405:1367174] [ 6] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(PMPI_Gather+0x152)[0x1555554660b2]
+[dane841:1819904] [12] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x402a10]
+[dane1045:321520] [ 8] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408cd2]
+[dane1364:1520648] [ 6] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(PMPI_Gather+0x152)[0x1555554660b2]
+[dane206:2576555] [ 6] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(PMPI_Gather+0x152)[0x1555554660b2]
+[dane700:1358739] [11] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x4048ba]
+[dane1120:2933160] [ 8] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408cd2]
+[dane125:2287197] [11] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x4048ba]
+[dane586:1098612] [ 7] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408a5d]
+[dane233:1166154] [ 8] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408cd2]
+[dane1300:1864474] [ 7] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408a5d]
+[dane1070:2758422] [ 8] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408cd2]
+[dane1039:3707412] [14] /lib64/libc.so.6(__libc_start_main+0xe5)[0x1555542007e5]
+[dane961:3221196] [ 9] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408d22]
+[dane453:2290481] [ 8] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408cd2]
+[dane434:1255909] [ 7] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408a5d]
+[dane220:808456] [12] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x402a10]
+[dane1478:1463808] [11] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x4048ba]
+[dane222:2067926] [14] /lib64/libc.so.6(__libc_start_main+0xe5)[0x1555542007e5]
+[dane500:1986750] [ 9] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408d22]
+[dane1096:1893129] [11] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x4048ba]
+[dane238:3887531] [10] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x405bfb]
+[dane405:1367174] [ 7] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408a5d]
+[dane432:1243340] [10] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x405bfb]
+[dane841:1819904] [13] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x402570]
+[dane1045:321520] [ 9] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408d22]
+[dane1364:1520648] [ 7] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408a5d]
+[dane610:1609161] [12] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x402a10]
+[dane170:3142333] [ 9] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408d22]
+[dane206:2576555] [ 7] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408a5d]
+[dane700:1358739] [12] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x402a10]
+[dane1120:2933160] [ 9] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408d22]
+[dane233:1166154] [ 9] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408d22]
+[dane1300:1864474] [ 8] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408cd2]
+[dane125:2287197] [12] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x402a10]
+[dane586:1098612] [ 8] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408cd2]
+[dane1478:1463808] [12] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x402a10]
+[dane1070:2758422] [ 9] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408d22]
+[dane1039:3707412] [15] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x40229e]
+[dane1096:1893129] [12] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x402a10]
+[dane961:3221196] [10] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x405bfb]
+[dane453:2290481] [ 9] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408d22]
+[dane434:1255909] [ 8] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408cd2]
+[dane220:808456] [13] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x402570]
+[dane222:2067926] [15] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x40229e]
+[dane500:1986750] [10] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x405bfb]
+[dane238:3887531] [11] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x4048ba]
+[dane610:1609161] [13] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x402570]
+[dane170:3142333] [10] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x405bfb]
+[dane405:1367174] [ 8] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408cd2]
+[dane432:1243340] [11] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x4048ba]
+[dane1039:3707412] *** End of error message ***
+[dane206:2576555] [ 8] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408cd2]
+[dane841:1819904] [14] /lib64/libc.so.6(__libc_start_main+0xe5)[0x1555542007e5]
+[dane1045:321520] [10] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x405bfb]
+[dane1364:1520648] [ 8] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408cd2]
+[dane700:1358739] [13] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x402570]
+[dane222:2067926] *** End of error message ***
+[dane586:1098612] [ 9] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408d22]
+[dane1070:2758422] [10] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x405bfb]
+[dane453:2290481] [10] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x405bfb]
+[dane434:1255909] [ 9] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408d22]
+[dane1120:2933160] [10] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x405bfb]
+[dane125:2287197] [13] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x402570]
+[dane233:1166154] [10] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x405bfb]
+[dane1300:1864474] [ 9] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408d22]
+[dane1478:1463808] [13] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x402570]
+[dane500:1986750] [11] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x4048ba]
+[dane961:3221196] [11] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x4048ba]
+[dane220:808456] [14] /lib64/libc.so.6(__libc_start_main+0xe5)[0x1555542007e5]
+[dane1096:1893129] [13] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x402570]
+[dane238:3887531] [12] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x402a10]
+[dane170:3142333] [11] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x4048ba]
+[dane405:1367174] [ 9] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408d22]
+[dane432:1243340] [12] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x402a10]
+[dane610:1609161] [14] /lib64/libc.so.6(__libc_start_main+0xe5)[0x1555542007e5]
+[dane841:1819904] [15] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x40229e]
+[dane1045:321520] [11] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x4048ba]
+[dane1364:1520648] [ 9] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408d22]
+[dane206:2576555] [ 9] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408d22]
+[dane1120:2933160] [11] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x4048ba]
+[dane233:1166154] [11] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x4048ba]
+[dane1300:1864474] [10] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x405bfb]
+[dane586:1098612] [10] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x405bfb]
+[dane700:1358739] [14] /lib64/libc.so.6(__libc_start_main+0xe5)[0x1555542007e5]
+[dane1070:2758422] [11] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x4048ba]
+[dane961:3221196] [12] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x402a10]
+[dane453:2290481] [11] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x4048ba]
+[dane434:1255909] [10] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x405bfb]
+[dane125:2287197] [14] /lib64/libc.so.6(__libc_start_main+0xe5)[0x1555542007e5]
+[dane500:1986750] [12] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x402a10]
+[dane220:808456] [15] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x40229e]
+[dane841:1819904] *** End of error message ***
+[dane1478:1463808] [14] /lib64/libc.so.6(__libc_start_main+0xe5)[0x1555542007e5]
+[dane1096:1893129] [14] /lib64/libc.so.6(__libc_start_main+0xe5)[0x1555542007e5]
+[dane238:3887531] [13] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x402570]
+[dane405:1367174] [10] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x405bfb]
+[dane170:3142333] [12] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x402a10]
+[dane432:1243340] [13] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x402570]
+[dane610:1609161] [15] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x40229e]
+[dane1045:321520] [12] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x402a10]
+[dane1364:1520648] [10] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x405bfb]
+[dane1070:2758422] [12] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x402a10]
+[dane434:1255909] [11] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x4048ba]
+[dane1120:2933160] [12] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x402a10]
+[dane233:1166154] [12] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x402a10]
+[dane220:808456] *** End of error message ***
+[dane206:2576555] [10] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x405bfb]
+[dane700:1358739] [15] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x40229e]
+[dane1300:1864474] [11] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x4048ba]
+[dane125:2287197] [15] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x40229e]
+[dane586:1098612] [11] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x4048ba]
+[dane500:1986750] [13] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x402570]
+[dane961:3221196] [13] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x402570]
+[dane453:2290481] [12] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x402a10]
+[dane610:1609161] *** End of error message ***
+[dane1478:1463808] [15] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x40229e]
+[dane1096:1893129] [15] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x40229e]
+[dane238:3887531] [14] /lib64/libc.so.6(__libc_start_main+0xe5)[0x1555542007e5]
+[dane405:1367174] [11] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x4048ba]
+[dane170:3142333] [13] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x402570]
+[dane125:2287197] *** End of error message ***
+[dane700:1358739] *** End of error message ***
+[dane432:1243340] [14] /lib64/libc.so.6(__libc_start_main+0xe5)[0x1555542007e5]
+[dane206:2576555] [11] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x4048ba]
+[dane1045:321520] [13] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x402570]
+[dane1364:1520648] [11] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x4048ba]
+[dane1120:2933160] [13] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x402570]
+[dane1300:1864474] [12] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x402a10]
+[dane1096:1893129] *** End of error message ***
+[dane453:2290481] [13] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x402570]
+[dane434:1255909] [12] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x402a10]
+[dane586:1098612] [12] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x402a10]
+[dane233:1166154] [13] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x402570]
+[dane1478:1463808] *** End of error message ***
+[dane1070:2758422] [13] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x402570]
+[dane961:3221196] [14] /lib64/libc.so.6(__libc_start_main+0xe5)[0x1555542007e5]
+[dane500:1986750] [14] /lib64/libc.so.6(__libc_start_main+0xe5)[0x1555542007e5]
+[dane238:3887531] [15] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x40229e]
+[dane170:3142333] [14] /lib64/libc.so.6(__libc_start_main+0xe5)[0x1555542007e5]
+[dane405:1367174] [12] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x402a10]
+[dane432:1243340] [15] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x40229e]
+[dane206:2576555] [12] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x402a10]
+[dane1045:321520] [14] /lib64/libc.so.6(__libc_start_main+0xe5)[0x1555542007e5]
+[dane1364:1520648] [12] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x402a10]
+[dane434:1255909] [13] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x402570]
+[dane1120:2933160] [14] /lib64/libc.so.6(__libc_start_main+0xe5)[0x1555542007e5]
+[dane1300:1864474] [13] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x402570]
+[dane1070:2758422] [14] /lib64/libc.so.6(__libc_start_main+0xe5)[0x1555542007e5]
+[dane238:3887531] *** End of error message ***
+[dane432:1243340] *** End of error message ***
+[dane586:1098612] [13] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x402570]
+[dane233:1166154] [14] /lib64/libc.so.6(__libc_start_main+0xe5)[0x1555542007e5]
+[dane961:3221196] [15] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x40229e]
+[dane453:2290481] [14] /lib64/libc.so.6(__libc_start_main+0xe5)[0x1555542007e5]
+[dane500:1986750] [15] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x40229e]
+[dane405:1367174] [13] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x402570]
+[dane170:3142333] [15] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x40229e]
+[dane206:2576555] [13] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x402570]
+[dane500:1986750] *** End of error message ***
+[dane1045:321520] [15] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x40229e]
+[dane1364:1520648] [13] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x402570]
+[dane961:3221196] *** End of error message ***
+[dane1120:2933160] [15] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x40229e]
+[dane233:1166154] [15] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x40229e]
+[dane1070:2758422] [15] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x40229e]
+[dane453:2290481] [15] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x40229e]
+[dane434:1255909] [14] /lib64/libc.so.6(__libc_start_main+0xe5)[0x1555542007e5]
+[dane586:1098612] [14] /lib64/libc.so.6(__libc_start_main+0xe5)[0x1555542007e5]
+[dane1300:1864474] [14] /lib64/libc.so.6(__libc_start_main+0xe5)[0x1555542007e5]
+[dane1045:321520] *** End of error message ***
+[dane170:3142333] *** End of error message ***
+[dane405:1367174] [14] /lib64/libc.so.6(__libc_start_main+0xe5)[0x1555542007e5]
+[dane1120:2933160] *** End of error message ***
+[dane233:1166154] *** End of error message ***
+[dane1070:2758422] *** End of error message ***
+[dane453:2290481] *** End of error message ***
+[dane206:2576555] [14] /lib64/libc.so.6(__libc_start_main+0xe5)[0x1555542007e5]
+[dane1364:1520648] [14] /lib64/libc.so.6(__libc_start_main+0xe5)[0x1555542007e5]
+[dane434:1255909] [15] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x40229e]
+[dane586:1098612] [15] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x40229e]
+[dane1300:1864474] [15] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x40229e]
+[dane434:1255909] *** End of error message ***
+[dane405:1367174] [15] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x40229e]
+[dane586:1098612] *** End of error message ***
+[dane1300:1864474] *** End of error message ***
+[dane206:2576555] [15] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x40229e]
+[dane1364:1520648] [15] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x40229e]
+[dane405:1367174] *** End of error message ***
+[dane1364:1520648] *** End of error message ***
+[dane206:2576555] *** End of error message ***
+==== backtrace (tid:2320557) ====
+ 0  /lib64/libucs.so.0(ucs_handle_error+0x2dc) [0x15555003f07c]
+==== backtrace (tid:2434668) ====
+ 0  /lib64/libucs.so.0(ucs_handle_error+0x2dc) [0x15555003f07c]
+ 1  /lib64/libucs.so.0(+0x3125c) [0x15555003f25c]
+ 1  /lib64/libucs.so.0(+0x3125c) [0x15555003f25c]
+ 2  /lib64/libucs.so.0(+0x3142a) [0x15555003f42a]
+==== backtrace (tid:2824874) ====
+ 2  /lib64/libucs.so.0(+0x3142a) [0x15555003f42a]
+ 3  /lib64/libc.so.6(+0xde9d2) [0x1555542a49d2]
+ 0  /lib64/libucs.so.0(ucs_handle_error+0x2dc) [0x15555003f07c]
+ 4  /usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/libopen-pal.so.40(+0x46721) [0x155553e9c721]
+ 3  /lib64/libc.so.6(+0xde9d2) [0x1555542a49d2]
+ 4  /usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/libopen-pal.so.40(+0x46721) [0x155553e9c721]
+ 5  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_datatype_sndrcv+0x4da) [0x15555545205a]
+ 1  /lib64/libucs.so.0(+0x3125c) [0x15555003f25c]
+ 6  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_coll_base_gather_intra_binomial+0x2fe) [0x15555549de9e]
+ 5  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_datatype_sndrcv+0x4da) [0x15555545205a]
+ 2  /lib64/libucs.so.0(+0x3142a) [0x15555003f42a]
+ 6  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_coll_base_gather_intra_binomial+0x2fe) [0x15555549de9e]
+ 7  ///////////////////////////////////////////////////////////////////////////////////////////////////usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/openmpi/mca_coll_tuned.so(ompi_coll_tuned_gather_intra_dec_fixed+0x81) [0x155550c8aff1]
+ 3  /lib64/libc.so.6(+0xde9d2) [0x1555542a49d2]
+==== backtrace (tid:1999534) ====
+ 4  /usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/libopen-pal.so.40(+0x46721) [0x155553e9c721]
+ 7  ///////////////////////////////////////////////////////////////////////////////////////////////////usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/openmpi/mca_coll_tuned.so(ompi_coll_tuned_gather_intra_dec_fixed+0x81) [0x155550c8aff1]
+ 8  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(PMPI_Gather+0x152) [0x1555554660b2]
+ 0  /lib64/libucs.so.0(ucs_handle_error+0x2dc) [0x15555003f07c]
+ 8  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(PMPI_Gather+0x152) [0x1555554660b2]
+ 9  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408a5d]
+ 5  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_datatype_sndrcv+0x4da) [0x15555545205a]
+==== backtrace (tid:2921217) ====
+==== backtrace (tid:2701731) ====
+ 9  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408a5d]
+ 6  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_coll_base_gather_intra_binomial+0x2fe) [0x15555549de9e]
+10  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408cd2]
+ 1  /lib64/libucs.so.0(+0x3125c) [0x15555003f25c]
+ 0  /lib64/libucs.so.0(ucs_handle_error+0x2dc) [0x15555003f07c]
+ 0  /lib64/libucs.so.0(ucs_handle_error+0x2dc) [0x15555003f07c]
+10  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408cd2]
+11  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408d22]
+ 7  ///////////////////////////////////////////////////////////////////////////////////////////////////usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/openmpi/mca_coll_tuned.so(ompi_coll_tuned_gather_intra_dec_fixed+0x81) [0x155550c8aff1]
+ 2  /lib64/libucs.so.0(+0x3142a) [0x15555003f42a]
+ 1  /lib64/libucs.so.0(+0x3125c) [0x15555003f25c]
+11  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408d22]
+12  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x405bfb]
+ 1  /lib64/libucs.so.0(+0x3125c) [0x15555003f25c]
+ 3  /lib64/libc.so.6(+0xde9d2) [0x1555542a49d2]
+==== backtrace (tid:2279930) ====
+ 8  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(PMPI_Gather+0x152) [0x1555554660b2]
+13  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x4048ba]
+ 2  /lib64/libucs.so.0(+0x3142a) [0x15555003f42a]
+ 2  /lib64/libucs.so.0(+0x3142a) [0x15555003f42a]
+ 4  /usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/libopen-pal.so.40(+0x46721) [0x155553e9c721]
+12  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x405bfb]
+ 0  /lib64/libucs.so.0(ucs_handle_error+0x2dc) [0x15555003f07c]
+ 9  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408a5d]
+ 3  /lib64/libc.so.6(+0xde9d2) [0x1555542a49d2]
+14  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x402a10]
+ 3  /lib64/libc.so.6(+0xde9d2) [0x1555542a49d2]
+ 5  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_datatype_sndrcv+0x4da) [0x15555545205a]
+13  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x4048ba]
+10  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408cd2]
+ 4  /usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/libopen-pal.so.40(+0x46721) [0x155553e9c721]
+ 1  /lib64/libucs.so.0(+0x3125c) [0x15555003f25c]
+ 4  /usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/libopen-pal.so.40(+0x46721) [0x155553e9c721]
+15  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x402570]
+ 6  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_coll_base_gather_intra_binomial+0x2fe) [0x15555549de9e]
+14  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x402a10]
+15  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x402570]
+11  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408d22]
+ 2  /lib64/libucs.so.0(+0x3142a) [0x15555003f42a]
+ 5  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_datatype_sndrcv+0x4da) [0x15555545205a]
+ 5  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_datatype_sndrcv+0x4da) [0x15555545205a]
+16  /lib64/libc.so.6(__libc_start_main+0xe5) [0x1555542007e5]
+ 6  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_coll_base_gather_intra_binomial+0x2fe) [0x15555549de9e]
+ 7  ///////////////////////////////////////////////////////////////////////////////////////////////////usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/openmpi/mca_coll_tuned.so(ompi_coll_tuned_gather_intra_dec_fixed+0x81) [0x155550c8aff1]
+12  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x405bfb]
+16  /lib64/libc.so.6(__libc_start_main+0xe5) [0x1555542007e5]
+ 3  /lib64/libc.so.6(+0xde9d2) [0x1555542a49d2]
+17  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x40229e]
+ 6  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_coll_base_gather_intra_binomial+0x2fe) [0x15555549de9e]
+ 4  /usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/libopen-pal.so.40(+0x46721) [0x155553e9c721]
+ 8  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(PMPI_Gather+0x152) [0x1555554660b2]
+17  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x40229e]
+ 7  ///////////////////////////////////////////////////////////////////////////////////////////////////usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/openmpi/mca_coll_tuned.so(ompi_coll_tuned_gather_intra_dec_fixed+0x81) [0x155550c8aff1]
+13  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x4048ba]
+=================================
+ 7  ///////////////////////////////////////////////////////////////////////////////////////////////////usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/openmpi/mca_coll_tuned.so(ompi_coll_tuned_gather_intra_dec_fixed+0x81) [0x155550c8aff1]
+ 5  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_datatype_sndrcv+0x4da) [0x15555545205a]
+ 8  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(PMPI_Gather+0x152) [0x1555554660b2]
+ 9  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408a5d]
+=================================
+14  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x402a10]
+ 8  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(PMPI_Gather+0x152) [0x1555554660b2]
+ 6  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_coll_base_gather_intra_binomial+0x2fe) [0x15555549de9e]
+[dane364:2320557] *** Process received signal ***
+10  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408cd2]
+ 9  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408a5d]
+15  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x402570]
+[dane287:2434668] *** Process received signal ***
+ 9  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408a5d]
+[dane364:2320557] Signal: Segmentation fault (11)
+[dane364:2320557] Signal code:  (-6)
+[dane364:2320557] Failing at address: 0xb2a2002368ad
+ 7  ///////////////////////////////////////////////////////////////////////////////////////////////////usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/openmpi/mca_coll_tuned.so(ompi_coll_tuned_gather_intra_dec_fixed+0x81) [0x155550c8aff1]
+11  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408d22]
+16  /lib64/libc.so.6(__libc_start_main+0xe5) [0x1555542007e5]
+10  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408cd2]
+[dane287:2434668] Signal: Segmentation fault (11)
+[dane287:2434668] Signal code:  (-6)
+[dane287:2434668] Failing at address: 0xb2a20025266c
+10  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408cd2]
+17  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x40229e]
+ 8  /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(PMPI_Gather+0x152) [0x1555554660b2]
+12  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x405bfb]
+11  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408d22]
+11  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408d22]
+=================================
+ 9  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408a5d]
+13  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x4048ba]
+[dane364:2320557] [ 0] /lib64/libpthread.so.0(+0x12990)[0x1555545af990]
+12  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x405bfb]
+12  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x405bfb]
+14  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x402a10]
+[dane287:2434668] [ 0] /lib64/libpthread.so.0(+0x12990)[0x1555545af990]
+10  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408cd2]
+13  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x4048ba]
+[dane1489:2824874] *** Process received signal ***
+13  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x4048ba]
+15  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x402570]
+11  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x408d22]
+14  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x402a10]
+[dane1489:2824874] Signal: Segmentation fault (11)
+[dane1489:2824874] Signal code:  (-6)
+[dane1489:2824874] Failing at address: 0xb2a2002b1aaa
+[dane364:2320557] [ 1] /lib64/libc.so.6(+0xde9d2)[0x1555542a49d2]
+14  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x402a10]
+16  /lib64/libc.so.6(__libc_start_main+0xe5) [0x1555542007e5]
+12  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x405bfb]
+15  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x402570]
+[dane287:2434668] [ 1] /lib64/libc.so.6(+0xde9d2)[0x1555542a49d2]
+15  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x402570]
+17  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x40229e]
+13  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x4048ba]
+16  /lib64/libc.so.6(__libc_start_main+0xe5) [0x1555542007e5]
+16  /lib64/libc.so.6(__libc_start_main+0xe5) [0x1555542007e5]
+=================================
+[dane1489:2824874] [ 0] /lib64/libpthread.so.0(+0x12990)[0x1555545af990]
+14  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x402a10]
+17  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x40229e]
+[dane364:2320557] [ 2] /usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/libopen-pal.so.40(+0x46721)[0x155553e9c721]
+17  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x40229e]
+[dane287:2434668] [ 2] /usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/libopen-pal.so.40(+0x46721)[0x155553e9c721]
+15  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x402570]
+=================================
+=================================
+[dane194:1999534] *** Process received signal ***
+16  /lib64/libc.so.6(__libc_start_main+0xe5) [0x1555542007e5]
+[dane1489:2824874] [ 1] /lib64/libc.so.6(+0xde9d2)[0x1555542a49d2]
+[dane174:2921217] *** Process received signal ***
+[dane194:1999534] Signal: Segmentation fault (11)
+[dane194:1999534] Signal code:  (-6)
+[dane194:1999534] Failing at address: 0xb2a2001e82ae
+17  /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology() [0x40229e]
+[dane364:2320557] [ 3] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_datatype_sndrcv+0x4da)[0x15555545205a]
+[dane1335:2701731] *** Process received signal ***
+[dane287:2434668] [ 3] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_datatype_sndrcv+0x4da)[0x15555545205a]
+=================================
+[dane174:2921217] Signal: Segmentation fault (11)
+[dane174:2921217] Signal code:  (-6)
+[dane174:2921217] Failing at address: 0xb2a2002c9301
+[dane1335:2701731] Signal: Segmentation fault (11)
+[dane1335:2701731] Signal code:  (-6)
+[dane1335:2701731] Failing at address: 0xb2a2002939a3
+[dane1489:2824874] [ 2] /usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/libopen-pal.so.40(+0x46721)[0x155553e9c721]
+[dane364:2320557] [ 4] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_coll_base_gather_intra_binomial+0x2fe)[0x15555549de9e]
+[dane357:2279930] *** Process received signal ***
+[dane194:1999534] [ 0] /lib64/libpthread.so.0(+0x12990)[0x1555545af990]
+[dane287:2434668] [ 4] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_coll_base_gather_intra_binomial+0x2fe)[0x15555549de9e]
+[dane174:2921217] [ 0] /lib64/libpthread.so.0(+0x12990)[0x1555545af990]
+[dane357:2279930] Signal: Segmentation fault (11)
+[dane357:2279930] Signal code:  (-6)
+[dane357:2279930] Failing at address: 0xb2a20022c9fa
+[dane1335:2701731] [ 0] /lib64/libpthread.so.0(+0x12990)[0x1555545af990]
+[dane364:2320557] [ 5] ///////////////////////////////////////////////////////////////////////////////////////////////////usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/openmpi/mca_coll_tuned.so(ompi_coll_tuned_gather_intra_dec_fixed+0x81)[0x155550c8aff1]
+[dane1489:2824874] [ 3] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_datatype_sndrcv+0x4da)[0x15555545205a]
+[dane194:1999534] [ 1] /lib64/libc.so.6(+0xde9d2)[0x1555542a49d2]
+[dane287:2434668] [ 5] ///////////////////////////////////////////////////////////////////////////////////////////////////usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/openmpi/mca_coll_tuned.so(ompi_coll_tuned_gather_intra_dec_fixed+0x81)[0x155550c8aff1]
+[dane174:2921217] [ 1] /lib64/libc.so.6(+0xde9d2)[0x1555542a49d2]
+[dane1335:2701731] [ 1] /lib64/libc.so.6(+0xde9d2)[0x1555542a49d2]
+[dane357:2279930] [ 0] /lib64/libpthread.so.0(+0x12990)[0x1555545af990]
+[dane364:2320557] [ 6] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(PMPI_Gather+0x152)[0x1555554660b2]
+[dane1489:2824874] [ 4] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_coll_base_gather_intra_binomial+0x2fe)[0x15555549de9e]
+[dane194:1999534] [ 2] /usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/libopen-pal.so.40(+0x46721)[0x155553e9c721]
+[dane287:2434668] [ 6] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(PMPI_Gather+0x152)[0x1555554660b2]
+[dane174:2921217] [ 2] /usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/libopen-pal.so.40(+0x46721)[0x155553e9c721]
+[dane1335:2701731] [ 2] /usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/libopen-pal.so.40(+0x46721)[0x155553e9c721]
+[dane357:2279930] [ 1] /lib64/libc.so.6(+0xde9d2)[0x1555542a49d2]
+[dane364:2320557] [ 7] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408a5d]
+[dane1489:2824874] [ 5] ///////////////////////////////////////////////////////////////////////////////////////////////////usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/openmpi/mca_coll_tuned.so(ompi_coll_tuned_gather_intra_dec_fixed+0x81)[0x155550c8aff1]
+[dane287:2434668] [ 7] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408a5d]
+[dane194:1999534] [ 3] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_datatype_sndrcv+0x4da)[0x15555545205a]
+[dane174:2921217] [ 3] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_datatype_sndrcv+0x4da)[0x15555545205a]
+[dane357:2279930] [ 2] /usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/libopen-pal.so.40(+0x46721)[0x155553e9c721]
+[dane1335:2701731] [ 3] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_datatype_sndrcv+0x4da)[0x15555545205a]
+[dane364:2320557] [ 8] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408cd2]
+[dane1489:2824874] [ 6] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(PMPI_Gather+0x152)[0x1555554660b2]
+[dane287:2434668] [ 8] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408cd2]
+[dane194:1999534] [ 4] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_coll_base_gather_intra_binomial+0x2fe)[0x15555549de9e]
+[dane174:2921217] [ 4] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_coll_base_gather_intra_binomial+0x2fe)[0x15555549de9e]
+[dane364:2320557] [ 9] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408d22]
+[dane1335:2701731] [ 4] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_coll_base_gather_intra_binomial+0x2fe)[0x15555549de9e]
+[dane287:2434668] [ 9] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408d22]
+[dane1489:2824874] [ 7] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408a5d]
+[dane357:2279930] [ 3] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_datatype_sndrcv+0x4da)[0x15555545205a]
+[dane194:1999534] [ 5] ///////////////////////////////////////////////////////////////////////////////////////////////////usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/openmpi/mca_coll_tuned.so(ompi_coll_tuned_gather_intra_dec_fixed+0x81)[0x155550c8aff1]
+[dane1335:2701731] [ 5] ///////////////////////////////////////////////////////////////////////////////////////////////////usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/openmpi/mca_coll_tuned.so(ompi_coll_tuned_gather_intra_dec_fixed+0x81)[0x155550c8aff1]
+[dane364:2320557] [10] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x405bfb]
+[dane174:2921217] [ 5] ///////////////////////////////////////////////////////////////////////////////////////////////////usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/openmpi/mca_coll_tuned.so(ompi_coll_tuned_gather_intra_dec_fixed+0x81)[0x155550c8aff1]
+[dane287:2434668] [10] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x405bfb]
+[dane1489:2824874] [ 8] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408cd2]
+[dane357:2279930] [ 4] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(ompi_coll_base_gather_intra_binomial+0x2fe)[0x15555549de9e]
+[dane194:1999534] [ 6] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(PMPI_Gather+0x152)[0x1555554660b2]
+[dane174:2921217] [ 6] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(PMPI_Gather+0x152)[0x1555554660b2]
+[dane364:2320557] [11] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x4048ba]
+[dane1335:2701731] [ 6] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(PMPI_Gather+0x152)[0x1555554660b2]
+[dane287:2434668] [11] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x4048ba]
+[dane1489:2824874] [ 9] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408d22]
+[dane357:2279930] [ 5] ///////////////////////////////////////////////////////////////////////////////////////////////////usr/tce/backend/installations/linux-rhel8-x86_64/gcc-10.3.1/openmpi-4.1.2-66kpmbgreoruj2exhnizo3iwcd2boybx/lib/openmpi/mca_coll_tuned.so(ompi_coll_tuned_gather_intra_dec_fixed+0x81)[0x155550c8aff1]
+[dane194:1999534] [ 7] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408a5d]
+[dane174:2921217] [ 7] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408a5d]
+[dane287:2434668] [12] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x402a10]
+[dane364:2320557] [12] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x402a10]
+[dane1335:2701731] [ 7] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408a5d]
+[dane1489:2824874] [10] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x405bfb]
+[dane357:2279930] [ 6] /usr/tce/packages/openmpi/openmpi-4.1.2-gcc-10.3.1/lib/libmpi.so.40(PMPI_Gather+0x152)[0x1555554660b2]
+[dane194:1999534] [ 8] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408cd2]
+[dane174:2921217] [ 8] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408cd2]
+[dane287:2434668] [13] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x402570]
+[dane364:2320557] [13] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x402570]
+[dane1335:2701731] [ 8] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408cd2]
+[dane1489:2824874] [11] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x4048ba]
+[dane357:2279930] [ 7] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408a5d]
+[dane194:1999534] [ 9] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408d22]
+[dane174:2921217] [ 9] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408d22]
+[dane1335:2701731] [ 9] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408d22]
+[dane287:2434668] [14] /lib64/libc.so.6(__libc_start_main+0xe5)[0x1555542007e5]
+[dane364:2320557] [14] /lib64/libc.so.6(__libc_start_main+0xe5)[0x1555542007e5]
+[dane1489:2824874] [12] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x402a10]
+[dane357:2279930] [ 8] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408cd2]
+[dane194:1999534] [10] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x405bfb]
+[dane174:2921217] [10] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x405bfb]
+[dane287:2434668] [15] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x40229e]
+[dane1335:2701731] [10] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x405bfb]
+[dane364:2320557] [15] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x40229e]
+[dane1489:2824874] [13] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x402570]
+[dane357:2279930] [ 9] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x408d22]
+[dane364:2320557] *** End of error message ***
+[dane194:1999534] [11] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x4048ba]
+[dane287:2434668] *** End of error message ***
+[dane174:2921217] [11] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x4048ba]
+[dane1335:2701731] [11] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x4048ba]
+[dane1489:2824874] [14] /lib64/libc.so.6(__libc_start_main+0xe5)[0x1555542007e5]
+[dane357:2279930] [10] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x405bfb]
+[dane194:1999534] [12] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x402a10]
+[dane174:2921217] [12] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x402a10]
+[dane1335:2701731] [12] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x402a10]
+[dane1489:2824874] [15] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x40229e]
+[dane357:2279930] [11] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x4048ba]
+[dane194:1999534] [13] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x402570]
+[dane1335:2701731] [13] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x402570]
+[dane1489:2824874] *** End of error message ***
+[dane174:2921217] [13] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x402570]
+[dane357:2279930] [12] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x402a10]
+[dane194:1999534] [14] /lib64/libc.so.6(__libc_start_main+0xe5)[0x1555542007e5]
+[dane174:2921217] [14] /lib64/libc.so.6(__libc_start_main+0xe5)[0x1555542007e5]
+[dane1335:2701731] [14] /lib64/libc.so.6(__libc_start_main+0xe5)[0x1555542007e5]
+[dane357:2279930] [13] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x402570]
+[dane194:1999534] [15] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x40229e]
+[dane174:2921217] [15] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x40229e]
+[dane1335:2701731] [15] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x40229e]
+[dane174:2921217] *** End of error message ***
+[dane194:1999534] *** End of error message ***
+[dane357:2279930] [14] /lib64/libc.so.6(__libc_start_main+0xe5)[0x1555542007e5]
+[dane1335:2701731] *** End of error message ***
+[dane357:2279930] [15] /g/g14/bienz1/locality_alltoalls/build/benchmarks/./alltoall_topology[0x40229e]
+[dane357:2279930] *** End of error message ***
+srun: error: dane238: task 896: Segmentation fault (core dumped)
+srun: error: dane1039: task 2464: Segmentation fault (core dumped)
+srun: error: dane1335: task 3136: Segmentation fault (core dumped)
+srun: error: dane1070: task 2688: Segmentation fault (core dumped)
+srun: error: dane586: task 1904: Segmentation fault (core dumped)
+srun: error: dane222: task 672: Segmentation fault (core dumped)
+srun: error: dane194: task 336: Segmentation fault (core dumped)
+srun: error: dane1489: task 3472: Segmentation fault (core dumped)
+srun: error: dane700: task 2128: Segmentation fault (core dumped)
+srun: error: dane610: task 2016: Segmentation fault (core dumped)
+srun: error: dane220: task 560: Segmentation fault (core dumped)
+srun: error: dane453: task 1680: Segmentation fault (core dumped)
+srun: error: dane174: task 224: Segmentation fault (core dumped)
+srun: error: dane500: task 1792: Segmentation fault (core dumped)
+srun: error: dane1096: task 2800: Segmentation fault (core dumped)
+srun: error: dane1300: task 3024: Segmentation fault (core dumped)
+srun: error: dane125: task 0: Segmentation fault (core dumped)
+srun: error: dane434: task 1568: Segmentation fault (core dumped)
+srun: error: dane1045: task 2576: Segmentation fault (core dumped)
+srun: error: dane961: task 2352: Segmentation fault (core dumped)
+srun: error: dane206: task 448: Segmentation fault (core dumped)
+srun: error: dane170: task 112: Segmentation fault (core dumped)
+srun: error: dane364: task 1232: Segmentation fault (core dumped)
+srun: error: dane841: task 2240: Segmentation fault (core dumped)
+srun: error: dane1364: task 3248: Segmentation fault (core dumped)
+srun: error: dane233: task 784: Segmentation fault (core dumped)
+srun: error: dane1120: task 2912: Segmentation fault (core dumped)
+srun: error: dane287: task 1008: Segmentation fault (core dumped)
+srun: error: dane1478: task 3360: Segmentation fault (core dumped)
+srun: error: dane405: task 1344: Segmentation fault (core dumped)
+srun: error: dane357: task 1120: Segmentation fault (core dumped)
+srun: error: dane432: task 1456: Segmentation fault (core dumped)
+srun: First task exited 30s ago
+srun: StepId=4047839.0 tasks 1-111,113-223,225-335,337-447,449-559,561-671,673-783,785-895,897-1007,1009-1119,1121-1231,1233-1343,1345-1455,1457-1567,1569-1679,1681-1791,1793-1903,1905-2015,2017-2127,2129-2239,2241-2351,2353-2463,2465-2575,2577-2687,2689-2799,2801-2911,2913-3023,3025-3135,3137-3247,3249-3359,3361-3471,3473-3583: running
+srun: StepId=4047839.0 tasks 0,112,224,336,448,560,672,784,896,1008,1120,1232,1344,1456,1568,1680,1792,1904,2016,2128,2240,2352,2464,2576,2688,2800,2912,3024,3136,3248,3360,3472: exited abnormally
+srun: Terminating StepId=4047839.0
+slurmstepd: error: *** STEP 4047839.0 ON dane125 CANCELLED AT 2025-10-29T07:22:35 ***
+srun: Job step aborted: Waiting up to 62 seconds for job step to finish.
+srun: error: dane1045: tasks 2577-2687: Killed
+srun: error: dane841: tasks 2241-2351: Killed
+srun: error: dane220: tasks 561-671: Killed
+srun: error: dane500: tasks 1793-1903: Killed
+srun: error: dane1489: tasks 3473-3583: Killed
+srun: error: dane364: tasks 1233-1343: Killed
+srun: error: dane1364: tasks 3249-3359: Killed
+srun: error: dane961: tasks 2353-2463: Killed
+srun: error: dane1070: tasks 2689-2799: Killed
+srun: error: dane1039: tasks 2465-2575: Killed
+srun: error: dane405: tasks 1345-1455: Killed
+srun: error: dane233: tasks 785-895: Killed
+srun: error: dane287: tasks 1009-1119: Killed
+srun: error: dane586: tasks 1905-2015: Killed
+srun: error: dane1096: tasks 2801-2911: Killed
+srun: error: dane453: tasks 1681-1791: Killed
+srun: error: dane125: tasks 1-111: Killed
+srun: error: dane357: tasks 1121-1231: Killed
+srun: error: dane610: tasks 2017-2127: Killed
+srun: error: dane194: tasks 337-447: Killed
+srun: error: dane1120: tasks 2913-3023: Killed
+srun: error: dane222: tasks 673-783: Killed
+srun: error: dane1300: tasks 3025-3135: Killed
+srun: error: dane700: tasks 2129-2239: Killed
+srun: error: dane206: tasks 449-559: Killed
+srun: error: dane434: tasks 1569-1679: Killed
+srun: error: dane174: tasks 225-335: Killed
+srun: error: dane170: tasks 113-223: Killed
+srun: error: dane238: tasks 897-1007: Killed
+srun: error: dane432: tasks 1457-1567: Killed
+srun: error: dane1335: tasks 3137-3247: Killed
+srun: error: dane1478: tasks 3361-3471: Killed

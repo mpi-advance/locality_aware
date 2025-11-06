@@ -25,6 +25,23 @@ extern AlltoallMethod mpix_alltoall_implementation;
 typedef int (*alltoall_ftn)(const void*, const int, MPI_Datatype, void*, const int, MPI_Datatype, MPIX_Comm*);
 typedef int (*alltoall_helper_ftn)(const void*, const int, MPI_Datatype, void*, const int, MPI_Datatype, MPI_Comm, int tag);
 
+int pairwise_helper(const void* sendbuf,
+        const int sendcount,
+        MPI_Datatype sendtype,
+        void* recvbuf,
+        const int recvcount,
+        MPI_Datatype recvtype,
+        MPI_Comm comm,
+        int tag);
+int nonblocking_helper(const void* sendbuf,
+        const int sendcount,
+        MPI_Datatype sendtype,
+        void* recvbuf,
+        const int recvcount,
+        MPI_Datatype recvtype,
+        MPI_Comm comm,
+        int tag);
+
 int alltoall_pairwise(const void* sendbuf,
         const int sendcount,
         MPI_Datatype sendtype,
@@ -57,6 +74,16 @@ int alltoall_hierarchical_nonblocking(
         const int recvcount,
         MPI_Datatype recvtype,
         MPIX_Comm* comm);
+int alltoall_multileader( 
+        alltoall_helper_ftn f,
+        const void* sendbuf,
+        const int sendcount,
+        MPI_Datatype sendtype,
+        void* recvbuf,
+        const int recvcount,
+        MPI_Datatype recvtype,
+        MPIX_Comm* comm,
+        int n_leaders);
 int alltoall_multileader_pairwise(
         const void* sendbuf,
         const int sendcount,
@@ -92,6 +119,16 @@ int alltoall_node_aware_nonblocking(
         const int recvcount,
         MPI_Datatype recvtype,
         MPIX_Comm* comm);
+int alltoall_locality_aware(
+        alltoall_helper_ftn f,
+        const void* sendbuf,
+        const int sendcount,
+        MPI_Datatype sendtype,
+        void* recvbuf,
+        const int recvcount,
+        MPI_Datatype recvtype,
+        MPIX_Comm* comm,
+        int groups_per_node);
 int alltoall_locality_aware_pairwise(
         const void* sendbuf,
         const int sendcount,
@@ -111,6 +148,16 @@ int alltoall_locality_aware_nonblocking(
 
 
 
+int alltoall_multileader_locality(
+        alltoall_helper_ftn f,
+        const void* sendbuf,
+        const int sendcount,
+        MPI_Datatype sendtype,
+        void* recvbuf,
+        const int recvcount,
+        MPI_Datatype recvtype,
+        MPIX_Comm* comm,
+        int leaders_per_node);
 int alltoall_multileader_locality_pairwise(
         const void* sendbuf,
         const int sendcount,

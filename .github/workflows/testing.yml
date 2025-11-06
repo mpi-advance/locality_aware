@@ -2,28 +2,33 @@ name: MPI Advance Ctest
 
 on:
   push:
-    branches: [main, cleanup]
+    branches: [master, cleanup]
   pull_request:
-    branches: [main]
+    branches: [master]
 
-jobs:
-  test:
-    name: MPI Advance Ctest
+jobs:    
+  build:
     runs-on: ubuntu-latest
-    container:
-      image: hpc/mpich:latest
-      options: --user root
-
+    strategy:
+      matrix:
+        mpi: [ 'mpich', 'intelmpi']
+    name: ${{ matrix.mpi }} example
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
+      - name: Setup MPI
+        uses: mpi4py/setup-mpi@v1
+        with:
+          mpi: ${{ matrix.mpi }}
 
       - name: Install build tools
+        timeout-minutes: 10
         run: |
-          apt-get update
-          apt-get install -y cmake build-essential
+          sudo apt-get update
+          sudo apt-get install -y cmake build-essential
 
       - name: Configure CMake
+        timeout-minutes: 10
         run: |
           mkdir build
           cd build
@@ -31,12 +36,14 @@ jobs:
           cd ..
 
       - name: Build project
+        timeout-minutes: 10
         run: |
           cd build 
           make 
           cd ..
 
       - name: Run tests with CTest
+        timeout-minutes: 10
         run: |
           cd build
           ctest --output-on-failure

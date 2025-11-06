@@ -292,7 +292,7 @@ int alltoall_multileader(
             int ppl;
             MPI_Comm_size(comm->leader_comm, &ppl);
             if (ppl != procs_per_leader)
-                MPI_Comm_free(&comm->leader_comm);
+                MPIX_Comm_leader_free(comm);
         }
 
         // If leader comm does not exist, create it
@@ -566,7 +566,7 @@ int alltoall_locality_aware(
             int ppg;
             MPI_Comm_size(comm->leader_comm, &ppg);
             if (ppg != procs_per_group)
-                MPI_Comm_free(&(comm->leader_comm));
+                MPIX_Comm_leader_free(comm);
         }
 
         if (comm->leader_comm == MPI_COMM_NULL)
@@ -657,7 +657,8 @@ int alltoall_multileader_locality(
         void* recvbuf,
         const int recvcount,
         MPI_Datatype recvtype,
-        MPIX_Comm* comm)
+        MPIX_Comm* comm,
+        int groups_per_node)
 {
     int rank, num_procs;
     MPI_Comm_rank(comm->global_comm, &rank);
@@ -673,14 +674,26 @@ int alltoall_multileader_locality(
     MPI_Comm_rank(comm->local_comm, &local_rank);
     MPI_Comm_size(comm->local_comm, &ppn);
 
+    // Everyone is a leader, just run node-aware
+    if (ppn <= groups_per_node)
+    {
+        return alltoall_node_aware(f, sendbuf, sendcount, sendtype,
+                recvbuf, recvcount, recvtype, comm);
+    }
+    int procs_per_group = ppn / groups_per_node;
+
+    if (comm->leader_comm != MPI_COMM_NULL)
+    {
+        int ppg;
+        MPI_Comm_size(comm->leader_comm, &ppg);
+        if (ppg != procs_per_group)
+            MPIX_Comm_leader_free(comm);
+    }
     if (comm->leader_comm == MPI_COMM_NULL)
     {
-        int num_leaders_per_node = 4;
-        if (ppn < num_leaders_per_node)
-            num_leaders_per_node = ppn;
-        MPIX_Comm_leader_init(comm, ppn / num_leaders_per_node);
+        MPIX_Comm_leader_init(comm, procs_per_group);
     }
-    
+
     int procs_per_leader, leader_rank;
     MPI_Comm_rank(comm->leader_comm, &leader_rank);
     MPI_Comm_size(comm->leader_comm, &procs_per_leader);
@@ -698,10 +711,6 @@ int alltoall_multileader_locality(
     int n_nodes = num_procs / ppn;
     int n_leaders = num_procs / procs_per_leader;
  
-    int leaders_per_node;
-    MPI_Comm_size(comm->leader_local_comm, &leaders_per_node);
-
-
     char* local_send_buffer = NULL;
     char* local_recv_buffer = NULL;
     if (leader_rank == 0)
@@ -726,12 +735,6 @@ int alltoall_multileader_locality(
 
     if (leader_rank == 0)
     {
-    /*
-        alltoall_locality_aware_helper(f, sendbuf, procs_per_leader*sendcount, sendtype,
-            recvbuf, procs_per_leader*recvcount, recvtype, comm, groups_per_node, 
-            comm->leader_local_comm, comm->group_comm);
-*/
-
         ctr = 0;
         for (int dest_node = 0; dest_node < n_leaders; dest_node++)
         {
@@ -751,7 +754,7 @@ int alltoall_multileader_locality(
 
         // Re-Pack for exchange between local leaders
         ctr = 0;
-        for (int local_leader = 0; local_leader < leaders_per_node; local_leader++)
+        for (int local_leader = 0; local_leader < groups_per_node; local_leader++)
         {
             int leader_start = local_leader*procs_per_leader*procs_per_leader*sendcount*send_size;
             for (int dest_node = 0; dest_node < n_nodes; dest_node++)
@@ -776,7 +779,7 @@ int alltoall_multileader_locality(
             {
                 int orig_node_start = orig_node*procs_per_leader*procs_per_leader*recvcount*recv_size;
 
-                for (int orig_leader = 0; orig_leader < leaders_per_node; orig_leader++)
+                for (int orig_leader = 0; orig_leader < groups_per_node; orig_leader++)
                 {
                     int orig_leader_start = orig_leader*n_nodes*procs_per_leader*procs_per_leader*recvcount*recv_size;
                     for (int orig_proc = 0; orig_proc < procs_per_leader; orig_proc++)
@@ -814,7 +817,7 @@ int alltoall_multileader_locality_pairwise(
 {
     return alltoall_multileader_locality(pairwise_helper,
             sendbuf, sendcount, sendtype, recvbuf, recvcount, 
-            recvtype, comm);
+            recvtype, comm, 4);
 }
 
 int alltoall_multileader_locality_nonblocking(
@@ -828,7 +831,7 @@ int alltoall_multileader_locality_nonblocking(
 {
     return alltoall_multileader_locality(nonblocking_helper,
             sendbuf, sendcount, sendtype, recvbuf, recvcount, 
-            recvtype, comm);
+            recvtype, comm, 4);
 }
 
 
