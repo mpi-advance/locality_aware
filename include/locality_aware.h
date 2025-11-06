@@ -169,6 +169,7 @@ int MPIL_Comm_free(MPIL_Comm** xcomm_ptr);
  * @return MPI_Success upon successful completion. 
 .**/
 int MPIL_Comm_topo_init(MPIL_Comm* xcomm);
+
 /** @brief delete local_comms
  * @details called by MPIL_Comm_free
  *
@@ -271,6 +272,8 @@ int MPIL_Start(MPIL_Request* request);
 /**@brief wrapper that calls MPI_wait or neighbor wait **/
 int MPIL_Wait(MPIL_Request* request, MPI_Status* status);
 int MPIL_Request_free(MPIL_Request** request);
+
+/** @brief set reorder value of request to value **/
 int MPIL_Request_reorder(MPIL_Request* request, int value);
 
 /** @brief wrapper around MPI_Dist_graph_create_adjacent. 
@@ -288,7 +291,8 @@ int MPIL_Dist_graph_create_adjacent(MPI_Comm comm_old,
                                     MPIL_Comm** comm_dist_graph_ptr);
 
 // Main MPIL Functions
-/** @degroup api Core MPIL Function handles
+/** @defgroup api_core Algorithm APIs
+    @brief Wrapper functions around algorithms to fit MPI semantics
 	@details
 		Use switch statements and global variables to call
 		internal algorithm to complete the associated 
@@ -299,7 +303,7 @@ int MPIL_Dist_graph_create_adjacent(MPI_Comm comm_old,
 /** @brief wrapper around MPI_alltoall.  
  *  @details
  *  Defaults to AllTOALL_PMPI
- *	@ingroup api 
+ *	@ingroup api_core 
  */
 int MPIL_Alltoall(const void* sendbuf,
                   const int sendcount,
@@ -312,7 +316,7 @@ int MPIL_Alltoall(const void* sendbuf,
 /** @brief wrapper around MPI_alltoallv.  
  *  @details
  *  Defaults to AllTOALLV_PMPI
- *	@ingroup api 
+ *	@ingroup api_core 
  */		  
 int MPIL_Alltoallv(const void* sendbuf,
                    const int sendcounts[],
@@ -325,7 +329,7 @@ int MPIL_Alltoallv(const void* sendbuf,
                    MPIL_Comm* comm);
 
 /** @brief wrapper around MPI_Neighbor_alltoallv  
- *	@ingroup api 
+ *	@ingroup api_core 
  */
 int MPIL_Neighbor_alltoallv(const void* sendbuf,
                             const int sendcounts[],
@@ -338,7 +342,7 @@ int MPIL_Neighbor_alltoallv(const void* sendbuf,
                             MPIL_Comm* comm);
 							
 /** @brief wrapper around MPI_Neighbor_alltoallv that accepts an all ready generated topology.  
- *	@ingroup api 
+ *	@ingroup api_core 
  */
 int MPIL_Neighbor_alltoallv_topo(const void* sendbuf,
                                  const int sendcounts[],
@@ -352,7 +356,7 @@ int MPIL_Neighbor_alltoallv_topo(const void* sendbuf,
                                  MPIL_Comm* comm);
 
 /** @brief wrapper around persistent versions MPI_Neighbor_alltoallv.
- *	@ingroup api 
+ *	@ingroup api_core 
  */
 int MPIL_Neighbor_alltoallv_init(const void* sendbuf,
                                  const int sendcounts[],
@@ -424,7 +428,7 @@ int MPIL_Neighbor_alltoallv_init_ext_topo(const void* sendbuf,
  *  @details
  *  Defaults to ALLTOALL_CRS_PERSONALIZED; 
  * 
- *	@ingroup api 
+ *	@ingroup api_core 
  */
 int MPIL_Alltoall_crs(const int send_nnz,
                       const int* dest,
@@ -443,7 +447,7 @@ int MPIL_Alltoall_crs(const int send_nnz,
  *  @details
  *  Defaults to ALLTOALLV_CRS_PERSONALIZED; 
  * 
- *	@ingroup api 
+ *	@ingroup api_core 
  */					  
 int MPIL_Alltoallv_crs(const int send_nnz,
                        const int send_size,

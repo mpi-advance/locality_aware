@@ -23,21 +23,23 @@ typedef struct _MPIL_Comm
     MPI_Comm neighbor_comm;
 
     // For hierarchical collectives
-	/**@brief **/
+	/**@brief communicator for communicating inside the node**/
     MPI_Comm local_comm;
-	/**@brief **/
+	/**@brief communicator containing leader process on each node**/
     MPI_Comm group_comm; 
 
-	/**@brief **/
+	/**@brief comm containing group leaders**/
     MPI_Comm leader_comm;
-	/**@brief **/
+	/**@brief comm containing **/
     MPI_Comm leader_group_comm;
-	/**@brief **/
+	/**@brief comm containing local processes under leader**/
     MPI_Comm leader_local_comm;
 
+	/**@brief number of nodes in comm**/
     int num_nodes;
+	/**@brief rank of process in comm**/
     int rank_node;
-	/**@brief processes per nod**/
+	/**@brief processes per node**/
     int ppn;
 
 	/**@brief MPI_window if using sync**/
@@ -49,7 +51,9 @@ typedef struct _MPIL_Comm
 	/**@brief size of the datatype in win_array in bytes**/
     int win_type_bytes;
 
+	/**@brief array of requests using the comm \todo confirm??**/
     MPI_Request* requests;
+	/**@brief status the requests in this->requests**/
     MPI_Status* statuses;
 	/**@brief size of requests and statuses
 	   @details 
@@ -57,8 +61,9 @@ typedef struct _MPIL_Comm
 			can be updated through MPIL_Comm_req_resize;
 	**/
     int n_requests;
-
+    /** @brief unique identifier for the comm **/
     int tag;
+	/** @brief maximum size of tag allowed by the system (currently hard capped at 126)**/
     int max_tag;
 
 	/** @brief maps rank in global_comm to rank in local_comm **/
@@ -69,8 +74,9 @@ typedef struct _MPIL_Comm
     int* ordered_global_ranks;
 
 #ifdef GPU
+	/** @brief number of gpus on the node**/
     int gpus_per_node;
-	/** @brief rank running on gpu**/
+	/** @brief rank running on the gpu**/
     int rank_gpu;
     /** @brief pointer to gpuStream_t
 		@details changed to void* to assist compiling.

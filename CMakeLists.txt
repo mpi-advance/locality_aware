@@ -77,7 +77,17 @@ endif()
 
 if (ENABLE_UNIT_TESTS)
     enable_testing()
-	set(TEST_PROCS "16" CACHE STRING "Number of processes to use when running ctests")
+	set(TEST_PROCS "16" CACHE STRING "Number of processes to use when making ctests")
+	function(make_test file)
+		#get file name for unique handle
+		get_filename_component(exec_name ${file} NAME_WE)
+		add_executable(${exec_name} ${file})
+		target_link_libraries(${exec_name} locality_aware ${EXTERNAL_LIBS})
+		if(DEFINED MPIRUN)
+			add_test(NAME ${exec_name}_Test COMMAND ${MPIRUN} -n ${TEST_PROCS} ./${exec_name})
+		else()
+			add_test(NAME ${exec_name}_Test COMMAND srun -n ${TEST_PROCS} ./${exec_name})
+	endfunction()
 endif()
 
 # Flag == TRUE means TEST

@@ -10,14 +10,18 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
+/** @brief struct for messaging metadata **/
 typedef struct LocalityComm
 {
-    CommPkg* local_L_comm;
-    CommPkg* local_S_comm;
-    CommPkg* local_R_comm;
-    CommPkg* global_comm;
-
+	/** @brief metadata on local (on-node) communications**/
+    CommPkg* local_L_comm; 
+    /** @brief metadata on original messages before aggration**/
+	CommPkg* local_S_comm;  
+    /** @brief metadata to redistribute aggravated messages.**/
+	CommPkg* local_R_comm; 
+    /** @brief metadata on messages sent between nodes.**/
+	CommPkg* global_comm;   
+	/** @brief array of communicators used in the locality mapping **/
     MPIL_Comm* communicators;
 } LocalityComm;
 

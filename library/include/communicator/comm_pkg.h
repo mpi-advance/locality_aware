@@ -3,15 +3,22 @@
 
 #include "comm_data.h"
 
-/** @brief struct containing buffers meta data for two sides of a communication and tag **/
+/** @brief struct for storing message data
+ *	@details  
+ *    One comm_pkg per process. One comm_data object for each process send to and received from by that process.  	  
+**/
 typedef struct _CommPkg
 {
+	/** @brief information on outgoing messages **/
     CommData* send_data;
+	/** @brief information on incoming messages **/
     CommData* recv_data;
+	
+	/** @brief unique id for the struct. **/
     int tag;
 } CommPkg;
 
-
+/** @brief allocate and initalize comm_pkg **/
 void init_comm_pkg(CommPkg** comm_ptr,
                    MPI_Datatype sendtype,
                    MPI_Datatype recvtype,
