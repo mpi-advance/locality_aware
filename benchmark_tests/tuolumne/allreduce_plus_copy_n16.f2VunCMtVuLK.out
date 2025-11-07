@@ -1,0 +1,394 @@
+0: 1 Processes Per GPU, 4 GPUs Per Node
+0: Only 1 GPU Visible, But GPN is 4.  Assuming 4 gpus per node.  If GPN is not correct, rerun cmake with -DARCH_GPUS_PER_NODE=Correct#
+0: .my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: Size 4 (Per Proc 4, 1)
+0: STD: 1.701330e-05
+0: MIKELANE: 2.085285e-05
+0: Size 8 (Per Proc 8, 2)
+0: STD: 1.679784e-05
+0: MIKELANE: 2.229701e-05
+0: Size 16 (Per Proc 16, 4)
+0: STD: 1.688156e-05
+0: MIKELANE: 2.387070e-05
+0: Size 32 (Per Proc 32, 8)
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: STD: 1.862521e-05
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: MIKELANE: 2.417560e-05
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: Size 64 (Per Proc 64, 16)
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: STD: 2.829898e-05
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: MIKELANE: 2.649737e-05
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: Size 128 (Per Proc 128, 32)
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: STD: 3.112759e-05
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: MIKELANE: 3.138888e-05
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: Size 256 (Per Proc 256, 64)
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: STD: 3.612692e-05
+0: MIKELANE: 3.689767e-05
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: Size 512 (Per Proc 512, 128)
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: STD: 4.153399e-05
+0: MIKELANE: 4.742762e-05
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: Size 1024 (Per Proc 1024, 256)
+0: STD: 5.182441e-05
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: MIKELANE: 6.155832e-05
+0: Size 2048 (Per Proc 2048, 512)
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: STD: 9.241348e-05
+0: MIKELANE: 7.339309e-05
+0: Size 4096 (Per Proc 4096, 1024)
+0: STD: 1.411538e-04
+0: MIKELANE: 8.811028e-05
+0: Size 8192 (Per Proc 8192, 2048)
+0: STD: 1.572049e-04
+0: MIKELANE: 1.441554e-04
+0: Size 16384 (Per Proc 16384, 4096)
+0: STD: 1.787586e-04
+0: MIKELANE: 2.295037e-04
+0: Size 32768 (Per Proc 32768, 8192)
+0: STD: 1.989862e-04
+0: MIKELANE: 3.711984e-04
+0: Size 65536 (Per Proc 65536, 16384)
+0: STD: 2.228480e-04
+0: MIKELANE: 5.004884e-04
+0: Size 131072 (Per Proc 131072, 32768)
+0: STD: 2.586216e-04
+0: MIKELANE: 1.233864e-03
+0: Size 262144 (Per Proc 262144, 65536)
+0: STD: 3.205243e-04
+0: MIKELANE: 1.424106e-03
+0: Size 524288 (Per Proc 524288, 131072)
+0: STD: 4.082790e-04
+0: MIKELANE: 2.014714e-03
+0: Size 1048576 (Per Proc 1048576, 262144)
+0: STD: 5.854636e-04
+0: MIKELANE: 2.332341e-03
+0: Size 2097152 (Per Proc 2097152, 524288)
+0: STD: 9.479192e-04
+0: MIKELANE: 3.566531e-03
+0: Size 4194304 (Per Proc 4194304, 1048576)
+0: STD: 1.897456e-03
+0: MIKELANE: 9.215316e-03
+0: Size 8388608 (Per Proc 8388608, 2097152)
+0: STD: 3.803816e-03
+0: MIKELANE: 1.333418e-02
+0: Size 16777216 (Per Proc 16777216, 4194304)
+0: STD: 7.632053e-03
+0: MIKELANE: 2.154627e-02
+0: Size 33554432 (Per Proc 33554432, 8388608)
+0: STD: 1.532207e-02
+0: MIKELANE: 5.754377e-02
+0: Size 67108864 (Per Proc 67108864, 16777216)
+0: STD: 3.064616e-02
+0: MIKELANE: 1.144871e-01
+0: Size 134217728 (Per Proc 134217728, 33554432)
+0: STD: 6.128248e-02
+0: MIKELANE: 2.205313e-01
+0: Size 268435456 (Per Proc 268435456, 67108864)
+0: STD: 1.226593e-01
+0: MIKELANE: 4.273311e-01
+0: Size 536870912 (Per Proc 536870912, 134217728)
+0: STD: 2.452481e-01
+0: MIKELANE: 8.439455e-01
+0: 
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: 2 Processes Per GPU, 4 GPUs Per Node
+0: Only 1 GPU Visible, But GPN is 4.  Assuming 4 gpus per node.  If GPN is not correct, rerun cmake with -DARCH_GPUS_PER_NODE=Correct#
+0: .Size 8 (Per Proc 4, 1)
+0: STD MPS COPY: 6.650038e-05
+0: MIKELANE MPS COPY: 7.094922e-05
+0: Size 16 (Per Proc 8, 2)
+0: STD MPS COPY: 6.662839e-05
+0: MIKELANE MPS COPY: 7.143231e-05
+0: Size 32 (Per Proc 16, 4)
+0: STD MPS COPY: 6.673224e-05
+0: MIKELANE MPS COPY: 7.202253e-05
+0: Size 64 (Per Proc 32, 8)
+0: STD MPS COPY: 6.801158e-05
+0: MIKELANE MPS COPY: 7.217986e-05
+0: Size 128 (Per Proc 64, 16)
+0: STD MPS COPY: 7.836687e-05
+0: MIKELANE MPS COPY: 7.709641e-05
+0: Size 256 (Per Proc 128, 32)
+0: STD MPS COPY: 9.643705e-05
+0: MIKELANE MPS COPY: 7.898518e-05
+0: Size 512 (Per Proc 256, 64)
+0: STD MPS COPY: 8.596342e-05
+0: MIKELANE MPS COPY: 8.441598e-05
+0: Size 1024 (Per Proc 512, 128)
+0: STD MPS COPY: 9.150839e-05
+0: MIKELANE MPS COPY: 9.615178e-05
+0: Size 2048 (Per Proc 1024, 256)
+0: STD MPS COPY: 9.950040e-05
+0: MIKELANE MPS COPY: 1.099687e-04
+0: Size 4096 (Per Proc 2048, 512)
+0: STD MPS COPY: 1.502917e-04
+0: MIKELANE MPS COPY: 1.179699e-04
+0: Size 8192 (Per Proc 4096, 1024)
+0: STD MPS COPY: 2.097312e-04
+0: MIKELANE MPS COPY: 1.363583e-04
+0: Size 16384 (Per Proc 8192, 2048)
+0: STD MPS COPY: 2.255246e-04
+0: MIKELANE MPS COPY: 2.039909e-04
+0: Size 32768 (Per Proc 16384, 4096)
+0: STD MPS COPY: 2.497537e-04
+0: MIKELANE MPS COPY: 3.015949e-04
+0: Size 65536 (Per Proc 32768, 8192)
+0: STD MPS COPY: 2.724176e-04
+0: MIKELANE MPS COPY: 3.942643e-04
+0: Size 131072 (Per Proc 65536, 16384)
+0: STD MPS COPY: 3.065172e-04
+0: MIKELANE MPS COPY: 5.795375e-04
+0: Size 262144 (Per Proc 131072, 32768)
+0: STD MPS COPY: 3.741421e-04
+0: MIKELANE MPS COPY: 1.531419e-03
+0: Size 524288 (Per Proc 262144, 65536)
+0: STD MPS COPY: 5.352172e-04
+0: MIKELANE MPS COPY: 1.831898e-03
+0: Size 1048576 (Per Proc 524288, 131072)
+0: STD MPS COPY: 7.087583e-04
+0: MIKELANE MPS COPY: 2.684571e-03
+0: Size 2097152 (Per Proc 1048576, 262144)
+0: STD MPS COPY: 1.069373e-03
+0: MIKELANE MPS COPY: 4.000416e-03
+0: Size 4194304 (Per Proc 2097152, 524288)
+0: STD MPS COPY: 1.798775e-03
+0: MIKELANE MPS COPY: 7.739282e-03
+0: Size 8388608 (Per Proc 4194304, 1048576)
+0: STD MPS COPY: 3.459544e-03
+0: MIKELANE MPS COPY: 1.280106e-02
+0: Size 16777216 (Per Proc 8388608, 2097152)
+0: STD MPS COPY: 6.861792e-03
+0: MIKELANE MPS COPY: 2.034191e-02
+0: Size 33554432 (Per Proc 16777216, 4194304)
+0: STD MPS COPY: 1.368960e-02
+0: MIKELANE MPS COPY: 3.265850e-02
+0: Size 67108864 (Per Proc 33554432, 8388608)
+0: STD MPS COPY: 2.721550e-02
+0: MIKELANE MPS COPY: 7.696709e-02
+0: Size 134217728 (Per Proc 67108864, 16777216)
+0: STD MPS COPY: 5.436994e-02
+0: MIKELANE MPS COPY: 1.484764e-01
+0: Size 268435456 (Per Proc 134217728, 33554432)
+0: STD MPS COPY: 1.080077e-01
+0: MIKELANE MPS COPY: 2.850752e-01
+0: Size 536870912 (Per Proc 268435456, 67108864)
+0: STD MPS COPY: 2.158353e-01
+0: MIKELANE MPS COPY: 5.472526e-01
+0: 
+0: 4 Processes Per GPU, 4 GPUs Per Node
+0: Only 1 GPU Visible, But GPN is 4.  Assuming 4 gpus per node.  If GPN is not correct, rerun cmake with -DARCH_GPUS_PER_NODE=Correct#
+0: .Size 16 (Per Proc 4, 1)
+0: STD MPS COPY: 2.248695e-04
+0: MIKELANE MPS COPY: 2.284959e-04
+0: Size 32 (Per Proc 8, 2)
+0: STD MPS COPY: 2.262155e-04
+0: MIKELANE MPS COPY: 2.298726e-04
+0: Size 64 (Per Proc 16, 4)
+0: STD MPS COPY: 2.254910e-04
+0: MIKELANE MPS COPY: 2.304948e-04
+0: Size 128 (Per Proc 32, 8)
+0: STD MPS COPY: 2.249406e-04
+0: MIKELANE MPS COPY: 2.311576e-04
+0: Size 256 (Per Proc 64, 16)
+0: STD MPS COPY: 2.338056e-04
+0: MIKELANE MPS COPY: 2.337260e-04
+0: Size 512 (Per Proc 128, 32)
+0: STD MPS COPY: 2.367104e-04
+0: MIKELANE MPS COPY: 2.411552e-04
+0: Size 1024 (Per Proc 256, 64)
+0: STD MPS COPY: 3.752300e-04
+0: MIKELANE MPS COPY: 2.476864e-04
+0: Size 2048 (Per Proc 512, 128)
+0: STD MPS COPY: 2.459249e-04
+0: MIKELANE MPS COPY: 2.534769e-04
+0: Size 4096 (Per Proc 1024, 256)
+0: STD MPS COPY: 2.282543e-04
+0: MIKELANE MPS COPY: 2.384102e-04
+0: Size 8192 (Per Proc 2048, 512)
+0: STD MPS COPY: 2.476143e-04
+0: MIKELANE MPS COPY: 2.458865e-04
+0: Size 16384 (Per Proc 4096, 1024)
+0: STD MPS COPY: 3.041707e-04
+0: MIKELANE MPS COPY: 1.642618e-04
+0: Size 32768 (Per Proc 8192, 2048)
+0: STD MPS COPY: 3.593563e-04
+0: MIKELANE MPS COPY: 2.641773e-04
+0: Size 65536 (Per Proc 16384, 4096)
+0: STD MPS COPY: 3.712836e-04
+0: MIKELANE MPS COPY: 3.662621e-04
+0: Size 131072 (Per Proc 32768, 8192)
+0: STD MPS COPY: 3.831343e-04
+0: MIKELANE MPS COPY: 4.455181e-04
+0: Size 262144 (Per Proc 65536, 16384)
+0: STD MPS COPY: 4.232091e-04
+0: MIKELANE MPS COPY: 6.226741e-04
+0: Size 524288 (Per Proc 131072, 32768)
+0: STD MPS COPY: 5.443561e-04
+0: MIKELANE MPS COPY: 1.821339e-03
+0: Size 1048576 (Per Proc 262144, 65536)
+0: STD MPS COPY: 7.722198e-04
+0: MIKELANE MPS COPY: 2.390058e-03
+0: Size 2097152 (Per Proc 524288, 131072)
+0: STD MPS COPY: 1.094192e-03
+0: MIKELANE MPS COPY: 3.741541e-03
+0: Size 4194304 (Per Proc 1048576, 262144)
+0: STD MPS COPY: 1.830040e-03
+0: MIKELANE MPS COPY: 7.472093e-03
+0: Size 8388608 (Per Proc 2097152, 524288)
+0: STD MPS COPY: 3.629318e-03
+0: MIKELANE MPS COPY: 1.470004e-02
+0: Size 16777216 (Per Proc 4194304, 1048576)
+0: STD MPS COPY: 7.158371e-03
+0: MIKELANE MPS COPY: 1.845683e-02
+0: Size 33554432 (Per Proc 8388608, 2097152)
+0: STD MPS COPY: 1.464503e-02
+0: MIKELANE MPS COPY: 2.769301e-02
+0: Size 67108864 (Per Proc 16777216, 4194304)
+0: STD MPS COPY: 2.962089e-02
+0: MIKELANE MPS COPY: 4.589322e-02
+0: Size 134217728 (Per Proc 33554432, 8388608)
+0: STD MPS COPY: 5.979928e-02
+0: MIKELANE MPS COPY: 1.046400e-01
+0: Size 268435456 (Per Proc 67108864, 16777216)
+0: STD MPS COPY: 1.198775e-01
+0: MIKELANE MPS COPY: 2.065102e-01
+0: Size 536870912 (Per Proc 134217728, 33554432)
+0: STD MPS COPY: 2.400373e-01
+0: MIKELANE MPS COPY: 3.916135e-01
+0: 
+0: 8 Processes Per GPU, 4 GPUs Per Node
+0: Only 1 GPU Visible, But GPN is 4.  Assuming 4 gpus per node.  If GPN is not correct, rerun cmake with -DARCH_GPUS_PER_NODE=Correct#
+0: .Size 32 (Per Proc 4, 1)
+0: STD MPS COPY: 2.778137e-04
+0: MIKELANE MPS COPY: 2.804469e-04
+0: Size 64 (Per Proc 8, 2)
+0: STD MPS COPY: 2.775602e-04
+0: MIKELANE MPS COPY: 2.825653e-04
+0: Size 128 (Per Proc 16, 4)
+0: STD MPS COPY: 2.783404e-04
+0: MIKELANE MPS COPY: 2.820777e-04
+0: Size 256 (Per Proc 32, 8)
+0: STD MPS COPY: 2.809802e-04
+0: MIKELANE MPS COPY: 2.826352e-04
+0: Size 512 (Per Proc 64, 16)
+0: STD MPS COPY: 2.847667e-04
+0: MIKELANE MPS COPY: 2.843854e-04
+0: Size 1024 (Per Proc 128, 32)
+0: STD MPS COPY: 2.867781e-04
+0: MIKELANE MPS COPY: 2.882024e-04
+0: Size 2048 (Per Proc 256, 64)
+0: STD MPS COPY: 5.729727e-04
+0: MIKELANE MPS COPY: 3.300816e-04
+0: Size 4096 (Per Proc 512, 128)
+0: STD MPS COPY: 2.978921e-04
+0: MIKELANE MPS COPY: 2.996171e-04
+0: Size 8192 (Per Proc 1024, 256)
+0: STD MPS COPY: 3.021344e-04
+0: MIKELANE MPS COPY: 3.126158e-04
+0: Size 16384 (Per Proc 2048, 512)
+0: STD MPS COPY: 3.360428e-04
+0: MIKELANE MPS COPY: 3.191838e-04
+0: Size 32768 (Per Proc 4096, 1024)
+0: STD MPS COPY: 6.086855e-04
+0: MIKELANE MPS COPY: 3.224603e-04
+0: Size 65536 (Per Proc 8192, 2048)
+0: STD MPS COPY: 6.472747e-04
+0: MIKELANE MPS COPY: 4.588771e-04
+0: Size 131072 (Per Proc 16384, 4096)
+0: STD MPS COPY: 6.855239e-04
+0: MIKELANE MPS COPY: 6.634903e-04
+0: Size 262144 (Per Proc 32768, 8192)
+0: STD MPS COPY: 7.293510e-04
+0: MIKELANE MPS COPY: 7.487799e-04
+0: Size 524288 (Per Proc 65536, 16384)
+0: STD MPS COPY: 8.101427e-04
+0: MIKELANE MPS COPY: 9.500599e-04
+0: Size 1048576 (Per Proc 131072, 32768)
+0: STD MPS COPY: 1.026031e-03
+0: MIKELANE MPS COPY: 2.802776e-03
+0: Size 2097152 (Per Proc 262144, 65536)
+0: STD MPS COPY: 1.376605e-03
+0: MIKELANE MPS COPY: 3.448281e-03
+0: Size 4194304 (Per Proc 524288, 131072)
+0: STD MPS COPY: 2.098860e-03
+0: MIKELANE MPS COPY: 6.009443e-03
+0: Size 8388608 (Per Proc 1048576, 262144)
+0: STD MPS COPY: 3.925530e-03
+0: MIKELANE MPS COPY: 8.726272e-03
+0: Size 16777216 (Per Proc 2097152, 524288)
+0: STD MPS COPY: 8.232746e-03
+0: MIKELANE MPS COPY: 1.843932e-02
+0: Size 33554432 (Per Proc 4194304, 1048576)
+0: STD MPS COPY: 1.611237e-02
+0: MIKELANE MPS COPY: 2.975293e-02
+0: Size 67108864 (Per Proc 8388608, 2097152)
+0: STD MPS COPY: 3.200986e-02
+0: MIKELANE MPS COPY: 4.239842e-02
+0: Size 134217728 (Per Proc 16777216, 4194304)
+0: STD MPS COPY: 6.274261e-02
+0: MIKELANE MPS COPY: 7.150843e-02
+0: Size 268435456 (Per Proc 33554432, 8388608)
+0: STD MPS COPY: 1.249655e-01
+0: MIKELANE MPS COPY: 1.522030e-01
+0: Size 536870912 (Per Proc 67108864, 16777216)
+0: STD MPS COPY: 2.480508e-01
+0: MIKELANE MPS COPY: 2.983008e-01
+0: 
