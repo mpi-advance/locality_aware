@@ -23,17 +23,24 @@ typedef struct _MPIL_Request
 {
     // Message counts
     // Will only use global unless locality-aware
-	/** @brief ??? \todo what are these used for? local_L/S/R msg??? **/
-    int local_L_n_msgs;
+	/** @brief intra-node message count **/
+    int local_L_n_msgs;  
+	/** @brief sent message count **/
     int local_S_n_msgs;
+	/** @brief received message count **/
     int local_R_n_msgs;
+	/** @brief number of inter-node messages **/
     int global_n_msgs;
 
     // MPI Request arrays
     // Will only use global unless locality-aware
+	/** @brief requests to manage of intra-node messages **/
     MPI_Request* local_L_requests;
+	/** @brief requests to control sent messages **/	
     MPI_Request* local_S_requests;
+	/** @brief requests to control recieved messages **/	
     MPI_Request* local_R_requests;
+	/** @brief requests to manage of inter-node messages **/
     MPI_Request* global_requests;
 
     // Pointer to locality communication, only for locality-aware
@@ -52,7 +59,6 @@ typedef struct _MPIL_Request
 
     int tag;
 	
-	/** \todo use? **/
     int reorder;
 
 #ifdef GPU

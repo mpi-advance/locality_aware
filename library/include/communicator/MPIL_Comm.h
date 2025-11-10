@@ -51,7 +51,7 @@ typedef struct _MPIL_Comm
 	/**@brief size of the datatype in win_array in bytes**/
     int win_type_bytes;
 
-	/**@brief array of requests using the comm \todo confirm??**/
+	/**@brief array of requests using the comm **/
     MPI_Request* requests;
 	/**@brief status the requests in this->requests**/
     MPI_Status* statuses;
