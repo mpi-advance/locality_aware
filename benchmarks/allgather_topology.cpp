@@ -221,12 +221,12 @@ void print_allgathers(int max_p,
             // 4. Intra-Node Allgather
             time = test_collective(MPI_Allgather, leader_rank == 0, local_recv_buff, procs_per_leader * n_nodes * s, sendtype, recvbuf, procs_per_leader * n_nodes * s, recvtype, comm->leader_local_comm);
             if (rank == 0)
-			  printf("Multileader Node-Aware (N Leaders %d) Internal: Intranode Allgather: %e\n", leaders_per_node, time);
+                printf("Multileader Node-Aware (N Leaders %d) Internal: Intranode Allgather: %e\n", leaders_per_node, time);
 
             // 5. Broadcast
             time = test_collective(MPI_Bcast, true, recvbuf, s * num_procs, recvtype, 0, comm->local_comm);
             if (rank == 0)
-			  printf("Multileader Node-Aware (N Leaders %d) Internal: Broadcast: %e\n", leaders_per_node, time);
+                printf("Multileader Node-Aware (N Leaders %d) Internal: Broadcast: %e\n", leaders_per_node, time);
 
             free(local_send_buff);
             free(local_recv_buff);
