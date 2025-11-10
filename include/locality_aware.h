@@ -19,15 +19,15 @@ typedef struct _MPIL_Request MPIL_Request;
 	one or more descriptors after the main function
 	that change the underlying algorithm. 
 	When supplied to the algorithm selection function. 
-		<br> STANDARD: ????
+		<br> STANDARD: Uses standard collective operation
 		<br>PAIRWISE: Uses Pairwise communication pattern. 
 		<br>NONBLOCKING: Uses non-blocking communication internally. 
 		<br>HIERARCHICAL: Local groups???
 		<br>MULTILEADER: Separates world into subgroups ???
 		<br>LOCALITY_AWARE|LOCALITY|LOC: Locality_aware  
 		<br>NODE_AWARE: Partial locality awareness (limited to node level locality)
-		<br>BATCH:
-		<br>ASYNC:
+		<br>BATCH: Aggregate messages
+		<br>ASYNC: Uses RMA for one-sided communication 
 		<br>GPU: GPU aware
 		<br>CTC: Copy to Cpu
 		<br>INIT: Persistent Communication used internally. 
