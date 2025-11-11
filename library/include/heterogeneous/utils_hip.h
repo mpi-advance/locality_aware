@@ -12,8 +12,8 @@
 #define gpuSetDevice hipSetDevice
 
 // Data allocation
-#define gpuMallocHost hipHostMalloc
-#define gpuMalloc hipMallocHost     //--deprecated
+#define gpuMallocHost hipMallocHost
+#define gpuMalloc hipMalloc
 #define gpuFree hipFree
 #define gpuFreeHost hipHostFree
 
