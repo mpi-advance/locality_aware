@@ -13,7 +13,7 @@
 
 // Data allocation
 #define gpuMallocHost hipHostMalloc
-#define gpuMalloc hipMalloc
+#define gpuMalloc hipMallocHost     //--deprecated
 #define gpuFree hipFree
 #define gpuFreeHost hipHostFree
 
