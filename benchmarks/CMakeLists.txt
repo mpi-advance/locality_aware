@@ -4,7 +4,7 @@ set(CPP_SOURCES "")
 ## Most benchmarks will go in just fine
 list(APPEND CPP_SOURCES "alltoall_crs.cpp")
 list(APPEND CPP_SOURCES "alltoallv_crs.cpp")
-list(APPEND CPP_SOURCES "microbenchmarks.cpp")
+#list(APPEND CPP_SOURCES "microbenchmarks.cpp")
 list(APPEND CPP_SOURCES "p2p_alltoall.cpp")
 list(APPEND CPP_SOURCES "p2p_alltoallv.cpp")
 
