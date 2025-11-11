@@ -110,8 +110,8 @@ int copy_to_cpu_alltoallv_batch_async(const void* sendbuf,
                                       MPI_Datatype recvtype,
                                       MPIL_Comm* comm);
 
-#ifdef OPENMP
-#include <omp.h>
+//#ifdef OPENMP
+//#include <omp.h>
 int threaded_alltoallv_pairwise(const void* sendbuf,
                                 const int sendcounts[],
                                 const int sdispls[],
@@ -131,7 +131,7 @@ int threaded_alltoallv_nonblocking(const void* sendbuf,
                                    const int rdispls[],
                                    MPI_Datatype recvtype,
                                    MPIL_Comm* comm);
-#endif
+//#endif
 
 #ifdef __cplusplus
 }

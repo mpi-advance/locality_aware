@@ -37,16 +37,6 @@ set(MPIRUN "mpirun" CACHE STRING "MPIRUN command")
 find_package(MPI REQUIRED)
 set(EXTERNAL_LIBS "MPI::MPI_CXX")
 
-if(NOT USE_HIP)
-	# Find OpenMP (not required)
-	find_package(OpenMP)
-	if (${OpenMP_CXX_FOUND})
-	  list(APPEND EXTERNAL_LIBS "OpenMP::OpenMP_CXX")
-  	  add_definitions(-DOPENMP)
-	endif()
-endif()
-
-
 # Set default language of .cpp files
 set(locality_aware_LANG CXX)
 add_library(locality_aware "")
@@ -65,7 +55,6 @@ if (USE_CUDA OR USE_HIP)
 	  enable_language(CUDA)
 	  set(locality_aware_LANG CUDA)
 	  message(STATUS "CUDA support enabled: ${CMAKE_CUDA_FLAGS}")
-	  find_package(CUDAToolkit)
 	  target_compile_definitions(locality_aware PUBLIC CUDA)
 	 
 	elseif (USE_HIP)
@@ -123,7 +112,7 @@ add_subdirectory(include)
 add_subdirectory(library)
 target_link_libraries(locality_aware PUBLIC ${EXTERNAL_LIBS})
 
-if (USE_GPU)
+if (USE_CUDA)
 	get_property(GPU_SOURCES_GLOBAL GLOBAL PROPERTY GPU_SOURCES_GLOBAL)
 	set_source_files_properties(${GPU_SOURCES_GLOBAL} PROPERTIES LANGUAGE ${locality_aware_LANG})
 endif()

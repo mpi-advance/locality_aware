@@ -72,8 +72,8 @@ int copy_to_cpu_alltoall_nonblocking(const void* sendbuf,
                                      MPI_Datatype recvtype,
                                      MPIL_Comm* comm);
 
-#ifdef OPENMP
-#include <omp.h>
+//#ifdef OPENMP
+//#include <omp.h>
 /** @brief Untested function using OpenMP to divide GPU buffers and proc sends. 
 	@details
 	    \todo Not currently tested or included in switch
@@ -99,7 +99,7 @@ int threaded_alltoall_nonblocking(const void* sendbuf,
                                   const int recvcount,
                                   MPI_Datatype recvtype,
                                   MPIL_Comm* comm);
-#endif
+//#endif
 
 #ifdef __cplusplus
 }
