@@ -60,15 +60,11 @@ if (USE_CUDA OR USE_HIP)
 	elseif (USE_HIP)
 	  enable_language(HIP)
 	  find_package(hip REQUIRED)
-	  target_link_libraries(locality_aware hip::host)
+	  target_link_libraries(locality_aware PUBLIC hip::host)
 	  set(locality_aware_LANG HIP)
 	  message(STATUS "HIP support enabled")
 	  target_compile_definitions(locality_aware PUBLIC HIP)
 	endif()
-endif()
-
-if(NOT DEFINED MPIRUN)
-	set(MPIRUN "srun")
 endif()
 
 if (ENABLE_UNIT_TESTS)
@@ -138,7 +134,7 @@ configure_package_config_file(
 write_basic_package_version_file(
 	${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config-version.cmake
 	COMPATIBILITY SameMinorVersion
-)
+)c
 
 install(FILES
 	${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config-version.cmake
