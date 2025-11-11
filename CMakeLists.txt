@@ -6,7 +6,7 @@ project(locality_aware VERSION 2.0.0 LANGUAGES C CXX)
 
 # Set C,CXX standards
 set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_C_STANDARD 99)
+set(CMAKE_C_STANDARD 11)
 
 # Set default build type
 if(NOT CMAKE_BUILD_TYPE)
@@ -108,7 +108,7 @@ add_subdirectory(include)
 add_subdirectory(library)
 target_link_libraries(locality_aware PUBLIC ${EXTERNAL_LIBS})
 
-if (USE_CUDA)
+if (USE_GPU)
 	get_property(GPU_SOURCES_GLOBAL GLOBAL PROPERTY GPU_SOURCES_GLOBAL)
 	set_source_files_properties(${GPU_SOURCES_GLOBAL} PROPERTIES LANGUAGE ${locality_aware_LANG})
 endif()
