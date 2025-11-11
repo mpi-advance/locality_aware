@@ -1,0 +1,18 @@
+0: 1 Processes Per GPU, 4 GPUs Per Node
+0: Only 1 GPU Visible, But GPN is 4.  Assuming 4 gpus per node.  If GPN is not correct, rerun cmake with -DARCH_GPUS_PER_NODE=Correct#
+0: .Num nodes 8, GPN 4, Size 1048576
+0: 1 PPG, MPI_Alltoall w/ 1 PPG:  7.612743e-03
+0: 1 PPG, MPI_Alltoall w/ 1 PPG:  7.523793e-03
+0: 1 PPG, MPI_Alltoall w/ 1 PPG, intragpu barrier:  7.512259e-03
+0: 2 Processes Per GPU, 4 GPUs Per Node
+0: Only 1 GPU Visible, But GPN is 4.  Assuming 4 gpus per node.  If GPN is not correct, rerun cmake with -DARCH_GPUS_PER_NODE=Correct#
+0: .Num nodes 8, GPN 4, Size 1048576
+0: 2 PPG, MPI_Alltoall w/ 1 PPG:  7.593110e-03
+0: 2 PPG, MPI_Alltoall w/ 2 PPG:  7.044301e-03
+0: 2 PPG, MPI_Alltoall w/ 2 PPG, intragpu barrier:  7.285653e-03
+0: 4 Processes Per GPU, 4 GPUs Per Node
+0: Only 1 GPU Visible, But GPN is 4.  Assuming 4 gpus per node.  If GPN is not correct, rerun cmake with -DARCH_GPUS_PER_NODE=Correct#
+0: .Num nodes 8, GPN 4, Size 1048576
+0: 4 PPG, MPI_Alltoall w/ 1 PPG:  7.533322e-03
+0: 4 PPG, MPI_Alltoall w/ 4 PPG:  6.454357e-03
+0: 4 PPG, MPI_Alltoall w/ 4 PPG, intragpu barrier:  6.941544e-03

@@ -1,0 +1,45 @@
+0: 1 Processes Per GPU, 4 GPUs Per Node
+0: Only 1 GPU Visible, But GPN is 4.  Assuming 4 gpus per node.  If GPN is not correct, rerun cmake with -DARCH_GPUS_PER_NODE=Correct#
+0: .Num nodes 8, GPN 4, Size 33554432
+0: 1 PPG, MPI_Allreduce w/ 1 PPG:  3.270536e-03
+0: 1 PPG, MPI_Allreduce w/ 1 PPG:  3.233757e-03
+0: 1 PPG, MPI_Allreduce w/ 1 PPG, intragpu barrier:  3.223006e-03
+0: 1 PPG, MPI_Allreduce in place w/ 1 PPG:  3.077636e-03
+0: 1 PPG, MPI_Allreduce in place w/ 1 PPG:  3.078638e-03
+0: 1 PPG, MPI_Allreduce in place w/ 1 PPG, intragpu barrier:  3.074771e-03
+0: 1 PPG, MPI_Allgather w/ 1 PPG:  1.821543e-03
+0: 1 PPG, MPI_Allgather w/ 1 PPG:  1.810821e-03
+0: 1 PPG, MPI_Allgather w/ 1 PPG, intragpu barrier:  1.812016e-03
+0: 1 PPG, MPI_Allgather in place w/ 1 PPG:  1.762732e-03
+0: 1 PPG, MPI_Allgather in place w/ 1 PPG:  1.763295e-03
+0: 1 PPG, MPI_Allgather in place w/ 1 PPG, intragpu barrier:  1.764344e-03
+0: 2 Processes Per GPU, 4 GPUs Per Node
+0: Only 1 GPU Visible, But GPN is 4.  Assuming 4 gpus per node.  If GPN is not correct, rerun cmake with -DARCH_GPUS_PER_NODE=Correct#
+0: .Num nodes 8, GPN 4, Size 33554432
+0: 2 PPG, MPI_Allreduce w/ 1 PPG:  3.264429e-03
+0: 2 PPG, MPI_Allreduce w/ 2 PPG:  2.884686e-03
+0: 2 PPG, MPI_Allreduce w/ 2 PPG, intragpu barrier:  2.797885e-03
+0: 2 PPG, MPI_Allreduce in place w/ 1 PPG:  3.068455e-03
+0: 2 PPG, MPI_Allreduce in place w/ 2 PPG:  2.755017e-03
+0: 2 PPG, MPI_Allreduce in place w/ 2 PPG, intragpu barrier:  2.727432e-03
+0: 2 PPG, MPI_Allgather w/ 1 PPG:  1.820778e-03
+0: 2 PPG, MPI_Allgather w/ 2 PPG:  1.872658e-03
+0: 2 PPG, MPI_Allgather w/ 2 PPG, intragpu barrier:  1.884665e-03
+0: 2 PPG, MPI_Allgather in place w/ 1 PPG:  1.764016e-03
+0: 2 PPG, MPI_Allgather in place w/ 2 PPG:  1.823609e-03
+0: 2 PPG, MPI_Allgather in place w/ 2 PPG, intragpu barrier:  1.830040e-03
+0: 4 Processes Per GPU, 4 GPUs Per Node
+0: Only 1 GPU Visible, But GPN is 4.  Assuming 4 gpus per node.  If GPN is not correct, rerun cmake with -DARCH_GPUS_PER_NODE=Correct#
+0: .Num nodes 8, GPN 4, Size 33554432
+0: 4 PPG, MPI_Allreduce w/ 1 PPG:  3.285587e-03
+0: 4 PPG, MPI_Allreduce w/ 4 PPG:  3.279622e-03
+0: 4 PPG, MPI_Allreduce w/ 4 PPG, intragpu barrier:  2.908380e-03
+0: 4 PPG, MPI_Allreduce in place w/ 1 PPG:  3.075133e-03
+0: 4 PPG, MPI_Allreduce in place w/ 4 PPG:  3.205459e-03
+0: 4 PPG, MPI_Allreduce in place w/ 4 PPG, intragpu barrier:  2.847507e-03
+0: 4 PPG, MPI_Allgather w/ 1 PPG:  1.818701e-03
+0: 4 PPG, MPI_Allgather w/ 4 PPG:  1.907711e-03
+0: 4 PPG, MPI_Allgather w/ 4 PPG, intragpu barrier:  1.931563e-03
+0: 4 PPG, MPI_Allgather in place w/ 1 PPG:  1.762359e-03
+0: 4 PPG, MPI_Allgather in place w/ 4 PPG:  1.852519e-03
+0: 4 PPG, MPI_Allgather in place w/ 4 PPG, intragpu barrier:  1.864118e-03
