@@ -66,7 +66,7 @@ typedef struct _MPIL_Request
     void* cpu_sendbuf; 
 	/** @brief allocate cpu buffers for copy-to-cpu algorithms **/
     void* cpu_recvbuf; 
-#endift
+#endif
 	/** @brief function pointer to MPIL_Start or MPIL_neighbor_start **/
     int (*start_function)(struct _MPIL_Request* request);
 	/** @brief function pointer to MPIL_Wait or MPIL_neighbor_wait **/
