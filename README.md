@@ -5,10 +5,11 @@ This repository performs locality-aware optimizations for standard MPI collectiv
 # Building Instructions
 
 ## Prequistites and Dependencies
-cmake 3.21
-C 99, C++ 11
-MPI
-HIP or CUDA for heterogeneous functions. 
+- CMake 3.21
+- C 11
+- C++ 11
+- MPI
+- HIP or CUDA for GPU-based optimizations, if enabled
 
 ## Building
 ```
@@ -17,36 +18,40 @@ cd build
 cmake .. <build options>
 ```
 ### Build options
-- -DBENCHMARKS (Default on) <br>
-	This option enables the building of the benchmarks in the top level of the repo. The benchmark executable are built and available for use. Input files for the benchmarks can be found in /Test_data 
-
-- -DENABLE_UNIT_TESTS (Default on) <br>
+- `-DBENCHMARKS` (Default `ON`) <br>
+	This option enables the building of the benchmarks in the top level of the repo. The benchmark executable are built and available for use. Input files for the benchmarks can be found in `<top repository level>/test_data` 
+- `-DENABLE_UNIT_TESTS` (Default `ON`) <br>
 	This option enables ctest support for quick testing of proper functionality of the library. Tests can be run by either `make test` or by running `ctest` in the build directory.
+- `-DUSE_CUDA` (Default `OFF`) <br>
+	Build the library with CUDA support. In order to use this option you may need to provide the target GPU architecture if it is not set in the environment. The specific architecture of an NVIDIA GPU can be found by searching for the GPU model on NVIDIA's [compute capability list](https://developer.nvidia.com/cuda-gpus) and supplying the compute capability via `-DCMAKE_CUDA_ARCHITECTURES`. You should ignore the decimal when supplying the architecture. For example: a GeForce RTX 4080 has a compute capability of 8.9 thus to build for it you would use `-DCMAKE_CUDA_ARCHITECTURES=89`.
+- `-DUSE_HIP` (Default `OFF`) <br>
+	Build the library with HIP support. In order to use this option you may need to provide the target GPU architecture if it is not set in the environment. The specific architecture of an AMD GPU can be found by searching for the GPU model at  [ROCM capability list](https://rocm.docs.amd.com/en/latest/reference/gpu-arch-specs.html) and supplying the compute capability via `-DCMAKE_HIP_ARCHITECTURES`. For example: `-DCMAKE_HIP_ARCHITECTURES=gfx942`
 
-- -DUSE_CUDA (Default off) <br>
-	Build the library with cuda support. In order to use this option you will additionally need to provide the target Nvidia architecture. 
-	The cuda architecture may already be set in the environment. If not it can be found by searching for the gpu model on Nvidia's [compute capability list](https://developer.nvidia.com/cuda-gpus) and supplying the compute capability as 
--DCMAKE_CUDA_ARCHITECTURES. You should ignore the decimal when supplying the architecture. For example: a GeForce RTX 4080 has a compute capability of 8.9 thus to build for it you would use `-DCMAKE_CUDA_ARCHITECTURES=89`.
+- 'DTEST_PROCS'(Default '16') <br>
+	Controls the number of processes used during ctest. 
+	
+- `DMPIRUN='x' (Default `mpirun`) <br>
+	Set the command to launch ctests. 
 
-- -DUSE_CUDA (Default off) <br>
-- -DUSE_HIP <br>
-	Build the library with HIP support. In order to use this option you will additionally need to provide the target gpu architecture. 
-	The cuda architecture may already be set in the environment. If not it can be found by searching for the gpu model at  [ROCM capability list](https://rocm.docs.amd.com/en/latest/reference/gpu-arch-specs.html) and supplying the compute capability as 
-
-- -DCMAKE_HIP_ARCHITECTURES. For example: -DCMAKE_HIP_ARCHITECTURES=gfx942
-
+- 'DGPU_AWARE' (Default `ON`) 
+	Allow the library to build with supplied GPU type (see USE_CUDA and USE_HIP) 
 
 # Using the Library
 
 ## Linking
-All publicly available structs and API are included in include/locality.h. 
-The produced shared library is locality_aware.so. 
-It can be found by cmake by including the locality_aware package if the library is installed.   
+All publicly available structs and APIs are included in `include/locality_aware.h`. 
+The produced library file will be called `liblocality_aware.<a/so>
+This project will also install a CMake module file to enable CMake to find this library for use in other projects.
 ## API
+This library offers multiple algorithms to modify the behavior of MPI alltoall collective operations. A majority of these functions share a common interface with the official functions in the MPI standard and simply utilize our MPIL prefix and MPIL objects.
+A few of the provided interfaces, do not match the standard, requiring additional information to complete the operation. 
+:
+Each of the MPIL collective operations contain at least options of algorithms to run internally. The algorithm used is defined in an variable external to the function. This allows users to swap the algorithm being run without having to change the function call. Each Specifics for the list of implemented algorithms and how to select them as shown below. 
 
 ### Selecting an algorithm
 A majority of the API calls are wrappers that invoke internal functions to complete the operation. The API calls follow the same parameter setup as the associated MPI function. 
-Each wrapper looks for a set global variable, by setting these global variables different algorithms can be used. 
+Each wrapper looks for a set global variable, by setting these global variables different algorithms can be used. The generalized call order is as follows
+ 
 There are several different possible algorithms possible for each API call. 
 for a full list of supported algorithms, look at the enums at the top of locality_aware.h
   
@@ -59,11 +64,10 @@ int MPIL_Alltoall(const void* sendbuf,
                   const int recvcount,
                   MPI_Datatype recvtype,
                   MPIL_Comm* comm);
-```
-#### Set function
-- int MPIL_Set_alltoall_algorithm(enum AlltoallMethod algorithm);
 
-#### Implemented Algorithm Combinations
+int MPIL_Set_alltoall_algorithm(enum AlltoallMethod algorithm);  
+
+enum AlltoallMethod{
     ALLTOALL_GPU_PAIRWISE,
     ALLTOALL_GPU_NONBLOCKING,
     ALLTOALL_CTC_PAIRWISE,
@@ -80,7 +84,10 @@ int MPIL_Alltoall(const void* sendbuf,
     ALLTOALL_LOCALITY_AWARE_NONBLOCKING,
     ALLTOALL_MULTILEADER_LOCALITY_PAIRWISE,
     ALLTOALL_MULTILEADER_LOCALITY_NONBLOCKING,
-    ALLTOALL_PMPI
+    ALLTOALL_PMPI                                 //Default
+};
+				  
+```
 	
 ### Alltoallv
 ```c
@@ -93,10 +100,10 @@ int MPIL_Alltoallv(const void* sendbuf,
                    const int rdispls[],
                    MPI_Datatype recvtype,
                    MPIL_Comm* comm);
-				   ```
-#### Set functions
-- int MPIL_Set_alltoallv_algorithm(enum AlltoallvMethod algorithm);
-#### Implemented Algorithm Combinations
+
+int MPIL_Set_alltoallv_algorithm(enum AlltoallvMethod algorithm)
+
+enum AlltoallvMethod{
     ALLTOALLV_GPU_PAIRWISE,
     ALLTOALLV_GPU_NONBLOCKING,
     ALLTOALLV_CTC_PAIRWISE,
@@ -105,14 +112,13 @@ int MPIL_Alltoallv(const void* sendbuf,
     ALLTOALLV_NONBLOCKING,
     ALLTOALLV_BATCH,
     ALLTOALLV_BATCH_ASYNC,
-    ALLTOALLV_PMPI
+    ALLTOALLV_PMPI           //Default
 
-### CRS Collective API
-Optimized algorithms for CRS operations. 
+}
+```
 
+### MPIL_Alltoall_CRS 
 ```c
-int MPIL_Info_init(MPIL_Info** info);
-int MPIL_Info_free(MPIL_Info** info);
 int MPIL_Alltoall_crs(const int send_nnz,
                       const int* dest,
                       const int sendcount,
@@ -125,6 +131,19 @@ int MPIL_Alltoall_crs(const int send_nnz,
                       void** recvvals_ptr,
                       MPIL_Info* xinfo,
                       MPIL_Comm* xcomm);
+
+int MPIL_Set_alltoall_crs(enum AlltoallCRSMethod algorithm);
+			
+enum AlltoallCRSMethod{
+    ALLTOALL_CRS_RMA,
+    ALLTOALL_CRS_NONBLOCKING,
+    ALLTOALL_CRS_NONBLOCKING_LOC,
+    ALLTOALL_CRS_PERSONALIZED,      //Default
+    ALLTOALL_CRS_PERSONALIZED_LOC			
+}
+```					  
+### MPIL_Alltoallv_CRS 
+```c
 int MPIL_Alltoallv_crs(const int send_nnz,
                        const int send_size,
                        const int* dest,
@@ -141,36 +160,20 @@ int MPIL_Alltoallv_crs(const int send_nnz,
                        void** recvvals_ptr,
                        MPIL_Info* xinfo,
                        MPIL_Comm* comm);
-int MPIL_Info_init(MPIL_Info** info);
-int MPIL_Info_free(MPIL_Info** info);
-```
-#### Set functions
-- int MPIL_Set_alltoall_crs(enum AlltoallCRSMethod algorithm);
-- int MPIL_Set_alltoallv_crs(enum AlltoallvCRSMethod algorithm);
+					   
+int MPIL_Set_alltoallv_crs(enum AlltoallvCRSMethod algorithm);
 
-#### Implemented Algorithm Combinations
-    ALLTOALL_CRS_RMA,
-    ALLTOALL_CRS_NONBLOCKING,
-    ALLTOALL_CRS_NONBLOCKING_LOC,
-    ALLTOALL_CRS_PERSONALIZED,
-    ALLTOALL_CRS_PERSONALIZED_LOC
+enum AlltoallvCRSMethod{
 	ALLTOALLV_CRS_NONBLOCKING,
     ALLTOALLV_CRS_NONBLOCKING_LOC,
-    ALLTOALLV_CRS_PERSONALIZED,
+    ALLTOALLV_CRS_PERSONALIZED,     //Default
     ALLTOALLV_CRS_PERSONALIZED_LOC
 
-#### Call order
-- MPIL_Info_init();
-- MPIL_Set_alltoall_crs()
-- MPIL_Alltoall_crs()
+}
+```
 
-
-
-
-### Neighborhood Collectives
-For neighborhood collectives you need to create a Neighborhood communicator this can be done by using
-- MPIL_Dist_graph_create_adjacent. Once you have a Neighborhood comm, you can store that configuration in a MPIL_Topo object using 
-- MPI_Topo_from_neighbor_comm. Once the MPIL_Topo is created you can use it directly with the 'topo' API calls. 
+### Neighborhood Collectives 
+For neighborhood collectives you need to create a Neighborhood communicator this can be done by using MPIL_Dist_graph_create_adjacent. Once you have a Neighborhood comm, you can store that configuration in a MPIL_Topo object using MPI_Topo_from_neighbor_comm.
 
 ```c 
 int MPIL_Dist_graph_create_adjacent(MPI_Comm comm_old,
@@ -183,8 +186,11 @@ int MPIL_Dist_graph_create_adjacent(MPI_Comm comm_old,
                                     MPIL_Info* info,
                                     int reorder,
                                     MPIL_Comm** comm_dist_graph_ptr);
+									
 int MPIL_Topo_from_neighbor_comm(MPIL_Comm* comm, MPIL_Topo** mpil_topo_ptr);
-
+```
+#### Neighborhood Alltoallv
+```c
 int MPIL_Neighbor_alltoallv(const void* sendbuf,
                             const int sendcounts[],
                             const int sdispls[],
@@ -203,7 +209,18 @@ int MPIL_Neighbor_alltoallv_topo(const void* sendbuf,
                                  const int rdispls[],
                                  MPI_Datatype recvtype,
                                  MPIL_Topo* topo,
-                                 MPIL_Comm* comm);							
+                                 MPIL_Comm* comm);
+
+int MPIL_Set_alltoallv_neighbor_alogorithm(enum NeighborAlltoallvMethod algorithm);
+
+enum NeighborAlltoallvMethod
+{
+    NEIGHBOR_ALLTOALLV_STANDARD,  \\Default
+    NEIGHBOR_ALLTOALLV_LOCALITY
+};
+```
+#### Persistent Neighborhood Alltoallv
+```c								 
 int MPIL_Neighbor_alltoallv_init(const void* sendbuf,
                                  const int sendcounts[],
                                  const int sdispls[],
@@ -254,11 +271,16 @@ int MPIL_Neighbor_alltoallv_init_ext_topo(const void* sendbuf,
                                           MPIL_Comm* comm,
                                           MPIL_Info* info,
                                           MPIL_Request** request_ptr);
+
+int MPIL_Set_alltoallv_neighbor_init_alogorithm(enum NeighborAlltoallvInitMethod algorithm);
+
+enum NeighborAlltoallvInitMethod
+{
+    NEIGHBOR_ALLTOALLV_INIT_STANDARD, \\DEFAULT
+    NEIGHBOR_ALLTOALLV_INIT_LOCALITY
+};
 ```
-#### Call order
-- MPIL_Dist_graph_create_adjacent()
-- MPIL_Set_alltoall_neighbor_alogrithm()
-- MPIL_Neighbor_alltoall()
+
 
 
 
@@ -289,6 +311,8 @@ int MPIL_Comm_update_locality(MPIL_Comm* xcomm, int ppn);
 int MPIL_Comm_tag(MPIL_Comm* comm, int* tag);
 int MPIL_Comm_topo_init(MPIL_Comm* xcomm);
 int MPIL_Comm_topo_free(MPIL_Comm* xcomm);
+int MPIL_Info_init(MPIL_Info** info);
+int MPIL_Info_free(MPIL_Info** info);
 ```
 # Repository Layout
 The library is split into four main parts. 
