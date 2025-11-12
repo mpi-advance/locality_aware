@@ -5,9 +5,7 @@
 extern "C" {
 #endif
 
-/** @brief struct for containing number of initized columna and overall size
-
- \todo why a new struct instead of adding key to existing MPI Info object?
+/** @brief Struct for containing number of initialized columns and overall size
 **/
 typedef struct _MPIL_Info
 {
