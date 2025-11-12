@@ -398,7 +398,7 @@ int MPIL_Neighbor_alltoallv_init_ext(const void* sendbuf,
                                      MPIL_Info* info,
                                      MPIL_Request** request_ptr);
 									 
-/** @brief wrapper around persistent version MPI_Neighbor_alltoallv that accepts an already generated topology object. 
+/** @brief Wrapper around persistent version MPI_Neighbor_alltoallv that accepts an already generated topology object. 
  *	@ingroup collective_func 
  */								 
 int MPIL_Neighbor_alltoallv_init_topo(const void* sendbuf,
@@ -414,7 +414,7 @@ int MPIL_Neighbor_alltoallv_init_topo(const void* sendbuf,
                                       MPIL_Info* info,
                                       MPIL_Request** request_ptr);
 
-/** @brief w Extended version of neighbor alltoallv_int_topo that allows you to provide global indices.  
+/** @brief Extended version of MPIL_Neighbor_alltoallv_init_topo that allows you to provide global indices.  
  *	@ingroup collective_func 
  */
 int MPIL_Neighbor_alltoallv_init_ext_topo(const void* sendbuf,
@@ -432,7 +432,7 @@ int MPIL_Neighbor_alltoallv_init_ext_topo(const void* sendbuf,
                                           MPIL_Info* info,
                                           MPIL_Request** request_ptr);
 
-/** @brief wrapper around MPI_Alltoall implementations optimized for compressed row storage matrix operations. 
+/** @brief Extended version of MPI_Alltoall optimized for compressed row storage layout. 
  *  @details
  *  Defaults to ALLTOALL_CRS_PERSONALIZED; 
  * 
@@ -451,7 +451,7 @@ int MPIL_Alltoall_crs(const int send_nnz,
                       MPIL_Info* xinfo,
                       MPIL_Comm* xcomm);
 					  
-/** @brief wrapper around MPI_Alltoallv implementations optimized for compressed row storage matrix operations. 
+/** @brief  Extended version of MPI_Alltoallv optimized for compressed row storage layout. 
  *  @details
  *  Defaults to ALLTOALLV_CRS_PERSONALIZED; 
  * 
@@ -474,8 +474,8 @@ int MPIL_Alltoallv_crs(const int send_nnz,
                        MPIL_Info* xinfo,
                        MPIL_Comm* comm);
 
-// Utility functions (used in some of the crs tests, may move internal
-/** @brief Dynamically allocates enough space for char[bytes] and returns pointer to the new alloc. 
+
+/** @brief Dynamically allocates enough space for char[bytes] and returns pointer to the new allocation. 
   * @details
   * Will cause error if bytes < 0
   * Will return null pointer if bytes == 0
@@ -484,6 +484,7 @@ int MPIL_Alltoallv_crs(const int send_nnz,
   * @return MPI_Success on a successful return. 
  */
 int MPIL_Alloc(void** pointer, const int bytes);
+
 /** @brief Frees space at pointer. 
   * @details
   *    Does nothing if supplied with nullptr. 

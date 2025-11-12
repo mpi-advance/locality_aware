@@ -10,7 +10,7 @@
 extern "C" {
 #endif
 
-/** @brief function pointer to alltoall implemenation
+/** @brief Function pointer to alltoall implemenation
  * @details 
  * Uses the parameters of standard MPI_Alltoall API, except replacing MPI_Comm with MPIL_Comm
  * most of the behavior is derived from internal parameters in MPIL_Comm.
@@ -18,7 +18,7 @@ extern "C" {
  * @param [in] sendbuf buffer containing data to send
  * @param [in] sendcount int number of items in sendbuff
  * @param [in] sendtype MPI_Datatype in sendbuff
- * @param [out] recvbuf buffer to recieve messages
+ * @param [out] recvbuf buffer to receive messages
  * @param [in] recvcount int number of items expected in recvbuff
  * @param [in] recvtype MPI_Datatype in recvbuff
  * @param [in] comm MPIL_Comm used for context
@@ -26,17 +26,19 @@ extern "C" {
 typedef int (*alltoall_ftn)(
     const void*, const int, MPI_Datatype, void*, const int, MPI_Datatype, MPIL_Comm*);
 
-/** @brief function pointer to alltoall helper function
+/** @brief Function pointer to alltoall helper function.. 
  * @details 
  * Uses the parameters of standard MPI_Alltoall API, plus a tag for additional options. 
- * ususally invoked by a function of type alltoall_ftn 
+ * usually invoked by a function of type alltoall_ftn.
+ *  
  * @param [in] sendbuf buffer containing data to send
  * @param [in] sendcount int number of items in sendbuff
  * @param [in] sendtype MPI_Datatype in sendbuff
- * @param [out] recvbuf buffer to recieve messages
+ * @param [out] recvbuf buffer to receive messages
  * @param [in] recvcount int number of items expected in recvbuff
  * @param [in] recvtype MPI_Datatype in recvbuff
  * @param [in] comm MPIL_Comm used for context
+ * @param [in] tag unique tag for matching messages. 
  **/
 typedef int (*alltoall_helper_ftn)(const void*,
                                    const int,
@@ -50,11 +52,11 @@ typedef int (*alltoall_helper_ftn)(const void*,
 //** External Wrappers
 //**//----------------------------------------------------------------------
 /** @brief Call the pairwise implementation. 
- * @details calls get_tag then call pairwise_helper with the same input parameters plus the found tag. 
+ * @details calls get_tag() then call pairwise_helper() with the same input parameters plus the found tag. 
  * @param [in] sendbuf buffer containing data to send
  * @param [in] sendcount int number of items in sendbuff
  * @param [in] sendtype MPI_Datatype in sendbuff
- * @param [out] recvbuf buffer to recieve messages
+ * @param [out] recvbuf buffer to receive messages
  * @param [in] recvcount int number of items expected in recvbuff
  * @param [in] recvtype MPI_Datatype in recvbuff
  * @param [in] comm MPIL_Comm used for context
@@ -69,12 +71,12 @@ int alltoall_pairwise(const void* sendbuf,
                       MPIL_Comm* comm);
 
 /** @brief Call the non-blocking implemenation. 
- * @details calls get_tag then call nonblocking_helper with the same input parameters plus the found tag. 
+ * @details calls get_tag then call nonblocking_helper() with the same input parameters plus the found tag. 
  *
  * @param [in] sendbuf buffer containing data to send
  * @param [in] sendcount int number of items in sendbuff
  * @param [in] sendtype MPI_Datatype in sendbuff
- * @param [out] recvbuf buffer to recieve messages
+ * @param [out] recvbuf buffer to receive messages
  * @param [in] recvcount int number of items expected in recvbuff
  * @param [in] recvtype MPI_Datatype in recvbuff
  * @param [in] comm MPIL_Comm used for context
@@ -88,14 +90,11 @@ int alltoall_nonblocking(const void* sendbuf,
                          MPI_Datatype recvtype,
                          MPIL_Comm* comm);
 
-/** @brief call alltoall_hiearchical passing pairwise_helper
- * @details 
- * 	
- *  
+/** @brief call alltoall_hiearchical passing pairwise_helper()	
  * @param [in] sendbuf buffer containing data to send
  * @param [in] sendcount int number of items in sendbuff
  * @param [in] sendtype MPI_Datatype in sendbuff
- * @param [out] recvbuf buffer to recieve messages
+ * @param [out] recvbuf buffer to receive messages
  * @param [in] recvcount int number of items expected in recvbuff
  * @param [in] recvtype MPI_Datatype in recvbuff
  * @param [in] comm MPIL_Comm used for context
@@ -109,7 +108,7 @@ int alltoall_hierarchical_pairwise(const void* sendbuf,
                                    MPI_Datatype recvtype,
                                    MPIL_Comm* comm);
 
-/** @brief call alltoall_hiearchical passing nonblocking_helper**/
+/** @brief call alltoall_hiearchical passing nonblocking_helper() **/
 int alltoall_hierarchical_nonblocking(const void* sendbuf,
                                       const int sendcount,
                                       MPI_Datatype sendtype,
@@ -118,7 +117,7 @@ int alltoall_hierarchical_nonblocking(const void* sendbuf,
                                       MPI_Datatype recvtype,
                                       MPIL_Comm* comm);
 
-/** @brief call alltoall_hiearchical passing pairwise_helper, nleaders=4**/
+/** @brief call alltoall_hiearchical() passing pairwise_helper(), nleaders=4**/
 int alltoall_multileader_pairwise(const void* sendbuf,
                                   const int sendcount,
                                   MPI_Datatype sendtype,
@@ -127,7 +126,7 @@ int alltoall_multileader_pairwise(const void* sendbuf,
                                   MPI_Datatype recvtype,
                                   MPIL_Comm* comm);
 
-/** @brief call alltoall_hiearchical passing nonblocking_helper, nleaders=4**/
+/** @brief call alltoall_hiearchical() passing nonblocking_helper(), nleaders=4**/
 int alltoall_multileader_nonblocking(const void* sendbuf,
                                      const int sendcount,
                                      MPI_Datatype sendtype,
@@ -136,7 +135,7 @@ int alltoall_multileader_nonblocking(const void* sendbuf,
                                      MPI_Datatype recvtype,
                                      MPIL_Comm* comm);
 
-/** @brief call node_aware with pairwise helper **/
+/** @brief call alltoall_node_node_aware() with pairwise_helper() **/
 int alltoall_node_aware_pairwise(const void* sendbuf,
                                  const int sendcount,
                                  MPI_Datatype sendtype,
@@ -145,7 +144,7 @@ int alltoall_node_aware_pairwise(const void* sendbuf,
                                  MPI_Datatype recvtype,
                                  MPIL_Comm* comm);
 
-/** @brief call node_aware with nonblocking helper **/
+/** @brief call alltoall_node_aware() with nonblocking_helper() **/
 int alltoall_node_aware_nonblocking(const void* sendbuf,
                                     const int sendcount,
                                     MPI_Datatype sendtype,
@@ -154,7 +153,7 @@ int alltoall_node_aware_nonblocking(const void* sendbuf,
                                     MPI_Datatype recvtype,
                                     MPIL_Comm* comm);
 
-/** @brief call locality_aware with pairwise helper, groups_per_node=4**/
+/** @brief call alltoall_locality_aware() with pairwise_helper(), groups_per_node=4**/
 int alltoall_locality_aware_pairwise(const void* sendbuf,
                                      const int sendcount,
                                      MPI_Datatype sendtype,
@@ -163,7 +162,7 @@ int alltoall_locality_aware_pairwise(const void* sendbuf,
                                      MPI_Datatype recvtype,
                                      MPIL_Comm* comm);
 
-/** @brief call locality_aware with nonblocking helper, groups_per_node=4**/
+/** @brief call alltoall_locality_aware() with nonblocking_helper(), groups_per_node=4**/
 int alltoall_locality_aware_nonblocking(const void* sendbuf,
                                         const int sendcount,
                                         MPI_Datatype sendtype,
@@ -172,7 +171,7 @@ int alltoall_locality_aware_nonblocking(const void* sendbuf,
                                         MPI_Datatype recvtype,
                                         MPIL_Comm* comm);
 
-/** @brief calls multileader_locality with pairwise helper **/
+/** @brief calls alltoall_multileader_locality() with pairwise_helper() **/
 int alltoall_multileader_locality_pairwise(const void* sendbuf,
                                            const int sendcount,
                                            MPI_Datatype sendtype,
@@ -181,7 +180,7 @@ int alltoall_multileader_locality_pairwise(const void* sendbuf,
                                            MPI_Datatype recvtype,
                                            MPIL_Comm* comm);
 
-/** @brief calls multileader_locality with nonblocking helper **/
+/** @brief calls alltoall_multileader_locality() with nonblocking_helper() **/
 int alltoall_multileader_locality_nonblocking(const void* sendbuf,
                                               const int sendcount,
                                               MPI_Datatype sendtype,
@@ -192,7 +191,7 @@ int alltoall_multileader_locality_nonblocking(const void* sendbuf,
 
 //** Intermediate Wrappers
 //**//-----------------------------------------------------------------
-/** @brief calls alltoall_locality_aware with groups_per_node=1**/
+/** @brief calls alltoall_locality_aware() with groups_per_node=1**/
 int alltoall_node_aware(alltoall_helper_ftn f,
                         const void* sendbuf,
                         const int sendcount,
@@ -202,7 +201,7 @@ int alltoall_node_aware(alltoall_helper_ftn f,
                         MPI_Datatype recvtype,
                         MPIL_Comm* comm);
 
-/** @brief wrapper around alltoall_multileader with nleaders=1)**/
+/** @brief wrapper around alltoall_multileader() with nleaders=1**/
 int alltoall_hierarchical(alltoall_helper_ftn f,
                           const void* sendbuf,
                           const int sendcount,
@@ -217,11 +216,12 @@ int alltoall_hierarchical(alltoall_helper_ftn f,
  * @param [in] sendbuf buffer containing data to send
  * @param [in] sendcount int number of items in sendbuff
  * @param [in] sendtype MPI_Datatype in sendbuff
- * @param [out] recvbuf buffer to recieve messages
+ * @param [out] recvbuf buffer to receive messages
  * @param [in] recvcount int number of items expected in recvbuff
  * @param [in] recvtype MPI_Datatype in recvbuff
  * @param [in] comm MPIL_Comm used for context
- * @return alltoall_locality_aware_helper
+ * @param [in] groups_per_node number of groups per node
+ * @return value from call to f
  **/
 int alltoall_locality_aware(alltoall_helper_ftn f,
                             const void* sendbuf,
@@ -239,7 +239,7 @@ int alltoall_locality_aware(alltoall_helper_ftn f,
  * @param [in] sendbuf buffer containing data to send
  * @param [in] sendcount int number of items in sendbuff
  * @param [in] sendtype MPI_Datatype in sendbuff
- * @param [out] recvbuf buffer to recieve messages
+ * @param [out] recvbuf buffer to receive messages
  * @param [in] recvcount int number of items expected in recvbuff
  * @param [in] recvtype MPI_Datatype in recvbuff
  * @param [in] comm MPIL_Comm used for context
@@ -261,7 +261,7 @@ int pairwise_helper(const void* sendbuf,
  * @param [in] sendbuf buffer containing data to send
  * @param [in] sendcount int number of items in sendbuff
  * @param [in] sendtype MPI_Datatype in sendbuff
- * @param [out] recvbuf buffer to recieve messages
+ * @param [out] recvbuf buffer to receive messages
  * @param [in] recvcount int number of items expected in recvbuff
  * @param [in] recvtype MPI_Datatype in recvbuff
  * @param [in] comm MPIL_Comm used for context
@@ -277,17 +277,18 @@ int nonblocking_helper(const void* sendbuf,
                        MPI_Comm comm,
                        int tag);
 
-/** @brief Use the supplied number of leader functions
+/** @brief Uses n_leaders to aggregate messages and distribute to other processes. 
  * @details 
- *   Three stage:
+ *   Number of leaders controlled by n_leader parameter. 
+ *   Communication occurs in three stages:
  *   - Each leader gathers from its grouping
  *   - Leaders exchange using supplied helper function. 
- *   - Each leader scatters back amoung its group. 
+ *   - Each leader scatters back among its group. 
  * 
  * @param [in] f pointer to helper function allows additional functionality
  * @param [in] sendcount int number of items in sendbuff
  * @param [in] sendtype MPI_Datatype in sendbuff
- * @param [out] recvbuf buffer to recieve messages
+ * @param [out] recvbuf buffer to receive messages
  * @param [in] recvcount int number of items expected in recvbuff
  * @param [in] recvtype MPI_Datatype in recvbuff
  * @param [in] comm MPIL_Comm used for context
@@ -309,7 +310,7 @@ int alltoall_multileader(alltoall_helper_ftn f,
  * @param [in] sendbuf buffer containing data to send
  * @param [in] sendcount int number of items in sendbuff
  * @param [in] sendtype MPI_Datatype in sendbuff
- * @param [out] recvbuf buffer to recieve messages
+ * @param [out] recvbuf buffer to receive messages
  * @param [in] recvcount int number of items expected in recvbuff
  * @param [in] recvtype MPI_Datatype in recvbuff
  * @param [in] comm MPIL_Comm used for context
@@ -331,28 +332,27 @@ int alltoall_locality_aware_helper(alltoall_helper_ftn f,
 
 /** @brief Multileader alltoall algorithm with topology aware grouping. 
  * @details
- *  Uses multiple leaders to gather messages based on topology 
+ *  Uses multiple leaders (currently set to 4) to gather messages based on topology 
  *  to create communication map. 
- *  Acutal communications are implemented by the supplied helper function.  
+ *  Actual communications are implemented by the supplied helper function.  
  *  Steps:
  *  - Does a node-wide gather 
  *  - repack for sends (assumes SMP ordering)
  *  - invoke helper function to perform alltoall between leaders
  *  - repacks if necessary
- *  - invoke helper function to perfrom alltoall on node 
+ *  - invoke helper function to perform alltoall on node 
  *  <br><br>
- *  Currently assumes full nodes and even procs_per_leader per node
+ *  Currently assumes full nodes and equal procs_per_leader per node
  *  
  * @param [in] f pointer to helper function allows additional functionality
  * @param [in] sendcount int number of items in sendbuff
  * @param [in] sendtype MPI_Datatype in sendbuff
- * @param [out] recvbuf buffer to recieve messages
+ * @param [out] recvbuf buffer to receive messages
  * @param [in] recvcount int number of items expected in recvbuff
  * @param [in] recvtype MPI_Datatype in recvbuff
  * @param [in] comm MPIL_Comm used for context
  * @param [tag] tag int flag used for message matching. 
  * @return returns MPI_Success  
- * \todo why hardcoded at 4 leaders_per_node?
  **/
 int alltoall_multileader_locality(alltoall_helper_ftn f,
                                   const void* sendbuf,
@@ -363,7 +363,6 @@ int alltoall_multileader_locality(alltoall_helper_ftn f,
                                   MPI_Datatype recvtype,
                                   MPIL_Comm* comm);
 
-// Calls underlying MPI implementation
 /** @brief calls underlying PMPI_Alltoall implementation **/
 int alltoall_pmpi(const void* sendbuf,
                   const int sendcount,

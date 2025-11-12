@@ -3,9 +3,6 @@
 #include "communicator/MPIL_Comm.h"
 #include "locality_aware.h"
 
-
-/** \todo Why is tag based on MPI_COMM_WORLD rather than global_comm?**/
-/** \todo Why 126?**/
 int MPIL_Comm_init(MPIL_Comm** xcomm_ptr, MPI_Comm global_comm)
 {
     int rank, num_procs;
