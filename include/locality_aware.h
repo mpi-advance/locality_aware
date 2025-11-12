@@ -187,12 +187,11 @@ int MPIL_Comm_topo_free(MPIL_Comm* xcomm);
 */
 int MPIL_Topo_from_neighbor_comm(MPIL_Comm* comm, MPIL_Topo** mpil_topo_ptr);
 
-/** @brief Subdivides global_comm into groups and desinates a communciation leader for each subgroup. 
-Create disjoint subcomms of maximum size procs_per_leader from xcomm->global_comm
+/** @brief Subdivides an MPIL_Comm into subgroups and assigns communication leader for each subgroup. 
  * @details
  *     Global communicator is split into sub-communicators of maximum size proc_per_leader.
- *     Calls MPIL_Comm_topo_init if local_comm is not set.      
- *     Leader is selected from each sub-communicator and added to xcomm-> leader_group_comm
+ *     Calls MPIL_Comm_topo_init if MPIL_Comm::local_comm is not set.      
+ *     Leader is selected from each sub-communicator and added to MPIL_Comm::leader_group_comm
  *
  * @param [in, out] xcomm MPIL_comm to divide 
  * @param [in] procs_per_leader maximum number of processes per leader 
@@ -218,24 +217,26 @@ int MPIL_Comm_leader_free(MPIL_Comm* xcomm);
  * @return MPI_Success upon successful completion. 
 .**/
 int MPIL_Comm_win_init(MPIL_Comm* xcomm, int bytes, int type_bytes);
-/** @brief delete window and free allocated memory, called by MPIL_Comm_free**/
+
+/** @brief Delete window and free allocated memory, called by MPIL_Comm_free**/
 int MPIL_Comm_win_free(MPIL_Comm* xcomm);
 
-/** @brief Initialize gpustream and bind to comm
+/** @brief Initialize GPU stream inside the communicator
  * @details
- * Initializes xcomm using MPIL_Comm_topo_init if null. 
+ * GPU Stream is mapped based on selected support. 
  * If at least one gpu is detected, creates gpuStream and binds to xcomm. 
- * Null process if GPU awareness is not active.
+ * If not built with GPU support, this function is a no-op 
  * 
- * @param [in,out] xcomm MPIL_Comm to manage stream. 
+ * @param [in,out] xcomm MPIL_Comm to initialize stream for GPU. 
  * @return MPI_Success upon successful completion. 
 .**/
+
 int MPIL_Comm_device_init(MPIL_Comm* xcomm);
-/** @brief Destroys the gpu_stream operated by xcomm
+/** @brief Destroys the gpustream operated by xcomm
  * @details
- *   Null process if GPU awareness is not active. 
+ *   If not built with GPU support, this function is a no-op 
  *
- * @param [in,out] xcomm MPIL_Comm to link to stream. 
+ * @param [in,out] xcomm MPIL_Comm object holding handle of gpustream to deallocate. 
  * @return MPI_Success upon successful completion. 
 .**/
 int MPIL_Comm_device_free(MPIL_Comm* xcomm);
@@ -243,17 +244,20 @@ int MPIL_Comm_device_free(MPIL_Comm* xcomm);
 /** @brief Resize xcomm number of requests and status arrays to be size n.**/
 int MPIL_Comm_req_resize(MPIL_Comm* xcomm, int n);
 
-/** @brief Wrapper around update_locality, see update_locality.**/
+/** @brief Wrapper around update_locality, see update_locality().**/
 int MPIL_Comm_update_locality(MPIL_Comm* xcomm, int ppn);
 
-/** @brief Wrapper around get_comm, returns tag and increments comm->tag by 1,see @get_comm.**/
+/** @brief Get current tag in communicator and then increment tag by 1. See get_comm()**/
 int MPIL_Comm_tag(MPIL_Comm* comm, int* tag);
 
 // Functions to initialize and free the MPI_Info object
+/** @brief Initializes MPIL_Info object**/
 int MPIL_Info_init(MPIL_Info** info);
+
+/** @brief Deletes MPIL_Info object**/
 int MPIL_Info_free(MPIL_Info** info);
 
-// Functions to control the MPIL_Topo object
+/** @brief Initializes and returns pointer to ::MPIL_Topo object **/
 int MPIL_Topo_init(int indegree,
                    const int sources[],
                    const int sourceweights[],
@@ -262,21 +266,29 @@ int MPIL_Topo_init(int indegree,
                    const int destweights[],
                    MPIL_Info* info,
                    MPIL_Topo** mpil_topo_ptr);
+
+/** @brief deletes ::MPIL_topo object **/
 int MPIL_Topo_free(MPIL_Topo** topo);
 
-// Functions to control the MPIL_Request object
-/**@brief Wrapper that calls MPI_start or neighbor start **/
+/**@brief Start processing the request. 
+  * @details
+  *	 Query request::start_function and call it to activate the request. 
+**/
 int MPIL_Start(MPIL_Request* request);
-/**@brief Wrapper that calls MPI_wait or neighbor wait **/
+
+/**@brief Wait for the request to complete.  
+ *  @details 
+ * Query request::wait_function and call it to wait for requests to complete. 
+**/
 int MPIL_Wait(MPIL_Request* request, MPI_Status* status);
+
+/**@brief Deallocates MPIL_Request object and any internal structures **/
 int MPIL_Request_free(MPIL_Request** request);
 
 /** @brief Set reorder value of request to value **/
 int MPIL_Request_reorder(MPIL_Request* request, int value);
 
-/** @brief Wrapper around MPI_Dist_graph_create_adjacent. 
- *	@ingroup api 
- */
+/** @brief Wrapper around MPI_Dist_graph_create_adjacent. */
 int MPIL_Dist_graph_create_adjacent(MPI_Comm comm_old,
                                     int indegree,
                                     const int sources[],
@@ -289,19 +301,20 @@ int MPIL_Dist_graph_create_adjacent(MPI_Comm comm_old,
                                     MPIL_Comm** comm_dist_graph_ptr);
 
 // Main MPIL Functions
-/** @defgroup api_core Algorithm APIs
-    @brief Wrapper functions around algorithms to fit MPI semantics
-	@details
-		Use switch statements and global variables to call
-		internal algorithm to complete the associated 
-		
-		Parameters are the same as MPI_Alltoall, just adapted to work 
-		with objects extended by the library. 
+/** @defgroup collective_func Algorithm APIs
+ *  @brief Wrapper functions around algorithms to fit MPI semantics
+ *  @details
+ *	Use switch statements and global variables to call
+ *	internal algorithm to complete the associated 
+ *		
+ *	Parameters are the same as MPI_Alltoall, just adapted to work 
+ *	with objects extended by the library. 
 **/
-/** @brief wrapper around MPI_alltoall.  
+
+/** @brief Wrapper around MPI_Alltoall.  
  *  @details
  *  Defaults to AllTOALL_PMPI
- *	@ingroup api_core 
+ *	@ingroup collective_func 
  */
 int MPIL_Alltoall(const void* sendbuf,
                   const int sendcount,
@@ -311,10 +324,10 @@ int MPIL_Alltoall(const void* sendbuf,
                   MPI_Datatype recvtype,
                   MPIL_Comm* comm);
 				  		  
-/** @brief wrapper around MPI_alltoallv.  
+/** @brief Wrapper around MPI_Alltoallv.  
  *  @details
  *  Defaults to AllTOALLV_PMPI
- *	@ingroup api_core 
+ *	@ingroup collective_func 
  */		  
 int MPIL_Alltoallv(const void* sendbuf,
                    const int sendcounts[],
@@ -326,8 +339,8 @@ int MPIL_Alltoallv(const void* sendbuf,
                    MPI_Datatype recvtype,
                    MPIL_Comm* comm);
 
-/** @brief wrapper around MPI_Neighbor_alltoallv  
- *	@ingroup api_core 
+/** @brief Wrapper around MPI_Neighbor_alltoallv  
+ *	@ingroup collective_func 
  */
 int MPIL_Neighbor_alltoallv(const void* sendbuf,
                             const int sendcounts[],
@@ -339,8 +352,8 @@ int MPIL_Neighbor_alltoallv(const void* sendbuf,
                             MPI_Datatype recvtype,
                             MPIL_Comm* comm);
 							
-/** @brief wrapper around MPI_Neighbor_alltoallv that accepts an all ready generated topology.  
- *	@ingroup api_core 
+/** @brief Wrapper around MPI_Neighbor_alltoallv that accepts an already generated topology.  
+ *	@ingroup collective_func 
  */
 int MPIL_Neighbor_alltoallv_topo(const void* sendbuf,
                                  const int sendcounts[],
@@ -353,8 +366,8 @@ int MPIL_Neighbor_alltoallv_topo(const void* sendbuf,
                                  MPIL_Topo* topo,
                                  MPIL_Comm* comm);
 
-/** @brief wrapper around persistent versions MPI_Neighbor_alltoallv.
- *	@ingroup api_core 
+/** @brief Wrapper around persistent versions MPI_Neighbor_alltoallv.
+ *	@ingroup collective_func 
  */
 int MPIL_Neighbor_alltoallv_init(const void* sendbuf,
                                  const int sendcounts[],
@@ -368,8 +381,8 @@ int MPIL_Neighbor_alltoallv_init(const void* sendbuf,
                                  MPIL_Info* info,
                                  MPIL_Request** request_ptr);
 								 
-/** @brief wrapper around persistent version MPI_Neighbor_alltoallv, accepts array of requests rather than single request for operation. 
- *	@ingroup api 
+/** @brief Extended version of neighbor alltoallv that allows you to provide global indices. 
+ *	@ingroup collective_func 
  */
 int MPIL_Neighbor_alltoallv_init_ext(const void* sendbuf,
                                      const int sendcounts[],
@@ -386,7 +399,7 @@ int MPIL_Neighbor_alltoallv_init_ext(const void* sendbuf,
                                      MPIL_Request** request_ptr);
 									 
 /** @brief wrapper around persistent version MPI_Neighbor_alltoallv that accepts an already generated topology object. 
- *	@ingroup api 
+ *	@ingroup collective_func 
  */								 
 int MPIL_Neighbor_alltoallv_init_topo(const void* sendbuf,
                                       const int sendcounts[],
@@ -401,11 +414,8 @@ int MPIL_Neighbor_alltoallv_init_topo(const void* sendbuf,
                                       MPIL_Info* info,
                                       MPIL_Request** request_ptr);
 
-/** @brief wrapper around persistent version MPI_Neighbor_alltoallv, accepts array of requests rather than single request for operation, and a already generated topology struct.  
- *  @details
- *  Defaults to ALLTOALLV_CRS_PERSONALIZED; 
- * 
- *	@ingroup api 
+/** @brief w Extended version of neighbor alltoallv_int_topo that allows you to provide global indices.  
+ *	@ingroup collective_func 
  */
 int MPIL_Neighbor_alltoallv_init_ext_topo(const void* sendbuf,
                                           const int sendcounts[],
@@ -426,7 +436,7 @@ int MPIL_Neighbor_alltoallv_init_ext_topo(const void* sendbuf,
  *  @details
  *  Defaults to ALLTOALL_CRS_PERSONALIZED; 
  * 
- *	@ingroup api_core 
+ *	@ingroup collective_func 
  */
 int MPIL_Alltoall_crs(const int send_nnz,
                       const int* dest,
@@ -445,7 +455,7 @@ int MPIL_Alltoall_crs(const int send_nnz,
  *  @details
  *  Defaults to ALLTOALLV_CRS_PERSONALIZED; 
  * 
- *	@ingroup api_core 
+ *	@ingroup collective_func 
  */					  
 int MPIL_Alltoallv_crs(const int send_nnz,
                        const int send_size,

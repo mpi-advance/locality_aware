@@ -7,7 +7,8 @@ extern "C" {
 
 /** @brief Struct to hold topology weights
     @details
-		Structure containing the same arguments as MPI_Dist_graph_create_adjacent
+		Structure containing the same arguments as MPI_Dist_graph_create_adjacent.
+		Information is cached to avoiding to rebuild communicators as often. 
 		See MPI standard: MPI_Dist_graph_create_adjacent for more details. 
 **/
 typedef struct _MPIL_Topo

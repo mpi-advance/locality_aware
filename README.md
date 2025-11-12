@@ -281,9 +281,6 @@ enum NeighborAlltoallvInitMethod
 };
 ```
 
-
-
-
 ### Structs and Classes. 
 The library provides the following opaque structs. Limited access and control of the interior of these structs is available through API calls. For more information see doxygen docs. 
 - MPIL_Comm
