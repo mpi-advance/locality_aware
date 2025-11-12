@@ -6,107 +6,109 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-/** @brief struct capable of maintaining multiple request and communicators for library operations.
+/** @brief Struct capable of maintaining multiple request and communicators for library operations.
  *  @details
- *     Protected struct, user access must be through init, get, or set style functions. 
- *     Supported operations include
- *        buffers for MPI_Windows
- *        MPI_comm slots for locality, multileader, and neighborhoods
+ *     Protected struct, external user access must be through MPIL APIs.
+ *     Supported operations include:
+ *         - Buffers for MPI_Windows
+ *         - MPI_comms for locality, multileader, and neighborhoods
  *     Contains preprocessor locked GPU aware components. 
 **/
 typedef struct _MPIL_Comm
 {
-	/**@brief global MPI comm for reference, usually MPI_COMM_WORLD**/
+	/**@brief Global MPI comm for reference, usually MPI_COMM_WORLD**/
     MPI_Comm global_comm;
 
 	/**@brief communicator containing neighbor processes**/
     MPI_Comm neighbor_comm;
 
     // For hierarchical collectives
-	/**@brief communicator for communicating inside the node**/
+	/**@brief Communicator for communicating inside the node**/
     MPI_Comm local_comm;
-	/**@brief communicator containing leader process on each node**/
+	/**@brief Communicator containing leader process on each node**/
     MPI_Comm group_comm; 
 
-	/**@brief comm containing group leaders**/
+	/**@brief Communicator containing all leaders**/
     MPI_Comm leader_comm;
-	/**@brief comm containing **/
+	/**@brief Communicator containing leaders  **/
     MPI_Comm leader_group_comm;
-	/**@brief comm containing local processes under leader**/
+	/**@brief Communicator containing local processes under leader**/
     MPI_Comm leader_local_comm;
 
-	/**@brief number of nodes in comm**/
+	/**@brief Number of nodes in comm**/
     int num_nodes;
-	/**@brief rank of process in comm**/
+	/**@brief Rank of process in comm**/
     int rank_node;
-	/**@brief processes per node**/
+	/**@brief Processes per node**/
     int ppn;
 
 	/**@brief MPI_window if using sync**/
     MPI_Win win;
-	/**@brief buffer for MPI_window**/
+	/**@brief Buffer for MPI_window**/
     char* win_array;
-	/**@brief size of win_array in bytes**/
+	/**@brief Size of win_array in bytes**/
     int win_bytes;
-	/**@brief size of the datatype in win_array in bytes**/
+	/**@brief Size of the datatype in win_array in bytes**/
     int win_type_bytes;
 
-	/**@brief array of requests using the comm **/
+	/**@brief Internal array of requests made during a blocking collective**/
     MPI_Request* requests;
-	/**@brief status the requests in this->requests**/
+	/**@brief Status the requests in requests**/
     MPI_Status* statuses;
-	/**@brief size of requests and statuses
+	
+	/**@brief Size of requests and statuses
 	   @details 
 			requests and statuses should always be the same size.
 			can be updated through MPIL_Comm_req_resize;
 	**/
     int n_requests;
-    /** @brief unique identifier for the comm **/
+    /** @brief Unique identifier for any requests using this comm (defaulting to 126)**/
     int tag;
-	/** @brief maximum size of tag allowed by the system (currently hard capped at 126)**/
+	/** @brief Maximum size of tag allowed by the system.**/
     int max_tag;
 
-	/** @brief maps rank in global_comm to rank in local_comm **/
+	/** @brief Maps rank in global_comm to rank in local_comm **/
     int* global_rank_to_local;
-	/** @brief maps rank in global_comm to node id (0 based) **/
+	/** @brief Maps rank in global_comm to node id (0 based) **/
     int* global_rank_to_node;
-	/** @brief orders ranks bases on node, node*ppn+local **/
+	/** @brief Orders ranks bases on node, node*ppn+local **/
     int* ordered_global_ranks;
 
 #ifdef GPU
-	/** @brief number of gpus on the node**/
+	/** @brief Number of gpus on the node**/
     int gpus_per_node;
-	/** @brief rank running on the gpu**/
+	/** @brief Rank running on the gpu**/
     int rank_gpu;
-    /** @brief pointer to gpuStream_t
-		@details changed to void* to assist compiling.
+    /** @brief Pointer to gpuStream_t
+		@details 
+			Changed to void* to assist compiling.
+			Actual type is gpuStream_t, changed to void* to assist compiling.
 	*/
-	// actual type is gpuStream_t, changed to void* to assist compiling.
     void* proc_stream;
 #endif
 } MPIL_Comm;
 
-/** @brief wrapper around data->global_rank_to_node**/
+/** @brief Returns the node that process proc is on(data->global_rank_to_node[proc]**/
 int get_node(const MPIL_Comm* data, const int proc);
 
-/** @brief wrapper around data->global_rank_to_local**/
+/** @brief Return the rank of proc in local communicator (using MPIL_Comm::global_rank_to_local)**/
 int get_local_proc(const MPIL_Comm* data, const int proc);
 
-/** @brief wrapper around data->ordered_global_ranks**/
+/** @brief Given a node and a rank of a process, get its rank in the global communicator**/
 int get_global_proc(const MPIL_Comm* data, const int node, const int local_proc);
 
 // For testing purposes (manually set PPN)
-/** @brief recreates internal comms given the number of processes per node
+/** @brief Recreates internal communicators given the number of processes per node
 	@details
-		frees and resets local_com and group_comm
-		splits global into local_comms of size ppn or smaller
-		remaps global rank to rank in local_comms, each node, and reorders_global
+		Frees and resets local_com and group_comm.
+		Splits MPIL_Comm::global_comm into local_comms of size ppn or smaller.
+		Remaps rank to rank in local_comms, each node, and reorders_global
 **/
 int update_locality(MPIL_Comm* xcomm, int ppn);
 
-/** @brief gets current tag from xcomm then increments xcomm->tag 
+/** @brief Gets current tag from xcomm then increments MPIL_Comm::tag 
 	@details
-	  invoked externally by MPIL_Comm_get_tag
+	  Invoked externally by MPIL_Comm_get_tag
 	@param [in, out] xcomm communicator to query and updated
 	@param [out] tag value of xcomm->tag before the operations
 	@return MPI_SUCCESS
