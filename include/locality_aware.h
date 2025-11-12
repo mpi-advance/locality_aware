@@ -14,27 +14,26 @@ typedef struct _MPIL_Topo MPIL_Topo;
 typedef struct _MPIL_Request MPIL_Request;
 
 /** \defgroup alg_enum Algorithm enumerations
-    @brief Enumerations of implemented algorithms 
-	@details Each member has
-	one or more descriptors after the main function
-	that change the underlying algorithm. 
-	When supplied to the algorithm selection function. 
-		<br> STANDARD: Uses standard collective operation
-		<br>PAIRWISE: Uses Pairwise communication pattern. 
-		<br>NONBLOCKING: Uses non-blocking communication internally. 
-		<br>HIERARCHICAL: Local groups???
-		<br>MULTILEADER: Separates world into subgroups ???
-		<br>LOCALITY_AWARE|LOCALITY|LOC: Locality_aware  
-		<br>NODE_AWARE: Partial locality awareness (limited to node level locality)
-		<br>BATCH: Aggregate messages
-		<br>ASYNC: Uses RMA for one-sided communication 
-		<br>GPU: GPU aware
-		<br>CTC: Copy to Cpu
-		<br>INIT: Persistent Communication used internally. 
-		<br>PMPI: Calls the underlying MPI implementation. 
+ *    @brief Enumerations of implemented algorithms 
+ *	@details Each member has
+ *	one or more descriptors after the main function
+ *	that change the underlying algorithm. 
+ *	When supplied to the algorithm selection function. 
+ *		<br> STANDARD: Uses standard collective operation
+ *		<br>PAIRWISE: Uses Pairwise communication pattern. 
+ *		<br>NONBLOCKING: Uses non-blocking communication internally. 
+ *		<br>HIERARCHICAL: Single leader aggregates messages before redistribution
+ *		<br>MULTILEADER: Group of leaders aggregates message among themselves  before distribution. 
+ *		<br>LOCALITY_AWARE|LOCALITY|LOC: Uses hardware architecture based  *communication tree for operations.    
+ *		<br>NODE_AWARE: Partial locality awareness (limited to node level locality)
+ *		<br>BATCH: Aggregate messages for bulk send
+ *		<br>ASYNC: Uses RMA for one-sided communication 
+ *		<br>GPU: Offload communication to GPU 
+ *		<br>CTC: Copy messages from gpu to cpu before sending. 
+ *		<br>INIT: Persistent Communication used internally. 
+ *		<br>PMPI: Calls the underlying MPI implementation. 
 **/
 
-/* Enums for listing of implemented algorithms */
 /** @brief Enumeration of implemented alltoall algorithms @ingroup alg_enum**/
 enum AlltoallMethod
 {
@@ -109,10 +108,8 @@ enum AlltoallvCRSMethod
     ALLTOALLV_CRS_PERSONALIZED_LOC
 };
 
-/* Create global variables for algorithm selection. */
 /** \defgroup globals Algorithm_switches
- *@brief global variables used to select which algorithms to use 
- *	inside MPIL API calls.
+ *@brief Global variables used to select which algorithms to use inside MPIL API calls.
  *@{
 */
 extern enum AlltoallMethod mpil_alltoall_implementation;
@@ -123,11 +120,13 @@ extern enum AlltoallCRSMethod mpil_alltoall_crs_implementation;
 extern enum AlltoallvCRSMethod mpil_alltoallv_crs_implementation;
  /**@}*/
  
-/* Algorithm selection functions. */
+
 /** \defgroup global_setters algorithm_set_functions 
  * @brief Functions to set global settings to call a chosen algorithm.
- *        Each accepts an enumerated value from one of the Algorithm enumerations.
- *        If an invalid value is provided, called MPIL functions will use their default algorithm. 
+ * @details
+ * Each accepts an enumerated value from one of the Algorithm enumerations.
+ * If an invalid value is provided, called MPIL functions will use their default algorithm. 
+ *
  * @{
 */
 int MPIL_Set_alltoall_algorithm(enum AlltoallMethod algorithm);
@@ -139,10 +138,9 @@ int MPIL_Set_alltoall_crs(enum AlltoallCRSMethod algorithm);
 int MPIL_Set_alltoallv_crs(enum AlltoallvCRSMethod algorithm);
  /**@}*/
 
-// Functions to control various versions of the MPIL_Comm object---------------------
-/** @brief allocate and initialize MPIL_Comm object at xcomm using global_comm as a parent. 
+/**@brief Allocate and initialize MPIL_Comm object at xcomm using global_comm as a parent. 
  * @details
- *   sets xcomm->global_comm to global_comm
+ *   Will set xcomm->global_comm to global_comm and 
  *   sets tag value up to 126 based on MPI_Comm_world
  * 
  * @param [in] global_comm parent communicator
@@ -151,58 +149,58 @@ int MPIL_Set_alltoallv_crs(enum AlltoallvCRSMethod algorithm);
 .**/
 int MPIL_Comm_init(MPIL_Comm** xcomm_ptr, MPI_Comm global_comm);
 
-/** @brief free MPIL_Comm and all contained structs. 
+/** @brief Free MPIL_Comm and all contained structs. 
  * @param [in, out] xcomm_ptr pointer to xcomm object to delete.  
  * @return MPI_Success upon successful completion. 
 .**/
 int MPIL_Comm_free(MPIL_Comm** xcomm_ptr);
 
-/** @brief Create comm for communication between processes with a shared memory pool. 
+/** @brief Create comm for communication between processes on the same node. 
  * @details
- *     sets up local_comm
- *     Gather arrays for get_node, get_local, and get_global methods <br>
- *     These arrays allow for these methods to work with any ordering <br>
- *     No longer relying on SMP ordering of processes to nodes! <br>
- *     Does rely on constant ppn <br>
+ *     Sets up LocalityComm by  gathering arrays for get_node, get_local, and get_global methods.
+ *     These arrays allow for these methods to work with any ordering.
+ *     No longer relying on SMP ordering of processes to nodes!
+ *     This functions assumes all nodes have the same number of processes per node. 
  * 
  * @param [in, out] xcomm MPIL_comm to modify
  * @return MPI_Success upon successful completion. 
 .**/
 int MPIL_Comm_topo_init(MPIL_Comm* xcomm);
 
-/** @brief delete local_comms
- * @details called by MPIL_Comm_free
- *
+/** @brief Delete local_comms
+ * @details 
+ *   Called by MPIL_Comm_free.
+ *   Deletes MPIL_topo object stored by xcomm. 
  * @param [in, out] xcomm MPIL_comm to modify
  * @return MPI_Success upon successful completion. 
 */
 int MPIL_Comm_topo_free(MPIL_Comm* xcomm);
 
-/** @brief uses MPI neighbor functions to setup MPIL_Topo
- * @details called by MPIL_Comm_free
- *    Uses neighbor_comm inside xcomm to generate MPIL_Topo object. 
- *    calls MPI_Dist_graph_neighbors_count and MPI_Dist_graph_neighbors. 
+/** @brief Generates MPIL_Topo from using comm object returned from MPIL_Dist_graph_create_adjacent.
+ * @details 
+ *    Uses neighbor_comm inside comm to generate MPIL_Topo object. 
+ *    Calls MPI_Dist_graph_neighbors_count and MPI_Dist_graph_neighbors. 
  *		
- *    MPI_Dist_graph_neighbors
- * @param [in] xcomm MPIL_comm object with set neighbor_comm 
+ * @param [in] comm MPIL_comm object with set neighbor_comm 
  * @param [out] mpil_topo_ptr pointer to generated MPIL_Topo struct
  * @return MPI_Success upon successful completion. 
 */
 int MPIL_Topo_from_neighbor_comm(MPIL_Comm* comm, MPIL_Topo** mpil_topo_ptr);
 
-/** @brief Create disjoint subcomms of maximum size procs_per_leader from xcomm->global_comm
+/** @brief Subdivides global_comm into groups and desinates a communciation leader for each subgroup. 
+Create disjoint subcomms of maximum size procs_per_leader from xcomm->global_comm
  * @details
- *     splits global comm into subcoms of maximum size proc_per_leader
- *     Leader is selected from each subcomms, leaders communicate vai leader_group_comm
- *     calls MPIL_Comm_topo_init if local_comm is not set. 
- *     Leaders gather from leader_local_comm
- * 
+ *     Global communicator is split into sub-communicators of maximum size proc_per_leader.
+ *     Calls MPIL_Comm_topo_init if local_comm is not set.      
+ *     Leader is selected from each sub-communicator and added to xcomm-> leader_group_comm
+ *
  * @param [in, out] xcomm MPIL_comm to divide 
- * @param [in, out] procs_per_leader maximum number of processes per leader 
+ * @param [in] procs_per_leader maximum number of processes per leader 
  * @return MPI_Success upon successful completion. 
 .**/
 int MPIL_Comm_leader_init(MPIL_Comm* xcomm, int procs_per_leader);
-/** @brief free MPI communicators created as part of hierarchical or multi-leader setups.  
+
+/** @brief Free MPI communicators created as part of hierarchical or multi-leader setups.  
  * @details
  *    Called by MPIL_Comm_free 
  * @param [in, out] MPIL_Comm  
@@ -210,9 +208,9 @@ int MPIL_Comm_leader_init(MPIL_Comm* xcomm, int procs_per_leader);
 .**/
 int MPIL_Comm_leader_free(MPIL_Comm* xcomm);
 
-/** @brief create a window for one-sided communication. 
+/** @brief Create a window for one-sided communication. 
  * @details 
- *    allocate memory and create MPI_Window.    
+ *    Allocate memory and create MPI_Window.    
  * 
  * @param [in, out] xcomm
  * @param [in] bytes size of windows in bytes
@@ -223,7 +221,7 @@ int MPIL_Comm_win_init(MPIL_Comm* xcomm, int bytes, int type_bytes);
 /** @brief delete window and free allocated memory, called by MPIL_Comm_free**/
 int MPIL_Comm_win_free(MPIL_Comm* xcomm);
 
-/** @brief initialize gpustream and bind to comm
+/** @brief Initialize gpustream and bind to comm
  * @details
  * Initializes xcomm using MPIL_Comm_topo_init if null. 
  * If at least one gpu is detected, creates gpuStream and binds to xcomm. 
@@ -233,7 +231,7 @@ int MPIL_Comm_win_free(MPIL_Comm* xcomm);
  * @return MPI_Success upon successful completion. 
 .**/
 int MPIL_Comm_device_init(MPIL_Comm* xcomm);
-/** @brief destroys the gpu_stream operated by xcomm
+/** @brief Destroys the gpu_stream operated by xcomm
  * @details
  *   Null process if GPU awareness is not active. 
  *
@@ -242,13 +240,13 @@ int MPIL_Comm_device_init(MPIL_Comm* xcomm);
 .**/
 int MPIL_Comm_device_free(MPIL_Comm* xcomm);
 
-/** @brief resize xcomm number of requests and status arrays to be size n.**/
+/** @brief Resize xcomm number of requests and status arrays to be size n.**/
 int MPIL_Comm_req_resize(MPIL_Comm* xcomm, int n);
 
-/** @brief wrapper around update_locality, see update_locality.**/
+/** @brief Wrapper around update_locality, see update_locality.**/
 int MPIL_Comm_update_locality(MPIL_Comm* xcomm, int ppn);
 
-/** @brief wrapper around get_comm, returns tag and increments comm->tag by 1,see @get_comm.**/
+/** @brief Wrapper around get_comm, returns tag and increments comm->tag by 1,see @get_comm.**/
 int MPIL_Comm_tag(MPIL_Comm* comm, int* tag);
 
 // Functions to initialize and free the MPI_Info object
@@ -267,16 +265,16 @@ int MPIL_Topo_init(int indegree,
 int MPIL_Topo_free(MPIL_Topo** topo);
 
 // Functions to control the MPIL_Request object
-/**@brief wrapper that calls MPI_start or neighbor start **/
+/**@brief Wrapper that calls MPI_start or neighbor start **/
 int MPIL_Start(MPIL_Request* request);
-/**@brief wrapper that calls MPI_wait or neighbor wait **/
+/**@brief Wrapper that calls MPI_wait or neighbor wait **/
 int MPIL_Wait(MPIL_Request* request, MPI_Status* status);
 int MPIL_Request_free(MPIL_Request** request);
 
-/** @brief set reorder value of request to value **/
+/** @brief Set reorder value of request to value **/
 int MPIL_Request_reorder(MPIL_Request* request, int value);
 
-/** @brief wrapper around MPI_Dist_graph_create_adjacent. 
+/** @brief Wrapper around MPI_Dist_graph_create_adjacent. 
  *	@ingroup api 
  */
 int MPIL_Dist_graph_create_adjacent(MPI_Comm comm_old,
