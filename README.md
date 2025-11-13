@@ -1,10 +1,11 @@
 # Overview
-This repository performs locality-aware optimizations for standard MPI collectives as well as neighborhood collectives.
+The locality_aware repository offers locality-aware optimizations for the standard and neighborhood MPI Alltoall collective. This library also provides these optimizations for the the "v" variants of these collectives.
 
 
 # Building Instructions
+The locality_aware library is a straightforward CMake projects with modest dependencies.
 
-## Prequistites and Dependencies
+## Software Dependencies
 - CMake 3.21
 - C 11
 - C++ 11
@@ -15,11 +16,11 @@ This repository performs locality-aware optimizations for standard MPI collectiv
 ```
 mkdir build
 cd build
-cmake .. <build options>
+cmake <build options> ..
 ```
 ### Build options
-- `DGPU_AWARE` (Default `ON`) 
-	Allow the library to build with supplied GPU type if available (see USE_CUDA and USE_HIP) 
+- `-DGPU_AWARE` (Default `ON`) <br>
+    Allow the library to build with supplied GPU type if available (see USE_CUDA and USE_HIP) 
 - `-DUSE_CUDA` (Default `OFF`) <br>
 	Build the library with CUDA support. In order to use this option you may need to provide the target GPU architecture if it is not set in the environment. The specific architecture of an NVIDIA GPU can be found by searching for the GPU model on NVIDIA's [compute capability list](https://developer.nvidia.com/cuda-gpus) and supplying the compute capability via `-DCMAKE_CUDA_ARCHITECTURES`. You should ignore the decimal when supplying the architecture. For example: a GeForce RTX 4080 has a compute capability of 8.9 thus to build for it you would use `-DCMAKE_CUDA_ARCHITECTURES=89`.
 - `-DUSE_HIP` (Default `OFF`) <br>
@@ -36,21 +37,17 @@ cmake .. <build options>
 
 # Using the Library
 
-## Linking
-All publicly available structs and APIs are included in `include/locality_aware.h`. 
-The produced library file will be called `liblocality_aware.<a/so>`
-This project will also install a CMake module file to enable CMake to find this library for use in other projects.
+All user-facing structs and APIs can be found in repository file: `include/locality_aware.h`. 
+The produced library file will be called `liblocality_aware.<a/so>`. This project will also install a CMake module file to enable CMake to find the locality_aware library for use in other projects.
 
-## API
-This library offers multiple algorithms to modify the behavior of some MPI_Alltoall and MPIL_Alltoallv collective operations. A majority of these functions share a common interface with the official functions in the MPI standard and simply utilize our MPIL prefix and MPIL objects.
-:
-A few of the provided interfaces, do not have an existing entry in the standard and  require additional information. See internal documentation for function details.  
-:
-Each of the MPIL collective operations contain at least options of algorithms to run internally. The algorithm used is defined in an variable external to the function. This allows users to swap the algorithm being run without having to change the function call. Each Specifics for the list of implemented algorithms and how to select them as shown below. 
+## APIs
+This library offers multiple algorithms to modify the behavior of MPI_Alltoall and MPIL_Alltoallv collective operations. A majority of these functions share a common interface with the official functions in the MPI standard and simply utilize our MPIL prefix, whiles require a few more inputs and/or MPIL-specific objects. The latter APIs do not have an existing entry in the MPI standard to describe the input parameters, so please see internal documentation for function details.  
+
+Each of the MPIL collective operations contain a few options of algorithms to run internally. The algorithm used is defined in an variable external to the function and can be changed at the user level to swap the algorithm being run underneath. The set of available algorithm options available for each call, and how to select them, are shown below. 
 
 ### Selecting an algorithm
 A majority of the API calls are wrappers that invoke internal functions to complete the operation. The API calls follow the same parameter setup as the associated MPI function. 
-Each wrapper looks for a set global variable to determine which algorithm to use. Users can set these global variables using the MPIL_Set functions. Once the global value is set, all calls of the associated alltoall operation will use the new algorithm, until the global is changed. If no algorithm is selected or an invalid enum is provided, each function uses the default algorithm noted below. 
+Each wrapper looks for a set global variable to determine which algorithm to use. Users can set these global variables using the `MPIL_Set_<>` functions, after which all calls of the associated alltoall operation will use the new algorithm. If no algorithm is selected or an invalid enum is provided, each function uses the default algorithm noted below. 
   
 ### Alltoall
 ```c
@@ -65,7 +62,7 @@ int MPIL_Alltoall(const void* sendbuf,
 int MPIL_Set_alltoall_algorithm(enum AlltoallMethod algorithm);  
 
 enum AlltoallMethod{
-    ALLTOALL_GPU_PAIRWISE,
+    ALLTOALL_GPU_PAIRWISE,                  // Default
     ALLTOALL_GPU_NONBLOCKING,
     ALLTOALL_CTC_PAIRWISE,
     ALLTOALL_CTC_NONBLOCKING,
@@ -81,9 +78,8 @@ enum AlltoallMethod{
     ALLTOALL_LOCALITY_AWARE_NONBLOCKING,
     ALLTOALL_MULTILEADER_LOCALITY_PAIRWISE,
     ALLTOALL_MULTILEADER_LOCALITY_NONBLOCKING,
-    ALLTOALL_PMPI                                 //Default
-};
-				  
+    ALLTOALL_PMPI
+};		  
 ```
 	
 ### Alltoallv
@@ -101,7 +97,7 @@ int MPIL_Alltoallv(const void* sendbuf,
 int MPIL_Set_alltoallv_algorithm(enum AlltoallvMethod algorithm)
 
 enum AlltoallvMethod{
-    ALLTOALLV_GPU_PAIRWISE,
+    ALLTOALLV_GPU_PAIRWISE,    // Default
     ALLTOALLV_GPU_NONBLOCKING,
     ALLTOALLV_CTC_PAIRWISE,
     ALLTOALLV_CTC_NONBLOCKING,
@@ -109,12 +105,14 @@ enum AlltoallvMethod{
     ALLTOALLV_NONBLOCKING,
     ALLTOALLV_BATCH,
     ALLTOALLV_BATCH_ASYNC,
-    ALLTOALLV_PMPI           //Default
-
+    ALLTOALLV_PMPI
 }
 ```
 
-### MPIL_Alltoall_CRS 
+### Compressed-row Storage Alltoall Variants
+
+The locality_aware library also offers an alltoall and alltoallv variant that has been modified to work specifically with compressed row storage layout. These calls do require additional parameters than the normal alltoall call (see the header file for more details).
+
 ```c
 int MPIL_Alltoall_crs(const int send_nnz,
                       const int* dest,
@@ -135,12 +133,10 @@ enum AlltoallCRSMethod{
     ALLTOALL_CRS_RMA,
     ALLTOALL_CRS_NONBLOCKING,
     ALLTOALL_CRS_NONBLOCKING_LOC,
-    ALLTOALL_CRS_PERSONALIZED,      //Default
+    ALLTOALL_CRS_PERSONALIZED,      // Default
     ALLTOALL_CRS_PERSONALIZED_LOC			
 }
-```					  
-### MPIL_Alltoallv_CRS 
-```c
+
 int MPIL_Alltoallv_crs(const int send_nnz,
                        const int send_size,
                        const int* dest,
@@ -163,14 +159,14 @@ int MPIL_Set_alltoallv_crs(enum AlltoallvCRSMethod algorithm);
 enum AlltoallvCRSMethod{
 	ALLTOALLV_CRS_NONBLOCKING,
     ALLTOALLV_CRS_NONBLOCKING_LOC,
-    ALLTOALLV_CRS_PERSONALIZED,     //Default
+    ALLTOALLV_CRS_PERSONALIZED,     // Default
     ALLTOALLV_CRS_PERSONALIZED_LOC
 
 }
 ```
 
 ### Neighborhood Collectives 
-For neighborhood collectives you need to create a Neighborhood communicator before the opration. This can be done by using MPIL_Dist_graph_create_adjacent, in the same way as its MPI counterpart. Once you have a Neighborhood comm, you can store that configuration in a MPIL_Topo object using MPI_Topo_from_neighbor_comm. This allows reuse of the generated information without having to regenerate the communicator. 
+For neighborhood collectives, you first need to create a neighborhood communicator before the opration. This can be done by using `MPIL_Dist_graph_create_adjacent`, in the same way as its MPI counterpart. In addition to `MPIL_Neighbor_alltoallv`, the locality_aware library offers a variant on the neighbor alltoall that takes a normal (MPIL) communicator and an additional object that specifies the topology. This object (`MPIL_Topo`) allows for a first-class topology object that is not tied to a communicator, and thus could be easily adjusted or regenrated without needing a new communicator. If you have already created a neighborhood communicator, you can use `MPIL_Topo_from_neighbor_comm` to copy the topology object inside the communicator.
 
 ```c 
 int MPIL_Dist_graph_create_adjacent(MPI_Comm comm_old,
@@ -185,9 +181,7 @@ int MPIL_Dist_graph_create_adjacent(MPI_Comm comm_old,
                                     MPIL_Comm** comm_dist_graph_ptr);
 									
 int MPIL_Topo_from_neighbor_comm(MPIL_Comm* comm, MPIL_Topo** mpil_topo_ptr);
-```
-#### Neighborhood Alltoallv
-```c
+
 int MPIL_Neighbor_alltoallv(const void* sendbuf,
                             const int sendcounts[],
                             const int sdispls[],
@@ -212,11 +206,13 @@ int MPIL_Set_alltoallv_neighbor_alogorithm(enum NeighborAlltoallvMethod algorith
 
 enum NeighborAlltoallvMethod
 {
-    NEIGHBOR_ALLTOALLV_STANDARD,  \\Default
+    NEIGHBOR_ALLTOALLV_STANDARD,  // Default
     NEIGHBOR_ALLTOALLV_LOCALITY
 };
 ```
 #### Persistent Neighborhood Alltoallv
+There are also persistent versions of the nieghborhood alltoallv collectives:
+
 ```c								 
 int MPIL_Neighbor_alltoallv_init(const void* sendbuf,
                                  const int sendcounts[],
@@ -273,13 +269,13 @@ int MPIL_Set_alltoallv_neighbor_init_alogorithm(enum NeighborAlltoallvInitMethod
 
 enum NeighborAlltoallvInitMethod
 {
-    NEIGHBOR_ALLTOALLV_INIT_STANDARD, \\DEFAULT
+    NEIGHBOR_ALLTOALLV_INIT_STANDARD, // DEFAULT
     NEIGHBOR_ALLTOALLV_INIT_LOCALITY
 };
 ```
 
 ### Structs and Classes. 
-The library provides the following opaque structs. Limited access and control of the interior of these structs is available through API calls. For more information see doxygen docs. 
+The library provides the following opaque structs. Limited access and control of the interior of these structs is available through API calls. For more information, please see the doxygen documentation. 
 - MPIL_Comm
 - MPIL_Info
 - MPIL_Topo
@@ -309,7 +305,7 @@ int MPIL_Info_init(MPIL_Info** info);
 int MPIL_Info_free(MPIL_Info** info);
 ```
 # Repository Layout
-The Repository is laid out as follows
+The locality_aware repository is laid out as follows:
 - *Include* 
 - *Benchmarks* Contains source code for several benchmarks used in publications.
 - *Test Data* Contains input files for testing of Benchmarks. 
