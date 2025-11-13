@@ -28,11 +28,11 @@ typedef struct _MPIL_Comm
 	/**@brief Communicator containing leader process on each node**/
     MPI_Comm group_comm; 
 
-	/**@brief Communicator containing all leaders**/
+	/**@brief Communicator containing a single leader and its subordinates**/
     MPI_Comm leader_comm;
-	/**@brief Communicator containing leaders  **/
+	/**@brief Communicator containing all leaders **/
     MPI_Comm leader_group_comm;
-	/**@brief Communicator containing local processes under leader**/
+	/**@brief Communicator containing all leaders on a single node**/
     MPI_Comm leader_local_comm;
 
 	/**@brief Number of nodes in comm**/
