@@ -142,7 +142,6 @@ void init_locality(const int n_sends,
 
     // Copy to pointer for return
     request->locality = locality_comm;
-    request->tag      = locality_comm->global_comm->tag;
 }
 #ifdef __cplusplus
 }
