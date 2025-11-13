@@ -434,9 +434,26 @@ int MPIL_Neighbor_alltoallv_init_ext_topo(const void* sendbuf,
 
 /** @brief Extended version of MPI_Alltoall optimized for compressed row storage layout. 
  *  @details
- *  Defaults to ALLTOALL_CRS_PERSONALIZED; 
+ *  Sets up dynamic communication tree based on row sparsity in the supplied matrix.  	
  * 
- *	@ingroup collective_func 
+ *  
+ *
+ *  Defaults to ALLTOALL_CRS_PERSONALIZED;
+ *	@ingroup collective_func
+ *  
+ *  @param [in] send_nnz Number of dynamic sends. 
+ *  @param [in] dest Destination of the messages
+ *  @param [in] sendcount Send per message count
+ *  @param [in] sendtype Datatype being sent
+ *  @param [in] sendvals Data to be sent. 
+ *  @param [in,out] recv_nnz Number of dynamic recvs
+ *  @param [out] src_ptr Destinations of messages to be recieved
+ *  @param [out] recvcount Receives per-message count
+ *  @param [out] recvtype Datatype being recieved
+ *  @param [out] recvvals_ptr Data to receive
+ *  @param [in] xinfo
+ *  @param [in] xcomm
+ *  @return MPI_Success
  */
 int MPIL_Alltoall_crs(const int send_nnz,
                       const int* dest,
@@ -456,7 +473,22 @@ int MPIL_Alltoall_crs(const int send_nnz,
  *  Defaults to ALLTOALLV_CRS_PERSONALIZED; 
  * 
  *	@ingroup collective_func 
- */					  
+ *  @param [in] send_nnz Number of dynamic sends. 
+ *  @param [in] dest Destination of the messages
+ *  @param [in] sendcount Send per message count
+ *  @param [in] sdispls Displacements of sent messages. 
+ *  @param [in] sendtype Datatype being sent
+ *  @param [in] sendvals Data to be sent. 
+ *  @param [in, out] recv_nnz Number of dynamic receives
+ *  @param [in, out] size of dynamic receives 
+ *  @param [out] src_ptr Destination for received message
+ *  @param [out] recvcount Receives per-message count
+ *  @param [out] recvtype Datatype being received
+ *  @param [out] recvvals_ptr Data to receive
+ *  @param [in] xinfo
+ *  @param [in] xcomm
+ *  @return MPI_Success
+ */				  
 int MPIL_Alltoallv_crs(const int send_nnz,
                        const int send_size,
                        const int* dest,

@@ -18,42 +18,39 @@ cd build
 cmake .. <build options>
 ```
 ### Build options
-- `-DBENCHMARKS` (Default `ON`) <br>
-	This option enables the building of the benchmarks in the top level of the repo. The benchmark executable are built and available for use. Input files for the benchmarks can be found in `<top repository level>/test_data` 
-- `-DENABLE_UNIT_TESTS` (Default `ON`) <br>
-	This option enables ctest support for quick testing of proper functionality of the library. Tests can be run by either `make test` or by running `ctest` in the build directory.
+- `DGPU_AWARE` (Default `ON`) 
+	Allow the library to build with supplied GPU type if available (see USE_CUDA and USE_HIP) 
 - `-DUSE_CUDA` (Default `OFF`) <br>
 	Build the library with CUDA support. In order to use this option you may need to provide the target GPU architecture if it is not set in the environment. The specific architecture of an NVIDIA GPU can be found by searching for the GPU model on NVIDIA's [compute capability list](https://developer.nvidia.com/cuda-gpus) and supplying the compute capability via `-DCMAKE_CUDA_ARCHITECTURES`. You should ignore the decimal when supplying the architecture. For example: a GeForce RTX 4080 has a compute capability of 8.9 thus to build for it you would use `-DCMAKE_CUDA_ARCHITECTURES=89`.
 - `-DUSE_HIP` (Default `OFF`) <br>
 	Build the library with HIP support. In order to use this option you may need to provide the target GPU architecture if it is not set in the environment. The specific architecture of an AMD GPU can be found by searching for the GPU model at  [ROCM capability list](https://rocm.docs.amd.com/en/latest/reference/gpu-arch-specs.html) and supplying the compute capability via `-DCMAKE_HIP_ARCHITECTURES`. For example: `-DCMAKE_HIP_ARCHITECTURES=gfx942`
+- `-DBENCHMARKS` (Default `ON`) <br>
+	This option enables the building of the benchmarks in the top level of the repo. The benchmark executable are built and available for use. Input files for the benchmarks can be found in `<top repository level>/test_data` 
+- `-DENABLE_UNIT_TESTS` (Default `ON`) <br>
+	This option enables ctest support for quick testing of proper functionality of the library. Tests can be run by either `make test` or by running `ctest` in the build directory.
+- `-DTEST_PROCS`(Default `16`) <br>
+	Controls the number of processes used during ctests.
+- `-DMPIRUN` (Default `mpirun`) <br>
+	Set the command to used to run ctests.  
 
-- 'DTEST_PROCS'(Default '16') <br>
-	Controls the number of processes used during ctest. 
-	
-- `DMPIRUN='x' (Default `mpirun`) <br>
-	Set the command to launch ctests. 
-
-- 'DGPU_AWARE' (Default `ON`) 
-	Allow the library to build with supplied GPU type (see USE_CUDA and USE_HIP) 
 
 # Using the Library
 
 ## Linking
 All publicly available structs and APIs are included in `include/locality_aware.h`. 
-The produced library file will be called `liblocality_aware.<a/so>
+The produced library file will be called `liblocality_aware.<a/so>`
 This project will also install a CMake module file to enable CMake to find this library for use in other projects.
+
 ## API
-This library offers multiple algorithms to modify the behavior of MPI alltoall collective operations. A majority of these functions share a common interface with the official functions in the MPI standard and simply utilize our MPIL prefix and MPIL objects.
-A few of the provided interfaces, do not match the standard, requiring additional information to complete the operation. 
+This library offers multiple algorithms to modify the behavior of some MPI_Alltoall and MPIL_Alltoallv collective operations. A majority of these functions share a common interface with the official functions in the MPI standard and simply utilize our MPIL prefix and MPIL objects.
+:
+A few of the provided interfaces, do not have an existing entry in the standard and  require additional information. See internal documentation for function details.  
 :
 Each of the MPIL collective operations contain at least options of algorithms to run internally. The algorithm used is defined in an variable external to the function. This allows users to swap the algorithm being run without having to change the function call. Each Specifics for the list of implemented algorithms and how to select them as shown below. 
 
 ### Selecting an algorithm
 A majority of the API calls are wrappers that invoke internal functions to complete the operation. The API calls follow the same parameter setup as the associated MPI function. 
-Each wrapper looks for a set global variable, by setting these global variables different algorithms can be used. The generalized call order is as follows
- 
-There are several different possible algorithms possible for each API call. 
-for a full list of supported algorithms, look at the enums at the top of locality_aware.h
+Each wrapper looks for a set global variable to determine which algorithm to use. Users can set these global variables using the MPIL_Set functions. Once the global value is set, all calls of the associated alltoall operation will use the new algorithm, until the global is changed. If no algorithm is selected or an invalid enum is provided, each function uses the default algorithm noted below. 
   
 ### Alltoall
 ```c
@@ -173,7 +170,7 @@ enum AlltoallvCRSMethod{
 ```
 
 ### Neighborhood Collectives 
-For neighborhood collectives you need to create a Neighborhood communicator this can be done by using MPIL_Dist_graph_create_adjacent. Once you have a Neighborhood comm, you can store that configuration in a MPIL_Topo object using MPI_Topo_from_neighbor_comm.
+For neighborhood collectives you need to create a Neighborhood communicator before the opration. This can be done by using MPIL_Dist_graph_create_adjacent, in the same way as its MPI counterpart. Once you have a Neighborhood comm, you can store that configuration in a MPIL_Topo object using MPI_Topo_from_neighbor_comm. This allows reuse of the generated information without having to regenerate the communicator. 
 
 ```c 
 int MPIL_Dist_graph_create_adjacent(MPI_Comm comm_old,
@@ -312,13 +309,15 @@ int MPIL_Info_init(MPIL_Info** info);
 int MPIL_Info_free(MPIL_Info** info);
 ```
 # Repository Layout
-The library is split into four main parts. 
-- library/bindings contains the implementations of all the user facing functions. These commonly call functions deeper inside the library. 
-- library/include contains any internal headers necessary for building.
-- library/src contains implementations of internal functions. 
-- library/test only contains functions and code for conducting the unit tests. 
-
-include and src are further divided into sub-folders depending on the portion of the library being implemented. 
+The Repository is laid out as follows
+- *Include* 
+- *Benchmarks* Contains source code for several benchmarks used in publications.
+- *Test Data* Contains input files for testing of Benchmarks. 
+- *Library* Contains the source code for the library. It is divided into four parts: 
+	- **bindings:** contains the implementations of all the user facing functions. These commonly call functions deeper inside the library. 
+	- **include:** contains any internal headers necessary for building.
+	- **source:** contains implementations of internal functions used by the bindings.
+	- **test:**   contains functions and code for conducting the unit tests. 
 
 
 # Acknowledgements
