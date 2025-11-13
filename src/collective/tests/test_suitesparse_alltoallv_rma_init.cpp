@@ -13,11 +13,16 @@
 
  void test_matrix(const char* filename, int n_iter)
 {
-    int rank, P; MPI_Comm_rank(MPI_COMM_WORLD, &rank); MPI_Comm_size(MPI_COMM_WORLD, &P);
 
-    // Load matrix & form comm pattern
+    int rank, P; MPI_Comm_rank(MPI_COMM_WORLD, &rank); MPI_Comm_size(MPI_COMM_WORLD, &P);
+    //P is num_procs
+    // Load matrix 
     ParMat<int> A;
+
+    //read suitesparse matrix
     readParMatrix(filename, A);
+
+    //form comm pattern
     form_comm(A);
 
     
@@ -31,16 +36,16 @@
         proc_pos[A.send_comm.procs[i]] = i;
 
     
-    std::vector<double> packed_send(A.send_comm.size_msgs);//packing actual data to send
+    std::vector<double> packed_send(A.send_comm.size_msgs);//originally named "alltoallv_send_vals"-packing actual data to send
     int ctr = 0;
     for (int dest = 0; dest < P; ++dest) {
         int idx = proc_pos[dest];
-        if (idx < 0) continue;
+        if (idx < 0) continue;  //skip ranks with no messages.
         int start = A.send_comm.ptr[idx];
         int end   = A.send_comm.ptr[idx+1];
         for (int j = start; j < end; ++j) {
             int row = A.send_comm.idx[j];
-            assert(row >= 0 && row < (int)send_vals.size());
+           
             packed_send[ctr++] = send_vals[row];
         }
     }
@@ -83,10 +88,9 @@
     double pmpi_avg = (MPI_Wtime() - t0) / n_iter, pmpi_max = 0.0;
     MPI_Reduce(&pmpi_avg, &pmpi_max, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
 
-    // bytes  rank 0 sends in total
-    size_t bytes = (size_t)sdispls.back() * sizeof(int);
+    
     if (rank == 0) {
-        std::printf("[PMPI] Alltoallv avg: %e s, bytes/rank: %zu\n", pmpi_max, bytes);
+       std::printf("[PMPI] Alltoallv avg: %e\n", pmpi_max);
     }
 
     // ---RMA winfence persistent --------
@@ -115,6 +119,10 @@
     if (rank == 0) {
         std::printf("[RMA ] winfence init+free in loop avg: %e s\n", rma_initmax);
     }
+
+
+    
+
 
     // persistent request once
     alltoallv_rma_winfence_init(packed_send.data(),
@@ -147,7 +155,38 @@
             MPI_Abort(MPI_COMM_WORLD, 1);
         }
     }
-/*
+//==================================Lock next==============================
+
+
+
+  MPI_Barrier(xcomm->global_comm);
+   double tlnit = MPI_Wtime();
+    // This is for accuracy
+
+    for (int k = 0; k < n_iter; k++) {
+        // printf("rank:%d\n,k =%d\n",rank,k);
+        // printf("****a\n");
+         alltoallv_rma_lock_init(packed_send.data(),
+                            sendcounts.data(), sdispls.data(), MPI_DOUBLE,
+                            rma_recv.data(),
+                            recvcounts.data(), rdispls.data(), MPI_DOUBLE,
+                            xcomm, xinfo, &req);
+        // printf("****b\n");
+        MPIX_Request_free(req);
+        MPIX_Comm_win_free(xcomm);
+        // printf("****c\n");
+    }
+
+    double rma_intlock_final = (MPI_Wtime() - tlnit) / n_iter, rma_intlock_final_max=0.0;
+
+    // RMA 
+    MPI_Reduce(&rma_intlock_final, &rma_intlock_final_max, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
+    if (rank == 0) {
+        printf("[RMA ] winlock init+free in loop avg: %e seconds\n", rma_intlock_final_max);
+       
+    }
+
+
     // -------- RMA winlock persistent --------
     alltoallv_rma_lock_init(packed_send.data(),
                             sendcounts.data(), sdispls.data(), MPI_DOUBLE,
@@ -167,7 +206,7 @@
         std::printf("[RMA ] winlock persistent avg: %e s\n", rma_max2);
     }
 
-    // correctness vs PMPI (again)
+    // correctness vs PMPI 
     if (rma_recv.size() != recv_vals.size()) {
         if (rank == 0) std::fprintf(stderr, "Size mismatch between PMPI and RMA_lock recv buffers\n");
         MPI_Abort(MPI_COMM_WORLD, 1);
@@ -179,7 +218,7 @@
             MPI_Abort(MPI_COMM_WORLD, 1);
         }
     }
-*/
+
     MPIX_Request_free(req);
     MPIX_Comm_win_free(xcomm);
     
