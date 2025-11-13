@@ -305,8 +305,7 @@ int rma_start(MPIX_Request* request)
 
     MPI_Barrier(request->xcomm->global_comm);  
 
-    //int puts_done = 0;//just want to see which processes actually do the puts
-
+    
 
     MPI_Win_fence(MPI_MODE_NOPRECEDE, request->xcomm->win);
     for (int i = 0; i < request->n_puts; ++i) {
@@ -360,7 +359,7 @@ int rma_wait(MPIX_Request* request, MPI_Status* status)
    //MPI_Barrier(request->xcomm->global_comm);
 //printf("[rma_wait] Rank %d entering fence\n", rank); fflush(stdout);
 
-    //MPI_Win_fence(MPI_MODE_NOPUT|MPI_MODE_NOSUCCEED, request->xcomm->win);
+    
     MPI_Win_fence(MPI_MODE_NOSUCCEED, request->xcomm->win);
     
 //printf("[rma_wait] Rank %d leaving fence\n", rank); fflush(stdout);
@@ -370,13 +369,15 @@ int rma_wait(MPIX_Request* request, MPI_Status* status)
 }
 
 
+
+
 int rma_lock_start(MPIX_Request* request)
 {
     int rank;
     
     MPI_Comm_rank(request->xcomm->global_comm, &rank);  // Get the rank of the process
-    printf("Process %d entering rma_lock_start\n", rank);
-    fflush(stdout);
+   // printf("Process %d entering rma_lock_start\n", rank);
+    //fflush(stdout);
 
     const char*  send_buffer = (const char* )(request->sendbuf);
     const char*  recv_buffer = (const char* )(request->recvbuf); 
@@ -386,9 +387,9 @@ int rma_lock_start(MPIX_Request* request)
 
     //printf("******************333");
    // fflush(stdout);
-       // Lock the window for all processes
-    for (int i = 0; i < request->n_puts; ++i)
-        request->global_requests[i] = MPI_REQUEST_NULL;
+       
+    //for (int i = 0; i < request->n_puts; ++i)
+       // request->global_requests[i] = MPI_REQUEST_NULL;
     
        
     MPI_Win_lock_all(0, request->xcomm->win);
@@ -431,7 +432,7 @@ MPI_Waitall(request->global_n_msgs, request->global_requests, MPI_STATUSES_IGNOR
                     request->xcomm->win);
         }
     }
- // end MPI_Put-previous put-temporarily commented out, to try the modified version with arithmatic pointers
+ 
 */
 
 
@@ -462,53 +463,35 @@ MPI_Waitall(request->global_n_msgs, request->global_requests, MPI_STATUSES_IGNOR
     
    
 
-    printf("Process %d leaving rma_lock_start\n", rank);
-    fflush(stdout);    
+    //printf("Process %d leaving rma_lock_start\n", rank);
+    //fflush(stdout);    
     
     return MPI_SUCCESS;
 }
 
 
-
-    
-     
 int rma_lock_wait(MPIX_Request* request, MPI_Status* status)
 {
-    int rank;  // MGFD: We should really save this off at init, but we need this here for the exclusive lock.
-    
-    MPI_Comm_rank(request->xcomm->global_comm, &rank);
-    
-   
-    printf("Process %d entering rma_lock_wait\n", rank);
+    int rank; MPI_Comm_rank(request->xcomm->global_comm, &rank);
 
     MPI_Win_unlock_all(request->xcomm->win);
-    
-    //MPI_Win_flush_all(request->xcomm->win); //MGFD: We're already doing the unlock and lock below so the flush is not needed
-    //printf(" MPI_Win_unlock_all******************13");
-    //fflush(stdout); 
-    for (int i = 0; i < request->global_n_msgs; i++) {
 
-        MPI_Request_free(&request->global_requests[i]);
-      
-    }
-      
-      
-    
-   // MPI_Barrier(request->xcomm->global_comm); // MGFD: Barrier would be needed if we were relying of flush, but we're not, so we don't need it.
-    //printf("******************14");
-    //fflush(stdout);
+    /* Ensure every origin has finished their access epochs  */
+    MPI_Barrier(request->xcomm->global_comm);//removed the segfault
 
     
-    MPI_Win_lock(MPI_LOCK_EXCLUSIVE, rank, 0, request->xcomm->win); // MGFD: this makes the buffer go into an consistent state, and therefore is safe to access by the user.
-    
-    //printf("******************15");
-    //fflush(stdout);
 
-     printf("Process %d leaving rma_lock_wait\n", rank);
+    // Now re-acquire the exclusive self lock so user code can safely read recvbuf 
+    // MGFD: this makes the buffer go into an consistent state, and therefore is safe to access by the user.
+    MPI_Win_lock(MPI_LOCK_EXCLUSIVE, rank, 0, request->xcomm->win);
     
-
     return MPI_SUCCESS;
 }
+
+
+
+     
+
   
 
 
