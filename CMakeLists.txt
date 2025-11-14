@@ -112,15 +112,12 @@ if (USE_CUDA)
 	set_source_files_properties(${GPU_SOURCES_GLOBAL} PROPERTIES LANGUAGE ${locality_aware_LANG})
 endif()
 
-install(TARGETS locality_aware)
-
 ### Installation Requirements for Spack Package ###
 include(CMakePackageConfigHelpers)
 
 # Install the actual target(s) and register them for export
 install(TARGETS locality_aware
-        EXPORT locality_awareTargets
-        DESTINATION lib)
+        EXPORT locality_awareTargets)
 
 # Create the configuration file
 configure_package_config_file(
