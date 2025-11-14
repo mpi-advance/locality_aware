@@ -5,6 +5,8 @@
 extern "C" {
 #endif
 
+/** @brief Struct for containing number of initialized columns and overall size
+**/
 typedef struct _MPIL_Info
 {
     int crs_num_initialized;

@@ -19,15 +19,15 @@ int alltoallv_batch(const void* sendbuf,
     int nb_stride = 5;
     if (nb_stride >= num_procs)
     {
-        alltoallv_nonblocking(sendbuf,
-                              sendcounts,
-                              sdispls,
-                              sendtype,
-                              recvbuf,
-                              recvcounts,
-                              rdispls,
-                              recvtype,
-                              comm);
+        return alltoallv_nonblocking(sendbuf,
+                                     sendcounts,
+                                     sdispls,
+                                     sendtype,
+                                     recvbuf,
+                                     recvcounts,
+                                     rdispls,
+                                     recvtype,
+                                     comm);
     }
 
     int tag;

@@ -10,7 +10,19 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
+/** @brief Function pointer to alltoallv implementation
+ * @details 
+ * Uses the parameters of standard MPI_Alltoallv API, except replacing MPI_Comm with MPIL_Comm.
+ * Most of the behavior is derived from internal parameters in MPIL_Comm.
+ *  
+ * @param [in] sendbuf buffer containing data to send
+ * @param [in] sendcount int number of items in sendbuff
+ * @param [in] sendtype MPI_Datatype in sendbuff
+ * @param [out] recvbuf buffer to receive messages
+ * @param [in] recvcount int number of items expected in recvbuff
+ * @param [in] recvtype MPI_Datatype in recvbuff
+ * @param [in] comm MPIL_Comm used for context
+ **/
 typedef int (*alltoallv_ftn)(const void*,
                              const int*,
                              const int*,
@@ -20,8 +32,16 @@ typedef int (*alltoallv_ftn)(const void*,
                              const int*,
                              MPI_Datatype,
                              MPIL_Comm*);
-
-// Helper Functions
+							 
+/** @brief Uses Sendrecv to do the alltoallv
+ * @param [in] sendbuf buffer containing data to send
+ * @param [in] sendcount int number of items in sendbuff
+ * @param [in] sendtype MPI_Datatype in sendbuff
+ * @param [out] recvbuf buffer to receive messages
+ * @param [in] recvcount int number of items expected in recvbuff
+ * @param [in] recvtype MPI_Datatype in recvbuff
+ * @param [in] comm MPIL_Comm used for context
+ **/
 int alltoallv_pairwise(const void* sendbuf,
                        const int sendcounts[],
                        const int sdispls[],
@@ -31,6 +51,16 @@ int alltoallv_pairwise(const void* sendbuf,
                        const int rdispls[],
                        MPI_Datatype recvtype,
                        MPIL_Comm* comm);
+
+/** @brief Uses Isend and Irecv to do the alltoallv
+ * @param [in] sendbuf buffer containing data to send
+ * @param [in] sendcount int number of items in sendbuff
+ * @param [in] sendtype MPI_Datatype in sendbuff
+ * @param [out] recvbuf buffer to receive messages
+ * @param [in] recvcount int number of items expected in recvbuff
+ * @param [in] recvtype MPI_Datatype in recvbuff
+ * @param [in] comm MPIL_Comm used for context
+ **/
 int alltoallv_nonblocking(const void* sendbuf,
                           const int sendcounts[],
                           const int sdispls[],
@@ -40,6 +70,22 @@ int alltoallv_nonblocking(const void* sendbuf,
                           const int rdispls[],
                           MPI_Datatype recvtype,
                           MPIL_Comm* comm);
+						  
+/** @brief Groups messages before sending them as a group using nonblocking operations. 
+ * @details
+ *    Has internal tuning parameter nb_stride, which controls the number
+ *    of messages between waits. 
+ *    
+ *    Fires off nb_stride messages before waiting on completion.  
+ *
+ * @param [in] sendbuf buffer containing data to send
+ * @param [in] sendcount int number of items in sendbuff
+ * @param [in] sendtype MPI_Datatype in sendbuff
+ * @param [out] recvbuf buffer to receive messages
+ * @param [in] recvcount int number of items expected in recvbuff
+ * @param [in] recvtype MPI_Datatype in recvbuff
+ * @param [in] comm MPIL_Comm used for context
+ **/
 int alltoallv_batch(const void* sendbuf,
                     const int sendcounts[],
                     const int sdispls[],
@@ -49,6 +95,23 @@ int alltoallv_batch(const void* sendbuf,
                     const int rdispls[],
                     MPI_Datatype recvtype,
                     MPIL_Comm* comm);
+	
+
+/** @brief Groups messages before sending them as a group using blocking, but does not wait for completion of stride. 
+ * @details
+ *    Has internal tuning parameter nb_stride, which controls the number
+ *    of messages between waits.  
+ *    
+ *    Fires off nb_stride messages then rotates and fires new messages as requests complete.   
+ *
+ * @param [in] sendbuf buffer containing data to send
+ * @param [in] sendcount int number of items in sendbuff
+ * @param [in] sendtype MPI_Datatype in sendbuff
+ * @param [out] recvbuf buffer to receive messages
+ * @param [in] recvcount int number of items expected in recvbuff
+ * @param [in] recvtype MPI_Datatype in recvbuff
+ * @param [in] comm MPIL_Comm used for context
+ **/	
 int alltoallv_batch_async(const void* sendbuf,
                           const int sendcounts[],
                           const int sdispls[],
@@ -58,6 +121,8 @@ int alltoallv_batch_async(const void* sendbuf,
                           const int rdispls[],
                           MPI_Datatype recvtype,
                           MPIL_Comm* comm);
+						  
+/**@brief calls underlying PMPI_Alltoallv implementation **/
 int alltoallv_pmpi(const void* sendbuf,
                    const int sendcounts[],
                    const int sdispls[],
