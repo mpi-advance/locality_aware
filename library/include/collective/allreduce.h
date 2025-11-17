@@ -45,26 +45,6 @@ int allreduce_recursive_doubling(const void* sendbuf,
                                  MPI_Op op,
                                  MPIL_Comm* comm);
 
-/** @brief Call the dissemination implementation
- * @details Will perform the standard dissemination algorithm
- * At each step i, all ranks end data to rank - 2^i 
- * and receive data from rank + 2^i.
- * @param [in] sendbuf buffer containing data to reduce
- * @param [out] recvbuf buffer to receive and reduce all messages
- * @param [in] count int number of items to be reduced
- * @param [in] datatype MPI_Datatype 
- * @param [in] op MPI_Op
- * @param [in] comm MPIL_Comm used for context
- **/
-int allreduce_dissemination(const void* sendbuf,
-                                 void* recvbuf,
-                                 int count,
-                                 MPI_Datatype datatype,
-                                 MPI_Op op,
-                                 MPIL_Comm* comm);
-
-
-
 /** @brief Call the locality-aware dissemination implementation
  * @details Each step consists of a local allreduce before non-local
  * communication.  Each process per node uses a separate stride.
@@ -78,6 +58,25 @@ int allreduce_dissemination(const void* sendbuf,
  * @param [in] comm MPIL_Comm used for context
  **/
 int allreduce_dissemination_loc(const void* sendbuf,
+                                 void* recvbuf,
+                                 int count,
+                                 MPI_Datatype datatype,
+                                 MPI_Op op,
+                                 MPIL_Comm* comm);
+
+/** @brief Call the locality-aware multi-leader dissemination implementation
+ * @details Each step consists of a local allreduce before non-local
+ * communication.  Each process per NUMA (4 per node) uses a separate stride.
+ * Each local rank i initially sends to NUMA - i - 1, and at each
+ * successive step, this stride is multiplied by ppNUMA.
+ * @param [in] sendbuf buffer containing data to reduce
+ * @param [out] recvbuf buffer to receive and reduce all messages
+ * @param [in] count int number of items to be reduced
+ * @param [in] datatype MPI_Datatype
+ * @param [in] op MPI_Op
+ * @param [in] comm MPIL_Comm used for context
+ **/
+int allreduce_dissemination_ml(const void* sendbuf,
                                  void* recvbuf,
                                  int count,
                                  MPI_Datatype datatype,

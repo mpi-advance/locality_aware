@@ -98,6 +98,17 @@ int main(int argc, char** argv)
                        MPI_SUM,
                        locality_comm);
         compare_allreduce_results(pmpi_allreduce, mpil_allreduce, s);
+
+        // Dissemination Locality (Multileader) MPIL Allreduce
+        std::fill(mpil_allreduce.begin(), mpil_allreduce.end(), 0);
+        MPIL_Set_allreduce_algorithm(ALLREDUCE_DISSEMINATION_ML);
+        MPIL_Allreduce(local_data.data(),
+                       mpil_allreduce.data(),
+                       s, 
+                       MPI_INT,
+                       MPI_SUM,
+                       locality_comm);
+        compare_allreduce_results(pmpi_allreduce, mpil_allreduce, s);
     }
 
     MPIL_Comm_free(&locality_comm);
