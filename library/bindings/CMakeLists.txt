@@ -4,6 +4,7 @@ target_sources(locality_aware PRIVATE
 	Collective/MPIL_Alltoallv.c
 	Collective/MPIL_Alltoall_crs.c
 	Collective/MPIL_Alltoallv_crs.c
+    Collective/MPIL_Allreduce.c
 	MPIL_Alloc/MPIL_Alloc.cpp
 	MPIL_Alloc/MPIL_Free.cpp
 	MPIL_Info/MPIL_Info_init.cpp

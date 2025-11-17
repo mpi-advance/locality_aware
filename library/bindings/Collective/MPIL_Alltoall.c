@@ -16,14 +16,15 @@ int MPIL_Alltoall(const void* sendbuf,
 
     switch (mpil_alltoall_implementation)
     {
-#if defined(GPU) && defined(GPU_AWARE)
-
+#if defined(GPU) 
+#if defined(GPU_AWARE)
         case ALLTOALL_GPU_PAIRWISE:
             method = gpu_aware_alltoall_pairwise;
             break;
         case ALLTOALL_GPU_NONBLOCKING:
             method = gpu_aware_alltoall_nonblocking;
             break;
+#endif
         case ALLTOALL_CTC_PAIRWISE:
             method = copy_to_cpu_alltoall_pairwise;
             break;

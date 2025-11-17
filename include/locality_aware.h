@@ -75,6 +75,24 @@ enum AlltoallvMethod
     ALLTOALLV_PMPI
 };
 
+enum AllreduceMethod
+{
+#if defined(GPU)
+#if defined(GPU_AWARE)
+    ALLREDUCE_GPU_RECURSIVE_DOUBLING,
+    ALLREDUCE_GPU_DISSEMINATION,
+    ALLREDUCE_GPU_DISSEMINATION_LOC,
+#endif
+    ALLREDUCE_CTC_RECURSIVE_DOUBLING,
+    ALLREDUCE_CTC_DISSEMINATION,
+    ALLREDUCE_CTC_DISSEMINATION_LOC,
+#endif
+    ALLREDUCE_RECURSIVE_DOUBLING,
+    ALLREDUCE_DISSEMINATION,
+    ALLREDUCE_DISSEMINATION_LOC,
+    ALLREDUCE_PMPI
+};
+
 /** @brief Enumeration of implemented neighborhood alltoall algorithms @ingroup alg_enum**/
 enum NeighborAlltoallvMethod
 {
@@ -114,6 +132,7 @@ enum AlltoallvCRSMethod
 */
 extern enum AlltoallMethod mpil_alltoall_implementation;
 extern enum AlltoallvMethod mpil_alltoallv_implementation;
+extern enum AllreduceMethod mpil_allreduce_implementation;
 extern enum NeighborAlltoallvMethod mpil_neighbor_alltoallv_implementation;
 extern enum NeighborAlltoallvInitMethod mpil_neighbor_alltoallv_init_implementation;
 extern enum AlltoallCRSMethod mpil_alltoall_crs_implementation;
@@ -131,6 +150,7 @@ extern enum AlltoallvCRSMethod mpil_alltoallv_crs_implementation;
 */
 int MPIL_Set_alltoall_algorithm(enum AlltoallMethod algorithm);
 int MPIL_Set_alltoallv_algorithm(enum AlltoallvMethod algorithm);
+int MPIL_Set_allreduce_algorithm(enum AllreduceMethod algorithm);
 int MPIL_Set_alltoallv_neighbor_alogorithm(enum NeighborAlltoallvMethod algorithm);
 int MPIL_Set_alltoallv_neighbor_init_alogorithm(
     enum NeighborAlltoallvInitMethod algorithm);
@@ -337,6 +357,18 @@ int MPIL_Alltoallv(const void* sendbuf,
                    const int recvcounts[],
                    const int rdispls[],
                    MPI_Datatype recvtype,
+                   MPIL_Comm* comm);
+
+/** @brief Wrapper around MPI_Allreduce.
+ *  @details
+ *  Defaults to AllREDUCE_PMPI
+ *  @ingroup collective_func
+ */
+int MPIL_Allreduce(const void* sendbuf,
+                   void* recvbuf,
+                   int count,
+                   MPI_Datatype datatype,
+                   MPI_Op op,
                    MPIL_Comm* comm);
 
 /** @brief Wrapper around MPI_Neighbor_alltoallv  
