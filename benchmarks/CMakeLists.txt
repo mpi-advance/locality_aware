@@ -7,6 +7,7 @@ list(APPEND CPP_SOURCES "alltoallv_crs.cpp")
 #list(APPEND CPP_SOURCES "microbenchmarks.cpp")
 list(APPEND CPP_SOURCES "p2p_alltoall.cpp")
 list(APPEND CPP_SOURCES "p2p_alltoallv.cpp")
+list(APPEND CPP_SOURCES "allreduce.cpp")
 
 ## But some need special requirements -- removed until necessary parameters obtained. 
 # if(USE_GPU)
