@@ -93,7 +93,6 @@ int main(int argc, char* argv[])
     MPIL_Comm_topo_init(xcomm);
     int local_rank;
     MPI_Comm_rank(xcomm->local_comm, &local_rank);
-    //printf("Rank %d, num devices %d, local rank %d\n", rank, num_devices, local_rank);
     //gpuSetDevice(local_rank);
     gpuSetDevice(0);
 
@@ -106,29 +105,23 @@ int main(int argc, char* argv[])
         }
 
         // Standard MPI Implementation
-        gpuStreamSynchronize(0);
         PMPI_Allreduce(
             send_data_d, recv_data_d, s, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
-        gpuStreamSynchronize(0);
         gpuMemcpy(pmpi.data(),
                   recv_data_d,
                   s * sizeof(double),
                   gpuMemcpyDeviceToHost);
-        gpuStreamSynchronize(0);
         gpuMemset(recv_data_d, 0, s * sizeof(double));
         gpuStreamSynchronize(0);
 
 
-        /*
         // MPI Advance : GPU-Aware Recursive Doubling
         MPIL_Set_allreduce_algorithm(ALLREDUCE_GPU_RECURSIVE_DOUBLING);
         MPIL_Allreduce(send_data_d, recv_data_d, s, MPI_DOUBLE, MPI_SUM, xcomm);
-        gpuStreamSynchronize(0);
         gpuMemcpy(mpil.data(),
                   recv_data_d,
                   s * sizeof(double),
                   gpuMemcpyDeviceToHost);
-        gpuStreamSynchronize(0);
         gpuMemset(recv_data_d, 0, s * sizeof(double));
         gpuStreamSynchronize(0);
         for (int j = 0; j < s; j++)
@@ -149,12 +142,10 @@ int main(int argc, char* argv[])
         // MPI Advance : GPU-Aware Node-Aware Dissemination
         MPIL_Set_allreduce_algorithm(ALLREDUCE_GPU_DISSEMINATION_LOC);
         MPIL_Allreduce(send_data_d, recv_data_d, s, MPI_DOUBLE, MPI_SUM, xcomm);
-        gpuStreamSynchronize(0);
         gpuMemcpy(mpil.data(),
                   recv_data_d,
                   s * sizeof(double),
                   gpuMemcpyDeviceToHost);
-        gpuStreamSynchronize(0);
         gpuMemset(recv_data_d, 0, s * sizeof(double));
         gpuStreamSynchronize(0);
         for (int j = 0; j < s; j++)
@@ -174,12 +165,10 @@ int main(int argc, char* argv[])
         // MPI Advance : GPU-Aware NUMA-Aware Dissemination
         MPIL_Set_allreduce_algorithm(ALLREDUCE_GPU_DISSEMINATION_ML);
         MPIL_Allreduce(send_data_d, recv_data_d, s, MPI_DOUBLE, MPI_SUM, xcomm);
-        gpuStreamSynchronize(0);
         gpuMemcpy(mpil.data(),
                   recv_data_d,
                   s * sizeof(double),
                   gpuMemcpyDeviceToHost);
-        gpuStreamSynchronize(0);
         gpuMemset(recv_data_d, 0, s * sizeof(double));
         gpuStreamSynchronize(0);
         for (int j = 0; j < s; j++)
@@ -199,14 +188,11 @@ int main(int argc, char* argv[])
 
         // MPI Advance : CopyToCPU PMPI
         MPIL_Set_allreduce_algorithm(ALLREDUCE_CTC_PMPI);
-        gpuStreamSynchronize(0);
         MPIL_Allreduce(send_data_d, recv_data_d, s, MPI_DOUBLE, MPI_SUM, xcomm);
-        gpuStreamSynchronize(0);
         gpuMemcpy(mpil.data(),
                   recv_data_d,
                   s * sizeof(double),
                   gpuMemcpyDeviceToHost);
-        gpuStreamSynchronize(0);
         gpuMemset(recv_data_d, 0, s * sizeof(double));
         gpuStreamSynchronize(0);
         for (int j = 0; j < s; j++)
@@ -227,12 +213,10 @@ int main(int argc, char* argv[])
         // MPI Advance : CopyToCPU RECURSIVE DOUBLING
         MPIL_Set_allreduce_algorithm(ALLREDUCE_CTC_RECURSIVE_DOUBLING);
         MPIL_Allreduce(send_data_d, recv_data_d, s, MPI_DOUBLE, MPI_SUM, xcomm);
-        gpuStreamSynchronize(0);
         gpuMemcpy(mpil.data(),
                   recv_data_d,
                   s * sizeof(double),
                   gpuMemcpyDeviceToHost);
-        gpuStreamSynchronize(0);
         gpuMemset(recv_data_d, 0, s * sizeof(double));
         gpuStreamSynchronize(0);
         for (int j = 0; j < s; j++)
@@ -253,12 +237,10 @@ int main(int argc, char* argv[])
         // MPI Advance : CopyToCPU Node-Aware Dissemination
         MPIL_Set_allreduce_algorithm(ALLREDUCE_CTC_DISSEMINATION_LOC);
         MPIL_Allreduce(send_data_d, recv_data_d, s, MPI_DOUBLE, MPI_SUM, xcomm);
-        gpuStreamSynchronize(0);
         gpuMemcpy(mpil.data(),
                   recv_data_d,
                   s * sizeof(double),
                   gpuMemcpyDeviceToHost);
-        gpuStreamSynchronize(0);
         gpuMemset(recv_data_d, 0, s * sizeof(double));
         gpuStreamSynchronize(0);
         for (int j = 0; j < s; j++)
@@ -275,18 +257,14 @@ int main(int argc, char* argv[])
                 return 1;
             }
         }
-*/
 
         // MPI Advance : GPU-Aware NUMA-Aware Dissemination
         MPIL_Set_allreduce_algorithm(ALLREDUCE_CTC_DISSEMINATION_ML);
-        gpuStreamSynchronize(0);
         MPIL_Allreduce(send_data_d, recv_data_d, s, MPI_DOUBLE, MPI_SUM, xcomm);
-        gpuStreamSynchronize(0);
         gpuMemcpy(mpil.data(),
                   recv_data_d,
                   s * sizeof(double),
                   gpuMemcpyDeviceToHost);
-        gpuStreamSynchronize(0);
         gpuMemset(recv_data_d, 0, s * sizeof(double));
         gpuStreamSynchronize(0);
         for (int j = 0; j < s; j++)
@@ -305,7 +283,6 @@ int main(int argc, char* argv[])
         }
 
 
-/*
         // Time PMPI Allreduce
         time = time_allreduce(PMPI_Allreduce, send_data_d, recv_data_d, 
                 s, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
@@ -354,7 +331,6 @@ int main(int argc, char* argv[])
         time = time_allreduce(MPIL_Allreduce, send_data_d, recv_data_d, 
                 s, MPI_DOUBLE, MPI_SUM, xcomm);
         if (rank == 0) printf("MPIL CopyToCPU NUMA-Aware Dissemination Time: %e\n", time);
-*/
     }
 
     MPIL_Comm_free(&xcomm);

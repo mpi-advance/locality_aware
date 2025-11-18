@@ -85,7 +85,7 @@ int allreduce_dissemination_loc_helper(
 
         for (int node_stride = 1; node_stride < max_node; node_stride *= (ppn+1))
         {
-            int stride = node_stride + local_rank;
+            int stride = node_stride * (local_rank+1);
             if (stride < max_node)
             {
                 int send_node = (rank_node - stride + max_node) % max_node;

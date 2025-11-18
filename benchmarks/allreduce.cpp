@@ -28,7 +28,7 @@ int main(int argc, char* argv[])
     std::vector<double> pmpi_allreduce(max_s);
     std::vector<double> mpil_allreduce(max_s);
     for (int j = 0; j < max_s; j++)
-        send_data[j] = ((float)(rand())) / RAND_MAX;
+        send_data[j] = j+1;
 
     MPIL_Comm* xcomm;
     MPIL_Comm_init(&xcomm, MPI_COMM_WORLD);
@@ -38,7 +38,6 @@ int main(int argc, char* argv[])
     MPI_Comm_rank(xcomm->local_comm, &local_rank);
     MPI_Comm_size(xcomm->local_comm, &ppn);
     MPIL_Comm_leader_init(xcomm, ppn/4);
-
 
     for (int i = 0; i < max_i; i++)
     {
@@ -72,7 +71,6 @@ int main(int argc, char* argv[])
             }
         }
 
-/*
         // Locality-Aware Dissemination (Node-Aware)
         std::fill(mpil_allreduce.begin(), mpil_allreduce.end(), 0);
         MPIL_Set_allreduce_algorithm(ALLREDUCE_DISSEMINATION_LOC);
@@ -114,8 +112,6 @@ int main(int argc, char* argv[])
                 return 1;
             }
         }
-*/
-
         // Time PMPI Allreduce
         PMPI_Allreduce(send_data.data(), pmpi_allreduce.data(),
                 s, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);

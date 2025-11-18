@@ -73,6 +73,7 @@ int allreduce_dissemination_ml_helper(
     MPI_Comm_rank(comm->leader_group_comm, &rank_node);
     MPI_Comm_size(comm->leader_group_comm, &num_nodes);
 
+
     int tag;
     get_tag(comm, &tag);
 
@@ -105,7 +106,7 @@ int allreduce_dissemination_ml_helper(
 
         for (int node_stride = 1; node_stride < max_node; node_stride *= (ppn+1))
         {
-            int stride = node_stride + local_rank;
+            int stride = node_stride * (local_rank+1);
 
             if (stride < max_node)
             {
@@ -116,9 +117,12 @@ int allreduce_dissemination_ml_helper(
                         comm->leader_group_comm, MPI_STATUS_IGNORE);
             }
             else
+{
                 memset(tmpbuf, 0, count*type_size);
+}
             MPI_Allreduce(MPI_IN_PLACE, tmpbuf, count, datatype, op, comm->leader_comm);
             MPI_Reduce_local(tmpbuf, recvbuf, count, datatype, op);
+
         }
 
         if (rank_node < extra)
