@@ -1,4 +1,4 @@
-#include "collective/allreduce.h"
+#include "collective/allreduce.hpp"
 #include "locality_aware.h"
 #include <string.h>
 #include <math.h>
@@ -10,25 +10,39 @@ int allreduce_recursive_doubling(const void* sendbuf,
                                  MPI_Op op,
                                  MPIL_Comm* comm)
 {
+    return allreduce_impl(allreduce_recursive_doubling_helper,
+                   sendbuf, recvbuf, count, datatype, op, comm,
+                   MPIL_Alloc, MPIL_Free);
+}
+
+int allreduce_recursive_doubling_helper(
+                        const void* sendbuf,
+                        void* tmpbuf,
+                        void* recvbuf,
+                        int count,
+                        MPI_Datatype datatype,
+                        MPI_Op op,
+                        MPIL_Comm* comm)
+{
     if (count == 0)
         return MPI_SUCCESS;
+
+    int type_size;
+    MPI_Type_size(datatype, &type_size);
 
     int rank, num_procs;
     MPI_Comm_rank(comm->global_comm, &rank);
     MPI_Comm_size(comm->global_comm, &num_procs);
 
-    int type_size;
-    MPI_Type_size(datatype, &type_size);
-
     int tag;
     get_tag(comm, &tag);
 
     if (sendbuf != MPI_IN_PLACE)
-       memcpy(recvbuf, sendbuf, count * type_size); 
+        MPI_Sendrecv(sendbuf, count, datatype, rank, tag,
+                recvbuf, count, datatype, rank, tag, comm->global_comm,
+                MPI_STATUS_IGNORE);
 
-    void* tmpbuf = malloc(count*type_size); 
     int proc; 
-
     int log_procs = (int)log2(num_procs);
     int log2_num_procs = 1 << log_procs;
     int extra_procs = num_procs - log2_num_procs;
@@ -62,6 +76,5 @@ int allreduce_recursive_doubling(const void* sendbuf,
         }
     }
 
-    free(tmpbuf);
     return MPI_SUCCESS;
 }

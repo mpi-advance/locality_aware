@@ -54,12 +54,12 @@ int MPIL_Request_free(MPIL_Request** request_ptr)
     int ierr;
     if (request->cpu_sendbuf)
     {
-        ierr = gpuFreeHost(request->cpu_sendbuf);
+        ierr = gpuHostFree(request->cpu_sendbuf);
         gpu_check(ierr);
     }
     if (request->cpu_recvbuf)
     {
-        ierr = gpuFreeHost(request->cpu_recvbuf);
+        ierr = gpuHostFree(request->cpu_recvbuf);
         gpu_check(ierr);
     }
 #endif

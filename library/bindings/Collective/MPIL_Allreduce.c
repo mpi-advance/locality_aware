@@ -20,24 +20,29 @@ int MPIL_Allreduce(const void* sendbuf,
         case ALLREDUCE_GPU_RECURSIVE_DOUBLING:
             method = gpu_aware_allreduce_recursive_doubling;
             break;
-        case ALLREDUCE_GPU_DISSEMINTATION_LOC:
+        case ALLREDUCE_GPU_DISSEMINATION_LOC:
             method = gpu_aware_allreduce_dissemination_loc;
             break;
         case ALLREDUCE_GPU_DISSEMINATION_ML:
             method = gpu_aware_allreduce_dissemination_ml;
             break;
+        case ALLREDUCE_GPU_PMPI:
+            method = gpu_aware_allreduce_pmpi;
+            break;
 #endif
         case ALLREDUCE_CTC_RECURSIVE_DOUBLING:
             method = copy_to_cpu_allreduce_recursive_doubling;
             break;
-        case ALLREDUCE_CTC_DISSEMINTATION_LOC:
+        case ALLREDUCE_CTC_DISSEMINATION_LOC:
             method = copy_to_cpu_allreduce_dissemination_loc;
             break;
         case ALLREDUCE_CTC_DISSEMINATION_ML:
             method = copy_to_cpu_allreduce_dissemination_ml;
             break;
+        case ALLREDUCE_CTC_PMPI:
+            method = copy_to_cpu_allreduce_pmpi;
+            break;
 #endif
-
         case ALLREDUCE_RECURSIVE_DOUBLING:
             method = allreduce_recursive_doubling;
             break;

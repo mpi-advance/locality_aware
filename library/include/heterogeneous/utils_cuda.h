@@ -7,10 +7,10 @@
 #define gpuSetDevice cudaSetDevice
 
 // Data allocation
-#define gpuMallocHost cudaMallocHost
+#define gpuHostMalloc cudaHostMalloc
 #define gpuMalloc cudaMalloc
 #define gpuFree cudaFree
-#define gpuFreeHost cudaFreeHost
+#define gpuHostFree cudaHostFree
 
 // Error Handling
 #define gpuError cudaError

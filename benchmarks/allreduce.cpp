@@ -19,7 +19,7 @@ int main(int argc, char* argv[])
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
 
-    int max_i  = 10;
+    int max_i  = 20;
     int max_s  = pow(2, max_i);
     int n_iter = 100;
     double t0, tfinal;
@@ -53,7 +53,7 @@ int main(int argc, char* argv[])
                 s, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
 
         // Recursive-Doubling
-        memset(mpil_allreduce.data(), 0, s*sizeof(int));
+        std::fill(mpil_allreduce.begin(), mpil_allreduce.end(), 0);
         MPIL_Set_allreduce_algorithm(ALLREDUCE_RECURSIVE_DOUBLING);
         MPIL_Allreduce(send_data.data(), mpil_allreduce.data(),
                 s, MPI_DOUBLE, MPI_SUM, xcomm);
@@ -72,8 +72,9 @@ int main(int argc, char* argv[])
             }
         }
 
+/*
         // Locality-Aware Dissemination (Node-Aware)
-        memset(mpil_allreduce.data(), 0, s*sizeof(int));
+        std::fill(mpil_allreduce.begin(), mpil_allreduce.end(), 0);
         MPIL_Set_allreduce_algorithm(ALLREDUCE_DISSEMINATION_LOC);
         MPIL_Allreduce(send_data.data(), mpil_allreduce.data(),
                 s, MPI_DOUBLE, MPI_SUM, xcomm);
@@ -95,7 +96,7 @@ int main(int argc, char* argv[])
 
 
         // Locality-Aware Dissemination (NUMA-Aware)
-        memset(mpil_allreduce.data(), 0, s*sizeof(int));
+        std::fill(mpil_allreduce.begin(), mpil_allreduce.end(), 0);
         MPIL_Set_allreduce_algorithm(ALLREDUCE_DISSEMINATION_ML);
         MPIL_Allreduce(send_data.data(), mpil_allreduce.data(),
                 s, MPI_DOUBLE, MPI_SUM, xcomm);
@@ -113,7 +114,7 @@ int main(int argc, char* argv[])
                 return 1;
             }
         }
-
+*/
 
         // Time PMPI Allreduce
         PMPI_Allreduce(send_data.data(), pmpi_allreduce.data(),
@@ -140,8 +141,9 @@ int main(int argc, char* argv[])
             tfinal = (MPI_Wtime() - t0)/10;
             MPI_Allreduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
             
-            n_iter = (0.1 / tfinal);
+            n_iter = (0.1 / t0);
         }
+
 
         MPI_Barrier(MPI_COMM_WORLD);
         t0 = MPI_Wtime();
@@ -185,7 +187,7 @@ int main(int argc, char* argv[])
             tfinal = (MPI_Wtime() - t0)/10;
             MPI_Allreduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
             
-            n_iter = (0.1 / tfinal);
+            n_iter = (0.1 / t0);
         }
 
         MPI_Barrier(MPI_COMM_WORLD);
@@ -201,8 +203,6 @@ int main(int argc, char* argv[])
         {
             printf("MPIL Recursive Doubling Allreduce Time %e\n", t0);
         }
-
-
 
 
 
@@ -232,7 +232,7 @@ int main(int argc, char* argv[])
             tfinal = (MPI_Wtime() - t0)/10;
             MPI_Allreduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
             
-            n_iter = (0.1 / tfinal);
+            n_iter = (0.1 / t0);
         }
 
         MPI_Barrier(MPI_COMM_WORLD);
@@ -248,7 +248,6 @@ int main(int argc, char* argv[])
         {
             printf("MPIL Node-Aware Dissemination Allreduce Time %e\n", t0);
         }
-
 
 
 
@@ -279,7 +278,7 @@ int main(int argc, char* argv[])
             tfinal = (MPI_Wtime() - t0)/10;
             MPI_Allreduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
             
-            n_iter = (0.1 / tfinal);
+            n_iter = (0.1 / t0);
         }
 
         MPI_Barrier(MPI_COMM_WORLD);

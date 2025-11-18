@@ -24,6 +24,8 @@ extern "C" {
  **/
 typedef int (*allreduce_ftn)(
     const void*, void*, const int, MPI_Datatype, MPI_Op op, MPIL_Comm*);
+typedef int (*allreduce_helper_ftn)(
+    const void*, void*, void*, const int, MPI_Datatype, MPI_Op op, MPIL_Comm*);
 
 //** External Wrappers
 //**//----------------------------------------------------------------------
@@ -85,6 +87,37 @@ int allreduce_dissemination_ml(const void* sendbuf,
 
 /** @brief Calls underlying PMPI_Allreduce implementation **/
 int allreduce_pmpi(const void* sendbuf,
+                                 void* recvbuf,
+                                 int count,
+                                 MPI_Datatype datatype,
+                                 MPI_Op op,
+                                 MPIL_Comm* comm);
+
+
+
+/** @brief Helper functions
+ * @details takes the temporary buffer as input
+ * @details Each step consists of a local allreduce before non-local
+ **/
+int allreduce_recursive_doubling_helper(
+                                 const void* sendbuf,
+                                 void* tmpbuf,
+                                 void* recvbuf,
+                                 int count,
+                                 MPI_Datatype datatype,
+                                 MPI_Op op,
+                                 MPIL_Comm* comm);
+int allreduce_dissemination_loc_helper(
+                                 const void* sendbuf,
+                                 void* tmpbuf,
+                                 void* recvbuf,
+                                 int count,
+                                 MPI_Datatype datatype,
+                                 MPI_Op op,
+                                 MPIL_Comm* comm);
+int allreduce_dissemination_ml_helper(
+                                 const void* sendbuf,
+                                 void* tmpbuf,
                                  void* recvbuf,
                                  int count,
                                  MPI_Datatype datatype,

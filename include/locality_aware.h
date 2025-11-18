@@ -82,10 +82,12 @@ enum AllreduceMethod
     ALLREDUCE_GPU_RECURSIVE_DOUBLING,
     ALLREDUCE_GPU_DISSEMINATION_LOC,
     ALLREDUCE_GPU_DISSEMINATION_ML,
+    ALLREDUCE_GPU_PMPI,
 #endif
     ALLREDUCE_CTC_RECURSIVE_DOUBLING,
     ALLREDUCE_CTC_DISSEMINATION_LOC,
     ALLREDUCE_CTC_DISSEMINATION_ML,
+    ALLREDUCE_CTC_PMPI,
 #endif
     ALLREDUCE_RECURSIVE_DOUBLING,
     ALLREDUCE_DISSEMINATION_LOC,
@@ -556,6 +558,14 @@ int MPIL_Alloc(void** pointer, const int bytes);
   * @return MPI_Success on a successful return. 
  */
 int MPIL_Free(void* pointer);
+
+#if defined(GPU)
+/** @brief Allocates data on the gpu with either cudaMalloc or hipMalloc
+ **/
+int MPIL_GPU_Alloc(void** pointer, const int bytes);
+/** @brief Frees device pointer with cudaFree or hipFree **/
+int MPIL_GPU_Free(void* pointer);
+#endif
 
 #ifdef __cplusplus
 }

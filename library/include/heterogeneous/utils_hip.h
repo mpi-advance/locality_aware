@@ -12,10 +12,10 @@
 #define gpuSetDevice hipSetDevice
 
 // Data allocation
-#define gpuMallocHost hipMallocHost
+#define gpuHostMalloc hipHostMalloc
 #define gpuMalloc hipMalloc
 #define gpuFree hipFree
-#define gpuFreeHost hipHostFree
+#define gpuHostFree hipHostFree
 
 // Error Handling
 #define gpuError hipError_t
