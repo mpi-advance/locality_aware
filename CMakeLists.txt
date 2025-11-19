@@ -2,125 +2,146 @@ cmake_minimum_required(VERSION 3.21 FATAL_ERROR)
 cmake_policy(VERSION 3.21.1...3.27)
 
 # Create project
-project(locality_aware LANGUAGES C CXX)
+project(locality_aware VERSION 2.0.0 LANGUAGES C CXX)
 
 # Set C,CXX standards
 set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_C_STANDARD 99)
+set(CMAKE_C_STANDARD 11)
+
+# Set default build type
+if(NOT CMAKE_BUILD_TYPE)
+	message(STATUS "No CMAKE_BUILD_TYPE specified, setting build type to RELEASE.")
+	set(CMAKE_BUILD_TYPE "RELEASE")
+endif()
+
+# Convert to lower case string to ignore case
+string(TOLOWER ${CMAKE_BUILD_TYPE} build_type)
+message(STATUS "Build type: ${CMAKE_BUILD_TYPE} -> ${build_type}")
 
 # Add warning flags to help with debugging
-set(CMAKE_C_FLAGS "-Wall -Wextra -Wpedantic -Wshadow")
-set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wpedantic -Wshadow")
+if(build_type STREQUAL "debug")
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -Wpedantic -Wshadow")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic -Wshadow")
+endif()
 
 # Build Options
 option(USE_CUDA "Enable NVIDIA CUDA support" OFF)
 option(USE_HIP "Enable AMD HIP support" OFF)
 option(GPU_AWARE "Use GPU-Aware MPI, if GPU support is enabled" ON)
 option(ENABLE_UNIT_TESTS "Enable unit testing" ON)
+option(BENCHMARKS "Enable benchmarks" ON)
 
-set(MPICXX "mpicxx" CACHE STRING "MPICXX command")
 set(MPIRUN "mpirun" CACHE STRING "MPIRUN command")
-set(CUDA_ARCH "75" CACHE STRING "CUDA Architecture")
-
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}")
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}/src")
 
 # Find MPI
 find_package(MPI REQUIRED)
-if (MPI_COMPILER_FLAGS)
-  add_compile_options(${MPI_COMPILER_FLAGS})
-endif()
-include_directories(${MPI_INCLUDE_PATH})
-set(EXTERNAL_LIBS ${MPI_LIBRARIES})
-
-# Find OpenMP (not required)
-find_package(OpenMP)
-if (${OpenMP_CXX_FOUND})
-  # Add OpenMP flags to compile options
-  add_compile_options(${OpenMP_CXX_FLAGS})
-
-  set(EXTERNAL_LIBS ${EXTERNAL_LIBS} ${OpenMP_CXX_LIBRARIES})
-  add_definitions(-DOPENMP)
-  message(STATUS "Found OpenMP ${OpenMP_CXX_LIBRARIES}")
-endif()
+set(EXTERNAL_LIBS "MPI::MPI_CXX")
 
 # Set default language of .cpp files
 set(locality_aware_LANG CXX)
+add_library(locality_aware "")
 
 if (USE_CUDA OR USE_HIP)
-  if (GPU_AWARE)
-      add_definitions(-DGPU_AWARE)
-      message(STATUS "Code will be compiled assuming GPU-Aware support.  If your compiler doesn't not support this, set GPU_AWARE to OFF")
-  endif()
-  set(USE_GPU ON)
-  add_definitions(-DGPU)
-if (USE_CUDA)
-  set(CMAKE_CUDA_HOST_COMPILER "${MPICXX}")
-  set(CMAKE_CUDA_ARCHITECTURES ${CUDA_ARCH})
-  enable_language(CUDA)
-  set(locality_aware_LANG CUDA)
-  message(STATUS "CUDA support enabled: ${CMAKE_CUDA_FLAGS}")
-  add_definitions(-DCUDA)
-
-elseif (USE_HIP)
-  set(CMAKE_HIP_COMPILER "${MPICXX}")
-  enable_language(HIP)
-  set(locality_aware_LANG HIP)
-  message(STATUS "HIP support enabled")
-  add_definitions(-DHIP)
+	if (GPU_AWARE)
+	  add_definitions(-DGPU_AWARE)
+	  message(STATUS "Code will be compiled assuming GPU-Aware support.  If your compiler doesn't not support this, set GPU_AWARE to OFF")
+	endif()
+	set(USE_GPU ON)
+	target_compile_definitions(locality_aware PUBLIC GPU)
+	define_property(GLOBAL PROPERTY CUDA_SOURCES_GLOBAL)
+	set_property(GLOBAL PROPERTY GPU_SOURCES_GLOBAL "")
+  
+	if (USE_CUDA)
+	  enable_language(CUDA)
+	  set(locality_aware_LANG CUDA)
+	  message(STATUS "CUDA support enabled: ${CMAKE_CUDA_FLAGS}")
+	  target_compile_definitions(locality_aware PUBLIC CUDA)
+	 
+	elseif (USE_HIP)
+	  find_package(hip REQUIRED)
+	  target_link_libraries(locality_aware PUBLIC hip::host)
+      target_compile_options(locality_aware PUBLIC $<$<COMPILE_LANGUAGE:CXX>:-x hip>)
+	  message(STATUS "HIP support enabled")
+	  target_compile_definitions(locality_aware PUBLIC HIP)
+	endif()
 endif()
-endif()
-
-add_subdirectory(src/utils)
-add_subdirectory(src/communicator)
-add_subdirectory(src/persistent)
-add_subdirectory(src/collective)
-add_subdirectory(src/neighborhood)
-if(USE_CUDA OR USE_HIP)
-    add_subdirectory(src/heterogeneous)
-endif()
-
-set_source_files_properties(
-    ${utils_SOURCES}
-    ${communicator_SOURCES}
-    ${collective_SOURCES}
-    ${persistent_SOURCES}
-    ${neighborhood_SOURCES}
-    ${heterogeneous_SOURCES}
-    PROPERTIES LANGUAGE ${locality_aware_LANG})
-
-add_library(mpi_advance
-    ${utils_SOURCES} ${utils_HEADERS}
-    ${communicator_SOURCES} ${communicator_HEADERS}
-    ${collective_SOURCES} ${collective_HEADERS}
-    ${persistent_SOURCES} ${persistent_HEADERS}
-    ${neighborhood_SOURCES} ${neighborhood_HEADERS}
-    ${heterogeneous_SOURCES} ${heterogeneous_HEADERS}
-)
-target_link_libraries(mpi_advance PUBLIC ${EXTERNAL_LIBS})
-
-install(TARGETS mpi_advance 
-        ARCHIVE DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
-        LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
-        RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
-
-install(FILES src/mpi_advance.h DESTINATION ${CMAKE_INSTALL_PREFIX}/include)
-install(FILES ${utils_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/utils)
-install(FILES ${communicator_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/communicator)
-install(FILES ${collective_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/collective)
-install(FILES ${persistent_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/persistent)
-install(FILES ${neighborhood_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/neighborhood)
-install(FILES ${heterogeneous_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/heterogeneous)
 
 if (ENABLE_UNIT_TESTS)
     enable_testing()
-    add_subdirectory(src/collective/tests)
-    add_subdirectory(src/neighborhood/tests)
-    if (USE_GPU)
-        add_subdirectory(src/heterogeneous/tests)
-    endif(USE_GPU)
+	set(TEST_PROCS "16" CACHE STRING "Number of processes to use when making ctests")
+	function(make_test file)
+		#get file name for unique handle
+		get_filename_component(exec_name ${file} NAME_WE)
+		add_executable(${exec_name} ${file})
+		target_link_libraries(${exec_name} locality_aware ${EXTERNAL_LIBS})
+		add_test(NAME ${exec_name}_Test COMMAND ${MPIRUN} -n ${TEST_PROCS} ./${exec_name})
+	endfunction()
 endif()
 
-add_subdirectory(benchmarks)
+# Flag == TRUE means TEST
+# Flag == FALSE means BENCHMARK
+function(make_executable filename flag)
+	get_filename_component(exec_name ${filename} NAME_WE)
+	add_executable(${exec_name} ${filename})
+	target_link_libraries(${exec_name} locality_aware ${EXTERNAL_LIBS})
+	
+	if(${flag})
+		set(locality_test_name ${exec_name}_Test)
+	else()
+		set(locality_test_name ${exec_name}_Benchmark)
+		install(TARGETS ${exec_name} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
+	endif()
 
+	if(ENABLE_UNIT_TESTS)
+		add_test(NAME ${locality_test_name} COMMAND ${MPIRUN} -n ${TEST_PROCS} ./${exec_name} ${TEST_MATRIX_FILE})
+	endif()
+
+endfunction()
+
+if (BENCHMARKS)
+	add_subdirectory(benchmarks)
+endif()
+
+set_target_properties(locality_aware PROPERTIES PUBLIC_HEADER include/locality_aware.h)
+add_subdirectory(include)
+add_subdirectory(library)
+target_link_libraries(locality_aware PUBLIC ${EXTERNAL_LIBS})
+
+if (USE_CUDA)
+	get_property(GPU_SOURCES_GLOBAL GLOBAL PROPERTY GPU_SOURCES_GLOBAL)
+	set_source_files_properties(${GPU_SOURCES_GLOBAL} PROPERTIES LANGUAGE ${locality_aware_LANG})
+endif()
+
+### Installation Requirements for Spack Package ###
+include(CMakePackageConfigHelpers)
+
+# Install the actual target(s) and register them for export
+install(TARGETS locality_aware
+        EXPORT locality_awareTargets)
+
+# Create the configuration file
+configure_package_config_file(
+	${CMAKE_CURRENT_SOURCE_DIR}/cmake/locality_aware-config.cmake.in
+	${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
+	INSTALL_DESTINATION share/${PROJECT_NAME}
+)
+
+## Version file
+write_basic_package_version_file(
+	${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config-version.cmake
+	COMPATIBILITY SameMinorVersion
+)
+
+install(FILES
+	${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config-version.cmake
+	${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
+	DESTINATION share/${PROJECT_NAME}
+)
+
+# Export the targets into a CMake package
+install(EXPORT locality_awareTargets
+        NAMESPACE MPIAdvance::
+        DESTINATION share/${PROJECT_NAME})
+
+############## End of Spack Section ################
 
