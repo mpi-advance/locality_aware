@@ -1,4 +1,7 @@
+
+
 #include <mpi.h>
+#include <mpi-ext.h>// Open MPI 4.1.x persistent collectives
 #include <vector>
 #include <numeric>
 #include <cassert>
@@ -76,9 +79,17 @@
 
     // ----- PMPI baseline alltoallv--------
     std::vector<double> recv_vals(rdispls.back(), 0);
-    MPI_Barrier(MPI_COMM_WORLD);
-    double t0 = MPI_Wtime();
-    for (int k = 0; k < n_iter; ++k) {
+    MPI_Barrier(MPI_COMM_WORLD);//syc before timing
+
+    int warmups = 10;
+    double t0 = 0.0;
+    
+    for (int k = 0; k <warmups + n_iter; ++k) {
+        if(k== warmups){
+
+             t0 = MPI_Wtime();
+
+        }
         PMPI_Alltoallv(packed_send.data(),
                        sendcounts.data(), sdispls.data(), MPI_DOUBLE,
                        recv_vals.data(),
@@ -92,6 +103,72 @@
     if (rank == 0) {
        std::printf("[PMPI] Alltoallv avg: %e\n", pmpi_max);
     }
+
+    //---------Persistent Legacy Alltoallv_init
+
+    // === ADDED: Persistent Alltoallv (Open MPI 4.1.x) — init+free timing
+std::vector<double> recv_pers(rdispls.back(), 0);
+MPI_Request req_pers = MPI_REQUEST_NULL;
+
+MPI_Barrier(MPI_COMM_WORLD);
+ t0 = MPI_Wtime();
+for (int k = 0; k < n_iter; ++k) {
+    MPIX_Alltoallv_init(packed_send.data(),
+                        sendcounts.data(), sdispls.data(), MPI_DOUBLE,
+                        recv_pers.data(),
+                        recvcounts.data(), rdispls.data(), MPI_DOUBLE,
+                        MPI_COMM_WORLD, MPI_INFO_NULL, &req_pers);
+    MPI_Request_free(&req_pers);
+}
+double pers_init_avg = (MPI_Wtime() - t0) / n_iter, pers_init_max = 0.0;
+MPI_Reduce(&pers_init_avg, &pers_init_max, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
+if (rank == 0) {
+    std::printf("[PMPI] Alltoallv_init+free in loop avg: %e s\n", pers_init_max);
+}
+
+// === one time Persistent Alltoallv (Open MPI 4.1.x)=============
+MPIX_Alltoallv_init(packed_send.data(),
+                    sendcounts.data(), sdispls.data(), MPI_DOUBLE,
+                    recv_pers.data(),
+                    recvcounts.data(), rdispls.data(), MPI_DOUBLE,
+                    MPI_COMM_WORLD, MPI_INFO_NULL, &req_pers);
+
+//--------------real Persistent-----------------------------------
+MPI_Barrier(MPI_COMM_WORLD);
+
+    for (int k = 0; k <warmups + n_iter; ++k) {
+        if(k== warmups){
+            t0 = MPI_Wtime();
+
+        }
+
+    MPI_Start(&req_pers);
+    MPI_Wait(&req_pers, MPI_STATUS_IGNORE);
+}
+double pers_avg = (MPI_Wtime() - t0) / n_iter, pers_max = 0.0;
+MPI_Reduce(&pers_avg, &pers_max, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
+if (rank == 0) {
+    std::printf("[PMPI] Alltoallv persistent avg: %e s\n", pers_max);
+}
+
+ // correctness vs PMPI
+    if (recv_pers.size() != recv_vals.size()) {
+        if (rank == 0) std::fprintf(stderr, "Size mismatch between PMPI and  Persistent Alltoallv (Open MPI 4.1.x) buffers\n");
+        MPI_Abort(MPI_COMM_WORLD, 1);
+    }
+    for (size_t i = 0; i < recv_pers.size(); ++i) {
+        if (recv_pers[i] != recv_vals[i]) {
+            std::fprintf(stderr, "[%d] MISMATCH at %zu: PMPI=%d RMA=%d\n",
+                         rank, i, recv_vals[i], recv_pers[i]);
+            MPI_Abort(MPI_COMM_WORLD, 1);
+        }
+    }
+
+// i think i wont use req_pers again
+MPI_Request_free(&req_pers);
+
+//==============
+
 
     // ---RMA winfence persistent --------
     MPIX_Comm*    xcomm = nullptr;
@@ -132,8 +209,12 @@
                                 xcomm, xinfo, &req);
 
     MPI_Barrier(xcomm->global_comm);
-    t0 = MPI_Wtime();
-    for (int k = 0; k < n_iter; ++k) {
+   
+     for (int k = 0; k <warmups + n_iter; ++k) {
+        if(k== warmups){
+
+             t0 = MPI_Wtime();
+        }
         MPIX_Start(req);
         MPIX_Wait(req, MPI_STATUS_IGNORE);
     }
@@ -195,10 +276,15 @@
                             xcomm, xinfo, &req);
 
     MPI_Barrier(xcomm->global_comm);
-    t0 = MPI_Wtime();
-    for (int k = 0; k < n_iter; ++k) {
+    //t0 = MPI_Wtime();
+   for (int k = 0; k <warmups + n_iter; ++k) {
+        if(k== warmups){
+        t0 = MPI_Wtime();
+        }
+
         MPIX_Start(req);
         MPIX_Wait(req, MPI_STATUS_IGNORE);
+        
     }
     double rma_avg2 = (MPI_Wtime() - t0) / n_iter, rma_max2 = 0.0;
     MPI_Reduce(&rma_avg2, &rma_max2, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
