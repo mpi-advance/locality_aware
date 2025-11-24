@@ -11,9 +11,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout the locality-aware repo
+      # Checkout the track-traffic branch
       - name: Checkout repo
         uses: actions/checkout@v3
+        with:
+          ref: track-traffic
 
       - name: Get yesterday's clone traffic
         id: clones
@@ -53,5 +55,5 @@ jobs:
 
           git add .github/metrics/clone_history.csv
           git commit -m "Daily clone stats (${{ steps.clones.outputs.date }})" || echo "No changes"
-          git push
+          git push origin HEAD:track-traffic
 
