@@ -17,6 +17,8 @@ jobs:
 
       - name: Get yesterday's clone traffic
         id: clones
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           # yesterday's clones have date = `yesterday`
           YESTERDAY=$(date -I -d "yesterday")
