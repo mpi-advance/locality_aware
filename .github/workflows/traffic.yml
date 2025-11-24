@@ -43,12 +43,12 @@ jobs:
       - name: Append to clone_history.csv
         run: |
           # Create csv on first run
-          if [ ! -f clone_history.csv ]; then
-            echo "date,daily_clones,daily_unique_cloners" > clone_history.csv
+          if [ ! -f .github/metrics/clone_history.csv ]; then
+            echo "date,daily_clones,daily_unique_cloners" > .github/metrics/clone_history.csv
           fi
 
           # Append yesterday’s entry to file
-          echo "${{ steps.clones.outputs.date }},${{ steps.clones.outputs.count }},${{ steps.clones.outputs.uniques }}" >> clone_history.csv
+          echo "${{ steps.clones.outputs.date }},${{ steps.clones.outputs.count }},${{ steps.clones.outputs.uniques }}" >> .github/metrics/clone_history.csv
 
       - name: Commit and push
         run: |
