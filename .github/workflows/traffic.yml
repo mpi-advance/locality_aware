@@ -1,0 +1,19 @@
+name: Track Traffic
+on:
+  schedule:
+    - cron: "0 0 * * *" # once per day
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Fetch clone stats
+        run: |
+          gh api repos/${GITHUB_REPOSITORY}/traffic/clones > traffic.json
+      - name: Commit data
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add traffic.json
+          git commit -m "Daily traffic snapshot" || true
+          git push
