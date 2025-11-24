@@ -1,19 +1,61 @@
 name: Track Traffic
 on:
   schedule:
-    - cron: "0 0 * * *" # once per day
+    - cron: "0 0 * * *" # Runs at 00:00, every day
+  workflow_dispatch:      # Or can manually run
+permissions:
+  contents: write
+  actions: read
 jobs:
-  capture:
+  capture-traffic:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
-      - name: Fetch clone stats
+      # Checkout the locality-aware repo
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      # Install Github CLI for Clone query command
+      - name: Install GitHub CLI
+        uses: cli/cli@v3
+        with:
+          version: latest
+
+      - name: Get yesterday's clone traffic
+        id: clones
         run: |
-          gh api repos/${GITHUB_REPOSITORY}/traffic/clones > traffic.json
-      - name: Commit data
+          # yesterday's clones have date = `yesterday`
+          YESTERDAY=$(date -I -d "yesterday")
+
+          # get all traffic from yesterday
+          DAILY_JSON=$(gh api repos/${GITHUB_REPOSITORY}/traffic/clones \
+            --jq ".clones[] | select(.timestamp | startswith(\"$YESTERDAY\"))")
+
+          # get total clone count and unique clone count
+          DAILY_COUNT=$(echo "$DAILY_JSON" | jq -r '.count // 0')
+          DAILY_UNIQUES=$(echo "$DAILY_JSON" | jq -r '.uniques // 0')
+
+          # Output variables date, count, and uniques to next step
+          echo "date=$YESTERDAY" >> $GITHUB_OUTPUT
+          echo "count=$DAILY_COUNT" >> $GITHUB_OUTPUT
+          echo "uniques=$DAILY_UNIQUES" >> $GITHUB_OUTPUT
+
+      - name: Append to clone_history.csv
         run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add traffic.json
-          git commit -m "Daily traffic snapshot" || true
+          # Create csv on first run
+          if [ ! -f clone_history.csv ]; then
+            echo "date,daily_clones,daily_unique_cloners" > clone_history.csv
+          fi
+
+          # Append yesterday’s entry to file
+          echo "${{ steps.clones.outputs.date }},${{ steps.clones.outputs.count }},${{ steps.clones.outputs.uniques }}" >> clone_history.csv
+
+      - name: Commit and push
+        run: |
+          git config --local user.email "actions@github.com"
+          git config --local user.name "GitHub Actions"
+
+          git add clone_history.csv
+          git commit -m "Daily clone stats (${{ steps.clones.outputs.date }})" || echo "No changes"
           git push
+
