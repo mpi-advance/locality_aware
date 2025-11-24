@@ -15,12 +15,6 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
 
-      # Install Github CLI for Clone query command
-      - name: Install GitHub CLI
-        uses: cli/cli@v3
-        with:
-          version: latest
-
       - name: Get yesterday's clone traffic
         id: clones
         run: |
