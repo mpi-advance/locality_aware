@@ -1,4 +1,4 @@
-#include "collective/allreduce.hpp"
+#include "collective/allreduce.h"
 #include "locality_aware.h"
 #include <string.h>
 #include <math.h>
@@ -13,26 +13,36 @@ int allreduce_dissemination_loc(const void* sendbuf,
                                  MPI_Op op,
                                  MPIL_Comm* comm)
 {
-    return allreduce_impl(allreduce_dissemination_loc_helper,
-                   sendbuf, recvbuf, count, datatype, op, comm,
-                   MPIL_Alloc, MPIL_Free);
+    if (count == 0)
+        return MPI_SUCCESS;
+
+    return allreduce_dissemination_loc_helper(sendbuf, recvbuf, count,
+            datatype, op, comm, MPIL_Alloc, MPIL_Free);
 }
 
-int allreduce_dissemination_loc_helper(
-                        const void* sendbuf,
-                        void* tmpbuf,
-                        void* recvbuf,
-                        int count,
-                        MPI_Datatype datatype,
-                        MPI_Op op,
-                        MPIL_Comm* comm)
+int allreduce_dissemination_ml(const void* sendbuf,
+                                 void* recvbuf,
+                                 int count,
+                                 MPI_Datatype datatype,
+                                 MPI_Op op,
+                                 MPIL_Comm* comm)
 {
     if (count == 0)
         return MPI_SUCCESS;
 
-    int type_size;
-    MPI_Type_size(datatype, &type_size);
+    return allreduce_dissemination_ml_helper(sendbuf, recvbuf, count, 
+            datatype, op, comm, MPIL_Alloc, MPIL_Free);
+}
 
+int allreduce_dissemination_loc_helper(const void* sendbuf,
+                                         void* recvbuf,
+                                         int count,
+                                         MPI_Datatype datatype,
+                                         MPI_Op op,
+                                         MPIL_Comm* comm,
+                                         MPIL_Alloc_ftn alloc_ftn, 
+                                         MPIL_Free_ftn free_ftn)
+{
     int rank, num_procs;
     MPI_Comm_rank(comm->global_comm, &rank);
     MPI_Comm_size(comm->global_comm, &num_procs);
@@ -48,16 +58,107 @@ int allreduce_dissemination_loc_helper(
     MPI_Comm_rank(comm->group_comm, &rank_node);
     MPI_Comm_size(comm->group_comm, &num_nodes);
 
+    int tag;
+    get_tag(comm, &tag);
+
     // Locality-Aware only works if ppn is even on all processes
     if (num_nodes * ppn != num_procs)
         return allreduce_recursive_doubling_helper(
-                sendbuf, tmpbuf, recvbuf, count, datatype, op, comm);
+                sendbuf, recvbuf, count, datatype, op, comm,
+                alloc_ftn, free_ftn);
+
+    return allreduce_dissemination_loc_core(
+                   sendbuf, recvbuf, count, datatype, op, 
+                   comm->global_comm, comm->group_comm, 
+                   comm->local_comm, tag,
+                   alloc_ftn, free_ftn);
+}
+
+
+int allreduce_dissemination_ml_helper(const void* sendbuf,
+                                      void* recvbuf,
+                                      int count,
+                                      MPI_Datatype datatype,
+                                      MPI_Op op,
+                                      MPIL_Comm* comm,
+                                      MPIL_Alloc_ftn alloc_ftn,
+                                      MPIL_Free_ftn free_ftn)
+{
+    int rank, num_procs;
+    MPI_Comm_rank(comm->global_comm, &rank);
+    MPI_Comm_size(comm->global_comm, &num_procs);
+
+    if (comm->local_comm == MPI_COMM_NULL)
+        MPIL_Comm_topo_init(comm);
+
+    int local_rank, ppn;
+    MPI_Comm_rank(comm->local_comm, &local_rank);
+    MPI_Comm_size(comm->local_comm, &ppn);
+
+    int rank_node, num_nodes;
+    MPI_Comm_rank(comm->group_comm, &rank_node);
+    MPI_Comm_size(comm->group_comm, &num_nodes);
 
     int tag;
     get_tag(comm, &tag);
 
+    // Locality-Aware only works if ppn is even on all processes
+    if (num_nodes * ppn != num_procs)
+        return allreduce_recursive_doubling_helper(
+                sendbuf, recvbuf, count, datatype, op, comm,
+                MPIL_Alloc, MPIL_Free);
+
+    // Convert to leader_comm (4 leaders per node)
+    int num_leaders = 4;
+    if (comm->leader_comm != MPI_COMM_NULL)
+    {
+        int ppl;
+        MPI_Comm_size(comm->leader_comm, &ppl);
+        if (ppn / num_leaders != ppl)
+        {
+            MPIL_Comm_leader_free(comm);
+        }
+    }
+    if (comm->leader_comm == MPI_COMM_NULL)
+        MPIL_Comm_leader_init(comm, ppn / num_leaders);
+
+    return allreduce_dissemination_loc_core(
+                   sendbuf, recvbuf, count, datatype, op, 
+                   comm->global_comm, comm->leader_group_comm, 
+                   comm->leader_comm, tag,
+                   MPIL_Alloc, MPIL_Free);
+}
+
+int allreduce_dissemination_loc_core(
+                        const void* sendbuf,
+                        void* recvbuf,
+                        int count,
+                        MPI_Datatype datatype,
+                        MPI_Op op,
+                        MPI_Comm global_comm, 
+                        MPI_Comm group_comm,
+                        MPI_Comm local_comm,
+                        int tag,
+                        MPIL_Alloc_ftn alloc_ftn,
+                        MPIL_Free_ftn free_ftn)
+{
+    int type_size;
+    MPI_Type_size(datatype, &type_size);
+
+    int rank, num_procs;
+    MPI_Comm_rank(global_comm, &rank);
+    MPI_Comm_size(global_comm, &num_procs);
+
+    int local_rank, ppn;
+    MPI_Comm_rank(local_comm, &local_rank);
+    MPI_Comm_size(local_comm, &ppn);
+
+    int rank_node, num_nodes;
+    MPI_Comm_rank(group_comm, &rank_node);
+    MPI_Comm_size(group_comm, &num_nodes);
+
     PMPI_Allreduce(sendbuf, recvbuf, count, datatype,
-            op, comm->local_comm);
+            op, local_comm);
 
     int pow_ppn_num_nodes = 1;
     int base = ppn + 1;
@@ -67,18 +168,21 @@ int allreduce_dissemination_loc_helper(
     int max_node = mult * pow_ppn_num_nodes;
     int extra = num_nodes - max_node;
 
+    void *tmpbuf;
+    alloc_ftn(&tmpbuf, type_size*count);
+
     if (rank_node >= max_node)
     {
         int node = rank_node - max_node;
-        MPI_Send(recvbuf, count, datatype, node, tag, comm->group_comm);
-        MPI_Recv(recvbuf, count, datatype, node, tag, comm->group_comm,
+        MPI_Send(recvbuf, count, datatype, node, tag, group_comm);
+        MPI_Recv(recvbuf, count, datatype, node, tag, group_comm,
                 MPI_STATUS_IGNORE);
     }
     else
     {
         if (rank_node < extra)
         {
-            MPI_Recv(tmpbuf, count, datatype, max_node + rank_node, tag, comm->group_comm,
+            MPI_Recv(tmpbuf, count, datatype, max_node + rank_node, tag, group_comm,
                    MPI_STATUS_IGNORE);
             MPI_Reduce_local(tmpbuf, recvbuf, count, datatype, op);
         }
@@ -92,19 +196,29 @@ int allreduce_dissemination_loc_helper(
                 int recv_node = (rank_node + stride) % max_node;
                 MPI_Sendrecv(recvbuf, count, datatype, send_node, tag,
                         tmpbuf, count, datatype, recv_node, tag,
-                        comm->group_comm, MPI_STATUS_IGNORE);
+                        group_comm, MPI_STATUS_IGNORE);
             }
             else
-                memset(tmpbuf, 0, count*type_size);
-            MPI_Allreduce(MPI_IN_PLACE, tmpbuf, count, datatype, op, comm->local_comm);
+            {
+                // Odd implementation to be portable to GPU
+                char* zerobuf = (char*)malloc(type_size*count);
+                memset(zerobuf, 0, type_size*count);
+                MPI_Sendrecv(zerobuf, count, datatype, rank, tag,
+                        tmpbuf, count, datatype, rank, tag,
+                        MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+                free(zerobuf);
+            }
+            MPI_Allreduce(MPI_IN_PLACE, tmpbuf, count, datatype, op, local_comm);
             MPI_Reduce_local(tmpbuf, recvbuf, count, datatype, op);
         }
 
         if (rank_node < extra)
         {
-            MPI_Send(recvbuf, count, datatype, max_node + rank_node, tag, comm->group_comm);
+            MPI_Send(recvbuf, count, datatype, max_node + rank_node, tag, group_comm);
         }
     }
+
+    free_ftn(tmpbuf);
 
     return MPI_SUCCESS;
 }

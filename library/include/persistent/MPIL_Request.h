@@ -4,6 +4,7 @@
 #include <mpi.h>
 
 #include "communicator/locality_comm.h"
+#include "utils/MPIL_Alloc.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -50,7 +51,24 @@ typedef struct _MPIL_Request
     /** @brief Block size for strided/blocked communication **/
     int block_size;
 
+    MPI_Comm global_comm;
+    MPI_Comm local_comm;
+
     int reorder;
+
+    void* tmpbuf;
+    MPIL_Free_ftn free_ftn;
+
+    // Only needed for allreduce (MPI_Reduce_local call)
+    /** @brief count Number of datatypes to reduce in MPI_Reduce_local **/
+    int count;
+    /** @brief datatype MPI_Datatype to be reduced in MPI_Reduce_local **/
+    MPI_Datatype datatype;
+    /** @brief op MPI_Op to be used in MPI_Reduce_local **/
+    MPI_Op op;
+    /** @brief num_ops int number of local operations **/
+    int num_ops;
+    
 
 #ifdef GPU
     /** @brief Allocated cpu-based send buffers for copy-to-cpu algorithms **/

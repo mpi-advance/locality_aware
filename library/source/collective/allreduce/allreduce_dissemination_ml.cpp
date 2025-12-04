@@ -1,4 +1,4 @@
-#include "collective/allreduce.hpp"
+#include "collective/allreduce.h"
 #include "locality_aware.h"
 #include <string.h>
 #include <math.h>
@@ -14,19 +14,20 @@ int allreduce_dissemination_ml(const void* sendbuf,
                                  MPI_Op op,
                                  MPIL_Comm* comm)
 {
-    return allreduce_impl(allreduce_dissemination_ml_helper,
+    return allreduce_dissemination_ml_helper(
                    sendbuf, recvbuf, count, datatype, op, comm,
                    MPIL_Alloc, MPIL_Free);
 }
 
 int allreduce_dissemination_ml_helper(
                         const void* sendbuf,
-                        void* tmpbuf,
                         void* recvbuf,
                         int count,
                         MPI_Datatype datatype,
                         MPI_Op op,
-                        MPIL_Comm* comm)
+                        MPIL_Comm* comm,
+                        MPIL_Alloc_ftn alloc_ftn,
+                        MPIL_Free_ftn free_ftn)
 {
     if (count == 0)
         return MPI_SUCCESS;
@@ -52,7 +53,8 @@ int allreduce_dissemination_ml_helper(
     // Locality-Aware only works if ppn is even on all processes
     if (num_nodes * ppn != num_procs)
         return allreduce_recursive_doubling_helper(
-                sendbuf, tmpbuf, recvbuf, count, datatype, op, comm);
+                sendbuf, recvbuf, count, datatype, op, comm,
+                alloc_ftn, free_ftn);
 
     // Convert to leader_comm (4 leaders per node)
     int num_leaders = 4;
@@ -87,6 +89,9 @@ int allreduce_dissemination_ml_helper(
     int mult = num_nodes / pow_ppn_num_nodes;
     int max_node = mult * pow_ppn_num_nodes;
     int extra = num_nodes - max_node;
+
+    void* tmpbuf;
+    alloc_ftn(&tmpbuf, type_size * count);
 
     if (rank_node >= max_node)
     {
@@ -130,6 +135,8 @@ int allreduce_dissemination_ml_helper(
             MPI_Send(recvbuf, count, datatype, max_node + rank_node, tag, comm->leader_group_comm);
         }
     }
+
+    free_ftn(tmpbuf);
 
     return MPI_SUCCESS;
 }

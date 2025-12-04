@@ -106,7 +106,7 @@ int copy_to_cpu_allreduce(allreduce_helper_ftn f,
     gpuStreamSynchronize(0);
 #endif 
 
-    ierr += allreduce_impl(f, cpu_sendbuf, cpu_recvbuf, count, datatype, op, comm,
+    ierr += f(cpu_sendbuf, cpu_recvbuf, count, datatype, op, comm,
                     MPIL_Alloc, MPIL_Free);
 
 #if defined(APU)

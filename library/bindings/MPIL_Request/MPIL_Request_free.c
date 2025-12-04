@@ -2,6 +2,7 @@
 
 #include "locality_aware.h"
 #include "persistent/MPIL_Request.h"
+#include "utils/MPIL_Alloc.h"
 #ifdef GPU
 #include "heterogeneous/gpu_utils.h"
 #endif
@@ -48,6 +49,16 @@ int MPIL_Request_free(MPIL_Request** request_ptr)
     {
         destroy_locality_comm(request->locality);
     }
+
+    if (request->tmpbuf != NULL)
+    {
+        request->free_ftn(request->tmpbuf);
+    }
+
+    if (request->global_comm != MPI_COMM_NULL)
+        MPI_Comm_free(&(request->global_comm));
+    if (request->local_comm != MPI_COMM_NULL)
+        MPI_Comm_free(&(request->local_comm));
 
 // TODO : for safety, may want to check if allocated with malloc?
 #ifdef GPU  // Assuming cpu buffers allocated in pinned memory

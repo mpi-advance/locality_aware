@@ -1,4 +1,4 @@
-#include "collective/allreduce.hpp"
+#include "collective/allreduce.h"
 #include "locality_aware.h"
 #include <string.h>
 #include <math.h>
@@ -10,19 +10,20 @@ int allreduce_recursive_doubling(const void* sendbuf,
                                  MPI_Op op,
                                  MPIL_Comm* comm)
 {
-    return allreduce_impl(allreduce_recursive_doubling_helper,
+    return allreduce_recursive_doubling_helper(
                    sendbuf, recvbuf, count, datatype, op, comm,
                    MPIL_Alloc, MPIL_Free);
 }
 
 int allreduce_recursive_doubling_helper(
                         const void* sendbuf,
-                        void* tmpbuf,
                         void* recvbuf,
                         int count,
                         MPI_Datatype datatype,
                         MPI_Op op,
-                        MPIL_Comm* comm)
+                        MPIL_Comm* comm,
+                        MPIL_Alloc_ftn alloc_ftn,
+                        MPIL_Free_ftn free_ftn)
 {
     if (count == 0)
         return MPI_SUCCESS;
@@ -46,6 +47,9 @@ int allreduce_recursive_doubling_helper(
     int log_procs = (int)log2(num_procs);
     int log2_num_procs = 1 << log_procs;
     int extra_procs = num_procs - log2_num_procs;
+
+    void* tmpbuf;
+    alloc_ftn(&tmpbuf, type_size * count);
 
     if (rank >= log2_num_procs)
     {
@@ -75,6 +79,8 @@ int allreduce_recursive_doubling_helper(
             MPI_Send(recvbuf, count, datatype, rank + log2_num_procs, tag, comm->global_comm);
         }
     }
+
+    free_ftn(tmpbuf);
 
     return MPI_SUCCESS;
 }

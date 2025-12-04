@@ -5,6 +5,8 @@ target_sources(locality_aware PRIVATE
 	Collective/MPIL_Alltoall_crs.c
 	Collective/MPIL_Alltoallv_crs.c
     Collective/MPIL_Allreduce.c
+    Collective/MPIL_Allreduce_init.c
+    Collective/MPIL_Allgather.c
 	MPIL_Alloc/MPIL_Alloc.cpp
 	MPIL_Alloc/MPIL_Free.cpp
 	MPIL_Info/MPIL_Info_init.cpp
@@ -27,6 +29,8 @@ if(USE_GPU)
 		"${CMAKE_CURRENT_SOURCE_DIR}/Collective/MPIL_Alltoallv.c"
 		"${CMAKE_CURRENT_SOURCE_DIR}/Collective/MPIL_Alltoall_crs.c"
 		"${CMAKE_CURRENT_SOURCE_DIR}/Collective/MPIL_Alltoallv_crs.c"
+        "${CMAKE_CURRENT_SOURCE_DIR}/Collective/MPIL_Allreduce.c"
+        "${CMAKE_CURRENT_SOURCE_DIR}/Collective/MPIL_Allreduce_init.c"
 		"${CMAKE_CURRENT_SOURCE_DIR}/MPIL_Comm/MPIL_Comm_device_init.c"
 		"${CMAKE_CURRENT_SOURCE_DIR}/MPIL_Comm/MPIL_Comm_device_free.c"
 		"${CMAKE_CURRENT_SOURCE_DIR}/MPIL_Request/MPIL_Request_free.c"
