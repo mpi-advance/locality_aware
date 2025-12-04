@@ -25,6 +25,12 @@ int MPIX_Request_init(MPIX_Request** request_ptr)
     request->send_sizes = NULL;
     request->recv_sizes = NULL;
     request->n_puts = 0;
+    //new
+    request->is_local = NULL;        // [size] 1 = same node, 0 = off-node
+    request->remote_targets = NULL;  // list of off-node ranks we send to
+    request->n_remote = 0;
+    request->local_targets = NULL;   // list of on-node ranks we send to
+    request->n_local = 0;
 
     *request_ptr = request;
 
@@ -120,6 +126,16 @@ int MPIX_Request_free(MPIX_Request* request)
         free(request->send_sizes);
     if (request->recv_sizes)
         free(request->recv_sizes);
+
+     /* NEW frees */
+    if (request->is_local)
+        free(request->is_local);
+    if (request->remote_targets)
+        free(request->remote_targets);
+    if (request->local_targets)
+        free(request->local_targets);
+
+    
 
     free(request);
 
@@ -292,6 +308,48 @@ int batch_wait(MPIX_Request* request, MPI_Status* status)
 }
 
 
+int rma_start_han(MPIX_Request* request)
+{
+    int rank;
+    MPI_Comm_rank(request->xcomm->global_comm, &rank);
+
+    const char* send_buffer = (const char*)(request->sendbuf);
+   
+
+    MPI_Barrier(request->xcomm->global_comm);
+
+    MPI_Win_fence(MPI_MODE_NOPRECEDE, request->xcomm->win);
+
+    /* --------- remote ranks first (off-node) --------- */
+    for (int idx = 0; idx < request->n_remote; ++idx) {
+        int i      = request->remote_targets[idx];
+        int nbytes = request->send_sizes[i];
+        if (nbytes == 0) continue;
+
+        MPI_Put((const void*)((const char*)request->sendbuf + request->sdispls[i]),
+                nbytes, MPI_BYTE,
+                i, (MPI_Aint)request->put_displs[i],
+                nbytes, MPI_BYTE,
+                request->xcomm->win);
+    }
+
+    /* --------- local ranks second (same node) -------- */
+    for (int idx = 0; idx < request->n_local; ++idx) {
+        int i      = request->local_targets[idx];
+        int nbytes = request->send_sizes[i];
+        if (nbytes == 0) continue;
+
+        MPI_Put((const void*)((const char*)request->sendbuf + request->sdispls[i]),
+                nbytes, MPI_BYTE,
+                i, (MPI_Aint)request->put_displs[i],
+                nbytes, MPI_BYTE,
+                request->xcomm->win);
+    }
+
+    return MPI_SUCCESS;
+}
+
+
 
 int rma_start(MPIX_Request* request)
 {
@@ -367,6 +425,13 @@ int rma_wait(MPIX_Request* request, MPI_Status* status)
 
     return MPI_SUCCESS;
 }
+
+/*
+rma_lock_start
+
+*/
+
+
 
 
 
@@ -470,25 +535,123 @@ MPI_Waitall(request->global_n_msgs, request->global_requests, MPI_STATUSES_IGNOR
 }
 
 
-int rma_lock_wait(MPIX_Request* request, MPI_Status* status)
+int rma_lock_start_han(MPIX_Request* request)
 {
+    int rank;
+    
+    MPI_Comm_rank(request->xcomm->global_comm, &rank);  // Get the rank of the process
+   // printf("Process %d entering rma_lock_start\n", rank);
+    //fflush(stdout);
+
+    const char*  send_buffer = (const char* )(request->sendbuf);
+    const char*  recv_buffer = (const char* )(request->recvbuf); 
+    //printf("*************329");
+    //fflush(stdout);
+    MPI_Win_unlock(rank, request->xcomm->win); // MGFD: Release Local Exclusive Lock, this allows other process to safely put data. 
+
+    //printf("******************333");
+   // fflush(stdout);
+       
+    //for (int i = 0; i < request->n_puts; ++i)
+       // request->global_requests[i] = MPI_REQUEST_NULL;
+    
+       
+    MPI_Win_lock_all(0, request->xcomm->win);
+      
+
+//MPI_Aint is large enough to store any valid memory address, so it won’t overflow on 64-bit systems.
+
+
+
+     /* --------- remote ranks first (off-node) --------- */
+    for (int idx = 0; idx < request->n_remote; ++idx) {
+        int i      = request->remote_targets[idx];
+        int nbytes = request->send_sizes[i];
+        if (nbytes == 0) continue;
+
+        MPI_Put((const void*)((const char*)request->sendbuf + request->sdispls[i]),
+                nbytes, MPI_BYTE,
+                i, (MPI_Aint)request->put_displs[i],
+                nbytes, MPI_BYTE,
+                request->xcomm->win);
+    }
+
+    /* --------- local ranks second (same node) -------- */
+    for (int idx = 0; idx < request->n_local; ++idx) {
+        int i      = request->local_targets[idx];
+        int nbytes = request->send_sizes[i];
+        if (nbytes == 0) continue;
+
+        MPI_Put((const void*)((const char*)request->sendbuf + request->sdispls[i]),
+                nbytes, MPI_BYTE,
+                i, (MPI_Aint)request->put_displs[i],
+                nbytes, MPI_BYTE,
+                request->xcomm->win);
+    }
+     //tracking 0 requests now
+    //request->global_n_msgs = 0; 
+
+
+   // printf("lock_start nputs=%d, request count= %d\n",request->n_puts, request_count);
+    //fflush(stdout);
+
+    //printf("*************after Rputs***");
+    //fflush(stdout);
+    // Waiting for all non-blocking operations to complete 
+    
+   
+
+    //printf("Process %d leaving rma_lock_start\n", rank);
+    //fflush(stdout);    
+    
+    return MPI_SUCCESS;
+}
+
+/*
+rma_lock_start_han ends
+*/
+
+int rma_lock_wait_han(MPIX_Request* request, MPI_Status* status)
+{
+	
     int rank; MPI_Comm_rank(request->xcomm->global_comm, &rank);
+ //printf("Process %d starting rma_start\n", rank);
 
     MPI_Win_unlock_all(request->xcomm->win);
 
-    /* Ensure every origin has finished their access epochs  */
+    /* Ensure every process has finished their access epochs  */
     MPI_Barrier(request->xcomm->global_comm);//removed the segfault
 
     
 
     // Now re-acquire the exclusive self lock so user code can safely read recvbuf 
-    // MGFD: this makes the buffer go into an consistent state, and therefore is safe to access by the user.
+    // MGFD: this makes the buffer go into a consistent state, and therefore is safe to access by the user.
     MPI_Win_lock(MPI_LOCK_EXCLUSIVE, rank, 0, request->xcomm->win);
     
+     //printf("process %d leaving", rank);
     return MPI_SUCCESS;
 }
 
+int rma_lock_wait(MPIX_Request* request, MPI_Status* status)
+{
 
+    int rank; MPI_Comm_rank(request->xcomm->global_comm, &rank);
+// printf("Process %d starting rma_start\n", rank);
+
+    MPI_Win_unlock_all(request->xcomm->win);
+
+    /* Ensure every process has finished their access epochs  */
+    MPI_Barrier(request->xcomm->global_comm);//removed the segfault
+
+
+
+    // Now re-acquire the exclusive self lock so user code can safely read recvbuf
+    // MGFD: this makes the buffer go into an consistent state, and therefore is safe to access by the user.
+    MPI_Win_lock(MPI_LOCK_EXCLUSIVE, rank, 0, request->xcomm->win);
+
+  //   printf("process %d leaving", rank);
+    return MPI_SUCCESS;
+}
 
      
 

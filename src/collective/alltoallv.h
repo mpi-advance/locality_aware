@@ -4,10 +4,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <mpi.h>
-#include "utils.h"
-#include "collective.h"
-#include "locality/topology.h"
-#include "persistent/persistent.h"
+#include "/g/g92/enamug/clean/GPU_locality_aware/locality_aware/src/utils.h"
+#include "/g/g92/enamug/clean/GPU_locality_aware/locality_aware/src/collective/collective.h"
+#include "/g/g92/enamug/clean/GPU_locality_aware/locality_aware/src/locality/topology.h"
+#include "/g/g92/enamug/clean/GPU_locality_aware/locality_aware/src/persistent/persistent.h"
 #ifdef __cplusplus
 extern "C"
 {
@@ -99,6 +99,18 @@ int alltoallv_rma_winfence_init(const void* sendbuf,
                 MPIX_Info* xinfo,
                 MPIX_Request** request_ptr);
 
+int alltoallv_rma_winfence_init_han(const void* sendbuf,
+                const int sendcounts[],
+                const int sdispls[],
+                MPI_Datatype sendtype,
+                void* recvbuf,
+                const int recvcounts[],
+                const int rdispls[],
+                MPI_Datatype recvtype,
+                MPIX_Comm* xcomm,
+                MPIX_Info* xinfo,
+                MPIX_Request** request_ptr);                
+
 int alltoallv_rma_lock_init(const void* sendbuf,
                         const int sendcounts[],
                         const int sdispls[],
@@ -111,6 +123,19 @@ int alltoallv_rma_lock_init(const void* sendbuf,
                         MPIX_Info* xinfo,
                         MPIX_Request** request_ptr);
                   
+
+int alltoallv_rma_lock_init_han(const void* sendbuf,
+                        const int sendcounts[],
+                        const int sdispls[],
+                        MPI_Datatype sendtype,
+                        void* recvbuf,
+                        const int recvcounts[],
+                        const int rdispls[],
+                        MPI_Datatype recvtype,
+                        MPIX_Comm* xcomm,
+                        MPIX_Info* xinfo,
+                        MPIX_Request** request_ptr);
+
 
 int alltoallv_rma_winlock(const void* sendbuf,
         const int sendcounts[],

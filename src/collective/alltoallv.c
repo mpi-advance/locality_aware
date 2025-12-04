@@ -2,6 +2,7 @@
 #include <string.h>
 #include <math.h>
 #include "utils.h"
+
 //#include "/g/g92/enamug/install/include/caliper/cali.h"
 #include "/g/g92/enamug/my_caliper_install/include/caliper/cali.h"
 /**************************************************
@@ -206,7 +207,7 @@ int alltoallv_rma_winfence(const void* sendbuf,
         total_recv_bytes += recvcounts[i] * recv_type_size;
     }
 
-    
+    /*
     if (xcomm->win_bytes != total_recv_bytes || xcomm->win_type_bytes != 1) {
         MPIX_Comm_win_free(xcomm);
     }
@@ -215,16 +216,34 @@ int alltoallv_rma_winfence(const void* sendbuf,
     if (xcomm->win == MPI_WIN_NULL) {
         MPI_Win_create(recv_buffer, total_recv_bytes, 1, MPI_INFO_NULL, xcomm->global_comm, &xcomm->win);
     }
+     */
 
+     //  Locally deciding if this rank needs reallocation
+    int local_need_reallo = 0;
+    if (xcomm->win_bytes != total_recv_bytes || xcomm->win_type_bytes != 1 || xcomm->win == MPI_WIN_NULL)
+    local_need_reallo = 1;
+
+    // every process deciding if any rank needs to recreate
+    int global_need_reallo = 0;
+    MPI_Allreduce(&local_need_reallo, &global_need_reallo, 1, MPI_INT, MPI_LOR, xcomm->global_comm);
+
+
+    if (global_need_reallo) {
+    if (xcomm->win != MPI_WIN_NULL)
+        MPIX_Comm_win_free(xcomm);
+
+    MPI_Win_create(recvbuf, total_recv_bytes, 1, MPI_INFO_NULL, xcomm->global_comm, &xcomm->win);
    
-CALI_MARK_BEGIN("start_rma_Win_fence_region");
+    }
+   
+//CALI_MARK_BEGIN("start_rma_Win_fence_region");
 
     MPI_Win_fence(MPI_MODE_NOSTORE | MPI_MODE_NOPRECEDE, xcomm->win);//epoch starts
 
-CALI_MARK_END("start_rma_Win_fence_region");
+//CALI_MARK_END("start_rma_Win_fence_region");
 
 
-CALI_MARK_BEGIN("put_region_rma_Winfence");
+//CALI_MARK_BEGIN("put_region_rma_Winfence");
     
     for (int i = 0; i < num_procs; i++) {
         if (sendcounts[i] > 0) {
@@ -239,28 +258,170 @@ CALI_MARK_BEGIN("put_region_rma_Winfence");
         }
     }
 
-CALI_MARK_END("put_region_rma_Winfence");
+//CALI_MARK_END("put_region_rma_Winfence");
 
    
 
-CALI_MARK_BEGIN("Final_rma_Win_fence_region");
+//CALI_MARK_BEGIN("Final_rma_Win_fence_region");
 
     // Final synchronization
     MPI_Win_fence(MPI_MODE_NOPUT | MPI_MODE_NOSUCCEED, xcomm->win);
 
-CALI_MARK_END("Final_rma_Win_fence_region");
+//CALI_MARK_END("Final_rma_Win_fence_region");
 
-CALI_MARK_BEGIN("Final_barrier_Win_fence_region");
+//CALI_MARK_BEGIN("Final_barrier_Win_fence_region");
 
     MPI_Barrier(xcomm->global_comm);
-CALI_MARK_END("Final_barrier_Win_fence_region");
+//CALI_MARK_END("Final_barrier_Win_fence_region");
 
 free(rdispls_dist);
     return MPI_SUCCESS;
 }
 
 
-/**************** */
+
+int alltoallv_rma_winfence_init_han(const void* sendbuf,
+    const int sendcounts[],
+    const int sdispls[],
+    MPI_Datatype sendtype,
+    void* recvbuf,
+    const int recvcounts[],
+    const int rdispls[],
+    MPI_Datatype recvtype,
+    MPIX_Comm* xcomm,
+    MPIX_Info* xinfo,
+    MPIX_Request** request_ptr)
+{
+    int rank, num_procs;
+    MPI_Comm_rank(xcomm->global_comm, &rank);
+    MPI_Comm_size(xcomm->global_comm, &num_procs);
+
+    MPIX_Request* request;
+    MPIX_Request_init(&request);
+    int rma_start_han(MPIX_Request* request);
+        
+    request->start_function = rma_start_han;
+    request->wait_function  = rma_wait;
+
+    request->sendbuf = sendbuf;
+    request->recvbuf = recvbuf;
+
+    int send_type_size, recv_type_size;
+    MPI_Type_size(sendtype, &send_type_size);
+    MPI_Type_size(recvtype, &recv_type_size);
+
+    int total_recv_bytes = 0;
+        
+    // We only free an existing window if we know it was previously set up
+    // (win_bytes > 0) AND its size/type no longer match what we need now.
+    if (xcomm->win_bytes > 0 &&
+        (xcomm->win_bytes != total_recv_bytes || xcomm->win_type_bytes != 1)) {
+
+        
+
+        MPIX_Comm_win_free(xcomm);  // this calls MPI_Win_free and sets win to MPI_WIN_NULL
+    }
+
+    // If there is no valid window, create one for this recvbuf
+    if (xcomm->win == MPI_WIN_NULL || xcomm->win_bytes == 0) {
+       
+
+        MPI_Win_create(recvbuf,
+                       total_recv_bytes,
+                       1,                // disp_unit in bytes
+                       MPI_INFO_NULL,
+                       xcomm->global_comm,
+                       &xcomm->win);
+
+        // Update bookkeeping so future init calls know what is there
+        xcomm->win_bytes      = total_recv_bytes;
+        xcomm->win_type_bytes = 1;
+    }
+
+    // Attach communicator to this request
+    request->xcomm = xcomm;
+
+    
+
+    request->n_puts = num_procs;
+
+    //request->xcomm      = xcomm;
+    request->sdispls    = (int*)malloc(num_procs * sizeof(int));
+    request->send_sizes = (int*)malloc(num_procs * sizeof(int));
+    request->recv_sizes = (int*)malloc(num_procs * sizeof(int));
+    request->recv_size  = total_recv_bytes;
+    request->put_displs = (int*)malloc(num_procs * sizeof(int));
+
+    MPI_Alltoall(rdispls, 1, MPI_INT,
+                 request->put_displs, 1, MPI_INT,
+                 xcomm->global_comm);
+
+    for (int i = 0; i < num_procs; i++) {
+        request->sdispls[i]    = sdispls[i] * send_type_size;
+        request->send_sizes[i] = sendcounts[i] * send_type_size;
+        request->recv_sizes[i] = recvcounts[i] * recv_type_size;
+        request->put_displs[i] *= recv_type_size;
+    }
+
+    /* ------------- NEW; building new hanstyle (remote-first / local-second lists, then puts happen in rma_start) ------------- */
+    //int MPI_Comm_split_type(MPI_Comm comm, int split_type, int key(contol of rank assignment), MPI_Info info, MPI_Comm * newcomm)
+    //https://www.mpich.org/static/docs/v3.4/www3/MPI_Comm_split_type.html
+    // Split communicator by node, shared_comm (shared memory on anode) 
+    // different nodes have different shared_comm
+    MPI_Comm shared_comm;
+    MPI_Comm_split_type(xcomm->global_comm,
+                        MPI_COMM_TYPE_SHARED,
+                        0,
+                        MPI_INFO_NULL,
+                        &shared_comm);
+
+    int local_size;
+    MPI_Comm_size(shared_comm, &local_size);
+
+    int *local_world_ranks = (int*)malloc(local_size * sizeof(int));
+
+    // Gather the global ranks of all procs on my node
+    MPI_Allgather(&rank, 1, MPI_INT,
+                  local_world_ranks, 1, MPI_INT,
+                  shared_comm);
+
+    //  Mark which global ranks are on my node
+    request->is_local = (int*)malloc(num_procs * sizeof(int));
+    for (int r = 0; r < num_procs; r++)
+        request->is_local[r] = 0;//initialize is local to all zeros
+
+    for (int i = 0; i < local_size; i++) {
+        int gr = local_world_ranks[i];   // global rank(gr) on my node
+        request->is_local[gr] = 1;//the moment you are on my node you are marked with 1
+    }
+
+    //building target lists: remote_targets first(will hold ranks on the other nodes) and local_targets(on my node)
+    request->remote_targets = (int*)malloc(num_procs * sizeof(int));//will hold ranks on the other nodes
+    request->local_targets  = (int*)malloc(num_procs * sizeof(int));//will hold ranks on my nodes
+    request->n_remote = 0;//initialize counters-2 count how many elements we have put in each list
+    request->n_local  = 0;
+
+    for (int r = 0; r < num_procs; r++) {
+        if (r == rank) continue;                    //if myrank =sender rank, skip self
+        if (request->send_sizes[r] == 0) continue;  //if there no data to send, skip
+
+        if (request->is_local[r])
+            request->local_targets[request->n_local++]   = r;
+        else
+            request->remote_targets[request->n_remote++] = r;
+    }
+
+    free(local_world_ranks);
+    MPI_Comm_free(&shared_comm);
+
+    /* ------------------------------------------------------------------------ */
+
+    *request_ptr = request;
+    return MPI_SUCCESS;
+}
+
+
+
 
 int alltoallv_rma_winfence_init(const void* sendbuf,
     const int sendcounts[],
@@ -302,14 +463,45 @@ int alltoallv_rma_winfence_init(const void* sendbuf,
         MPIX_Comm_win_free(xcomm);
          //xcomm->win = MPI_WIN_NULL;
     }
+    /*
     //printf("[Init] Rank %d total_recv_bytes = %d\n", rank, total_recv_bytes); fflush(stdout);
-
+    MPI_Barrier(xcomm->global_comm);
     // Initialize window only if it hasn't been initialized
     if (xcomm->win == MPI_WIN_NULL) {
         MPI_Win_create(recvbuf, total_recv_bytes, 1, MPI_INFO_NULL, xcomm->global_comm, &xcomm->win);
     }
+*/    
 
-    
+    /*
+//  Locally deciding if this rank needs reallocation
+int local_need_reallo = 0;
+if (xcomm->win_bytes != total_recv_bytes || xcomm->win_type_bytes != 1 || xcomm->win == MPI_WIN_NULL)
+    local_need_reallo = 1;
+
+// every process deciding if any rank needs to recreate
+int global_need_reallo = 0;
+MPI_Allreduce(&local_need_reallo, &global_need_reallo, 1, MPI_INT, MPI_LOR, xcomm->global_comm);
+
+
+if (global_need_reallo) {
+    if (xcomm->win != MPI_WIN_NULL)
+        MPIX_Comm_win_free(xcomm);
+
+    MPI_Win_create(recvbuf, total_recv_bytes, 1, MPI_INFO_NULL, xcomm->global_comm, &xcomm->win);
+   
+}
+    */
+
+  // if (xcomm->win != MPI_WIN_NULL)  
+if (xcomm->win == MPI_WIN_NULL) {
+    //MPIX_Comm_win_free(xcomm);
+
+
+// Create a new window every time
+MPI_Win_create(recvbuf, total_recv_bytes, 1, MPI_INFO_NULL, xcomm->global_comm, &xcomm->win);
+
+}
+   //Next to try to change all payloads to doubles 
    request->n_puts = num_procs;
 
    request->xcomm = xcomm;
@@ -345,6 +537,182 @@ int alltoallv_rma_winfence_init(const void* sendbuf,
 
     return MPI_SUCCESS;
 }
+
+/*===============
+lock han starts
+=================*/
+
+int alltoallv_rma_lock_init_han(const void* sendbuf,
+    const int sendcounts[],
+    const int sdispls[],
+    MPI_Datatype sendtype,
+    void* recvbuf,
+    const int recvcounts[],
+    const int rdispls[],
+    MPI_Datatype recvtype,
+    MPIX_Comm* xcomm,
+    MPIX_Info* xinfo,
+    MPIX_Request** request_ptr)
+{
+    int rank, num_procs;
+    MPI_Comm_rank(xcomm->global_comm, &rank);
+    MPI_Comm_size(xcomm->global_comm, &num_procs);
+
+    
+    MPIX_Request* request;
+    MPIX_Request_init(&request);
+    request->locked_win=1;
+  
+    int rma_lock_start_han(MPIX_Request* request);
+    int rma_lock_wait_han(MPIX_Request* request);
+
+    request->start_function = rma_lock_start_han;
+  
+    request->wait_function = rma_lock_wait_han;
+  
+    request->global_n_msgs = 0;
+    allocate_requests(num_procs, &(request->global_requests));
+    request->sendbuf = sendbuf;
+    request->recvbuf = recvbuf;
+
+    int send_type_size, recv_type_size;
+    MPI_Type_size(sendtype, &send_type_size);
+    MPI_Type_size(recvtype, &recv_type_size);
+
+   
+    int total_recv_bytes = 0;
+    for (int i = 0; i < num_procs; i++) {
+        total_recv_bytes += recvcounts[i] * recv_type_size;
+    }
+     
+    // We only free an existing window if we know it was previously set up
+    // (win_bytes > 0) AND its size/type no longer match what we need now.
+    if (xcomm->win_bytes > 0 &&
+        (xcomm->win_bytes != total_recv_bytes || xcomm->win_type_bytes != 1)) {
+
+        //printf("[init_han] rank %d: freeing old window (win_bytes=%d, type_bytes=%d)\n",
+            //   rank, xcomm->win_bytes, xcomm->win_type_bytes);
+        //fflush(stdout);
+
+        MPIX_Comm_win_free(xcomm);  // this calls MPI_Win_free and sets win to MPI_WIN_NULL
+    }
+
+    // If there is no valid window, create one for this recvbuf
+    if (xcomm->win == MPI_WIN_NULL || xcomm->win_bytes == 0) {
+       // printf("[init_han] rank %d: creating new window, total_recv_bytes=%d\n",
+             //  rank, total_recv_bytes);
+        //fflush(stdout);
+
+        MPI_Win_create(recvbuf,
+                       total_recv_bytes,
+                       1,                // disp_unit in bytes
+                       MPI_INFO_NULL,
+                       xcomm->global_comm,
+                       &xcomm->win);
+
+        // Update bookkeeping so future init calls know what is there
+        xcomm->win_bytes      = total_recv_bytes;
+        xcomm->win_type_bytes = 1;
+    }
+    
+    request->xcomm = xcomm;
+
+  
+    
+   MPI_Win_lock(MPI_LOCK_EXCLUSIVE, rank, 0, request->xcomm->win); //MGFD: To ensure that the recv buffer is not modified before it is valid to do so, we need to do an exclusive self-lock here. 
+    
+   request->n_puts = num_procs;
+
+   request->sdispls = (int*)malloc(num_procs*sizeof(int));
+   request->send_sizes = (int*)malloc(num_procs*sizeof(int));
+   request->recv_sizes = (int*)malloc(num_procs*sizeof(int));
+   request->recv_size = total_recv_bytes;
+
+  
+   request->put_displs =(int*)malloc(num_procs*sizeof(int));
+   MPI_Alltoall(rdispls, 1, MPI_INT, request->put_displs, 1, MPI_INT, xcomm->global_comm);
+
+  
+
+   for (int i = 0; i < num_procs; i++)
+   {
+       request->sdispls[i] = sdispls[i]*send_type_size;
+       request->send_sizes[i] = sendcounts[i] * send_type_size;
+       request->recv_sizes[i] = recvcounts[i] * recv_type_size;
+       request->put_displs[i] *= recv_type_size; 
+   }
+
+
+
+ // ------------- NEW; building new hanstyle (remote-first / local-second lists, then puts happen in rma_start) ------------- 
+
+    // Split communicator by node, shared_comm (shared memory on anode) 
+    // different nodes have different shared_comm
+    MPI_Comm shared_comm;
+    MPI_Comm_split_type(xcomm->global_comm,
+                        MPI_COMM_TYPE_SHARED,
+                        0,
+                        MPI_INFO_NULL,
+                        &shared_comm);
+
+    int local_size;
+    MPI_Comm_size(shared_comm, &local_size);
+
+    int *local_world_ranks = (int*)malloc(local_size * sizeof(int));
+
+    // Gather the global ranks of all procs on my node
+    MPI_Allgather(&rank, 1, MPI_INT,
+                  local_world_ranks, 1, MPI_INT,
+                  shared_comm);
+
+    //  Mark which global ranks are on my node
+    request->is_local = (int*)malloc(num_procs * sizeof(int));
+    for (int r = 0; r < num_procs; r++)
+        request->is_local[r] = 0;//initialize is local to all zeros
+
+    for (int i = 0; i < local_size; i++) {
+        int gr = local_world_ranks[i];   // global rank(gr) on my node
+        request->is_local[gr] = 1;//the moment you are on my node you are marked with 1
+    }
+
+    //building target lists: remote_targets first(will hold ranks on the other nodes) and local_targets(on my node)
+    request->remote_targets = (int*)malloc(num_procs * sizeof(int));//will hold ranks on the other nodes
+    request->local_targets  = (int*)malloc(num_procs * sizeof(int));//will hold ranks on my nodes
+    request->n_remote = 0;//initialize counters-2 count how many elements we have put in each list
+    request->n_local  = 0;
+
+    for (int r = 0; r < num_procs; r++) {
+        if (r == rank) continue;                    //if myrank =sender rank, skip self
+        if (request->send_sizes[r] == 0) continue;  //if there no data to send, skip
+
+        if (request->is_local[r])
+            request->local_targets[request->n_local++]   = r;
+        else
+            request->remote_targets[request->n_remote++] = r;
+    }
+
+    free(local_world_ranks);
+    MPI_Comm_free(&shared_comm);
+
+    //------------------------------------------------------------------------ 
+
+
+
+  
+   //MPI_Win_unlock(rank, request->xcomm->win);
+   //printf("******************7");
+   *request_ptr = request;
+    //printf("******************8");
+   // printf("%d: *****Iam exiting rma lock init*************\n",rank); fflush(stdout);
+    return MPI_SUCCESS;
+}
+
+/*
+lock-han ends
+*/
+
+
+
 
 int alltoallv_rma_lock_init(const void* sendbuf,
     const int sendcounts[],
@@ -386,6 +754,9 @@ int alltoallv_rma_lock_init(const void* sendbuf,
         total_recv_bytes += recvcounts[i] * recv_type_size;
     }
 
+   
+
+    
    // printf("%d: *****Iam at line %d rma lock init*************1\n",rank,__LINE__); fflush(stdout);
    //printf("%d: *****Iam at line %d total_recv_bytes*************1\n",rank,total_recv_bytes); fflush(stdout);
     if (xcomm->win_bytes != total_recv_bytes || xcomm->win_type_bytes != 1) {
@@ -407,9 +778,10 @@ int alltoallv_rma_lock_init(const void* sendbuf,
     //printf("%d: *****Iam at line %d rma lock init*************1\n",rank,__LINE__); fflush(stdout);
     request->xcomm = xcomm;
 
+  
     
    MPI_Win_lock(MPI_LOCK_EXCLUSIVE, rank, 0, request->xcomm->win); //MGFD: To ensure that the recv buffer is not modified before it is valid to do so, we need to do an exclusive self-lock here. 
-
+     //   request->holding_self_lock = 1;
 
     //printf("******************5");
    // printf("%d: *****Iam at line %d rma lock init*************1\n",rank,__LINE__); fflush(stdout);
@@ -434,6 +806,10 @@ int alltoallv_rma_lock_init(const void* sendbuf,
        request->recv_sizes[i] = recvcounts[i] * recv_type_size;
        request->put_displs[i] *= recv_type_size; 
    }
+
+
+
+
   
    //MPI_Win_unlock(rank, request->xcomm->win);
    //printf("******************7");
@@ -563,15 +939,15 @@ int alltoallv_rma_winlock(const void* sendbuf,
         xcomm->win_type_bytes = 1;
     }
 
-    CALI_MARK_BEGIN("start_Win_lock__used_in_rma_winlock");
+    ////CALI_MARK_BEGIN("start_Win_lock__used_in_rma_winlock");
 
     // Lock the window for all processes
     MPI_Win_lock_all(0, xcomm->win);
     //local window-> each acceses the target exclusively
 
-    CALI_MARK_END("start_Win_lock__used_in_rma_winlock");
+    //CALI_MARK_END("start_Win_lock__used_in_rma_winlock");
 
-    CALI_MARK_BEGIN("Put_region__used_in_rma_winlock");
+    //CALI_MARK_BEGIN("Put_region__used_in_rma_winlock");
 
     
     MPI_Request* requests = (MPI_Request*)malloc(num_procs * sizeof(MPI_Request));
@@ -598,9 +974,9 @@ int alltoallv_rma_winlock(const void* sendbuf,
     
     free(requests);
 
-    CALI_MARK_END("Put_region__used_in_rma_winlock");
+    //CALI_MARK_END("Put_region__used_in_rma_winlock");
 
-    CALI_MARK_BEGIN("Final_Win_flush_region__used_in_rma_winlock");
+    //CALI_MARK_BEGIN("Final_Win_flush_region__used_in_rma_winlock");
 
     // to complete RMA operations 
     MPI_Win_flush_all(xcomm->win);
@@ -608,12 +984,12 @@ int alltoallv_rma_winlock(const void* sendbuf,
    
     //CALI_MARK_END("Final_Win_flush_region__used_in_rma_winlock");
    
-    CALI_MARK_BEGIN("Final_Win_unlock_region__used_in_rma_winlock");
+    //CALI_MARK_BEGIN("Final_Win_unlock_region__used_in_rma_winlock");
 
     //unlocking
     MPI_Win_unlock_all(xcomm->win);
 
-    CALI_MARK_END("Final_Win_unlock_region__used_in_rma_winlock");
+    //CALI_MARK_END("Final_Win_unlock_region__used_in_rma_winlock");
     
     MPI_Barrier(xcomm->global_comm);
 
@@ -1252,4 +1628,5 @@ int alltoallv_pairwise_loc(const void* sendbuf,
 
     return 0;
 }
+
 

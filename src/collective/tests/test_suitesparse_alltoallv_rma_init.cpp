@@ -11,7 +11,7 @@
 
 #include "/g/g92/enamug/clean/GPU_locality_aware/locality_aware/src/tests/sparse_mat.hpp"
 #include "/g/g92/enamug/clean/GPU_locality_aware/locality_aware/src/tests/par_binary_IO.hpp"
-#include "/g/g92/enamug/clean/GPU_locality_aware/locality_aware/src/mpi_advance.h"
+#include "/usr/workspace/enamug/clean/GPU_locality_aware/locality_aware/src/mpi_advance.h"
 
 
  void test_matrix(const char* filename, int n_iter)
@@ -68,9 +68,8 @@
         sdispls[p+1] = sdispls[p] + sendcounts[p];
         rdispls[p+1] = rdispls[p] + recvcounts[p];
     }
-   
 
-    /***This is the end of the original top sparse pattern ****/
+/***This is the end of the original top sparse pattern ****/
 
     if (rdispls.back() == 0 && sdispls.back() == 0) {
         if (rank == 0) std::printf("No messages to exchange (empty pattern). Done.\n");
@@ -90,7 +89,7 @@
              t0 = MPI_Wtime();
 
         }
-        PMPI_Alltoallv(packed_send.data(),
+        MPI_Alltoallv(packed_send.data(),
                        sendcounts.data(), sdispls.data(), MPI_DOUBLE,
                        recv_vals.data(),
                        recvcounts.data(), rdispls.data(), MPI_DOUBLE,
@@ -101,15 +100,15 @@
 
     
     if (rank == 0) {
-       std::printf("[PMPI] Alltoallv avg: %e\n", pmpi_max);
+       std::printf(" Alltoallv avg: %e\n", pmpi_max);
     }
 
     //---------Persistent Legacy Alltoallv_init
 
-    // === ADDED: Persistent Alltoallv (Open MPI 4.1.x) — init+free timing
+    
 std::vector<double> recv_pers(rdispls.back(), 0);
 MPI_Request req_pers = MPI_REQUEST_NULL;
-
+/*
 MPI_Barrier(MPI_COMM_WORLD);
  t0 = MPI_Wtime();
 for (int k = 0; k < n_iter; ++k) {
@@ -163,7 +162,7 @@ if (rank == 0) {
             MPI_Abort(MPI_COMM_WORLD, 1);
         }
     }
-
+*/
 // i think i wont use req_pers again
 MPI_Request_free(&req_pers);
 
@@ -236,6 +235,65 @@ MPI_Request_free(&req_pers);
             MPI_Abort(MPI_COMM_WORLD, 1);
         }
     }
+//==================winfence_han===============================================
+
+t0 = MPI_Wtime();
+    for (int k = 0; k < n_iter; ++k) {
+        alltoallv_rma_winfence_init_han(packed_send.data(),
+                                    sendcounts.data(), sdispls.data(), MPI_DOUBLE,
+                                    rma_recv.data(),
+                                    recvcounts.data(), rdispls.data(), MPI_DOUBLE,
+                                    xcomm, xinfo, &req);
+        MPIX_Request_free(req);
+    }
+     rma_initavg = (MPI_Wtime() - t0) / n_iter; double rma_initmaxhan = 0.0;
+    MPI_Reduce(&rma_initavg, &rma_initmaxhan, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
+    if (rank == 0) {
+        std::printf("[RMA ] winfence init_han+free in loop avg: %e s\n", rma_initmaxhan);
+    }
+
+
+    
+
+
+    // persistent request once
+    alltoallv_rma_winfence_init_han(packed_send.data(),
+                                sendcounts.data(), sdispls.data(), MPI_DOUBLE,
+                                rma_recv.data(),
+                                recvcounts.data(), rdispls.data(), MPI_DOUBLE,
+                                xcomm, xinfo, &req);
+
+    MPI_Barrier(xcomm->global_comm);
+   
+     for (int k = 0; k <warmups + n_iter; ++k) {
+        if(k== warmups){
+
+             t0 = MPI_Wtime();
+        }
+        MPIX_Start(req);
+        MPIX_Wait(req, MPI_STATUS_IGNORE);
+    }
+    rma_avg = (MPI_Wtime() - t0) / n_iter; double rma_max_fencehan = 0.0;
+    MPI_Reduce(&rma_avg, &rma_max_fencehan, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
+    if (rank == 0) {
+        std::printf("[RMA ] winfence_han persistent avg: %e s\n", rma_max_fencehan);
+    }
+
+    // correctness vs PMPI
+    if (rma_recv.size() != recv_vals.size()) {
+        if (rank == 0) std::fprintf(stderr, "Size mismatch between PMPI and RMA recv buffers\n");
+        MPI_Abort(MPI_COMM_WORLD, 1);
+    }
+    for (size_t i = 0; i < rma_recv.size(); ++i) {
+        if (rma_recv[i] != recv_vals[i]) {
+            std::fprintf(stderr, "[%d] MISMATCH at %zu: PMPI=%d RMA=%d\n",
+                         rank, i, recv_vals[i], rma_recv[i]);
+            MPI_Abort(MPI_COMM_WORLD, 1);
+        }
+    } 
+
+
+
 //==================================Lock next==============================
 
 
@@ -304,6 +362,88 @@ MPI_Request_free(&req_pers);
             MPI_Abort(MPI_COMM_WORLD, 1);
         }
     }
+//==========================Lock-Han next=======================================================
+
+
+MPI_Barrier(xcomm->global_comm);
+    tlnit = MPI_Wtime();
+    // This is for accuracy
+
+    for (int k = 0; k < n_iter; k++) {
+        // printf("rank:%d\n,k =%d\n",rank,k);
+        // printf("****a\n");
+        // printf("[rank %d] LOOP winlock_han init+free, iter %d: calling alltoallv_rma_lock_init_han\n",
+         //  rank, k);
+    //fflush(stdout);
+
+         alltoallv_rma_lock_init_han(packed_send.data(),
+                            sendcounts.data(), sdispls.data(), MPI_DOUBLE,
+                            rma_recv.data(),
+                            recvcounts.data(), rdispls.data(), MPI_DOUBLE,
+                            xcomm, xinfo, &req);
+        //printf("[rank %d] LOOP winlock_han init+free B, iter %d: MPIX_Request_free\n",
+         //  rank, k);
+    //fflush(stdout);
+        MPIX_Request_free(req);
+        //printf("[rank %d] LOOP winlock_han init+free C, iter %d: MPIX_Request_free\n",
+          // rank, k);
+    //fflush(stdout);
+        MPIX_Comm_win_free(xcomm);
+        // printf("****c\n");
+        //printf("[rank %d] LOOP winlock_han init+free D, iter %d: MPIX_Request_free\n",
+          // rank, k);
+    //fflush(stdout);
+    }
+
+     rma_intlock_final = (MPI_Wtime() - tlnit) / n_iter; double rma_intlock_finali_max=0.0;
+
+    // RMA 
+    MPI_Reduce(&rma_intlock_final, &rma_intlock_finali_max, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
+    if (rank == 0) {
+        printf("[RMA ] winlock init_han + free in loop avg: %e seconds\n", rma_intlock_finali_max);
+       
+    }
+
+
+    // -------- RMA winlock han persistent --------
+    alltoallv_rma_lock_init_han(packed_send.data(),
+                            sendcounts.data(), sdispls.data(), MPI_DOUBLE,
+                            rma_recv.data(),
+                            recvcounts.data(), rdispls.data(), MPI_DOUBLE,
+                            xcomm, xinfo, &req);
+
+    MPI_Barrier(xcomm->global_comm);
+    //t0 = MPI_Wtime();
+   for (int k = 0; k <warmups + n_iter; ++k) {
+        if(k== warmups){
+        t0 = MPI_Wtime();
+        }
+      // printf("****start 1 %d\n",rank);
+        MPIX_Start(req);
+       //printf("****start 2 %d\n",rank);
+        MPIX_Wait(req, MPI_STATUS_IGNORE);
+        //printf("****leaving start + wait %d\n", rank);
+        
+    }
+     rma_avg2 = (MPI_Wtime() - t0) / n_iter; double rma_max3 = 0.0;
+    MPI_Reduce(&rma_avg2, &rma_max3, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
+    if (rank == 0) {
+        std::printf("[RMA ] winlock_han persistent avg: %e s\n", rma_max3);
+    }
+
+    // correctness vs PMPI 
+    if (rma_recv.size() != recv_vals.size()) {
+        if (rank == 0) std::fprintf(stderr, "Size mismatch between PMPI and RMA_lock recv buffers\n");
+        MPI_Abort(MPI_COMM_WORLD, 1);
+    }
+    for (size_t i = 0; i < rma_recv.size(); ++i) {
+        if (rma_recv[i] != recv_vals[i]) {
+            std::fprintf(stderr, "[%d] MISMATCH at %zu: PMPI=%d RMA=%d\n",
+                         rank, i, recv_vals[i], rma_recv[i]);
+            MPI_Abort(MPI_COMM_WORLD, 1);
+        }
+    }
+
 
     MPIX_Request_free(req);
     MPIX_Comm_win_free(xcomm);
@@ -318,14 +458,16 @@ MPI_Request_free(&req_pers);
 int main(int argc, char** argv)
 {
     MPI_Init(&argc, &argv);
-    int rank=0; MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    int rank; MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     if (argc < 2) {
         if (rank == 0) std::fprintf(stderr, "Usage: srun -n <P> ./sparse_pattern_with_rma <matrix.pm> [iters]\n");
         MPI_Finalize(); return 1;
     }
     const char* matrix = argv[1];
-    int iters = (argc >= 3 ? std::max(1, std::atoi(argv[2])) : 10);
+    int iters = argv[2];
+    
     test_matrix(matrix, iters);
     MPI_Finalize();
     return 0;
 }
+
