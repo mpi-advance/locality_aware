@@ -19,7 +19,7 @@ double* network_discovery(MPIX_Comm* xcomm, int size, int tag, int num_iteration
     int send_pos, recv_pos;
     MPI_Status status;
     averageDistances[rank] = 0.0;
-    for (int i = 0; i < num_procs; i++)
+    for (int i = 1; i < num_procs; i++)
     {
         send_proc = rank + i;
         if (send_proc >= num_procs)
@@ -46,21 +46,8 @@ double* network_discovery(MPIX_Comm* xcomm, int size, int tag, int num_iteration
                      xcomm->global_comm,
                      &status);
 
-        MPI_Sendrecv(send_buffer + recv_pos,
-                     1,
-                     MPI_CHAR,
-                     recv_proc,
-                     tag,
-                     recv_buffer + send_pos,
-                     1,
-                     MPI_CHAR,
-                     send_proc,
-                     tag,
-                     xcomm->global_comm, 
-                     &status);
-
         double t0 = MPI_Wtime();
-        for (int i = 0; i < num_iterations; i++)
+        for (int j = 0; j < num_iterations; j++)
         {
             MPI_Sendrecv(send_buffer + send_pos,
                         1,
@@ -74,22 +61,42 @@ double* network_discovery(MPIX_Comm* xcomm, int size, int tag, int num_iteration
                         tag,
                         xcomm->global_comm,
                         &status);
-
-            MPI_Sendrecv(send_buffer + recv_pos,
-                        1,
-                        MPI_CHAR,
-                        recv_proc,
-                        tag,
-                        recv_buffer + send_pos,
-                        1,
-                        MPI_CHAR,
-                        send_proc,
-                        tag,
-                        xcomm->global_comm, 
-                        &status);
         }
 
-        averageDistances[send_proc] = averageDistances[recv_proc] = (MPI_Wtime() - t0) / (2. * (double) num_iterations);
+        averageDistances[send_proc] = (MPI_Wtime() - t0) / (2. * (double) num_iterations);
+
+        // MPI_Sendrecv(send_buffer + recv_pos,
+        //              1,
+        //              MPI_CHAR,
+        //              recv_proc,
+        //              tag,
+        //              recv_buffer + send_pos,
+        //              1,
+        //              MPI_CHAR,
+        //              send_proc,
+        //              tag,
+        //              xcomm->global_comm, 
+        //              &status);
+
+        // t0 = MPI_Wtime();
+        // for (int j = 0; j < num_iterations; j++)
+        // {
+        //     MPI_Sendrecv(send_buffer + recv_pos,
+        //                 1,
+        //                 MPI_CHAR,
+        //                 recv_proc,
+        //                 tag,
+        //                 recv_buffer + send_pos,
+        //                 1,
+        //                 MPI_CHAR,
+        //                 send_proc,
+        //                 tag,
+        //                 xcomm->global_comm, 
+        //                 &status);
+        // }
+
+        // averageDistances[recv_proc] = (MPI_Wtime() - t0) / (2. * (double) num_iterations);
+
     }
 
     double* adjacencyMatrix = (double*) malloc(num_procs * num_procs * sizeof(double));
@@ -146,9 +153,10 @@ bool balancedBellmanFord(double* adjacencyMatrix,
                 }
             }
         }
+
+        t++;
     } 
-    while (t < maxIterations || done);
-    
+    while (t < maxIterations && !done);
     return changed;
 }
 
@@ -161,7 +169,7 @@ void clusteredFloydWarshall(double* adjacencyMatrix,
                             int* predecessors,
                             int numProcs)
 {
-    for (int a = 0; a <numClusters; a++)
+    for (int a = 0; a < numClusters; a++)
     {
         for (int i = 0; i < clusterSizes[a]; i++)
         {
@@ -284,35 +292,35 @@ bool centerNodes(double* adjacencyMatrix,
 }
 
 void balancedLloydClustering(double* adjacencyMatrix,
-                             int *clusterCenters,
-                             int* clusterMembership,
+                             int** clusterCenters,
+                             int** clusterMembership,
                              int maxIterations,
                              int maxBellmanFordIterations,
                              int numProcs,
                              int numClusters)
 {
     // balanced initialization
-    clusterMembership = (int*) malloc(numProcs * sizeof(int));
+    *clusterMembership = (int*) malloc(numProcs * sizeof(int));
     double* shortestPathToCenter = (double*) malloc(numProcs * sizeof(double));
     int* predecessorInCluster = (int*) malloc(numProcs * sizeof(int));
     int* numAsPredecessor = (int*) malloc(numProcs * sizeof(int));
     for (int i = 0; i < numProcs; i++)
     {
-        clusterMembership[i] = -1;
+        clusterMembership[0][i] = -1;
         shortestPathToCenter[i] = INFINITY;
         predecessorInCluster[i] = -1;
         numAsPredecessor[i] = 0;
     }
 
     int* clusterSizes = (int*) malloc(numClusters * sizeof(int));
-    clusterCenters = (int*) malloc(numClusters * sizeof(int));
+    *clusterCenters = (int*) malloc(numClusters * sizeof(int));
     srand(time(NULL));
     for (int a = 0; a < numClusters; a++)
     {
-        clusterCenters[a] = rand() % numProcs;
-        int nodeIndex = clusterCenters[a];
+        clusterCenters[0][a] = rand() % numProcs;
+        int nodeIndex = clusterCenters[0][a];
         shortestPathToCenter[a] = 0;
-        clusterMembership[nodeIndex] = a;
+        clusterMembership[0][nodeIndex] = a;
         predecessorInCluster[nodeIndex] = nodeIndex;
         numAsPredecessor[nodeIndex] = 1;
     }
@@ -321,9 +329,10 @@ void balancedLloydClustering(double* adjacencyMatrix,
     bool changed = true;
     do 
     {
+        printf("Iteration: %d\n", iteration);
         changed = balancedBellmanFord(adjacencyMatrix, 
-                                      clusterMembership, 
-                                      clusterCenters, 
+                                      *clusterMembership, 
+                                      *clusterCenters, 
                                       shortestPathToCenter,
                                       predecessorInCluster,
                                       numAsPredecessor, 
@@ -342,32 +351,35 @@ void balancedLloydClustering(double* adjacencyMatrix,
 
         for (int i = 0; i < numProcs; i++)
         {
-            int cluster = clusterMembership[i];
-            clusters[cluster][positionInCluster[cluster]] = i;
-            positionInCluster[cluster]++;
+            int cluster = clusterMembership[0][i];
+            printf("i: %d, cluster: %d, positionInCluster: %d\n", i, cluster, positionInCluster[cluster]);
+            // clusters[cluster][positionInCluster[cluster]] = i;
+            // positionInCluster[cluster]++;
         }
 
-        clusteredFloydWarshall(adjacencyMatrix, 
-                               clusterMembership, 
-                               clusterSizes,
-                               clusters,
-                               numClusters,
-                               shortestPathToCenter,
-                               predecessorInCluster,
-                               numProcs);
+        // printf("Calling clustered Floyd Warhsall\n");
+        // clusteredFloydWarshall(adjacencyMatrix, 
+        //                        *clusterMembership, 
+        //                        clusterSizes,
+        //                        clusters,
+        //                        numClusters,
+        //                        shortestPathToCenter,
+        //                        predecessorInCluster,
+        //                        numProcs);
 
-        changed |= centerNodes(adjacencyMatrix, 
-                               numProcs,
-                               clusterMembership,
-                               numClusters,
-                               clusterCenters,
-                               shortestPathToCenter,
-                               predecessorInCluster,
-                               numAsPredecessor,
-                               shortestPathToCenter,
-                               predecessorInCluster,
-                               clusters,
-                               clusterSizes);
+        // printf("Center nodes\n");
+        // changed |= centerNodes(adjacencyMatrix, 
+        //                        numProcs,
+        //                        *clusterMembership,
+        //                        numClusters,
+        //                        *clusterCenters,
+        //                        shortestPathToCenter,
+        //                        predecessorInCluster,
+        //                        numAsPredecessor,
+        //                        shortestPathToCenter,
+        //                        predecessorInCluster,
+        //                        clusters,
+        //                        clusterSizes);
 
         iteration++;
     } while (iteration < maxIterations && changed);

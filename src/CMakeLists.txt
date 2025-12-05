@@ -29,8 +29,10 @@ add_library(mpi_advance
 
 target_link_libraries(mpi_advance ${MPI_LIBRARIES})
 
+message(STATUS "Unit tests enabled: ${ENABLE_UNIT_TESTS}")
 if (ENABLE_UNIT_TESTS)
     add_subdirectory(collective/tests)
+    add_subdirectory(communicator/tests)
     add_subdirectory(neighborhood/tests)
     if (USE_GPU)
         add_subdirectory(heterogeneous/tests)
