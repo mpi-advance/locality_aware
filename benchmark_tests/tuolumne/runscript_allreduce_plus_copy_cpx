@@ -23,7 +23,7 @@ export HSA_XNACK=1
 # Check if THP are enabled
 #cat /sys/kernel/mm/transparent_hugepage/enabled
 
-cd $HOME/MPICCL/build/benchmarks
+cd $HOME/MPICCL/build_cpx/benchmarks
 
 n_nodes=32
 gpus_per_node=24
