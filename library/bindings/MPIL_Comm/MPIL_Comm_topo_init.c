@@ -2,23 +2,89 @@
 
 #include "communicator/MPIL_Comm.h"
 #include "locality_aware.h"
+#include "numa.h"
 
 int MPIL_Comm_topo_init(MPIL_Comm* xcomm)
 {
-    int rank, num_procs;
+
+
+
+
+
+
+
+    int rank, num_procs,numa_node;
     MPI_Comm_rank(xcomm->global_comm, &rank);
     MPI_Comm_size(xcomm->global_comm, &num_procs);
+    if (numa_available() != -1) {
+        numa_node = numa_node_of_cpu(sched_getcpu());
+    }
+
+
+
+
 
     // Split global comm into local (per node) communicators
-    MPI_Comm_split_type(xcomm->global_comm,
-                        MPI_COMM_TYPE_SHARED,
-                        rank,
-                        MPI_INFO_NULL,
-                        &(xcomm->local_comm));
+
+
+    int type = 1;
+    if(type ==0){
+
+        MPI_Comm node_comm;
+        MPI_Comm_split_type(xcomm->global_comm,
+                MPI_COMM_TYPE_SHARED,
+                rank,
+                MPI_INFO_NULL,
+                &node_comm);
+
+        int numas_per_node = 8;
+        int node_rank, ppn;
+        MPI_Comm_size(node_comm, &ppn);
+        MPI_Comm_rank(node_comm, &node_rank);
+
+        int numa = numa_node;
+        MPI_Comm_split(node_comm, numa, node_rank, &(xcomm->local_comm));
+
+        MPI_Comm_free(node_comm);
+
+    }else if(type ==1){
+
+        MPI_Comm node_comm;
+        MPI_Comm_split_type(xcomm->global_comm,
+                MPI_COMM_TYPE_SHARED,
+                rank,
+                MPI_INFO_NULL,
+                &node_comm);
+
+        int node_rank, ppn;
+        MPI_Comm_size(node_comm, &ppn);
+        MPI_Comm_rank(node_comm, &node_rank);
+        int numa = numa_node / 4;
+        MPI_Comm_split(node_comm, numa, node_rank, &(xcomm->local_comm));
+
+        MPI_Comm_free(node_comm);
+
+
+
+    }else {
+        MPI_Comm_split_type(xcomm->global_comm,
+                                      MPI_COMM_TYPE_SHARED,
+                                      rank,
+                                      MPI_INFO_NULL,
+                                      &(xcomm->local_comm));
+    }
+
+
+
+
 
     int local_rank, ppn;
     MPI_Comm_rank(xcomm->local_comm, &local_rank);
-    MPI_Comm_size(xcomm->local_comm, &ppn);
+    MPI_Comm_size(xcomm- >local_comm, &ppn);
+
+
+
+
 
     // Split global comm into group (per local rank) communicators
     MPI_Comm_split(xcomm->global_comm, local_rank, rank, &(xcomm->group_comm));
