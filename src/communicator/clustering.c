@@ -9,101 +9,163 @@ double* network_discovery(MPIX_Comm* xcomm, int size, int tag, int num_iteration
     int rank, num_procs;
     MPI_Comm_rank(xcomm->global_comm, &rank);
     MPI_Comm_size(xcomm->global_comm, &num_procs);
-    
-    double* averageDistances = (double*) calloc(num_procs, sizeof(double));
-
+ 
     char* send_buffer = (char*) malloc(num_procs * size * sizeof(char));
     char* recv_buffer = (char*) malloc(num_procs * size * sizeof(char));
 
     int send_proc, recv_proc;
     int send_pos, recv_pos;
     MPI_Status status;
-    averageDistances[rank] = 0.0;
+    double* times = (double*) calloc(num_procs, sizeof(double));
+
     for (int i = 1; i < num_procs; i++)
     {
-        send_proc = rank + i;
-        if (send_proc >= num_procs)
-            send_proc -= num_procs;
-        
-        recv_proc = rank - i;
-        if (recv_proc < 0)
-            recv_proc += num_procs;
+        // warm up
+        printf("Warming up\n");
+        int send_proc;
+        if ((rank / i) % 2 == 0)
+        {
+            send_proc = rank + i;
+            if (send_proc >= num_procs) 
+            {
+                send_proc -= num_procs;
+            }   
+            
+            MPI_Send(send_buffer, size, MPI_CHAR, send_proc, tag, xcomm->global_comm);
+            MPI_Recv(recv_buffer, size, MPI_CHAR, send_proc, tag, xcomm->global_comm, &status);
+        }
+        else
+        {
+            send_proc = rank - i;
+            if (send_proc < 0)
+            {
+                send_proc += num_procs;
+            }
+            MPI_Recv(recv_buffer, size, MPI_CHAR, send_proc, tag, xcomm->global_comm, &status);
+            MPI_Send(send_buffer, size, MPI_CHAR, send_proc, tag, xcomm->global_comm);   
+        }
 
-        send_pos = send_proc * sizeof(char);
-        recv_pos = recv_proc * sizeof(char); 
-
-        // Warm up
-        MPI_Sendrecv(send_buffer + send_pos,
-                     1,
-                     MPI_CHAR, 
-                     send_proc,
-                     tag,
-                     recv_buffer + recv_pos,
-                     1,
-                     MPI_CHAR,
-                     recv_proc,
-                     tag,
-                     xcomm->global_comm,
-                     &status);
-
+        printf("Testing distance from %d to %d\n", rank, send_proc);
         double t0 = MPI_Wtime();
         for (int j = 0; j < num_iterations; j++)
         {
-            MPI_Sendrecv(send_buffer + send_pos,
-                        1,
-                        MPI_CHAR, 
-                        send_proc,
-                        tag,
-                        recv_buffer + recv_pos,
-                        1,
-                        MPI_CHAR,
-                        recv_proc,
-                        tag,
-                        xcomm->global_comm,
-                        &status);
+            if ((rank / i) % 2 == 0)
+            {
+                MPI_Send(send_buffer, size, MPI_CHAR, send_proc, tag, xcomm->global_comm);
+                MPI_Recv(recv_buffer, size, MPI_CHAR, send_proc, tag, xcomm->global_comm, &status);
+            }
+            else
+            {
+                MPI_Recv(recv_buffer, size, MPI_CHAR, send_proc, tag, xcomm->global_comm, &status);
+                MPI_Send(send_buffer, size, MPI_CHAR, send_proc, tag, xcomm->global_comm);   
+            }
         }
-
-        averageDistances[send_proc] = (MPI_Wtime() - t0) / (2. * (double) num_iterations);
-
-        // MPI_Sendrecv(send_buffer + recv_pos,
-        //              1,
-        //              MPI_CHAR,
-        //              recv_proc,
-        //              tag,
-        //              recv_buffer + send_pos,
-        //              1,
-        //              MPI_CHAR,
-        //              send_proc,
-        //              tag,
-        //              xcomm->global_comm, 
-        //              &status);
-
-        // t0 = MPI_Wtime();
-        // for (int j = 0; j < num_iterations; j++)
-        // {
-        //     MPI_Sendrecv(send_buffer + recv_pos,
-        //                 1,
-        //                 MPI_CHAR,
-        //                 recv_proc,
-        //                 tag,
-        //                 recv_buffer + send_pos,
-        //                 1,
-        //                 MPI_CHAR,
-        //                 send_proc,
-        //                 tag,
-        //                 xcomm->global_comm, 
-        //                 &status);
-        // }
-
-        // averageDistances[recv_proc] = (MPI_Wtime() - t0) / (2. * (double) num_iterations);
-
+        times[i] = MPI_Wtime() - t0 / (2. * num_iterations);
     }
 
-    double* adjacencyMatrix = (double*) malloc(num_procs * num_procs * sizeof(double));
-    MPI_Allgather(averageDistances, num_procs, MPI_DOUBLE, adjacencyMatrix, num_procs, MPI_DOUBLE, xcomm->global_comm);
-
-    return adjacencyMatrix;
+    return times;
 }
+
+// double* network_discovery(MPIX_Comm* xcomm, int size, int tag, int num_iterations)
+// {
+//     int rank, num_procs;
+//     MPI_Comm_rank(xcomm->global_comm, &rank);
+//     MPI_Comm_size(xcomm->global_comm, &num_procs);
+    
+//     double* averageDistances = (double*) calloc(num_procs, sizeof(double));
+
+//     char* send_buffer = (char*) malloc(num_procs * size * sizeof(char));
+//     char* recv_buffer = (char*) malloc(num_procs * size * sizeof(char));
+
+//     int send_proc, recv_proc;
+//     int send_pos, recv_pos;
+//     MPI_Status status;
+//     averageDistances[rank] = 0.0;
+//     for (int i = 1; i < num_procs; i++)
+//     {
+//         send_proc = rank + i;
+//         if (send_proc >= num_procs)
+//             send_proc -= num_procs;
+        
+//         recv_proc = rank - i;
+//         if (recv_proc < 0)
+//             recv_proc += num_procs;
+
+//         send_pos = send_proc * sizeof(char);
+//         recv_pos = recv_proc * sizeof(char); 
+
+//         // Warm up
+//         MPI_Sendrecv(send_buffer + send_pos,
+//                      1,
+//                      MPI_CHAR, 
+//                      send_proc,
+//                      tag,
+//                      recv_buffer + recv_pos,
+//                      1,
+//                      MPI_CHAR,
+//                      recv_proc,
+//                      tag,
+//                      xcomm->global_comm,
+//                      &status);
+
+//         double t0 = MPI_Wtime();
+//         for (int j = 0; j < num_iterations; j++)
+//         {
+//             MPI_Sendrecv(send_buffer + send_pos,
+//                         1,
+//                         MPI_CHAR, 
+//                         send_proc,
+//                         tag,
+//                         recv_buffer + recv_pos,
+//                         1,
+//                         MPI_CHAR,
+//                         recv_proc,
+//                         tag,
+//                         xcomm->global_comm,
+//                         &status);
+//         }
+
+//         averageDistances[send_proc] = (MPI_Wtime() - t0) / (2. * (double) num_iterations);
+
+//         // MPI_Sendrecv(send_buffer + recv_pos,
+//         //              1,
+//         //              MPI_CHAR,
+//         //              recv_proc,
+//         //              tag,
+//         //              recv_buffer + send_pos,
+//         //              1,
+//         //              MPI_CHAR,
+//         //              send_proc,
+//         //              tag,
+//         //              xcomm->global_comm, 
+//         //              &status);
+
+//         // t0 = MPI_Wtime();
+//         // for (int j = 0; j < num_iterations; j++)
+//         // {
+//         //     MPI_Sendrecv(send_buffer + recv_pos,
+//         //                 1,
+//         //                 MPI_CHAR,
+//         //                 recv_proc,
+//         //                 tag,
+//         //                 recv_buffer + send_pos,
+//         //                 1,
+//         //                 MPI_CHAR,
+//         //                 send_proc,
+//         //                 tag,
+//         //                 xcomm->global_comm, 
+//         //                 &status);
+//         // }
+
+//         // averageDistances[recv_proc] = (MPI_Wtime() - t0) / (2. * (double) num_iterations);
+
+//     }
+
+//     double* adjacencyMatrix = (double*) malloc(num_procs * num_procs * sizeof(double));
+//     MPI_Allgather(averageDistances, num_procs, MPI_DOUBLE, adjacencyMatrix, num_procs, MPI_DOUBLE, xcomm->global_comm);
+
+//     return adjacencyMatrix;
+// }
 
 bool balancedBellmanFord(double* adjacencyMatrix, 
                          int* clusterMembership, 

@@ -12,27 +12,26 @@ int main(int argc, char* argv[])
     int rank, num_procs;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
+    printf("Rank: %d\n", rank);
 
     int tag;
     MPIX_Comm_tag(xcomm, &tag);
+    printf("Tag: %d\n", tag);
 
+    printf("Starting network discover\n");
     int max_p = 11;
     for (int k = 0; k < max_p; k++)
     {
         int size = 1 << k;
+        printf("Testing with message size: %d\n", k);
         double* adjacencyMatrix = network_discovery(xcomm, size, tag, 100);
-        if (rank == 0)
+        printf("Adjacency matrix (message size: %d)\n", size);
+        for (int i = 0; i < num_procs; i++)
         {
-            printf("Adjacency matrix (message size: %d)\n", size);
-            for (int i = 0; i < num_procs; i++)
-            {
-                for (int j = 0; j < num_procs; j++)
-                {
-                    printf("%.10lf\t", adjacencyMatrix[i * num_procs + j]);            
-                }
-                printf("\n");
-            }
-        }    
+            printf("%.10lf\t", adjacencyMatrix[i]);            
+        }
+
+        printf("\n");
         free(adjacencyMatrix);
     }
 }
