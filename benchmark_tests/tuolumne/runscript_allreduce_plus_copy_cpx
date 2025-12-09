@@ -35,9 +35,9 @@ for ppg in 1 2 4; do
   echo "${ppg} Processes Per GPU, ${gpus_per_node} GPUs Per Node"
   if [ "$ppg" -eq 1 ]; then
     flux run -N${n_nodes} -n${n_procs} -c${n_cores} --verbose --exclusive\
-        --setopt=mpibind=verbose:2 ./allreduce
+        --setopt=mpibind=verbose:2 ./allreduce_partialvector
   else
     flux run -N${n_nodes} -n${n_procs} -c${n_cores} --verbose --exclusive\
-        --setopt=mpibind=verbose:2 ./allreduce_copy
+        --setopt=mpibind=verbose:2 ./allreduce_copy_partialvector
   fi
 done
