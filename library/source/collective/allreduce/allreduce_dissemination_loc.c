@@ -201,6 +201,8 @@ int allreduce_dissemination_loc_core(
             else
             {
                 // Odd implementation to be portable to GPU
+                // Can have zerobuf be on CPU, regardless of
+                // where tmpbuf is located
                 char* zerobuf = (char*)malloc(type_size*count);
                 memset(zerobuf, 0, type_size*count);
                 MPI_Sendrecv(zerobuf, count, datatype, rank, tag,

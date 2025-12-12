@@ -87,6 +87,25 @@ int allreduce_dissemination_ml(const void* sendbuf,
                                  MPI_Op op,
                                  MPIL_Comm* comm);
 
+/** @brief Call the increased radix dissemination implementation
+ * @details Each step consists of a sending/receiving `radix-1`
+ * nonblocking messages before waiting for all to complete.
+ * Then, `radix-1` reduce_local operations are performed before 
+ * the next step of communication.
+ * @param [in] sendbuf buffer containing data to reduce
+ * @param [out] recvbuf buffer to receive and reduce all messages
+ * @param [in] count int number of items to be reduced
+ * @param [in] datatype MPI_Datatype
+ * @param [in] op MPI_Op
+ * @param [in] comm MPIL_Comm used for context
+ **/
+int allreduce_dissemination_radix(const void* sendbuf,
+                                 void* recvbuf,
+                                 int count,
+                                 MPI_Datatype datatype,
+                                 MPI_Op op,
+                                 MPIL_Comm* comm);
+
 /** @brief Calls underlying PMPI_Allreduce implementation **/
 int allreduce_pmpi(const void* sendbuf,
                                  void* recvbuf,
@@ -128,6 +147,15 @@ int allreduce_dissemination_ml_helper(
                                  MPIL_Comm* comm,
                                  MPIL_Alloc_ftn alloc_ftn,
                                  MPIL_Free_ftn free_ftn);
+int allreduce_dissemination_radix_helper(
+                                 const void* sendbuf,
+                                 void* recvbuf,
+                                 int count,
+                                 MPI_Datatype datatype,
+                                 MPI_Op op,
+                                 MPIL_Comm* comm,
+                                 MPIL_Alloc_ftn alloc_ftn,
+                                 MPIL_Free_ftn free_ftn);
 
 int allreduce_dissemination_loc_core(
                                  const void* sendbuf,
@@ -141,6 +169,18 @@ int allreduce_dissemination_loc_core(
                                  int tag,
                                  MPIL_Alloc_ftn alloc_ftn,
                                  MPIL_Free_ftn free_ftn);
+int allreduce_dissemination_radix_core(
+                                 const void* sendbuf,
+                                 void* recvbuf,
+                                 int count,
+                                 MPI_Datatype datatype,
+                                 MPI_Op op,
+                                 MPIL_Comm* comm,
+                                 int tag,
+                                 int radix,
+                                 MPIL_Alloc_ftn alloc_ftn,
+                                 MPIL_Free_ftn free_ftn);
+
 
 
 

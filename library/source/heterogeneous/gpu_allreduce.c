@@ -71,6 +71,22 @@ int gpu_aware_allreduce_dissemination_ml(const void* sendbuf,
                                comm);
 }
 
+int gpu_aware_allreduce_dissemination_radix(const void* sendbuf,
+                                         void* recvbuf,
+                                         int count,
+                                         MPI_Datatype datatype,
+                                         MPI_Op op,
+                                         MPIL_Comm* comm)
+{
+    return gpu_aware_allreduce(allreduce_dissemination_radix_helper,
+                               sendbuf,
+                               recvbuf,
+                               count,
+                               datatype,
+                               op,
+                               comm);
+}
+
 int gpu_aware_allreduce_pmpi(const void* sendbuf,
                              void* recvbuf,
                              int count,
@@ -172,6 +188,23 @@ int copy_to_cpu_allreduce_dissemination_ml(const void* sendbuf,
                                op,
                                comm);
 }
+
+int copy_to_cpu_allreduce_dissemination_radix(const void* sendbuf,
+                                         void* recvbuf,
+                                         int count,
+                                         MPI_Datatype datatype,
+                                         MPI_Op op,
+                                         MPIL_Comm* comm)
+{
+    return copy_to_cpu_allreduce(allreduce_dissemination_radix_helper,
+                               sendbuf,
+                               recvbuf,
+                               count,
+                               datatype,
+                               op,
+                               comm);
+}
+
 
 int copy_to_cpu_allreduce_pmpi(const void* sendbuf,
                                void* recvbuf,

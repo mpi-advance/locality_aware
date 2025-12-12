@@ -54,6 +54,14 @@ int gpu_aware_allreduce_dissemination_ml(
                         MPI_Datatype datatype,
                         MPI_Op op,
                         MPIL_Comm* comm);
+/** @brief Calls ::gpu_aware_allreduce with ::dissemination RADIX function**/
+int gpu_aware_allreduce_dissemination_radix(
+                        const void* sendbuf,
+                        void* recvbuf,
+                        int count,
+                        MPI_Datatype datatype,
+                        MPI_Op op,
+                        MPIL_Comm* comm);
 #endif
 
 
@@ -100,6 +108,14 @@ int copy_to_cpu_allreduce_dissemination_loc(
                         MPIL_Comm* comm);
 /** @brief Calls ::copy_to_cpu_allreduce with ::dissemination NUMA-aware function**/
 int copy_to_cpu_allreduce_dissemination_ml(
+                        const void* sendbuf,
+                        void* recvbuf,
+                        int count,
+                        MPI_Datatype datatype,
+                        MPI_Op op,
+                        MPIL_Comm* comm);
+/** @brief Calls ::copy_to_cpu_allreduce with ::dissemination RADIX function**/
+int copy_to_cpu_allreduce_dissemination_radix(
                         const void* sendbuf,
                         void* recvbuf,
                         int count,

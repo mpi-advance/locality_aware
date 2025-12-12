@@ -1,4 +1,6 @@
 #include "collective/allgather.h"
+#include "locality_aware.h"
+
 // Calls underlying MPI implementation
 int allgather_ring(const void* sendbuf,
                    int sendcount,
@@ -7,6 +9,23 @@ int allgather_ring(const void* sendbuf,
                    int recvcount,
                    MPI_Datatype recvtype,
                    MPIL_Comm* comm)
+{
+        if (sendcount == 0)
+        return MPI_SUCCESS;
+
+    return allgather_ring_helper(sendbuf, sendcount, sendtype, recvbuf, recvcount,
+            recvtype, comm, MPIL_Alloc, MPIL_Free);
+}
+
+int allgather_ring_helper(const void* sendbuf,
+                   int sendcount,
+                   MPI_Datatype sendtype,
+                   void* recvbuf,
+                   int recvcount,
+                   MPI_Datatype recvtype,
+                   MPIL_Comm* comm,
+                   MPIL_Alloc_ftn alloc_ftn,
+                   MPIL_Free_ftn free_ftn)
 {
     int rank, num_procs;
     MPI_Comm_rank(comm->global_comm, &rank);

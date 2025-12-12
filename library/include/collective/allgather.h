@@ -81,6 +81,27 @@ int allgather_pmpi(const void* sendbuf,
                    MPIL_Comm* comm);
 
 
+int allgather_ring_helper(const void* sendbuf,
+                   int sendcount,
+                   MPI_Datatype sendtype,
+                   void* recvbuf,
+                   int recvcount,
+                   MPI_Datatype recvtype,
+                   MPIL_Comm* comm,
+                   MPIL_Alloc_ftn alloc_ftn,
+                   MPIL_Free_ftn free_ftn);
+int allgather_bruck_helper(const void* sendbuf,
+                   int sendcount,
+                   MPI_Datatype sendtype,
+                   void* recvbuf,
+                   int recvcount,
+                   MPI_Datatype recvtype,
+                   MPIL_Comm* comm,
+                   MPIL_Alloc_ftn alloc_ftn,
+                   MPIL_Free_ftn free_ftn);
+
+
+
 
 /** @brief Helper functions
  **/
