@@ -1,0 +1,560 @@
+0: 1 Processes Per GPU, 4 GPUs Per Node
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: rank 1, gpuMallocHost ptr 0x1549fe800000, gpuHostGetDevicePointer ptr 0x1549fe800000
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: rank 2, gpuMallocHost ptr 0x1549fe800000, gpuHostGetDevicePointer ptr 0x1549fe800000
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: rank 4, gpuMallocHost ptr 0x1549fe200000, gpuHostGetDevicePointer ptr 0x1549fe200000
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: rank 5, gpuMallocHost ptr 0x1549fe800000, gpuHostGetDevicePointer ptr 0x1549fe800000
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: rank 3, gpuMallocHost ptr 0x1549fe800000, gpuHostGetDevicePointer ptr 0x1549fe800000
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: rank 6, gpuMallocHost ptr 0x1549fe800000, gpuHostGetDevicePointer ptr 0x1549fe800000
+0: Only 1 GPU Visible, But GPN is 4.  Assuming 4 gpus per node.  If GPN is not correct, rerun cmake with -DARCH_GPUS_PER_NODE=Correct#
+0: .my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: rank 0, gpuMallocHost ptr 0x1549fe200000, gpuHostGetDevicePointer ptr 0x1549fe200000
+0: my_gpu 0, node_size 4, gpu_size 1, gpuspernode 4
+0: rank 7, gpuMallocHost ptr 0x1549fe800000, gpuHostGetDevicePointer ptr 0x1549fe800000
+0: Size 1 (Per Proc 1)
+0: STD: 1.029231e-05
+0: PW: 1.689573e-05
+0: NB: 1.059067e-05
+0: STD HOST: 1.043859e-05
+0: PW HOST: 1.739180e-05
+0: NB HOST: 1.062601e-05
+0: Size 2 (Per Proc 2)
+0: STD: 1.035448e-05
+0: PW: 1.669263e-05
+0: NB: 1.059418e-05
+0: STD HOST: 1.013798e-05
+0: PW HOST: 1.728297e-05
+0: NB HOST: 1.062738e-05
+0: Size 4 (Per Proc 4)
+0: STD: 1.070598e-05
+0: PW: 1.926607e-05
+0: NB: 1.147812e-05
+0: STD HOST: 1.091331e-05
+0: PW HOST: 1.947182e-05
+0: NB HOST: 1.166522e-05
+0: Size 8 (Per Proc 8)
+0: STD: 1.075593e-05
+0: PW: 1.932868e-05
+0: NB: 1.150324e-05
+0: STD HOST: 1.107271e-05
+0: PW HOST: 1.931431e-05
+0: NB HOST: 1.155229e-05
+0: Size 16 (Per Proc 16)
+0: STD: 1.111348e-05
+0: PW: 1.894934e-05
+0: NB: 1.176781e-05
+0: STD HOST: 1.116682e-05
+0: PW HOST: 1.911083e-05
+0: NB HOST: 1.194600e-05
+0: Size 32 (Per Proc 32)
+0: STD: 1.440699e-05
+0: PW: 2.738192e-05
+0: NB: 1.501914e-05
+0: STD HOST: 1.453841e-05
+0: PW HOST: 2.748725e-05
+0: NB HOST: 1.506473e-05
+0: Size 64 (Per Proc 64)
+0: STD: 1.688655e-05
+0: PW: 3.117083e-05
+0: NB: 1.557562e-05
+0: STD HOST: 1.666887e-05
+0: PW HOST: 3.127630e-05
+0: NB HOST: 1.560875e-05
+0: Size 128 (Per Proc 128)
+0: STD: 2.537030e-05
+0: PW: 3.479087e-05
+0: NB: 1.761419e-05
+0: STD HOST: 2.523141e-05
+0: PW HOST: 3.475910e-05
+0: NB HOST: 1.767173e-05
+0: Size 256 (Per Proc 256)
+0: STD: 3.409939e-05
+0: PW: 4.351848e-05
+0: NB: 2.706953e-05
+0: STD HOST: 2.669340e-05
+0: PW HOST: 3.673461e-05
+0: NB HOST: 2.025108e-05
+0: Size 512 (Per Proc 512)
+0: STD: 3.448112e-05
+0: PW: 4.420192e-05
+0: NB: 2.749864e-05
+0: STD HOST: 2.713975e-05
+0: PW HOST: 3.687830e-05
+0: NB HOST: 2.093452e-05
+0: Size 1024 (Per Proc 1024)
+0: STD: 3.493126e-05
+0: PW: 4.502953e-05
+0: NB: 2.774718e-05
+0: STD HOST: 2.737177e-05
+0: PW HOST: 3.793712e-05
+0: NB HOST: 2.142814e-05
+0: Size 2048 (Per Proc 2048)
+0: STD: 5.230741e-05
+0: PW: 6.042796e-05
+0: NB: 4.177018e-05
+0: STD HOST: 2.924017e-05
+0: PW HOST: 4.158090e-05
+0: NB HOST: 2.447263e-05
+0: Size 4096 (Per Proc 4096)
+0: STD: 5.350660e-05
+0: PW: 6.572801e-05
+0: NB: 4.222283e-05
+0: STD HOST: 3.122418e-05
+0: PW HOST: 4.873239e-05
+0: NB HOST: 2.765360e-05
+0: Size 8192 (Per Proc 8192)
+0: STD: 5.370521e-05
+0: PW: 8.515980e-05
+0: NB: 4.222721e-05
+0: STD HOST: 3.580563e-05
+0: PW HOST: 6.916475e-05
+0: NB HOST: 3.326933e-05
+0: Size 16384 (Per Proc 16384)
+0: STD: 5.552214e-05
+0: PW: 9.805812e-05
+0: NB: 4.617392e-05
+0: STD HOST: 4.106850e-05
+0: PW HOST: 8.264252e-05
+0: NB HOST: 3.901351e-05
+0: Size 32768 (Per Proc 32768)
+0: STD: 6.043345e-05
+0: PW: 1.222929e-04
+0: NB: 5.162825e-05
+0: STD HOST: 5.572855e-05
+0: PW HOST: 1.140542e-04
+0: NB HOST: 5.182276e-05
+0: Size 65536 (Per Proc 65536)
+0: STD: 8.078058e-05
+0: PW: 1.687422e-04
+0: NB: 6.640614e-05
+0: STD HOST: 8.761743e-05
+0: PW HOST: 1.727746e-04
+0: NB HOST: 7.536578e-05
+0: Size 131072 (Per Proc 131072)
+0: STD: 2.000231e-04
+0: PW: 2.589163e-04
+0: NB: 1.048327e-04
+0: STD HOST: 2.152837e-04
+0: PW HOST: 2.856695e-04
+0: NB HOST: 1.241378e-04
+0: Size 262144 (Per Proc 262144)
+0: STD: 3.532225e-04
+0: PW: 4.320299e-04
+0: NB: 1.995997e-04
+0: STD HOST: 3.891398e-04
+0: PW HOST: 5.142460e-04
+0: NB HOST: 2.322393e-04
+0: Size 524288 (Per Proc 524288)
+0: STD: 6.204472e-04
+0: PW: 7.887523e-04
+0: NB: 3.785870e-04
+0: STD HOST: 7.286727e-04
+0: PW HOST: 9.617831e-04
+0: NB HOST: 4.567277e-04
+0: Size 1048576 (Per Proc 1048576)
+0: STD: 1.181651e-03
+0: PW: 1.459972e-03
+0: NB: 7.374334e-04
+0: STD HOST: 2.135302e-03
+0: PW HOST: 3.661288e-03
+0: NB HOST: 1.829604e-03
+0: Size 2097152 (Per Proc 2097152)
+0: STD: 2.248674e-03
+0: PW: 2.838763e-03
+0: NB: 1.457016e-03
+0: STD HOST: 8.043711e-03
+0: PW HOST: 9.334109e-03
+0: NB HOST: 4.838689e-03
+0: Size 4194304 (Per Proc 4194304)
+0: STD: 4.434827e-03
+0: PW: 6.700914e-03
+0: NB: 2.907962e-03
+0: STD HOST: 1.081647e-02
+0: PW HOST: 1.404727e-02
+0: NB HOST: 6.768255e-03
+0: Size 8388608 (Per Proc 8388608)
+0: STD: 8.849363e-03
+0: PW: 1.459510e-02
+0: NB: 6.877377e-03
+0: STD HOST: 1.723450e-02
+0: PW HOST: 2.525663e-02
+0: NB HOST: 1.218821e-02
+0: Size 16777216 (Per Proc 16777216)
+0: STD: 1.761937e-02
+0: PW: 2.897109e-02
+0: NB: 1.368412e-02
+0: STD HOST: 3.190377e-02
+0: PW HOST: 4.764441e-02
+0: NB HOST: 2.300730e-02
+0: Size 33554432 (Per Proc 33554432)
+0: STD: 3.520253e-02
+0: PW: 5.760565e-02
+0: NB: 2.634591e-02
+0: STD HOST: 6.090685e-02
+0: PW HOST: 9.140076e-02
+0: NB HOST: 4.299843e-02
+0: Size 67108864 (Per Proc 67108864)
+0: STD: 7.031463e-02
+0: PW: 1.129916e-01
+0: NB: 5.189692e-02
+0: STD HOST: 1.230620e-01
+0: PW HOST: 1.797348e-01
+0: NB HOST: 8.511742e-02
+0: 
+0: 2 Processes Per GPU, 4 GPUs Per Node
+0: my_gpu 0, node_size 8, gpu_size 2, gpuspernode 4
+0: my_gpu 0, node_size 8, gpu_size 2, gpuspernode 4
+0: my_gpu 0, node_size 8, gpu_size 2, gpuspernode 4
+0: my_gpu 0, node_size 8, gpu_size 2, gpuspernode 4
+0: my_gpu 0, node_size 8, gpu_size 2, gpuspernode 4
+0: my_gpu 0, node_size 8, gpu_size 2, gpuspernode 4
+0: my_gpu 0, node_size 8, gpu_size 2, gpuspernode 4
+0: Only 1 GPU Visible, But GPN is 4.  Assuming 4 gpus per node.  If GPN is not correct, rerun cmake with -DARCH_GPUS_PER_NODE=Correct#
+0: .my_gpu 0, node_size 8, gpu_size 2, gpuspernode 4
+0: Size 2 (Per Proc 1)
+0: STD WIN HOST: 1.218703e-05
+0: PW SPLIT WIN HOST: 2.013165e-05
+0: NB SPLIT WIN HOST: 1.310685e-05
+0: PW WIN HOST: 1.336579e-05
+0: NB WIN HOST: 7.409759e-06
+0: my_gpu 0, node_size 8, gpu_size 2, gpuspernode 4
+0: my_gpu 0, node_size 8, gpu_size 2, gpuspernode 4
+0: my_gpu 0, node_size 8, gpu_size 2, gpuspernode 4
+0: my_gpu 0, node_size 8, gpu_size 2, gpuspernode 4
+0: my_gpu 0, node_size 8, gpu_size 2, gpuspernode 4
+0: my_gpu 0, node_size 8, gpu_size 2, gpuspernode 4
+0: my_gpu 0, node_size 8, gpu_size 2, gpuspernode 4
+0: my_gpu 0, node_size 8, gpu_size 2, gpuspernode 4
+0: Size 4 (Per Proc 2)
+0: STD WIN HOST: 1.208054e-05
+0: PW SPLIT WIN HOST: 2.013907e-05
+0: NB SPLIT WIN HOST: 1.311350e-05
+0: PW WIN HOST: 1.345046e-05
+0: NB WIN HOST: 8.605882e-06
+0: Size 8 (Per Proc 4)
+0: STD WIN HOST: 1.307229e-05
+0: PW SPLIT WIN HOST: 2.203577e-05
+0: NB SPLIT WIN HOST: 1.382655e-05
+0: PW WIN HOST: 1.345900e-05
+0: NB WIN HOST: 8.744808e-06
+0: Size 16 (Per Proc 8)
+0: STD WIN HOST: 1.309356e-05
+0: PW SPLIT WIN HOST: 2.206825e-05
+0: NB SPLIT WIN HOST: 1.433000e-05
+0: PW WIN HOST: 1.346822e-05
+0: NB WIN HOST: 8.576754e-06
+0: Size 32 (Per Proc 16)
+0: STD WIN HOST: 1.290705e-05
+0: PW SPLIT WIN HOST: 2.170200e-05
+0: NB SPLIT WIN HOST: 1.377922e-05
+0: PW WIN HOST: 1.670872e-05
+0: NB WIN HOST: 1.172051e-05
+0: Size 64 (Per Proc 32)
+0: STD WIN HOST: 1.621042e-05
+0: PW SPLIT WIN HOST: 3.070648e-05
+0: NB SPLIT WIN HOST: 1.788058e-05
+0: PW WIN HOST: 1.871962e-05
+0: NB WIN HOST: 1.192666e-05
+0: Size 128 (Per Proc 64)
+0: STD WIN HOST: 1.822806e-05
+0: PW SPLIT WIN HOST: 3.459588e-05
+0: NB SPLIT WIN HOST: 1.869384e-05
+0: PW WIN HOST: 1.996192e-05
+0: NB WIN HOST: 1.413611e-05
+0: Size 256 (Per Proc 128)
+0: STD WIN HOST: 2.057652e-05
+0: PW SPLIT WIN HOST: 3.845446e-05
+0: NB SPLIT WIN HOST: 2.107951e-05
+0: PW WIN HOST: 2.015419e-05
+0: NB WIN HOST: 1.516954e-05
+0: Size 512 (Per Proc 256)
+0: STD WIN HOST: 2.151786e-05
+0: PW SPLIT WIN HOST: 4.096506e-05
+0: NB SPLIT WIN HOST: 2.324427e-05
+0: PW WIN HOST: 2.075637e-05
+0: NB WIN HOST: 1.528748e-05
+0: Size 1024 (Per Proc 512)
+0: STD WIN HOST: 2.195852e-05
+0: PW SPLIT WIN HOST: 4.148970e-05
+0: NB SPLIT WIN HOST: 2.365887e-05
+0: PW WIN HOST: 2.093356e-05
+0: NB WIN HOST: 1.547816e-05
+0: Size 2048 (Per Proc 1024)
+0: STD WIN HOST: 2.232383e-05
+0: PW SPLIT WIN HOST: 4.254115e-05
+0: NB SPLIT WIN HOST: 2.405805e-05
+0: PW WIN HOST: 2.249884e-05
+0: NB WIN HOST: 1.656080e-05
+0: Size 4096 (Per Proc 2048)
+0: STD WIN HOST: 2.439346e-05
+0: PW SPLIT WIN HOST: 4.614959e-05
+0: NB SPLIT WIN HOST: 2.633421e-05
+0: PW WIN HOST: 3.085554e-05
+0: NB WIN HOST: 2.559002e-05
+0: Size 8192 (Per Proc 4096)
+0: STD WIN HOST: 3.047763e-05
+0: PW SPLIT WIN HOST: 5.579797e-05
+0: NB SPLIT WIN HOST: 3.459020e-05
+0: PW WIN HOST: 3.900797e-05
+0: NB WIN HOST: 2.304959e-05
+0: Size 16384 (Per Proc 8192)
+0: STD WIN HOST: 3.244919e-05
+0: PW SPLIT WIN HOST: 7.477142e-05
+0: NB SPLIT WIN HOST: 3.803819e-05
+0: PW WIN HOST: 4.582783e-05
+0: NB WIN HOST: 2.767154e-05
+0: Size 32768 (Per Proc 16384)
+0: STD WIN HOST: 4.297688e-05
+0: PW SPLIT WIN HOST: 9.010376e-05
+0: NB SPLIT WIN HOST: 4.480973e-05
+0: PW WIN HOST: 5.854146e-05
+0: NB WIN HOST: 4.084306e-05
+0: Size 65536 (Per Proc 32768)
+0: STD WIN HOST: 7.316630e-05
+0: PW SPLIT WIN HOST: 1.311992e-04
+0: NB SPLIT WIN HOST: 6.701226e-05
+0: PW WIN HOST: 8.661920e-05
+0: NB WIN HOST: 6.231914e-05
+0: Size 131072 (Per Proc 65536)
+0: STD WIN HOST: 1.410730e-04
+0: PW SPLIT WIN HOST: 2.002851e-04
+0: NB SPLIT WIN HOST: 1.068624e-04
+0: PW WIN HOST: 1.417744e-04
+0: NB WIN HOST: 1.045518e-04
+0: Size 262144 (Per Proc 131072)
+0: STD WIN HOST: 2.788380e-04
+0: PW SPLIT WIN HOST: 3.412741e-04
+0: NB SPLIT WIN HOST: 2.293533e-04
+0: PW WIN HOST: 2.560949e-04
+0: NB WIN HOST: 1.950476e-04
+0: Size 524288 (Per Proc 262144)
+0: STD WIN HOST: 5.043835e-04
+0: PW SPLIT WIN HOST: 6.126063e-04
+0: NB SPLIT WIN HOST: 4.449088e-04
+0: PW WIN HOST: 5.805286e-04
+0: NB WIN HOST: 4.126102e-04
+0: Size 1048576 (Per Proc 524288)
+0: STD WIN HOST: 9.363894e-04
+0: PW SPLIT WIN HOST: 1.144277e-03
+0: NB SPLIT WIN HOST: 8.334162e-04
+0: PW WIN HOST: 2.931842e-03
+0: NB WIN HOST: 1.906086e-03
+0: Size 2097152 (Per Proc 1048576)
+0: STD WIN HOST: 2.280483e-03
+0: PW SPLIT WIN HOST: 4.348365e-03
+0: NB SPLIT WIN HOST: 2.306850e-03
+0: PW WIN HOST: 7.067325e-03
+0: NB WIN HOST: 4.409602e-03
+0: Size 4194304 (Per Proc 2097152)
+0: STD WIN HOST: 5.182727e-03
+0: PW SPLIT WIN HOST: 9.010199e-03
+0: NB SPLIT WIN HOST: 4.435589e-03
+0: PW WIN HOST: 1.196329e-02
+0: NB WIN HOST: 7.785358e-03
+0: Size 8388608 (Per Proc 4194304)
+0: STD WIN HOST: 9.750727e-03
+0: PW SPLIT WIN HOST: 1.708113e-02
+0: NB SPLIT WIN HOST: 9.464151e-03
+0: PW WIN HOST: 2.202356e-02
+0: NB WIN HOST: 1.461609e-02
+0: Size 16777216 (Per Proc 8388608)
+0: STD WIN HOST: 1.823121e-02
+0: PW SPLIT WIN HOST: 3.206365e-02
+0: NB SPLIT WIN HOST: 1.535671e-02
+0: PW WIN HOST: 4.164771e-02
+0: NB WIN HOST: 2.789277e-02
+0: Size 33554432 (Per Proc 16777216)
+0: STD WIN HOST: 3.688808e-02
+0: PW SPLIT WIN HOST: 6.124053e-02
+0: NB SPLIT WIN HOST: 3.519053e-02
+0: PW WIN HOST: 7.732689e-02
+0: NB WIN HOST: 5.154586e-02
+0: Size 67108864 (Per Proc 33554432)
+0: STD WIN HOST: 7.184231e-02
+0: PW SPLIT WIN HOST: 1.206289e-01
+0: NB SPLIT WIN HOST: 6.656689e-02
+0: PW WIN HOST: 1.521541e-01
+0: NB WIN HOST: 9.938169e-02
+0: 4 Processes Per GPU, 4 GPUs Per Node
+0: my_gpu 0, node_size 16, gpu_size 4, gpuspernode 4
+0: my_gpu 0, node_size 16, gpu_size 4, gpuspernode 4
+0: my_gpu 0, node_size 16, gpu_size 4, gpuspernode 4
+0: my_gpu 0, node_size 16, gpu_size 4, gpuspernode 4
+0: my_gpu 0, node_size 16, gpu_size 4, gpuspernode 4
+0: my_gpu 0, node_size 16, gpu_size 4, gpuspernode 4
+0: my_gpu 0, node_size 16, gpu_size 4, gpuspernode 4
+0: my_gpu 0, node_size 16, gpu_size 4, gpuspernode 4
+0: my_gpu 0, node_size 16, gpu_size 4, gpuspernode 4
+0: my_gpu 0, node_size 16, gpu_size 4, gpuspernode 4
+0: my_gpu 0, node_size 16, gpu_size 4, gpuspernode 4
+0: my_gpu 0, node_size 16, gpu_size 4, gpuspernode 4
+0: my_gpu 0, node_size 16, gpu_size 4, gpuspernode 4
+0: my_gpu 0, node_size 16, gpu_size 4, gpuspernode 4
+0: my_gpu 0, node_size 16, gpu_size 4, gpuspernode 4
+0: Only 1 GPU Visible, But GPN is 4.  Assuming 4 gpus per node.  If GPN is not correct, rerun cmake with -DARCH_GPUS_PER_NODE=Correct#
+0: .my_gpu 0, node_size 16, gpu_size 4, gpuspernode 4
+0: Size 4 (Per Proc 1)
+0: STD WIN HOST: 1.454611e-05
+0: PW SPLIT WIN HOST: 2.234756e-05
+0: NB SPLIT WIN HOST: 1.555828e-05
+0: PW WIN HOST: 9.866743e-06
+0: NB WIN HOST: 8.289181e-06
+0: my_gpu 0, node_size 16, gpu_size 4, gpuspernode 4
+0: my_gpu 0, node_size 16, gpu_size 4, gpuspernode 4
+0: my_gpu 0, node_size 16, gpu_size 4, gpuspernode 4
+0: my_gpu 0, node_size 16, gpu_size 4, gpuspernode 4
+0: my_gpu 0, node_size 16, gpu_size 4, gpuspernode 4
+0: my_gpu 0, node_size 16, gpu_size 4, gpuspernode 4
+0: my_gpu 0, node_size 16, gpu_size 4, gpuspernode 4
+0: my_gpu 0, node_size 16, gpu_size 4, gpuspernode 4
+0: my_gpu 0, node_size 16, gpu_size 4, gpuspernode 4
+0: my_gpu 0, node_size 16, gpu_size 4, gpuspernode 4
+0: my_gpu 0, node_size 16, gpu_size 4, gpuspernode 4
+0: my_gpu 0, node_size 16, gpu_size 4, gpuspernode 4
+0: my_gpu 0, node_size 16, gpu_size 4, gpuspernode 4
+0: my_gpu 0, node_size 16, gpu_size 4, gpuspernode 4
+0: my_gpu 0, node_size 16, gpu_size 4, gpuspernode 4
+0: my_gpu 0, node_size 16, gpu_size 4, gpuspernode 4
+0: Size 8 (Per Proc 2)
+0: STD WIN HOST: 1.444362e-05
+0: PW SPLIT WIN HOST: 2.240665e-05
+0: NB SPLIT WIN HOST: 1.549227e-05
+0: PW WIN HOST: 9.899138e-06
+0: NB WIN HOST: 8.343031e-06
+0: Size 16 (Per Proc 4)
+0: STD WIN HOST: 1.545686e-05
+0: PW SPLIT WIN HOST: 2.423562e-05
+0: NB SPLIT WIN HOST: 1.675544e-05
+0: PW WIN HOST: 9.927783e-06
+0: NB WIN HOST: 8.438065e-06
+0: Size 32 (Per Proc 8)
+0: STD WIN HOST: 1.545429e-05
+0: PW SPLIT WIN HOST: 2.414829e-05
+0: NB SPLIT WIN HOST: 1.654367e-05
+0: PW WIN HOST: 1.225606e-05
+0: NB WIN HOST: 1.045927e-05
+0: Size 64 (Per Proc 16)
+0: STD WIN HOST: 1.532434e-05
+0: PW SPLIT WIN HOST: 2.364855e-05
+0: NB SPLIT WIN HOST: 1.567926e-05
+0: PW WIN HOST: 1.368230e-05
+0: NB WIN HOST: 1.083931e-05
+0: Size 128 (Per Proc 32)
+0: STD WIN HOST: 1.787280e-05
+0: PW SPLIT WIN HOST: 3.188511e-05
+0: NB SPLIT WIN HOST: 1.959867e-05
+0: PW WIN HOST: 1.481127e-05
+0: NB WIN HOST: 1.171781e-05
+0: Size 256 (Per Proc 64)
+0: STD WIN HOST: 1.988616e-05
+0: PW SPLIT WIN HOST: 3.605650e-05
+0: NB SPLIT WIN HOST: 2.062463e-05
+0: PW WIN HOST: 1.556159e-05
+0: NB WIN HOST: 1.193839e-05
+0: Size 512 (Per Proc 128)
+0: STD WIN HOST: 2.264071e-05
+0: PW SPLIT WIN HOST: 3.958226e-05
+0: NB SPLIT WIN HOST: 2.459067e-05
+0: PW WIN HOST: 1.560415e-05
+0: NB WIN HOST: 1.189248e-05
+0: Size 1024 (Per Proc 256)
+0: STD WIN HOST: 2.365614e-05
+0: PW SPLIT WIN HOST: 4.221289e-05
+0: NB SPLIT WIN HOST: 2.462985e-05
+0: PW WIN HOST: 1.576290e-05
+0: NB WIN HOST: 1.201115e-05
+0: Size 2048 (Per Proc 512)
+0: STD WIN HOST: 2.376610e-05
+0: PW SPLIT WIN HOST: 4.295016e-05
+0: NB SPLIT WIN HOST: 2.680758e-05
+0: PW WIN HOST: 1.664833e-05
+0: NB WIN HOST: 1.239581e-05
+0: Size 4096 (Per Proc 1024)
+0: STD WIN HOST: 2.382103e-05
+0: PW SPLIT WIN HOST: 4.368891e-05
+0: NB SPLIT WIN HOST: 2.470252e-05
+0: PW WIN HOST: 2.046695e-05
+0: NB WIN HOST: 1.595810e-05
+0: Size 8192 (Per Proc 2048)
+0: STD WIN HOST: 2.603943e-05
+0: PW SPLIT WIN HOST: 4.835251e-05
+0: NB SPLIT WIN HOST: 2.770459e-05
+0: PW WIN HOST: 2.498974e-05
+0: NB WIN HOST: 1.898501e-05
+0: Size 16384 (Per Proc 4096)
+0: STD WIN HOST: 3.125070e-05
+0: PW SPLIT WIN HOST: 5.771098e-05
+0: NB SPLIT WIN HOST: 3.523510e-05
+0: PW WIN HOST: 3.128082e-05
+0: NB WIN HOST: 2.528558e-05
+0: Size 32768 (Per Proc 8192)
+0: STD WIN HOST: 4.229144e-05
+0: PW SPLIT WIN HOST: 7.956270e-05
+0: NB SPLIT WIN HOST: 4.130039e-05
+0: PW WIN HOST: 4.406334e-05
+0: NB WIN HOST: 3.770232e-05
+0: Size 65536 (Per Proc 16384)
+0: STD WIN HOST: 6.697082e-05
+0: PW SPLIT WIN HOST: 1.017039e-04
+0: NB SPLIT WIN HOST: 6.171275e-05
+0: PW WIN HOST: 6.672156e-05
+0: NB WIN HOST: 6.008257e-05
+0: Size 131072 (Per Proc 32768)
+0: STD WIN HOST: 1.233855e-04
+0: PW SPLIT WIN HOST: 1.558753e-04
+0: NB SPLIT WIN HOST: 1.154797e-04
+0: PW WIN HOST: 1.112923e-04
+0: NB WIN HOST: 1.045014e-04
+0: Size 262144 (Per Proc 65536)
+0: STD WIN HOST: 2.745055e-04
+0: PW SPLIT WIN HOST: 2.648577e-04
+0: NB SPLIT WIN HOST: 2.068598e-04
+0: PW WIN HOST: 2.013157e-04
+0: NB WIN HOST: 1.951954e-04
+0: Size 524288 (Per Proc 131072)
+0: STD WIN HOST: 4.849848e-04
+0: PW SPLIT WIN HOST: 4.863567e-04
+0: NB SPLIT WIN HOST: 3.863783e-04
+0: PW WIN HOST: 3.821426e-04
+0: NB WIN HOST: 3.767135e-04
+0: Size 1048576 (Per Proc 262144)
+0: STD WIN HOST: 8.649366e-04
+0: PW SPLIT WIN HOST: 9.424333e-04
+0: NB SPLIT WIN HOST: 8.135940e-04
+0: PW WIN HOST: 7.423737e-04
+0: NB WIN HOST: 7.381160e-04
+0: Size 2097152 (Per Proc 524288)
+0: STD WIN HOST: 1.720735e-03
+0: PW SPLIT WIN HOST: 2.638059e-03
+0: NB SPLIT WIN HOST: 1.693437e-03
+0: PW WIN HOST: 2.974859e-03
+0: NB WIN HOST: 2.012669e-03
+0: Size 4194304 (Per Proc 1048576)
+0: STD WIN HOST: 3.575323e-03
+0: PW SPLIT WIN HOST: 5.262961e-03
+0: NB SPLIT WIN HOST: 3.446439e-03
+0: PW WIN HOST: 5.927581e-03
+0: NB WIN HOST: 4.488043e-03
+0: Size 8388608 (Per Proc 2097152)
+0: STD WIN HOST: 7.882520e-03
+0: PW SPLIT WIN HOST: 1.082877e-02
+0: NB SPLIT WIN HOST: 6.984380e-03
+0: PW WIN HOST: 1.138318e-02
+0: NB WIN HOST: 8.866912e-03
+0: Size 16777216 (Per Proc 4194304)
+0: STD WIN HOST: 1.579102e-02
+0: PW SPLIT WIN HOST: 2.036778e-02
+0: NB SPLIT WIN HOST: 1.416172e-02
+0: PW WIN HOST: 2.225769e-02
+0: NB WIN HOST: 1.710888e-02
+0: Size 33554432 (Per Proc 8388608)
+0: STD WIN HOST: 3.074002e-02
+0: PW SPLIT WIN HOST: 3.976199e-02
+0: NB SPLIT WIN HOST: 2.936233e-02
+0: PW WIN HOST: 4.276465e-02
+0: NB WIN HOST: 3.266166e-02
