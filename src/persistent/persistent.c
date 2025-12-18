@@ -32,6 +32,19 @@ int MPIX_Request_init(MPIX_Request** request_ptr)
     request->local_targets = NULL;   // list of on-node ranks we send to
     request->n_local = 0;
 
+     /*
+     * NEW for RTS/DONE (ready to receive) signaling
+     *  */
+    request->sig_win       = MPI_WIN_NULL;
+    request->signals       = NULL;
+    request->rts_flags     = NULL;
+    request->done_flags    = NULL;
+    request->send_peers    = NULL;
+    request->recv_peers    = NULL;
+    request->num_send_peers = 0;
+    request->num_recv_peers = 0;
+
+
     *request_ptr = request;
 
     return MPI_SUCCESS;
@@ -541,14 +554,18 @@ int rma_lock_start_han(MPIX_Request* request)
     
     MPI_Comm_rank(request->xcomm->global_comm, &rank);  // Get the rank of the process
    // printf("Process %d entering rma_lock_start\n", rank);
-    //fflush(stdout);
+  // fflush(stdout);
 
     const char*  send_buffer = (const char* )(request->sendbuf);
     const char*  recv_buffer = (const char* )(request->recvbuf); 
     //printf("*************329");
     //fflush(stdout);
+    //
+  //   MPI_Barrier(request->xcomm->global_comm);
     MPI_Win_unlock(rank, request->xcomm->win); // MGFD: Release Local Exclusive Lock, this allows other process to safely put data. 
 
+
+    // MPI_Barrier(request->xcomm->global_comm);
     //printf("******************333");
    // fflush(stdout);
        
@@ -620,7 +637,7 @@ int rma_lock_wait_han(MPIX_Request* request, MPI_Status* status)
     MPI_Win_unlock_all(request->xcomm->win);
 
     /* Ensure every process has finished their access epochs  */
-    MPI_Barrier(request->xcomm->global_comm);//removed the segfault
+   MPI_Barrier(request->xcomm->global_comm);//removed the segfault
 
     
 
@@ -652,11 +669,111 @@ int rma_lock_wait(MPIX_Request* request, MPI_Status* status)
   //   printf("process %d leaving", rank);
     return MPI_SUCCESS;
 }
+//===============================================
+     
+int rma_start_RTS(MPIX_Request* request)
+{
+    int rank, num_procs;
+    MPI_Comm_rank(request->xcomm->global_comm, &rank);
+    MPI_Comm_size(request->xcomm->global_comm, &num_procs);
+
+    const char* send_buffer = (const char*)(request->sendbuf);
+    // const char* recv_buffer = (const char*)(request->recvbuf); // not used
+
+    int one = 1;
 
      
+    //  opening epoch(session) for signals (RTS/DONE)
+     
+    MPI_Win_lock_all(0, request->sig_win);
+
+    /* 
+     *  Post RTR (ready-to-receive) flags 
+     *    At rank R:
+     *      rts_flags[src] = 1  means  "R is ready to receive from src"
+     * */
+    for (int k = 0; k < request->num_recv_peers; k++) {
+        int src = request->recv_peers[k];
+        request->rts_flags[src] = 1;
+    }
+    // Making sure my local writes (flag) are visible to remote ranks
+    MPI_Win_sync(request->sig_win);
+
+    
+    // Open data epoch
+    
+    MPI_Win_lock_all(0, request->xcomm->win);
+
+    /* -----------------------------
+     *  For each destination dst I send to:
+     *    - wait until dst has its rts_flags[rank] == 1
+     *    - PUT my data
+     *    - set done_flags[rank] on dst
+     * ----------------------------- */
+    for (int idx = 0; idx < request->num_send_peers; ++idx) {
+        int dst    = request->send_peers[idx];
+        int nbytes = request->send_sizes[dst];
+        if (nbytes == 0) continue;
+
+        /* ---- wait until dst is ready for this rank-- */
+        int ready = 0;
+        while (!ready) {
+            int rtr_val = 0;
+
+            // rts_flags[rank]'s displacement is = rank (int units)
+            MPI_Get(&rtr_val, 1, MPI_INT,
+                    dst, rank, 1, MPI_INT,
+                    request->sig_win);
+            MPI_Win_flush(dst, request->sig_win);
+
+            if (rtr_val == 1) {
+                ready = 1;
+            }
+            
+        }
+
+        /* ---- putting my data into dst's recvbuf ---- */
+        MPI_Put(send_buffer + request->sdispls[dst],
+                nbytes, MPI_BYTE,
+                dst,
+                (MPI_Aint)request->put_displs[dst],
+                nbytes, MPI_BYTE,
+                request->xcomm->win);
+        // ensure the PUT to dst completes 
+        MPI_Win_flush(dst, request->xcomm->win);
+
+        /* ---- signal DONE to dst ----
+         * done_flags[rank] lives at displacement = num_procs + rank
+         */
+        MPI_Put(&one, 1, MPI_INT,
+                dst, num_procs + rank, 1, MPI_INT,
+                request->sig_win);
+        MPI_Win_flush(dst, request->sig_win);//complete signal puts
+    }
+
+    
+    return MPI_SUCCESS;
+}
 
   
+int rma_wait_RTS(MPIX_Request* request, MPI_Status* status)
+{
+    int rank, num_procs;
+    MPI_Comm_rank(request->xcomm->global_comm, &rank);
+    MPI_Comm_size(request->xcomm->global_comm, &num_procs);
 
+    //completing all data PUTs 
+    MPI_Win_flush_all(request->xcomm->win);
+
+    //Do you think we need aline of code here (while loop) to keep checking if all done flags are arrived ? or flush is enough to complete the siginal puts?    
+ 
+    /*  Close epochs (control flags + data)
+     */
+    MPI_Win_unlock_all(request->sig_win);
+    MPI_Win_unlock_all(request->xcomm->win);
+
+    return MPI_SUCCESS;
+}
 
 
  
