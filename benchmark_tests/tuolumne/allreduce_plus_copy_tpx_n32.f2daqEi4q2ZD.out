@@ -1,0 +1,702 @@
+0: 1 Processes Per GPU, 12 GPUs Per Node
+0: Only 1 GPU Visible, But GPN is 12.  Assuming 12 gpus per node.  If GPN is not correct, rerun cmake with -DARCH_GPUS_PER_NODE=Correct#
+0: .my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: Size 8 (Per Proc 8, 0)
+0: STD: 2.818760e-05
+0: MIKELANE: 3.394216e-05
+0: Size 16 (Per Proc 16, 1)
+0: STD: 2.813086e-05
+0: MIKELANE: 3.817278e-05
+0: Size 32 (Per Proc 32, 2)
+0: STD: 3.017128e-05
+0: MIKELANE: 3.984264e-05
+0: Size 64 (Per Proc 64, 5)
+0: STD: 5.816579e-05
+0: MIKELANE: 4.739830e-05
+0: Size 128 (Per Proc 128, 10)
+0: STD: 8.869971e-05
+0: MIKELANE: 5.145382e-05
+0: Size 256 (Per Proc 256, 21)
+0: STD: 7.112936e-05
+0: MIKELANE: 5.639411e-05
+0: Size 512 (Per Proc 512, 42)
+0: STD: 7.388895e-05
+0: MIKELANE: 7.139840e-05
+0: Size 1024 (Per Proc 1024, 85)
+0: STD: 8.708302e-05
+0: MIKELANE: 1.157076e-04
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: Size 2048 (Per Proc 2048, 170)
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: STD: 2.372954e-04
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: MIKELANE: 1.500522e-04
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: Size 4096 (Per Proc 4096, 341)
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: STD: 1.855618e-04
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: MIKELANE: 1.532954e-04
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: Size 8192 (Per Proc 8192, 682)
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: STD: 2.100574e-04
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: MIKELANE: 2.194363e-04
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: Size 16384 (Per Proc 16384, 1365)
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: STD: 2.536699e-04
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: MIKELANE: 4.111038e-04
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: Size 32768 (Per Proc 32768, 2730)
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: STD: 3.017598e-04
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: MIKELANE: 6.881430e-04
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: Size 65536 (Per Proc 65536, 5461)
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: STD: 3.731527e-04
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: MIKELANE: 1.132324e-03
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: Size 131072 (Per Proc 131072, 10922)
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: STD: 5.007034e-04
+0: MIKELANE: 3.841735e-03
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: Size 262144 (Per Proc 262144, 21845)
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: STD: 7.229598e-04
+0: MIKELANE: 4.418495e-03
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: Size 524288 (Per Proc 524288, 43690)
+0: STD: 1.174643e-03
+0: MIKELANE: 4.973424e-03
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: Size 1048576 (Per Proc 1048576, 87381)
+0: STD: 2.086514e-03
+0: MIKELANE: 1.107313e-02
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: Size 2097152 (Per Proc 2097152, 174762)
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: STD: 3.946411e-03
+0: MIKELANE: 2.092244e-02
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: Size 4194304 (Per Proc 4194304, 349525)
+0: STD: 7.894172e-03
+0: MIKELANE: 3.395716e-02
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: Size 8388608 (Per Proc 8388608, 699050)
+0: STD: 1.580991e-02
+0: MIKELANE: 8.784954e-02
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: Size 16777216 (Per Proc 16777216, 1398101)
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: STD: 3.164724e-02
+0: MIKELANE: 6.640339e-02
+0: Size 33554432 (Per Proc 33554432, 2796202)
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: STD: 6.326537e-02
+0: MIKELANE: 1.137807e-01
+0: Size 67108864 (Per Proc 67108864, 5592405)
+0: STD: 1.265077e-01
+0: MIKELANE: 1.274162e-01
+0: Size 134217728 (Per Proc 134217728, 11184810)
+0: STD: 2.531020e-01
+0: MIKELANE: 3.080438e-01
+0: Size 268435456 (Per Proc 268435456, 22369621)
+0: STD: 5.063231e-01
+0: MIKELANE: 5.642781e-01
+0: Size 536870912 (Per Proc 536870912, 44739242)
+0: STD: 1.012717e+00
+0: MIKELANE: 1.094478e+00
+0: 
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: my_gpu 0, node_size 12, gpu_size 1, gpuspernode 12
+0: 2 Processes Per GPU, 12 GPUs Per Node
+0: Only 1 GPU Visible, But GPN is 12.  Assuming 12 gpus per node.  If GPN is not correct, rerun cmake with -DARCH_GPUS_PER_NODE=Correct#
+0: .Size 16 (Per Proc 8, 0)
+0: STD MPS COPY: 2.048676e-04
+0: MIKELANE MPS COPY: 4.304087e-04
+0: Size 32 (Per Proc 16, 1)
+0: STD MPS COPY: 8.275466e-05
+0: MIKELANE MPS COPY: 9.197876e-05
+0: Size 64 (Per Proc 32, 2)
+0: STD MPS COPY: 9.692413e-05
+0: MIKELANE MPS COPY: 1.050543e-04
+0: Size 128 (Per Proc 64, 5)
+0: STD MPS COPY: 1.187748e-04
+0: MIKELANE MPS COPY: 1.116110e-04
+0: Size 256 (Per Proc 128, 10)
+0: STD MPS COPY: 2.369056e-04
+0: MIKELANE MPS COPY: 1.196252e-04
+0: Size 512 (Per Proc 256, 21)
+0: STD MPS COPY: 1.925543e-04
+0: MIKELANE MPS COPY: 1.183100e-04
+0: Size 1024 (Per Proc 512, 42)
+0: STD MPS COPY: 1.470375e-04
+0: MIKELANE MPS COPY: 1.303973e-04
+0: Size 2048 (Per Proc 1024, 85)
+0: STD MPS COPY: 1.574844e-04
+0: MIKELANE MPS COPY: 1.747920e-04
+0: Size 4096 (Per Proc 2048, 170)
+0: STD MPS COPY: 3.636932e-04
+0: MIKELANE MPS COPY: 2.555009e-04
+0: Size 8192 (Per Proc 4096, 341)
+0: STD MPS COPY: 1.813623e-02
+0: MIKELANE MPS COPY: 8.143273e-03
+0: Size 16384 (Per Proc 8192, 682)
+0: STD MPS COPY: 3.389062e-04
+0: MIKELANE MPS COPY: 4.128557e-04
+0: Size 32768 (Per Proc 16384, 1365)
+0: STD MPS COPY: 3.831969e-04
+0: MIKELANE MPS COPY: 5.139989e-04
+0: Size 65536 (Per Proc 32768, 2730)
+0: STD MPS COPY: 4.418014e-04
+0: MIKELANE MPS COPY: 7.181476e-04
+0: Size 131072 (Per Proc 65536, 5461)
+0: STD MPS COPY: 5.696514e-04
+0: MIKELANE MPS COPY: 1.225253e-03
+0: Size 262144 (Per Proc 131072, 10922)
+0: STD MPS COPY: 8.030937e-04
+0: MIKELANE MPS COPY: 6.425593e-03
+0: Size 524288 (Per Proc 262144, 21845)
+0: STD MPS COPY: 1.320816e-03
+0: MIKELANE MPS COPY: 6.806525e-03
+0: Size 1048576 (Per Proc 524288, 43690)
+0: STD MPS COPY: 2.273037e-03
+0: MIKELANE MPS COPY: 6.909600e-03
+0: Size 2097152 (Per Proc 1048576, 87381)
+0: STD MPS COPY: 4.244816e-03
+0: MIKELANE MPS COPY: 1.356348e-02
+0: Size 4194304 (Per Proc 2097152, 174762)
+0: STD MPS COPY: 8.362665e-03
+0: MIKELANE MPS COPY: 2.372447e-02
+0: Size 8388608 (Per Proc 4194304, 349525)
+0: STD MPS COPY: 1.624263e-02
+0: MIKELANE MPS COPY: 3.896706e-02
+0: Size 16777216 (Per Proc 8388608, 699050)
+0: STD MPS COPY: 3.251494e-02
+0: MIKELANE MPS COPY: 3.577488e-02
+0: Size 33554432 (Per Proc 16777216, 1398101)
+0: STD MPS COPY: 6.503988e-02
+0: MIKELANE MPS COPY: 9.244361e-02
+0: Size 67108864 (Per Proc 33554432, 2796202)
+0: STD MPS COPY: 1.295117e-01
+0: MIKELANE MPS COPY: 1.675721e-01
+0: Size 134217728 (Per Proc 67108864, 5592405)
+0: STD MPS COPY: 2.585159e-01
+0: MIKELANE MPS COPY: 3.888863e-01
+0: Size 268435456 (Per Proc 134217728, 11184810)
+0: STD MPS COPY: 5.188964e-01
+0: MIKELANE MPS COPY: 1.809211e+00
+0: Size 536870912 (Per Proc 268435456, 22369621)
+0: STD MPS COPY: 1.031900e+00
+0: MIKELANE MPS COPY: 3.088910e+00
+0: 
+0: 4 Processes Per GPU, 12 GPUs Per Node
+0: Only 1 GPU Visible, But GPN is 12.  Assuming 12 gpus per node.  If GPN is not correct, rerun cmake with -DARCH_GPUS_PER_NODE=Correct#
+0: .Size 32 (Per Proc 8, 0)
+0: STD MPS COPY: 4.651588e-04
+0: MIKELANE MPS COPY: 6.631365e-04
+0: Size 64 (Per Proc 16, 1)
+0: STD MPS COPY: 3.773429e-04
+0: MIKELANE MPS COPY: 6.144381e-04
+0: Size 128 (Per Proc 32, 2)
+0: STD MPS COPY: 5.546471e-04
+0: MIKELANE MPS COPY: 7.279718e-04
+0: Size 256 (Per Proc 64, 5)
+0: STD MPS COPY: 2.686977e-04
+0: MIKELANE MPS COPY: 2.646393e-04
+0: Size 512 (Per Proc 128, 10)
+0: STD MPS COPY: 2.693995e-04
+0: MIKELANE MPS COPY: 2.655425e-04
+0: Size 1024 (Per Proc 256, 21)
+0: STD MPS COPY: 8.052730e-04
+0: MIKELANE MPS COPY: 2.695779e-04
+0: Size 2048 (Per Proc 512, 42)
+0: STD MPS COPY: 2.824404e-04
+0: MIKELANE MPS COPY: 2.761917e-04
+0: Size 4096 (Per Proc 1024, 85)
+0: STD MPS COPY: 2.852783e-04
+0: MIKELANE MPS COPY: 2.960746e-04
+0: Size 8192 (Per Proc 2048, 170)
+0: STD MPS COPY: 6.192743e-04
+0: MIKELANE MPS COPY: 3.561439e-04
+0: Size 16384 (Per Proc 4096, 341)
+0: STD MPS COPY: 4.669756e-04
+0: MIKELANE MPS COPY: 8.196180e-04
+0: Size 32768 (Per Proc 8192, 682)
+0: STD MPS COPY: 4.668912e-04
+0: MIKELANE MPS COPY: 3.199934e-04
+0: Size 65536 (Per Proc 16384, 1365)
+0: STD MPS COPY: 5.242225e-04
+0: MIKELANE MPS COPY: 7.834803e-04
+0: Size 131072 (Per Proc 32768, 2730)
+0: STD MPS COPY: 6.182458e-04
+0: MIKELANE MPS COPY: 7.916136e-04
+0: Size 262144 (Per Proc 65536, 5461)
+0: STD MPS COPY: 8.759269e-04
+0: MIKELANE MPS COPY: 1.232189e-03
+0: Size 524288 (Per Proc 131072, 10922)
+0: STD MPS COPY: 1.363577e-03
+0: MIKELANE MPS COPY: 1.198775e-02
+0: Size 1048576 (Per Proc 262144, 21845)
+0: STD MPS COPY: 2.401566e-03
+0: MIKELANE MPS COPY: 1.277186e-02
+0: Size 2097152 (Per Proc 524288, 43690)
+0: STD MPS COPY: 4.435301e-03
+0: MIKELANE MPS COPY: 1.203838e-02
+0: Size 4194304 (Per Proc 1048576, 87381)
+0: STD MPS COPY: 8.574068e-03
+0: MIKELANE MPS COPY: 1.309902e-02
+0: Size 8388608 (Per Proc 2097152, 174762)
+0: STD MPS COPY: 1.715187e-02
+0: MIKELANE MPS COPY: 2.212070e-02
+0: Size 16777216 (Per Proc 4194304, 349525)
+0: STD MPS COPY: 3.359419e-02
+0: MIKELANE MPS COPY: 4.148874e-02
+0: Size 33554432 (Per Proc 8388608, 699050)
+0: STD MPS COPY: 6.693061e-02
+0: MIKELANE MPS COPY: 4.630898e-02
+0: Size 67108864 (Per Proc 16777216, 1398101)
+0: STD MPS COPY: 1.332878e-01
+0: MIKELANE MPS COPY: 1.786829e-01
+0: Size 134217728 (Per Proc 33554432, 2796202)
+0: STD MPS COPY: 2.680612e-01
+0: MIKELANE MPS COPY: 4.039631e-01
+0: Size 268435456 (Per Proc 67108864, 5592405)
+0: STD MPS COPY: 5.429921e-01
+0: MIKELANE MPS COPY: 6.712048e-01
+0: Size 536870912 (Per Proc 134217728, 11184810)
+0: STD MPS COPY: 1.085320e+00
+0: MIKELANE MPS COPY: 2.971369e+00
+0: 
+0: 8 Processes Per GPU, 12 GPUs Per Node
+0: Only 1 GPU Visible, But GPN is 12.  Assuming 12 gpus per node.  If GPN is not correct, rerun cmake with -DARCH_GPUS_PER_NODE=Correct#
+0: .Size 64 (Per Proc 8, 0)
+0: STD MPS COPY: 5.488876e-04
+0: MIKELANE MPS COPY: 6.380475e-03
+0: Size 128 (Per Proc 16, 1)
+0: STD MPS COPY: 8.402574e-03
+0: MIKELANE MPS COPY: 8.042964e-03
+0: Size 256 (Per Proc 32, 2)
+0: STD MPS COPY: 9.641118e-03
+0: MIKELANE MPS COPY: 8.956558e-03
+0: Size 512 (Per Proc 64, 5)
+0: STD MPS COPY: 8.475008e-03
+0: MIKELANE MPS COPY: 9.513042e-03
+0: Size 1024 (Per Proc 128, 10)
+0: STD MPS COPY: 8.053563e-03
+0: MIKELANE MPS COPY: 1.107916e-02
+0: Size 2048 (Per Proc 256, 21)
+0: STD MPS COPY: 7.627295e-03
+0: MIKELANE MPS COPY: 8.911354e-03
+0: Size 4096 (Per Proc 512, 42)
+0: STD MPS COPY: 5.881804e-03
+0: MIKELANE MPS COPY: 5.757718e-03
+0: Size 8192 (Per Proc 1024, 85)
+0: STD MPS COPY: 6.225291e-03
+0: MIKELANE MPS COPY: 6.347685e-03
+0: Size 16384 (Per Proc 2048, 170)
+0: STD MPS COPY: 4.654827e-03
+0: MIKELANE MPS COPY: 5.746880e-03
+0: Size 32768 (Per Proc 4096, 341)
+0: STD MPS COPY: 1.813850e-02
+0: MIKELANE MPS COPY: 1.747527e-02
+0: Size 65536 (Per Proc 8192, 682)
+0: STD MPS COPY: 1.665021e-02
+0: MIKELANE MPS COPY: 1.527690e-02
+0: Size 131072 (Per Proc 16384, 1365)
+0: STD MPS COPY: 1.663447e-02
+0: MIKELANE MPS COPY: 2.355097e-02
+0: Size 262144 (Per Proc 32768, 2730)
+0: STD MPS COPY: 1.706641e-02
+0: MIKELANE MPS COPY: 1.733393e-02
+0: Size 524288 (Per Proc 65536, 5461)
+0: STD MPS COPY: 1.289496e-02
+0: MIKELANE MPS COPY: 5.396339e-03
+0: Size 1048576 (Per Proc 131072, 10922)
+0: STD MPS COPY: 6.739200e-03
+0: MIKELANE MPS COPY: 2.678999e-02
+0: Size 2097152 (Per Proc 262144, 21845)
+0: STD MPS COPY: 1.369434e-02
+0: MIKELANE MPS COPY: 2.883311e-02
+0: Size 4194304 (Per Proc 524288, 43690)
+0: STD MPS COPY: 9.863845e-03
+0: MIKELANE MPS COPY: 2.995354e-02
+0: Size 8388608 (Per Proc 1048576, 87381)
+0: STD MPS COPY: 1.746959e-02
+0: MIKELANE MPS COPY: 2.754800e-02
+0: Size 16777216 (Per Proc 2097152, 174762)
+0: STD MPS COPY: 3.513786e-02
+0: MIKELANE MPS COPY: 3.112300e-02
+0: Size 33554432 (Per Proc 4194304, 349525)
+0: STD MPS COPY: 6.856372e-02
+0: MIKELANE MPS COPY: 3.982816e-02
+0: Size 67108864 (Per Proc 8388608, 699050)
+0: STD MPS COPY: 1.371292e-01
+0: MIKELANE MPS COPY: 4.688590e-02
+0: Size 134217728 (Per Proc 16777216, 1398101)
+0: STD MPS COPY: 2.748056e-01
+0: MIKELANE MPS COPY: 2.298469e-01
+0: Size 268435456 (Per Proc 33554432, 2796202)
+0: STD MPS COPY: 5.500644e-01
+0: MIKELANE MPS COPY: 3.893024e-01
+0: Size 536870912 (Per Proc 67108864, 5592405)
+0: STD MPS COPY: 1.110043e+00
+0: MIKELANE MPS COPY: 6.468236e-01
+0: 
