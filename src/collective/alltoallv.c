@@ -2,9 +2,11 @@
 #include <string.h>
 #include <math.h>
 #include "utils.h"
+#include "/usr/workspace/enamug/clean/GPU_locality_aware/locality_aware/src/persistent/persistent.h"
+
 
 //#include "/g/g92/enamug/install/include/caliper/cali.h"
-#include "/g/g92/enamug/my_caliper_install/include/caliper/cali.h"
+//#include "/g/g92/enamug/my_caliper_install/include/caliper/cali.h"
 /**************************************************
  * Locality-Aware Point-to-Point Alltoallv
  * Same as PMPI_Alltoall (no load balancing)
@@ -24,6 +26,7 @@
  *      - Load balacing is too expensive for 
  *          non-persistent Alltoallv
  *************************************************/
+/*
 int MPI_Alltoallv(const void* sendbuf,
         const int sendcounts[],
         const int sdispls[],
@@ -46,6 +49,7 @@ int MPI_Alltoallv(const void* sendbuf,
         comm);
 }
 
+*/
 int MPIX_Alltoallv(const void* sendbuf,
         const int sendcounts[],
         const int sdispls[],
@@ -420,6 +424,131 @@ int alltoallv_rma_winfence_init_han(const void* sendbuf,
     return MPI_SUCCESS;
 }
 
+
+int alltoallv_rma_RTS_init(const void* sendbuf,
+    const int sendcounts[],
+    const int sdispls[],
+    MPI_Datatype sendtype,
+    void* recvbuf,
+    const int recvcounts[],
+    const int rdispls[],
+    MPI_Datatype recvtype,
+    MPIX_Comm* xcomm,
+    MPIX_Info* xinfo,
+    MPIX_Request** request_ptr)
+{
+    int rank, num_procs;
+    MPI_Comm_rank(xcomm->global_comm, &rank);
+    MPI_Comm_size(xcomm->global_comm, &num_procs);
+
+    MPIX_Request* request;
+    MPIX_Request_init(&request);
+
+
+//    int rma_start_RTS(MPIX_Request* request);
+ //   int rma_wait_RTS(MPIX_Request* request);
+
+    request->start_function = rma_start_RTS;
+    request->wait_function = rma_wait_RTS;
+
+    request->sendbuf = sendbuf;
+    request->recvbuf = recvbuf;
+
+    int send_type_size, recv_type_size;
+    MPI_Type_size(sendtype, &send_type_size);
+    MPI_Type_size(recvtype, &recv_type_size);
+
+
+    int total_recv_bytes = 0;
+    for (int i = 0; i < num_procs; i++) {
+        total_recv_bytes += recvcounts[i] * recv_type_size;
+    }
+
+
+    if (xcomm->win_bytes != total_recv_bytes || xcomm->win_type_bytes != 1) {
+        MPIX_Comm_win_free(xcomm);
+         //xcomm->win = MPI_WIN_NULL;
+    }
+	  // if (xcomm->win != MPI_WIN_NULL)
+if (xcomm->win == MPI_WIN_NULL) {
+    //MPIX_Comm_win_free(xcomm);
+
+MPI_Win_create(recvbuf, total_recv_bytes, 1, MPI_INFO_NULL, xcomm->global_comm, &xcomm->win);
+
+}
+   
+   request->n_puts = num_procs;
+
+   request->xcomm = xcomm;
+   request->sdispls = (int*)malloc(num_procs*sizeof(int));
+   request->send_sizes = (int*)malloc(num_procs*sizeof(int));
+   request->recv_sizes = (int*)malloc(num_procs*sizeof(int));
+   request->recv_size = total_recv_bytes;
+
+
+   request->put_displs =(int*)malloc(num_procs*sizeof(int));
+
+   MPI_Alltoall(rdispls, 1, MPI_INT, request->put_displs, 1, MPI_INT, xcomm->global_comm);
+
+   for (int i = 0; i < num_procs; i++)
+   {
+       request->sdispls[i] = sdispls[i]*send_type_size;
+       request->send_sizes[i] = sendcounts[i] * send_type_size;
+       request->recv_sizes[i] = recvcounts[i] * recv_type_size;
+       request->put_displs[i] *= recv_type_size;
+
+   }
+
+
+   //    NEW for RTS/done build sparse neighbor lists-> like who will i be sending(sendpeers) to, or receive from(recv peers) ? these lists are to avoid no zeros
+ 
+    request->send_peers = (int*)malloc(num_procs * sizeof(int));
+    request->recv_peers = (int*)malloc(num_procs * sizeof(int));
+    request->num_send_peers = 0;
+    request->num_recv_peers = 0;
+
+    for (int i = 0; i < num_procs; i++) {
+        if (request->send_sizes[i] > 0) {
+            request->send_peers[request->num_send_peers++] = i;
+        }
+        if (request->recv_sizes[i] > 0) {
+            request->recv_peers[request->num_recv_peers++] = i;
+        }
+    }
+
+    /* 
+     NEW for RTS/DONE: control window allocation
+   *
+   * Each process, rank will expose its mem:
+   *   signals[0 ..   P-1]     = RTS_from[dst iam sending too],
+  *   signals[P .. 2*P-1]     = DONE_from[src iam receiving from]
+  */
+    MPI_Alloc_mem(2 * num_procs * sizeof(int),
+                  MPI_INFO_NULL,
+                  &request->signals);
+
+    for (int i = 0; i < 2 * num_procs; i++) {
+        request->signals[i] = 0;
+    }
+
+    request->rts_flags  = request->signals;//ready to recieve
+    request->done_flags = request->signals + num_procs;//|--RTR flags--||--done flags----|
+
+    MPI_Win_create(request->signals,
+                   2 * num_procs * sizeof(int),
+                   sizeof(int),                 // disp_unit = sizeof(int)
+                   MPI_INFO_NULL,
+                   xcomm->global_comm,
+                   &request->sig_win);
+
+
+
+
+
+*request_ptr = request;
+
+    return MPI_SUCCESS;
+}
 
 
 
