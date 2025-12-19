@@ -47,8 +47,6 @@ double* network_discovery(char* send_buffer, char* recv_buffer, double* times,
         }
         times[i] = MPI_Wtime() - t0 / (2. * num_iterations);
     }
-
-    return times;
 }
 
 int main(int argc, char* argv[])
@@ -77,15 +75,14 @@ int main(int argc, char* argv[])
     {
         int size = 1 << k;
         printf("Testing with message size: %d\n", k);
-        double* adjacencyMatrix = network_discovery(send_buffer, recv_buffer, times, size, tag, 100);
+        network_discovery(send_buffer, recv_buffer, times, size, tag, 100);
         printf("Adjacency matrix (message size: %d)\n", size);
         for (int i = 0; i < num_procs; i++)
         {
-            printf("%.10lf\t", adjacencyMatrix[i]);            
+            printf("%.10lf\t", times[i]);            
         }
 
         printf("\n");
-        free(adjacencyMatrix);
     }
     free(send_buffer);
     free(recv_buffer);
