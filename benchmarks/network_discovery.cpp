@@ -20,14 +20,14 @@ double* network_discovery(char* send_buffer, char* recv_buffer, double* times,
         if ((rank / dist) % 2 == i % 2)
         {
             proc = (rank + dist) % num_procs;
-            MPI_Send(send_buffer, size, MPI_CHAR, send_proc, tag, MPI_COMM_WORLD);
-            MPI_Recv(recv_buffer, size, MPI_CHAR, send_proc, tag, MPI_COMM_WORLD, &status);
+            MPI_Send(send_buffer, size, MPI_CHAR, proc, tag, MPI_COMM_WORLD);
+            MPI_Recv(recv_buffer, size, MPI_CHAR, proc, tag, MPI_COMM_WORLD, &status);
         }
         else
         {
             proc = (rank - dist + num_procs) % num_procs;
-            MPI_Recv(recv_buffer, size, MPI_CHAR, send_proc, tag, MPI_COMM_WORLD, &status);
-            MPI_Send(send_buffer, size, MPI_CHAR, send_proc, tag, MPI_COMM_WORLD);   
+            MPI_Recv(recv_buffer, size, MPI_CHAR, proc, tag, MPI_COMM_WORLD, &status);
+            MPI_Send(send_buffer, size, MPI_CHAR, proc, tag, MPI_COMM_WORLD);   
         }
 
         printf("Testing distance from %d to %d\n", rank, send_proc);
@@ -36,13 +36,13 @@ double* network_discovery(char* send_buffer, char* recv_buffer, double* times,
         {
             if ((rank / dist) % 2 == i % 2)
             {
-                MPI_Send(send_buffer, size, MPI_CHAR, send_proc, tag, MPI_COMM_WORLD);
-                MPI_Recv(recv_buffer, size, MPI_CHAR, send_proc, tag, MPI_COMM_WORLD, &status);
+                MPI_Send(send_buffer, size, MPI_CHAR, proc, tag, MPI_COMM_WORLD);
+                MPI_Recv(recv_buffer, size, MPI_CHAR, proc, tag, MPI_COMM_WORLD, &status);
             }
             else
             {
-                MPI_Recv(recv_buffer, size, MPI_CHAR, send_proc, tag, MPI_COMM_WORLD, &status);
-                MPI_Send(send_buffer, size, MPI_CHAR, send_proc, tag, MPI_COMM_WORLD);   
+                MPI_Recv(recv_buffer, size, MPI_CHAR, proc, tag, MPI_COMM_WORLD, &status);
+                MPI_Send(send_buffer, size, MPI_CHAR, proc, tag, MPI_COMM_WORLD);   
             }
         }
         times[i] = MPI_Wtime() - t0 / (2. * num_iterations);
