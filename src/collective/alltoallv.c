@@ -1174,21 +1174,6 @@ int alltoallv_rma_winlock(const void* sendbuf,
 }
 
 
-//winlock newly optimized version following the intructions below instructions;
-/*
-can you add lockall flags
-
-For i in all processes
-
-    MpiAccumulate +1 flags rank i
-
-end for
-
-unlock flags 
-
-while myflag != numprocs //spin check
-*/
-////New New
 
 
 
