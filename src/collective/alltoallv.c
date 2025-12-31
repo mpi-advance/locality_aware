@@ -337,7 +337,7 @@ int alltoallv_rma_winfence_init_han(const void* sendbuf,
                        xcomm->global_comm,
                        &xcomm->win);
 
-        // Update bookkeeping so future init calls know what is there
+        // Update  so future init calls know what is there
         xcomm->win_bytes      = total_recv_bytes;
         xcomm->win_type_bytes = 1;
     }
@@ -444,7 +444,7 @@ int alltoallv_rma_RTS_init(const void* sendbuf,
     MPIX_Request* request;
     MPIX_Request_init(&request);
 
-
+    request->lockedall_wins = 1;
 //    int rma_start_RTS(MPIX_Request* request);
  //   int rma_wait_RTS(MPIX_Request* request);
 
@@ -453,33 +453,67 @@ int alltoallv_rma_RTS_init(const void* sendbuf,
 
     request->sendbuf = sendbuf;
     request->recvbuf = recvbuf;
+    request->xcomm = xcomm;
 
     int send_type_size, recv_type_size;
     MPI_Type_size(sendtype, &send_type_size);
     MPI_Type_size(recvtype, &recv_type_size);
 
 
+
+   
     int total_recv_bytes = 0;
-    for (int i = 0; i < num_procs; i++) {
+
+     for (int i = 0; i < num_procs; i++) {
         total_recv_bytes += recvcounts[i] * recv_type_size;
     }
 
+    // We only free an existing window if we know it was previously set up
+    // (win_bytes > 0) AND its size/type no longer match what we need now.
+    if (xcomm->win_bytes > 0 &&
+        (xcomm->win_bytes != total_recv_bytes || xcomm->win_type_bytes != 1)) {
 
-    if (xcomm->win_bytes != total_recv_bytes || xcomm->win_type_bytes != 1) {
-        MPIX_Comm_win_free(xcomm);
-         //xcomm->win = MPI_WIN_NULL;
+
+
+        MPIX_Comm_win_free(xcomm);  // 
     }
-	  // if (xcomm->win != MPI_WIN_NULL)
-if (xcomm->win == MPI_WIN_NULL) {
-    //MPIX_Comm_win_free(xcomm);
 
-MPI_Win_create(recvbuf, total_recv_bytes, 1, MPI_INFO_NULL, xcomm->global_comm, &xcomm->win);
+    // If there is no valid window, create one for this recvbuf
+    if (xcomm->win == MPI_WIN_NULL || xcomm->win_bytes == 0) {
 
-}
-   
+
+        MPI_Win_create(recvbuf,
+                       total_recv_bytes,
+                       1,                // disp_unit in bytes
+                       MPI_INFO_NULL,
+                       xcomm->global_comm,
+                       &xcomm->win);
+
+        // Update  so future init calls know what is there
+        xcomm->win_bytes      = total_recv_bytes;
+        xcomm->win_type_bytes = 1;
+    }
+
+    // Attach communicator to this request
+    request->xcomm = xcomm;
+
+  // printf("[rank %d] rts_Alltoallv2:\n", rank);
+   //    fflush(stdout);
+
+MPI_Barrier(xcomm->global_comm);
+
+
+MPI_Win_lock_all(MPI_MODE_NOCHECK, request->xcomm->win);
+    //MPI_Win_lock_all(0, request->xcomm->win);
+
+
+    // DEBUG: after MPI_Win_lock_all
+  //    printf("[rank %d] rts_Alltoallv3:\n", rank);
+    //  fflush(stdout);
+
    request->n_puts = num_procs;
 
-   request->xcomm = xcomm;
+
    request->sdispls = (int*)malloc(num_procs*sizeof(int));
    request->send_sizes = (int*)malloc(num_procs*sizeof(int));
    request->recv_sizes = (int*)malloc(num_procs*sizeof(int));
@@ -499,6 +533,9 @@ MPI_Win_create(recvbuf, total_recv_bytes, 1, MPI_INFO_NULL, xcomm->global_comm, 
 
    }
 
+// DEBUG: after payloads
+      // printf("[rank %d] rts_Alltoallv3: \n", rank);
+       //fflush(stdout);
 
    //    NEW for RTS/done build sparse neighbor lists-> like who will i be sending(sendpeers) to, or receive from(recv peers) ? these lists are to avoid no zeros
  
@@ -508,10 +545,12 @@ MPI_Win_create(recvbuf, total_recv_bytes, 1, MPI_INFO_NULL, xcomm->global_comm, 
     request->num_recv_peers = 0;
 
     for (int i = 0; i < num_procs; i++) {
-        if (request->send_sizes[i] > 0) {
+
+        if (i == rank) continue;  // skip self
+        if (sendcounts[i] > 0) {
             request->send_peers[request->num_send_peers++] = i;
         }
-        if (request->recv_sizes[i] > 0) {
+        if (recvcounts[i] > 0) {
             request->recv_peers[request->num_recv_peers++] = i;
         }
     }
@@ -531,7 +570,7 @@ MPI_Win_create(recvbuf, total_recv_bytes, 1, MPI_INFO_NULL, xcomm->global_comm, 
         request->signals[i] = 0;
     }
 
-    request->rts_flags  = request->signals;//ready to recieve
+    request->rtr_flags  = request->signals;//ready to recieve
     request->done_flags = request->signals + num_procs;//|--RTR flags--||--done flags----|
 
     MPI_Win_create(request->signals,
@@ -541,10 +580,17 @@ MPI_Win_create(recvbuf, total_recv_bytes, 1, MPI_INFO_NULL, xcomm->global_comm, 
                    xcomm->global_comm,
                    &request->sig_win);
 
+ //  opening epoch(session) for signals (RTS/DONE)
 
+   // MPI_Win_lock_all(0, request->sig_win);
+  
+MPI_Win_lock_all(MPI_MODE_NOCHECK, request->sig_win);
 
+// DEBUG: before x
+       //printf("[rank %d] xxxxx", rank);
+       //fflush(stdout);
 
-
+request->epoch = 0;
 *request_ptr = request;
 
     return MPI_SUCCESS;
@@ -739,7 +785,7 @@ int alltoallv_rma_lock_init_han(const void* sendbuf,
                        xcomm->global_comm,
                        &xcomm->win);
 
-        // Update bookkeeping so future init calls know what is there
+        // Update details(of window) so future init calls know what is there
         xcomm->win_bytes      = total_recv_bytes;
         xcomm->win_type_bytes = 1;
     }

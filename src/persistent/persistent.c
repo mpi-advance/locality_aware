@@ -26,25 +26,26 @@ int MPIX_Request_init(MPIX_Request** request_ptr)
     request->recv_sizes = NULL;
     request->n_puts = 0;
     //new
-    request->is_local = NULL;        // [size] 1 = same node, 0 = off-node
+    request->is_local = NULL; 
+    request->lockedall_wins = NULL;
     request->remote_targets = NULL;  // list of off-node ranks we send to
     request->n_remote = 0;
     request->local_targets = NULL;   // list of on-node ranks we send to
     request->n_local = 0;
 
      /*
-     * NEW for RTS/DONE (ready to receive) signaling
+     * NEW for //ONE (ready to receive) signaling
      *  */
     request->sig_win       = MPI_WIN_NULL;
     request->signals       = NULL;
-    request->rts_flags     = NULL;
+    request->rtr_flags     = NULL;
     request->done_flags    = NULL;
     request->send_peers    = NULL;
     request->recv_peers    = NULL;
     request->num_send_peers = 0;
     request->num_recv_peers = 0;
-
-
+    request->epoch=0;
+    
     *request_ptr = request;
 
     return MPI_SUCCESS;
@@ -92,6 +93,16 @@ int MPIX_Request_free(MPIX_Request* request)
 
     }
     
+     if (request->lockedall_wins)
+    {
+    
+
+        MPI_Win_unlock_all(request->sig_win);
+        MPI_Win_unlock_all(request->xcomm->win);	
+
+    }
+
+
     if (request->local_L_n_msgs)
     {
         for (int i = 0; i < request->local_L_n_msgs; i++)
@@ -678,102 +689,178 @@ int rma_start_RTS(MPIX_Request* request)
     MPI_Comm_size(request->xcomm->global_comm, &num_procs);
 
     const char* send_buffer = (const char*)(request->sendbuf);
-    // const char* recv_buffer = (const char*)(request->recvbuf); // not used
 
-    int one = 1;
+    
+    /* MPI_Win_lock_all moved to INIT */
 
-     
-    //  opening epoch(session) for signals (RTS/DONE)
-     
-    MPI_Win_lock_all(0, request->sig_win);
+    /* Used epoch counter so we don't need to clear flags every time */
+      int epoch	= request->epoch += 1;
 
-    /* 
-     *  Post RTR (ready-to-receive) flags 
-     *    At rank R:
-     *      rts_flags[src] = 1  means  "R is ready to receive from src"
-     * */
+    const int one = 1;
+
+    /* ---------------------------------------------------------------------------------
+     * posting, incrementing rtr using MPI_Accumulate
+	 * If A will be sending data to B
+	 * process B calls MPI_Accumulate to increment(+1) A's memory of rtr flags @ displ B(rtr_flags[B])
+    *thats to say:
+     * If I (rank B) expect to receive from src(A), I notify src by
+     * incrementing src's(A) rtr_flags[rankB].
+     *
+     * Then, src(A) polls its local rtr_flags[rank(B)]->in the second loop (I removed MPI_Get because it was over the network).
+     *-------------------------------------------  */
+	 //Go over everybody who will be sending me rtr flags(they send(notify) me siginals now, will send them data in next loop)
+    
+    
+    printf("[rank %d]before accumulate:\n", rank);
+    	fflush(stdout);
+
     for (int k = 0; k < request->num_recv_peers; k++) {
         int src = request->recv_peers[k];
-        request->rts_flags[src] = 1;
-    }
-    // Making sure my local writes (flag) are visible to remote ranks
-    MPI_Win_sync(request->sig_win);
 
-    
-    // Open data epoch
-    
-    MPI_Win_lock_all(0, request->xcomm->win);
-
-    /* -----------------------------
-     *  For each destination dst I send to:
-     *    - wait until dst has its rts_flags[rank] == 1
-     *    - PUT my data
-     *    - set done_flags[rank] on dst
-     * ----------------------------- */
-    for (int idx = 0; idx < request->num_send_peers; ++idx) {
-        int dst    = request->send_peers[idx];
-        int nbytes = request->send_sizes[dst];
-        if (nbytes == 0) continue;
-
-        /* ---- wait until dst is ready for this rank-- */
-        int ready = 0;
-        while (!ready) {
-            int rtr_val = 0;
-
-            // rts_flags[rank]'s displacement is = rank (int units)
-            MPI_Get(&rtr_val, 1, MPI_INT,
-                    dst, rank, 1, MPI_INT,
-                    request->sig_win);
-            MPI_Win_flush(dst, request->sig_win);
-
-            if (rtr_val == 1) {
-                ready = 1;
-            }
-            
-        }
-
-        /* ---- putting my data into dst's recvbuf ---- */
-        MPI_Put(send_buffer + request->sdispls[dst],
-                nbytes, MPI_BYTE,
-                dst,
-                (MPI_Aint)request->put_displs[dst],
-                nbytes, MPI_BYTE,
-                request->xcomm->win);
-        // ensure the PUT to dst completes 
-        MPI_Win_flush(dst, request->xcomm->win);
-
-        /* ---- signal DONE to dst ----
-         * done_flags[rank] lives at displacement = num_procs + rank
-         */
-        MPI_Put(&one, 1, MPI_INT,
-                dst, num_procs + rank, 1, MPI_INT,
-                request->sig_win);
-        MPI_Win_flush(dst, request->sig_win);//complete signal puts
+        /* target = src(A), update slot OR position "rank( B)" in src's(A) rtr_flags[] */
+        MPI_Accumulate(&one, 1, MPI_INT,
+                       src,
+                       (MPI_Aint)rank,   /* (disp_unit = sizeof(int) not bytes like in data win) */
+                       1, MPI_INT,
+                       MPI_SUM,
+                       request->sig_win);
     }
 
+    /* I didnt put any flushes in here since I  moved them to WAIT.
+	 *It should be noted that at this point the code hangs, there are no print statements seen at this point,
+	 *printed after accumulate, but when I tried to flush it worked but again got stack(hang at the next point).
+	*/
+   // MPI_Win_flush_all(request->sig_win);
+
+     printf("[rank %d]After accumulate:\n",rank);
+     	fflush(stdout);
+
+    /* ---------------------------------------------------------------------------
+     * now trying the dynamic start of transfers
+     *
+     * where src(A) is checking whether it has rtr_flags of the destinations it will send too :)(Poll is local: request->rtr_flags[dst]
+     * ---------------------------------------- */
+
+
+	    //
+ int remaining = request->num_send_peers;//Has remaining processes that havent seen done flags
+
+    while (remaining > 0) {
+	    MPI_Win_sync(request->sig_win);
+  //data phase
+ printf("[rank %d]before data phase:\n", rank);
+ 	fflush(stdout);
+        for (int i = 0; i < request->num_send_peers; ++i) 
+		{
+            int dst = request->send_peers[i];
+
+            // ready when dst has incremented my rtr_flags[dst]up to the current epoch 
+            if (request->rtr_flags[dst] < epoch)
+		    continue;
+			
+
+                int nbytes = request->send_sizes[dst];
+                if (nbytes > 0) 
+				{
+                    MPI_Put(send_buffer + request->sdispls[dst],
+                            nbytes, MPI_BYTE,
+                            dst,
+                            (MPI_Aint)request->put_displs[dst],
+                            nbytes, MPI_BYTE,
+                            request->xcomm->win);//Putting
+                }
+		
+
+	   request->rtr_flags[dst] = epoch - 1;
+
+            remaining--;
+            if (remaining == 0) break;
+
+
+             } 
+    }	
+		
+  printf("[rank %d]After Data Phase:\n", rank);
+	fflush(stdout); 
+        
     
+
     return MPI_SUCCESS;
 }
 
-  
+
+
 int rma_wait_RTS(MPIX_Request* request, MPI_Status* status)
 {
     int rank, num_procs;
     MPI_Comm_rank(request->xcomm->global_comm, &rank);
     MPI_Comm_size(request->xcomm->global_comm, &num_procs);
 
-    //completing all data PUTs 
+    int epoch = request->epoch;
+    const int one = 1;
+
+    printf("[rank %d]Starting the Wait phase:\n", rank);
+        fflush(stdout);
+
     MPI_Win_flush_all(request->xcomm->win);
 
-    //Do you think we need aline of code here (while loop) to keep checking if all done flags are arrived ? or flush is enough to complete the siginal puts?    
- 
-    /*  Close epochs (control flags + data)
-     */
-    MPI_Win_unlock_all(request->sig_win);
-    MPI_Win_unlock_all(request->xcomm->win);
+     printf("After completing data phase:\n");
+        fflush(stdout);
+
+    /* ---------------------------------------------------------
+     *  signaling DONE to each destination I put data. 
+     *      
+     *       done_flags[src] is stored at displacement (num_procs + src) becoz any doneflags will be stored after all the rtr flags which end @numprocs-1,  
+     *
+     * At dst(B), we want to increment dst.done_flags[rank(A)].
+     * so A calls MPI_Accumulate(+1) on B to let it know that iam done sending
+     * --------------------------------------------------------- */
+
+	 printf("before accumulating in Wait :\n");
+        fflush(stdout);
+    //Going over everybody I sent, put data too, increment there doneflag of me[rank] by one, so that they know it that Iam done.
+    for (int i = 0; i < request->num_send_peers; i++) {
+        int dst = request->send_peers[i];
+
+        MPI_Accumulate(&one, 1, MPI_INT,
+                       dst,(num_procs + rank),
+                       1, MPI_INT, MPI_SUM,
+                       request->sig_win);
+    }
+
+    // Complete done siginals
+    MPI_Win_flush_all(request->sig_win);
+
+     printf("After accumulating(doneflags) loop in wait:\n");
+        fflush(stdout);
+    //
+ int remaining = request->num_recv_peers;//Has remaining processes that havent seen done flags
+
+ printf("before polling in wait:\n");
+        fflush(stdout);  
+ while (remaining > 0) {
+        MPI_Win_sync(request->sig_win);
+	
+	for (int k = 0; k < request->num_recv_peers; k++) {
+	
+	int src = request->recv_peers[k]; 
+
+	if (request->done_flags[src] >= epoch) {
+                request->done_flags[src] = epoch - 1; //
+    	        remaining--;
+                if (remaining == 0) break;
+            }
+        }
+    }		
+ printf("After polling in wait:\n");
+        fflush(stdout);
+
+    
 
     return MPI_SUCCESS;
 }
 
 
- 
+
+
+
