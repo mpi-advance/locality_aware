@@ -204,7 +204,7 @@ if __name__ == "__main__":
         plt.title = lambda *args, **kwargs: None
     
     fn_in = sys.argv[1]
-    nodes_input = sys.argv[2]
+    nodes_input = sys.argv[2]  # _n,2,4,8,... or all,_n
     prefix = "allreduce_plus_copy"
     suffix = ".out"
     if len(sys.argv) >= 4:
@@ -212,23 +212,24 @@ if __name__ == "__main__":
     if len(sys.argv) >= 5:
         suffix = sys.argv[4]
     
-    if nodes_input != "all":    
+    if not nodes_input.startswith("all"):    
+        cut_size = 256
         for n_nodes in list(map(int, nodes_input.split(",")[1:])):
             node_substring = nodes_input.split(",")[0] + str(n_nodes)
             li_lines = []
             for fn in os.listdir(fn_in):
-                if node_substring in fn and fn.startswith(prefix) and fn.endswith(suffix) and find_nnodes(node_substring) == find_nnodes(fn):
+                if node_substring in fn and fn.startswith(prefix + node_substring) and fn.endswith(suffix) and find_nnodes(node_substring) == find_nnodes(fn):
                     with open(os.path.join(fn_in, fn), 'r') as f:
                         lines = f.readlines()
                         li_lines.append(lines)
 
-            fn_out = os.path.join(fn_in, prefix + "_" + node_substring + "_node_run_errorbar.pdf")
+            fn_out = os.path.join(fn_in, prefix + node_substring + "_node_run_errorbar.pdf")
 
             li_locality_times = []
             for lines in li_lines:
                 locality_times = find_besttimes(lines)
                 
-                locality_times = filter_sizes(locality_times, 256)
+                locality_times = filter_sizes(locality_times, cut_size)
                 
                 locality_times = push_sizes_in(locality_times)
                 
@@ -280,11 +281,18 @@ if __name__ == "__main__":
                 
             pdf.close()
     else:
+        prefix_node_suffix = nodes_input.split(",")[1]
+        
         dict_li_lines = {}
         for fn in os.listdir(fn_in):
             if fn.startswith(prefix) and fn.endswith(suffix):
                 num_nodes = find_nnodes(fn)
+                
+                if not fn.startswith(prefix + prefix_node_suffix + str(num_nodes)):
+                    continue
+                
                 if num_nodes > 0:
+                    print(fn)
                     with open(os.path.join(fn_in, fn), 'r') as f:
                         lines = f.readlines()
                         if num_nodes not in dict_li_lines.keys():
@@ -368,6 +376,38 @@ if __name__ == "__main__":
         plt.gca().xaxis.set_minor_formatter("")
         plt.ylabel("Speedup")
         plt.legend()
+        plt.tight_layout()
+        pdf.savefig(plt.gcf())
+        
+        plt.figure()
+        plt.errorbar([x[0] for x in locality_times_avg[1]["STD"]], [y[1] for y in locality_times_avg[1]["STD"]], yerr=(locality_times_error_diffs_np[1]["STD"])[1:, :], label="Standard")
+        plt.errorbar([x[0] for x in locality_times_avg[2]["STD MPS COPY"]], [y[1] for y in locality_times_avg[2]["STD MPS COPY"]], yerr=(locality_times_error_diffs_np[2]["STD MPS COPY"])[1:, :], label="Optimized")
+        plt.xlabel("Nodes")
+        plt.xscale("log")
+        plt.xticks(ticks=sorted(set(dict_li_locality_times.keys()) | {10**i for i in range(math.ceil(math.log10(min(dict_li_locality_times))), math.floor(math.log10(max(dict_li_locality_times)))+1)}))
+        plt.gca().xaxis.set_major_formatter(StrMethodFormatter('{x:,.0f}'))
+        plt.gca().xaxis.set_minor_formatter("")
+        plt.tick_params(which="minor", left=True)
+        plt.ylabel("Time (Seconds)")
+        plt.yscale("log")
+        # plt.legend()
+        pfp.add_anchored_legend(ncol=2)
+        plt.tight_layout()
+        pdf.savefig(plt.gcf())
+        
+        plt.figure()
+        plt.errorbar([x[0] for x in locality_times_avg[1]["STD"]], [y[1] for y in locality_times_avg[1]["STD"]], yerr=(locality_times_error_diffs_np[1]["STD"])[1:, :], label="Standard")
+        plt.errorbar([x[0] for x in locality_times_avg[4]["STD MPS COPY"]], [y[1] for y in locality_times_avg[4]["STD MPS COPY"]], yerr=(locality_times_error_diffs_np[4]["STD MPS COPY"])[1:, :], label="Optimized")
+        plt.xlabel("Nodes")
+        plt.xscale("log")
+        plt.xticks(ticks=sorted(set(dict_li_locality_times.keys()) | {10**i for i in range(math.ceil(math.log10(min(dict_li_locality_times))), math.floor(math.log10(max(dict_li_locality_times)))+1)}))
+        plt.gca().xaxis.set_major_formatter(StrMethodFormatter('{x:,.0f}'))
+        plt.gca().xaxis.set_minor_formatter("")
+        plt.tick_params(which="minor", left=True)
+        plt.ylabel("Time (Seconds)")
+        plt.yscale("log")
+        # plt.legend()
+        pfp.add_anchored_legend(ncol=2)
         plt.tight_layout()
         pdf.savefig(plt.gcf())
         
