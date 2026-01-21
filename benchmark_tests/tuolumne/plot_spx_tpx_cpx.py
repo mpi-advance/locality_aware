@@ -231,31 +231,27 @@ for mode in ["tpx", "cpx"]:
     plt.set_scale('log', 'log')
     plt.save_plot(mode + "_gpu_multi_allgpusactive_pergpu.pdf")
 
-    # Speedup at max size and max PPG
-    sub = 0
-    max_ppg = max(map(lambda x: gpu_multi_all[x].active_procs, range(len(gpu_multi_all))))
-    while True:
-        try:
-            max_ppg_actual = max_ppg - sub
-            if max_ppg_actual <= 1:
-                break
-            one_ppg_sizes = None
-            one_ppg_times = None
-            max_ppg_sizes = None
-            max_ppg_times = None
-            for i in range(len(gpu_multi_all)):
-                if gpu_multi_all[i].active_procs == 1:
-                    one_ppg_sizes = [s*gpu_multi_all[i].active_procs for s in gpu_multi_all[i].sizes]
-                    one_ppg_times = gpu_multi_all[i].times
-                elif gpu_multi_all[i].active_procs == max_ppg_actual:
-                    max_ppg_sizes = [s*gpu_multi_all[i].active_procs for s in gpu_multi_all[i].sizes]
-                    max_ppg_times = gpu_multi_all[i].times
-            intersect = set(one_ppg_sizes).intersection(max_ppg_sizes)
-            max_size = max(intersect)
-            print(mode + "_gpu_multi_allgpusactive_pergpu: speedup at " + str(max_size) + " for active_procs " + str(max_ppg_actual) + ": " + str(one_ppg_times[one_ppg_sizes.index(max_size)] / max_ppg_times[max_ppg_sizes.index(max_size)]))
+    # Speedup at each size and each PPG
+    one_ppg_sizes = None
+    one_ppg_times = None
+    max_ppg_sizes = None
+    max_ppg_times = None
+    for i in range(len(gpu_multi_all)):
+        if gpu_multi_all[i].active_procs == 1:
+            one_ppg_sizes = [s*gpu_multi_all[i].active_procs for s in gpu_multi_all[i].sizes]
+            one_ppg_times = gpu_multi_all[i].times
             break
+    for i in range(len(gpu_multi_all)):
+        try:
+            if gpu_multi_all[i].active_procs != 1:
+                max_ppg_sizes = [s*gpu_multi_all[i].active_procs for s in gpu_multi_all[i].sizes]
+                max_ppg_times = gpu_multi_all[i].times
+                intersect = set(one_ppg_sizes).intersection(max_ppg_sizes)
+                max_size = max(intersect)
         except:
-            sub += 1
+            continue
+        if gpu_multi_all[i].active_procs != 1:
+            print(mode + "_gpu_multi_allgpusactive_pergpu: speedup at " + str(max_size) + " for active_procs " + str(gpu_multi_all[i].active_procs) + ": " + str(one_ppg_times[one_ppg_sizes.index(max_size)] / max_ppg_times[max_ppg_sizes.index(max_size)]))
 
     # Multiple Processes Per GPU
     plt.add_luke_options()
