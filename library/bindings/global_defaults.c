@@ -41,7 +41,18 @@ int MPIL_Set_alltoall_crs(enum AlltoallCRSMethod algorithm)
     return MPI_SUCCESS;
 }
 
-int MPIL_Set_alltoallv_crs(enum AlltoallvCRSMethod algorithm)
+
+
+
+int MPIL_Set_split(enum Split algorithm)
+{
+    split_implementation = (enum Split)algorithm;
+    return MPI_SUCCESS;
+}
+
+
+
+int Set_split(enum AlltoallvCRSMethod algorithm)
 {
     mpil_alltoallv_crs_implementation = (enum AlltoallvCRSMethod)algorithm;
     return MPI_SUCCESS;

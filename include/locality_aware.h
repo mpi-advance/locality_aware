@@ -74,6 +74,16 @@ enum AlltoallCRSMethod
     ALLTOALL_CRS_PERSONALIZED_LOC
 };
 
+
+enum Split
+{
+        SOCKET,
+        NUMA,
+        NODE
+};
+
+
+
 enum AlltoallvCRSMethod
 {
     ALLTOALLV_CRS_NONBLOCKING,
@@ -89,9 +99,12 @@ extern enum NeighborAlltoallvMethod mpil_neighbor_alltoallv_implementation;
 extern enum NeighborAlltoallvInitMethod mpil_neighbor_alltoallv_init_implementation;
 extern enum AlltoallCRSMethod mpil_alltoall_crs_implementation;
 extern enum AlltoallvCRSMethod mpil_alltoallv_crs_implementation;
+extern enum Split split_implementation;
+
+
 
 /* Algorithm selection functions. */
-int MPIL_Set_alltoall_algorithm(enum AlltoallMethod algorithm);
+int MPIL_Set_split(enum split_implementation algorithm);
 int MPIL_Set_alltoallv_algorithm(enum AlltoallvMethod algorithm);
 int MPIL_Set_alltoallv_neighbor_alogorithm(enum NeighborAlltoallvMethod algorithm);
 int MPIL_Set_alltoallv_neighbor_init_alogorithm(

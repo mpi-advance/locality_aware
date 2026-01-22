@@ -27,8 +27,11 @@ int MPIL_Comm_topo_init(MPIL_Comm* xcomm)
     // Split global comm into local (per node) communicators
 
 
-    int type = 1;
-    if(type ==0){
+    Split type = split_implementation;
+
+
+
+    if(type ==NUMA){
 
         MPI_Comm node_comm;
         MPI_Comm_split_type(xcomm->global_comm,
@@ -37,7 +40,6 @@ int MPIL_Comm_topo_init(MPIL_Comm* xcomm)
                 MPI_INFO_NULL,
                 &node_comm);
 
-        int numas_per_node = 8;
         int node_rank, ppn;
         MPI_Comm_size(node_comm, &ppn);
         MPI_Comm_rank(node_comm, &node_rank);
@@ -47,7 +49,7 @@ int MPIL_Comm_topo_init(MPIL_Comm* xcomm)
 
         MPI_Comm_free(node_comm);
 
-    }else if(type ==1){
+    }else if(type ==SOCKET){
 
         MPI_Comm node_comm;
         MPI_Comm_split_type(xcomm->global_comm,
@@ -66,7 +68,7 @@ int MPIL_Comm_topo_init(MPIL_Comm* xcomm)
 
 
 
-    }else {
+    }else if(type ==NODE||true){
         MPI_Comm_split_type(xcomm->global_comm,
                                       MPI_COMM_TYPE_SHARED,
                                       rank,
