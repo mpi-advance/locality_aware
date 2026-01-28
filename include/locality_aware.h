@@ -104,7 +104,7 @@ extern enum Split split_implementation;
 
 
 /* Algorithm selection functions. */
-int MPIL_Set_split(enum split_implementation algorithm);
+int MPIL_Set_split(enum Split algorithm);
 int MPIL_Set_alltoallv_algorithm(enum AlltoallvMethod algorithm);
 int MPIL_Set_alltoallv_neighbor_alogorithm(enum NeighborAlltoallvMethod algorithm);
 int MPIL_Set_alltoallv_neighbor_init_alogorithm(
