@@ -68,7 +68,7 @@ int MPIL_Comm_topo_init(MPIL_Comm* xcomm)
 
 
 
-    }else if(type ==NODE||true){
+    }else if(type ==NODE){
         MPI_Comm_split_type(xcomm->global_comm,
                                       MPI_COMM_TYPE_SHARED,
                                       rank,
@@ -82,7 +82,7 @@ int MPIL_Comm_topo_init(MPIL_Comm* xcomm)
 
     int local_rank, ppn;
     MPI_Comm_rank(xcomm->local_comm, &local_rank);
-    MPI_Comm_size(xcomm- >local_comm, &ppn);
+    MPI_Comm_size(xcomm->local_comm, &ppn);
 
 
 
