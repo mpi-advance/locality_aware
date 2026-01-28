@@ -9,6 +9,9 @@ enum NeighborAlltoallvMethod mpil_neighbor_alltoallv_implementation =
     NEIGHBOR_ALLTOALLV_STANDARD;
 enum NeighborAlltoallvInitMethod mpil_neighbor_alltoallv_init_implementation =
     NEIGHBOR_ALLTOALLV_INIT_STANDARD;
+enum Split split_implementation =
+    SOCKET;
+
 
 int MPIL_Set_alltoall_algorithm(enum AlltoallMethod algorithm)
 {
@@ -44,7 +47,7 @@ int MPIL_Set_alltoall_crs(enum AlltoallCRSMethod algorithm)
 
 
 
-int MPIL_Set_split(enum split_implementation algorithm)
+int MPIL_Set_split(enum Split algorithm)
 {
     split_implementation = (enum Split)algorithm;
     return MPI_SUCCESS;
