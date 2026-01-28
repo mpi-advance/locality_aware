@@ -1,7 +1,7 @@
 #include "collective/allreduce_init.h"
 #include "locality_aware.h"
 #ifdef GPU
-#include "heterogeneous/gpu_allreduce.h"
+#include "heterogeneous/gpu_allreduce_init.h"
 #endif
 
 int MPIL_Allreduce_init(const void* sendbuf,

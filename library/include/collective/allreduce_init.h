@@ -35,6 +35,10 @@ int allreduce_dissemination_ml_wait(MPIL_Request* request, MPI_Status* status);
 typedef int (*allreduce_init_ftn)(
     const void*, void*, int, MPI_Datatype, MPI_Op op, MPIL_Comm*,
     MPIL_Info* info, MPIL_Request** req_ptr);
+typedef int (*allreduce_init_helper_ftn)(
+    const void*, void*, int, MPI_Datatype, MPI_Op op, MPIL_Comm*,
+    MPIL_Info* info, MPIL_Request** req_ptr,
+    MPIL_Alloc_ftn, MPIL_Free_ftn);
 
 //** External Wrappers
 //**//----------------------------------------------------------------------
@@ -137,6 +141,30 @@ int allreduce_recursive_doubling_init_helper(
                                  MPIL_Free_ftn free_ftn);
 
 int allreduce_dissemination_loc_init_helper(
+                                 const void* sendbuf,
+                                 void* recvbuf,
+                                 int count,
+                                 MPI_Datatype datatype,
+                                 MPI_Op op,
+                                 MPIL_Comm* comm,
+                                 MPIL_Info* info,
+                                 MPIL_Request** req_ptr,
+                                 MPIL_Alloc_ftn alloc_ftn,
+                                 MPIL_Free_ftn free_ftn);
+
+int allreduce_dissemination_ml_init_helper(
+                                 const void* sendbuf,
+                                 void* recvbuf,
+                                 int count,
+                                 MPI_Datatype datatype,
+                                 MPI_Op op,
+                                 MPIL_Comm* comm,
+                                 MPIL_Info* info,
+                                 MPIL_Request** req_ptr,
+                                 MPIL_Alloc_ftn alloc_ftn,
+                                 MPIL_Free_ftn free_ftn);
+
+int allreduce_dissemination_loc_init_core(
                                  const void* sendbuf,
                                  void* recvbuf,
                                  int count,

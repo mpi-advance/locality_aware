@@ -1,6 +1,6 @@
 #include "heterogeneous/gpu_allreduce.h"
 #include "heterogeneous/gpu_utils.h"
-#include "collective/allreduce.hpp"
+#include "collective/allreduce_init.h"
 #include "communicator/MPIL_Comm.h"
 #include "locality_aware.h"
 
@@ -22,7 +22,7 @@ int gpu_aware_allreduce_init(allreduce_init_helper_ftn f,
 
     // Small sizes, reductions on CPU
     return f(sendbuf, recvbuf, count, datatype, op, comm,
-            comm, info, req_ptr, MPIL_Alloc, MPIL_Free);
+            info, req_ptr, MPIL_Alloc, MPIL_Free);
 }
 
 int gpu_aware_allreduce_recursive_doubling_init(const void* sendbuf,
@@ -92,7 +92,7 @@ int gpu_aware_allreduce_pmpi_init(const void* sendbuf,
 
 
 // TODO -- c2c_start, c2c_wait
-int copy_to_cpu_allreduce_init(allreduce_helper_ftn f,
+int copy_to_cpu_allreduce_init(allreduce_init_helper_ftn f,
                           const void* sendbuf,
                           void* recvbuf,
                           int count,

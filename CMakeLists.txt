@@ -28,6 +28,7 @@ endif()
 option(USE_CUDA "Enable NVIDIA CUDA support" OFF)
 option(USE_HIP "Enable AMD HIP support" OFF)
 option(GPU_AWARE "Use GPU-Aware MPI, if GPU support is enabled" ON)
+option(USE_APU "System has APUs" OFF)
 option(ENABLE_UNIT_TESTS "Enable unit testing" ON)
 option(BENCHMARKS "Enable benchmarks" ON)
 
@@ -64,6 +65,10 @@ if (USE_CUDA OR USE_HIP)
 	  message(STATUS "HIP support enabled")
 	  target_compile_definitions(locality_aware PUBLIC HIP)
 	endif()
+
+    if (USE_APU)
+        add_definitions(-DAPU)
+    endif()
 endif()
 
 if (ENABLE_UNIT_TESTS)

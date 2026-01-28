@@ -282,6 +282,33 @@ int main(int argc, char* argv[])
             }
         }
 
+        // MPI Advance : GPU-Aware RADIX Dissemination
+        for (int radix = 3; radix < 15; radix++)
+        {
+            MPIL_Set_collective_radix(radix);
+            MPIL_Set_allreduce_algorithm(ALLREDUCE_CTC_DISSEMINATION_RADIX);
+            MPIL_Allreduce(send_data_d, recv_data_d, s, MPI_DOUBLE, MPI_SUM, xcomm);
+            gpuMemcpy(mpil.data(),
+                      recv_data_d,
+                      s * sizeof(double),
+                      gpuMemcpyDeviceToHost);
+            gpuMemset(recv_data_d, 0, s * sizeof(double));
+            gpuStreamSynchronize(0);
+            for (int j = 0; j < s; j++)
+            {
+                if (fabs((pmpi[j] - mpil[j]) / pmpi[j]) > 1e-06)
+                {
+                    fprintf(stderr,
+                            "Rank %d, idx %d, pmpi %e, GA-PE %e\n",
+                            rank,
+                            j,
+                            pmpi[j],
+                            mpil[j]);
+                    MPI_Abort(MPI_COMM_WORLD, 1);
+                    return 1;
+                }
+            }
+        }
 
         // Time PMPI Allreduce
         time = time_allreduce(PMPI_Allreduce, send_data_d, recv_data_d, 
@@ -331,6 +358,16 @@ int main(int argc, char* argv[])
         time = time_allreduce(MPIL_Allreduce, send_data_d, recv_data_d, 
                 s, MPI_DOUBLE, MPI_SUM, xcomm);
         if (rank == 0) printf("MPIL CopyToCPU NUMA-Aware Dissemination Time: %e\n", time);
+
+        // Time CopyToCPU RADIX Dissemination Allreduce
+        for (int radix = 3; radix < 15; radix++)
+        {
+            MPIL_Set_collective_radix(radix);
+            MPIL_Set_allreduce_algorithm(ALLREDUCE_CTC_DISSEMINATION_RADIX);
+            time = time_allreduce(MPIL_Allreduce, send_data_d, recv_data_d, 
+                    s, MPI_DOUBLE, MPI_SUM, xcomm);
+            if (rank == 0) printf("MPIL CopyToCPU RADIX-%d Dissemination Time: %e\n", radix, time);
+        }
     }
 
     MPIL_Comm_free(&xcomm);

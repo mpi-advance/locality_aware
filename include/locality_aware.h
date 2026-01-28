@@ -160,6 +160,7 @@ extern enum NeighborAlltoallvMethod mpil_neighbor_alltoallv_implementation;
 extern enum NeighborAlltoallvInitMethod mpil_neighbor_alltoallv_init_implementation;
 extern enum AlltoallCRSMethod mpil_alltoall_crs_implementation;
 extern enum AlltoallvCRSMethod mpil_alltoallv_crs_implementation;
+extern int mpil_collective_radix;
  /**@}*/
  
 
@@ -180,6 +181,7 @@ int MPIL_Set_alltoallv_neighbor_init_alogorithm(
     enum NeighborAlltoallvInitMethod algorithm);
 int MPIL_Set_alltoall_crs(enum AlltoallCRSMethod algorithm);
 int MPIL_Set_alltoallv_crs(enum AlltoallvCRSMethod algorithm);
+int MPIL_Set_collective_radix(int radix);
  /**@}*/
 
 /**@brief Allocate and initialize MPIL_Comm object at xcomm using global_comm as a parent. 

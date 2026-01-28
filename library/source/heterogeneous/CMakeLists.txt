@@ -17,7 +17,6 @@ target_sources(locality_aware PRIVATE
 	get_mem_types.c
 	gpu_alltoall.c
     gpu_allreduce.c
-    gpu_allreduce_init.c
 	gpu_check.c
 	repack.cpp
 	device_repack.cpp 

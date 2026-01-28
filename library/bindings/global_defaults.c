@@ -11,7 +11,14 @@ enum NeighborAlltoallvMethod mpil_neighbor_alltoallv_implementation =
     NEIGHBOR_ALLTOALLV_STANDARD;
 enum NeighborAlltoallvInitMethod mpil_neighbor_alltoallv_init_implementation =
     NEIGHBOR_ALLTOALLV_INIT_STANDARD;
+int mpil_collective_radix = 4;
 
+
+int MPIL_Set_collective_radix(int radix)
+{
+    mpil_collective_radix = radix;
+    return MPI_SUCCESS;
+}
 int MPIL_Set_alltoall_algorithm(enum AlltoallMethod algorithm)
 {
     mpil_alltoall_implementation = (enum AlltoallMethod)algorithm;

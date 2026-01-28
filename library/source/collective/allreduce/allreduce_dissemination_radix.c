@@ -33,7 +33,7 @@ int allreduce_dissemination_radix_helper(const void* sendbuf,
     MPI_Comm_rank(comm->global_comm, &rank);
     MPI_Comm_size(comm->global_comm, &num_procs);
 
-    int radix = 4;
+    int radix = mpil_collective_radix;
 
     int tag;
     get_tag(comm, &tag);

@@ -1,5 +1,5 @@
-#ifndef MPI_ADVANCE_GPU_ALLTOALL_H
-#define MPI_ADVANCE_GPU_ALLTOALL_H
+#ifndef MPI_ADVANCE_GPU_ALLREDUCE_H
+#define MPI_ADVANCE_GPU_ALLREDUCE_H
 
 #include "collective/allreduce.h"
 #include "gpu_utils.h"
