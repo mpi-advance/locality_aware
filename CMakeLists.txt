@@ -96,12 +96,21 @@ endif()
 set_target_properties(locality_aware PROPERTIES PUBLIC_HEADER include/locality_aware.h)
 add_subdirectory(include)
 add_subdirectory(library)
-target_link_libraries(locality_aware PUBLIC ${EXTERNAL_LIBS})
+target_link_libraries(locality_aware PUBLIC ${EXTERNAL_LIBS} NUMA::numa)
 
 if (USE_GPU)
 	get_property(GPU_SOURCES_GLOBAL GLOBAL PROPERTY GPU_SOURCES_GLOBAL)
 	set_source_files_properties(${GPU_SOURCES_GLOBAL} PROPERTIES LANGUAGE ${locality_aware_LANG})
 endif()
+
+
+add_library(NUMA::numa UNKNOWN IMPORTED)
+set_target_properties(NUMA::numa PROPERTIES
+		IMPORTED_LOCATION ${NUMA_LIBRARY}
+		INTERFACE_INCLUDE_DIRECTORIES ${NUMA_INCLUDE_DIR}
+)
+
+
 
 install(TARGETS locality_aware)
 
