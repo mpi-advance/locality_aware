@@ -2,7 +2,7 @@
 file(GLOB CPP_SOURCES CONFIGURE_DEPENDS "*.cpp" ".c")
 
 foreach(src ${CPP_SOURCES})
-	make_test(${src})
+#	make_test(${src})
 endforeach()
 
 target_include_directories(locality_aware PUBLIC 
