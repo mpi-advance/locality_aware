@@ -27,7 +27,7 @@ int MPIL_Comm_topo_init(MPIL_Comm* xcomm)
     // Split global comm into local (per node) communicators
 
 
-    Split type = split_implementation;
+    enum Split type = split_implementation;
 
 
 
