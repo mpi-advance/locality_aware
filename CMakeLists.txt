@@ -27,9 +27,9 @@ endif()
 # Build Options
 option(USE_CUDA "Enable NVIDIA CUDA support" OFF)
 option(USE_HIP "Enable AMD HIP support" OFF)
-option(GPU_AWARE "Use GPU-Aware MPI, if GPU support is enabled" ON)
-option(ENABLE_UNIT_TESTS "Enable unit testing" ON)
-option(BENCHMARKS "Enable benchmarks" ON)
+option(GPU_AWARE "Use GPU-Aware MPI, if GPU support is enabled" OFF)
+option(ENABLE_UNIT_TESTS "Enable unit testing" OFF)
+option(BENCHMARKS "Enable benchmarks" OFF)
 
 set(MPIRUN "mpirun" CACHE STRING "MPIRUN command")
 
