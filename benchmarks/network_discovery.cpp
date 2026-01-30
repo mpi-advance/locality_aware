@@ -2,8 +2,7 @@
 
 #include "mpi_advance.h"
 
-double* network_discovery(char* send_buffer, char* recv_buffer, double* times,
-        int size, int tag, int num_iterations)
+double* network_discovery(char* send_buffer, char* recv_buffer, int size, int tag, int num_iterations)
 {
     int rank, num_procs;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -12,6 +11,8 @@ double* network_discovery(char* send_buffer, char* recv_buffer, double* times,
     int proc;
     MPI_Status status;
 
+    double* times = (double*) malloc(num_procs * sizeof(double));
+    times[0] = 0.0;
     for (int i = 0; i < num_procs - 1; i++)
     {
         int dist = i / 2 + 1;
@@ -126,7 +127,7 @@ int main(int argc, char* argv[])
     {
         int size = 1 << k;
         double* times = pingPong(send_buffer, recv_buffer, size, tag, 100);
-        // network_discovery(send_buffer, recv_buffer, times, size, tag, 100);
+        // double* times = network_discovery(send_buffer, recv_buffer, size, tag, 100);
         if (rank == 0)
         {
             printf("Adjacency matrix (message size: %d)\n", size);
@@ -142,4 +143,20 @@ int main(int argc, char* argv[])
     }
     free(send_buffer);
     free(recv_buffer);
+
+    MPI_Barrier(MPI_COMM_WORLD);
+
+    MPI_Comm node_comm;
+    MPI_Comm_split_type(MPI_COMM_WORLD, MPI_COMM_TYPE_SHARED, 0, MPI_INFO_NULL, &node_comm);
+
+    int node_rank, ppn;
+    MPI_Comm_rank(node_comm, &node_rank);
+    MPI_Comm_size(node_comm, &ppn);
+
+    MPI_Comm group_comm;
+    MPI_Comm_split(MPI_COMM_WORLD, node_rank, rank, &group_comm);
+
+    int node;
+    MPI_Comm_rank(group_comm, &node);
+    printf("Rank %d has local rank %d of %d on node %d\n", rank, node_rank, ppn, node);
 }
