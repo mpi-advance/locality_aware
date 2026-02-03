@@ -515,6 +515,7 @@ void matching_ping_pong(int max_p, char* sendbuf, char* recvbuf, MPI_Request* re
 int main(int argc, char* argv[])
 {
     MPI_Init(&argc, &argv);
+    MPIL_Init(MPI_COMM_WORLD);
 
     int rank, num_procs;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -538,6 +539,7 @@ int main(int argc, char* argv[])
     delete[] recvbuf;
     delete[] req;
 
+    MPIL_Finalize();
     MPI_Finalize();
     return 0;
 }

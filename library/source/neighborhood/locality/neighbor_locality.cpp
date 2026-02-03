@@ -31,11 +31,6 @@ void init_locality(const int n_sends,
                    MPIL_Comm* mpil_comm,
                    MPIL_Request* request)
 {
-    // Get MPI Information
-    int rank, num_procs;
-    MPI_Comm_rank(mpil_comm->global_comm, &rank);
-    MPI_Comm_size(mpil_comm->global_comm, &num_procs);
-
     // Initialize structure
     LocalityComm* locality_comm;
     init_locality_comm(&locality_comm, mpil_comm, sendtype, recvtype);
@@ -167,11 +162,7 @@ void map_procs_to_nodes(LocalityComm* locality,
                         std::vector<int>& msg_node_to_local,
                         bool incr)
 {
-    int rank, num_procs;
     int local_rank, local_num_procs;
-
-    MPI_Comm_rank(locality->communicators->global_comm, &rank);
-    MPI_Comm_size(locality->communicators->global_comm, &num_procs);
     MPI_Comm_rank(locality->communicators->local_comm, &local_rank);
     MPI_Comm_size(locality->communicators->local_comm, &local_num_procs);
 
@@ -260,10 +251,7 @@ void form_local_comm(const int orig_num_sends,
                      const int tag)
 {
     // MPI_Information
-    int rank, num_procs;
     int local_rank, local_num_procs;
-    MPI_Comm_rank(locality->communicators->global_comm, &rank);
-    MPI_Comm_size(locality->communicators->global_comm, &num_procs);
     MPI_Comm_rank(locality->communicators->local_comm, &local_rank);
     MPI_Comm_size(locality->communicators->local_comm, &local_num_procs);
 
@@ -476,10 +464,7 @@ void form_global_comm(CommData* local_data,
     std::vector<int> node_ctr;
 
     // Get MPI Information
-    int rank, num_procs;
     int local_rank, local_num_procs;
-    MPI_Comm_rank(mpil_comm->global_comm, &rank);
-    MPI_Comm_size(mpil_comm->global_comm, &num_procs);
     MPI_Comm_rank(mpil_comm->local_comm, &local_rank);
     MPI_Comm_size(mpil_comm->local_comm, &local_num_procs);
     int num_nodes = mpil_comm->num_nodes;

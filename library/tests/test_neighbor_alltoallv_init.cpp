@@ -31,6 +31,7 @@ void compare_neighbor_alltoallv_results(std::vector<int>& pmpi_recv_vals,
 int main(int argc, char** argv)
 {
     MPI_Init(&argc, &argv);
+    MPIL_Init(MPI_COMM_WORLD);
 
     // Get MPI Information
     int rank, num_procs;
@@ -214,6 +215,7 @@ int main(int argc, char** argv)
         delete[] recv_counts;
     }
 
+    MPIL_Finalize();
     MPI_Finalize();
     return 0;
 }  // end of main() //

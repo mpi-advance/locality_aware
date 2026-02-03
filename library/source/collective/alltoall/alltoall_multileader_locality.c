@@ -12,8 +12,7 @@ int alltoall_multileader_locality(alltoall_helper_ftn f,
                                   MPI_Datatype recvtype,
                                   MPIL_Comm* comm)
 {
-    int rank, num_procs;
-    MPI_Comm_rank(comm->global_comm, &rank);
+    int num_procs;
     MPI_Comm_size(comm->global_comm, &num_procs);
 
     int tag;
@@ -89,11 +88,10 @@ int alltoall_multileader_locality(alltoall_helper_ftn f,
 
     if (leader_rank == 0)
     {
-        /*
-            alltoall_locality_aware_helper(f, sendbuf, procs_per_leader*sendcount,
-           sendtype, recvbuf, procs_per_leader*recvcount, recvtype, comm, groups_per_node,
-                comm->leader_local_comm, comm->group_comm);
-    */
+        /* alltoall_locality_aware_helper(f, sendbuf, procs_per_leader*sendcount,
+         *   sendtype, recvbuf, procs_per_leader*recvcount, recvtype, comm,
+         * groups_per_node, comm->leader_local_comm, comm->group_comm);
+         */
 
         ctr = 0;
         for (int dest_node = 0; dest_node < n_leaders; dest_node++)
