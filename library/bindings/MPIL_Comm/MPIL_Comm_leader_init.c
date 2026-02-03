@@ -3,9 +3,8 @@
 
 int MPIL_Comm_leader_init(MPIL_Comm* xcomm, int procs_per_leader)
 {
-    int rank, num_procs;
+    int rank;
     MPI_Comm_rank(xcomm->global_comm, &rank);
-    MPI_Comm_size(xcomm->global_comm, &num_procs);
 
     MPI_Comm_split(
         xcomm->global_comm, rank / procs_per_leader, rank, &(xcomm->leader_comm));

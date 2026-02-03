@@ -12,6 +12,8 @@ target_sources(locality_aware PRIVATE
 	MPIL_Request/MPIL_Wait.c
 	MPIL_Request/MPIL_Request_free.c
 	MPIL_Request/MPIL_Request_reorder.c
+	MPIL_Setup/MPIL_Finalize.cpp
+	MPIL_Setup/MPIL_Init.cpp
 )
 
 #for directories with several files 

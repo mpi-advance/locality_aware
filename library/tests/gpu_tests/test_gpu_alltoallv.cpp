@@ -8,11 +8,12 @@
 #include <set>
 #include <vector>
 
-#include "par_binary_IO.hpp"
-#include "sparse_mat.hpp"
 #include "communicator/MPIL_Comm.h"
+#include "communicator/global_comms.hpp"
 #include "heterogeneous/gpu_utils.h"
 #include "locality_aware.h"
+#include "par_binary_IO.hpp"
+#include "sparse_mat.hpp"
 
 void compare_alltoallv_results(std::vector<int>& pmpi_alltoall,
                                std::vector<int>& mpix_alltoall,
@@ -278,6 +279,7 @@ int main(int argc, char** argv)
     test_matrix("../../../../test_data/dwt_162.pm");
     test_matrix("../../../../test_data/odepa400.pm");
     test_matrix("../../../../test_data/ww_36_pmec_36.pm");
+    MPIL_Finalize();
     MPI_Finalize();
     return 0;
 }  // end of main() //

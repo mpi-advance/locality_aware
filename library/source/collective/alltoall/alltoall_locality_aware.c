@@ -11,10 +11,6 @@ int alltoall_locality_aware(alltoall_helper_ftn f,
                             MPIL_Comm* comm,
                             int groups_per_node)
 {
-    int rank, num_procs;
-    MPI_Comm_rank(comm->global_comm, &rank);
-    MPI_Comm_size(comm->global_comm, &num_procs);
-
     int tag;
     get_tag(comm, &tag);
 
