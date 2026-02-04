@@ -24,6 +24,7 @@ jobs:
         run: |
           # yesterday's clones have date = `yesterday`
           YESTERDAY=$(date -I -d "yesterday")
+          echo $YESTERDAY
 
           # get all traffic from yesterday
           DAILY_JSON=$(gh api repos/${GITHUB_REPOSITORY}/traffic/clones \
