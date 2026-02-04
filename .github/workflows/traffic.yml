@@ -29,10 +29,13 @@ jobs:
           # get all traffic from yesterday
           DAILY_JSON=$(gh api repos/${GITHUB_REPOSITORY}/traffic/clones \
             --jq ".clones[] | select(.timestamp | startswith(\"$YESTERDAY\"))")
+          echo $DAILY_JSON
 
           # get total clone count and unique clone count
           DAILY_COUNT=$(echo "$DAILY_JSON" | jq -r '.count // 0')
+          echo $DAILY_COUNT
           DAILY_UNIQUES=$(echo "$DAILY_JSON" | jq -r '.uniques // 0')
+          echo $DAILY_UNIQUES
 
           # Output variables date, count, and uniques to next step
           echo "date=$YESTERDAY" >> $GITHUB_OUTPUT
