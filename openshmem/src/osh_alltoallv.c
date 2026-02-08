@@ -69,6 +69,20 @@ int osh_alltoallv_init(const void      *sendbuf,
     size_t *gathered_recv_counts = (size_t*)shmem_malloc(npes * sizeof(size_t));
     size_t *max_recv_count = (size_t*)shmem_malloc(sizeof(size_t));
     if (!gathered_recv_counts || !max_recv_count) {
+
+	if (gathered_recv_counts)
+	{
+	shmem_free(req->gathered_recv_counts);
+
+	}
+
+	 if (max_recv_count)
+        {
+        shmem_free(req->max_recv_count);
+
+        }
+
+
         shmem_free(req->rdispls_sym);
         free(req);
         return 4;
