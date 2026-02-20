@@ -22,8 +22,10 @@ static inline size_t total_recv_bytes(const int *counts, size_t elem_size, int n
 int osh_alltoallv_init(const void      *sendbuf,
                        const int       *sendcounts,
                        const int       *sdispls,
-                       size_t           send_size,  /* sizeof(send type) */
-                       const int       *recvcounts,
+                       size_t           send_size, /* sizeof(send type) */
+		     
+		       void      **recvbuf_ptr,
+		       const int       *recvcounts,
                        const int       *rdispls,
                        size_t           recv_size,  /* sizeof(recv type) */
                        osh_a2avp_t    **request_ptr )
@@ -72,13 +74,13 @@ int osh_alltoallv_init(const void      *sendbuf,
 
 	if (gathered_recv_counts)
 	{
-	shmem_free(req->gathered_recv_counts);
+	shmem_free(gathered_recv_counts);
 
 	}
 
 	 if (max_recv_count)
         {
-        shmem_free(req->max_recv_count);
+        shmem_free(max_recv_count);
 
         }
 
@@ -119,7 +121,10 @@ int osh_alltoallv_init(const void      *sendbuf,
     shmem_free(max_recv_count);
 
     //Allocate symmetric recv buffer with max recv count on all pes
-    req->recv_sym = (size_t*)shmem_malloc(max_value);
+    req->recv_sym = shmem_malloc(max_value);
+
+    *recvbuf_ptr = req->recv_sym;
+
     if (!req->recv_sym) {
         shmem_free(req->rdispls_sym);
         free(req);
