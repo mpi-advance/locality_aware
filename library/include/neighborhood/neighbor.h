@@ -3,7 +3,7 @@
 
 #include <mpi.h>
 
-#include "communicator/MPIL_Comm.h"
+#include "communicator/MPIL_Comm.hpp"
 #include "neighborhood/MPIL_Topo.h"
 
 // Declarations of C++ methods

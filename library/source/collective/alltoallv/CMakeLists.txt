@@ -1,7 +1,7 @@
 target_sources(locality_aware PRIVATE 
-	alltoallv_batch_async.c
-	alltoallv_pairwise.c
-	alltoallv_batch.c
-	alltoallv_nonblocking.c
-	alltoallv_pmpi.c
+	alltoallv_batch_async.cpp
+	alltoallv_pairwise.cpp
+	alltoallv_batch.cpp
+	alltoallv_nonblocking.cpp
+	alltoallv_pmpi.cpp
 )

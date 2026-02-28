@@ -100,14 +100,9 @@ int get_local_proc(const MPIL_Comm* data, const int proc);
  * communicator**/
 int get_global_proc(const MPIL_Comm* data, const int node, const int local_proc);
 
-// For testing purposes (manually set PPN)
-/** @brief Recreates internal communicators given the number of processes per node
-        @details
-                Frees and resets local_com and group_comm.
-                Splits MPIL_Comm::global_comm into local_comms of size ppn or smaller.
-                Remaps rank to rank in local_comms, each node, and reorders_global
-**/
-int update_locality(MPIL_Comm* xcomm, int ppn);
+int initalize_comm_object(MPIL_Comm** xcom, MPI_Comm global_comm);
+int initialize_topo_communicator(MPIL_Comm* xcomm, int ppn_override = 0);
+int initialize_rank_mapping(MPIL_Comm* xcomm);
 
 /** @brief Gets current tag from xcomm then increments MPIL_Comm::tag
         @details

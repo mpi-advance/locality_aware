@@ -1,7 +1,7 @@
 #include <cstring>
 #include <vector>
 
-#include "communicator/MPIL_Comm.h"
+#include "communicator/MPIL_Comm.hpp"
 #include "locality_aware.h"
 // Assumes SMP Ordering of ranks across nodes (aggregates ranks 0-PPN)
 int alltoall_crs_personalized_loc(int send_nnz,

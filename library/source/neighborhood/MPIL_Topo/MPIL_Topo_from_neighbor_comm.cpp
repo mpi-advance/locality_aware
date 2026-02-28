@@ -1,7 +1,11 @@
 #include <stdlib.h>
 
-#include "communicator/MPIL_Comm.h"
+#include "communicator/MPIL_Comm.hpp"
 #include "neighborhood/MPIL_Topo.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 int MPIL_Topo_from_neighbor_comm(MPIL_Comm* comm, MPIL_Topo** mpil_topo_ptr)
 {
@@ -53,3 +57,7 @@ int MPIL_Topo_from_neighbor_comm(MPIL_Comm* comm, MPIL_Topo** mpil_topo_ptr)
 
     return MPI_SUCCESS;
 }
+
+#ifdef __cplusplus
+}
+#endif

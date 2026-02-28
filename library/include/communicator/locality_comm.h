@@ -3,7 +3,7 @@
 
 #include <mpi.h>
 
-#include "MPIL_Comm.h"
+#include "MPIL_Comm.hpp"
 #include "comm_pkg.h"
 
 // Declarations of C++ methods

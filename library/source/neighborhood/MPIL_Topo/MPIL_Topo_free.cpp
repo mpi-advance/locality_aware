@@ -3,6 +3,10 @@
 
 #include "neighborhood/MPIL_Topo.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 int MPIL_Topo_free(MPIL_Topo** mpil_topo_ptr)
 {
     MPIL_Topo* mpil_topo = *mpil_topo_ptr;
@@ -27,3 +31,7 @@ int MPIL_Topo_free(MPIL_Topo** mpil_topo_ptr)
     free(mpil_topo);
     return MPI_SUCCESS;
 }
+
+#ifdef __cplusplus
+}
+#endif

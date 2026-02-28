@@ -1,4 +1,4 @@
-#include "communicator/MPIL_Comm.h"
+#include "communicator/MPIL_Comm.hpp"
 #include "locality_aware.h"
 #ifdef GPU
 #include "heterogeneous/gpu_utils.h"

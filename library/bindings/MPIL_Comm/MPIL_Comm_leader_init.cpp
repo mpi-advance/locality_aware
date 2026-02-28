@@ -1,4 +1,4 @@
-#include "communicator/MPIL_Comm.h"
+#include "communicator/MPIL_Comm.hpp"
 #include "locality_aware.h"
 
 int MPIL_Comm_leader_init(MPIL_Comm* xcomm, int procs_per_leader)

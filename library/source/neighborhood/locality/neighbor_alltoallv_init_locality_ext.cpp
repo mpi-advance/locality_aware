@@ -1,6 +1,6 @@
 #include <stdlib.h>
 
-#include "communicator/MPIL_Comm.h"
+#include "communicator/MPIL_Comm.hpp"
 #include "locality_aware.h"
 #include "neighborhood/MPIL_Topo.h"
 #include "neighborhood/neighborhood_init.h"

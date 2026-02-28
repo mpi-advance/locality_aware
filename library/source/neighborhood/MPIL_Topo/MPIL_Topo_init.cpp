@@ -5,6 +5,10 @@
 #include "communicator/MPIL_Info.h"
 #include "neighborhood/MPIL_Topo.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 int MPIL_Topo_init(int indegree,
                    const int sources[],
                    const int sourceweights[],
@@ -59,3 +63,7 @@ int MPIL_Topo_init(int indegree,
 
     return MPI_SUCCESS;
 }
+
+#ifdef __cplusplus
+}
+#endif

@@ -1,6 +1,6 @@
 #include <stdlib.h>
 
-#include "communicator/MPIL_Comm.h"
+#include "communicator/MPIL_Comm.hpp"
 #include "locality_aware.h"
 
 int MPIL_Comm_req_resize(MPIL_Comm* xcomm, int n)

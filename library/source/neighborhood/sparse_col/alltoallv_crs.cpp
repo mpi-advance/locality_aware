@@ -1,7 +1,7 @@
 #include <cstring>
 #include <vector>
 
-#include "communicator/MPIL_Comm.h"
+#include "communicator/MPIL_Comm.hpp"
 #include "locality_aware.h"
 
 // Declarations of C++ methods

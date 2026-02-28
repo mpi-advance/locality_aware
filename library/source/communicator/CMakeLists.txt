@@ -1,9 +1,9 @@
 target_sources(locality_aware PRIVATE 
-	comm_data.c
-	comm_pkg.c
-	get_tag.c
+	comm_data.cpp
+	comm_pkg.cpp
+	get_tag.cpp
 	global_comms.cpp
-	locality_comm.c
-	topology_functions.c
-	update_locality.c
+	initializers.cpp
+	locality_comm.cpp
+	topology_functions.cpp
 )

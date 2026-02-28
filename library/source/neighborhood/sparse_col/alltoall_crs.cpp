@@ -2,7 +2,7 @@
 #include <cstring>
 #include <vector>
 
-#include "communicator/MPIL_Comm.h"
+#include "communicator/MPIL_Comm.hpp"
 #include "communicator/MPIL_Info.h"
 #include "locality_aware.h"
 

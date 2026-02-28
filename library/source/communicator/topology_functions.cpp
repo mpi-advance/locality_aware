@@ -1,4 +1,4 @@
-#include "communicator/MPIL_Comm.h"
+#include "communicator/MPIL_Comm.hpp"
 
 /****  Topology Functions   ****/
 int get_node(const MPIL_Comm* data, const int proc)

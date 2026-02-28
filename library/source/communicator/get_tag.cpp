@@ -1,4 +1,4 @@
-#include "communicator/MPIL_Comm.h"
+#include "communicator/MPIL_Comm.hpp"
 
 int get_tag(MPIL_Comm* xcomm, int* tag)
 {

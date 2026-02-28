@@ -1,12 +1,16 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "communicator/MPIL_Comm.h"
+#include "communicator/MPIL_Comm.hpp"
 #include "communicator/MPIL_Info.h"
 #include "locality_aware.h"
 #include "neighborhood/MPIL_Topo.h"
 #include "neighborhood/alltoall_crs.h"
 
+// Declarations of C++ methods
+#ifdef __cplusplus
+extern "C" {
+#endif
 // Non-persistent, locality-aware == call dynamic version
 int neighbor_alltoallv_locality(const void* sendbuf,
                                 const int sendcounts[],
@@ -83,3 +87,7 @@ int neighbor_alltoallv_locality(const void* sendbuf,
 
     return MPI_SUCCESS;
 }
+
+#ifdef __cplusplus
+}
+#endif

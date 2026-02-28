@@ -2,7 +2,7 @@
 
 #include <algorithm>
 
-#include "communicator/MPIL_Comm.h"
+#include "communicator/MPIL_Comm.hpp"
 #include "persistent/MPIL_Request.h"
 
 /******************************************

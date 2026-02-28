@@ -1,6 +1,6 @@
 #include <stdlib.h>
 
-#include "communicator/MPIL_Comm.h"
+#include "communicator/MPIL_Comm.hpp"
 #include "locality_aware.h"
 
 int MPIL_Comm_free(MPIL_Comm** xcomm_ptr)
@@ -10,11 +10,13 @@ int MPIL_Comm_free(MPIL_Comm** xcomm_ptr)
     if (xcomm->n_requests > 0)
     {
         free(xcomm->requests);
+        xcomm->requests = NULL;
     }
 
     if (xcomm->neighbor_comm != MPI_COMM_NULL)
     {
         MPI_Comm_free(&(xcomm->neighbor_comm));
+        xcomm->neighbor_comm = MPI_COMM_NULL;
     }
 
     MPIL_Comm_topo_free(xcomm);

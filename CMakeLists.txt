@@ -76,7 +76,8 @@ endif()
 function(make_executable filename flag)
 	get_filename_component(exec_name ${filename} NAME_WE)
 	add_executable(${exec_name} ${filename})
-	target_link_libraries(${exec_name} locality_aware ${EXTERNAL_LIBS})
+	# Need the "math" library (m) for the C test to work correctly
+	target_link_libraries(${exec_name} locality_aware m)
 	
 	if(${flag})
 		set(locality_test_name ${exec_name}_Test)
@@ -86,7 +87,7 @@ function(make_executable filename flag)
 	endif()
 
 	if(ENABLE_UNIT_TESTS)
-		add_test(NAME ${locality_test_name} COMMAND ${MPIRUN} -n ${TEST_PROCS} ./${exec_name} ${TEST_MATRIX_FILE})
+		add_test(NAME ${locality_test_name} COMMAND ${MPIRUN} --oversubscribe -n ${TEST_PROCS} ./${exec_name} ${TEST_MATRIX_FILE})
 	endif()
 
 endfunction()

@@ -13,13 +13,15 @@ typedef struct _MPIL_Info MPIL_Info;
 typedef struct _MPIL_Topo MPIL_Topo;
 typedef struct _MPIL_Request MPIL_Request;
 
+extern MPIL_Comm* MPIL_COMM_WORLD;
+
 /** \defgroup alg_enum Algorithm enumerations
- *    @brief Enumerations of implemented algorithms
+ *  @brief Enumerations of implemented algorithms
  *	@details Each member has
  *	one or more descriptors after the main function
  *	that change the underlying algorithm.
  *	When supplied to the algorithm selection function.
- *		<br> STANDARD: Uses standard collective operation
+ *		<br>STANDARD: Uses standard collective operation
  *		<br>PAIRWISE: Uses Pairwise communication pattern.
  *		<br>NONBLOCKING: Uses non-blocking communication internally.
  *		<br>HIERARCHICAL: Single leader aggregates messages before redistribution

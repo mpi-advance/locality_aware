@@ -44,7 +44,7 @@ int main(int argc, char** argv)
 
     MPIL_Comm* locality_comm;
     MPIL_Comm_init(&locality_comm, MPI_COMM_WORLD);
-    update_locality(locality_comm, 4);
+    MPIL_Comm_update_locality(locality_comm, 4);
 
     for (int i = 0; i < max_i; i++)
     {
@@ -63,9 +63,9 @@ int main(int argc, char** argv)
         PMPI_Alltoall(local_data, s, MPI_INT, pmpi_alltoall, s, MPI_INT, MPI_COMM_WORLD);
 
         // Locality-Aware Pairwise Alltoall
-        for (int i = 0; i < elements; i++)
+        for (int l = 0; l < elements; l++)
         {
-            mpil_alltoall[i] = 0;
+            mpil_alltoall[l] = 0;
         }
 
         MPIL_Alltoall(local_data, s, MPI_INT, mpil_alltoall, s, MPI_INT, locality_comm);

@@ -1,17 +1,17 @@
 target_sources(locality_aware PRIVATE 
 	global_defaults.c
-	Collective/MPIL_Alltoall.c
-	Collective/MPIL_Alltoallv.c
-	Collective/MPIL_Alltoall_crs.c
-	Collective/MPIL_Alltoallv_crs.c
+	Collective/MPIL_Alltoall.cpp
+	Collective/MPIL_Alltoallv.cpp
+	Collective/MPIL_Alltoall_crs.cpp
+	Collective/MPIL_Alltoallv_crs.cpp
 	MPIL_Alloc/MPIL_Alloc.cpp
 	MPIL_Alloc/MPIL_Free.cpp
 	MPIL_Info/MPIL_Info_init.cpp
 	MPIL_Info/MPIL_Info_free.cpp
-	MPIL_Request/MPIL_Start.c
-	MPIL_Request/MPIL_Wait.c
-	MPIL_Request/MPIL_Request_free.c
-	MPIL_Request/MPIL_Request_reorder.c
+	MPIL_Request/MPIL_Start.cpp
+	MPIL_Request/MPIL_Wait.cpp
+	MPIL_Request/MPIL_Request_free.cpp
+	MPIL_Request/MPIL_Request_reorder.cpp
 	MPIL_Setup/MPIL_Finalize.cpp
 	MPIL_Setup/MPIL_Init.cpp
 )
