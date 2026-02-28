@@ -15,7 +15,7 @@ int MPIL_Init(MPI_Comm world)
     MPI_Comm_dup(world, &Communicator::WORLD_COMM);
 
     /* Create MPIL_COMM_WORLD */
-    initalize_comm_object(&MPIL_COMM_WORLD, Communicator::WORLD_COMM);
+    initialize_comm_object(&MPIL_COMM_WORLD, Communicator::WORLD_COMM);
     initialize_topo_communicator(MPIL_COMM_WORLD);
     initialize_rank_mapping(MPIL_COMM_WORLD);
 

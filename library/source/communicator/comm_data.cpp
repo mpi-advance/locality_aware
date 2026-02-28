@@ -19,22 +19,10 @@ void init_comm_data(CommData** comm_data_ptr, MPI_Datatype datatype)
 
 void destroy_comm_data(CommData* data)
 {
-    if (data->procs)
-    {
-        free(data->procs);
-    }
-    if (data->indptr)
-    {
-        free(data->indptr);
-    }
-    if (data->indices)
-    {
-        free(data->indices);
-    }
-    if (data->buffer)
-    {
-        free(data->buffer);
-    }
+    free(data->procs);
+    free(data->indptr);
+    free(data->indices);
+    free(data->buffer);
 
     free(data);
 }

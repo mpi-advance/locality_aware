@@ -287,19 +287,19 @@ int MPIL_Topo_init(int indegree,
 /** @brief deletes ::MPIL_topo object **/
 int MPIL_Topo_free(MPIL_Topo** topo);
 
-/**@brief Start processing the request.
+/** @brief Start processing the request.
  * @details
- *	 Query request::start_function and call it to activate the request.
+ *	 Query _MPIL_Request::start_function and call it to activate the request.
  **/
 int MPIL_Start(MPIL_Request* request);
 
-/**@brief Wait for the request to complete.
- *  @details
- * Query request::wait_function and call it to wait for requests to complete.
+/** @brief Wait for the request to complete.
+ * @details
+ *  Query _MPIL_Request::wait_function and call it to wait for requests to complete.
  **/
 int MPIL_Wait(MPIL_Request* request, MPI_Status* status);
 
-/**@brief Deallocates MPIL_Request object and any internal structures **/
+/** @brief Deallocates ::_MPIL_Request object and any internal structures **/
 int MPIL_Request_free(MPIL_Request** request);
 
 /** @brief Set reorder value of request to value **/

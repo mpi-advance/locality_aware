@@ -2,9 +2,6 @@ target_sources(locality_aware PRIVATE
 	sparse_col/alltoall_crs.cpp
 	sparse_col/alltoallv_crs.cpp
 	sparse_col/sparse_coll_utils.cpp
-	MPIL_Topo/MPIL_Topo_free.cpp
-	MPIL_Topo/MPIL_Topo_from_neighbor_comm.cpp
-	MPIL_Topo/MPIL_Topo_init.cpp
 	locality/neighbor_locality.cpp
 	locality/neighbor_alltoallv_locality.cpp
 	locality/neighbor_alltoallv_init_locality.cpp

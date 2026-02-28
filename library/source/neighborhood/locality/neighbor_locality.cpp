@@ -764,14 +764,8 @@ void update_indices(LocalityComm* locality,
     map_indices(locality->local_L_comm->recv_data, recv_global_to_local);
 
     // Don't need local_S or global recv indices (just contiguous)
-    if (locality->local_S_comm->recv_data->indices)
-    {
-        free(locality->local_S_comm->recv_data->indices);
-        locality->local_S_comm->recv_data->indices = NULL;
-    }
-    if (locality->global_comm->recv_data->indices)
-    {
-        free(locality->global_comm->recv_data->indices);
-        locality->global_comm->recv_data->indices = NULL;
-    }
+    free(locality->local_S_comm->recv_data->indices);
+    locality->local_S_comm->recv_data->indices = NULL;
+    free(locality->global_comm->recv_data->indices);
+    locality->global_comm->recv_data->indices = NULL;
 }

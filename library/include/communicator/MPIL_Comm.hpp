@@ -100,8 +100,38 @@ int get_local_proc(const MPIL_Comm* data, const int proc);
  * communicator**/
 int get_global_proc(const MPIL_Comm* data, const int node, const int local_proc);
 
-int initalize_comm_object(MPIL_Comm** xcom, MPI_Comm global_comm);
+/** @brief Constructor for an ::_MPIL_Comm object.
+ * @details Allocates (using malloc) an ::_MPIL_Comm object to be saved into the provided
+ * location. The passed MPI Communicator is save into _MPIL_Comm::global_comm ; all other
+ * variables are set to NULL, 0, or appropriate null MPI object.
+ * @param [in, out] xcomm The location to create the MPIL_Comm at.
+ * @param [in] global_comm MPI communicator to use a global communicator in MPIL_Comm
+ * @return MPI_SUCCESS
+ **/
+int initialize_comm_object(MPIL_Comm** xcomm, MPI_Comm global_comm);
+
+/** @brief Initialize the per-node, and group communicators inside an ::_MPIL_Comm.
+ * @details Each topology communicator is created via an MPI_Comm_split. The per-node
+ * communicator will be created with MPI_Comm_split_type using "MPI_COMM_TYPE_SHARED"
+ * unless a "ppn_override" value. In that case, the "node" of each rank will be calculated
+ * and used as the color for the MPI_Comm_split.
+ * @param [in, out] xcomm The ::_MPIL_Comm to store the topology communicators into.
+ * @param [in] ppn_override Optional integer to determine how many processes are node.
+ * If set, overrides default creation of MPIL_Comm::local_comm.
+ * @return MPI_SUCCESS
+ **/
 int initialize_topo_communicator(MPIL_Comm* xcomm, int ppn_override = 0);
+
+/** @brief Allocate and fill in various process mapping array inside an :_MPIL_Comm object
+ * @details This method requires that ::initialize_topo_communicator has been called
+ * first. Inside this method, MPIL_Comm::global_rank_to_local,
+ * MPIL_Comm::global_rank_to_node, and MPIL_Comm::ordered_global_ranks will (usually) be
+ * allocated. Once allocated, the first two will be collected from all ranks using an
+ * MPI_Allgather to get complete process mappings. The last array will uses these two to
+ * build an inverse mapping. Finally, MPIL_Comm::num_nodes and MPIL_Comm::rank_node will be set.
+ * @param [in, out] xcomm The _MPIL_Comm object to fill in.
+ * @return MPI_SUCCESS
+ **/
 int initialize_rank_mapping(MPIL_Comm* xcomm);
 
 /** @brief Gets current tag from xcomm then increments MPIL_Comm::tag

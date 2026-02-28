@@ -14,6 +14,9 @@ target_sources(locality_aware PRIVATE
 	MPIL_Request/MPIL_Request_reorder.cpp
 	MPIL_Setup/MPIL_Finalize.cpp
 	MPIL_Setup/MPIL_Init.cpp
+	MPIL_Topo/MPIL_Topo_free.cpp
+	MPIL_Topo/MPIL_Topo_from_neighbor_comm.cpp
+	MPIL_Topo/MPIL_Topo_init.cpp
 )
 
 #for directories with several files 
