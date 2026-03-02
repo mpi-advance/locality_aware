@@ -16,8 +16,7 @@ int alltoall_locality_aware_helper(alltoall_helper_ftn f,
                                    MPI_Comm group_comm,
                                    int tag)
 {
-    int rank, num_procs;
-    MPI_Comm_rank(comm->global_comm, &rank);
+    int num_procs;
     MPI_Comm_size(comm->global_comm, &num_procs);
 
     int ppg;

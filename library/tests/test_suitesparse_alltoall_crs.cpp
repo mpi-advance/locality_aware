@@ -169,6 +169,7 @@ void test_matrix(const char* filename)
 int main(int argc, char** argv)
 {
     MPI_Init(&argc, &argv);
+    MPIL_Init(MPI_COMM_WORLD);
     test_matrix("../../../test_data/dwt_162.pm");
     test_matrix("../../../test_data/odepa400.pm");
     test_matrix("../../../test_data/ww_36_pmec_36.pm");
@@ -188,6 +189,7 @@ int main(int argc, char** argv)
     test_matrix("../../../test_data/can_1072.pm");
     test_matrix("../../../test_data/lp_woodw.pm");
     test_matrix("../../../test_data/lp_sctap2.pm");
+    MPIL_Finalize();
     MPI_Finalize();
     return 0;
 }  // end of main() //

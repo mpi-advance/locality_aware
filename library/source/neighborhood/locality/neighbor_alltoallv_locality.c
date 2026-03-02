@@ -19,8 +19,7 @@ int neighbor_alltoallv_locality(const void* sendbuf,
                                 MPIL_Topo* topo,
                                 MPIL_Comm* comm)
 {
-    int rank, num_procs;
-    MPI_Comm_rank(comm->global_comm, &rank);
+    int num_procs;
     MPI_Comm_size(comm->global_comm, &num_procs);
 
     int send_nnz  = topo->outdegree;

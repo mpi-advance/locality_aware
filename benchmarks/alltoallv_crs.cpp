@@ -70,6 +70,7 @@ void compare(int n_recvs,
 int main(int argc, char* argv[])
 {
     MPI_Init(&argc, &argv);
+    MPIL_Init(MPI_COMM_WORLD);
 
     int rank, num_procs;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -89,6 +90,7 @@ int main(int argc, char* argv[])
         {
             printf("Pass Matrix Filename as Command Line Arg!\n");
         }
+        MPIL_Finalize();
         MPI_Finalize();
         return 1;
     }
@@ -348,6 +350,7 @@ int main(int argc, char* argv[])
     MPIL_Info_free(&xinfo);
     MPIL_Comm_free(&xcomm);
 
+    MPIL_Finalize();
     MPI_Finalize();
     return 0;
 }

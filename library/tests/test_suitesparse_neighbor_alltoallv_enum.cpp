@@ -185,7 +185,9 @@ void test_matrix(const char* filename)
 int main(int argc, char** argv)
 {
     MPI_Init(&argc, &argv);
+    MPIL_Init(MPI_COMM_WORLD);
     test_all_matrices();
+    MPIL_Finalize();
     MPI_Finalize();
     return 0;
 }  // end of main() //

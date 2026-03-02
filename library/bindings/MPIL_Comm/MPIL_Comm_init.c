@@ -5,10 +5,6 @@
 
 int MPIL_Comm_init(MPIL_Comm** xcomm_ptr, MPI_Comm global_comm)
 {
-    int rank, num_procs;
-    MPI_Comm_rank(global_comm, &rank);
-    MPI_Comm_size(global_comm, &num_procs);
-
     MPIL_Comm* xcomm   = (MPIL_Comm*)malloc(sizeof(MPIL_Comm));
     xcomm->global_comm = global_comm;
 
