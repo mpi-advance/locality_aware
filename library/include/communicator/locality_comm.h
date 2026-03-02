@@ -34,20 +34,7 @@ void init_locality_comm(LocalityComm** locality_ptr,
 void finalize_locality_comm(LocalityComm* locality);
 /** @brief Destructor for a ::LocalityComm object. */
 void destroy_locality_comm(LocalityComm* locality);
-/** @brief Collect the maximum number of local and non-local messages.
- *  @details This method is currently collective over MPI_COMM_WORLD, using
- * MPI_Allreduce(MPI_MAX). For all ranks in that communicator, the first two values are
- * derived from LocalityComm::local_L_comm, LocalityComm::local_S_comm, and
- * LocalityComm::local_R_comm. The last two outputs are derived from
- * LocalityComm::global_comm.
- */
-void get_local_comm_data(LocalityComm* locality,
-                         int* max_local_num,
-                         int* max_local_size,
-                         int* max_non_local_num,
-                         int* max_non_local_size);
 
-// Declarations of C++ methods
 #ifdef __cplusplus
 }
 #endif
