@@ -13,13 +13,15 @@ typedef struct _MPIL_Info MPIL_Info;
 typedef struct _MPIL_Topo MPIL_Topo;
 typedef struct _MPIL_Request MPIL_Request;
 
+extern MPIL_Comm* MPIL_COMM_WORLD;
+
 /** \defgroup alg_enum Algorithm enumerations
- *    @brief Enumerations of implemented algorithms
+ *  @brief Enumerations of implemented algorithms
  *	@details Each member has
  *	one or more descriptors after the main function
  *	that change the underlying algorithm.
  *	When supplied to the algorithm selection function.
- *		<br> STANDARD: Uses standard collective operation
+ *		<br>STANDARD: Uses standard collective operation
  *		<br>PAIRWISE: Uses Pairwise communication pattern.
  *		<br>NONBLOCKING: Uses non-blocking communication internally.
  *		<br>HIERARCHICAL: Single leader aggregates messages before redistribution
@@ -285,19 +287,20 @@ int MPIL_Topo_init(int indegree,
 /** @brief deletes ::MPIL_topo object **/
 int MPIL_Topo_free(MPIL_Topo** topo);
 
-/**@brief Start processing the request.
+/** @brief Start processing the request.
  * @details
- *	 Query request::start_function and call it to activate the request.
+ *	 Query _MPIL_Request::start_function and call it to activate the request.
  **/
 int MPIL_Start(MPIL_Request* request);
 
-/**@brief Wait for the request to complete.
- *  @details
- * Query request::wait_function and call it to wait for requests to complete.
+/** @brief Wait for the request to complete.
+ * @details
+ *  Query _MPIL_Request::wait_function and call it to wait for requests to complete.
+ * Currently ingores the status parameter.
  **/
 int MPIL_Wait(MPIL_Request* request, MPI_Status* status);
 
-/**@brief Deallocates MPIL_Request object and any internal structures **/
+/** @brief Deallocates ::_MPIL_Request object and any internal structures **/
 int MPIL_Request_free(MPIL_Request** request);
 
 /** @brief Set reorder value of request to value **/

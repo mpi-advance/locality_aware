@@ -1,8 +1,16 @@
 #include "communicator/global_comms.hpp"
 #include "locality_aware.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 int MPIL_Finalize()
 {
-    Communicator::teardown_communicators();
+    MPIL_Comm_free(&MPIL_COMM_WORLD);
     return MPI_SUCCESS;
 }
+
+#ifdef __cplusplus
+}
+#endif

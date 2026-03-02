@@ -8,7 +8,6 @@
 #include <vector>
 
 #include "locality_aware.h"
-// #include "collective/alltoall.h"
 
 void compare_alltoall_results(std::vector<int>& pmpi, std::vector<int>& mpil, int s)
 {

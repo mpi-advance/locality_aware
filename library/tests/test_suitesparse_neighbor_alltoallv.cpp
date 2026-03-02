@@ -78,9 +78,7 @@ void test_matrix(const char* filename)
     communicate(A, send_vals, mpix_recv_vals, MPI_INT);
 
     MPI_Comm std_comm;
-    MPI_Status status;
     MPIL_Comm* xcomm;
-    MPIL_Request* xrequest;
     MPIL_Info* xinfo;
 
     MPIL_Info_init(&xinfo);
