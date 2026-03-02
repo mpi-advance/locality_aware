@@ -1,8 +1,6 @@
 name: MPI Advance Ctest
 
 on:
-  push:
-    branches: [master, cleanup]
   pull_request:
     branches: [master]
 
@@ -28,22 +26,22 @@ jobs:
           sudo apt-get install -y cmake build-essential
 
       - name: Configure CMake
-        timeout-minutes: 10
+        timeout-minutes: 5
         run: |
           mkdir build
           cd build
-          cmake -DCMAKE_BUILD_TYPE=Release ..
+          cmake -DTEST_PROCS=4 -DCMAKE_BUILD_TYPE=Release ..
           cd ..
 
       - name: Build project
-        timeout-minutes: 10
+        timeout-minutes: 5
         run: |
           cd build 
-          make 
+          make -j4
           cd ..
 
       - name: Run tests with CTest
-        timeout-minutes: 10
+        timeout-minutes: 5
         run: |
           cd build
           ctest --output-on-failure

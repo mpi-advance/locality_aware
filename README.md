@@ -317,6 +317,6 @@ The locality_aware repository is laid out as follows:
 
 
 # Acknowledgements
-This work has been partially funded by ...
+This work has been funded by the National Science Foundation through grants 2514054, 2450093, 2412182, CNS2450092, CCF2338077, CCF2151022. This work was also performed with support from the U.S. Department of Energy's National Nuclear Security Administration (NNSA) under the Predictive Science Academic Alliance Program (PSAAP-III), Award DE-NA0003966. 
 
-############################################################
+Any opinions, findings, and conclusions or recommendations expressed in this material are those of the author(s) and do not necessarily reflect the views of the National Science Foundation or the U.S. Department of Energy's National Nuclear Security Administration.
