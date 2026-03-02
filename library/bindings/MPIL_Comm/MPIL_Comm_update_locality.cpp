@@ -1,6 +1,10 @@
 #include "communicator/MPIL_Comm.hpp"
 #include "locality_aware.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 int MPIL_Comm_update_locality(MPIL_Comm* xcomm, int ppn)
 {
     /* Don't want the users updating the MPIL_COMM_WORLD */
@@ -18,3 +22,7 @@ int MPIL_Comm_update_locality(MPIL_Comm* xcomm, int ppn)
 
     return MPI_SUCCESS;
 }
+
+#ifdef __cplusplus
+}
+#endif

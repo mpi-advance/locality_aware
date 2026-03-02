@@ -41,34 +41,6 @@ int initialize_comm_object(MPIL_Comm** xcomm_ptr, MPI_Comm global_comm)
     return MPI_SUCCESS;
 }
 
-int initialize_topo_communicator(MPIL_Comm* xcomm, int ppn_override)
-{
-    int rank;
-    MPI_Comm_rank(xcomm->global_comm, &rank);
-
-    if (ppn_override > 0)
-    {  // Split communicator on a custom number of PPN
-        MPI_Comm_split(
-            xcomm->global_comm, rank / ppn_override, rank, &(xcomm->local_comm));
-    }
-    else
-    {  // Split global comm into local (per node) communicators
-        MPI_Comm_split_type(xcomm->global_comm,
-                            MPI_COMM_TYPE_SHARED,
-                            rank,
-                            MPI_INFO_NULL,
-                            &(xcomm->local_comm));
-    }
-
-    int local_rank;
-    MPI_Comm_rank(xcomm->local_comm, &local_rank);
-
-    // Split global comm into group (per local rank) communicators
-    MPI_Comm_split(xcomm->global_comm, local_rank, rank, &(xcomm->group_comm));
-
-    return MPI_SUCCESS;
-}
-
 int initialize_rank_mapping(MPIL_Comm* xcomm)
 {
     int rank = -1, num_procs = -1;

@@ -6,6 +6,10 @@
 #include "heterogeneous/gpu_utils.h"
 #endif
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 int MPIL_Request_free(MPIL_Request** request_ptr)
 {
     MPIL_Request* request = *request_ptr;
@@ -68,3 +72,7 @@ int MPIL_Request_free(MPIL_Request** request_ptr)
 
     return 0;
 }
+
+#ifdef __cplusplus
+}
+#endif

@@ -1,5 +1,5 @@
 target_sources(locality_aware PRIVATE 
-	global_defaults.c
+	global_defaults.cpp
 	Collective/MPIL_Alltoall.cpp
 	Collective/MPIL_Alltoallv.cpp
 	Collective/MPIL_Alltoall_crs.cpp

@@ -1,5 +1,9 @@
 #include "locality_aware.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // Default algorithms
 enum AlltoallMethod mpil_alltoall_implementation          = ALLTOALL_PAIRWISE;
 enum AlltoallvMethod mpil_alltoallv_implementation        = ALLTOALLV_PAIRWISE;
@@ -46,3 +50,7 @@ int MPIL_Set_alltoallv_crs(enum AlltoallvCRSMethod algorithm)
     mpil_alltoallv_crs_implementation = (enum AlltoallvCRSMethod)algorithm;
     return MPI_SUCCESS;
 }
+
+#ifdef __cplusplus
+}
+#endif

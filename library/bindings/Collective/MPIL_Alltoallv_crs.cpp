@@ -1,6 +1,10 @@
 #include "locality_aware.h"
 #include "neighborhood/alltoall_crs.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 int MPIL_Alltoallv_crs(const int send_nnz,
                        const int send_size,
                        const int* dest,
@@ -56,3 +60,7 @@ int MPIL_Alltoallv_crs(const int send_nnz,
                   xinfo,
                   xcomm);
 }
+
+#ifdef __cplusplus
+}
+#endif

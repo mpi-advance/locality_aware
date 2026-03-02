@@ -2,6 +2,10 @@
 #include "communicator/global_comms.hpp"
 #include "locality_aware.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 MPIL_Comm* MPIL_COMM_WORLD;
 
 int MPIL_Init(MPI_Comm world)
@@ -21,3 +25,7 @@ int MPIL_Init(MPI_Comm world)
 
     return MPI_SUCCESS;
 }
+
+#ifdef __cplusplus
+}
+#endif

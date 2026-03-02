@@ -1,6 +1,10 @@
 #include "locality_aware.h"
 #include "neighborhood/MPIL_Topo.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 int MPIL_Neighbor_alltoallv_init_ext(const void* sendbuf,
                                      const int sendcounts[],
                                      const int sdispls[],
@@ -37,3 +41,7 @@ int MPIL_Neighbor_alltoallv_init_ext(const void* sendbuf,
 
     return MPI_SUCCESS;
 }
+
+#ifdef __cplusplus
+}
+#endif

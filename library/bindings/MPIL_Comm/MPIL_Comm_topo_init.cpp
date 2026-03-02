@@ -3,6 +3,10 @@
 #include "communicator/MPIL_Comm.hpp"
 #include "locality_aware.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 int MPIL_Comm_topo_init(MPIL_Comm* xcomm)
 {
     if (xcomm == MPIL_COMM_WORLD)
@@ -15,3 +19,7 @@ int MPIL_Comm_topo_init(MPIL_Comm* xcomm)
 
     return MPI_SUCCESS;
 }
+
+#ifdef __cplusplus
+}
+#endif

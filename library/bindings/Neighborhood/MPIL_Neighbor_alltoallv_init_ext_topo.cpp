@@ -2,6 +2,10 @@
 #include "locality_aware.h"
 #include "neighborhood/neighborhood_init.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 int MPIL_Neighbor_alltoallv_init_ext_topo(const void* sendbuf,
                                           const int sendcounts[],
                                           const int sdispls[],
@@ -62,3 +66,7 @@ int MPIL_Neighbor_alltoallv_init_ext_topo(const void* sendbuf,
                                                     request_ptr);
     }
 }
+
+#ifdef __cplusplus
+}
+#endif

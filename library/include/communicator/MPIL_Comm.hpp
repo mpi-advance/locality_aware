@@ -3,9 +3,6 @@
 
 #include <mpi.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 /** @brief Struct capable of maintaining multiple request and communicators for library
  * operations.
  *  @details
@@ -114,13 +111,43 @@ int initialize_comm_object(MPIL_Comm** xcomm, MPI_Comm global_comm);
  * @details Each topology communicator is created via an MPI_Comm_split. The per-node
  * communicator will be created with MPI_Comm_split_type using "MPI_COMM_TYPE_SHARED"
  * unless a "ppn_override" value. In that case, the "node" of each rank will be calculated
- * and used as the color for the MPI_Comm_split.
+ * and used as the color for the MPI_Comm_split. The calculation of the the "node" is
+ * determined by the templated parameter. If the template is false, "rank/ppn_override" is
+ * used; if the template is true "rank % ppn_override" is used.
+ * @tparam NUMA Controls how the grouping is made in the case that a PPN override is used.
  * @param [in, out] xcomm The ::_MPIL_Comm to store the topology communicators into.
  * @param [in] ppn_override Optional integer to determine how many processes are node.
  * If set, overrides default creation of MPIL_Comm::local_comm.
  * @return MPI_SUCCESS
  **/
-int initialize_topo_communicator(MPIL_Comm* xcomm, int ppn_override = 0);
+template <bool NUMA = false>
+int initialize_topo_communicator(MPIL_Comm* xcomm, int ppn_override = 0)
+{
+    int rank;
+    MPI_Comm_rank(xcomm->global_comm, &rank);
+
+    if (ppn_override > 0)
+    {  // Split communicator on a custom number of PPN
+        int color = (NUMA) ? rank % ppn_override : rank / ppn_override;
+        MPI_Comm_split(xcomm->global_comm, color, rank, &(xcomm->local_comm));
+    }
+    else
+    {  // Split global comm into local (per node) communicators
+        MPI_Comm_split_type(xcomm->global_comm,
+                            MPI_COMM_TYPE_SHARED,
+                            rank,
+                            MPI_INFO_NULL,
+                            &(xcomm->local_comm));
+    }
+
+    int local_rank;
+    MPI_Comm_rank(xcomm->local_comm, &local_rank);
+
+    // Split global comm into group (per local rank) communicators
+    MPI_Comm_split(xcomm->global_comm, local_rank, rank, &(xcomm->group_comm));
+
+    return MPI_SUCCESS;
+}
 
 /** @brief Allocate and fill in various process mapping array inside an :_MPIL_Comm object
  * @details This method requires that ::initialize_topo_communicator has been called
@@ -128,7 +155,8 @@ int initialize_topo_communicator(MPIL_Comm* xcomm, int ppn_override = 0);
  * MPIL_Comm::global_rank_to_node, and MPIL_Comm::ordered_global_ranks will (usually) be
  * allocated. Once allocated, the first two will be collected from all ranks using an
  * MPI_Allgather to get complete process mappings. The last array will uses these two to
- * build an inverse mapping. Finally, MPIL_Comm::num_nodes and MPIL_Comm::rank_node will be set.
+ * build an inverse mapping. Finally, MPIL_Comm::num_nodes and MPIL_Comm::rank_node will
+ * be set.
  * @param [in, out] xcomm The _MPIL_Comm object to fill in.
  * @return MPI_SUCCESS
  **/
@@ -142,9 +170,5 @@ int initialize_rank_mapping(MPIL_Comm* xcomm);
         @return MPI_SUCCESS
 **/
 int get_tag(MPIL_Comm* xcomm, int* tag);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif

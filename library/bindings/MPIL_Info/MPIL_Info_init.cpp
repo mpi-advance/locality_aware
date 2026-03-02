@@ -3,7 +3,10 @@
 #include "communicator/MPIL_Info.h"
 #include "locality_aware.h"
 
-// MPIL Info Object Routines
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 int MPIL_Info_init(MPIL_Info** info_ptr)
 {
     MPIL_Info* xinfo            = (MPIL_Info*)malloc(sizeof(MPIL_Info));
@@ -14,3 +17,7 @@ int MPIL_Info_init(MPIL_Info** info_ptr)
 
     return MPI_SUCCESS;
 }
+
+#ifdef __cplusplus
+}
+#endif

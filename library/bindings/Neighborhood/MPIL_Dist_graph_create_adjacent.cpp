@@ -1,6 +1,10 @@
 #include "communicator/MPIL_Comm.hpp"
 #include "locality_aware.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 int MPIL_Dist_graph_create_adjacent(MPI_Comm comm_old,
                                     int indegree,
                                     const int sources[],
@@ -41,3 +45,7 @@ int MPIL_Dist_graph_create_adjacent(MPI_Comm comm_old,
 
     return 0;
 }
+
+#ifdef __cplusplus
+}
+#endif

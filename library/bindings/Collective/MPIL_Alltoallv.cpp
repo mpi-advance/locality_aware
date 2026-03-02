@@ -4,6 +4,10 @@
 #include "heterogeneous/gpu_alltoallv.h"
 #endif
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 int MPIL_Alltoallv(const void* sendbuf,
                    const int sendcounts[],
                    const int sdispls[],
@@ -61,3 +65,7 @@ int MPIL_Alltoallv(const void* sendbuf,
                   recvtype,
                   mpi_comm);
 }
+
+#ifdef __cplusplus
+}
+#endif

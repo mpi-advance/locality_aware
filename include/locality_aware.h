@@ -296,6 +296,7 @@ int MPIL_Start(MPIL_Request* request);
 /** @brief Wait for the request to complete.
  * @details
  *  Query _MPIL_Request::wait_function and call it to wait for requests to complete.
+ * Currently ingores the status parameter.
  **/
 int MPIL_Wait(MPIL_Request* request, MPI_Status* status);
 

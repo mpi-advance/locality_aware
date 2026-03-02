@@ -1,6 +1,11 @@
 #include "communicator/MPIL_Comm.hpp"
 #include "locality_aware.h"
 #include "neighborhood/neighbor.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 int MPIL_Neighbor_alltoallv_topo(const void* sendbuf,
                                  const int sendcounts[],
                                  const int sdispls[],
@@ -38,3 +43,7 @@ int MPIL_Neighbor_alltoallv_topo(const void* sendbuf,
                   topo,
                   comm);
 }
+
+#ifdef __cplusplus
+}
+#endif

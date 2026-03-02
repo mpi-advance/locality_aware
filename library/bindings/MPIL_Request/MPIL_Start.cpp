@@ -3,6 +3,10 @@
 #include "locality_aware.h"
 #include "persistent/MPIL_Request.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 int MPIL_Start(MPIL_Request* request)
 {
     if (request == NULL)
@@ -12,3 +16,7 @@ int MPIL_Start(MPIL_Request* request)
 
     return (request->start_function)(request);
 }
+
+#ifdef __cplusplus
+}
+#endif

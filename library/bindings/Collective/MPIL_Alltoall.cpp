@@ -4,6 +4,10 @@
 #include "heterogeneous/gpu_alltoall.h"
 #endif
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 int MPIL_Alltoall(const void* sendbuf,
                   const int sendcount,
                   MPI_Datatype sendtype,
@@ -77,3 +81,7 @@ int MPIL_Alltoall(const void* sendbuf,
 
     return method(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, mpi_comm);
 }
+
+#ifdef __cplusplus
+}
+#endif
