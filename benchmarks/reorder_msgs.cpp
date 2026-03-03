@@ -147,6 +147,8 @@ void compare(std::vector<double>& recvbuf_std,
 {
     for (int i = 0; i < recvbuf_std.size(); i++)
     {
+        if (std::isnan(recvbuf_std[i]) && std::isnan(recvbuf_new[i]))
+            continue;
         if (recvbuf_std[i] != recvbuf_new[i])
         {
             fprintf(stderr, "Difference at position %d, xorig %e, xnew %e\n", 
@@ -312,18 +314,24 @@ int main(int argc, char* argv[])
     // Standard Communication
     std::iota(send_order.begin(), send_order.end(), 0);
     std::iota(recv_order.begin(), recv_order.end(), 0);
-    t0 = time_par_spmv(A, x, b, sendbuf, recvbuf, 
-            send_order, recv_order, send_req, recv_req, xcomm);
-    if (rank == 0) printf("Original SpMV Time: %e\n", t0);
+    for (int iter = 0; iter < 5; iter++)
+    {
+        t0 = time_par_spmv(A, x, b, sendbuf, recvbuf, 
+                send_order, recv_order, send_req, recv_req, xcomm);
+        if (rank == 0) printf("Iter %d: Original SpMV Time: %e\n", iter, t0);
+    }
 
     // Reorder Recvs
     std::iota(send_order.begin(), send_order.end(), 0);
     std::iota(recv_order.begin(), recv_order.end(), 0);
     reorder_recvs(A, sendbuf, recvbuf, send_order, recv_order,
             send_req, recv_req, xcomm);
-    t0 = time_par_spmv(A, x, b_new, sendbuf, recvbuf, 
-            send_order, recv_order, send_req, recv_req, xcomm);
-    if (rank == 0) printf("Reordered Recvs SpMV Time: %e\n", t0);
+    for (int iter = 0; iter < 5; iter++)
+    {
+        t0 = time_par_spmv(A, x, b_new, sendbuf, recvbuf, 
+                send_order, recv_order, send_req, recv_req, xcomm);
+        if (rank == 0) printf("Iter %d: Reordered Recvs SpMV Time: %e\n", iter, t0);
+    }
     compare(b, b_new);
 
     // Reorder Sends and Recvs
@@ -334,9 +342,12 @@ int main(int argc, char* argv[])
             send_req, recv_req, xcomm);
     reorder_recvs(A, sendbuf, recvbuf, send_order, recv_order,
             send_req, recv_req, xcomm);
-    t0 = time_par_spmv(A, x, b_new, sendbuf, recvbuf, 
-            send_order, recv_order, send_req, recv_req, xcomm);
-    if (rank == 0) printf("Reordered Sends/Recvs SpMV Time: %e\n", t0);
+    for (int iter = 0; iter < 5; iter++)
+    {
+        t0 = time_par_spmv(A, x, b_new, sendbuf, recvbuf, 
+                send_order, recv_order, send_req, recv_req, xcomm);
+        if (rank == 0) printf("Iter %d: Reordered Sends/Recvs SpMV Time: %e\n", iter, t0);
+    }
     compare(b, b_new);
 
     MPIL_Comm_free(&xcomm);
