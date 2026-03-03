@@ -59,44 +59,6 @@ void comm_init(ParMat<int>& A,
     }
 }
 
-void reverse_comm_init(ParMat<int>& A,
-            std::vector<double>& sendbuf,
-            std::vector<double>& recvbuf,
-            std::vector<int>& send_order,
-            std::vector<int>& recv_order,
-            std::vector<MPI_Request>& send_req,
-            std::vector<MPI_Request>& recv_req,
-            MPIL_Comm* xcomm)
-{
-    int idx;
-    int tag;
-    MPIL_Comm_tag(xcomm, &tag);
-
-    // Start communication
-    for (int i = 0; i < A.recv_comm.n_msgs; i++)
-    {
-        idx = recv_order[i];
-        MPI_Isend(&(recvbuf[A.recv_comm.ptr[idx]]),
-                    A.recv_comm.counts[idx],
-                    MPI_DOUBLE,
-                    A.recv_comm.procs[idx],
-                    tag,
-                    MPI_COMM_WORLD,
-                    &(recv_req[i]));
-    }
-    for (int i = 0; i < A.send_comm.n_msgs; i++)
-    {
-        idx = send_order[i];
-        MPI_Irecv(&(sendbuf[A.send_comm.ptr[idx]]),
-                    A.send_comm.counts[idx],
-                    MPI_DOUBLE,
-                    A.send_comm.procs[idx],
-                    tag,
-                    MPI_COMM_WORLD,
-                    &(send_req[i]));
-    }
-}
-
 void par_spmv(ParMat<int>& A,
             std::vector<double>& x,
             std::vector<double>& b,
@@ -203,12 +165,42 @@ void reorder_recvs(ParMat<int>& A,
             std::vector<MPI_Request>& recv_req,
             MPIL_Comm* xcomm)
 {
+    int num_procs;
+    MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
+    std::vector<int> procs_to_idx(num_procs);
+    for (int i = 0; i < A.recv_comm.n_msgs; i++)
+        procs_to_idx[A.recv_comm.procs[i]] = i;
+
     int idx;
-    comm_init(A, sendbuf, recvbuf, send_order, recv_order, 
-        send_req, recv_req, xcomm);
+    int tag;
+    MPIL_Comm_tag(xcomm, &tag);
+    
+    // Start sends
+    for (int i = 0; i < A.send_comm.n_msgs; i++)
+    {
+        idx = send_order[i];
+        MPI_Isend(&(sendbuf[A.send_comm.ptr[idx]]),
+                    A.send_comm.counts[idx],
+                    MPI_DOUBLE,
+                    A.send_comm.procs[idx],
+                    tag,
+                    MPI_COMM_WORLD,
+                    &(send_req[i]));
+    }
+
+    MPI_Status status;
     for (int i = 0; i < recv_req.size(); i++)
     {
-        MPI_Waitany(recv_req.size(), recv_req.data(), &idx, MPI_STATUS_IGNORE);
+        MPI_Probe(MPI_ANY_SOURCE, tag, MPI_COMM_WORLD, &status);
+        int proc = status.MPI_SOURCE;
+        idx = procs_to_idx[proc];
+        MPI_Recv(&(recvbuf[A.recv_comm.ptr[idx]]),
+                    A.recv_comm.counts[idx],
+                    MPI_DOUBLE, 
+                    A.recv_comm.procs[idx],
+                    tag,
+                    MPI_COMM_WORLD,
+                    &status);
         recv_order[i] = idx;
     }
 
@@ -224,12 +216,43 @@ void reorder_sends(ParMat<int>& A,
             std::vector<MPI_Request>& recv_req,
             MPIL_Comm* xcomm)
 {
+    int num_procs;
+    MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
+    std::vector<int> procs_to_idx(num_procs);
+    for (int i = 0; i < A.send_comm.n_msgs; i++)
+        procs_to_idx[A.send_comm.procs[i]] = i;
+
     int idx;
-    reverse_comm_init(A, sendbuf, recvbuf, send_order, recv_order,
-        send_req, recv_req, xcomm);
+    int tag;
+    MPIL_Comm_tag(xcomm, &tag);
+
+
+    for (int i = 0; i < A.recv_comm.n_msgs; i++)
+    {   
+        idx = recv_order[i];
+        MPI_Isend(&(recvbuf[A.recv_comm.ptr[idx]]),
+                    A.recv_comm.counts[idx],
+                    MPI_DOUBLE,
+                    A.recv_comm.procs[idx],
+                    tag,
+                    MPI_COMM_WORLD,
+                    &(recv_req[i]));
+    }
+
+
+    MPI_Status status;
     for (int i = 0; i < send_req.size(); i++)
     {
-        MPI_Waitany(send_req.size(), send_req.data(), &idx, MPI_STATUS_IGNORE);
+        MPI_Probe(MPI_ANY_SOURCE, tag, MPI_COMM_WORLD, &status);
+        int proc = status.MPI_SOURCE;
+        idx = procs_to_idx[proc];
+        MPI_Recv(&(sendbuf[A.send_comm.ptr[idx]]),
+                    A.send_comm.counts[idx],
+                    MPI_DOUBLE,
+                    A.send_comm.procs[idx],
+                    tag,
+                    MPI_COMM_WORLD,
+                    &status);
         send_order[i] = idx;
     }
 
@@ -298,7 +321,7 @@ int main(int argc, char* argv[])
     std::iota(recv_order.begin(), recv_order.end(), 0);
     reorder_recvs(A, sendbuf, recvbuf, send_order, recv_order,
             send_req, recv_req, xcomm);
-    t0 = time_par_spmv(A, x, b, sendbuf, recvbuf, 
+    t0 = time_par_spmv(A, x, b_new, sendbuf, recvbuf, 
             send_order, recv_order, send_req, recv_req, xcomm);
     if (rank == 0) printf("Reordered Recvs SpMV Time: %e\n", t0);
     compare(b, b_new);
@@ -311,7 +334,7 @@ int main(int argc, char* argv[])
             send_req, recv_req, xcomm);
     reorder_recvs(A, sendbuf, recvbuf, send_order, recv_order,
             send_req, recv_req, xcomm);
-    t0 = time_par_spmv(A, x, b, sendbuf, recvbuf, 
+    t0 = time_par_spmv(A, x, b_new, sendbuf, recvbuf, 
             send_order, recv_order, send_req, recv_req, xcomm);
     if (rank == 0) printf("Reordered Sends/Recvs SpMV Time: %e\n", t0);
     compare(b, b_new);
