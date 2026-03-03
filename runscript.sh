@@ -6,7 +6,7 @@
 #SBATCH --ntasks-per-node=112
 #SBATCH --cpus-per-task=1
 #SBATCH --time=00:20:00
-#SBATCH --partition=pdebug
+#SBATCH --partition=pbatch
 
 module load gcc
 module load openmpi

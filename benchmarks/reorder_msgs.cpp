@@ -21,21 +21,101 @@ void spmv(Mat& A,
     }
 }
 
+void comm_init(ParMat<int>& A,
+            std::vector<double>& sendbuf,
+            std::vector<double>& recvbuf,
+            std::vector<int>& send_order,
+            std::vector<int>& recv_order,
+            std::vector<MPI_Request>& send_req,
+            std::vector<MPI_Request>& recv_req,
+            MPIL_Comm* xcomm)
+{
+    int idx;
+    int tag;
+    MPIL_Comm_tag(xcomm, &tag);
+
+    // Start communication
+    for (int i = 0; i < A.recv_comm.n_msgs; i++)
+    {
+        idx = recv_order[i];
+        MPI_Irecv(&(recvbuf[A.recv_comm.ptr[idx]]),
+                    A.recv_comm.counts[idx],
+                    MPI_DOUBLE,
+                    A.recv_comm.procs[idx],
+                    tag,
+                    MPI_COMM_WORLD,
+                    &(recv_req[i]));
+    }
+    for (int i = 0; i < A.send_comm.n_msgs; i++)
+    {
+        idx = send_order[i];
+        MPI_Isend(&(sendbuf[A.send_comm.ptr[idx]]),
+                    A.send_comm.counts[idx],
+                    MPI_DOUBLE,
+                    A.send_comm.procs[idx],
+                    tag,
+                    MPI_COMM_WORLD,
+                    &(send_req[i]));
+    }
+}
+
+void reverse_comm_init(ParMat<int>& A,
+            std::vector<double>& sendbuf,
+            std::vector<double>& recvbuf,
+            std::vector<int>& send_order,
+            std::vector<int>& recv_order,
+            std::vector<MPI_Request>& send_req,
+            std::vector<MPI_Request>& recv_req,
+            MPIL_Comm* xcomm)
+{
+    int idx;
+    int tag;
+    MPIL_Comm_tag(xcomm, &tag);
+
+    // Start communication
+    for (int i = 0; i < A.recv_comm.n_msgs; i++)
+    {
+        idx = recv_order[i];
+        MPI_Isend(&(recvbuf[A.recv_comm.ptr[idx]]),
+                    A.recv_comm.counts[idx],
+                    MPI_DOUBLE,
+                    A.recv_comm.procs[idx],
+                    tag,
+                    MPI_COMM_WORLD,
+                    &(recv_req[i]));
+    }
+    for (int i = 0; i < A.send_comm.n_msgs; i++)
+    {
+        idx = send_order[i];
+        MPI_Irecv(&(sendbuf[A.send_comm.ptr[idx]]),
+                    A.send_comm.counts[idx],
+                    MPI_DOUBLE,
+                    A.send_comm.procs[idx],
+                    tag,
+                    MPI_COMM_WORLD,
+                    &(send_req[i]));
+    }
+}
+
 void par_spmv(ParMat<int>& A,
             std::vector<double>& x,
             std::vector<double>& b,
             std::vector<double>& sendbuf,
             std::vector<double>& recvbuf,
+            std::vector<int>& send_order,
+            std::vector<int>& recv_order,
             std::vector<MPI_Request>& send_req,
-            std::vector<MPI_Request>& recv_req)
+            std::vector<MPI_Request>& recv_req,
+            MPIL_Comm* xcomm)
 {
+    int idx;
+
     // Pack sendbuf
     for (int i = 0; i < A.send_comm.size_msgs; i++)
         sendbuf[i] = x[A.send_comm.idx[i]];
 
-    // Start communication
-    MPI_Startall(recv_req.size(), recv_req.data());
-    MPI_Startall(send_req.size(), send_req.data());
+    comm_init(A, sendbuf, recvbuf, send_order, recv_order,
+        send_req, recv_req, xcomm);
 
     // Fully local SpMV
     spmv(A.on_proc, x, b, 1.0, 0.0);
@@ -53,19 +133,24 @@ double time_par_spmv(ParMat<int>& A,
             std::vector<double>& b,
             std::vector<double>& sendbuf,
             std::vector<double>& recvbuf,
+            std::vector<int>& send_order,
+            std::vector<int>& recv_order,
             std::vector<MPI_Request>& send_req,
-            std::vector<MPI_Request>& recv_req)
+            std::vector<MPI_Request>& recv_req,
+            MPIL_Comm* xcomm)
 {
     double t0, tfinal;
     int n_iter = 1;
 
     // Warm-Up
-    par_spmv(A, x, b, sendbuf, recvbuf, send_req, recv_req);
+    par_spmv(A, x, b, sendbuf, recvbuf, send_order, recv_order, 
+            send_req, recv_req, xcomm);
 
     // Time single iteration
     MPI_Barrier(MPI_COMM_WORLD);
     t0 = MPI_Wtime();
-    par_spmv(A, x, b, sendbuf, recvbuf, send_req, recv_req);
+    par_spmv(A, x, b, sendbuf, recvbuf, send_order, recv_order, 
+            send_req, recv_req, xcomm);
     tfinal = MPI_Wtime() - t0;
     MPI_Allreduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
 
@@ -75,7 +160,8 @@ double time_par_spmv(ParMat<int>& A,
         MPI_Barrier(MPI_COMM_WORLD);
         t0 = MPI_Wtime();
         for (int i = 0; i < n_iter; i++)
-            par_spmv(A, x, b, sendbuf, recvbuf, send_req, recv_req);
+            par_spmv(A, x, b, sendbuf, recvbuf, send_order, recv_order, 
+                    send_req, recv_req, xcomm);
         tfinal = (MPI_Wtime() - t0) / n_iter;
         MPI_Allreduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
         n_iter = 1.0 / t0;
@@ -85,7 +171,8 @@ double time_par_spmv(ParMat<int>& A,
     MPI_Barrier(MPI_COMM_WORLD);
     t0 = MPI_Wtime();
     for (int i = 0; i < n_iter; i++)
-        par_spmv(A, x, b, sendbuf, recvbuf, send_req, recv_req);
+        par_spmv(A, x, b, sendbuf, recvbuf, send_order, recv_order, 
+                send_req, recv_req, xcomm);
     tfinal = (MPI_Wtime() - t0) / n_iter;
     MPI_Allreduce(&tfinal, &t0, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
 
@@ -107,132 +194,46 @@ void compare(std::vector<double>& recvbuf_std,
     }
 }
 
-void comm_init(ParMat<int>& A,
-                std::vector<double>& sendbuf,
-                std::vector<double>& recvbuf,
-                std::vector<MPI_Request>& send_req,
-                std::vector<MPI_Request>& recv_req,
-                MPIL_Comm* xcomm)
+void reorder_recvs(ParMat<int>& A,
+            std::vector<double>& sendbuf,
+            std::vector<double>& recvbuf,
+            std::vector<int>& send_order,
+            std::vector<int>& recv_order,
+            std::vector<MPI_Request>& send_req,
+            std::vector<MPI_Request>& recv_req,
+            MPIL_Comm* xcomm)
 {
-    int tag;
-    MPIL_Comm_tag(xcomm, &tag);
-
-    recv_req.resize(A.recv_comm.n_msgs);
-    for (int i = 0; i < A.recv_comm.n_msgs; i++)
-    {
-        MPI_Recv_init(&(recvbuf[A.recv_comm.ptr[i]]),
-                      A.recv_comm.counts[i],
-                      MPI_DOUBLE, 
-                      A.recv_comm.procs[i],
-                      tag,
-                      MPI_COMM_WORLD, 
-                      &(recv_req[i]));
-    }
-
-    send_req.resize(A.send_comm.n_msgs);
-    for (int i = 0; i < A.send_comm.n_msgs; i++)
-    {
-        MPI_Send_init(&(sendbuf[A.send_comm.ptr[i]]),
-                      A.send_comm.counts[i],
-                      MPI_DOUBLE,
-                      A.send_comm.procs[i],
-                      tag,
-                      MPI_COMM_WORLD, 
-                      &(send_req[i]));
-    }
-}
-
-void reverse_comm_init(ParMat<int>& A,
-                std::vector<double>& sendbuf,
-                std::vector<double>& recvbuf,
-                std::vector<MPI_Request>& send_req,
-                std::vector<MPI_Request>& recv_req,
-                MPIL_Comm* xcomm)
-{
-    int tag;
-    MPIL_Comm_tag(xcomm, &tag);
-
-    send_req.resize(A.recv_comm.n_msgs);
-    for (int i = 0; i < A.recv_comm.n_msgs; i++)
-    {
-        MPI_Send_init(&(sendbuf[A.recv_comm.ptr[i]]),
-                      A.recv_comm.counts[i],
-                      MPI_DOUBLE,
-                      A.recv_comm.procs[i],
-                      tag,
-                      MPI_COMM_WORLD, 
-                      &(send_req[i]));
-    }
-
-    recv_req.resize(A.send_comm.n_msgs);
-    for (int i = 0; i < A.send_comm.n_msgs; i++)
-    {
-        MPI_Recv_init(&(recvbuf[A.send_comm.ptr[i]]),
-                      A.send_comm.counts[i],
-                      MPI_DOUBLE,
-                      A.send_comm.procs[i],
-                      tag,
-                      MPI_COMM_WORLD, 
-                      &(recv_req[i]));
-    }
-}
-
-std::vector<int> find_order(std::vector<MPI_Request>& send_req,
-                    std::vector<MPI_Request>& recv_req)
-{
-    MPI_Startall(recv_req.size(), recv_req.data());
-    MPI_Startall(send_req.size(), send_req.data());
-
     int idx;
-    std::vector<int> order(recv_req.size());
+    comm_init(A, sendbuf, recvbuf, send_order, recv_order, 
+        send_req, recv_req, xcomm);
     for (int i = 0; i < recv_req.size(); i++)
     {
         MPI_Waitany(recv_req.size(), recv_req.data(), &idx, MPI_STATUS_IGNORE);
-        order[i] = idx;
+        recv_order[i] = idx;
     }
 
     MPI_Waitall(send_req.size(), send_req.data(), MPI_STATUSES_IGNORE);
-
-    return order;
 }
 
-void reorder_recvs(std::vector<MPI_Request>& send_req, 
-                    std::vector<MPI_Request>& recv_req)
+void reorder_sends(ParMat<int>& A,
+            std::vector<double>& sendbuf,
+            std::vector<double>& recvbuf,
+            std::vector<int>& send_order,
+            std::vector<int>& recv_order,
+            std::vector<MPI_Request>& send_req,
+            std::vector<MPI_Request>& recv_req,
+            MPIL_Comm* xcomm)
 {
-    std::vector<int> recv_order = find_order(send_req, recv_req);
-    std::vector<MPI_Request> recv_ordered(recv_req.size());
-    for (int i = 0; i < recv_req.size(); i++)
-        recv_ordered[i] = recv_req[recv_order[i]];
-    recv_req = recv_ordered;
-}
-
-void reorder_comm(std::vector<MPI_Request>& send_req,
-                    std::vector<MPI_Request>& recv_req,
-                    std::vector<MPI_Request>& reverse_send_req,
-                    std::vector<MPI_Request>& reverse_recv_req)
-{
-    std::vector<int> send_order = find_order(
-                reverse_send_req, reverse_recv_req);
-    std::vector<MPI_Request> send_ordered(send_req.size());
+    int idx;
+    reverse_comm_init(A, sendbuf, recvbuf, send_order, recv_order,
+        send_req, recv_req, xcomm);
     for (int i = 0; i < send_req.size(); i++)
-        send_ordered[i] = send_req[send_order[i]];
-    send_req = send_ordered;
+    {
+        MPI_Waitany(send_req.size(), send_req.data(), &idx, MPI_STATUS_IGNORE);
+        send_order[i] = idx;
+    }
 
-    std::vector<int> recv_order = find_order(send_req, recv_req);
-    std::vector<MPI_Request> recv_ordered(recv_req.size());
-    for (int i = 0; i < recv_req.size(); i++)
-        recv_ordered[i] = recv_req[recv_order[i]];
-    recv_req = recv_ordered;
-}
-
-void free_requests(std::vector<MPI_Request>& send_req,
-                    std::vector<MPI_Request>& recv_req)
-{
-    for (int i = 0; i < recv_req.size(); i++)
-        MPI_Request_free(&recv_req[i]);
-
-    for (int i = 0; i < send_req.size(); i++)
-        MPI_Request_free(&send_req[i]);
+    MPI_Waitall(recv_req.size(), recv_req.data(), MPI_STATUSES_IGNORE);
 }
 
 int main(int argc, char* argv[])
@@ -270,57 +271,51 @@ int main(int argc, char* argv[])
     std::vector<double> x(A.on_proc.n_rows);
     std::vector<double> b(A.on_proc.n_rows);
     std::vector<double> b_new(A.on_proc.n_rows);
-
-    // Fill x with random numbers
-    std::mt19937 gen(rank + time(NULL));
-    std::uniform_real_distribution<double> dist(0.0, 1.0);
-    std::generate(x.begin(), x.end(), [&]() { return dist(gen); });
+    std::generate(x.begin(), x.end(), 
+        []() { return (double)rand() / RAND_MAX; });
 
     std::vector<double> sendbuf(A.send_comm.size_msgs);
     std::vector<double> recvbuf(A.recv_comm.size_msgs);
 
-
     MPIL_Comm* xcomm;
     MPIL_Comm_init(&xcomm, MPI_COMM_WORLD);
 
-    MPIL_Info* xinfo;
-    MPIL_Info_init(&xinfo);
+    std::vector<MPI_Request> send_req(A.send_comm.n_msgs);
+    std::vector<MPI_Request> recv_req(A.recv_comm.n_msgs);
 
-    std::vector<MPI_Request> send_req;
-    std::vector<MPI_Request> recv_req;
-    std::vector<MPI_Request> reverse_send_req;
-    std::vector<MPI_Request> reverse_recv_req;
+    std::vector<int> send_order(A.send_comm.n_msgs);
+    std::vector<int> recv_order(A.recv_comm.n_msgs);
 
     // Standard Communication
-    comm_init(A, sendbuf, recvbuf, send_req, recv_req, xcomm);
+    std::iota(send_order.begin(), send_order.end(), 0);
+    std::iota(recv_order.begin(), recv_order.end(), 0);
     t0 = time_par_spmv(A, x, b, sendbuf, recvbuf, 
-            send_req, recv_req);
+            send_order, recv_order, send_req, recv_req, xcomm);
     if (rank == 0) printf("Original SpMV Time: %e\n", t0);
-    free_requests(send_req, recv_req);
 
     // Reorder Recvs
-    comm_init(A, sendbuf, recvbuf, send_req, recv_req, xcomm);
-    reorder_recvs(send_req, recv_req);
-    t0 = time_par_spmv(A, x, b_new, sendbuf, recvbuf, 
-            send_req, recv_req);
+    std::iota(send_order.begin(), send_order.end(), 0);
+    std::iota(recv_order.begin(), recv_order.end(), 0);
+    reorder_recvs(A, sendbuf, recvbuf, send_order, recv_order,
+            send_req, recv_req, xcomm);
+    t0 = time_par_spmv(A, x, b, sendbuf, recvbuf, 
+            send_order, recv_order, send_req, recv_req, xcomm);
     if (rank == 0) printf("Reordered Recvs SpMV Time: %e\n", t0);
-    free_requests(send_req, recv_req);
     compare(b, b_new);
 
     // Reorder Sends and Recvs
     std::fill(b_new.begin(), b_new.end(), 0);
-    comm_init(A, sendbuf, recvbuf, send_req, recv_req, xcomm);
-    reverse_comm_init(A, recvbuf, sendbuf, 
-                reverse_send_req, reverse_recv_req, xcomm);
-    reorder_comm(send_req, recv_req, reverse_send_req, reverse_recv_req);
-    free_requests(reverse_send_req, reverse_recv_req);
-    t0 = time_par_spmv(A, x, b_new, sendbuf, recvbuf, 
-            send_req, recv_req);
+    std::iota(send_order.begin(), send_order.end(), 0);
+    std::iota(recv_order.begin(), recv_order.end(), 0);
+    reorder_sends(A, sendbuf, recvbuf, send_order, recv_order,
+            send_req, recv_req, xcomm);
+    reorder_recvs(A, sendbuf, recvbuf, send_order, recv_order,
+            send_req, recv_req, xcomm);
+    t0 = time_par_spmv(A, x, b, sendbuf, recvbuf, 
+            send_order, recv_order, send_req, recv_req, xcomm);
     if (rank == 0) printf("Reordered Sends/Recvs SpMV Time: %e\n", t0);
-    free_requests(send_req, recv_req);
     compare(b, b_new);
 
-    MPIL_Info_free(&xinfo);
     MPIL_Comm_free(&xcomm);
 
     MPI_Finalize();
