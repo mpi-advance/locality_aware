@@ -12,7 +12,7 @@ void init_neighbor_request(MPIL_Request** request_ptr)
 }
 
 void init_packing_buffers(MPIL_Request* request, int size_sends, int* send_indices, 
-        int send_size, void* _sendbuf, int size_recvs, int* recv_indices, 
+        int send_size, const void* _sendbuf, int size_recvs, int* recv_indices, 
         int recv_size, void* _recvbuf)
 {
     if (size_sends)
