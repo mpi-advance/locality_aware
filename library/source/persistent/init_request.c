@@ -16,6 +16,9 @@ void init_request(MPIL_Request** request_ptr)
 
     request->size_sends = 0;
     request->size_recvs = 0;
+    request->send_size = 0;
+    request->recv_size = 0;
+
     request->tmp_sendbuf = NULL;
     request->tmp_recvbuf = NULL;
     request->send_indices = NULL;
