@@ -11,6 +11,7 @@ void init_comm_data(CommData** comm_data_ptr, MPI_Datatype datatype)
     MPI_Type_size(datatype, &(data->datatype_size));
     data->procs   = NULL;
     data->indptr  = NULL;
+    data->counts = NULL;
     data->indices = NULL;
     data->buffer  = NULL;
 
@@ -26,6 +27,10 @@ void destroy_comm_data(CommData* data)
     if (data->indptr)
     {
         free(data->indptr);
+    }
+    if (data->counts)
+    {
+        free(data->counts);
     }
     if (data->indices)
     {
@@ -45,6 +50,7 @@ void init_num_msgs(CommData* data, int num_msgs)
     if (data->num_msgs)
     {
         data->procs = (int*)malloc(sizeof(int) * data->num_msgs);
+        data->counts = (int*)malloc(sizeof(int) * data->num_msgs);
     }
     data->indptr    = (int*)malloc(sizeof(int) * (data->num_msgs + 1));
     data->indptr[0] = 0;

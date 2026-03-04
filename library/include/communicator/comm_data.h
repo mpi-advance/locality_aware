@@ -19,6 +19,8 @@ typedef struct _CommData
     int* procs;
     /** @brief pointer to index  **/
     int* indptr;
+    /** @brief pointer to counts **/
+    int* counts;
     /** @brief indexes for message  **/
     int* indices;
     /** @brief buffer containing copy of message  **/

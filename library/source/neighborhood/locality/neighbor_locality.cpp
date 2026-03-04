@@ -307,6 +307,7 @@ void form_local_comm(const int orig_num_sends,
             orig_to_node[i] = -1;
             local_data->procs[local_data->num_msgs] =
                 get_local_proc(locality->communicators, global_proc);
+            local_data->counts[local_data->num_msgs] = size;
             local_data->size_msgs += size;
             local_data->num_msgs++;
             local_data->indptr[local_data->num_msgs] = local_data->size_msgs;
@@ -317,6 +318,7 @@ void form_local_comm(const int orig_num_sends,
     for (int i = 0; i < send_data->num_msgs; i++)
     {
         local_proc               = send_data->procs[i];
+        send_data->counts[i + 1] = send_sizes[local_proc];
         send_data->indptr[i + 1] = send_data->indptr[i] + send_sizes[local_proc];
         send_sizes[local_proc]   = 0;
     }
@@ -437,6 +439,7 @@ void form_local_comm(const int orig_num_sends,
         old_start                = recvptr[pos];
         new_start                = recv_data->indptr[ctr];
         size                     = recvptr[pos + 1] - old_start;
+        recv_data->counts[ctr]   = size;
         recv_data->indptr[++ctr] = new_start + size;
         for (int j = 0; j < size; j++)
         {
@@ -497,6 +500,7 @@ void form_global_comm(CommData* local_data,
         if (node_sizes[i])
         {
             global_data->procs[global_data->num_msgs] = i;
+            global_data->counts[global_data->num_msgs] = node_sizes[i];
             global_data->size_msgs += node_sizes[i];
             node_sizes[i] = global_data->num_msgs;
             global_data->num_msgs++;
@@ -736,6 +740,7 @@ void remove_duplicates(CommData* comm_pkg)
         }
         start                   = end;
         comm_pkg->indptr[i + 1] = comm_pkg->size_msgs;
+        comm_pkg->counts[i]     = comm_pkg->indptr[i+1] - comm_pkg->indptr[i];
     }
 }
 
