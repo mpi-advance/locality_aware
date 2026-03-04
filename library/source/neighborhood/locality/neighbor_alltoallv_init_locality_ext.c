@@ -237,7 +237,7 @@ int neighbor_alltoallv_init_locality_ext(const void* sendbuffer,
                         locality->global_comm->recv_data->indptr,
                         recvtype,
                         topo_step,
-                        comm->local_comm,
+                        comm->global_comm,
                         mpil_info,
                         tag,
                         request);

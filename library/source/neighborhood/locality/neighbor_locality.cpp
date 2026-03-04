@@ -318,7 +318,7 @@ void form_local_comm(const int orig_num_sends,
     for (int i = 0; i < send_data->num_msgs; i++)
     {
         local_proc               = send_data->procs[i];
-        send_data->counts[i + 1] = send_sizes[local_proc];
+        send_data->counts[i]     = send_sizes[local_proc];
         send_data->indptr[i + 1] = send_data->indptr[i] + send_sizes[local_proc];
         send_sizes[local_proc]   = 0;
     }
