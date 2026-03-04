@@ -1,4 +1,5 @@
 #include <stdlib.h>  // For NULL
+#include <string.h>
 
 #include "locality_aware.h"
 #include "neighborhood/neighborhood_init.h"
@@ -19,33 +20,20 @@ int neighbor_wait(MPIL_Request* request, MPI_Status* status)
     int ierr = 0;
     int idx;
 
-    char* recv_buffer = NULL;
-    int recv_size     = 0;
-    if (request->recv_size)
-    {
-        recv_buffer = (char*)(request->recvbuf);
-        recv_size   = request->recv_size;
-    }
-
     // Global waits for recvs
     if (request->n_msgs)
     {
         ierr += MPI_Waitall(
             request->n_msgs, request->requests, MPI_STATUSES_IGNORE);
 
-        if (request->local_R_request)
+        if (request->size_recvs && request->recv_indices)
         {
-            for (int i = 0; i < request->locality->local_R_comm->send_data->size_msgs;
-                 i++)
+            for (int i = 0; i < request->size_recvs; i++)
             {
-                idx = request->locality->local_R_comm->send_data->indices[i];
-                for (int j = 0; j < recv_size; j++)
-                {
-                    request->locality->local_R_comm->send_data
-                        ->buffer[i * recv_size + j] =
-                        request->locality->global_comm->recv_data
-                            ->buffer[idx * recv_size + j];
-                }
+                idx = request->recv_indices[i];
+                memcpy(request->recvbuf + (idx*request->recv_size), 
+                        request->tmp_recvbuf + (i*request->recv_size),
+                        request->recv_size);
             }
         }
     }
@@ -55,33 +43,13 @@ int neighbor_wait(MPIL_Request* request, MPI_Status* status)
     {
         MPIL_Start(request->local_R_request);
         MPIL_Wait(request->local_R_request, MPI_STATUS_IGNORE);
-
-        for (int i = 0; i < request->locality->local_R_comm->recv_data->size_msgs; i++)
-        {
-            idx = request->locality->local_R_comm->recv_data->indices[i];
-            for (int j = 0; j < recv_size; j++)
-            {
-                recv_buffer[idx * recv_size + j] =
-                    request->locality->local_R_comm->recv_data->buffer[i * recv_size + j];
-            }
-        }
     }
 
     // Wait for local_L recvs
     if (request->local_L_request)
     {
         MPIL_Wait(request->local_L_request, MPI_STATUS_IGNORE);
-
-        for (int i = 0; i < request->locality->local_L_comm->recv_data->size_msgs; i++)
-        {
-            idx = request->locality->local_L_comm->recv_data->indices[i];
-            for (int j = 0; j < recv_size; j++)
-            {
-                recv_buffer[idx * recv_size + j] =
-                    request->locality->local_L_comm->recv_data->buffer[i * recv_size + j];
-            }
-        }
-    }
+     }
 
     return ierr;
 }

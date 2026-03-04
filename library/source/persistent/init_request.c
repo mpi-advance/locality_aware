@@ -11,6 +11,15 @@ void init_request(MPIL_Request** request_ptr)
 
     request->n_msgs = 0;
     request->requests = NULL;
+    request->sendbuf = NULL;
+    request->recvbuf = NULL;
+
+    request->size_sends = 0;
+    request->size_recvs = 0;
+    request->tmp_sendbuf = NULL;
+    request->tmp_recvbuf = NULL;
+    request->send_indices = NULL;
+    request->recv_indices = NULL;
 
     request->local_L_request = NULL;
     request->local_S_request = NULL;

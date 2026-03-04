@@ -83,6 +83,17 @@ void init_locality(const int n_sends,
                    MPIL_Comm* mpil_comm,
                    MPIL_Request* request);
 
+
+void init_packing_buffers(MPIL_Request* request, 
+                            int size_sends, 
+                            int* send_indices, 
+                            int send_size, 
+                            void* _sendbuf, 
+                            int size_recvs, 
+                            int* recv_indices, 
+                            int recv_size, 
+                            void* _recvbuf);
+
 int init_communication(const void* sendbuffer,
                        int n_sends,
                        const int* send_procs,

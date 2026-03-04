@@ -19,10 +19,31 @@ struct _MPIL_Request
 {
     /** @brief Number of messages **/
     int n_msgs;
-
     /** @brief array of MPI Requests **/
     MPI_Request* requests;
 
+    /** @brief Pointer to the user's original send buffer*/
+    const void* sendbuf;
+    /** @brief Pointer to the user's original receive buffer */
+    void* recvbuf;
+
+    /** @brief Pointer to new send buffer for data to be 
+     * packed into at intermediate steps */
+    void* tmp_sendbuf;
+    /** @brief Pointer to new recv buffer for data to be 
+     * recvd into at intermediate steps */
+    void* tmp_recvbuf;
+    /** @brief indices of input buffer to be packed **/
+    int* send_indices;
+    /** @brief indices of received buffer to be unpacked **/
+    int* recv_indices;
+    /** @brief size of sendbuf/send_indices **/ 
+    int size_sends;
+    /** @brief size of recvbuf/recv_indices **/ 
+    int size_recvs;
+    /** @brief size of sendtype **/
+    int send_size;
+    /** @brief size of recvtype **/
 
     // Pointers to MPI_Requests for aggregated communication
     /** @brief Fully local communication **/
@@ -32,20 +53,17 @@ struct _MPIL_Request
     /** @brief Final local disaggrgation **/
     MPIL_Request* local_R_request;
 
+
     /** @brief Pointer to locality communication information if using locality-aware
      * variants **/
     LocalityComm* locality;
-
-    /** @brief Pointers to the user's original send buffer */
-    const void* sendbuf;
-    /** @brief Pointer to the user's original receive buffer */
-    void* recvbuf;
 
     /** @brief Number of bytes per receive object, locality-aware only **/
     int recv_size;
     /** @brief Block size for strided/blocked communication **/
     int block_size;
-
+    /** @brief Flag for if we want MPIL to reorder requests based on order of arrival
+     * during first iteration **/
     int reorder;
 
 #ifdef GPU

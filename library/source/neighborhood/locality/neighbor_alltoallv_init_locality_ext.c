@@ -98,9 +98,59 @@ int neighbor_alltoallv_init_locality_ext(const void* sendbuffer,
                   comm,  // communicator used in dist_graph_create_adjacent
                   request);
 
-    request->sendbuf = sendbuffer;
-    request->recvbuf = recvbuffer;
-    MPI_Type_size(recvtype, &(request->recv_size));
+//    request->sendbuf = sendbuffer;
+//    request->recvbuf = recvbuffer;
+    int send_size, recv_size;
+    MPI_Type_size(sendtype, &(send_size));
+    MPI_Type_size(recvtype, &(recv_size));
+
+    // Initialize packing buffers for Local_L
+    init_packing_buffers(request->local_L_request,
+                            request->locality->local_L_comm->send_data->size_msgs,
+                            request->locality->local_L_comm->send_data->indices,
+                            send_size,
+                            sendbuffer,
+                            request->locality->local_L_comm->recv_data->size_msgs,
+                            request->locality->local_L_comm->recv_data->indices,
+                            recv_size,
+                            recvbuffer);
+
+    // Initialize packing buffers for Local_S
+    init_packing_buffers(request->local_S_request,
+                            request->locality->local_S_comm->send_data->size_msgs,
+                            request->locality->local_S_comm->send_data->indices,
+                            send_size,
+                            sendbuffer,
+                            0,
+                            NULL,
+                            0,
+                            NULL);
+
+    // Initialize packing buffers for global
+    init_packing_buffers(request,
+                            request->locality->global_comm->send_data->size_msgs,
+                            request->locality->global_comm->send_data->indices,
+                            send_size,
+                            request->local_S_request->tmp_recvbuf,
+                            0,
+                            NULL,
+                            0,
+                            NULL);
+
+    // Initialize packing buffers for Local_R
+    init_packing_buffers(request->local_R_request,
+                            request->locality->local_R_comm->send_data->size_msgs,
+                            request->locality->local_R_comm->send_data->indices,
+                            send_size,
+                            request->tmp_recvbuf,
+                            request->locality->local_R_comm->recv_data->size_msgs,
+                            request->locality->local_R_comm->recv_data->indices,
+                            recv_size,
+                            recvbuffer);
+
+
+
+
 
     // Local L Communication
     // init_communication(sendbuffer,
