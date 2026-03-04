@@ -9,7 +9,6 @@ target_sources(locality_aware PRIVATE
 	locality/neighbor_alltoallv_locality.c
 	locality/neighbor_alltoallv_init_locality.c
 	locality/neighbor_alltoallv_init_locality_ext.c
-	persistent/init_communication.c
 	persistent/init_neighbor_request.c
 	persistent/neighbor_start.c
 	persistent/neighbor_wait.c

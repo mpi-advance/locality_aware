@@ -110,19 +110,6 @@ void init_packing_buffers(MPIL_Request* request,
                             int recv_size, 
                             void* _recvbuf);
 
-int init_communication(const void* sendbuffer,
-                       int n_sends,
-                       const int* send_procs,
-                       const int* send_ptr,
-                       MPI_Datatype sendtype,
-                       void* recvbuffer,
-                       int n_recvs,
-                       const int* recv_procs,
-                       const int* recv_ptr,
-                       MPI_Datatype recvtype,
-                       int tag,
-                       MPI_Comm comm,
-                       MPIL_Request* request);
 
 #ifdef __cplusplus
 }
