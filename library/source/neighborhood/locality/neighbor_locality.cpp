@@ -29,21 +29,18 @@ void init_locality(const int n_sends,
                    const MPI_Datatype sendtype,
                    const MPI_Datatype recvtype,
                    MPIL_Comm* mpil_comm,
-                   MPIL_Request* request)
+                   MPIL_Request* request,
+                   LocalityComm* locality)
 {
     // Get MPI Information
     int rank, num_procs;
     MPI_Comm_rank(mpil_comm->global_comm, &rank);
     MPI_Comm_size(mpil_comm->global_comm, &num_procs);
 
-    // Initialize structure
-    LocalityComm* locality_comm;
-    init_locality_comm(&locality_comm, mpil_comm, sendtype, recvtype);
-
     // Find global send nodes
     std::vector<int> send_nodes;
     std::vector<int> send_node_to_local;
-    map_procs_to_nodes(locality_comm,
+    map_procs_to_nodes(locality,
                        n_sends,
                        send_procs,
                        sendcounts,
@@ -59,16 +56,16 @@ void init_locality(const int n_sends,
                     sendcounts,
                     global_send_indices,
                     send_node_to_local,
-                    locality_comm->local_S_comm->send_data,
-                    locality_comm->local_S_comm->recv_data,
-                    locality_comm->local_L_comm->send_data,
+                    locality->local_S_comm->send_data,
+                    locality->local_S_comm->recv_data,
+                    locality->local_L_comm->send_data,
                     recv_idx_nodes,
-                    locality_comm,
+                    locality,
                     19483);
 
     // Form global send data
-    form_global_comm(locality_comm->local_S_comm->recv_data,
-                     locality_comm->global_comm->send_data,
+    form_global_comm(locality->local_S_comm->recv_data,
+                     locality->global_comm->send_data,
                      recv_idx_nodes,
                      mpil_comm,
                      93284);
@@ -76,7 +73,7 @@ void init_locality(const int n_sends,
     // Find global recv nodes
     std::vector<int> recv_nodes;
     std::vector<int> recv_node_to_local;
-    map_procs_to_nodes(locality_comm,
+    map_procs_to_nodes(locality,
                        n_recvs,
                        recv_procs,
                        recvcounts,
@@ -92,22 +89,22 @@ void init_locality(const int n_sends,
                     recvcounts,
                     global_recv_indices,
                     recv_node_to_local,
-                    locality_comm->local_R_comm->recv_data,
-                    locality_comm->local_R_comm->send_data,
-                    locality_comm->local_L_comm->recv_data,
+                    locality->local_R_comm->recv_data,
+                    locality->local_R_comm->send_data,
+                    locality->local_L_comm->recv_data,
                     send_idx_nodes,
-                    locality_comm,
+                    locality,
                     32048);
 
     // Form global recv data
-    form_global_comm(locality_comm->local_R_comm->send_data,
-                     locality_comm->global_comm->recv_data,
+    form_global_comm(locality->local_R_comm->send_data,
+                     locality->global_comm->recv_data,
                      send_idx_nodes,
-                     locality_comm->communicators,
+                     locality->communicators,
                      93284);
 
     // Update procs for global_comm send and recvs
-    update_global_comm(locality_comm);
+    update_global_comm(locality);
 
     // Update send and receive indices
     std::map<long, int> send_global_to_local;
@@ -135,22 +132,14 @@ void init_locality(const int n_sends,
         }
     }
 
-    update_indices(locality_comm, send_global_to_local, recv_global_to_local);
+    update_indices(locality, send_global_to_local, recv_global_to_local);
 
     // Initialize final variable (MPI_Request arrays, etc.)
-    finalize_locality_comm(locality_comm);
-
-    // Copy to pointer for return
-    request->locality = locality_comm;
+    finalize_locality_comm(locality);
 }
 #ifdef __cplusplus
 }
 #endif
-// Destroy NAPComm* structure
-void destroy_locality(MPIL_Request* request)
-{
-    destroy_locality_comm(request->locality);
-}
 
 /******************************************
  ****

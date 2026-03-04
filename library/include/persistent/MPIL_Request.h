@@ -53,11 +53,6 @@ struct _MPIL_Request
     /** @brief Final local disaggrgation **/
     MPIL_Request* local_R_request;
 
-
-    /** @brief Pointer to locality communication information if using locality-aware
-     * variants **/
-    LocalityComm* locality;
-
     /** @brief Number of bytes per receive object, locality-aware only **/
     int recv_size;
     /** @brief Block size for strided/blocked communication **/

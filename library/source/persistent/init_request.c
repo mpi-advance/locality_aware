@@ -7,8 +7,6 @@ void init_request(MPIL_Request** request_ptr)
 {
     MPIL_Request* request = (MPIL_Request*)malloc(sizeof(MPIL_Request));
 
-    request->locality = NULL;
-
     request->n_msgs = 0;
     request->requests = NULL;
     request->sendbuf = NULL;

@@ -81,7 +81,8 @@ void init_locality(const int n_sends,
                    const MPI_Datatype sendtype,
                    const MPI_Datatype recvtype,
                    MPIL_Comm* mpil_comm,
-                   MPIL_Request* request);
+                   MPIL_Request* request,
+                   LocalityComm* locality);
 
 
 void init_packing_buffers(MPIL_Request* request, 

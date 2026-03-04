@@ -59,11 +59,6 @@ int MPIL_Request_free(MPIL_Request** request_ptr)
         request->size_recvs = 0;
     }
 
-    // If Locality-Aware
-    if (request->locality != NULL)
-    {
-        destroy_locality_comm(request->locality);
-    }
 
 // TODO : for safety, may want to check if allocated with malloc?
 #ifdef GPU  // Assuming cpu buffers allocated in pinned memory
