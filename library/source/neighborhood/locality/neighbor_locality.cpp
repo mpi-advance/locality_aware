@@ -3,7 +3,10 @@
 #include <algorithm>
 
 #include "communicator/MPIL_Comm.h"
+#include "locality_aware.h"
 #include "persistent/MPIL_Request.h"
+#include "neighborhood/MPIL_Topo.h"
+#include "neighborhood/neighborhood_init.h"
 
 /******************************************
  ****
@@ -20,22 +23,30 @@ void init_locality(const int n_sends,
                    const int* send_procs,
                    const int* send_indptr,
                    const int* sendcounts,
+                   const void* sendbuffer,
                    const int n_recvs,
                    const int* recv_procs,
                    const int* recv_indptr,
                    const int* recvcounts,
+                   void* recvbuffer,
                    const long* global_send_indices,
                    const long* global_recv_indices,
                    const MPI_Datatype sendtype,
                    const MPI_Datatype recvtype,
                    MPIL_Comm* mpil_comm,
-                   MPIL_Request* request,
-                   LocalityComm* locality)
+                   MPIL_Request* request)
 {
     // Get MPI Information
     int rank, num_procs;
     MPI_Comm_rank(mpil_comm->global_comm, &rank);
     MPI_Comm_size(mpil_comm->global_comm, &num_procs);
+
+    LocalityComm* locality;
+    init_locality_comm(&locality, mpil_comm, sendtype, recvtype);
+
+    int send_size, recv_size;
+    MPI_Type_size(sendtype, &(send_size));
+    MPI_Type_size(recvtype, &(recv_size));
 
     // Find global send nodes
     std::vector<int> send_nodes;
@@ -136,6 +147,171 @@ void init_locality(const int n_sends,
 
     // Initialize final variable (MPI_Request arrays, etc.)
     finalize_locality_comm(locality);
+
+    // Initialize packing buffers for Local_L
+    init_packing_buffers(request->local_L_request,
+                            locality->local_L_comm->send_data->size_msgs,
+                            locality->local_L_comm->send_data->indices,
+                            send_size,
+                            sendbuffer,
+                            locality->local_L_comm->recv_data->size_msgs,
+                            locality->local_L_comm->recv_data->indices,
+                            recv_size,
+                            recvbuffer);
+
+    // Initialize packing buffers for Local_S
+    init_packing_buffers(request->local_S_request,
+                            locality->local_S_comm->send_data->size_msgs,
+                            locality->local_S_comm->send_data->indices,
+                            send_size,
+                            sendbuffer,
+                            locality->local_S_comm->recv_data->size_msgs,
+                            NULL,
+                            send_size,
+                            NULL);
+
+    // Initialize packing buffers for global
+    init_packing_buffers(request,
+                            locality->global_comm->send_data->size_msgs,
+                            locality->global_comm->send_data->indices,
+                            send_size,
+                            request->local_S_request->tmp_recvbuf,
+                            locality->global_comm->recv_data->size_msgs,
+                            NULL,
+                            recv_size,
+                            NULL);
+
+    // Initialize packing buffers for Local_R
+    init_packing_buffers(request->local_R_request,
+                            locality->local_R_comm->send_data->size_msgs,
+                            locality->local_R_comm->send_data->indices,
+                            recv_size,
+                            request->tmp_recvbuf,
+                            locality->local_R_comm->recv_data->size_msgs,
+                            locality->local_R_comm->recv_data->indices,
+                            recv_size,
+                            recvbuffer);
+
+
+
+
+
+    MPIL_Info* mpil_info;
+    MPIL_Info_init(&mpil_info);
+    int tag;
+
+    // Local L Communication
+    // init_communication(sendbuffer,
+    MPIL_Topo* topo_step;
+    MPIL_Topo_init(locality->local_L_comm->recv_data->num_msgs,
+                    locality->local_L_comm->recv_data->procs,
+                    MPI_UNWEIGHTED,
+                    locality->local_L_comm->send_data->num_msgs, 
+                    locality->local_L_comm->send_data->procs,
+                    MPI_UNWEIGHTED,
+                    mpil_info,
+                    &topo_step);
+    MPIL_Comm_tag(mpil_comm, &tag);
+    neighbor_alltoallv_init_standard_helper(
+                        request->local_L_request->tmp_sendbuf,
+                        locality->local_L_comm->send_data->counts,
+                        locality->local_L_comm->send_data->indptr,
+                        sendtype,
+                        request->local_L_request->tmp_recvbuf,
+                        locality->local_L_comm->recv_data->counts,
+                        locality->local_L_comm->recv_data->indptr,
+                        recvtype,
+                        topo_step,
+                        mpil_comm->local_comm,
+                        mpil_info,
+                        tag,
+                        request->local_L_request);
+    MPIL_Topo_free(&topo_step);
+                        
+
+    // Local S Communication
+    MPIL_Topo_init(locality->local_S_comm->recv_data->num_msgs,
+                    locality->local_S_comm->recv_data->procs,
+                    MPI_UNWEIGHTED,
+                    locality->local_S_comm->send_data->num_msgs, 
+                    locality->local_S_comm->send_data->procs,
+                    MPI_UNWEIGHTED,
+                    mpil_info,
+                    &topo_step);
+    MPIL_Comm_tag(mpil_comm, &tag);
+    neighbor_alltoallv_init_standard_helper(
+                        request->local_S_request->tmp_sendbuf,
+                        locality->local_S_comm->send_data->counts,
+                        locality->local_S_comm->send_data->indptr,
+                        sendtype,
+                        request->local_S_request->tmp_recvbuf,
+                        locality->local_S_comm->recv_data->counts,
+                        locality->local_S_comm->recv_data->indptr,
+                        recvtype,
+                        topo_step,
+                        mpil_comm->local_comm,
+                        mpil_info,
+                        tag,
+                        request->local_S_request);
+    MPIL_Topo_free(&topo_step);
+    
+
+    // Global Communication
+    MPIL_Topo_init(locality->global_comm->recv_data->num_msgs,
+                    locality->global_comm->recv_data->procs,
+                    MPI_UNWEIGHTED,
+                    locality->global_comm->send_data->num_msgs, 
+                    locality->global_comm->send_data->procs,
+                    MPI_UNWEIGHTED,
+                    mpil_info,
+                    &topo_step);
+    MPIL_Comm_tag(mpil_comm, &tag);
+    neighbor_alltoallv_init_standard_helper(
+                        request->tmp_sendbuf,
+                        locality->global_comm->send_data->counts,
+                        locality->global_comm->send_data->indptr,
+                        sendtype,
+                        request->tmp_recvbuf,
+                        locality->global_comm->recv_data->counts,
+                        locality->global_comm->recv_data->indptr,
+                        recvtype,
+                        topo_step,
+                        mpil_comm->global_comm,
+                        mpil_info,
+                        tag,
+                        request);
+    MPIL_Topo_free(&topo_step);
+
+
+    // Local R Communication
+    MPIL_Topo_init(locality->local_R_comm->recv_data->num_msgs,
+                    locality->local_R_comm->recv_data->procs,
+                    MPI_UNWEIGHTED,
+                    locality->local_R_comm->send_data->num_msgs, 
+                    locality->local_R_comm->send_data->procs,
+                    MPI_UNWEIGHTED,
+                    mpil_info,
+                    &topo_step);
+    MPIL_Comm_tag(mpil_comm, &tag);
+    neighbor_alltoallv_init_standard_helper(
+                        request->local_R_request->tmp_sendbuf,
+                        locality->local_R_comm->send_data->counts,
+                        locality->local_R_comm->send_data->indptr,
+                        sendtype,
+                        request->local_R_request->tmp_recvbuf,
+                        locality->local_R_comm->recv_data->counts,
+                        locality->local_R_comm->recv_data->indptr,
+                        recvtype,
+                        topo_step,
+                        mpil_comm->local_comm,
+                        mpil_info,
+                        tag,
+                        request->local_R_request);
+
+    destroy_locality_comm(locality);
+    MPIL_Info_free(&mpil_info);
+    MPIL_Topo_free(&topo_step);
+
 }
 #ifdef __cplusplus
 }

@@ -86,17 +86,18 @@ void init_locality(const int n_sends,
                    const int* send_procs,
                    const int* send_indptr,
                    const int* sendcounts,
+                   const void* sendbuffer,
                    const int n_recvs,
                    const int* recv_procs,
                    const int* recv_indptr,
                    const int* recvcounts,
+                   void* recvbuffer,
                    const long* global_send_indices,
                    const long* global_recv_indices,
                    const MPI_Datatype sendtype,
                    const MPI_Datatype recvtype,
                    MPIL_Comm* mpil_comm,
-                   MPIL_Request* request,
-                   LocalityComm* locality);
+                   MPIL_Request* request);
 
 
 void init_packing_buffers(MPIL_Request* request, 
