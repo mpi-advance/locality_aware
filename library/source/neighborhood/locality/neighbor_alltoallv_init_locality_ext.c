@@ -164,11 +164,11 @@ int neighbor_alltoallv_init_locality_ext(const void* sendbuffer,
     // Local L Communication
     // init_communication(sendbuffer,
     MPIL_Topo* topo_step;
-    MPIL_Topo_init(locality->local_L_comm->send_data->num_msgs, 
-                    locality->local_L_comm->send_data->procs,
-                    MPI_UNWEIGHTED,
-                    locality->local_L_comm->recv_data->num_msgs,
+    MPIL_Topo_init(locality->local_L_comm->recv_data->num_msgs,
                     locality->local_L_comm->recv_data->procs,
+                    MPI_UNWEIGHTED,
+                    locality->local_L_comm->send_data->num_msgs, 
+                    locality->local_L_comm->send_data->procs,
                     MPI_UNWEIGHTED,
                     mpil_info,
                     &topo_step);
@@ -191,11 +191,11 @@ int neighbor_alltoallv_init_locality_ext(const void* sendbuffer,
                         
 
     // Local S Communication
-    MPIL_Topo_init(locality->local_S_comm->send_data->num_msgs, 
-                    locality->local_S_comm->send_data->procs,
-                    MPI_UNWEIGHTED,
-                    locality->local_S_comm->recv_data->num_msgs,
+    MPIL_Topo_init(locality->local_S_comm->recv_data->num_msgs,
                     locality->local_S_comm->recv_data->procs,
+                    MPI_UNWEIGHTED,
+                    locality->local_S_comm->send_data->num_msgs, 
+                    locality->local_S_comm->send_data->procs,
                     MPI_UNWEIGHTED,
                     mpil_info,
                     &topo_step);
@@ -218,11 +218,11 @@ int neighbor_alltoallv_init_locality_ext(const void* sendbuffer,
     
 
     // Global Communication
-    MPIL_Topo_init(locality->global_comm->send_data->num_msgs, 
-                    locality->global_comm->send_data->procs,
-                    MPI_UNWEIGHTED,
-                    locality->global_comm->recv_data->num_msgs,
+    MPIL_Topo_init(locality->global_comm->recv_data->num_msgs,
                     locality->global_comm->recv_data->procs,
+                    MPI_UNWEIGHTED,
+                    locality->global_comm->send_data->num_msgs, 
+                    locality->global_comm->send_data->procs,
                     MPI_UNWEIGHTED,
                     mpil_info,
                     &topo_step);
@@ -245,11 +245,11 @@ int neighbor_alltoallv_init_locality_ext(const void* sendbuffer,
 
 
     // Local R Communication
-    MPIL_Topo_init(locality->local_R_comm->send_data->num_msgs, 
-                    locality->local_R_comm->send_data->procs,
-                    MPI_UNWEIGHTED,
-                    locality->local_R_comm->recv_data->num_msgs,
+    MPIL_Topo_init(locality->local_R_comm->recv_data->num_msgs,
                     locality->local_R_comm->recv_data->procs,
+                    MPI_UNWEIGHTED,
+                    locality->local_R_comm->send_data->num_msgs, 
+                    locality->local_R_comm->send_data->procs,
                     MPI_UNWEIGHTED,
                     mpil_info,
                     &topo_step);
