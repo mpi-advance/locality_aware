@@ -9,32 +9,28 @@
 extern "C" {
 #endif
 
+typedef struct _MPIL_Request MPIL_Request;
 /** @brief A custom MPI_Request struct used for the library's persistent collectives
  * @details For external users, there is limited direct access to class members through
  * API calls. Contains multiple requests and buffers to manage complex communication.
  * Contains function pointer to appropriate start and wait functions.
  */
-typedef struct _MPIL_Request
+struct _MPIL_Request
 {
-    // Message counts; Will only use global unless locality-aware
-    /** @brief Intra-node message count **/
-    int local_L_n_msgs;
-    /** @brief Sent message count **/
-    int local_S_n_msgs;
-    /** @brief Received message count **/
-    int local_R_n_msgs;
-    /** @brief Number of inter-node messages **/
-    int global_n_msgs;
+    /** @brief Number of messages **/
+    int n_msgs;
 
-    // MPI Request arrays; Will only use global unless locality-aware
-    /** @brief Requests to manage of intra-node messages **/
-    MPI_Request* local_L_requests;
-    /** @brief Requests to control sent messages **/
-    MPI_Request* local_S_requests;
-    /** @brief Requests to control received messages **/
-    MPI_Request* local_R_requests;
-    /** @brief Requests to manage of inter-node messages **/
-    MPI_Request* global_requests;
+    /** @brief array of MPI Requests **/
+    MPI_Request* requests;
+
+
+    // Pointers to MPI_Requests for aggregated communication
+    /** @brief Fully local communication **/
+    MPIL_Request* local_L_request;
+    /** @brief Initial local aggregation **/
+    MPIL_Request* local_S_request;
+    /** @brief Final local disaggrgation **/
+    MPIL_Request* local_R_request;
 
     /** @brief Pointer to locality communication information if using locality-aware
      * variants **/
@@ -62,7 +58,7 @@ typedef struct _MPIL_Request
     int (*start_function)(struct _MPIL_Request* request);
     /** @brief Function pointer to MPIL_Wait or MPIL_neighbor_wait **/
     int (*wait_function)(struct _MPIL_Request* request, MPI_Status* status);
-} MPIL_Request;
+};
 
 /** @brief Constructor for ::MPIL_Request. Initializes most members to 0. */
 void init_request(MPIL_Request** request_ptr);
@@ -71,7 +67,7 @@ void init_request(MPIL_Request** request_ptr);
         @param [in] n_request how many requests need space
         @param [out] request_ptr pointer to start of allocated memory
 **/
-void allocate_requests(int n_requests, MPI_Request** request_ptr);
+void allocate_requests(int n_requests, MPIL_Request* request);
 
 #ifdef __cplusplus
 }

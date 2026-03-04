@@ -1,5 +1,6 @@
 #include <stdlib.h>  // For NULL
 
+#include "locality_aware.h"
 #include "neighborhood/neighborhood_init.h"
 #include "persistent/MPIL_Request.h"
 
@@ -22,7 +23,7 @@ int neighbor_start(MPIL_Request* request)
     }
 
     // Local L sends sendbuf
-    if (request->local_L_n_msgs)
+    if (request->local_L_request != NULL)
     {
         for (int i = 0; i < request->locality->local_L_comm->send_data->size_msgs; i++)
         {
@@ -33,11 +34,12 @@ int neighbor_start(MPIL_Request* request)
                     send_buffer[idx * recv_size + j];
             }
         }
-        ierr += MPI_Startall(request->local_L_n_msgs, request->local_L_requests);
+
+        MPIL_Start(request->local_L_request);
     }
 
     // Local S sends sendbuf
-    if (request->local_S_n_msgs)
+    if (request->local_S_request != NULL)
     {
         for (int i = 0; i < request->locality->local_S_comm->send_data->size_msgs; i++)
         {
@@ -50,9 +52,10 @@ int neighbor_start(MPIL_Request* request)
             }
         }
 
-        ierr += MPI_Startall(request->local_S_n_msgs, request->local_S_requests);
-        ierr += MPI_Waitall(
-            request->local_S_n_msgs, request->local_S_requests, MPI_STATUSES_IGNORE);
+        MPIL_Start(request->local_S_request);
+
+        MPI_Status status;
+        MPIL_Wait(request->local_S_request, MPI_STATUS_IGNORE);
 
         // Copy into global->send_data->buffer
         for (int i = 0; i < request->locality->global_comm->send_data->size_msgs; i++)
@@ -65,12 +68,13 @@ int neighbor_start(MPIL_Request* request)
                         ->buffer[idx * recv_size + j];
             }
         }
+
     }
 
     // Global sends buffer in locality, sendbuf in standard
-    if (request->global_n_msgs)
+    if (request->n_msgs)
     {
-        ierr += MPI_Startall(request->global_n_msgs, request->global_requests);
+        ierr += MPI_Startall(request->n_msgs, request->requests);
     }
 
     return ierr;

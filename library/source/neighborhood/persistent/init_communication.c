@@ -13,8 +13,7 @@ int init_communication(const void* sendbuffer,
                        MPI_Datatype recvtype,
                        int tag,
                        MPI_Comm comm,
-                       int* n_request_ptr,
-                       MPI_Request** request_ptr)
+                       MPIL_Request* request)
 {
     int ierr = 0;
     int start, size;
@@ -25,9 +24,7 @@ int init_communication(const void* sendbuffer,
     MPI_Type_size(sendtype, &send_size);
     MPI_Type_size(recvtype, &recv_size);
 
-    MPI_Request* requests;
-    *n_request_ptr = n_recvs + n_sends;
-    allocate_requests(*n_request_ptr, &requests);
+    allocate_requests(n_recvs + n_sends, request);
 
     for (int i = 0; i < n_recvs; i++)
     {
@@ -40,7 +37,7 @@ int init_communication(const void* sendbuffer,
                               recv_procs[i],
                               tag,
                               comm,
-                              &(requests[i]));
+                              &(request->requests[i]));
     }
 
     for (int i = 0; i < n_sends; i++)
@@ -54,10 +51,9 @@ int init_communication(const void* sendbuffer,
                               send_procs[i],
                               tag,
                               comm,
-                              &(requests[n_recvs + i]));
+                              &(request->requests[n_recvs + i]));
     }
 
-    *request_ptr = requests;
 
     return ierr;
 }

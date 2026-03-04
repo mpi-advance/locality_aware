@@ -95,8 +95,7 @@ int init_communication(const void* sendbuffer,
                        MPI_Datatype recvtype,
                        int tag,
                        MPI_Comm comm,
-                       int* n_request_ptr,
-                       MPI_Request** request_ptr);
+                       MPIL_Request* request);
 
 #ifdef __cplusplus
 }

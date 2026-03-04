@@ -23,8 +23,7 @@ int neighbor_alltoallv_init_standard(const void* sendbuf,
     int tag;
     MPIL_Comm_tag(comm, &tag);
 
-    request->global_n_msgs = topo->indegree + topo->outdegree;
-    allocate_requests(request->global_n_msgs, &(request->global_requests));
+    allocate_requests(topo->indegree + topo->outdegree, request);
 
     const char* send_buffer = (const char*)(sendbuf);
     char* recv_buffer       = (char*)(recvbuf);
@@ -42,7 +41,7 @@ int neighbor_alltoallv_init_standard(const void* sendbuf,
                               topo->sources[i],
                               tag,
                               comm->global_comm,
-                              &(request->global_requests[i]));
+                              &(request->requests[i]));
     }
 
     for (int i = 0; i < topo->outdegree; i++)
@@ -53,7 +52,7 @@ int neighbor_alltoallv_init_standard(const void* sendbuf,
                               topo->destinations[i],
                               tag,
                               comm->global_comm,
-                              &(request->global_requests[topo->indegree + i]));
+                              &(request->requests[topo->indegree + i]));
     }
 
     *request_ptr = request;

@@ -1,5 +1,6 @@
 #include <stdlib.h>  // For NULL
 
+#include "locality_aware.h"
 #include "neighborhood/neighborhood_init.h"
 #include "persistent/MPIL_Request.h"
 
@@ -27,12 +28,12 @@ int neighbor_wait(MPIL_Request* request, MPI_Status* status)
     }
 
     // Global waits for recvs
-    if (request->global_n_msgs)
+    if (request->n_msgs)
     {
         ierr += MPI_Waitall(
-            request->global_n_msgs, request->global_requests, MPI_STATUSES_IGNORE);
+            request->n_msgs, request->requests, MPI_STATUSES_IGNORE);
 
-        if (request->local_R_n_msgs)
+        if (request->local_R_request)
         {
             for (int i = 0; i < request->locality->local_R_comm->send_data->size_msgs;
                  i++)
@@ -50,11 +51,10 @@ int neighbor_wait(MPIL_Request* request, MPI_Status* status)
     }
 
     // Wait for local_R recvs
-    if (request->local_R_n_msgs)
+    if (request->local_R_request)
     {
-        ierr += MPI_Startall(request->local_R_n_msgs, request->local_R_requests);
-        ierr += MPI_Waitall(
-            request->local_R_n_msgs, request->local_R_requests, MPI_STATUSES_IGNORE);
+        MPIL_Start(request->local_R_request);
+        MPIL_Wait(request->local_R_request, MPI_STATUS_IGNORE);
 
         for (int i = 0; i < request->locality->local_R_comm->recv_data->size_msgs; i++)
         {
@@ -68,10 +68,9 @@ int neighbor_wait(MPIL_Request* request, MPI_Status* status)
     }
 
     // Wait for local_L recvs
-    if (request->local_L_n_msgs)
+    if (request->local_L_request)
     {
-        ierr += MPI_Waitall(
-            request->local_L_n_msgs, request->local_L_requests, MPI_STATUSES_IGNORE);
+        MPIL_Wait(request->local_L_request, MPI_STATUS_IGNORE);
 
         for (int i = 0; i < request->locality->local_L_comm->recv_data->size_msgs; i++)
         {

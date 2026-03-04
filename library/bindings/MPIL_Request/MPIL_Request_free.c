@@ -10,37 +10,28 @@ int MPIL_Request_free(MPIL_Request** request_ptr)
 {
     MPIL_Request* request = *request_ptr;
 
-    if (request->local_L_n_msgs)
+    if (request->local_L_request != NULL)
     {
-        for (int i = 0; i < request->local_L_n_msgs; i++)
-        {
-            MPI_Request_free(&(request->local_L_requests[i]));
-        }
-        free(request->local_L_requests);
+        MPIL_Request_free(&(request->local_L_request));
     }
-    if (request->local_S_n_msgs)
+
+    if (request->local_S_request != NULL)
     {
-        for (int i = 0; i < request->local_S_n_msgs; i++)
-        {
-            MPI_Request_free(&(request->local_S_requests[i]));
-        }
-        free(request->local_S_requests);
+        MPIL_Request_free(&(request->local_S_request));
     }
-    if (request->local_R_n_msgs)
+
+    if (request->local_R_request != NULL)
     {
-        for (int i = 0; i < request->local_R_n_msgs; i++)
-        {
-            MPI_Request_free(&(request->local_R_requests[i]));
-        }
-        free(request->local_R_requests);
+        MPIL_Request_free(&(request->local_R_request));
     }
-    if (request->global_n_msgs)
+
+    if (request->n_msgs)
     {
-        for (int i = 0; i < request->global_n_msgs; i++)
+        for (int i = 0; i < request->n_msgs; i++)
         {
-            MPI_Request_free(&(request->global_requests[i]));
+            MPI_Request_free(&(request->requests[i]));
         }
-        free(request->global_requests);
+        free(request->requests);
     }
 
     // If Locality-Aware

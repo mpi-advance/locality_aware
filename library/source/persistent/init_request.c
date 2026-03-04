@@ -9,15 +9,12 @@ void init_request(MPIL_Request** request_ptr)
 
     request->locality = NULL;
 
-    request->local_L_n_msgs = 0;
-    request->local_S_n_msgs = 0;
-    request->local_R_n_msgs = 0;
-    request->global_n_msgs  = 0;
+    request->n_msgs = 0;
+    request->requests = NULL;
 
-    request->local_L_requests = NULL;
-    request->local_S_requests = NULL;
-    request->local_R_requests = NULL;
-    request->global_requests  = NULL;
+    request->local_L_request = NULL;
+    request->local_S_request = NULL;
+    request->local_R_request = NULL;
 
     request->recv_size  = 0;
     request->block_size = 1;

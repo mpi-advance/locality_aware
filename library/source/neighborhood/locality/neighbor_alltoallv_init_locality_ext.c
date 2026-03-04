@@ -30,6 +30,9 @@ int neighbor_alltoallv_init_locality_ext(const void* sendbuffer,
 
     MPIL_Request* request;
     init_neighbor_request(&request);
+    init_neighbor_request(&(request->local_L_request));
+    init_neighbor_request(&(request->local_S_request));
+    init_neighbor_request(&(request->local_R_request));
 
     int indegree  = 0;
     int outdegree = 0;
@@ -113,8 +116,7 @@ int neighbor_alltoallv_init_locality_ext(const void* sendbuffer,
                        recvtype,
                        request->locality->local_L_comm->tag,
                        comm->local_comm,
-                       &(request->local_L_n_msgs),
-                       &(request->local_L_requests));
+                       request->local_L_request);
 
     // Local S Communication
     init_communication(request->locality->local_S_comm->send_data->buffer,
@@ -129,8 +131,7 @@ int neighbor_alltoallv_init_locality_ext(const void* sendbuffer,
                        recvtype,
                        request->locality->local_S_comm->tag,
                        comm->local_comm,
-                       &(request->local_S_n_msgs),
-                       &(request->local_S_requests));
+                       request->local_S_request);
 
     // Global Communication
     init_communication(request->locality->global_comm->send_data->buffer,
@@ -145,8 +146,7 @@ int neighbor_alltoallv_init_locality_ext(const void* sendbuffer,
                        recvtype,
                        request->locality->global_comm->tag,
                        comm->global_comm,
-                       &(request->global_n_msgs),
-                       &(request->global_requests));
+                       request);
 
     // Local R Communication
     init_communication(request->locality->local_R_comm->send_data->buffer,
@@ -161,8 +161,7 @@ int neighbor_alltoallv_init_locality_ext(const void* sendbuffer,
                        recvtype,
                        request->locality->local_R_comm->tag,
                        comm->local_comm,
-                       &(request->local_R_n_msgs),
-                       &(request->local_R_requests));
+                       request->local_R_request);
 
     *request_ptr = request;
 
