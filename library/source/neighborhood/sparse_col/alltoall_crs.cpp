@@ -655,6 +655,11 @@ int alltoall_crs_personalized_loc(const int send_nnz,
         }
     }
 
+    if (n_sends)
+    {
+        MPI_Waitall(n_sends, comm->requests, MPI_STATUSES_IGNORE);
+    }
+
     local_redistribute(node_recv_size,
                        recv_buf,
                        origins,
