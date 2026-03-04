@@ -222,6 +222,9 @@ void test_matrix(const char* filename)
                                      xcomm,
                                      xinfo,
                                      &xrequest);
+    MPIL_Start(xrequest);
+    MPIL_Wait(xrequest, &status);
+    MPIL_Request_free(&xrequest);
 
     // Full Locality
     MPIL_Set_alltoallv_neighbor_init_alogorithm(NEIGHBOR_ALLTOALLV_INIT_LOCALITY);
