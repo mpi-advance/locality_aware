@@ -19,19 +19,28 @@ void init_packing_buffers(MPIL_Request* request, int size_sends, int* send_indic
     {
         request->size_sends = size_sends;
         request->tmp_sendbuf = (char*)malloc(size_sends * send_size);
-        request->send_indices = (int*)malloc(size_sends * sizeof(int));
-        memcpy(request->send_indices, send_indices, size_sends*sizeof(int));
         request->sendbuf = _sendbuf;
         request->send_size = send_size;
+
+        if (send_indices)
+        {
+            request->send_indices = (int*)malloc(size_sends * sizeof(int));
+            memcpy(request->send_indices, send_indices, size_sends*sizeof(int));
+        }
+        
     }
 
     if (size_recvs)
     {
         request->size_recvs = size_recvs;
         request->tmp_recvbuf = (char*)malloc(size_recvs * recv_size);
-        request->recv_indices = (int*)malloc(size_recvs * sizeof(int));
-        memcpy(request->recv_indices, recv_indices, size_recvs*sizeof(int));
         request->recvbuf = _recvbuf;
         request->recv_size = recv_size;
+
+        if (recv_indices)
+        {
+            request->recv_indices = (int*)malloc(size_recvs * sizeof(int));
+            memcpy(request->recv_indices, recv_indices, size_recvs*sizeof(int));
+        }
     }
 }
