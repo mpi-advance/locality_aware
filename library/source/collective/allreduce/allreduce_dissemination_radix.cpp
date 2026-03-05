@@ -115,7 +115,7 @@ int allreduce_dissemination_radix_core(
             }
             MPI_Waitall(n_msgs, request, MPI_STATUSES_IGNORE);
             for (int i = 0; i < n_msgs/2; i++)
-                MPI_Reduce_local(tmpbuf+i*count*type_size, recvbuf, count,
+                MPI_Reduce_local( + tmpbuf+i*count*type_size, recvbuf, count,
                             datatype, op);
         }
 
