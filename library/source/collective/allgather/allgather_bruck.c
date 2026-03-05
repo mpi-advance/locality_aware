@@ -56,8 +56,8 @@ int allgather_bruck_helper(const void* sendbuf,
     int send_proc, recv_proc;
     for (int i = 0; i < log_procs; i++)
     {
-        send_proc = (rank + pow_i) % num_procs;
-        recv_proc = (rank - pow_i + num_procs) % num_procs;
+        send_proc = (rank - pow_i + num_procs) % num_procs;
+        recv_proc = (rank + pow_i) % num_procs;
         MPI_Sendrecv(tmpbuf, recvcount * pow_i, recvtype, send_proc, tag,
                 tmpbuf + pow_i * count_bytes, recvcount * pow_i, recvtype,
                 recv_proc, tag, comm->global_comm, MPI_STATUS_IGNORE);
@@ -68,8 +68,8 @@ int allgather_bruck_helper(const void* sendbuf,
     if (log2_num_procs != num_procs)
     {
         int count = num_procs - log2_num_procs;
-        send_proc = (rank + pow_i) % num_procs;
-        recv_proc = (rank - pow_i + num_procs) % num_procs;
+        send_proc = (rank - pow_i + num_procs) % num_procs;
+        recv_proc = (rank + pow_i) % num_procs;
         MPI_Sendrecv(tmpbuf, recvcount * count, recvtype, send_proc, tag,
                 tmpbuf + pow_i * count_bytes, recvcount * count, recvtype,
                 recv_proc, tag, comm->global_comm, MPI_STATUS_IGNORE);
