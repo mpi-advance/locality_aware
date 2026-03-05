@@ -4,6 +4,7 @@
 enum AlltoallMethod mpil_alltoall_implementation          = ALLTOALL_PAIRWISE;
 enum AlltoallvMethod mpil_alltoallv_implementation        = ALLTOALLV_PAIRWISE;
 enum AllreduceMethod mpil_allreduce_implementation        = ALLREDUCE_PMPI;
+enum AllreduceMethod mpil_allreduce_init_implementation   = ALLREDUCE_PMPI;
 enum AllgatherMethod mpil_allgather_implementation        = ALLGATHER_PMPI;
 enum AlltoallCRSMethod mpil_alltoall_crs_implementation   = ALLTOALL_CRS_PERSONALIZED;
 enum AlltoallvCRSMethod mpil_alltoallv_crs_implementation = ALLTOALLV_CRS_PERSONALIZED;
@@ -32,6 +33,11 @@ int MPIL_Set_alltoallv_algorithm(enum AlltoallvMethod algorithm)
 int MPIL_Set_allreduce_algorithm(enum AllreduceMethod algorithm)
 {
     mpil_allreduce_implementation = (enum AllreduceMethod)algorithm;
+    return MPI_SUCCESS;
+}
+int MPIL_Set_allreduce_init_algorithm(enum AllreduceMethod algorithm)
+{
+    mpil_allreduce_init_implementation = (enum AllreduceMethod)algorithm;
     return MPI_SUCCESS;
 }
 int MPIL_Set_allgather_algorithm(enum AllgatherMethod algorithm)

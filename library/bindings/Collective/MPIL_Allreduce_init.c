@@ -15,7 +15,7 @@ int MPIL_Allreduce_init(const void* sendbuf,
 {
     allreduce_init_ftn method;
 
-    switch (mpil_allreduce_implementation)
+    switch (mpil_allreduce_init_implementation)
     {
 #if defined(GPU) 
 #if defined(GPU_AWARE)

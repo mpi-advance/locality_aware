@@ -146,30 +146,6 @@ int allreduce_dissemination_loc_init_helper(
                                  int count,
                                  MPI_Datatype datatype,
                                  MPI_Op op,
-                                 MPIL_Comm* comm,
-                                 MPIL_Info* info,
-                                 MPIL_Request** req_ptr,
-                                 MPIL_Alloc_ftn alloc_ftn,
-                                 MPIL_Free_ftn free_ftn);
-
-int allreduce_dissemination_ml_init_helper(
-                                 const void* sendbuf,
-                                 void* recvbuf,
-                                 int count,
-                                 MPI_Datatype datatype,
-                                 MPI_Op op,
-                                 MPIL_Comm* comm,
-                                 MPIL_Info* info,
-                                 MPIL_Request** req_ptr,
-                                 MPIL_Alloc_ftn alloc_ftn,
-                                 MPIL_Free_ftn free_ftn);
-
-int allreduce_dissemination_loc_init_core(
-                                 const void* sendbuf,
-                                 void* recvbuf,
-                                 int count,
-                                 MPI_Datatype datatype,
-                                 MPI_Op op,
                                  MPI_Comm global_comm,
                                  MPI_Comm group_comm,
                                  MPI_Comm local_comm,
@@ -178,6 +154,8 @@ int allreduce_dissemination_loc_init_core(
                                  MPIL_Request** req_ptr,
                                  MPIL_Alloc_ftn alloc_ftn,
                                  MPIL_Free_ftn free_ftn);
+
+
 
 
 #ifdef __cplusplus

@@ -3,7 +3,7 @@
 #include <string.h>
 #include <math.h>
 
-int allreduce_dissemination_loc_init(const void* sendbuf,
+int allreduce_dissemination_radix_init(const void* sendbuf,
                                  void* recvbuf,
                                  int count,
                                  MPI_Datatype datatype,
@@ -16,95 +16,113 @@ int allreduce_dissemination_loc_init(const void* sendbuf,
     if (count == 0)
         return MPI_SUCCESS;
 
-    int rank, num_procs;
-    MPI_Comm_rank(comm->global_comm, &rank);
-    MPI_Comm_size(comm->global_comm, &num_procs);
-
-    if (comm->local_comm == MPI_COMM_NULL)
-        MPIL_Comm_topo_init(comm);
-
-    int local_rank, ppn;
-    MPI_Comm_rank(comm->local_comm, &local_rank);
-    MPI_Comm_size(comm->local_comm, &ppn);
-
-    int rank_node, num_nodes;
-    MPI_Comm_rank(comm->group_comm, &rank_node);
-    MPI_Comm_size(comm->group_comm, &num_nodes);
-
-    int tag;
-    get_tag(comm, &tag);
-
-    // Locality-Aware only works if ppn is even on all processes
-    if (num_nodes * ppn != num_procs)
-        return allreduce_recursive_doubling_init_helper(
-                sendbuf, recvbuf, count, datatype, op, comm,
-                info, req_ptr, MPIL_Alloc, MPIL_Free);
-
-    return allreduce_dissemination_loc_init_helper(sendbuf, recvbuf, count,
-            datatype, op, comm->global_comm, comm->group_comm, 
-            comm->local_comm, info, tag, req_ptr,
-            MPIL_Alloc, MPIL_Free);
-        
+    return allreduce_dissmeination_radix_init_helper(sendbuf, recvbuf,
+            count, datatype, op, comm, req_ptr, MPIL_Alloc, MPIL_Free);
 }
 
-
-
-int allreduce_dissemination_ml_init(const void* sendbuf,
-                                 void* recvbuf,
-                                 int count,
-                                 MPI_Datatype datatype,
-                                 MPI_Op op,
-                                 MPIL_Comm* comm,
-                                 MPIL_Info* info,
-                                 MPIL_Request** req_ptr)
+int allreduce_dissemination_radix_init_helper(const void* sendbuf,
+                                              void* recvbuf,
+                                              int count,
+                                              MPI_Datatype datatype,
+                                              MPI_Op op,
+                                              MPIL_Comm* comm,
+                                              MPIL_Info* info,
+                                              MPIL_Request** req_ptr,
+                                              MPIL_Alloc_ftn alloc_ftn,
+                                              MPIL_Free_ftn free_ftn)
 {
-    if (count == 0)
-        return MPI_SUCCESS;
+    int radix = mpil_collective_radix;
+
+    int tag;
+    get_tag(comm, &tag);
+
+    int type_size;
+    MPI_Type_size(datatype, &type_size);
 
     int rank, num_procs;
     MPI_Comm_rank(comm->global_comm, &rank);
     MPI_Comm_size(comm->global_comm, &num_procs);
 
-    if (comm->local_comm == MPI_COMM_NULL)
-        MPIL_Comm_topo_init(comm);
 
-    int local_rank, ppn;
-    MPI_Comm_rank(comm->local_comm, &local_rank);
-    MPI_Comm_size(comm->local_comm, &ppn);
+    allocate_requests(2, &(request->local_L_requests));
+    MPI_Send_init(sendbuf, count, datatype, rank, tag, 
+            comm->global_comm, &(request->local_L_requests[request->local_L_n_msgs++]));
+    MPI_Recv_init(recvbuf, count, datatype, rank, tag,
+            comm->global_comm, &(request->local_L_requests[request->local_L_n_msgs++]));
 
-    int rank_node, num_nodes;
-    MPI_Comm_rank(comm->group_comm, &rank_node);
-    MPI_Comm_size(comm->group_comm, &num_nodes);
+    int pow_radix_num_procs = 1;
+    while (pow_radix_num_procs * radix <= num_procs)
+        pow_radix_num_procs *= radix;
+    int mult = num_procs / pow_radix_num_procs;
+    int max_proc = mult * pow_radix_num_procs;
+    int extra = num_procs - max_proc;
 
-    int tag;
-    get_tag(comm, &tag);
+    // TODO - this is way too large, can find tighter bound
+    allocate_requests(2*num_procs, &(request->global_requests));
 
-    // Locality-Aware only works if ppn is even on all processes
-    if (num_nodes * ppn != num_procs)
-        return allreduce_recursive_doubling_init_helper(
-                sendbuf, recvbuf, count, datatype, op, comm,
-                info, req_ptr, MPIL_Alloc, MPIL_Free);
+    alloc_ftn(&(request->tmpbuf), radix*type_size*count*num_procs);
+    request->free_ftn = free_ftn;
 
-    // Convert to leader_comm (4 leaders per node)
-    int num_leaders = 4;
-    if (comm->leader_comm != MPI_COMM_NULL)
+
+    if (rank >= max_proc)
     {
-        int ppl;
-        MPI_Comm_size(comm->leader_comm, &ppl);
-        if (ppn / num_leaders != ppl)
+        int proc = rank - max_proc;
+        MPI_Send_init(recvbuf, count, datatype, proc, tag, 
+            comm->global_comm, &(request->local_S_requests[request->local_S_n_msgs++]));
+        MPI_Recv_init(recvbuf, count, datatype, proc, tag,
+            comm->global_comm, &(request->local_R_requests[request->local_R_n_msgs++]));
+    }
+    else
+    {
+        if (rank < extra)
         {
-            MPIL_Comm_leader_free(comm);
+            MPI_Recv_init(tmpbuf, count, datatype,  max_proc + rank, tag,
+                    comm->global_comm, &(request->local_S_requests[request->local_S_n_msgs++]));
+
+            MPI_Recv(tmpbuf, count, datatype, max_proc + rank, tag,
+                   comm->global_comm, MPI_STATUS_IGNORE);
+            MPI_Reduce_local(tmpbuf, recvbuf, count, datatype, op);
+        }
+
+        for (int stride_start = 1; stride_start < max_proc; stride_start *= radix)
+        {
+            int n_msgs = 0;
+            for (int step = 1; step < radix; step++)
+            {
+                int stride = stride_start * step;
+                if (stride < max_proc)
+                {
+                    int send_proc = (rank - stride + max_proc) % max_proc;
+                    int recv_proc = (rank + stride) % max_proc;
+                    MPI_Isend(recvbuf, count, datatype, send_proc, tag,
+                            comm->global_comm, &(request[n_msgs++]));
+                    MPI_Irecv(tmpbuf + (step-1)*count*type_size, count, datatype, recv_proc, tag,
+                            comm->global_comm, &(request[n_msgs++]));
+                }
+            }
+            MPI_Waitall(n_msgs, request, MPI_STATUSES_IGNORE);
+            for (int step = 1; step < radix; step++)
+            {
+                int stride = stride_start * step;
+                if (stride < max_proc)
+                    MPI_Reduce_local(tmpbuf+(step-1)*count*type_size, recvbuf, count,
+                            datatype, op);
+            }
+        }
+
+
+        if (rank < extra)
+        {
+            MPI_Send_init(recvbuf, count, datatype, max_proc + rank, tag, 
+                    comm->global_comm, &(request->local_R_requests[request->local_R_n_msgs++]));
         }
     }
-    if (comm->leader_comm == MPI_COMM_NULL)
-        MPIL_Comm_leader_init(comm, ppn / num_leaders);
 
-    return allreduce_dissemination_loc_init_helper(
-                   sendbuf, recvbuf, count, datatype, op,
-                   comm->global_comm, comm->group_comm,
-                   comm->local_comm, info, tag, req_ptr,
-                   MPIL_Alloc, MPIL_Free);
+    *request_ptr = request;
+
+    return MPI_SUCCESS;
 }
+
 
 
 int allreduce_dissemination_loc_init_helper(const void* sendbuf,

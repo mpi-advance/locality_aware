@@ -113,6 +113,7 @@ enum AllgatherMethod
     ALLGATHER_PMPI
 };
 
+
 /** @brief Enumeration of implemented neighborhood alltoall algorithms @ingroup
  * alg_enum**/
 enum NeighborAlltoallvMethod
@@ -157,6 +158,7 @@ enum AlltoallvCRSMethod
 extern enum AlltoallMethod mpil_alltoall_implementation;
 extern enum AlltoallvMethod mpil_alltoallv_implementation;
 extern enum AllreduceMethod mpil_allreduce_implementation;
+extern enum AllreduceMethod mpil_allreduce_init_implementation;
 extern enum AllgatherMethod mpil_allgather_implementation;
 extern enum NeighborAlltoallvMethod mpil_neighbor_alltoallv_implementation;
 extern enum NeighborAlltoallvInitMethod mpil_neighbor_alltoallv_init_implementation;
@@ -177,6 +179,7 @@ extern int mpil_collective_radix;
 int MPIL_Set_alltoall_algorithm(enum AlltoallMethod algorithm);
 int MPIL_Set_alltoallv_algorithm(enum AlltoallvMethod algorithm);
 int MPIL_Set_allreduce_algorithm(enum AllreduceMethod algorithm);
+int MPIL_Set_allreduce_init_algorithm(enum AllreduceMethod algorithm);
 int MPIL_Set_allgather_algorithm(enum AllgatherMethod algorithm);
 int MPIL_Set_alltoallv_neighbor_alogorithm(enum NeighborAlltoallvMethod algorithm);
 int MPIL_Set_alltoallv_neighbor_init_alogorithm(
