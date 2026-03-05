@@ -2,7 +2,7 @@
 #define MPI_ADVANCE_NEIGHBOR_INIT_H
 
 #include "MPIL_Topo.h"
-#include "communicator/MPIL_Comm.h"
+#include "communicator/MPIL_Comm.hpp"
 #include "communicator/MPIL_Info.h"
 #include "persistent/MPIL_Request.h"
 

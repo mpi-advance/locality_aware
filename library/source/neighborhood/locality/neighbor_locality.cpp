@@ -2,8 +2,8 @@
 
 #include <algorithm>
 
-#include "communicator/MPIL_Comm.h"
 #include "locality_aware.h"
+#include "communicator/MPIL_Comm.hpp"
 #include "persistent/MPIL_Request.h"
 #include "neighborhood/MPIL_Topo.h"
 #include "neighborhood/neighborhood_init.h"

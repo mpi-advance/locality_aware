@@ -1,7 +1,7 @@
 #include <cstring>
 #include <vector>
 
-#include "communicator/MPIL_Comm.h"
+#include "communicator/MPIL_Comm.hpp"
 #include "locality_aware.h"
 // Assumes SMP Ordering of ranks across nodes (aggregates ranks 0-PPN)
 int alltoall_crs_personalized_loc(int send_nnz,
@@ -17,15 +17,12 @@ int alltoall_crs_personalized_loc(int send_nnz,
                                   MPIL_Info* xinfo,
                                   MPIL_Comm* comm)
 {
-    int rank, num_procs, local_rank, PPN;
-    MPI_Comm_rank(comm->global_comm, &rank);
-    MPI_Comm_size(comm->global_comm, &num_procs);
-
     if (comm->local_comm == MPI_COMM_NULL)
     {
         MPIL_Comm_topo_init(comm);
     }
 
+    int local_rank, PPN;
     MPI_Comm_rank(comm->local_comm, &local_rank);
     MPI_Comm_size(comm->local_comm, &PPN);
 
@@ -331,15 +328,12 @@ int alltoall_crs_nonblocking_loc(int send_nnz,
                                  MPIL_Info* xinfo,
                                  MPIL_Comm* comm)
 {
-    int rank, num_procs, local_rank, PPN;
-    MPI_Comm_rank(comm->global_comm, &rank);
-    MPI_Comm_size(comm->global_comm, &num_procs);
-
     if (comm->local_comm == MPI_COMM_NULL)
     {
         MPIL_Comm_topo_init(comm);
     }
 
+    int local_rank, PPN;
     MPI_Comm_rank(comm->local_comm, &local_rank);
     MPI_Comm_size(comm->local_comm, &PPN);
 
@@ -665,14 +659,12 @@ int alltoallv_crs_personalized_loc(int send_nnz,
                                    MPIL_Info* xinfo,
                                    MPIL_Comm* comm)
 {
-    int rank, num_procs, local_rank, PPN;
-    MPI_Comm_rank(comm->global_comm, &rank);
-    MPI_Comm_size(comm->global_comm, &num_procs);
-
     if (comm->local_comm == MPI_COMM_NULL)
     {
         MPIL_Comm_topo_init(comm);
     }
+
+    int local_rank, PPN;
     MPI_Comm_rank(comm->local_comm, &local_rank);
     MPI_Comm_size(comm->local_comm, &PPN);
 
@@ -1039,14 +1031,12 @@ int alltoallv_crs_nonblocking_loc(int send_nnz,
                                   MPIL_Info* xinfo,
                                   MPIL_Comm* comm)
 {
-    int rank, num_procs, local_rank, PPN;
-    MPI_Comm_rank(comm->global_comm, &rank);
-    MPI_Comm_size(comm->global_comm, &num_procs);
-
     if (comm->local_comm == MPI_COMM_NULL)
     {
         MPIL_Comm_topo_init(comm);
     }
+
+    int local_rank, PPN;
     MPI_Comm_rank(comm->local_comm, &local_rank);
     MPI_Comm_size(comm->local_comm, &PPN);
 

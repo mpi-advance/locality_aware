@@ -78,9 +78,7 @@ void test_matrix(const char* filename)
     communicate(A, send_vals, mpix_recv_vals, MPI_INT);
 
     MPI_Comm std_comm;
-    MPI_Status status;
     MPIL_Comm* xcomm;
-    MPIL_Request* xrequest;
     MPIL_Info* xinfo;
 
     MPIL_Info_init(&xinfo);
@@ -204,7 +202,9 @@ void test_matrix(const char* filename)
 int main(int argc, char** argv)
 {
     MPI_Init(&argc, &argv);
+    MPIL_Init(MPI_COMM_WORLD);
     test_all_matrices();
+    MPIL_Finalize();
     MPI_Finalize();
     return 0;
 }  // end of main() //

@@ -7,7 +7,6 @@
 #include <set>
 #include <vector>
 
-// #include "persistent/MPIL_Request.h"
 #include "locality_aware.h"
 #include "neighbor_data.hpp"
 
@@ -32,6 +31,7 @@ void compare_neighbor_alltoallv_results(std::vector<int>& pmpi_recv_vals,
 int main(int argc, char** argv)
 {
     MPI_Init(&argc, &argv);
+    MPIL_Init(MPI_COMM_WORLD);
     // Get MPI Information
     int rank, num_procs;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -161,6 +161,7 @@ int main(int argc, char** argv)
     MPIL_Comm_free(&xcomm);
     MPI_Comm_free(&std_comm);
 
+    MPIL_Finalize();
     MPI_Finalize();
     return 0;
 }  // end of main() //

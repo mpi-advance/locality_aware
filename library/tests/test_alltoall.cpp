@@ -8,7 +8,6 @@
 #include <vector>
 
 #include "locality_aware.h"
-// #include "collective/alltoall.h"
 
 void compare_alltoall_results(std::vector<int>& pmpi, std::vector<int>& mpil, int s)
 {
@@ -32,6 +31,7 @@ void compare_alltoall_results(std::vector<int>& pmpi, std::vector<int>& mpil, in
 int main(int argc, char** argv)
 {
     MPI_Init(&argc, &argv);
+    MPIL_Init(MPI_COMM_WORLD);
 
     int rank, num_procs;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -225,6 +225,7 @@ int main(int argc, char** argv)
 
     MPIL_Comm_free(&locality_comm);
 
+    MPIL_Finalize();
     MPI_Finalize();
     return 0;
 }  // end of main() //

@@ -5,7 +5,7 @@ cmake_policy(VERSION 3.21.1...3.27)
 project(locality_aware VERSION 2.0.0 LANGUAGES C CXX)
 
 # Set C,CXX standards
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_C_STANDARD 11)
 
 # Set default build type
@@ -69,13 +69,6 @@ endif()
 if (ENABLE_UNIT_TESTS)
     enable_testing()
 	set(TEST_PROCS "16" CACHE STRING "Number of processes to use when making ctests")
-	function(make_test file)
-		#get file name for unique handle
-		get_filename_component(exec_name ${file} NAME_WE)
-		add_executable(${exec_name} ${file})
-		target_link_libraries(${exec_name} locality_aware ${EXTERNAL_LIBS})
-		add_test(NAME ${exec_name}_Test COMMAND ${MPIRUN} -n ${TEST_PROCS} ./${exec_name})
-	endfunction()
 endif()
 
 # Flag == TRUE means TEST
@@ -83,8 +76,12 @@ endif()
 function(make_executable filename flag)
 	get_filename_component(exec_name ${filename} NAME_WE)
 	add_executable(${exec_name} ${filename})
-	target_link_libraries(${exec_name} locality_aware ${EXTERNAL_LIBS})
+	# Need the "math" library (m) for the C test to work correctly
+	target_link_libraries(${exec_name} locality_aware m)
 	
+	target_include_directories(${exec_name} PRIVATE 
+		$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/library/tests/tests>)
+
 	if(${flag})
 		set(locality_test_name ${exec_name}_Test)
 	else()

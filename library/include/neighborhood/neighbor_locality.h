@@ -4,7 +4,7 @@
 #include <map>
 #include <vector>
 
-#include "communicator/MPIL_Comm.h"
+#include "communicator/MPIL_Comm.hpp"
 
 #ifdef __cplusplus
 extern "C" {
