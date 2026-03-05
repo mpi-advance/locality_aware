@@ -3,8 +3,6 @@
 
 #include <mpi.h>
 
-#include "communicator/locality_comm.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
