@@ -81,15 +81,13 @@ void init_locality(const int n_sends,
                     local_S_recv_data,
                     local_L_send_data,
                     recv_idx_nodes,
-                    mpil_comm,
-                    19483);
+                    mpil_comm);
 
     // Form global send data
     form_global_comm(local_S_recv_data,
                      global_send_data,
                      recv_idx_nodes,
-                     mpil_comm,
-                     93284);
+                     mpil_comm);
 
     // Find global recv nodes
     std::vector<int> recv_nodes;
@@ -114,15 +112,13 @@ void init_locality(const int n_sends,
                     local_R_send_data,
                     local_L_recv_data,
                     send_idx_nodes,
-                    mpil_comm,
-                    32048);
+                    mpil_comm);
 
     // Form global recv data
     form_global_comm(local_R_send_data,
                      global_recv_data,
                      send_idx_nodes,
-                     mpil_comm,
-                     93284);
+                     mpil_comm);
 
     // Update procs for global_comm send and recvs
     update_global_comm(global_send_data,
@@ -458,8 +454,7 @@ void form_local_comm(const int orig_num_sends,
                      CommData* recv_data,
                      CommData* local_data,
                      std::vector<int>& recv_idx_nodes,
-                     MPIL_Comm* mpil_comm, 
-                     const int tag)
+                     MPIL_Comm* mpil_comm)
 {
     // MPI_Information
     int local_rank, local_num_procs;
@@ -573,6 +568,11 @@ void form_local_comm(const int orig_num_sends,
     MPIL_Comm* local_mpil_comm;
     MPIL_Comm_init(&local_mpil_comm, mpil_comm->local_comm);
 
+    // Reseting local comm's tag to next available mpil_comm tag
+    // So that calling this method multiple times doesn't result
+    // in multiple dynamic comms on same tag
+    get_tag(mpil_comm, &local_mpil_comm->tag);
+
     MPIL_Info* local_info;
     MPIL_Info_init(&local_info);
 
@@ -626,8 +626,7 @@ void form_local_comm(const int orig_num_sends,
 void form_global_comm(CommData* local_data,
                       CommData* global_data,
                       std::vector<int>& local_data_nodes,
-                      MPIL_Comm* mpil_comm,
-                      int tag)
+                      MPIL_Comm* mpil_comm)
 {
     std::vector<int> node_sizes;
     std::vector<int> node_ctr;

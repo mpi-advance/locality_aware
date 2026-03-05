@@ -41,13 +41,11 @@ void form_local_comm(const int orig_num_sends,
                      CommData* recv_data,
                      CommData* local_data,
                      std::vector<int>& recv_idx_nodes,
-                     MPIL_Comm* mpil_comm,
-                     const int tag);
+                     MPIL_Comm* mpil_comm);
 void form_global_comm(CommData* local_data,
                       CommData* global_data,
                       std::vector<int>& local_data_nodes,
-                      MPIL_Comm* mpil_comm,
-                      int tag);
+                      MPIL_Comm* mpil_comm);
 void update_global_comm(CommData* global_send_data,
                         CommData* global_recv_data,
                         MPIL_Comm* mpil_comm);
