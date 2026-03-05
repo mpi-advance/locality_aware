@@ -59,7 +59,7 @@ int gpu_aware_allreduce_pmpi_init(const void* sendbuf,
                         MPIL_Request** req_ptr);
 #endif
 
-#endif defined(GPU_AWARE)
+#endif
 
 int copy_to_cpu_allreduce_init(allreduce_init_helper_ftn f,
                           const void* sendbuf,

@@ -22,12 +22,29 @@ int allreduce_dissemination_loc_init(const void* sendbuf,
     if (comm->local_comm == MPI_COMM_NULL)
         MPIL_Comm_topo_init(comm);
 
-    int local_rank, ppn;
-    MPI_Comm_rank(comm->local_comm, &local_rank);
+    return allreduce_dissemination_loc_init_helper(sendbuf,
+            recvbuf, count, datatype, op, comm, info, 
+            req_ptr, MPIL_Alloc, MPIL_Free);
+}
+
+int allreduce_dissemination_loc_init_helper(const void* sendbuf,
+                                 void* recvbuf,
+                                 int count,
+                                 MPI_Datatype datatype,
+                                 MPI_Op op,
+                                 MPIL_Comm* comm,
+                                 MPIL_Info* info,
+                                 MPIL_Request** req_ptr,
+                                 MPIL_Alloc_ftn alloc_ftn,
+                                 MPIL_Free_ftn free_ftn)
+{
+    int num_procs;
+    MPI_Comm_size(comm->global_comm, &num_procs);
+
+    int ppn;
     MPI_Comm_size(comm->local_comm, &ppn);
 
-    int rank_node, num_nodes;
-    MPI_Comm_rank(comm->group_comm, &rank_node);
+    int num_nodes;
     MPI_Comm_size(comm->group_comm, &num_nodes);
 
     int tag;
@@ -39,14 +56,12 @@ int allreduce_dissemination_loc_init(const void* sendbuf,
                 sendbuf, recvbuf, count, datatype, op, comm,
                 info, req_ptr, MPIL_Alloc, MPIL_Free);
 
-    return allreduce_dissemination_loc_init_helper(sendbuf, recvbuf, count,
+    return allreduce_dissemination_loc_init_core(sendbuf, recvbuf, count,
             datatype, op, comm->global_comm, comm->group_comm, 
             comm->local_comm, info, tag, req_ptr,
             MPIL_Alloc, MPIL_Free);
         
 }
-
-
 
 int allreduce_dissemination_ml_init(const void* sendbuf,
                                  void* recvbuf,
@@ -56,23 +71,42 @@ int allreduce_dissemination_ml_init(const void* sendbuf,
                                  MPIL_Comm* comm,
                                  MPIL_Info* info,
                                  MPIL_Request** req_ptr)
-{
+{   
     if (count == 0)
         return MPI_SUCCESS;
-
+    
     int rank, num_procs;
     MPI_Comm_rank(comm->global_comm, &rank);
     MPI_Comm_size(comm->global_comm, &num_procs);
-
+    
     if (comm->local_comm == MPI_COMM_NULL)
         MPIL_Comm_topo_init(comm);
+    
+    return allreduce_dissemination_ml_init_helper(sendbuf,
+            recvbuf, count, datatype, op, comm, info,
+            req_ptr, MPIL_Alloc, MPIL_Free);
+}
 
-    int local_rank, ppn;
-    MPI_Comm_rank(comm->local_comm, &local_rank);
+
+
+int allreduce_dissemination_ml_init_helper(const void* sendbuf,
+                                 void* recvbuf,
+                                 int count,
+                                 MPI_Datatype datatype,
+                                 MPI_Op op,
+                                 MPIL_Comm* comm,
+                                 MPIL_Info* info,
+                                 MPIL_Request** req_ptr,
+                                 MPIL_Alloc_ftn alloc_ftn,
+                                 MPIL_Free_ftn free_ftn)
+{
+    int num_procs;
+    MPI_Comm_size(comm->global_comm, &num_procs);
+
+    int ppn;
     MPI_Comm_size(comm->local_comm, &ppn);
 
-    int rank_node, num_nodes;
-    MPI_Comm_rank(comm->group_comm, &rank_node);
+    int num_nodes;
     MPI_Comm_size(comm->group_comm, &num_nodes);
 
     int tag;
@@ -98,7 +132,7 @@ int allreduce_dissemination_ml_init(const void* sendbuf,
     if (comm->leader_comm == MPI_COMM_NULL)
         MPIL_Comm_leader_init(comm, ppn / num_leaders);
 
-    return allreduce_dissemination_loc_init_helper(
+    return allreduce_dissemination_loc_init_core(
                    sendbuf, recvbuf, count, datatype, op,
                    comm->global_comm, comm->group_comm,
                    comm->local_comm, info, tag, req_ptr,
@@ -106,7 +140,7 @@ int allreduce_dissemination_ml_init(const void* sendbuf,
 }
 
 
-int allreduce_dissemination_loc_init_helper(const void* sendbuf,
+int allreduce_dissemination_loc_init_core(const void* sendbuf,
                                  void* recvbuf,
                                  int count,
                                  MPI_Datatype datatype,
