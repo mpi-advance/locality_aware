@@ -28,9 +28,11 @@ int MPIL_Allreduce_init(const void* sendbuf,
         case ALLREDUCE_GPU_DISSEMINATION_ML:
             method = gpu_aware_allreduce_dissemination_ml_init;
             break;
-        //case ALLREDUCE_GPU_PMPI:
-        //    method = gpu_aware_allreduce_pmpi_init;
-        //    break;
+#if defined(MPI4)
+        case ALLREDUCE_GPU_PMPI:
+            method = gpu_aware_allreduce_pmpi_init;
+            break;
+#endif
 #endif
         case ALLREDUCE_CTC_RECURSIVE_DOUBLING:
             method = copy_to_cpu_allreduce_recursive_doubling_init;
@@ -41,9 +43,11 @@ int MPIL_Allreduce_init(const void* sendbuf,
         case ALLREDUCE_CTC_DISSEMINATION_ML:
             method = copy_to_cpu_allreduce_dissemination_ml_init;
             break;
-        //case ALLREDUCE_CTC_PMPI:
-        //    method = copy_to_cpu_allreduce_pmpi_init;
-        //    break;
+#if defined(MPI4)
+        case ALLREDUCE_CTC_PMPI:
+            method = copy_to_cpu_allreduce_pmpi_init;
+            break;
+#endif
 #endif
         case ALLREDUCE_RECURSIVE_DOUBLING:
             method = allreduce_recursive_doubling_init;
@@ -54,9 +58,11 @@ int MPIL_Allreduce_init(const void* sendbuf,
         case ALLREDUCE_DISSEMINATION_ML:
             method = allreduce_dissemination_ml_init;
             break;
-        //case ALLREDUCE_PMPI:
-        //    method = allreduce_pmpi_init;
-        //    break;
+#if defined(MPI4)
+        case ALLREDUCE_PMPI:
+            method = allreduce_pmpi_init;
+            break;
+#endif
         default:
             method = allreduce_recursive_doubling_init;
             break;

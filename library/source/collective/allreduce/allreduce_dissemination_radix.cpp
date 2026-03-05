@@ -64,9 +64,10 @@ int allreduce_dissemination_radix_core(
     MPI_Comm_size(comm->global_comm, &num_procs);
 
     // Send `sendbuf` into `recvbuf` (Sendrecv to work on CPU or GPU)
-    MPI_Sendrecv(sendbuf, count, datatype, rank, tag, 
-            recvbuf, count, datatype, rank, tag, comm->global_comm,
-            MPI_STATUS_IGNORE);
+    if (sendbuf != MPI_IN_PLACE)
+        MPI_Sendrecv(sendbuf, count, datatype, rank, tag, 
+                recvbuf, count, datatype, rank, tag, comm->global_comm,
+                MPI_STATUS_IGNORE);
 
     int pow_radix_num_procs = 1;
     while (pow_radix_num_procs * radix <= num_procs)
@@ -113,13 +114,9 @@ int allreduce_dissemination_radix_core(
                 }
             }
             MPI_Waitall(n_msgs, request, MPI_STATUSES_IGNORE);
-            for (int step = 1; step < radix; step++)
-            {
-                int stride = stride_start * step;
-                if (stride < max_proc)
-                    MPI_Reduce_local(tmpbuf+(step-1)*count*type_size, recvbuf, count,
+            for (int i = 0; i < n_msgs/2; i++)
+                MPI_Reduce_local(tmpbuf+i*count*type_size, recvbuf, count,
                             datatype, op);
-            }
         }
 
 

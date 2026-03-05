@@ -17,8 +17,8 @@ int allreduce_recursive_doubling_start(MPIL_Request* request);
 int allreduce_recursive_doubling_wait(MPIL_Request* request, MPI_Status* status);
 int allreduce_dissemination_loc_start(MPIL_Request* request);
 int allreduce_dissemination_loc_wait(MPIL_Request* request, MPI_Status* status);
-int allreduce_dissemination_ml_start(MPIL_Request* request);
-int allreduce_dissemination_ml_wait(MPIL_Request* request, MPI_Status* status);
+int allreduce_dissemination_radix_start(MPIL_Request* request);
+int allreduce_dissemination_radix_wait(MPIL_Request* request, MPI_Status* status);
 
 /** @brief Function pointer to allreduce implemenation
  * @details 
@@ -112,6 +112,30 @@ int allreduce_dissemination_ml_init(const void* sendbuf,
                                  MPIL_Request** req_ptr);
 
 
+/** @brief Call the high-radix dissemination implementation
+ * @details Each step consists of `radix-1` nonblocking exchanges
+ * before locally reducing received data.  The same underlying algorithm
+ * as the locality-aware versions, but with a single process performing
+ * multiple steps of communication during each iteration of the allreduce.
+ * @param [in] sendbuf buffer containing data to reduce
+ * @param [out] recvbuf buffer to receive and reduce all messages
+ * @param [in] count int number of items to be reduced
+ * @param [in] datatype MPI_Datatype
+ * @param [in] op MPI_Op
+ * @param [in] comm MPIL_Comm used for context
+ * @param [in] info MPIL_Info used for hints
+ * @param [out] req_ptr MPIL_Request** returns pointer to persistent request
+ **/
+int allreduce_dissemination_radix_init(const void* sendbuf,
+                                 void* recvbuf,
+                                 int count,
+                                 MPI_Datatype datatype,
+                                 MPI_Op op,
+                                 MPIL_Comm* comm,
+                                 MPIL_Info* info,
+                                 MPIL_Request** req_ptr);
+
+
 /** @brief Calls underlying PMPI_Allreduce implementation **/
 int allreduce_pmpi_init(const void* sendbuf,
                                  void* recvbuf,
@@ -155,6 +179,16 @@ int allreduce_dissemination_loc_init_helper(
                                  MPIL_Alloc_ftn alloc_ftn,
                                  MPIL_Free_ftn free_ftn);
 
+int allreduce_dissemination_radix_init_helper(const void* sendbuf,
+                                              void* recvbuf,
+                                              int count,
+                                              MPI_Datatype datatype,
+                                              MPI_Op op,
+                                              MPIL_Comm* comm,
+                                              MPIL_Info* info,
+                                              MPIL_Request** req_ptr,
+                                              MPIL_Alloc_ftn alloc_ftn,
+                                              MPIL_Free_ftn free_ftn);
 
 
 

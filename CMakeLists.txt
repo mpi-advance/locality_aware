@@ -36,6 +36,9 @@ set(MPIRUN "mpirun" CACHE STRING "MPIRUN command")
 
 # Find MPI
 find_package(MPI REQUIRED)
+if(MPI_VERSION VERSION_GREATER_EQUAL "4.0")
+    add_definitions(-DMPI4)
+endif()
 set(EXTERNAL_LIBS "MPI::MPI_CXX")
 
 # Set default language of .cpp files
