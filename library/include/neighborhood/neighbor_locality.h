@@ -22,11 +22,6 @@ typedef struct _CommData
     char* buffer;
 } CommData;
 
-void init_num_msgs(CommData* data, int num_msgs);
-void init_size_msgs(CommData* data, int size_msgs);
-void destroy_comm_data(CommData* data);
-
-
   
 
 void map_procs_to_nodes(const int orig_num_msgs,
@@ -60,15 +55,11 @@ void form_global_map(const CommData* map_data, std::map<long, int>& global_map);
 void remove_duplicates(CommData* comm_pkg);
 
 
-void init_comm_data(CommData** comm_data_ptr, MPI_Datatype datatype);
-/** @brief ::CommData destructor that frees allocated memory **/
 void destroy_comm_data(CommData* data);
 /** @brief Sets the CommData::num_msgs to provided value */
 void init_num_msgs(CommData* data, int num_msgs);
 /** @brief Sets CommData::size_msgs and allocates CommData::indices for indexing messages **/
 void init_size_msgs(CommData* data, int size_msgs);
-/** @brief Allocates CommData::buffer to the size of `(CommData::size_msgs * CommData::datatype_size)` bytes **/
-void finalize_comm_data(CommData* data);
 
 #ifdef __cplusplus
 }
