@@ -686,113 +686,64 @@ void update_global_comm(CommData* global_send_data,
                         CommData* global_recv_data,
                         MPIL_Comm* mpil_comm)
 {
-    int rank, num_procs;
-    MPI_Comm_rank(mpil_comm->global_comm, &rank);
-    MPI_Comm_size(mpil_comm->global_comm, &num_procs);
     int local_rank;
     MPI_Comm_rank(mpil_comm->local_comm, &local_rank);
     int num_nodes = mpil_comm->num_nodes;
 
-    int n_sends           = global_send_data->num_msgs;
-    int n_recvs           = global_recv_data->num_msgs;
-    int n_msgs            = n_sends + n_recvs;
-    MPI_Request* requests = NULL;
-    int* send_buffer      = NULL;
-    int send_tag, recv_tag;
-    get_tag(mpil_comm, &send_tag);
-    get_tag(mpil_comm, &recv_tag);
-    int node, global_proc;
-    int num_to_recv;
-    MPI_Status recv_status;
     std::vector<int> send_nodes(num_nodes, 0);
     std::vector<int> recv_nodes(num_nodes, 0);
-    if (n_msgs)
-    {
-        requests    = new MPI_Request[n_msgs];
-        send_buffer = new int[n_msgs];
-    }
 
-    std::vector<int> comm_procs(num_procs, 0);
-    for (int i = 0; i < n_sends; i++)
-    {
-        node        = global_send_data->procs[i];
-        global_proc = get_global_proc(mpil_comm, node, local_rank);
-        comm_procs[global_proc]++;
-        send_buffer[i] = mpil_comm->rank_node;
-        MPI_Isend(&(send_buffer[i]),
-                  1,
-                  MPI_INT,
-                  global_proc,
-                  send_tag,
-                  mpil_comm->global_comm,
-                  &(requests[i]));
-    }
-    MPI_Allreduce(MPI_IN_PLACE,
-                  comm_procs.data(),
-                  num_procs,
-                  MPI_INT,
-                  MPI_SUM,
-                  mpil_comm->global_comm);
-    num_to_recv = comm_procs[rank];
-    for (int i = 0; i < num_procs; i++)
-    {
-        comm_procs[i] = 0;
-    }
-    for (int i = 0; i < num_to_recv; i++)
-    {
-        MPI_Probe(
-            MPI_ANY_SOURCE, send_tag, mpil_comm->global_comm, &recv_status);
-        global_proc = recv_status.MPI_SOURCE;
-        MPI_Recv(&node,
-                 1,
-                 MPI_INT,
-                 global_proc,
-                 send_tag,
-                 mpil_comm->global_comm,
-                 &recv_status);
-        recv_nodes[node] = global_proc;
-    }
+    MPIL_Info* mpil_info;
+    MPIL_Info_init(&mpil_info);
 
+    // Initialize send side for dynamic communication
+    std::vector<int> dest(global_send_data->num_msgs);
+    std::vector<int> vals(global_send_data->num_msgs, mpil_comm->rank_node);
+    for (int i = 0; i < global_send_data->num_msgs; i++)
+        dest[i] = get_global_proc(mpil_comm, global_send_data->procs[i], local_rank);
+
+    int n_recvs;
+    int *src, *recvbuf;
+    MPIL_Alltoall_crs(global_send_data->num_msgs,
+                    dest.data(), 
+                    1,
+                    MPI_INT,
+                    vals.data(),
+                    &n_recvs,
+                    &src,
+                    1,
+                    MPI_INT,
+                    (void**) &recvbuf,
+                    mpil_info,
+                    mpil_comm);
     for (int i = 0; i < n_recvs; i++)
-    {
-        node        = global_recv_data->procs[i];
-        global_proc = get_global_proc(mpil_comm, node, local_rank);
-        comm_procs[global_proc]++;
-        send_buffer[n_sends + i] = mpil_comm->rank_node;
-        MPI_Isend(&(send_buffer[n_sends + i]),
-                  1,
-                  MPI_INT,
-                  global_proc,
-                  recv_tag,
-                  mpil_comm->global_comm,
-                  &(requests[n_sends + i]));
-    }
-    MPI_Allreduce(MPI_IN_PLACE,
-                  comm_procs.data(),
-                  num_procs,
-                  MPI_INT,
-                  MPI_SUM,
-                  mpil_comm->global_comm);
-    num_to_recv = comm_procs[rank];
-    for (int i = 0; i < num_to_recv; i++)
-    {
-        MPI_Probe(
-            MPI_ANY_SOURCE, recv_tag, mpil_comm->global_comm, &recv_status);
-        global_proc = recv_status.MPI_SOURCE;
-        MPI_Recv(&node,
-                 1,
-                 MPI_INT,
-                 global_proc,
-                 recv_tag,
-                 mpil_comm->global_comm,
-                 &recv_status);
-        send_nodes[node] = global_proc;
-    }
+        recv_nodes[recvbuf[i]] = src[i];
 
-    if (n_sends + n_recvs)
-    {
-        MPI_Waitall(n_sends + n_recvs, requests, MPI_STATUSES_IGNORE);
-    }
+    MPIL_Free(src);
+    MPIL_Free(recvbuf);
+
+    dest.resize(global_recv_data->num_msgs);
+    vals.resize(global_recv_data->num_msgs, mpil_comm->rank_node);
+    for (int i = 0; i < global_recv_data->num_msgs; i++)
+        dest[i] = get_global_proc(mpil_comm, global_recv_data->procs[i], local_rank);
+    MPIL_Alltoall_crs(global_recv_data->num_msgs,
+                      dest.data(),
+                      1, 
+                      MPI_INT,
+                      vals.data(),
+                      &n_recvs,
+                      &src,
+                      1,
+                      MPI_INT,
+                      (void**) &recvbuf,
+                      mpil_info,
+                      mpil_comm);
+    for (int i = 0; i < n_recvs; i++)
+        send_nodes[recvbuf[i]] = src[i];
+
+    MPIL_Free(src);
+    MPIL_Free(recvbuf);
+
 
     MPI_Allreduce(MPI_IN_PLACE,
                   send_nodes.data(),
@@ -807,25 +758,13 @@ void update_global_comm(CommData* global_send_data,
                   MPI_MAX,
                   mpil_comm->local_comm);
 
-    for (int i = 0; i < n_sends; i++)
-    {
-        node = global_send_data->procs[i];
-        global_send_data->procs[i] = send_nodes[node];
-    }
-    for (int i = 0; i < n_recvs; i++)
-    {
-        node = global_recv_data->procs[i];
-        global_recv_data->procs[i] = recv_nodes[node];
-    }
+    for (int i = 0; i < global_send_data->num_msgs; i++)
+        global_send_data->procs[i] = send_nodes[global_send_data->procs[i]];
+    for (int i = 0; i < global_recv_data->num_msgs; i++)
+        global_recv_data->procs[i] = recv_nodes[global_recv_data->procs[i]];
 
-    if (requests)
-    {
-        delete[] requests;
-    }
-    if (send_buffer)
-    {
-        delete[] send_buffer;
-    }
+    MPIL_Info_free(&mpil_info);
+
 }
 
 void form_global_map(const CommData* map_data, std::map<long, int>& global_map)
