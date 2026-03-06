@@ -167,8 +167,8 @@ int allreduce_dissemination_loc_core(
     int extra = num_nodes - max_node;
 
     // Reduce local requires CPU buffers
-    void *tmpbuf = malloc(type_size*count);
-    void *tmp_recvbuf = malloc(type_size*count);
+    char* tmpbuf = (char*)malloc(type_size*count);
+    char* tmp_recvbuf = (char*)malloc(type_size*count);
 
     PMPI_Allreduce(sendbuf, tmp_recvbuf, count, datatype,
             op, local_comm);

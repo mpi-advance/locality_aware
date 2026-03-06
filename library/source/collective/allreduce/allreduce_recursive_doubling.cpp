@@ -44,8 +44,8 @@ int allreduce_recursive_doubling_helper(
     int extra_procs = num_procs - log2_num_procs;
 
     // Reduce locals require CPU buffers
-    void *tmpbuf = malloc(type_size*count);
-    void* tmp_recvbuf = malloc(type_size*count);
+    char* tmpbuf = (char*)malloc(type_size*count);
+    char* tmp_recvbuf = (char*)malloc(type_size*count);
 
     if (sendbuf != MPI_IN_PLACE)
         MPI_Sendrecv(sendbuf, count, datatype, rank, tag,

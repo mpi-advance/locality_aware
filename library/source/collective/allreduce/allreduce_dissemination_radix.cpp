@@ -72,8 +72,8 @@ int allreduce_dissemination_radix_core(
 
     MPI_Request* request = (MPI_Request*)malloc(2*radix*sizeof(MPI_Request));
 
-    char *tmpbuf = malloc(radix*type_size*count);
-    char *tmp_recvbuf = malloc(radix*type_size*count);
+    char* tmpbuf = (char*)malloc(radix*type_size*count);
+    char* tmp_recvbuf = (char*)malloc(radix*type_size*count);
 
 
     // Send `sendbuf` into `recvbuf` (Sendrecv to work on CPU or GPU)
