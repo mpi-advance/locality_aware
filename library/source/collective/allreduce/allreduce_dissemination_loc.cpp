@@ -206,7 +206,7 @@ int allreduce_dissemination_loc_core(
                 // Can have zerobuf be on CPU, regardless of
                 // where tmpbuf is located
                 void* zerobuf = malloc(count*type_size);
-                memset(tmpbuf, 0, type_size*count);
+                memset(zerobuf, 0, type_size*count);
                 MPI_Sendrecv(zerobuf, count, datatype, rank, tag,
                         tmpbuf, count, datatype, rank, tag,
                         MPI_COMM_WORLD, MPI_STATUS_IGNORE);
