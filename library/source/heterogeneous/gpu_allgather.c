@@ -88,7 +88,6 @@ int copy_to_cpu_allgather(allgather_helper_ftn f,
     int send_bytes = sendcount*send_size;
     int recv_bytes = recvcount*recv_size*num_procs;
 
-
     // gpuMalloc is too expensive for single allgather
     void* cpu_sendbuf = malloc(send_bytes);
     void* cpu_recvbuf = malloc(recv_bytes);
@@ -168,17 +167,21 @@ int copy_to_cpu_allgather_pmpi(const void* sendbuf,
     int num_procs;
     MPI_Comm_size(comm->global_comm, &num_procs);
 
-    int send_size;
+    int send_size, recv_size;
     MPI_Type_size(sendtype, &send_size);
-    int bytes = sendcount * send_size * num_procs;
+    MPI_Type_size(recvtype, &recv_size);
 
-    void* cpu_sendbuf = malloc(bytes);
-    void* cpu_recvbuf = malloc(bytes);
+    int send_bytes = sendcount*send_size;
+    int recv_bytes = recvcount*recv_size*num_procs;
+
+    // gpuMalloc is too expensive for single allgather
+    void* cpu_sendbuf = malloc(send_bytes);
+    void* cpu_recvbuf = malloc(recv_bytes);
 
 #if defined(APU)
-    memcpy(cpu_sendbuf, sendbuf, bytes);
+    memcpy(cpu_sendbuf, sendbuf, send_bytes);
 #else
-    gpuMemcpy(cpu_sendbuf, sendbuf, bytes, gpuMemcpyDeviceToHost);
+    gpuMemcpy(cpu_sendbuf, sendbuf, send_bytes, gpuMemcpyDeviceToHost);
     gpuStreamSynchronize(0); // needed on tuolumne
 #endif
 
@@ -186,9 +189,9 @@ int copy_to_cpu_allgather_pmpi(const void* sendbuf,
                 cpu_recvbuf, recvcount, recvtype, comm->global_comm);
 
 #if defined(APU)
-    memcpy(recvbuf, cpu_recvbuf, bytes);
+    memcpy(recvbuf, cpu_recvbuf, recv_bytes);
 #else
-    gpuMemcpy(recvbuf, cpu_recvbuf, bytes, gpuMemcpyHostToDevice);
+    gpuMemcpy(recvbuf, cpu_recvbuf, recv_bytes, gpuMemcpyHostToDevice);
     gpuStreamSynchronize(0); // needed on tuolumne
 #endif
 
