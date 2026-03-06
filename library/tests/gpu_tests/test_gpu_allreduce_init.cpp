@@ -20,7 +20,7 @@ void compare_allreduce_results(std::vector<int>& pmpi,
         if (pmpi[i] != mpil[i])
         {
             fprintf(stderr,
-                    "ERROR: position %d, pmpi %d, mpix %d\n",
+                    "Alltoall ERROR: position %d, pmpi %d, mpix %d\n",
                     i,
                     pmpi[i],
                     mpil[i]);
@@ -55,9 +55,9 @@ int main(int argc, char** argv)
     gpuSetDevice(xcomm->rank_gpu);
 
     int* local_data_d;
-    int* allreduce_d;
+    int* alltoall_d;
     gpuMalloc((void**)&local_data_d, max_s * sizeof(int));
-    gpuMalloc((void**)&allreduce_d, max_s * sizeof(int));
+    gpuMalloc((void**)&alltoall_d, max_s * sizeof(int));
 
     for (int i = 0; i < max_i; i++)
     {
@@ -68,12 +68,10 @@ int main(int argc, char** argv)
         {
             local_data[i] = rank * 10000 + i;
         }
-        gpuMemcpyAsync(local_data_d,
+        gpuMemcpy(local_data_d,
                   local_data.data(),
                   s * sizeof(int),
-                  gpuMemcpyHostToDevice,
-                  0);
-        gpuStreamSynchronize(0);
+                  gpuMemcpyHostToDevice);
 
         PMPI_Allreduce(local_data.data(),
                        pmpi.data(),
@@ -83,65 +81,64 @@ int main(int argc, char** argv)
                        MPI_COMM_WORLD);
 
         // Standard Recursive Doubling on CPU
-        MPIL_Set_allreduce_algorithm(ALLREDUCE_RECURSIVE_DOUBLING);
+        MPIL_Request* request;
         MPIL_Allreduce(
                 local_data.data(), mpil.data(), s, MPI_INT, MPI_SUM, xcomm);
         compare_allreduce_results(pmpi, mpil, s);
 
 #if defined(GPU_AWARE)
         // Standard PMPI GPU Allreduce
-        PMPI_Allreduce(local_data_d, allreduce_d, s, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
-        gpuMemcpyAsync(device_data.data(), allreduce_d, s*sizeof(int), gpuMemcpyDeviceToHost, 0);
-        gpuStreamSynchronize(0);
+        PMPI_Allreduce(local_data_d, alltoall_d, s, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
+        gpuMemcpy(device_data.data(), alltoall_d, s*sizeof(int), gpuMemcpyDeviceToHost);
         compare_allreduce_results(pmpi, device_data, s);
-        gpuMemset(allreduce_d, 0, s*sizeof(int));
+        gpuMemset(alltoall_d, 0, s*sizeof(int));
 
         // Standard Recursive Doubling on GPU
         MPIL_Set_allreduce_algorithm(ALLREDUCE_GPU_RECURSIVE_DOUBLING);
-        MPIL_Allreduce(local_data_d, allreduce_d, s, MPI_INT, MPI_SUM, xcomm);
-        gpuMemcpy(device_data.data(), allreduce_d, s*sizeof(int), gpuMemcpyDeviceToHost);
+        MPIL_Allreduce(local_data_d, alltoall_d, s, MPI_INT, MPI_SUM, xcomm);
+        gpuMemcpy(device_data.data(), alltoall_d, s*sizeof(int), gpuMemcpyDeviceToHost);
         compare_allreduce_results(pmpi, device_data, s);
-        gpuMemset(allreduce_d, 0, s*sizeof(int));
+        gpuMemset(alltoall_d, 0, s*sizeof(int));
         
         // Node-Aware Dissemination on GPU
         MPIL_Set_allreduce_algorithm(ALLREDUCE_GPU_DISSEMINATION_LOC);
-        MPIL_Allreduce(local_data_d, allreduce_d, s, MPI_INT, MPI_SUM, xcomm);
-        gpuMemcpy(device_data.data(), allreduce_d, s*sizeof(int), gpuMemcpyDeviceToHost);
+        MPIL_Allreduce(local_data_d, alltoall_d, s, MPI_INT, MPI_SUM, xcomm);
+        gpuMemcpy(device_data.data(), alltoall_d, s*sizeof(int), gpuMemcpyDeviceToHost);
         compare_allreduce_results(pmpi, device_data, s);
-        gpuMemset(allreduce_d, 0, s*sizeof(int));
+        gpuMemset(alltoall_d, 0, s*sizeof(int));
         
         // NUMA-Aware Dissemination on GPU
         MPIL_Set_allreduce_algorithm(ALLREDUCE_GPU_DISSEMINATION_ML);
-        MPIL_Allreduce(local_data_d, allreduce_d, s, MPI_INT, MPI_SUM, xcomm);
-        gpuMemcpy(device_data.data(), allreduce_d, s*sizeof(int), gpuMemcpyDeviceToHost);
+        MPIL_Allreduce(local_data_d, alltoall_d, s, MPI_INT, MPI_SUM, xcomm);
+        gpuMemcpy(device_data.data(), alltoall_d, s*sizeof(int), gpuMemcpyDeviceToHost);
         compare_allreduce_results(pmpi, device_data, s);
-        gpuMemset(allreduce_d, 0, s*sizeof(int));
-
+        gpuMemset(alltoall_d, 0, s*sizeof(int));
 #endif
+
         // CopyToCPU Standard Recursive Doubling on GPU
-        MPIL_Set_allreduce_algorithm(ALLREDUCE_CTC_RECURSIVE_DOUBLING);
-        MPIL_Allreduce(local_data_d, allreduce_d, s, MPI_INT, MPI_SUM, xcomm);
-        gpuMemcpy(device_data.data(), allreduce_d, s*sizeof(int), gpuMemcpyDeviceToHost);
+        MPIL_Set_allreduce_algorithm(ALLREDUCE_GPU_RECURSIVE_DOUBLING);
+        MPIL_Allreduce(local_data_d, alltoall_d, s, MPI_INT, MPI_SUM, xcomm);
+        gpuMemcpy(device_data.data(), alltoall_d, s*sizeof(int), gpuMemcpyDeviceToHost);
         compare_allreduce_results(pmpi, device_data, s);
-        gpuMemset(allreduce_d, 0, s*sizeof(int));
+        gpuMemset(alltoall_d, 0, s*sizeof(int));
 
         // CopyToCPU Node-Aware Dissemination on GPU
-        MPIL_Set_allreduce_algorithm(ALLREDUCE_CTC_DISSEMINATION_LOC);
-        MPIL_Allreduce(local_data_d, allreduce_d, s, MPI_INT, MPI_SUM, xcomm);
-        gpuMemcpy(device_data.data(), allreduce_d, s*sizeof(int), gpuMemcpyDeviceToHost);
+        MPIL_Set_allreduce_algorithm(ALLREDUCE_GPU_DISSEMINATION_LOC);
+        MPIL_Allreduce(local_data_d, alltoall_d, s, MPI_INT, MPI_SUM, xcomm);
+        gpuMemcpy(device_data.data(), alltoall_d, s*sizeof(int), gpuMemcpyDeviceToHost);
         compare_allreduce_results(pmpi, device_data, s);
-        gpuMemset(allreduce_d, 0, s*sizeof(int));
+        gpuMemset(alltoall_d, 0, s*sizeof(int));
 
         // CopyToCPU NUMA-Aware Dissemination on GPU
-        MPIL_Set_allreduce_algorithm(ALLREDUCE_CTC_DISSEMINATION_ML);
-        MPIL_Allreduce(local_data_d, allreduce_d, s, MPI_INT, MPI_SUM, xcomm);
-        gpuMemcpy(device_data.data(), allreduce_d, s*sizeof(int), gpuMemcpyDeviceToHost);
+        MPIL_Set_allreduce_algorithm(ALLREDUCE_GPU_DISSEMINATION_ML);
+        MPIL_Allreduce(local_data_d, alltoall_d, s, MPI_INT, MPI_SUM, xcomm);
+        gpuMemcpy(device_data.data(), alltoall_d, s*sizeof(int), gpuMemcpyDeviceToHost);
         compare_allreduce_results(pmpi, device_data, s);
-        gpuMemset(allreduce_d, 0, s*sizeof(int));
+        gpuMemset(alltoall_d, 0, s*sizeof(int));
     }
 
     gpuFree(local_data_d);
-    gpuFree(allreduce_d);
+    gpuFree(alltoall_d);
 
     MPIL_Comm_free(&xcomm);
 
