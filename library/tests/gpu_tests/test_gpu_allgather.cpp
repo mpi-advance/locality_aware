@@ -112,7 +112,8 @@ int main(int argc, char** argv)
                 num_procs*s*sizeof(int), gpuMemcpyDeviceToHost, 0);
         gpuStreamSynchronize(0);
         compare_allgather_results(pmpi, device_data, s);
-        gpuMemset(allgather_d, 0, num_procs*s*sizeof(int));
+        gpuMemsetAsync(allgather_d, 0, num_procs*s*sizeof(int), 0);
+        gpuStreamSynchronize(0);
 
         // Standard Bruck on GPU
         MPIL_Set_allgather_algorithm(ALLGATHER_GPU_BRUCK);
@@ -127,9 +128,9 @@ int main(int argc, char** argv)
                 num_procs*s*sizeof(int), gpuMemcpyDeviceToHost, 0);
         gpuStreamSynchronize(0);
         compare_allgather_results(pmpi, device_data, s);
-        gpuMemset(allgather_d, 0, num_procs*s*sizeof(int));
+        gpuMemsetAsync(allgather_d, 0, num_procs*s*sizeof(int), 0);
+        gpuStreamSynchronize(0);
 
-/*
         // Standard Ring on GPU
         MPIL_Set_allgather_algorithm(ALLGATHER_GPU_RING);
         MPIL_Allgather(local_data_d,
@@ -143,9 +144,9 @@ int main(int argc, char** argv)
                 num_procs*s*sizeof(int), gpuMemcpyDeviceToHost, 0);
         gpuStreamSynchronize(0);
         compare_allgather_results(pmpi, device_data, s);
-        gpuMemset(allgather_d, 0, num_procs*s*sizeof(int));
-*/
-/*
+        gpuMemsetAsync(allgather_d, 0, num_procs*s*sizeof(int), 0);
+        gpuStreamSynchronize(0);
+
         // Standard PMPI on GPU
         MPIL_Set_allgather_algorithm(ALLGATHER_GPU_PMPI);
         MPIL_Allgather(local_data_d,
@@ -159,8 +160,8 @@ int main(int argc, char** argv)
                 num_procs*s*sizeof(int), gpuMemcpyDeviceToHost, 0);
         gpuStreamSynchronize(0);
         compare_allgather_results(pmpi, device_data, s);
-        gpuMemset(allgather_d, 0, num_procs*s*sizeof(int));
-*/
+        gpuMemsetAsync(allgather_d, 0, num_procs*s*sizeof(int), 0);
+        gpuStreamSynchronize(0);
 #endif
 /*
         // Standard Bruck Copy-To-CPU

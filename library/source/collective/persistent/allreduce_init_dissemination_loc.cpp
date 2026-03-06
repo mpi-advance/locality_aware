@@ -280,6 +280,9 @@ if (request->cpu_sendbuf)
 
 int allreduce_dissemination_loc_wait(MPIL_Request* request, MPI_Status* status)
 {
+    int type_size;
+    MPI_Type_size(request->datatype, &type_size);
+
     if (request == NULL)
         return 0;
 

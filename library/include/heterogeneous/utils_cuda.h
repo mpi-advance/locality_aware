@@ -43,5 +43,6 @@
 #define gpuMemoryTypeDevice cudaMemoryTypeDevice
 #define gpuMemoryType cudaMemoryType
 #define gpuMemset cudaMemset
+#define gpuMemsetAsync cudaMemsetAsync
 
 #endif
