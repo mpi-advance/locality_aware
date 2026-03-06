@@ -43,9 +43,9 @@ int allreduce_recursive_doubling_helper(
     int log2_num_procs = 1 << log_procs;
     int extra_procs = num_procs - log2_num_procs;
 
-    void *tmpbuf, *tmp_recvbuf;
-    alloc_ftn(&tmpbuf, type_size * count);
-    alloc_ftn(&tmp_recvbuf, type_size * count);
+    // Reduce locals require CPU buffers
+    void *tmpbuf = malloc(type_size*count);
+    void* tmp_recvbuf = malloc(type_size*count);
 
     if (sendbuf != MPI_IN_PLACE)
         MPI_Sendrecv(sendbuf, count, datatype, rank, tag,
@@ -86,8 +86,8 @@ int allreduce_recursive_doubling_helper(
             recvbuf, count, datatype, rank, tag, comm->global_comm,
             MPI_STATUS_IGNORE);
 
-    free_ftn(tmpbuf);
-    free_ftn(tmp_recvbuf);
+    free(tmpbuf);
+    free(tmp_recvbuf);
 
     return MPI_SUCCESS;
 }

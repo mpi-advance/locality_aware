@@ -63,12 +63,6 @@ int allreduce_dissemination_radix_core(
     MPI_Comm_rank(comm->global_comm, &rank);
     MPI_Comm_size(comm->global_comm, &num_procs);
 
-    // Send `sendbuf` into `recvbuf` (Sendrecv to work on CPU or GPU)
-    if (sendbuf != MPI_IN_PLACE)
-        MPI_Sendrecv(sendbuf, count, datatype, rank, tag, 
-                recvbuf, count, datatype, rank, tag, comm->global_comm,
-                MPI_STATUS_IGNORE);
-
     int pow_radix_num_procs = 1;
     while (pow_radix_num_procs * radix <= num_procs)
         pow_radix_num_procs *= radix;
@@ -78,14 +72,21 @@ int allreduce_dissemination_radix_core(
 
     MPI_Request* request = (MPI_Request*)malloc(2*radix*sizeof(MPI_Request));
 
-    char *tmpbuf;
-    alloc_ftn((void**)(&tmpbuf), radix*type_size*count);
+    char *tmpbuf = malloc(radix*type_size*count);
+    char *tmp_recvbuf = malloc(radix*type_size*count);
+
+
+    // Send `sendbuf` into `recvbuf` (Sendrecv to work on CPU or GPU)
+    if (sendbuf != MPI_IN_PLACE)
+        MPI_Sendrecv(sendbuf, count, datatype, rank, tag, 
+                tmp_recvbuf, count, datatype, rank, tag, comm->global_comm,
+                MPI_STATUS_IGNORE);
 
     if (rank >= max_proc)
     {
         int proc = rank - max_proc;
-        MPI_Send(recvbuf, count, datatype, proc, tag, comm->global_comm);
-        MPI_Recv(recvbuf, count, datatype, proc, tag, comm->global_comm, 
+        MPI_Send(tmp_recvbuf, count, datatype, proc, tag, comm->global_comm);
+        MPI_Recv(tmp_recvbuf, count, datatype, proc, tag, comm->global_comm, 
                 MPI_STATUS_IGNORE);
     }
     else
@@ -94,7 +95,7 @@ int allreduce_dissemination_radix_core(
         {
             MPI_Recv(tmpbuf, count, datatype, max_proc + rank, tag,
                    comm->global_comm, MPI_STATUS_IGNORE);
-            MPI_Reduce_local(tmpbuf, recvbuf, count, datatype, op);
+            MPI_Reduce_local(tmpbuf, tmp_recvbuf, count, datatype, op);
         }
 
         for (int stride_start = 1; stride_start < max_proc; stride_start *= radix)
@@ -107,7 +108,7 @@ int allreduce_dissemination_radix_core(
                 {
                     int send_proc = (rank - stride + max_proc) % max_proc;
                     int recv_proc = (rank + stride) % max_proc;
-                    MPI_Isend(recvbuf, count, datatype, send_proc, tag,
+                    MPI_Isend(tmp_recvbuf, count, datatype, send_proc, tag,
                             comm->global_comm, &(request[n_msgs++]));
                     MPI_Irecv(tmpbuf + (step-1)*count*type_size, count, datatype, recv_proc, tag,
                             comm->global_comm, &(request[n_msgs++]));
@@ -115,19 +116,24 @@ int allreduce_dissemination_radix_core(
             }
             MPI_Waitall(n_msgs, request, MPI_STATUSES_IGNORE);
             for (int i = 0; i < n_msgs/2; i++)
-                MPI_Reduce_local( + tmpbuf+i*count*type_size, recvbuf, count,
+                MPI_Reduce_local(tmpbuf+i*count*type_size, tmp_recvbuf, count,
                             datatype, op);
         }
 
 
         if (rank < extra)
         {
-            MPI_Send(recvbuf, count, datatype, max_proc + rank, tag, comm->global_comm);
+            MPI_Send(tmp_recvbuf, count, datatype, max_proc + rank, tag, comm->global_comm);
         }
     }
 
+    MPI_Sendrecv(tmp_recvbuf, count, datatype, rank, tag, 
+            recvbuf, count, datatype, rank, tag, comm->global_comm,
+            MPI_STATUS_IGNORE);
+
     free(request);
-    free_ftn(tmpbuf);
+    free(tmpbuf);
+    free(tmp_recvbuf);
 
     return MPI_SUCCESS;
 }

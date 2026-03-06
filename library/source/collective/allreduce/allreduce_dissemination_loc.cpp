@@ -166,9 +166,9 @@ int allreduce_dissemination_loc_core(
     int max_node = mult * pow_ppn_num_nodes;
     int extra = num_nodes - max_node;
 
-    void *tmpbuf, *tmp_recvbuf;
-    alloc_ftn(&tmpbuf, type_size*count);
-    alloc_ftn(&tmp_recvbuf, type_size*count);
+    // Reduce local requires CPU buffers
+    void *tmpbuf = malloc(type_size*count);
+    void *tmp_recvbuf = malloc(type_size*count);
 
     PMPI_Allreduce(sendbuf, tmp_recvbuf, count, datatype,
             op, local_comm);
@@ -205,10 +205,12 @@ int allreduce_dissemination_loc_core(
                 // Odd implementation to be portable to GPU
                 // Can have zerobuf be on CPU, regardless of
                 // where tmpbuf is located
+                void* zerobuf = malloc(count*type_size);
                 memset(tmpbuf, 0, type_size*count);
-                MPI_Sendrecv(tmpbuf, count, datatype, rank, tag,
-                        tmp_recvbuf, count, datatype, rank, tag,
+                MPI_Sendrecv(zerobuf, count, datatype, rank, tag,
+                        tmpbuf, count, datatype, rank, tag,
                         MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+                free(zerobuf);
             }
             MPI_Allreduce(MPI_IN_PLACE, tmpbuf, count, datatype, op, local_comm);
             MPI_Reduce_local(tmpbuf, tmp_recvbuf, count, datatype, op);
@@ -220,7 +222,14 @@ int allreduce_dissemination_loc_core(
         }
     }
 
-    free_ftn(tmpbuf);
+    // Send tmp_recvbuf into recvbuf
+    MPI_Sendrecv(tmp_recvbuf, count, datatype, rank, tag,
+                 recvbuf, count, datatype, rank, tag,
+                 MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+
+
+    free(tmpbuf);
+    free(tmp_recvbuf);
 
     return MPI_SUCCESS;
 }
