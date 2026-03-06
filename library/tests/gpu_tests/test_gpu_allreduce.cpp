@@ -124,6 +124,15 @@ int main(int argc, char** argv)
         gpuMemsetAsync(allreduce_d, 0, s*sizeof(int), 0);
         gpuStreamSynchronize(0);
 
+        // HIGH-Radix Dissemination on GPU
+        MPIL_Set_allreduce_algorithm(ALLREDUCE_GPU_DISSEMINATION_RADIX);
+        MPIL_Allreduce(local_data_d, allreduce_d, s, MPI_INT, MPI_SUM, xcomm);
+        gpuMemcpyAsync(device_data.data(), allreduce_d, s*sizeof(int), gpuMemcpyDeviceToHost, 0);
+        gpuStreamSynchronize(0);
+        compare_allreduce_results(pmpi, device_data, s);
+        gpuMemsetAsync(allreduce_d, 0, s*sizeof(int), 0);
+        gpuStreamSynchronize(0);
+
 #endif
         // CopyToCPU Standard Recursive Doubling on GPU
         MPIL_Set_allreduce_algorithm(ALLREDUCE_CTC_RECURSIVE_DOUBLING);
@@ -145,6 +154,15 @@ int main(int argc, char** argv)
 
         // CopyToCPU NUMA-Aware Dissemination on GPU
         MPIL_Set_allreduce_algorithm(ALLREDUCE_CTC_DISSEMINATION_ML);
+        MPIL_Allreduce(local_data_d, allreduce_d, s, MPI_INT, MPI_SUM, xcomm);
+        gpuMemcpyAsync(device_data.data(), allreduce_d, s*sizeof(int), gpuMemcpyDeviceToHost, 0);
+        gpuStreamSynchronize(0);
+        compare_allreduce_results(pmpi, device_data, s);
+        gpuMemsetAsync(allreduce_d, 0, s*sizeof(int), 0);
+        gpuStreamSynchronize(0);
+
+        // CopyToCPU HIGH-Radix Dissemination on GPU
+        MPIL_Set_allreduce_algorithm(ALLREDUCE_CTC_DISSEMINATION_RADIX);
         MPIL_Allreduce(local_data_d, allreduce_d, s, MPI_INT, MPI_SUM, xcomm);
         gpuMemcpyAsync(device_data.data(), allreduce_d, s*sizeof(int), gpuMemcpyDeviceToHost, 0);
         gpuStreamSynchronize(0);

@@ -120,12 +120,12 @@ int allreduce_recursive_doubling_start(MPIL_Request* request)
     MPI_Type_size(request->datatype, &type_size);
 
 #if defined(GPU)
-if (request->cpu_sendbuf)
+if (request->gpu_sendbuf)
 {
 #if defined(APU)
-    memcpy(request->cpu_sendbuf, request->sendbuf, request->count*type_size);
+    memcpy(request->tmp_sendbuf, request->gpu_sendbuf, request->count*type_size);
 #else
-    gpuMemcpyAsync(request->cpu_sendbuf, request->sendbuf, request->count*type_size, 
+    gpuMemcpyAsync(request->tmp_sendbuf, request->gpu_sendbuf, request->count*type_size, 
             gpuMemcpyDeviceToHost, 0);
     gpuStreamSynchronize(0);
 #endif
@@ -177,13 +177,16 @@ int allreduce_recursive_doubling_wait(MPIL_Request* request, MPI_Status* status)
     }
 
 #if defined(GPU)
+if (request->gpu_recvbuf)
+{
 #if defined(APU)
-    memcpy(request->recvbuf, request->cpu_recvbuf, request->count*type_size);
+    memcpy(request->gpu_recvbuf, request->recvbuf, request->count*type_size);
 #else
-    gpuMemcpyAsync(request->recvbuf, request->cpu_recvbuf, request->count*type_size, 
+    gpuMemcpyAsync(request->gpu_recvbuf, request->recvbuf, request->count*type_size, 
             gpuMemcpyHostToDevice, 0);
     gpuStreamSynchronize(0);
 #endif
+}
 #endif
 
     return MPI_SUCCESS;

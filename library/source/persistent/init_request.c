@@ -36,8 +36,9 @@ void init_request(MPIL_Request** request_ptr)
     request->global_comm = MPI_COMM_NULL;
 
 #ifdef GPU
-    request->cpu_sendbuf = NULL;
-    request->cpu_recvbuf = NULL;
+    request->gpu_sendbuf = NULL;
+    request->gpu_recvbuf = NULL;
+    request->tmp_sendbuf = NULL;
 #endif
 
     *request_ptr = request;

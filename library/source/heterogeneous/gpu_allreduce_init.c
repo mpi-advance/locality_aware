@@ -108,24 +108,17 @@ int copy_to_cpu_allreduce_init(allreduce_init_helper_ftn f,
     MPI_Type_size(datatype, &type_size);
 
     // gpuMalloc is too expensive for single allreduce
-    void* cpu_sendbuf = malloc(count*type_size);
-    void* cpu_recvbuf = malloc(count*type_size);
+    void *cpu_sendbuf, *cpu_recvbuf;
+    MPIL_Alloc(&cpu_sendbuf, count*type_size);
+    MPIL_Alloc(&cpu_recvbuf, count*type_size);
 
     ierr += f(cpu_sendbuf, cpu_recvbuf, count, datatype, op, comm,
                     info, req_ptr, MPIL_Alloc, MPIL_Free);
 
-#if defined(APU)
-    memcpy(recvbuf, cpu_recvbuf, count*type_size);
-#else
-    gpuMemcpy(recvbuf, cpu_recvbuf, count*type_size, gpuMemcpyHostToDevice);
-    gpuStreamSynchronize(0);
-#endif
-
     MPIL_Request* request = *req_ptr;
-    request->cpu_sendbuf = cpu_sendbuf;
-    request->cpu_recvbuf = cpu_recvbuf;
-    request->sendbuf = sendbuf;
-    request->recvbuf = recvbuf;
+    request->tmp_sendbuf = cpu_sendbuf;
+    request->gpu_sendbuf = sendbuf;
+    request->gpu_recvbuf = recvbuf;
 
     gpuDeviceSynchronize();
 
@@ -185,34 +178,8 @@ int copy_to_cpu_allreduce_pmpi_init(const void* sendbuf,
                                MPIL_Info* info,
                                MPIL_Request** req_ptr)
 {
-    int ierr = 0;
-
-    int type_size;
-    MPI_Type_size(datatype, &type_size);
-
-    request->cpu_sendbuf = malloc(count*type_size);
-    request->cpu_recvbuf = malloc(count*type_size);
-
-#if defined(APU)
-    memcpy(cpu_sendbuf, sendbuf, count*type_size);
-#else
-    gpuMemcpy(cpu_sendbuf, sendbuf, count*type_size, gpuMemcpyDeviceToHost);
-    gpuStreamSynchronize(0); // needed on tuolumne
-#endif
-
-    ierr += PMPI_Allreduce_init(cpu_sendbuf, cpu_recvbuf, count, datatype, op,
-                    comm->global_comm, info, &(request->global_requests[0]));
-
-#if defined(APU)
-    memcpy(recvbuf, cpu_recvbuf, count*type_size);
-#else
-    gpuMemcpy(recvbuf, cpu_recvbuf, count*type_size, gpuMemcpyHostToDevice);
-    gpuStreamSynchronize(0); // needed on tuolumne
-#endif
-
-    free(cpu_sendbuf);
-    free(cpu_recvbuf);
-
-    return ierr;   
+    return copy_to_cpu_allreduce_init(allreduce_pmpi_helper,
+                            sendbuf, recvbuf, count, datatype, op,
+                            comm, info, req_ptr);
 }
 #endif

@@ -163,7 +163,6 @@ int main(int argc, char** argv)
         gpuMemsetAsync(allgather_d, 0, num_procs*s*sizeof(int), 0);
         gpuStreamSynchronize(0);
 #endif
-/*
         // Standard Bruck Copy-To-CPU
         MPIL_Set_allgather_algorithm(ALLGATHER_CTC_BRUCK);
         MPIL_Allgather(local_data_d,
@@ -208,7 +207,6 @@ int main(int argc, char** argv)
         gpuStreamSynchronize(0);
         compare_allgather_results(pmpi, device_data, s);
         gpuMemset(allgather_d, 0, num_procs*s*sizeof(int));
-*/
     }
 
     gpuFree(local_data_d);

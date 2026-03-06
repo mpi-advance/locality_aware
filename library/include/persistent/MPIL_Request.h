@@ -71,10 +71,16 @@ typedef struct _MPIL_Request
     
 
 #ifdef GPU
-    /** @brief Allocated cpu-based send buffers for copy-to-cpu algorithms **/
-    void* cpu_sendbuf;
-    /** @brief Allocated cpu-based receive buffers for copy-to-cpu algorithms **/
-    void* cpu_recvbuf;
+    /** @brief Allocated cpu-based send buffers for copy-to-cpu algorithms 
+     *         CPU buffers are stored in sendbuf, original sendbuf is
+     *         stored here */
+    const void* gpu_sendbuf;
+    /** @brief Allocated cpu-based receive buffers for copy-to-cpu algorithms
+     *         CPU buffers are stored in recvbuf, original recvbuf is
+     *         stored here */
+    void* gpu_recvbuf;
+    /** @brief points to sendbuf, but not const, for copy-to-CPU */
+    void* tmp_sendbuf;
 #endif
     /** @brief Function pointer to MPIL_Start or MPIL_neighbor_start **/
     int (*start_function)(struct _MPIL_Request* request);
