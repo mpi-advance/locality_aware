@@ -38,24 +38,26 @@ int allreduce_recursive_doubling_helper(
     int tag;
     get_tag(comm, &tag);
 
-    if (sendbuf != MPI_IN_PLACE)
-        MPI_Sendrecv(sendbuf, count, datatype, rank, tag,
-                recvbuf, count, datatype, rank, tag, comm->global_comm,
-                MPI_STATUS_IGNORE);
-
     int proc; 
     int log_procs = (int)log2(num_procs);
     int log2_num_procs = 1 << log_procs;
     int extra_procs = num_procs - log2_num_procs;
 
-    void* tmpbuf;
+    void *tmpbuf, *tmp_recvbuf;
     alloc_ftn(&tmpbuf, type_size * count);
+    alloc_ftn(&tmp_recvbuf, type_size * count);
+
+    if (sendbuf != MPI_IN_PLACE)
+        MPI_Sendrecv(sendbuf, count, datatype, rank, tag,
+                tmp_recvbuf, count, datatype, rank, tag, comm->global_comm,
+                MPI_STATUS_IGNORE);
+
 
     if (rank >= log2_num_procs)
     {
         proc = rank - log2_num_procs;
-        MPI_Send(recvbuf, count, datatype, rank - log2_num_procs, tag, comm->global_comm);
-        MPI_Recv(recvbuf, count, datatype, rank - log2_num_procs, tag, comm->global_comm,
+        MPI_Send(tmp_recvbuf, count, datatype, rank - log2_num_procs, tag, comm->global_comm);
+        MPI_Recv(tmp_recvbuf, count, datatype, rank - log2_num_procs, tag, comm->global_comm,
                 MPI_STATUS_IGNORE);
     }
     else
@@ -64,23 +66,28 @@ int allreduce_recursive_doubling_helper(
         {
             MPI_Recv(tmpbuf, count, datatype, rank + log2_num_procs, tag, comm->global_comm,
                     MPI_STATUS_IGNORE);
-            MPI_Reduce_local(tmpbuf, recvbuf, count, datatype, op);
+            MPI_Reduce_local(tmpbuf, tmp_recvbuf, count, datatype, op);
         }
         for (int stride = 1; stride < log2_num_procs; stride = stride << 1)
         {
             proc = rank ^ stride;
-            MPI_Sendrecv(recvbuf, count, datatype, proc, tag,
+            MPI_Sendrecv(tmp_recvbuf, count, datatype, proc, tag,
                     tmpbuf, count, datatype, proc, tag, comm->global_comm, 
                     MPI_STATUS_IGNORE);
-            MPI_Reduce_local(tmpbuf, recvbuf, count, datatype, op);
+            MPI_Reduce_local(tmpbuf, tmp_recvbuf, count, datatype, op);
         }
         if (rank < extra_procs)
         {
-            MPI_Send(recvbuf, count, datatype, rank + log2_num_procs, tag, comm->global_comm);
+            MPI_Send(tmp_recvbuf, count, datatype, rank + log2_num_procs, tag, comm->global_comm);
         }
     }
 
+    MPI_Sendrecv(tmp_recvbuf, count, datatype, rank, tag,
+            recvbuf, count, datatype, rank, tag, comm->global_comm,
+            MPI_STATUS_IGNORE);
+
     free_ftn(tmpbuf);
+    free_ftn(tmp_recvbuf);
 
     return MPI_SUCCESS;
 }
