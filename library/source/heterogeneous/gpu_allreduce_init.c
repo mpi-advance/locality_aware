@@ -67,29 +67,6 @@ int gpu_aware_allreduce_dissemination_ml_init(const void* sendbuf,
                                comm, info, req_ptr);
 }
 
-#if defined(MPI4)
-int gpu_aware_allreduce_pmpi_init(const void* sendbuf,
-                        void* recvbuf,
-                        int count,
-                        MPI_Datatype datatype,
-                        MPI_Op op,
-                        MPIL_Comm* comm,
-                        MPIL_Info* info,
-                        MPIL_Request** req_ptr)
-{
-    MPIL_Request* request;
-    init_request(&request);
-    allocate_requests(1, &(request->global_requests));
-    *req_ptr = request;
-    request->start_function = pmpi_start;
-    request->wait_function = pmpi_wait;
-
-    return PMPI_Allreduce_init(sendbuf, recvbuf, count, datatype, op, 
-            comm->global_comm, MPI_INFO_NULL, &(request->global_requests[0]));
-
-}
-#endif
-
 
 // TODO -- c2c_start, c2c_wait
 int copy_to_cpu_allreduce_init(allreduce_init_helper_ftn f,
@@ -119,8 +96,6 @@ int copy_to_cpu_allreduce_init(allreduce_init_helper_ftn f,
     request->tmp_sendbuf = cpu_sendbuf;
     request->gpu_sendbuf = sendbuf;
     request->gpu_recvbuf = recvbuf;
-
-    gpuDeviceSynchronize();
 
     return ierr;
 }
@@ -168,18 +143,4 @@ int copy_to_cpu_allreduce_dissemination_ml_init(const void* sendbuf,
                                comm, info, req_ptr);
 }
 
-#if defined(MPI4)
-int copy_to_cpu_allreduce_pmpi_init(const void* sendbuf,
-                               void* recvbuf,
-                               int count,
-                               MPI_Datatype datatype,
-                               MPI_Op op,
-                               MPIL_Comm* comm,
-                               MPIL_Info* info,
-                               MPIL_Request** req_ptr)
-{
-    return copy_to_cpu_allreduce_init(allreduce_pmpi_helper,
-                            sendbuf, recvbuf, count, datatype, op,
-                            comm, info, req_ptr);
-}
 #endif
