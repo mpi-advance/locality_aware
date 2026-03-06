@@ -55,6 +55,7 @@ int allreduce_recursive_doubling_init_helper(const void* sendbuf,
     request->sendbuf = sendbuf;
     request->recvbuf = recvbuf;
 
+
     int type_size;
     MPI_Type_size(datatype, &type_size);
 
@@ -115,6 +116,21 @@ int allreduce_recursive_doubling_init_helper(const void* sendbuf,
 
 int allreduce_recursive_doubling_start(MPIL_Request* request)
 {
+    int type_size;
+    MPI_Type_size(request->datatype, &type_size);
+
+#if defined(GPU)
+if (request->cpu_sendbuf)
+{
+#if defined(APU)
+    memcpy(request->cpu_sendbuf, request->sendbuf, request->count*type_size);
+#else
+    gpuMemcpyAsync(request->cpu_sendbuf, request->sendbuf, request->count*type_size, 
+            gpuMemcpyDeviceToHost, 0);
+    gpuStreamSynchronize(0);
+#endif
+}
+#endif
     if (request == NULL)
         return 0;
 
@@ -129,6 +145,9 @@ int allreduce_recursive_doubling_start(MPIL_Request* request)
 
 int allreduce_recursive_doubling_wait(MPIL_Request* request, MPI_Status* status)   
 {
+    int type_size;
+    MPI_Type_size(request->datatype, &type_size);
+
     if (request == NULL)
         return 0;
 
@@ -156,6 +175,16 @@ int allreduce_recursive_doubling_wait(MPIL_Request* request, MPI_Status* status)
         MPI_Startall(request->local_R_n_msgs, request->local_R_requests);
         MPI_Waitall(request->local_R_n_msgs, request->local_R_requests, MPI_STATUSES_IGNORE);
     }
+
+#if defined(GPU)
+#if defined(APU)
+    memcpy(request->recvbuf, request->cpu_recvbuf, request->count*type_size);
+#else
+    gpuMemcpyAsync(request->recvbuf, request->cpu_recvbuf, request->count*type_size, 
+            gpuMemcpyHostToDevice, 0);
+    gpuStreamSynchronize(0);
+#endif
+#endif
 
     return MPI_SUCCESS;
 }

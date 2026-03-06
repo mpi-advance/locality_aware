@@ -85,7 +85,7 @@ int copy_to_cpu_allgather(allgather_helper_ftn f,
     MPI_Type_size(sendtype, &send_size);
     MPI_Type_size(recvtype, &recv_size);
 
-    int bytes = sendcount*send_size*num_procs;
+    int bytes = sendcount*send_size;
 
     // gpuMalloc is too expensive for single allgather
     void* cpu_sendbuf = malloc(bytes);

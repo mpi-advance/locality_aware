@@ -111,13 +111,6 @@ int copy_to_cpu_allreduce_init(allreduce_init_helper_ftn f,
     void* cpu_sendbuf = malloc(count*type_size);
     void* cpu_recvbuf = malloc(count*type_size);
 
-#if defined(APU)
-    memcpy(cpu_sendbuf, sendbuf, count*type_size);
-#else
-    gpuMemcpy(cpu_sendbuf, sendbuf, count*type_size, gpuMemcpyDeviceToHost);
-    gpuStreamSynchronize(0);
-#endif 
-
     ierr += f(cpu_sendbuf, cpu_recvbuf, count, datatype, op, comm,
                     info, req_ptr, MPIL_Alloc, MPIL_Free);
 
