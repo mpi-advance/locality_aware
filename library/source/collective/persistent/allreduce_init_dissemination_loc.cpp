@@ -169,11 +169,18 @@ int allreduce_dissemination_loc_init_core(const void* sendbuf,
 
     MPIL_Request* request;
     init_request(&request);
+    MPIL_Request* local_L_request = request->local_L_request;
+    MPIL_Request* local_S_request = request->local_S_request;
+    MPIL_Request* local_R_request = request->local_R_request;
+    init_request(&(local_L_request));
+    init_request(&(local_S_request));
+    init_request(&(local_R_request));
+
     int max_n_msgs = 2*(log2(num_procs));
-    allocate_requests(max_n_msgs, &(request->global_requests));
-    allocate_requests(1, &(request->local_L_requests));
-    allocate_requests(1, &(request->local_S_requests));
-    allocate_requests(2, &(request->local_R_requests));
+    allocate_requests(max_n_msgs, request);
+    allocate_requests(1, local_L_request);
+    allocate_requests(1, local_S_request);
+    allocate_requests(1, local_R_request);
 
     request->start_function = allreduce_dissemination_loc_start;
     request->wait_function  = allreduce_dissemination_loc_wait;
@@ -205,16 +212,16 @@ int allreduce_dissemination_loc_init_core(const void* sendbuf,
     {
         int node = rank_node - max_node;
         MPI_Send_init(recvbuf, count, datatype, node, tag, 
-                group_comm, &(request->local_L_requests[request->local_L_n_msgs++]));
+                group_comm, &(local_L_request->requests[local_L_request->n_msgs++]));
         MPI_Recv_init(recvbuf, count, datatype, node, tag, 
-                group_comm, &(request->local_R_requests[request->local_R_n_msgs++]));
+                group_comm, &(local_R_request->requests[local_R_request->n_msgs++]));
     }
     else
     {
         if (rank_node < extra)
         {
             MPI_Recv_init(request->tmpbuf, count, datatype, max_node + rank_node, tag, 
-                    group_comm, &(request->local_S_requests[request->local_S_n_msgs++]));
+                    group_comm, &(local_S_request->requests[local_S_request->n_msgs++]));
         }
 
         for (int node_stride = 1; node_stride < max_node; node_stride *= (ppn+1))
@@ -226,9 +233,9 @@ int allreduce_dissemination_loc_init_core(const void* sendbuf,
                 int recv_node = (rank_node + stride) % max_node;
 
                 MPI_Send_init(recvbuf, count, datatype, send_node, tag, group_comm, 
-                    &(request->global_requests[request->global_n_msgs++]));
+                    &(request->requests[request->n_msgs++]));
                 MPI_Recv_init(request->tmpbuf, count, datatype, recv_node, tag, group_comm, 
-                    &(request->global_requests[request->global_n_msgs++]));
+                    &(request->requests[request->n_msgs++]));
             }
             request->num_ops += 2;
         }
@@ -236,7 +243,7 @@ int allreduce_dissemination_loc_init_core(const void* sendbuf,
         if (rank_node < extra)
         {
             MPI_Send_init(recvbuf, count, datatype, max_node + rank_node, 
-                    tag, group_comm, &(request->local_R_requests[request->local_R_n_msgs++]));
+                    tag, group_comm, &(local_R_request->requests[local_R_request->n_msgs++]));
         }
     }
 
@@ -248,6 +255,10 @@ int allreduce_dissemination_loc_init_core(const void* sendbuf,
 
 int allreduce_dissemination_loc_start(MPIL_Request* request)
 {
+    MPIL_Request* local_L_request = request->local_L_request;
+    MPIL_Request* local_S_request = request->local_S_request;
+    MPIL_Request* local_R_request = request->local_R_request;
+
     int type_size;
     MPI_Type_size(request->datatype, &type_size);
 
@@ -271,42 +282,46 @@ if (request->gpu_sendbuf)
     PMPI_Allreduce(request->sendbuf, request->recvbuf, request->count, 
             request->datatype, request->op, request->local_comm);
 
-    if (request->local_L_n_msgs)
-        MPI_Startall(request->local_L_n_msgs, request->local_L_requests);
-    if (request->local_S_n_msgs)
-        MPI_Startall(request->local_S_n_msgs, request->local_S_requests);
+    if (local_L_request->n_msgs)
+        MPI_Startall(local_L_request->n_msgs, local_L_request->requests);
+
+    if (local_S_request->n_msgs)
+        MPI_Startall(local_S_request->n_msgs, local_S_request->requests);
 
     return MPI_SUCCESS;
 }
 
 int allreduce_dissemination_loc_wait(MPIL_Request* request, MPI_Status* status)
 {
+    MPIL_Request* local_L_request = request->local_L_request;
+    MPIL_Request* local_S_request = request->local_S_request;
+    MPIL_Request* local_R_request = request->local_R_request;
+
     int type_size;
     MPI_Type_size(request->datatype, &type_size);
 
     if (request == NULL)
         return 0;
 
-    if (request->local_L_n_msgs)
-        MPI_Waitall(request->local_L_n_msgs, request->local_L_requests, MPI_STATUSES_IGNORE);
+    if (local_L_request->n_msgs)
+        MPI_Waitall(local_L_request->n_msgs, local_L_request->requests, MPI_STATUSES_IGNORE);
 
-    if (request->local_S_n_msgs)
+    if (local_S_request->n_msgs)
     {
-        MPI_Waitall(request->local_S_n_msgs, request->local_S_requests, MPI_STATUSES_IGNORE);
-        MPI_Reduce_local(request->tmpbuf, request->recvbuf, request->count,
+        MPI_Waitall(local_S_request->n_msgs, local_S_request->requests, MPI_STATUSES_IGNORE);             MPI_Reduce_local(request->tmpbuf, request->recvbuf, request->count,
                 request->datatype, request->op);
     }
 
-    for (int i = 0; i < request->global_n_msgs; i += 2)
+    for (int i = 0; i < request->n_msgs; i += 2)
     {
-        MPI_Startall(2, &(request->global_requests[i]));
-        MPI_Waitall(2, &(request->global_requests[i]), MPI_STATUSES_IGNORE);
+        MPI_Startall(2, &(request->requests[i]));
+        MPI_Waitall(2, &(request->requests[i]), MPI_STATUSES_IGNORE);
         MPI_Allreduce(MPI_IN_PLACE, request->tmpbuf, request->count,
                 request->datatype, request->op, request->local_comm);
         MPI_Reduce_local(request->tmpbuf, request->recvbuf, request->count,
                 request->datatype, request->op);
     }
-    if (request->num_ops > request->global_n_msgs)
+    if (request->num_ops > request->n_msgs)
     {
         int type_size;
         MPI_Type_size(request->datatype, &type_size);
@@ -317,10 +332,10 @@ int allreduce_dissemination_loc_wait(MPIL_Request* request, MPI_Status* status)
                 request->datatype, request->op);
     }
 
-    if (request->local_R_n_msgs)
+    if (local_R_request->n_msgs)
     {
-        MPI_Startall(request->local_R_n_msgs, request->local_R_requests);
-        MPI_Waitall(request->local_R_n_msgs, request->local_R_requests, MPI_STATUSES_IGNORE);
+        MPI_Startall(local_R_request->n_msgs, local_R_request->requests);
+        MPI_Waitall(local_R_request->n_msgs, local_R_request->requests, MPI_STATUSES_IGNORE);
     }
 
 #if defined(GPU)

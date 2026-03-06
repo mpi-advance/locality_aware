@@ -2,7 +2,7 @@
 #include <cstring>
 #include <vector>
 
-#include "communicator/MPIL_Comm.h"
+#include "communicator/MPIL_Comm.hpp"
 #include "communicator/MPIL_Info.h"
 #include "locality_aware.h"
 
@@ -644,6 +644,11 @@ int alltoall_crs_personalized_loc(const int send_nnz,
         {
             origins.push_back(proc * PPN + local_rank);
         }
+    }
+
+    if (n_sends)
+    {
+        MPI_Waitall(n_sends, comm->requests, MPI_STATUSES_IGNORE);
     }
 
     local_redistribute(node_recv_size,

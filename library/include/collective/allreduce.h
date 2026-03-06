@@ -4,7 +4,7 @@
 #include <mpi.h>
 #include <stdlib.h>
 
-#include "communicator/MPIL_Comm.h"
+#include "communicator/MPIL_Comm.hpp"
 #include "utils/MPIL_Alloc.h"
 
 #ifdef __cplusplus

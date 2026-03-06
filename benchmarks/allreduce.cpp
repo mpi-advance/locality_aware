@@ -8,7 +8,6 @@
 #include <set>
 #include <vector>
 
-#include "communicator/MPIL_Comm.h"
 #include "locality_aware.h"
 
 int main(int argc, char* argv[])
@@ -33,11 +32,7 @@ int main(int argc, char* argv[])
     MPIL_Comm* xcomm;
     MPIL_Comm_init(&xcomm, MPI_COMM_WORLD);
     MPIL_Comm_topo_init(xcomm);
-
-    int local_rank, ppn;
-    MPI_Comm_rank(xcomm->local_comm, &local_rank);
-    MPI_Comm_size(xcomm->local_comm, &ppn);
-    MPIL_Comm_leader_init(xcomm, ppn/4);
+    MPIL_Comm_leader_init(xcomm, 4);
 
     for (int i = 0; i < max_i; i++)
     {

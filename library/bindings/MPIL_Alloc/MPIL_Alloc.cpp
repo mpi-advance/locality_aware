@@ -5,6 +5,10 @@
 #endif
 
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 int MPIL_Alloc(void** pointer, const int bytes)
 {
     if (bytes == 0)
@@ -33,5 +37,9 @@ int MPIL_GPU_Alloc(void** pointer, const int bytes)
     gpuDeviceSynchronize();
 
     return MPI_SUCCESS;
+}
+#endif
+
+#ifdef __cplusplus
 }
 #endif

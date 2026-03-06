@@ -40,11 +40,19 @@ int allreduce_recursive_doubling_init_helper(const void* sendbuf,
 
     MPIL_Request* request;
     init_request(&request);
+    MPIL_Request* local_L_request = request->local_L_request;
+    MPIL_Request* local_S_request = request->local_S_request;
+    MPIL_Request* local_R_request = request->local_R_request;
+
+    init_request(&(local_L_request));
+    init_request(&(local_S_request));
+    init_request(&(local_R_request));
+
     int max_n_msgs = 2*(log2(num_procs));
-    allocate_requests(max_n_msgs, &(request->global_requests));
-    allocate_requests(1, &(request->local_S_requests));
-    allocate_requests(4, &(request->local_L_requests));
-    allocate_requests(1, &(request->local_R_requests));
+    allocate_requests(max_n_msgs, request);
+    allocate_requests(2, local_L_request);
+    allocate_requests(1, local_S_request);
+    allocate_requests(1, local_R_request);
 
     request->start_function = allreduce_recursive_doubling_start;
     request->wait_function  = allreduce_recursive_doubling_wait;
@@ -65,13 +73,13 @@ int allreduce_recursive_doubling_init_helper(const void* sendbuf,
     int tag;
     get_tag(comm, &tag);
 
-    request->global_n_msgs = 0;
+    request->n_msgs = 0;
     if (sendbuf != MPI_IN_PLACE)
     {
         MPI_Send_init(sendbuf, count, datatype, rank, tag,
-                comm->global_comm, &(request->local_L_requests[request->local_L_n_msgs++]));
+                comm->global_comm, &(local_L_request->requests[local_L_request->n_msgs++]));
         MPI_Recv_init(recvbuf, count, datatype, rank, tag,
-                comm->global_comm, &(request->local_L_requests[request->local_L_n_msgs++]));
+                comm->global_comm, &(local_L_request->requests[local_L_request->n_msgs++]));
     }
 
     int proc; 
@@ -83,29 +91,29 @@ int allreduce_recursive_doubling_init_helper(const void* sendbuf,
     {
         proc = rank - log2_num_procs;
         MPI_Send_init(recvbuf, count, datatype, rank - log2_num_procs, tag, 
-                comm->global_comm, &(request->local_R_requests[request->local_R_n_msgs++]));
+                comm->global_comm, &(local_S_request->requests[local_S_request->n_msgs++]));
         MPI_Recv_init(recvbuf, count, datatype, rank - log2_num_procs, tag, 
-                comm->global_comm, &(request->local_R_requests[request->local_R_n_msgs++]));
+                comm->global_comm, &(local_R_request->requests[local_R_request->n_msgs++]));
     }
     else
     {
         if (rank < extra_procs)
         {
             MPI_Recv_init(request->tmpbuf, count, datatype, rank + log2_num_procs, tag, 
-                    comm->global_comm, &(request->local_S_requests[request->local_S_n_msgs++]));
+                    comm->global_comm, &(local_S_request->requests[local_S_request->n_msgs++]));
         }
         for (int stride = 1; stride < log2_num_procs; stride = stride << 1)
         {
             proc = rank ^ stride;
             MPI_Send_init(recvbuf, count, datatype, proc, tag, comm->global_comm, 
-                    &(request->global_requests[request->global_n_msgs++]));
+                    &(request->requests[request->n_msgs++]));
             MPI_Recv_init(request->tmpbuf, count, datatype, proc, tag, comm->global_comm, 
-                    &(request->global_requests[request->global_n_msgs++]));
+                    &(request->requests[request->n_msgs++]));
         }
         if (rank < extra_procs)
         {
             MPI_Send_init(recvbuf, count, datatype, rank + log2_num_procs, tag, 
-                    comm->global_comm, &(request->local_R_requests[request->local_R_n_msgs++]));
+                    comm->global_comm, &(local_R_request->requests[local_R_request->n_msgs++]));
         }
     }
 
@@ -116,6 +124,10 @@ int allreduce_recursive_doubling_init_helper(const void* sendbuf,
 
 int allreduce_recursive_doubling_start(MPIL_Request* request)
 {
+    MPIL_Request* local_L_request = request->local_L_request;
+    MPIL_Request* local_S_request = request->local_S_request;
+    MPIL_Request* local_R_request = request->local_R_request;
+
     int type_size;
     MPI_Type_size(request->datatype, &type_size);
 
@@ -134,46 +146,50 @@ if (request->gpu_sendbuf)
     if (request == NULL)
         return 0;
 
-    if (request->local_L_n_msgs)
-        MPI_Startall(request->local_L_n_msgs, request->local_L_requests);
+    if (local_L_request->n_msgs)
+        MPI_Startall(local_L_request->n_msgs, local_L_request->requests);
 
-    if (request->local_S_n_msgs)
-        MPI_Startall(request->local_S_n_msgs, request->local_S_requests);
+    if (local_S_request->n_msgs)
+        MPI_Startall(local_S_request->n_msgs, local_S_request->requests);
 
     return MPI_SUCCESS;
 }
 
 int allreduce_recursive_doubling_wait(MPIL_Request* request, MPI_Status* status)   
 {
+    MPIL_Request* local_L_request = request->local_L_request;
+    MPIL_Request* local_S_request = request->local_S_request;
+    MPIL_Request* local_R_request = request->local_R_request;
+
     int type_size;
     MPI_Type_size(request->datatype, &type_size);
 
     if (request == NULL)
         return 0;
 
-    if (request->local_L_n_msgs)
-        MPI_Waitall(request->local_L_n_msgs, request->local_L_requests, MPI_STATUSES_IGNORE);
+    if (local_L_request->n_msgs)
+        MPI_Waitall(local_L_request->n_msgs, local_L_request->requests, MPI_STATUSES_IGNORE);
 
-    if (request->local_S_n_msgs)
+    if (local_S_request->n_msgs)
     {
-        MPI_Waitall(request->local_S_n_msgs, request->local_S_requests, MPI_STATUSES_IGNORE);
+        MPI_Waitall(local_S_request->n_msgs, local_S_request->requests, MPI_STATUSES_IGNORE);
         MPI_Reduce_local(request->tmpbuf, request->recvbuf, request->count,
                 request->datatype, request->op);
     }
 
-    for (int i = 0; i < request->global_n_msgs; i += 2)
+    for (int i = 0; i < request->n_msgs; i += 2)
     {
-        MPI_Startall(2, &(request->global_requests[i]));
-        MPI_Waitall(2, &(request->global_requests[i]), MPI_STATUSES_IGNORE);
+        MPI_Startall(2, &(request->requests[i]));
+        MPI_Waitall(2, &(request->requests[i]), MPI_STATUSES_IGNORE);
         MPI_Reduce_local(request->tmpbuf, request->recvbuf, request->count,
                 request->datatype, request->op);
     }
     
 
-    if (request->local_R_n_msgs)
+    if (local_R_request->n_msgs)
     {
-        MPI_Startall(request->local_R_n_msgs, request->local_R_requests);
-        MPI_Waitall(request->local_R_n_msgs, request->local_R_requests, MPI_STATUSES_IGNORE);
+        MPI_Startall(local_R_request->n_msgs, local_R_request->requests);
+        MPI_Waitall(local_R_request->n_msgs, local_R_request->requests, MPI_STATUSES_IGNORE);
     }
 
 #if defined(GPU)

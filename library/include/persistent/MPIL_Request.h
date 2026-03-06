@@ -3,48 +3,55 @@
 
 #include <mpi.h>
 
-#include "communicator/locality_comm.h"
 #include "utils/MPIL_Alloc.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+typedef struct _MPIL_Request MPIL_Request;
 /** @brief A custom MPI_Request struct used for the library's persistent collectives
  * @details For external users, there is limited direct access to class members through
  * API calls. Contains multiple requests and buffers to manage complex communication.
  * Contains function pointer to appropriate start and wait functions.
  */
-typedef struct _MPIL_Request
+struct _MPIL_Request
 {
-    // Message counts; Will only use global unless locality-aware
-    /** @brief Intra-node message count **/
-    int local_L_n_msgs;
-    /** @brief Sent message count **/
-    int local_S_n_msgs;
-    /** @brief Received message count **/
-    int local_R_n_msgs;
-    /** @brief Number of inter-node messages **/
-    int global_n_msgs;
+    /** @brief Number of messages **/
+    int n_msgs;
+    /** @brief array of MPI Requests **/
+    MPI_Request* requests;
 
-    // MPI Request arrays; Will only use global unless locality-aware
-    /** @brief Requests to manage of intra-node messages **/
-    MPI_Request* local_L_requests;
-    /** @brief Requests to control sent messages **/
-    MPI_Request* local_S_requests;
-    /** @brief Requests to control received messages **/
-    MPI_Request* local_R_requests;
-    /** @brief Requests to manage of inter-node messages **/
-    MPI_Request* global_requests;
-
-    /** @brief Pointer to locality communication information if using locality-aware
-     * variants **/
-    LocalityComm* locality;
-
-    /** @brief Pointers to the user's original send buffer */
+    /** @brief Pointer to the user's original send buffer*/
     const void* sendbuf;
     /** @brief Pointer to the user's original receive buffer */
     void* recvbuf;
+
+    /** @brief Pointer to new send buffer for data to be 
+     * packed into at intermediate steps */
+    void* tmp_sendbuf;
+    /** @brief Pointer to new recv buffer for data to be 
+     * recvd into at intermediate steps */
+    void* tmp_recvbuf;
+    /** @brief indices of input buffer to be packed **/
+    int* send_indices;
+    /** @brief indices of received buffer to be unpacked **/
+    int* recv_indices;
+    /** @brief size of sendbuf/send_indices **/ 
+    int size_sends;
+    /** @brief size of recvbuf/recv_indices **/ 
+    int size_recvs;
+    /** @brief size of sendtype **/
+    int send_size;
+    /** @brief size of recvtype **/
+
+    // Pointers to MPI_Requests for aggregated communication
+    /** @brief Fully local communication **/
+    MPIL_Request* local_L_request;
+    /** @brief Initial local aggregation **/
+    MPIL_Request* local_S_request;
+    /** @brief Final local disaggrgation **/
+    MPIL_Request* local_R_request;
 
     /** @brief Number of bytes per receive object, locality-aware only **/
     int recv_size;
@@ -54,6 +61,8 @@ typedef struct _MPIL_Request
     MPI_Comm global_comm;
     MPI_Comm local_comm;
 
+    /** @brief Flag for if we want MPIL to reorder requests based on order of arrival
+     * during first iteration **/
     int reorder;
 
     void* tmpbuf;
@@ -86,7 +95,7 @@ typedef struct _MPIL_Request
     int (*start_function)(struct _MPIL_Request* request);
     /** @brief Function pointer to MPIL_Wait or MPIL_neighbor_wait **/
     int (*wait_function)(struct _MPIL_Request* request, MPI_Status* status);
-} MPIL_Request;
+};
 
 /** @brief Constructor for ::MPIL_Request. Initializes most members to 0. */
 void init_request(MPIL_Request** request_ptr);
@@ -95,7 +104,7 @@ void init_request(MPIL_Request** request_ptr);
         @param [in] n_request how many requests need space
         @param [out] request_ptr pointer to start of allocated memory
 **/
-void allocate_requests(int n_requests, MPI_Request** request_ptr);
+void allocate_requests(int n_requests, MPIL_Request* request);
 
 #ifdef __cplusplus
 }
