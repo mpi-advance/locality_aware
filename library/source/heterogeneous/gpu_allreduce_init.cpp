@@ -1,7 +1,6 @@
 #include "heterogeneous/gpu_allreduce.h"
 #include "heterogeneous/gpu_utils.h"
 #include "collective/allreduce_init.h"
-#include "communicator/MPIL_Comm.h"
 #include "locality_aware.h"
 
 // ASSUMES 1 CPU CORE PER GPU (Standard for applications)
@@ -93,7 +92,7 @@ int copy_to_cpu_allreduce_init(allreduce_init_helper_ftn f,
                     info, req_ptr, MPIL_Alloc, MPIL_Free);
 
     MPIL_Request* request = *req_ptr;
-    request->tmp_sendbuf = cpu_sendbuf;
+    request->tmp_gpubuf = cpu_sendbuf;
     request->gpu_sendbuf = sendbuf;
     request->gpu_recvbuf = recvbuf;
 
@@ -143,4 +142,3 @@ int copy_to_cpu_allreduce_dissemination_ml_init(const void* sendbuf,
                                comm, info, req_ptr);
 }
 
-#endif

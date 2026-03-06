@@ -79,7 +79,7 @@ int MPIL_Request_free(MPIL_Request** request_ptr)
     
     // Can't free sendbuf (const), so free tmp_sendbuf
     if (request->gpu_sendbuf)
-        MPIL_Free(request->tmp_sendbuf);
+        MPIL_Free(request->tmp_gpubuf);
 
     if (request->gpu_recvbuf)
         MPIL_Free(request->recvbuf);

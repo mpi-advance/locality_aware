@@ -1,6 +1,7 @@
 #include "neighborhood/neighbor_locality.h"
 
 #include <algorithm>
+#include <string.h>
 
 #include "locality_aware.h"
 #include "communicator/MPIL_Comm.hpp"

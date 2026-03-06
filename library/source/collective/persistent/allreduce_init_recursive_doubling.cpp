@@ -135,9 +135,9 @@ int allreduce_recursive_doubling_start(MPIL_Request* request)
 if (request->gpu_sendbuf)
 {
 #if defined(APU)
-    memcpy(request->tmp_sendbuf, request->gpu_sendbuf, request->count*type_size);
+    memcpy(request->tmp_gpubuf, request->gpu_sendbuf, request->count*type_size);
 #else
-    gpuMemcpyAsync(request->tmp_sendbuf, request->gpu_sendbuf, request->count*type_size, 
+    gpuMemcpyAsync(request->tmp_gpubuf, request->gpu_sendbuf, request->count*type_size, 
             gpuMemcpyDeviceToHost, 0);
     gpuStreamSynchronize(0);
 #endif

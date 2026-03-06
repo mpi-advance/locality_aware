@@ -1,7 +1,6 @@
 #include "heterogeneous/gpu_allgather.h"
 #include "heterogeneous/gpu_utils.h"
 #include "collective/allgather.h"
-#include "communicator/MPIL_Comm.h"
 #include "locality_aware.h"
 
 // ASSUMES 1 CPU CORE PER GPU (Standard for applications)
