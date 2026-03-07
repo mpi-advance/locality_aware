@@ -33,7 +33,6 @@ int allreduce_recursive_doubling_init_helper(const void* sendbuf,
                                  MPIL_Alloc_ftn alloc_ftn,
                                  MPIL_Free_ftn free_ftn)
 {
-
     int rank, num_procs;
     MPI_Comm_rank(comm->global_comm, &rank);
     MPI_Comm_size(comm->global_comm, &num_procs);
@@ -52,6 +51,10 @@ int allreduce_recursive_doubling_init_helper(const void* sendbuf,
     allocate_requests(2, local_L_request);
     allocate_requests(1, local_S_request);
     allocate_requests(1, local_R_request);
+    request->n_msgs = 0;
+    local_L_request->n_msgs = 0;
+    local_S_request->n_msgs = 0;
+    local_R_request->n_msgs = 0;
 
     request->start_function = allreduce_recursive_doubling_start;
     request->wait_function  = allreduce_recursive_doubling_wait;
@@ -116,6 +119,7 @@ int allreduce_recursive_doubling_init_helper(const void* sendbuf,
         }
     }
 
+
     *req_ptr = request;    
 
     return MPI_SUCCESS;
@@ -176,6 +180,9 @@ int allreduce_recursive_doubling_wait(MPIL_Request* request, MPI_Status* status)
                 request->datatype, request->op);
     }
 
+    // Each step:
+    //      Start 1 send and 1 recv
+    //      Wait for 1 send + 1 recv
     for (int i = 0; i < request->n_msgs; i += 2)
     {
         MPI_Startall(2, &(request->requests[i]));

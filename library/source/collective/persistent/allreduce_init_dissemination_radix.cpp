@@ -52,12 +52,17 @@ int allreduce_dissemination_radix_init_helper(const void* sendbuf,
     MPIL_Request* local_S_request = request->local_S_request;
     MPIL_Request* local_R_request = request->local_R_request;
 
+
     int max_outer_steps = (int)(log((double)num_procs) / log((double)radix)) + 1;
     int max_global_msgs = max_outer_steps * 2 * (radix - 1);
     allocate_requests(max_global_msgs, request);
     allocate_requests(2, local_L_request);
     allocate_requests(1, local_S_request);
     allocate_requests(2, local_R_request);
+    request->n_msgs = 0;
+    local_L_request->n_msgs = 0;
+    local_S_request->n_msgs = 0;
+    local_R_request->n_msgs = 0;
 
     request->start_function = allreduce_dissemination_radix_start;
     request->wait_function = allreduce_dissemination_radix_wait;

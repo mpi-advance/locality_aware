@@ -72,7 +72,6 @@ int main(int argc, char** argv)
                        MPI_COMM_WORLD);
 
         // Default MPIL Allreduce (persistent)
-        /*
         std::fill(mpil_allreduce.begin(), mpil_allreduce.end(), 0);
         MPIL_Allreduce_init(local_data.data(),
                             mpil_allreduce.data(),
@@ -102,7 +101,6 @@ int main(int argc, char** argv)
         MPIL_Request_free(&mpil_request);
         compare_allreduce_results(pmpi_allreduce, mpil_allreduce, s); 
 
-    */
         std::fill(mpil_allreduce.begin(), mpil_allreduce.end(), 0);
         MPIL_Set_allreduce_init_algorithm(ALLREDUCE_DISSEMINATION_LOC);
         MPIL_Allreduce_init(local_data.data(),
@@ -118,7 +116,7 @@ int main(int argc, char** argv)
         MPIL_Request_free(&mpil_request);
         compare_allreduce_results(pmpi_allreduce, mpil_allreduce, s); 
 
-        /*
+        
         std::fill(mpil_allreduce.begin(), mpil_allreduce.end(), 0);
         MPIL_Set_allreduce_init_algorithm(ALLREDUCE_DISSEMINATION_ML);
         MPIL_Allreduce_init(local_data.data(),
@@ -134,6 +132,7 @@ int main(int argc, char** argv)
         MPIL_Request_free(&mpil_request);
         compare_allreduce_results(pmpi_allreduce, mpil_allreduce, s); 
 
+
         std::fill(mpil_allreduce.begin(), mpil_allreduce.end(), 0);
         MPIL_Set_allreduce_init_algorithm(ALLREDUCE_DISSEMINATION_RADIX);
         MPIL_Allreduce_init(local_data.data(),
@@ -148,7 +147,6 @@ int main(int argc, char** argv)
         MPIL_Wait(mpil_request, MPI_STATUS_IGNORE);
         MPIL_Request_free(&mpil_request);
         compare_allreduce_results(pmpi_allreduce, mpil_allreduce, s); 
-
 #if defined(MPI4)
         std::fill(mpil_allreduce.begin(), mpil_allreduce.end(), 0);
         MPIL_Set_allreduce_init_algorithm(ALLREDUCE_PMPI);
@@ -165,7 +163,6 @@ int main(int argc, char** argv)
         MPIL_Request_free(&mpil_request);
         compare_allreduce_results(pmpi_allreduce, mpil_allreduce, s); 
 #endif
-        */
         
     }
 

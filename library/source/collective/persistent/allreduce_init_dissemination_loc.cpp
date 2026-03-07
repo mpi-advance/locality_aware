@@ -181,6 +181,10 @@ int allreduce_dissemination_loc_init_core(const void* sendbuf,
     allocate_requests(1, local_L_request);
     allocate_requests(1, local_S_request);
     allocate_requests(1, local_R_request);
+    request->n_msgs = 0;
+    local_L_request->n_msgs = 0;
+    local_S_request->n_msgs = 0;
+    local_R_request->n_msgs = 0;
 
     request->start_function = allreduce_dissemination_loc_start;
     request->wait_function  = allreduce_dissemination_loc_wait;
