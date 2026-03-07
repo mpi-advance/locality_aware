@@ -156,10 +156,10 @@ int allreduce_dissemination_radix_start(MPIL_Request* request)
 if (request->gpu_sendbuf)
 {
 #if defined(APU)
-    memcpy(request->tmp_sendbuf, request->gpu_sendbuf, 
+    memcpy(request->tmp_gpubuf, request->gpu_sendbuf, 
             request->count*type_size);
 #else
-    gpuMemcpyAsync(request->tmp_sendbuf, request->gpu_sendbuf, 
+    gpuMemcpyAsync(request->tmp_gpubuf, request->gpu_sendbuf, 
             request->count*type_size, gpuMemcpyDeviceToHost, 0);
     gpuStreamSynchronize(0);
 #endif

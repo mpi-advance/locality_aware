@@ -89,7 +89,7 @@ struct _MPIL_Request
      *         stored here */
     void* gpu_recvbuf;
     /** @brief points to sendbuf, but not const, for copy-to-CPU */
-    void* tmp_sendbuf;
+    void* tmp_gpubuf;
 #endif
     /** @brief Function pointer to MPIL_Start or MPIL_neighbor_start **/
     int (*start_function)(struct _MPIL_Request* request);

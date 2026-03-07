@@ -7,8 +7,6 @@
 #include <set>
 #include <vector>
 
-#include "communicator/MPIL_Comm.hpp"
-#include "heterogeneous/gpu_utils.h"
 #include "locality_aware.h"
 
 int main(int argc, char* argv[])
