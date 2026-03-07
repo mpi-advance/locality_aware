@@ -169,12 +169,12 @@ int allreduce_dissemination_loc_init_core(const void* sendbuf,
 
     MPIL_Request* request;
     init_request(&request);
+    init_request(&(request->local_L_request));
+    init_request(&(request->local_S_request));
+    init_request(&(request->local_R_request));
     MPIL_Request* local_L_request = request->local_L_request;
     MPIL_Request* local_S_request = request->local_S_request;
     MPIL_Request* local_R_request = request->local_R_request;
-    init_request(&(local_L_request));
-    init_request(&(local_S_request));
-    init_request(&(local_R_request));
 
     int max_n_msgs = 2*(log2(num_procs));
     allocate_requests(max_n_msgs, request);
