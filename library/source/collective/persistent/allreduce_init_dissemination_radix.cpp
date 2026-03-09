@@ -178,7 +178,7 @@ if (request->gpu_sendbuf)
     return MPI_SUCCESS;
 }
 
-int allreduce_dissemination_radix_wait(MPIL_Request* request, MPI_Status status)
+int allreduce_dissemination_radix_wait(MPIL_Request* request, MPI_Status* status)
 {
     MPIL_Request* local_L_request = request->local_L_request;
     MPIL_Request* local_S_request = request->local_S_request;

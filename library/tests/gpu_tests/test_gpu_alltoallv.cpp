@@ -8,9 +8,6 @@
 #include <set>
 #include <vector>
 
-#include "communicator/MPIL_Comm.hpp"
-#include "communicator/global_comms.hpp"
-#include "heterogeneous/gpu_utils.h"
 #include "locality_aware.h"
 #include "par_binary_IO.hpp"
 #include "sparse_mat.hpp"
@@ -109,9 +106,14 @@ void test_matrix(const char* filename)
         rdispls[i + 1] = rdispls[i] + recvcounts[i];
     }
 
-    int n_gpus;
-    gpuGetDeviceCount(&n_gpus);
-    gpuSetDevice(xcomm->rank_gpu);
+    int num_devices;
+    gpuGetDeviceCount(&num_devices);
+    int local_rank;
+    MPIL_Comm_local_rank(xcomm, &local_rank);
+    if (local_rank < num_devices)
+        gpuSetDevice(local_rank);
+    else // assuming only single device visible
+        gpuSetDevice(0);
 
     MPI_Barrier(MPI_COMM_WORLD);
     int *sendbuf_d, *recvbuf_d;
@@ -152,7 +154,7 @@ void test_matrix(const char* filename)
                    recvcounts.data(),
                    rdispls.data(),
                    MPI_INT,
-                   xcomm->global_comm);
+                   MPI_COMM_WORLD);
 
     // Inter-GPU Alltoallv
     PMPI_Alltoallv(sendbuf_d,
@@ -163,7 +165,7 @@ void test_matrix(const char* filename)
                    recvcounts.data(),
                    rdispls.data(),
                    MPI_INT,
-                   xcomm->global_comm);
+                   MPI_COMM_WORLD);
 
     if (rank == 0)
     {

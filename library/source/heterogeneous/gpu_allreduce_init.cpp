@@ -1,4 +1,4 @@
-#include "heterogeneous/gpu_allreduce.h"
+#include "heterogeneous/gpu_allreduce_init.h"
 #include "heterogeneous/gpu_utils.h"
 #include "collective/allreduce_init.h"
 #include "locality_aware.h"
@@ -66,6 +66,22 @@ int gpu_aware_allreduce_dissemination_ml_init(const void* sendbuf,
                                comm, info, req_ptr);
 }
 
+int gpu_aware_allreduce_dissemination_radix_init(const void* sendbuf,
+                                              void* recvbuf,
+                                              int count,
+                                              MPI_Datatype datatype,
+                                              MPI_Op op,
+                                              MPIL_Comm* comm,
+                                              MPIL_Info* info,
+                                              MPIL_Request** req_ptr)
+{
+    return gpu_aware_allreduce_init(allreduce_dissemination_radix_init_helper,
+                               sendbuf, recvbuf, count, datatype, op,
+                               comm, info, req_ptr);
+}
+
+
+// TODO -- c2c_start, c2c_wait
 
 // TODO -- c2c_start, c2c_wait
 int copy_to_cpu_allreduce_init(allreduce_init_helper_ftn f,
@@ -138,6 +154,20 @@ int copy_to_cpu_allreduce_dissemination_ml_init(const void* sendbuf,
                                          MPIL_Request** req_ptr)
 {
     return copy_to_cpu_allreduce_init(allreduce_dissemination_ml_init_helper,
+                               sendbuf, recvbuf, count, datatype, op,
+                               comm, info, req_ptr);
+}
+
+int copy_to_cpu_allreduce_dissemination_radix_init(const void* sendbuf,
+                                         void* recvbuf,
+                                         int count,
+                                         MPI_Datatype datatype,
+                                         MPI_Op op,
+                                         MPIL_Comm* comm,
+                                         MPIL_Info* info,
+                                         MPIL_Request** req_ptr)
+{
+    return copy_to_cpu_allreduce_init(allreduce_dissemination_radix_init_helper,
                                sendbuf, recvbuf, count, datatype, op,
                                comm, info, req_ptr);
 }

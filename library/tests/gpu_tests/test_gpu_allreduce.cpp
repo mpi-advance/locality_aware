@@ -7,8 +7,6 @@
 #include <set>
 #include <vector>
 
-#include "heterogeneous/gpu_utils.h"
-#include "communicator/MPIL_Comm.h"
 #include "locality_aware.h"
 
 void compare_allreduce_results(std::vector<int>& pmpi,
@@ -50,9 +48,14 @@ int main(int argc, char** argv)
     MPIL_Comm_init(&xcomm, MPI_COMM_WORLD);
     MPIL_Comm_device_init(xcomm);
 
-    int n_gpus;
-    gpuGetDeviceCount(&n_gpus);
-    gpuSetDevice(xcomm->rank_gpu);
+    int num_devices;
+    gpuGetDeviceCount(&num_devices);
+    int local_rank;
+    MPIL_Comm_local_rank(xcomm, &local_rank);
+    if (local_rank < num_devices)
+        gpuSetDevice(local_rank);
+    else // assuming only single device visible
+        gpuSetDevice(0);
 
     int* local_data_d;
     int* allreduce_d;
