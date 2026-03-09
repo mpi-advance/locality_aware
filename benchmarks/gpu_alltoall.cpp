@@ -40,12 +40,18 @@ int main(int argc, char* argv[])
               max_s * num_procs * sizeof(double),
               gpuMemcpyHostToDevice);
 
+    int num_devices;
+    gpuGetDeviceCount(&num_devices);
+
     MPIL_Comm* xcomm;
     MPIL_Comm_init(&xcomm, MPI_COMM_WORLD);
     MPIL_Comm_topo_init(xcomm);
     int local_rank;
-    MPI_Comm_rank(xcomm->local_comm, &local_rank);
-    gpuSetDevice(local_rank);
+    MPIL_Comm_local_rank(xcomm, &local_rank);
+    if (local_rank < num_devices)
+        gpuSetDevice(local_rank);
+    else // assuming only single device visible
+        gpuSetDevice(0);
 
     for (int i = 0; i < max_i; i++)
     {

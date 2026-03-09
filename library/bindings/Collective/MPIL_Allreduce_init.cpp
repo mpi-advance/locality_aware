@@ -28,6 +28,9 @@ int MPIL_Allreduce_init(const void* sendbuf,
         case ALLREDUCE_GPU_DISSEMINATION_ML:
             method = gpu_aware_allreduce_dissemination_ml_init;
             break;
+        case ALLREDUCE_GPU_DISSEMINATION_RADIX:
+            method = gpu_aware_allreduce_dissemination_radix_init;
+            break;
 #if defined(MPI4)
         case ALLREDUCE_GPU_PMPI:
             method = gpu_aware_allreduce_pmpi_init;
@@ -42,6 +45,9 @@ int MPIL_Allreduce_init(const void* sendbuf,
             break;
         case ALLREDUCE_CTC_DISSEMINATION_ML:
             method = copy_to_cpu_allreduce_dissemination_ml_init;
+            break;
+        case ALLREDUCE_CTC_DISSEMINATION_RADIX:
+            method = copy_to_cpu_allreduce_dissemination_radix_init;
             break;
 #if defined(MPI4)
         case ALLREDUCE_CTC_PMPI:

@@ -3,10 +3,20 @@
 
 #include <mpi.h>
 
+#if defined(HIP)
+#include "utils_hip.h"
+#endif
+
+#if defined(CUDA)
+#include "utils_cuda.h"
+#endif
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+#if defined(GPU)
 /* Objects offered by this header*/
 typedef struct _MPIL_Comm MPIL_Comm;
 typedef struct _MPIL_Info MPIL_Info;
@@ -315,6 +325,25 @@ int MPIL_Comm_update_locality(MPIL_Comm* xcomm, int ppn);
 
 /** @brief Get current tag in communicator and then increment tag by 1. See get_comm()**/
 int MPIL_Comm_tag(MPIL_Comm* comm, int* tag);
+
+/** @brief Returns rank of global communicator **/
+int MPIL_Comm_rank(MPIL_Comm* xcomm, int* rank);
+/** @brief Returns size of global communicator **/
+int MPIL_Comm_size(MPIL_Comm* xcomm, int* size);
+
+/** @brief Returns rank of local communicator, if it exists.  
+ * Returns -1 if no local communicator **/
+int MPIL_Comm_local_rank(MPIL_Comm* xcomm, int* local_rank);
+/** @brief Returns size of local communicator, if it exists.  
+ * Returns 0 if no local communicator **/
+int MPIL_Comm_local_size(MPIL_Comm* xcomm, int* local_size);
+
+/** @brief Returns rank of group communicator, if it exists.  
+ * Returns -1 if no group communicator **/
+int MPIL_Comm_group_rank(MPIL_Comm* xcomm, int* group_rank);
+/** @brief Returns size of group communicator, if it exists.  
+ * Returns 0 if no group communicator **/
+int MPIL_Comm_group_size(MPIL_Comm* xcomm, int* group_size);
 
 // Functions to initialize and free the MPI_Info object
 /** @brief Initializes MPIL_Info object**/

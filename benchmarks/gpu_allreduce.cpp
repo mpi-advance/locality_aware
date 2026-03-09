@@ -7,8 +7,6 @@
 #include <set>
 #include <vector>
 
-#include "communicator/MPIL_Comm.h"
-#include "heterogeneous/gpu_utils.h"
 #include "locality_aware.h"
 
 template <typename AllreduceFn, typename... Args>
@@ -92,9 +90,11 @@ int main(int argc, char* argv[])
     MPIL_Comm_init(&xcomm, MPI_COMM_WORLD);
     MPIL_Comm_topo_init(xcomm);
     int local_rank;
-    MPI_Comm_rank(xcomm->local_comm, &local_rank);
-    //gpuSetDevice(local_rank);
-    gpuSetDevice(0);
+    MPIL_Comm_local_rank(xcomm, &local_rank);
+    if (local_rank < num_devices)
+        gpuSetDevice(local_rank);
+    else // assuming only single device visible
+        gpuSetDevice(0);
 
     for (int i = 0; i < max_i; i++)
     {
