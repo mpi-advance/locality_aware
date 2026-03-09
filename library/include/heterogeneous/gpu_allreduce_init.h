@@ -2,6 +2,7 @@
 #define MPI_ADVANCE_GPU_ALLREDUCE_INIT_H
 
 #include "collective/allreduce_init.h"
+#include "heterogeneous/gpu_allreduce_init.h"
 #include "gpu_utils.h"
 
 #ifdef __cplusplus
