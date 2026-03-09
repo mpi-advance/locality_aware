@@ -45,12 +45,13 @@ int allreduce_dissemination_radix_init_helper(const void* sendbuf,
     
     MPIL_Request* request;
     init_request(&request);
+    init_request(&(request->local_L_request));
+    init_request(&(request->local_S_request));
+    init_request(&(request->local_R_request));
     MPIL_Request* local_L_request = request->local_L_request;
     MPIL_Request* local_S_request = request->local_S_request;
     MPIL_Request* local_R_request = request->local_R_request;
-    init_request(&(local_L_request));
-    init_request(&(local_S_request));
-    init_request(&(local_R_request));
+
 
     int max_outer_steps = (int)(log((double)num_procs) / log((double)radix)) + 1;
     int max_global_msgs = max_outer_steps * 2 * (radix - 1);
@@ -58,6 +59,10 @@ int allreduce_dissemination_radix_init_helper(const void* sendbuf,
     allocate_requests(2, local_L_request);
     allocate_requests(1, local_S_request);
     allocate_requests(2, local_R_request);
+    request->n_msgs = 0;
+    local_L_request->n_msgs = 0;
+    local_S_request->n_msgs = 0;
+    local_R_request->n_msgs = 0;
 
     request->start_function = allreduce_dissemination_radix_start;
     request->wait_function = allreduce_dissemination_radix_wait;
@@ -198,9 +203,9 @@ int allreduce_dissemination_radix_wait(MPIL_Request* request, MPI_Status status)
                 request->datatype, request->op);
     }
 
+    int ctr = 0;
     for (int stride_start = 1; stride_start < max_proc; stride_start *= radix)
     {
-        int ctr = 0;
         int n_msgs = 0;
         for (int step = 1; step < radix; step++)
         {
