@@ -1,5 +1,9 @@
 #include "locality_aware.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 int MPIL_Free(void* pointer)
 {
     if (pointer != nullptr)
@@ -10,3 +14,7 @@ int MPIL_Free(void* pointer)
 
     return MPI_SUCCESS;
 }
+
+#ifdef __cplusplus
+}
+#endif

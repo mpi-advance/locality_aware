@@ -5,10 +5,10 @@ set_property(GLOBAL APPEND PROPERTY GPU_SOURCES_GLOBAL
 	${CMAKE_CURRENT_SOURCE_DIR}/gpu_alltoall.c
 	${CMAKE_CURRENT_SOURCE_DIR}/gpu_check.c
 	${CMAKE_CURRENT_SOURCE_DIR}/repack.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/device_repack.c 
+	${CMAKE_CURRENT_SOURCE_DIR}/device_repack.cpp 
 	${CMAKE_CURRENT_SOURCE_DIR}/get_memcpy_kind.c
 	${CMAKE_CURRENT_SOURCE_DIR}/gpu_alltoallv.c
-	${CMAKE_CURRENT_SOURCE_DIR}/gpu_repack.c
+	${CMAKE_CURRENT_SOURCE_DIR}/gpu_repack.cpp
 )
 
 target_sources(locality_aware PRIVATE 
@@ -16,8 +16,8 @@ target_sources(locality_aware PRIVATE
 	gpu_alltoall.c
 	gpu_check.c
 	repack.cpp
-	device_repack.c 
+	device_repack.cpp 
 	get_memcpy_kind.c
 	gpu_alltoallv.c
-	gpu_repack.c
+	gpu_repack.cpp
 )

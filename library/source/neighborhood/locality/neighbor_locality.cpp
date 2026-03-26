@@ -2,7 +2,7 @@
 
 #include <algorithm>
 
-#include "communicator/MPIL_Comm.h"
+#include "communicator/MPIL_Comm.hpp"
 #include "persistent/MPIL_Request.h"
 
 /******************************************
@@ -31,11 +31,6 @@ void init_locality(const int n_sends,
                    MPIL_Comm* mpil_comm,
                    MPIL_Request* request)
 {
-    // Get MPI Information
-    int rank, num_procs;
-    MPI_Comm_rank(mpil_comm->global_comm, &rank);
-    MPI_Comm_size(mpil_comm->global_comm, &num_procs);
-
     // Initialize structure
     LocalityComm* locality_comm;
     init_locality_comm(&locality_comm, mpil_comm, sendtype, recvtype);
@@ -142,7 +137,6 @@ void init_locality(const int n_sends,
 
     // Copy to pointer for return
     request->locality = locality_comm;
-    request->tag      = locality_comm->global_comm->tag;
 }
 #ifdef __cplusplus
 }
@@ -168,11 +162,7 @@ void map_procs_to_nodes(LocalityComm* locality,
                         std::vector<int>& msg_node_to_local,
                         bool incr)
 {
-    int rank, num_procs;
     int local_rank, local_num_procs;
-
-    MPI_Comm_rank(locality->communicators->global_comm, &rank);
-    MPI_Comm_size(locality->communicators->global_comm, &num_procs);
     MPI_Comm_rank(locality->communicators->local_comm, &local_rank);
     MPI_Comm_size(locality->communicators->local_comm, &local_num_procs);
 
@@ -261,10 +251,7 @@ void form_local_comm(const int orig_num_sends,
                      const int tag)
 {
     // MPI_Information
-    int rank, num_procs;
     int local_rank, local_num_procs;
-    MPI_Comm_rank(locality->communicators->global_comm, &rank);
-    MPI_Comm_size(locality->communicators->global_comm, &num_procs);
     MPI_Comm_rank(locality->communicators->local_comm, &local_rank);
     MPI_Comm_size(locality->communicators->local_comm, &local_num_procs);
 
@@ -477,10 +464,7 @@ void form_global_comm(CommData* local_data,
     std::vector<int> node_ctr;
 
     // Get MPI Information
-    int rank, num_procs;
     int local_rank, local_num_procs;
-    MPI_Comm_rank(mpil_comm->global_comm, &rank);
-    MPI_Comm_size(mpil_comm->global_comm, &num_procs);
     MPI_Comm_rank(mpil_comm->local_comm, &local_rank);
     MPI_Comm_size(mpil_comm->local_comm, &local_num_procs);
     int num_nodes = mpil_comm->num_nodes;
@@ -718,25 +702,32 @@ int cmpfunc(const void* a, const void* b)
 void remove_duplicates(CommData* comm_pkg)
 {
     int start, end;
+    int has_data = comm_pkg->size_msgs;
 
     for (int i = 0; i < comm_pkg->num_msgs; i++)
     {
         start = comm_pkg->indptr[i];
         end   = comm_pkg->indptr[i + 1];
-        std::sort(comm_pkg->indices + start, comm_pkg->indices + end);
+        if (has_data)
+        {
+            std::sort(comm_pkg->indices + start, comm_pkg->indices + end);
+        }
     }
 
     comm_pkg->size_msgs = 0;
     start               = comm_pkg->indptr[0];
     for (int i = 0; i < comm_pkg->num_msgs; i++)
     {
-        end                                      = comm_pkg->indptr[i + 1];
-        comm_pkg->indices[comm_pkg->size_msgs++] = comm_pkg->indices[start];
-        for (int j = start; j < end - 1; j++)
+        end = comm_pkg->indptr[i + 1];
+        if (has_data)
         {
-            if (comm_pkg->indices[j + 1] != comm_pkg->indices[j])
+            comm_pkg->indices[comm_pkg->size_msgs++] = comm_pkg->indices[start];
+            for (int j = start; j < end - 1; j++)
             {
-                comm_pkg->indices[comm_pkg->size_msgs++] = comm_pkg->indices[j + 1];
+                if (comm_pkg->indices[j + 1] != comm_pkg->indices[j])
+                {
+                    comm_pkg->indices[comm_pkg->size_msgs++] = comm_pkg->indices[j + 1];
+                }
             }
         }
         start                   = end;
@@ -773,14 +764,8 @@ void update_indices(LocalityComm* locality,
     map_indices(locality->local_L_comm->recv_data, recv_global_to_local);
 
     // Don't need local_S or global recv indices (just contiguous)
-    if (locality->local_S_comm->recv_data->indices)
-    {
-        free(locality->local_S_comm->recv_data->indices);
-        locality->local_S_comm->recv_data->indices = NULL;
-    }
-    if (locality->global_comm->recv_data->indices)
-    {
-        free(locality->global_comm->recv_data->indices);
-        locality->global_comm->recv_data->indices = NULL;
-    }
+    free(locality->local_S_comm->recv_data->indices);
+    locality->local_S_comm->recv_data->indices = NULL;
+    free(locality->global_comm->recv_data->indices);
+    locality->global_comm->recv_data->indices = NULL;
 }

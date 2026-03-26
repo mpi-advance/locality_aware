@@ -5,13 +5,13 @@ cmake_policy(VERSION 3.21.1...3.27)
 project(locality_aware VERSION 2.0.0 LANGUAGES C CXX)
 
 # Set C,CXX standards
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_C_STANDARD 99)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_C_STANDARD 11)
 
 # Set default build type
 if(NOT CMAKE_BUILD_TYPE)
 	message(STATUS "No CMAKE_BUILD_TYPE specified, setting build type to RELEASE.")
-	set(CMAKE_BUILD_TYPE "RELEASE")
+	set(CMAKE_BUILD_TYPE RELEASE CACHE STRING "Build type for project." FORCE)
 endif()
 
 # Convert to lower case string to ignore case
@@ -27,9 +27,9 @@ endif()
 # Build Options
 option(USE_CUDA "Enable NVIDIA CUDA support" OFF)
 option(USE_HIP "Enable AMD HIP support" OFF)
-option(GPU_AWARE "Use GPU-Aware MPI, if GPU support is enabled" OFF)
-option(ENABLE_UNIT_TESTS "Enable unit testing" OFF)
-option(BENCHMARKS "Enable benchmarks" OFF)
+option(GPU_AWARE "Use GPU-Aware MPI, if GPU support is enabled" ON)
+option(ENABLE_UNIT_TESTS "Enable unit testing" ON)
+option(BENCHMARKS "Enable benchmarks" ON)
 
 set(MPIRUN "mpirun" CACHE STRING "MPIRUN command")
 
@@ -68,8 +68,9 @@ if (USE_CUDA OR USE_HIP)
 	  target_compile_definitions(locality_aware PUBLIC CUDA)
 	 
 	elseif (USE_HIP)
-	  enable_language(HIP)
-	  set(locality_aware_LANG HIP)
+	  find_package(hip REQUIRED)
+	  target_link_libraries(locality_aware PUBLIC hip::host)
+      target_compile_options(locality_aware PUBLIC $<$<COMPILE_LANGUAGE:CXX>:-x hip>)
 	  message(STATUS "HIP support enabled")
 	  target_compile_definitions(locality_aware PUBLIC HIP)
 	endif()
@@ -87,18 +88,40 @@ if (ENABLE_UNIT_TESTS)
 	endfunction()
 endif()
 
+# Flag == TRUE means TEST
+# Flag == FALSE means BENCHMARK
+function(make_executable filename flag)
+	get_filename_component(exec_name ${filename} NAME_WE)
+	add_executable(${exec_name} ${filename})
+	# Need the "math" library (m) for the C test to work correctly
+	target_link_libraries(${exec_name} locality_aware m)
+
+	target_include_directories(${exec_name} PRIVATE
+		$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/library/tests/tests>)
+
+	if(${flag})
+		set(locality_test_name ${exec_name}_Test)
+	else()
+		set(locality_test_name ${exec_name}_Benchmark)
+		install(TARGETS ${exec_name} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
+	endif()
+
+	if(ENABLE_UNIT_TESTS)
+		add_test(NAME ${locality_test_name} COMMAND ${MPIRUN} -n ${TEST_PROCS} ./${exec_name} ${TEST_MATRIX_FILE})
+	endif()
+
+endfunction()
+
 if (BENCHMARKS)
 	add_subdirectory(benchmarks)
 endif()
 
-
-
 set_target_properties(locality_aware PROPERTIES PUBLIC_HEADER include/locality_aware.h)
 add_subdirectory(include)
 add_subdirectory(library)
-target_link_libraries(locality_aware PUBLIC ${EXTERNAL_LIBS} NUMA::numa)
+target_link_libraries(locality_aware PUBLIC ${EXTERNAL_LIBS})
 
-if (USE_GPU)
+if (USE_CUDA)
 	get_property(GPU_SOURCES_GLOBAL GLOBAL PROPERTY GPU_SOURCES_GLOBAL)
 	set_source_files_properties(${GPU_SOURCES_GLOBAL} PROPERTIES LANGUAGE ${locality_aware_LANG})
 endif()
@@ -119,8 +142,7 @@ include(CMakePackageConfigHelpers)
 
 # Install the actual target(s) and register them for export
 install(TARGETS locality_aware
-        EXPORT locality_awareTargets
-        DESTINATION lib)
+        EXPORT locality_awareTargets)
 
 # Create the configuration file
 configure_package_config_file(

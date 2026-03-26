@@ -1,0 +1,37 @@
+#include <mpi.h>
+#include <stdlib.h>
+
+#include "neighborhood/MPIL_Topo.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+int MPIL_Topo_free(MPIL_Topo** mpil_topo_ptr)
+{
+    MPIL_Topo* mpil_topo = *mpil_topo_ptr;
+
+    if (mpil_topo->indegree)
+    {
+        free(mpil_topo->sources);
+        if (mpil_topo->sourceweights != MPI_UNWEIGHTED)
+        {
+            free(mpil_topo->sourceweights);
+        }
+    }
+
+    if (mpil_topo->outdegree)
+    {
+        free(mpil_topo->destinations);
+        if (mpil_topo->destweights != MPI_UNWEIGHTED)
+        {
+            free(mpil_topo->destweights);
+        }
+    }
+    free(mpil_topo);
+    return MPI_SUCCESS;
+}
+
+#ifdef __cplusplus
+}
+#endif

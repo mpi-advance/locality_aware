@@ -271,7 +271,8 @@ int threaded_alltoallv_pairwise(const void* sendbuf,
                                 MPI_Datatype recvtype,
                                 MPIL_Comm* comm)
 {
-    int ierr = 0;
+	printf("FUNCTION UNSUPPORTED\n");
+    /* int ierr = 0;
 
     int rank, num_procs;
     MPI_Comm_rank(comm->global_comm, &rank);
@@ -365,7 +366,7 @@ int threaded_alltoallv_pairwise(const void* sendbuf,
     gpuFreeHost(cpu_sendbuf);
     gpuFreeHost(cpu_recvbuf);
 
-    return ierr;
+    return ierr; */
 }
 
 int threaded_alltoallv_nonblocking(const void* sendbuf,
@@ -378,6 +379,8 @@ int threaded_alltoallv_nonblocking(const void* sendbuf,
                                    MPI_Datatype recvtype,
                                    MPIL_Comm* comm)
 {
+	printf("FUNCTION UNSUPPORTED\n");
+	/*
     int ierr = 0;
 
     int rank, num_procs;
@@ -480,6 +483,7 @@ int threaded_alltoallv_nonblocking(const void* sendbuf,
     gpuFreeHost(cpu_recvbuf);
 
     return ierr;
+	*/
 }
 
 #endif
