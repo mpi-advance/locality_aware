@@ -95,6 +95,8 @@ function(make_executable filename flag)
 	else()
 		set(locality_test_name ${exec_name}_Benchmark)
 		install(TARGETS ${exec_name} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
+		target_include_directories(${exec_name} PRIVATE 
+				$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/library/include/utils>)
 	endif()
 
 	if(ENABLE_UNIT_TESTS)
