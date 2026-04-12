@@ -156,7 +156,7 @@ void print_allgathers(int max_p,
             MPI_Comm_size(comm->leader_group_comm, &num_leaders);
             int leaders_per_node = num_leaders / n_nodes;
             if (rank == 0)
-                printf("Running Multileader/Locality-Aware Tests with %d Processes Per Leader, %d Leaders Per Node", procs_per_leader, leaders_per_node);
+                printf("Running Multileader/Locality-Aware Tests with %d Processes Per Leader, %d Leaders Per Node\n", procs_per_leader, leaders_per_node);
 
             tmpbuf = (T*) malloc(s * num_procs * sizeof(T));
 
@@ -209,24 +209,24 @@ void print_allgathers(int max_p,
                 printf("Multileader Node-Aware (N leaders %d) Allgather: %e\n", leaders_per_node, time);
 
             // 2. Initial Gather
-            time = test_collective(MPI_Gather, true, sendbuf, s, sendtype, local_send_buff, s, recvtype, 0, comm->leader_comm);
+			time = test_collective(MPI_Gather, true, sendbuf, s, sendtype, local_send_buff, s, recvtype, 0, comm->leader_comm);
             if (rank == 0)
-                printf("Multileader Node-Aware (N leaders %d) Internal: Gather: %e\n", leaders_per_node, time);
+			  printf("Multileader Node-Aware (N leaders %d) Internal: Gather: %e\n", leaders_per_node, time);
 
             // 3. Inter-Node Allgather
             time = test_collective(MPI_Allgather, leader_rank == 0, local_send_buff, procs_per_leader * s, sendtype, local_recv_buff, procs_per_leader * s, sendtype, comm->group_comm);
             if (rank == 0)
-                printf("Multileader Node-Aware (N Leaders %d) Internal: Internode Allgather: %e\n", leaders_per_node, time);
+			  printf("Multileader Node-Aware (N Leaders %d) Internal: Internode Allgather: %e\n", leaders_per_node, time);
 
             // 4. Intra-Node Allgather
             time = test_collective(MPI_Allgather, leader_rank == 0, local_recv_buff, procs_per_leader * n_nodes * s, sendtype, recvbuf, procs_per_leader * n_nodes * s, recvtype, comm->leader_local_comm);
             if (rank == 0)
-                printf("Multileader Node-Aware (N Leaders %d) Internal: Intranode Allgather: %e\n", leaders_per_node, time);
+			  printf("Multileader Node-Aware (N Leaders %d) Internal: Intranode Allgather: %e\n", leaders_per_node, time);
 
-            // // 5. Broadcast
+            // 5. Broadcast
             time = test_collective(MPI_Bcast, true, recvbuf, s * num_procs, recvtype, 0, comm->local_comm);
             if (rank == 0)
-                printf("Multileader Node-Aware (N Leaders %d) Internal: Broadcast: %e\n", leaders_per_node, time);
+			  printf("Multileader Node-Aware (N Leaders %d) Internal: Broadcast: %e\n", leaders_per_node, time);
 
             free(local_send_buff);
             free(local_recv_buff);
