@@ -9,9 +9,6 @@
 #include "neighborhood/neighborhood_init.h"
 #include "neighborhood/alltoall_crs.h"
 
-void map_indices(CommData* idx_data, std::map<long, int>& global_map);
-void map_indices(CommData* idx_data, const CommData* map_data);
-
 /******************************************
  ****
  **** Main Methods
@@ -40,11 +37,6 @@ void init_locality(const int n_sends,
                    MPIL_Comm* mpil_comm,
                    MPIL_Request* request)
 {
-    // Get MPI Information
-    int rank, num_procs;
-    MPI_Comm_rank(mpil_comm->global_comm, &rank);
-    MPI_Comm_size(mpil_comm->global_comm, &num_procs);
-
     CommData* local_L_send_data = (CommData*)calloc(1, sizeof(CommData));
     CommData* local_L_recv_data = (CommData*)calloc(1, sizeof(CommData));
     CommData* local_S_send_data = (CommData*)calloc(1, sizeof(CommData));
@@ -167,12 +159,12 @@ void init_locality(const int n_sends,
     map_indices(local_L_recv_data, recv_global_to_local);
 
     // Don't need local_S or global recv indices (just contiguous)
-    if (local_S_recv_data->indices)
+    if (local_S_recv_data->indices != NULL)
     {
         free(local_S_recv_data->indices);
         local_S_recv_data->indices = NULL;
     }
-    if (global_recv_data->indices)
+    if (global_recv_data->indices != NULL)
     {
         free(global_recv_data->indices);
         global_recv_data->indices = NULL;
@@ -699,7 +691,9 @@ void update_global_comm(CommData* global_send_data,
     std::vector<int> dest(global_send_data->num_msgs);
     std::vector<int> vals(global_send_data->num_msgs, mpil_comm->rank_node);
     for (int i = 0; i < global_send_data->num_msgs; i++)
+    {
         dest[i] = get_global_proc(mpil_comm, global_send_data->procs[i], local_rank);
+    }
 
     int n_recvs;
     int *src, *recvbuf;
@@ -716,7 +710,9 @@ void update_global_comm(CommData* global_send_data,
                     mpil_info,
                     mpil_comm);
     for (int i = 0; i < n_recvs; i++)
+    {
         nodes[recvbuf[i]] = src[i];
+    }
 
     MPIL_Free(src);
     MPIL_Free(recvbuf);
@@ -724,7 +720,9 @@ void update_global_comm(CommData* global_send_data,
     dest.resize(global_recv_data->num_msgs);
     vals.resize(global_recv_data->num_msgs, mpil_comm->rank_node);
     for (int i = 0; i < global_recv_data->num_msgs; i++)
+    {
         dest[i] = get_global_proc(mpil_comm, global_recv_data->procs[i], local_rank);
+    }
     MPIL_Alltoall_crs(global_recv_data->num_msgs,
                       dest.data(),
                       1, 
@@ -738,8 +736,9 @@ void update_global_comm(CommData* global_send_data,
                       mpil_info,
                       mpil_comm);
     for (int i = 0; i < n_recvs; i++)
+    {
         nodes[num_nodes + recvbuf[i]] = src[i];
-
+    }
     MPIL_Free(src);
     MPIL_Free(recvbuf);
 
@@ -752,9 +751,13 @@ void update_global_comm(CommData* global_send_data,
                   mpil_comm->local_comm);
 
     for (int i = 0; i < global_send_data->num_msgs; i++)
+    {
         global_send_data->procs[i] = nodes[num_nodes + global_send_data->procs[i]];
+    }
     for (int i = 0; i < global_recv_data->num_msgs; i++)
+    {
         global_recv_data->procs[i] = nodes[global_recv_data->procs[i]];
+    }
 
     MPIL_Info_free(&mpil_info);
 
@@ -827,49 +830,4 @@ void remove_duplicates(CommData* comm_pkg)
 
 
 
-void init_num_msgs(CommData* data, int num_msgs)
-{
-    data->num_msgs = num_msgs;
-    if (data->num_msgs)
-    {
-        data->procs = (int*)malloc(sizeof(int) * data->num_msgs);
-        data->counts = (int*)malloc(sizeof(int) * data->num_msgs);
-    }
-    data->indptr    = (int*)malloc(sizeof(int) * (data->num_msgs + 1));
-    data->indptr[0] = 0;
-}
 
-void init_size_msgs(CommData* data, int size_msgs)
-{
-    data->size_msgs = size_msgs;
-    if (data->size_msgs)
-    {
-        data->indices = (int*)malloc(data->size_msgs * sizeof(int));
-    }
-}
-
-void destroy_comm_data(CommData* data)
-{
-    if (data->procs)
-    {
-        free(data->procs);
-    }
-    if (data->indptr)
-    {
-        free(data->indptr);
-    }
-    if (data->counts)
-    {
-        free(data->counts);
-    }
-    if (data->indices)
-    {
-        free(data->indices);
-    }
-    if (data->buffer)
-    {
-        free(data->buffer);
-    }
-
-    free(data);
-}
