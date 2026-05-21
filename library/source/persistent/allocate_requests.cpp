@@ -2,15 +2,11 @@
 
 #include "persistent/MPIL_Request.h"
 
-void allocate_requests(int n_requests, MPI_Request** request_ptr)
+void allocate_requests(int n_requests, MPIL_Request* request)
 {
     if (n_requests)
     {
-        MPI_Request* request = (MPI_Request*)malloc(sizeof(MPI_Request) * n_requests);
-        *request_ptr         = request;
-    }
-    else
-    {
-        *request_ptr = NULL;
+        request->n_msgs = n_requests;
+        request->requests = (MPI_Request*)malloc(sizeof(MPI_Request) * n_requests);
     }
 }

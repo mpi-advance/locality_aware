@@ -14,44 +14,55 @@ int MPIL_Request_free(MPIL_Request** request_ptr)
 {
     MPIL_Request* request = *request_ptr;
 
-    if (request->local_L_n_msgs)
+    /** Free any local request objects.  In these objects,
+     * sendbuf and recvbuf were malloc'd, so they must be freed */
+    if (request->local_L_request != NULL)
     {
-        for (int i = 0; i < request->local_L_n_msgs; i++)
-        {
-            MPI_Request_free(&(request->local_L_requests[i]));
-        }
-        free(request->local_L_requests);
+        MPIL_Request_free(&(request->local_L_request));
+        request->local_L_request = NULL;
     }
-    if (request->local_S_n_msgs)
+    if (request->local_S_request != NULL)
     {
-        for (int i = 0; i < request->local_S_n_msgs; i++)
-        {
-            MPI_Request_free(&(request->local_S_requests[i]));
-        }
-        free(request->local_S_requests);
+        MPIL_Request_free(&(request->local_S_request));
+        request->local_S_request = NULL;
     }
-    if (request->local_R_n_msgs)
+    if (request->local_R_request != NULL)
     {
-        for (int i = 0; i < request->local_R_n_msgs; i++)
-        {
-            MPI_Request_free(&(request->local_R_requests[i]));
-        }
-        free(request->local_R_requests);
-    }
-    if (request->global_n_msgs)
-    {
-        for (int i = 0; i < request->global_n_msgs; i++)
-        {
-            MPI_Request_free(&(request->global_requests[i]));
-        }
-        free(request->global_requests);
+        MPIL_Request_free(&(request->local_R_request));
+        request->local_R_request = NULL;
     }
 
-    // If Locality-Aware
-    if (request->locality != NULL)
+    if (request->n_msgs)
     {
-        destroy_locality_comm(request->locality);
+        for (int i = 0; i < request->n_msgs; i++)
+        {
+            MPI_Request_free(&(request->requests[i]));
+        }
+        free(request->requests);
+        request->n_msgs = 0;
     }
+
+    if (request->size_sends)
+    {
+        free(request->tmp_sendbuf);
+        request->tmp_sendbuf = NULL;
+
+        free(request->send_indices);
+        request->send_indices = NULL;
+
+        request->size_sends = 0;
+    }
+    if (request->size_recvs)
+    {
+        free(request->tmp_recvbuf);
+        request->tmp_recvbuf = NULL;
+
+        free(request->recv_indices);
+        request->recv_indices = NULL;
+
+        request->size_recvs = 0;
+    }
+
 
 // TODO : for safety, may want to check if allocated with malloc?
 #ifdef GPU  // Assuming cpu buffers allocated in pinned memory

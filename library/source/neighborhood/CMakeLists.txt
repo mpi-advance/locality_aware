@@ -6,7 +6,7 @@ target_sources(locality_aware PRIVATE
 	locality/neighbor_alltoallv_locality.cpp
 	locality/neighbor_alltoallv_init_locality.cpp
 	locality/neighbor_alltoallv_init_locality_ext.cpp
-	persistent/init_communication.cpp
+    locality/comm_data.cpp
 	persistent/init_neighbor_request.cpp
 	persistent/neighbor_start.cpp
 	persistent/neighbor_wait.cpp

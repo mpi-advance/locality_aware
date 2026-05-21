@@ -23,8 +23,32 @@ int neighbor_alltoallv_init_standard(const void* sendbuf,
     int tag;
     MPIL_Comm_tag(comm, &tag);
 
-    request->global_n_msgs = topo->indegree + topo->outdegree;
-    allocate_requests(request->global_n_msgs, &(request->global_requests));
+    int ierr = neighbor_alltoallv_init_standard_helper(sendbuf, sendcounts, sdispls,
+                    sendtype, recvbuf, recvcounts, rdispls, recvtype, topo, comm->global_comm, 
+                    info, tag, request);
+
+    *request_ptr = request;
+
+    return ierr;
+}
+
+
+
+int neighbor_alltoallv_init_standard_helper(const void* sendbuf,
+                                     const int sendcounts[],
+                                     const int sdispls[],
+                                     MPI_Datatype sendtype,
+                                     void* recvbuf,
+                                     const int recvcounts[],
+                                     const int rdispls[],
+                                     MPI_Datatype recvtype,
+                                     MPIL_Topo* topo,
+                                     MPI_Comm comm,
+                                     MPIL_Info* info,
+                                     int tag,
+                                     MPIL_Request* request)
+{
+    allocate_requests(topo->indegree + topo->outdegree, request);
 
     const char* send_buffer = (const char*)(sendbuf);
     char* recv_buffer       = (char*)(recvbuf);
@@ -41,8 +65,8 @@ int neighbor_alltoallv_init_standard(const void* sendbuf,
                               recvtype,
                               topo->sources[i],
                               tag,
-                              comm->global_comm,
-                              &(request->global_requests[i]));
+                              comm,
+                              &(request->requests[i]));
     }
 
     for (int i = 0; i < topo->outdegree; i++)
@@ -52,11 +76,9 @@ int neighbor_alltoallv_init_standard(const void* sendbuf,
                               sendtype,
                               topo->destinations[i],
                               tag,
-                              comm->global_comm,
-                              &(request->global_requests[topo->indegree + i]));
+                              comm,
+                              &(request->requests[topo->indegree + i]));
     }
-
-    *request_ptr = request;
 
     return ierr;
 }

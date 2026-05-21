@@ -7,17 +7,24 @@ void init_request(MPIL_Request** request_ptr)
 {
     MPIL_Request* request = (MPIL_Request*)malloc(sizeof(MPIL_Request));
 
-    request->locality = NULL;
+    request->n_msgs = 0;
+    request->requests = NULL;
+    request->sendbuf = NULL;
+    request->recvbuf = NULL;
 
-    request->local_L_n_msgs = 0;
-    request->local_S_n_msgs = 0;
-    request->local_R_n_msgs = 0;
-    request->global_n_msgs  = 0;
+    request->size_sends = 0;
+    request->size_recvs = 0;
+    request->send_size = 0;
+    request->recv_size = 0;
 
-    request->local_L_requests = NULL;
-    request->local_S_requests = NULL;
-    request->local_R_requests = NULL;
-    request->global_requests  = NULL;
+    request->tmp_sendbuf = NULL;
+    request->tmp_recvbuf = NULL;
+    request->send_indices = NULL;
+    request->recv_indices = NULL;
+
+    request->local_L_request = NULL;
+    request->local_S_request = NULL;
+    request->local_R_request = NULL;
 
     request->recv_size  = 0;
     request->block_size = 1;
