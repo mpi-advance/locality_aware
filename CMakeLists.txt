@@ -68,7 +68,7 @@ endif()
 
 if (ENABLE_UNIT_TESTS)
     enable_testing()
-	set(TEST_PROCS "16" CACHE STRING "Number of processes to use when making ctests")
+	set(TEST_PROCS "4" CACHE STRING "Number of processes to use when making ctests")
 endif()
 
 # Flag == TRUE means TEST
