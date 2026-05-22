@@ -178,7 +178,7 @@ int allreduce_dissemination_loc_core(
                 memset(zerobuf, 0, type_size*count);
                 MPI_Sendrecv(zerobuf, count, datatype, rank, tag,
                         tmpbuf, count, datatype, rank, tag,
-                        MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+                        global_comm, MPI_STATUS_IGNORE);
                 free(zerobuf);
             }
             MPI_Allreduce(MPI_IN_PLACE, tmpbuf, count, datatype, op, local_comm);
@@ -194,7 +194,7 @@ int allreduce_dissemination_loc_core(
     // Send tmp_recvbuf into recvbuf
     MPI_Sendrecv(tmp_recvbuf, count, datatype, rank, tag,
                  recvbuf, count, datatype, rank, tag,
-                 MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+                 global_comm, MPI_STATUS_IGNORE);
 
 
     free(tmpbuf);

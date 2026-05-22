@@ -17,7 +17,7 @@ int alltoallv_nonblocking(const void* sendbuf,
 
     if (num_procs <= 1)
     {
-        alltoallv_pairwise(sendbuf,
+        return alltoallv_pairwise(sendbuf,
                            sendcounts,
                            sdispls,
                            sendtype,
