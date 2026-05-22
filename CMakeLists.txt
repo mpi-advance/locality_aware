@@ -77,7 +77,7 @@ function(make_executable filename flag)
 	get_filename_component(exec_name ${filename} NAME_WE)
 	add_executable(${exec_name} ${filename})
 	# Need the "math" library (m) for the C test to work correctly
-	target_link_libraries(${exec_name} locality_aware m mpi_gtl_hsa)
+	target_link_libraries(${exec_name} locality_aware m)
 	
 	target_include_directories(${exec_name} PRIVATE 
 		$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/library/tests/tests>)
