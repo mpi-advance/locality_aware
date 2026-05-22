@@ -97,7 +97,9 @@ int main(int argc, char** argv)
         MPIL_Alltoall(
             local_data.data(), s, MPI_INT, mpix_alltoall.data(), s, MPI_INT, xcomm);
         compare_alltoall_results(pmpi_alltoall, mpix_alltoall, s);
+        if (rank == 0) printf("MPIL and PMPI equivalent on GPUs\n");
 
+#if defined(GPU_AWARE)
         // Standard GPU Alltoall
         PMPI_Alltoall(local_data_d, s, MPI_INT, alltoall_d, s, MPI_INT, MPI_COMM_WORLD);
         ierr = gpuMemcpyAsync(device_data.data(),
@@ -113,6 +115,7 @@ int main(int argc, char** argv)
         gpu_check(ierr);
         ierr = gpuStreamSynchronize(0);
         gpu_check(ierr);
+        if (rank == 0) printf("PMPI equivalent on CPU and GPU\n");
 
         // GPU-Aware Pairwise Alltoall
         MPIL_Set_alltoall_algorithm(ALLTOALL_GPU_PAIRWISE);
@@ -130,6 +133,7 @@ int main(int argc, char** argv)
         gpu_check(ierr);
         ierr = gpuStreamSynchronize(0);
         gpu_check(ierr);
+        if (rank == 0) printf("GPU Pairwise equivalent to PMPI\n");
 
         // GPU-Aware Nonblocking Alltoall
         MPIL_Set_alltoall_algorithm(ALLTOALL_GPU_NONBLOCKING);
@@ -147,6 +151,8 @@ int main(int argc, char** argv)
         gpu_check(ierr);
         ierr = gpuStreamSynchronize(0);
         gpu_check(ierr);
+        if (rank == 0) printf("GPU Nonblocking equivalent to PMPI\n");
+#endif
 
         // Copy-to-CPU Pairwise Alltoall
         MPIL_Set_alltoall_algorithm(ALLTOALL_CTC_PAIRWISE);
@@ -164,6 +170,7 @@ int main(int argc, char** argv)
         gpu_check(ierr);
         ierr = gpuStreamSynchronize(0);
         gpu_check(ierr);
+        if (rank == 0) printf("C2C pairwise equivalent to PMPI\n");
 
         // Copy-to-CPU Nonblocking Alltoall
         MPIL_Set_alltoall_algorithm(ALLTOALL_CTC_NONBLOCKING);
@@ -181,6 +188,7 @@ int main(int argc, char** argv)
         gpu_check(ierr);
         ierr = gpuStreamSynchronize(0);
         gpu_check(ierr);
+        if (rank == 0) printf("C2C nonblocking equivalent to PMPI\n");
     }
 
     ierr = gpuFree(local_data_d);

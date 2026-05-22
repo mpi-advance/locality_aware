@@ -102,6 +102,7 @@ int main(int argc, char** argv)
                         MPI_INT,
                         xcomm);
         compare_allgather_results(pmpi, mpil, s);
+        if (rank == 0) printf("MPIL and PMPI equivalent on CPU\n");
 
 #if defined(GPU_AWARE)
         // Standard PMPI GPU Allreduce
@@ -122,6 +123,7 @@ int main(int argc, char** argv)
         gpu_check(ierr);
         ierr = gpuStreamSynchronize(0);
         gpu_check(ierr);
+        if (rank == 0) printf("PMPI equivalent on CPU and GPU\n");
 
         // Standard Bruck on GPU
         MPIL_Set_allgather_algorithm(ALLGATHER_GPU_BRUCK);
@@ -142,6 +144,7 @@ int main(int argc, char** argv)
         gpu_check(ierr);
         ierr = gpuStreamSynchronize(0);
         gpu_check(ierr);
+        if (rank == 0) printf("GPU Bruck equivalent to PMPI\n");
 
         // Standard Ring on GPU
         MPIL_Set_allgather_algorithm(ALLGATHER_GPU_RING);
@@ -162,6 +165,7 @@ int main(int argc, char** argv)
         gpu_check(ierr);
         ierr = gpuStreamSynchronize(0);
         gpu_check(ierr);
+        if (rank == 0) printf("GPU Ring equivalent to PMPI\n");
 
         // Standard PMPI on GPU
         MPIL_Set_allgather_algorithm(ALLGATHER_GPU_PMPI);
@@ -182,6 +186,7 @@ int main(int argc, char** argv)
         gpu_check(ierr);
         ierr = gpuStreamSynchronize(0);
         gpu_check(ierr);
+        if (rank == 0) printf("GPU PMPI equivalent to PMPI\n");
 #endif
         // Standard Bruck Copy-To-CPU
         MPIL_Set_allgather_algorithm(ALLGATHER_CTC_BRUCK);
@@ -202,6 +207,7 @@ int main(int argc, char** argv)
         gpu_check(ierr);
         ierr = gpuStreamSynchronize(0);
         gpu_check(ierr);
+        if (rank == 0) printf("C2C Bruck equivalent to PMPI\n");
 
         // Standard Ring Copy-To-CPU
         MPIL_Set_allgather_algorithm(ALLGATHER_CTC_RING);
@@ -222,6 +228,7 @@ int main(int argc, char** argv)
         gpu_check(ierr);
         ierr = gpuStreamSynchronize(0);
         gpu_check(ierr);
+        if (rank == 0) printf("C2C Ring equivalent to PMPI\n");
 
         // Standard PMPI Copy-To-CPU
         MPIL_Set_allgather_algorithm(ALLGATHER_CTC_PMPI);
@@ -242,6 +249,7 @@ int main(int argc, char** argv)
         gpu_check(ierr);
         ierr = gpuStreamSynchronize(0);
         gpu_check(ierr);
+        if (rank == 0) printf("C2C PMPI equivalent to PMPI\n");
     }
 
     ierr = gpuFree(local_data_d);

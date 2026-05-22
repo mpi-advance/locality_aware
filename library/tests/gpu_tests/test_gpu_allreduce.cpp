@@ -89,6 +89,7 @@ int main(int argc, char** argv)
         MPIL_Allreduce(
                 local_data.data(), mpil.data(), s, MPI_INT, MPI_SUM, xcomm);
         compare_allreduce_results(pmpi, mpil, s);
+        if (rank == 0) printf("MPIL_Allreduce on CPU equivalent to PMPI Allreduce on CPU\n");
 
 #if defined(GPU_AWARE)
         // Standard PMPI GPU Allreduce
@@ -103,6 +104,7 @@ int main(int argc, char** argv)
         gpu_check(ierr);
         ierr = gpuStreamSynchronize(0);
         gpu_check(ierr);
+        if (rank == 0) printf("PMPI Allreduce on GPU equivalent to PMPI Allreduce on CPU\n");
 
         // Standard Recursive Doubling on GPU
         MPIL_Set_allreduce_algorithm(ALLREDUCE_GPU_RECURSIVE_DOUBLING);
@@ -117,6 +119,7 @@ int main(int argc, char** argv)
         gpu_check(ierr);
         ierr = gpuStreamSynchronize(0);
         gpu_check(ierr);
+        if (rank == 0) printf("MPIL Recursive Doubling equivalent to PMPI on GPU\n");
         
         // Node-Aware Dissemination on GPU
         MPIL_Set_allreduce_algorithm(ALLREDUCE_GPU_DISSEMINATION_LOC);
@@ -131,6 +134,7 @@ int main(int argc, char** argv)
         gpu_check(ierr);
         ierr = gpuStreamSynchronize(0);
         gpu_check(ierr);
+        if (rank == 0) printf("MPIL Node Aware Dissemination equivalent to PMPI on GPU\n");
         
         // NUMA-Aware Dissemination on GPU
         MPIL_Set_allreduce_algorithm(ALLREDUCE_GPU_DISSEMINATION_ML);
@@ -145,6 +149,7 @@ int main(int argc, char** argv)
         gpu_check(ierr);
         ierr = gpuStreamSynchronize(0);
         gpu_check(ierr);
+        if (rank == 0) printf("MPIL NUMA Aware Dissemination equivalent to PMPI on GPU\n");
 
         // HIGH-Radix Dissemination on GPU
         MPIL_Set_allreduce_algorithm(ALLREDUCE_GPU_DISSEMINATION_RADIX);
@@ -159,6 +164,7 @@ int main(int argc, char** argv)
         gpu_check(ierr);
         ierr = gpuStreamSynchronize(0);
         gpu_check(ierr);
+        if (rank == 0) printf("MPIL High Radix equivalent to PMPI on GPU\n");
 
 #endif
         // CopyToCPU Standard Recursive Doubling on GPU
@@ -174,6 +180,7 @@ int main(int argc, char** argv)
         gpu_check(ierr);
         ierr = gpuStreamSynchronize(0);
         gpu_check(ierr);
+        if (rank == 0) printf("C2C Recursive Doubling equivalent to PMPI on GPU\n");
 
         // CopyToCPU Node-Aware Dissemination on GPU
         MPIL_Set_allreduce_algorithm(ALLREDUCE_CTC_DISSEMINATION_LOC);
@@ -188,6 +195,7 @@ int main(int argc, char** argv)
         gpu_check(ierr);
         ierr = gpuStreamSynchronize(0);
         gpu_check(ierr);
+        if (rank == 0) printf("C2C Node Aware Dissemination equivalent to PMPI on GPU\n");
 
         // CopyToCPU NUMA-Aware Dissemination on GPU
         MPIL_Set_allreduce_algorithm(ALLREDUCE_CTC_DISSEMINATION_ML);
@@ -202,6 +210,7 @@ int main(int argc, char** argv)
         gpu_check(ierr);
         ierr = gpuStreamSynchronize(0);
         gpu_check(ierr);
+        if (rank == 0) printf("C2C NUMA Aware dissemination equivalent to PMPI on GPU\n");
 
         // CopyToCPU HIGH-Radix Dissemination on GPU
         MPIL_Set_allreduce_algorithm(ALLREDUCE_CTC_DISSEMINATION_RADIX);
@@ -216,6 +225,7 @@ int main(int argc, char** argv)
         gpu_check(ierr);
         ierr = gpuStreamSynchronize(0);
         gpu_check(ierr);
+        if (rank == 0) printf("C2C High Radix equiavlent to PMPI on GPU\n");
     }
 
     ierr = gpuFree(local_data_d);
