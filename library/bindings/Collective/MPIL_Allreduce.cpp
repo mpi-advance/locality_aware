@@ -1,7 +1,7 @@
 #include "collective/allreduce.h"
 #include "locality_aware.h"
 #ifdef GPU
-#include "heterogeneous/gpu_allreduce.h"
+#include "heterogeneous/gpu_collective.h"
 #endif
 
 int MPIL_Allreduce(const void* sendbuf,
@@ -12,41 +12,53 @@ int MPIL_Allreduce(const void* sendbuf,
                    MPIL_Comm* comm)
 {
     allreduce_ftn method;
+    bool gpu_aware = false;
+    bool copy_to_cpu = false;
 
     switch (mpil_allreduce_implementation)
     {
 #if defined(GPU) 
 #if defined(GPU_AWARE)
         case ALLREDUCE_GPU_RECURSIVE_DOUBLING:
-            method = gpu_aware_allreduce_recursive_doubling;
+            method = allreduce_recursive_doubling;
+            gpu_aware = true;
             break;
         case ALLREDUCE_GPU_DISSEMINATION_LOC:
-            method = gpu_aware_allreduce_dissemination_loc;
+            method = allreduce_dissemination_loc;
+            gpu_aware = true;
             break;
         case ALLREDUCE_GPU_DISSEMINATION_ML:
-            method = gpu_aware_allreduce_dissemination_ml;
+            method = allreduce_dissemination_ml;
+            gpu_aware = true;
             break;
         case ALLREDUCE_GPU_DISSEMINATION_RADIX:
-            method = gpu_aware_allreduce_dissemination_radix;
+            method = allreduce_dissemination_radix;
+            gpu_aware = true;
             break;
         case ALLREDUCE_GPU_PMPI:
-            method = gpu_aware_allreduce_pmpi;
+            method = allreduce_pmpi;
+            gpu_aware = true;
             break;
 #endif
         case ALLREDUCE_CTC_RECURSIVE_DOUBLING:
-            method = copy_to_cpu_allreduce_recursive_doubling;
+            method = allreduce_recursive_doubling;
+            copy_to_cpu = true;
             break;
         case ALLREDUCE_CTC_DISSEMINATION_LOC:
-            method = copy_to_cpu_allreduce_dissemination_loc;
+            method = allreduce_dissemination_loc;
+            copy_to_cpu = true;
             break;
         case ALLREDUCE_CTC_DISSEMINATION_ML:
-            method = copy_to_cpu_allreduce_dissemination_ml;
+            method = allreduce_dissemination_ml;
+            copy_to_cpu = true;
             break;
         case ALLREDUCE_CTC_DISSEMINATION_RADIX:
-            method = copy_to_cpu_allreduce_dissemination_radix;
+            method = allreduce_dissemination_radix;
+            copy_to_cpu = true;
             break;
         case ALLREDUCE_CTC_PMPI:
-            method = copy_to_cpu_allreduce_pmpi;
+            method = allreduce_pmpi;
+            copy_to_cpu = true;
             break;
 #endif
         case ALLREDUCE_RECURSIVE_DOUBLING:
@@ -68,6 +80,19 @@ int MPIL_Allreduce(const void* sendbuf,
             method = allreduce_pmpi;
             break;
     } 
+
+#if defined(GPU)
+    if (gpu_aware)
+    {
+        return gpu_aware_collective(method, sendbuf, recvbuf,
+                count, datatype, op, comm);
+    }
+    else if (copy_to_cpu)
+    {
+        return copy_to_cpu_allreduce(method, sendbuf, recvbuf,
+                count, datatype, op, comm);
+    }
+#endif
 
     return method(sendbuf, recvbuf, count, datatype, op, comm);
 }
