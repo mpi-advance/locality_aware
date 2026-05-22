@@ -109,9 +109,7 @@ int allreduce_dissemination_loc_core(
                         MPI_Comm global_comm, 
                         MPI_Comm group_comm,
                         MPI_Comm local_comm,
-                        int tag,
-                        MPIL_Alloc_ftn alloc_ftn,
-                        MPIL_Free_ftn free_ftn)
+                        int tag)
 {
     int type_size;
     MPI_Type_size(datatype, &type_size);

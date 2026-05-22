@@ -70,4 +70,4 @@ int MPIL_Allreduce(const void* sendbuf,
     } 
 
     return method(sendbuf, recvbuf, count, datatype, op, comm);
-}U_
+}

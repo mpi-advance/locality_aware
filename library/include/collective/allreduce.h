@@ -5,7 +5,6 @@
 #include <stdlib.h>
 
 #include "communicator/MPIL_Comm.hpp"
-#include "utils/MPIL_Alloc.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -112,6 +111,8 @@ int allreduce_pmpi(const void* sendbuf,
                                  MPIL_Comm* comm);
 
 
+/** @brief Helper method so that dissemination loc and dissemination ml 
+ * can share implementations **/
 int allreduce_dissemination_loc_core(
                                  const void* sendbuf,
                                  void* recvbuf,
@@ -121,9 +122,7 @@ int allreduce_dissemination_loc_core(
                                  MPI_Comm global_comm,
                                  MPI_Comm group_comm,
                                  MPI_Comm local_comm,
-                                 int tag,
-                                 MPIL_Alloc_ftn alloc_ftn,
-                                 MPIL_Free_ftn free_ftn);
+                                 int tag);
 
 
 

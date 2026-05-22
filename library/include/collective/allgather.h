@@ -5,7 +5,6 @@
 #include <stdlib.h>
 
 #include "communicator/MPIL_Comm.hpp"
-#include "utils/MPIL_Alloc.h"
 
 #ifdef __cplusplus
 extern "C" {
