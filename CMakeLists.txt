@@ -81,6 +81,8 @@ function(make_executable filename flag)
 	
 	target_include_directories(${exec_name} PRIVATE 
 		$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/library/tests/tests>)
+    target_include_directories(${exec_name} PRIVATE 
+		$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/library/include/heterogeneous>)
 
 	if(${flag})
 		set(locality_test_name ${exec_name}_Test)

@@ -8,6 +8,7 @@
 #include "neighborhood/MPIL_Topo.h"
 #include "neighborhood/neighborhood_init.h"
 #include "neighborhood/alltoall_crs.h"
+#include <string.h>
 
 /******************************************
  ****

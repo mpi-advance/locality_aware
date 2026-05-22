@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "locality_aware.h"
+#include "gpu_utils.h"
 
 void compare_allgather_results(std::vector<int>& pmpi,
                                std::vector<int>& mpil,
@@ -52,21 +53,17 @@ int main(int argc, char** argv)
     MPIL_Comm_init(&xcomm, MPI_COMM_WORLD);
     MPIL_Comm_device_init(xcomm);
 
-    int num_devices;
-    gpuGetDeviceCount(&num_devices);
-    int local_rank;
-    MPIL_Comm_local_rank(xcomm, &local_rank);
-    if (local_rank < num_devices)
-        gpuSetDevice(local_rank);
-    else // assuming only single device visible
-        gpuSetDevice(0);
+    int ierr;
 
     int* local_data_d;
     int* allgather_d;
-    gpuMalloc((void**)&local_data_d, 
+    ierr = gpuMalloc((void**)&local_data_d, 
             max_s * sizeof(int));
-    gpuMalloc((void**)&allgather_d, 
+    gpu_check(ierr);
+
+    ierr = gpuMalloc((void**)&allgather_d, 
             num_procs * max_s * sizeof(int));
+    gpu_check(ierr);
 
     for (int i = 0; i < max_i; i++)
     {
@@ -77,12 +74,15 @@ int main(int argc, char** argv)
         {
             local_data[i] = rank * 10000 + i;
         }
-        gpuMemcpyAsync(local_data_d,
+        ierr = gpuMemcpyAsync(local_data_d,
                   local_data.data(),
                   s * sizeof(int),
                   gpuMemcpyHostToDevice,
                   0);
-        gpuStreamSynchronize(0);
+        gpu_check(ierr);
+
+        ierr = gpuStreamSynchronize(0);
+        gpu_check(ierr);
 
         PMPI_Allgather(local_data.data(),
                         s,
@@ -112,12 +112,16 @@ int main(int argc, char** argv)
                         s,
                         MPI_INT,
                         MPI_COMM_WORLD);
-        gpuMemcpyAsync(device_data.data(), allgather_d, 
+        ierr = gpuMemcpyAsync(device_data.data(), allgather_d, 
                 num_procs*s*sizeof(int), gpuMemcpyDeviceToHost, 0);
-        gpuStreamSynchronize(0);
+        gpu_check(ierr);
+        ierr = gpuStreamSynchronize(0);
+        gpu_check(ierr);
         compare_allgather_results(pmpi, device_data, s);
-        gpuMemsetAsync(allgather_d, 0, num_procs*s*sizeof(int), 0);
-        gpuStreamSynchronize(0);
+        ierr = gpuMemsetAsync(allgather_d, 0, num_procs*s*sizeof(int), 0);
+        gpu_check(ierr);
+        ierr = gpuStreamSynchronize(0);
+        gpu_check(ierr);
 
         // Standard Bruck on GPU
         MPIL_Set_allgather_algorithm(ALLGATHER_GPU_BRUCK);
@@ -128,12 +132,16 @@ int main(int argc, char** argv)
                         s,
                         MPI_INT,
                         xcomm);
-        gpuMemcpyAsync(device_data.data(), allgather_d, 
+        ierr = gpuMemcpyAsync(device_data.data(), allgather_d, 
                 num_procs*s*sizeof(int), gpuMemcpyDeviceToHost, 0);
-        gpuStreamSynchronize(0);
+        gpu_check(ierr);
+        ierr = gpuStreamSynchronize(0);
+        gpu_check(ierr);
         compare_allgather_results(pmpi, device_data, s);
-        gpuMemsetAsync(allgather_d, 0, num_procs*s*sizeof(int), 0);
-        gpuStreamSynchronize(0);
+        ierr = gpuMemsetAsync(allgather_d, 0, num_procs*s*sizeof(int), 0);
+        gpu_check(ierr);
+        ierr = gpuStreamSynchronize(0);
+        gpu_check(ierr);
 
         // Standard Ring on GPU
         MPIL_Set_allgather_algorithm(ALLGATHER_GPU_RING);
@@ -144,12 +152,16 @@ int main(int argc, char** argv)
                         s,
                         MPI_INT,
                         xcomm);
-        gpuMemcpyAsync(device_data.data(), allgather_d, 
+        ierr = gpuMemcpyAsync(device_data.data(), allgather_d, 
                 num_procs*s*sizeof(int), gpuMemcpyDeviceToHost, 0);
-        gpuStreamSynchronize(0);
+        gpu_check(ierr);
+        ierr = gpuStreamSynchronize(0);
+        gpu_check(ierr);
         compare_allgather_results(pmpi, device_data, s);
-        gpuMemsetAsync(allgather_d, 0, num_procs*s*sizeof(int), 0);
-        gpuStreamSynchronize(0);
+        ierr = gpuMemsetAsync(allgather_d, 0, num_procs*s*sizeof(int), 0);
+        gpu_check(ierr);
+        ierr = gpuStreamSynchronize(0);
+        gpu_check(ierr);
 
         // Standard PMPI on GPU
         MPIL_Set_allgather_algorithm(ALLGATHER_GPU_PMPI);
@@ -160,12 +172,16 @@ int main(int argc, char** argv)
                         s,
                         MPI_INT,
                         xcomm);
-        gpuMemcpyAsync(device_data.data(), allgather_d, 
+        ierr = gpuMemcpyAsync(device_data.data(), allgather_d, 
                 num_procs*s*sizeof(int), gpuMemcpyDeviceToHost, 0);
-        gpuStreamSynchronize(0);
+        gpu_check(ierr);
+        ierr = gpuStreamSynchronize(0);
+        gpu_check(ierr);
         compare_allgather_results(pmpi, device_data, s);
-        gpuMemsetAsync(allgather_d, 0, num_procs*s*sizeof(int), 0);
-        gpuStreamSynchronize(0);
+        ierr = gpuMemsetAsync(allgather_d, 0, num_procs*s*sizeof(int), 0);
+        gpu_check(ierr);
+        ierr = gpuStreamSynchronize(0);
+        gpu_check(ierr);
 #endif
         // Standard Bruck Copy-To-CPU
         MPIL_Set_allgather_algorithm(ALLGATHER_CTC_BRUCK);
@@ -176,11 +192,16 @@ int main(int argc, char** argv)
                         s,
                         MPI_INT,
                         xcomm);
-        gpuMemcpyAsync(device_data.data(), allgather_d, 
+        ierr = gpuMemcpyAsync(device_data.data(), allgather_d, 
                 num_procs*s*sizeof(int), gpuMemcpyDeviceToHost, 0);
-        gpuStreamSynchronize(0);
+        gpu_check(ierr);
+        ierr = gpuStreamSynchronize(0);
+        gpu_check(ierr);
         compare_allgather_results(pmpi, device_data, s);
-        gpuMemset(allgather_d, 0, num_procs*s*sizeof(int));
+        ierr = gpuMemsetAsync(allgather_d, 0, num_procs*s*sizeof(int), 0);
+        gpu_check(ierr);
+        ierr = gpuStreamSynchronize(0);
+        gpu_check(ierr);
 
         // Standard Ring Copy-To-CPU
         MPIL_Set_allgather_algorithm(ALLGATHER_CTC_RING);
@@ -191,11 +212,16 @@ int main(int argc, char** argv)
                         s,
                         MPI_INT,
                         xcomm);
-        gpuMemcpyAsync(device_data.data(), allgather_d, 
+        ierr = gpuMemcpyAsync(device_data.data(), allgather_d, 
                 num_procs*s*sizeof(int), gpuMemcpyDeviceToHost, 0);
-        gpuStreamSynchronize(0);
+        gpu_check(ierr);
+        ierr = gpuStreamSynchronize(0);
+        gpu_check(ierr);
         compare_allgather_results(pmpi, device_data, s);
-        gpuMemset(allgather_d, 0, num_procs*s*sizeof(int));
+        ierr = gpuMemsetAsync(allgather_d, 0, num_procs*s*sizeof(int), 0);
+        gpu_check(ierr);
+        ierr = gpuStreamSynchronize(0);
+        gpu_check(ierr);
 
         // Standard PMPI Copy-To-CPU
         MPIL_Set_allgather_algorithm(ALLGATHER_CTC_PMPI);
@@ -206,15 +232,22 @@ int main(int argc, char** argv)
                         s,
                         MPI_INT,
                         xcomm);
-        gpuMemcpyAsync(device_data.data(), allgather_d, 
+        ierr = gpuMemcpyAsync(device_data.data(), allgather_d, 
                 num_procs*s*sizeof(int), gpuMemcpyDeviceToHost, 0);
-        gpuStreamSynchronize(0);
+        gpu_check(ierr);
+        ierr = gpuStreamSynchronize(0);
+        gpu_check(ierr);
         compare_allgather_results(pmpi, device_data, s);
-        gpuMemset(allgather_d, 0, num_procs*s*sizeof(int));
+        ierr = gpuMemsetAsync(allgather_d, 0, num_procs*s*sizeof(int), 0);
+        gpu_check(ierr);
+        ierr = gpuStreamSynchronize(0);
+        gpu_check(ierr);
     }
 
-    gpuFree(local_data_d);
-    gpuFree(allgather_d);
+    ierr = gpuFree(local_data_d);
+    gpu_check(ierr);
+    ierr = gpuFree(allgather_d);
+    gpu_check(ierr);
 
     MPIL_Comm_free(&xcomm);
 

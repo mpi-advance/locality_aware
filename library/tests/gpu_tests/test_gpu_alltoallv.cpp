@@ -8,9 +8,7 @@
 #include <set>
 #include <vector>
 
-#include "communicator/MPIL_Comm.hpp"
-#include "communicator/global_comms.hpp"
-#include "heterogeneous/gpu_utils.h"
+#include "gpu_utils.h"
 #include "locality_aware.h"
 #include "par_binary_IO.hpp"
 #include "sparse_mat.hpp"
@@ -109,18 +107,17 @@ void test_matrix(const char* filename)
         rdispls[i + 1] = rdispls[i] + recvcounts[i];
     }
 
-    int n_gpus;
-    gpuGetDeviceCount(&n_gpus);
-    gpuSetDevice(xcomm->rank_gpu);
-
+    int ierr;
     MPI_Barrier(MPI_COMM_WORLD);
     int *sendbuf_d, *recvbuf_d;
-    gpuMalloc((void**)&sendbuf_d, A.send_comm.size_msgs * sizeof(int));
-    gpuMalloc((void**)&recvbuf_d, A.recv_comm.size_msgs * sizeof(int));
-    gpuMemcpy(sendbuf_d,
+    ierr = gpuMalloc((void**)&sendbuf_d, A.send_comm.size_msgs * sizeof(int));
+    ierr = gpuMalloc((void**)&recvbuf_d, A.recv_comm.size_msgs * sizeof(int));
+    ierr = gpuMemcpyAsync(sendbuf_d,
               alltoallv_send_vals.data(),
               A.send_comm.size_msgs * sizeof(int),
-              gpuMemcpyHostToDevice);
+              gpuMemcpyHostToDevice,
+              0);
+    ierr = gpuStreamSynchronize(0);
 
     std::vector<int> pmpi_recv_vals(A.recv_comm.size_msgs);
     std::vector<int> gpu_recv_vals(A.recv_comm.size_msgs);
@@ -152,7 +149,7 @@ void test_matrix(const char* filename)
                    recvcounts.data(),
                    rdispls.data(),
                    MPI_INT,
-                   xcomm->global_comm);
+                   MPI_COMM_WORLD);
 
     // Inter-GPU Alltoallv
     PMPI_Alltoallv(sendbuf_d,
@@ -163,7 +160,7 @@ void test_matrix(const char* filename)
                    recvcounts.data(),
                    rdispls.data(),
                    MPI_INT,
-                   xcomm->global_comm);
+                   MPI_COMM_WORLD);
 
     if (rank == 0)
     {
@@ -183,12 +180,19 @@ void test_matrix(const char* filename)
     }
     MPI_Barrier(MPI_COMM_WORLD);
 
-    gpuMemcpy(gpu_recv_vals.data(),
+    ierr = gpuMemcpyAsync(gpu_recv_vals.data(),
               recvbuf_d,
               A.recv_comm.size_msgs * sizeof(int),
-              gpuMemcpyDeviceToHost);
+              gpuMemcpyDeviceToHost,
+              0);
+    gpu_check(ierr);
+    ierr = gpuStreamSynchronize(0);
+    gpu_check(ierr);
     compare_alltoallv_results(pmpi_recv_vals, gpu_recv_vals, A.recv_comm.size_msgs);
-    gpuMemset(recvbuf_d, 0, A.recv_comm.size_msgs * sizeof(int));
+    ierr = gpuMemsetAsync(recvbuf_d, 0, A.recv_comm.size_msgs * sizeof(int), 0);
+    gpu_check(ierr);
+    ierr = gpuStreamSynchronize(0);
+    gpu_check(ierr);
 
     std::cout << "1 RANK: " << rank << std::endl;
     MPI_Barrier(MPI_COMM_WORLD);
@@ -202,12 +206,19 @@ void test_matrix(const char* filename)
                    rdispls.data(),
                    MPI_INT,
                    xcomm);
-    gpuMemcpy(gpu_recv_vals.data(),
+    ierr = gpuMemcpyAsync(gpu_recv_vals.data(),
               recvbuf_d,
               A.recv_comm.size_msgs * sizeof(int),
-              gpuMemcpyDeviceToHost);
+              gpuMemcpyDeviceToHost,
+              0);
+    gpu_check(ierr);
+    ierr = gpuStreamSynchronize(0);
+    gpu_check(ierr);
     compare_alltoallv_results(pmpi_recv_vals, gpu_recv_vals, A.recv_comm.size_msgs);
-    gpuMemset(recvbuf_d, 0, A.recv_comm.size_msgs * sizeof(int));
+    ierr = gpuMemsetAsync(recvbuf_d, 0, A.recv_comm.size_msgs * sizeof(int), 0);
+    gpu_check(ierr);
+    ierr = gpuStreamSynchronize(0);
+    gpu_check(ierr);
 
     std::cout << "2 RANK: " << rank << std::endl;
     MPI_Barrier(MPI_COMM_WORLD);
@@ -221,12 +232,19 @@ void test_matrix(const char* filename)
                    rdispls.data(),
                    MPI_INT,
                    xcomm);
-    gpuMemcpy(gpu_recv_vals.data(),
+    ierr = gpuMemcpyAsync(gpu_recv_vals.data(),
               recvbuf_d,
               A.recv_comm.size_msgs * sizeof(int),
-              gpuMemcpyDeviceToHost);
+              gpuMemcpyDeviceToHost,
+              0);
+    gpu_check(ierr);
+    ierr = gpuStreamSynchronize(0);
+    gpu_check(ierr);
     compare_alltoallv_results(pmpi_recv_vals, gpu_recv_vals, A.recv_comm.size_msgs);
-    gpuMemset(recvbuf_d, 0, A.recv_comm.size_msgs * sizeof(int));
+    ierr = gpuMemsetAsync(recvbuf_d, 0, A.recv_comm.size_msgs * sizeof(int), 0);
+    gpu_check(ierr);
+    ierr = gpuStreamSynchronize(0);
+    gpu_check(ierr);
 
     std::cout << "3 RANK: " << rank << std::endl;
     MPI_Barrier(MPI_COMM_WORLD);
@@ -240,12 +258,19 @@ void test_matrix(const char* filename)
                    rdispls.data(),
                    MPI_INT,
                    xcomm);
-    gpuMemcpy(gpu_recv_vals.data(),
+    ierr = gpuMemcpyAsync(gpu_recv_vals.data(),
               recvbuf_d,
               A.recv_comm.size_msgs * sizeof(int),
-              gpuMemcpyDeviceToHost);
+              gpuMemcpyDeviceToHost,
+              0);
+    gpu_check(ierr);
+    ierr = gpuStreamSynchronize(0);
+    gpu_check(ierr);
     compare_alltoallv_results(pmpi_recv_vals, gpu_recv_vals, A.recv_comm.size_msgs);
-    gpuMemset(recvbuf_d, 0, A.recv_comm.size_msgs * sizeof(int));
+    ierr = gpuMemsetAsync(recvbuf_d, 0, A.recv_comm.size_msgs * sizeof(int), 0);
+    gpu_check(ierr);
+    ierr = gpuStreamSynchronize(0);
+    gpu_check(ierr);
 
     std::cout << "4 RANK: " << rank << std::endl;
     MPI_Barrier(MPI_COMM_WORLD);
@@ -259,15 +284,24 @@ void test_matrix(const char* filename)
                    rdispls.data(),
                    MPI_INT,
                    xcomm);
-    gpuMemcpy(gpu_recv_vals.data(),
+    ierr = gpuMemcpyAsync(gpu_recv_vals.data(),
               recvbuf_d,
               A.recv_comm.size_msgs * sizeof(int),
-              gpuMemcpyDeviceToHost);
+              gpuMemcpyDeviceToHost,
+              0);
+    gpu_check(ierr);
+    ierr = gpuStreamSynchronize(0);
+    gpu_check(ierr);
     compare_alltoallv_results(pmpi_recv_vals, gpu_recv_vals, A.recv_comm.size_msgs);
-    gpuMemset(recvbuf_d, 0, A.recv_comm.size_msgs * sizeof(int));
+    ierr = gpuMemsetAsync(recvbuf_d, 0, A.recv_comm.size_msgs * sizeof(int), 0);
+    gpu_check(ierr);
+    ierr = gpuStreamSynchronize(0);
+    gpu_check(ierr);
 
-    gpuFree(sendbuf_d);
-    gpuFree(recvbuf_d);
+    ierr = gpuFree(sendbuf_d);
+    gpu_check(ierr);
+    ierr = gpuFree(recvbuf_d);
+    gpu_check(ierr);
 
     MPIL_Comm_free(&xcomm);
 }

@@ -48,5 +48,6 @@
 #define gpuMemoryTypeDevice hipMemoryTypeDevice
 #define gpuPointerAttributes hipPointerAttribute_t
 #define gpuMemset hipMemset
+#define gpuMemsetAsync hipMemsetAsync
 
 #endif

@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "locality_aware.h"
+#include "gpu_utils.h"
 
 void compare_allreduce_results(std::vector<int>& pmpi,
                                std::vector<int>& mpil,
@@ -49,19 +50,14 @@ int main(int argc, char** argv)
     MPIL_Comm_init(&xcomm, MPI_COMM_WORLD);
     MPIL_Comm_device_init(xcomm);
 
-    int num_devices;
-    gpuGetDeviceCount(&num_devices);
-    int local_rank;
-    MPIL_Comm_local_rank(xcomm, &local_rank);
-    if (local_rank < num_devices)
-        gpuSetDevice(local_rank);
-    else // assuming only single device visible
-        gpuSetDevice(0);
+    int ierr;
 
     int* local_data_d;
     int* allreduce_d;
-    gpuMalloc((void**)&local_data_d, max_s * sizeof(int));
-    gpuMalloc((void**)&allreduce_d, max_s * sizeof(int));
+    ierr = gpuMalloc((void**)&local_data_d, max_s * sizeof(int));
+    gpu_check(ierr);
+    ierr = gpuMalloc((void**)&allreduce_d, max_s * sizeof(int));
+    gpu_check(ierr);
 
     for (int i = 0; i < max_i; i++)
     {
@@ -72,12 +68,14 @@ int main(int argc, char** argv)
         {
             local_data[i] = rank * 10000 + i;
         }
-        gpuMemcpyAsync(local_data_d,
+        ierr = gpuMemcpyAsync(local_data_d,
                   local_data.data(),
                   s * sizeof(int),
                   gpuMemcpyHostToDevice,
                   0);
-        gpuStreamSynchronize(0);
+        gpu_check(ierr);
+        ierr = gpuStreamSynchronize(0);
+        gpu_check(ierr);
 
         PMPI_Allreduce(local_data.data(),
                        pmpi.data(),
@@ -95,88 +93,135 @@ int main(int argc, char** argv)
 #if defined(GPU_AWARE)
         // Standard PMPI GPU Allreduce
         PMPI_Allreduce(local_data_d, allreduce_d, s, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
-        gpuMemcpyAsync(device_data.data(), allreduce_d, s*sizeof(int), gpuMemcpyDeviceToHost, 0);
-        gpuStreamSynchronize(0);
+        ierr = gpuMemcpyAsync(device_data.data(), allreduce_d, 
+                s*sizeof(int), gpuMemcpyDeviceToHost, 0);
+        gpu_check(ierr);
+        ierr = gpuStreamSynchronize(0);
+        gpu_check(ierr);
         compare_allreduce_results(pmpi, device_data, s);
-        gpuMemsetAsync(allreduce_d, 0, s*sizeof(int), 0);
-        gpuStreamSynchronize(0);
+        ierr = gpuMemsetAsync(allreduce_d, 0, s*sizeof(int), 0);
+        gpu_check(ierr);
+        ierr = gpuStreamSynchronize(0);
+        gpu_check(ierr);
 
         // Standard Recursive Doubling on GPU
         MPIL_Set_allreduce_algorithm(ALLREDUCE_GPU_RECURSIVE_DOUBLING);
         MPIL_Allreduce(local_data_d, allreduce_d, s, MPI_INT, MPI_SUM, xcomm);
-        gpuMemcpyAsync(device_data.data(), allreduce_d, s*sizeof(int), gpuMemcpyDeviceToHost, 0);
-        gpuStreamSynchronize(0);
+        ierr = gpuMemcpyAsync(device_data.data(), allreduce_d, 
+                s*sizeof(int), gpuMemcpyDeviceToHost, 0);
+        gpu_check(ierr);
+        ierr = gpuStreamSynchronize(0);
+        gpu_check(ierr);
         compare_allreduce_results(pmpi, device_data, s);
-        gpuMemsetAsync(allreduce_d, 0, s*sizeof(int), 0);
-        gpuStreamSynchronize(0);
+        ierr = gpuMemsetAsync(allreduce_d, 0, s*sizeof(int), 0);
+        gpu_check(ierr);
+        ierr = gpuStreamSynchronize(0);
+        gpu_check(ierr);
         
         // Node-Aware Dissemination on GPU
         MPIL_Set_allreduce_algorithm(ALLREDUCE_GPU_DISSEMINATION_LOC);
         MPIL_Allreduce(local_data_d, allreduce_d, s, MPI_INT, MPI_SUM, xcomm);
-        gpuMemcpyAsync(device_data.data(), allreduce_d, s*sizeof(int), gpuMemcpyDeviceToHost, 0);
-        gpuStreamSynchronize(0);
+        ierr = gpuMemcpyAsync(device_data.data(), allreduce_d, 
+                s*sizeof(int), gpuMemcpyDeviceToHost, 0);
+        gpu_check(ierr);
+        ierr = gpuStreamSynchronize(0);
+        gpu_check(ierr);
         compare_allreduce_results(pmpi, device_data, s);
-        gpuMemsetAsync(allreduce_d, 0, s*sizeof(int), 0);
-        gpuStreamSynchronize(0);
+        ierr = gpuMemsetAsync(allreduce_d, 0, s*sizeof(int), 0);
+        gpu_check(ierr);
+        ierr = gpuStreamSynchronize(0);
+        gpu_check(ierr);
         
         // NUMA-Aware Dissemination on GPU
         MPIL_Set_allreduce_algorithm(ALLREDUCE_GPU_DISSEMINATION_ML);
         MPIL_Allreduce(local_data_d, allreduce_d, s, MPI_INT, MPI_SUM, xcomm);
-        gpuMemcpyAsync(device_data.data(), allreduce_d, s*sizeof(int), gpuMemcpyDeviceToHost, 0);
-        gpuStreamSynchronize(0);
+        ierr = gpuMemcpyAsync(device_data.data(), allreduce_d, 
+                s*sizeof(int), gpuMemcpyDeviceToHost, 0);
+        gpu_check(ierr);
+        ierr = gpuStreamSynchronize(0);
+        gpu_check(ierr);
         compare_allreduce_results(pmpi, device_data, s);
-        gpuMemsetAsync(allreduce_d, 0, s*sizeof(int), 0);
-        gpuStreamSynchronize(0);
+        ierr = gpuMemsetAsync(allreduce_d, 0, s*sizeof(int), 0);
+        gpu_check(ierr);
+        ierr = gpuStreamSynchronize(0);
+        gpu_check(ierr);
 
         // HIGH-Radix Dissemination on GPU
         MPIL_Set_allreduce_algorithm(ALLREDUCE_GPU_DISSEMINATION_RADIX);
         MPIL_Allreduce(local_data_d, allreduce_d, s, MPI_INT, MPI_SUM, xcomm);
-        gpuMemcpyAsync(device_data.data(), allreduce_d, s*sizeof(int), gpuMemcpyDeviceToHost, 0);
-        gpuStreamSynchronize(0);
+        ierr = gpuMemcpyAsync(device_data.data(), allreduce_d, 
+                s*sizeof(int), gpuMemcpyDeviceToHost, 0);
+        gpu_check(ierr);
+        ierr = gpuStreamSynchronize(0);
+        gpu_check(ierr);
         compare_allreduce_results(pmpi, device_data, s);
-        gpuMemsetAsync(allreduce_d, 0, s*sizeof(int), 0);
-        gpuStreamSynchronize(0);
+        ierr = gpuMemsetAsync(allreduce_d, 0, s*sizeof(int), 0);
+        gpu_check(ierr);
+        ierr = gpuStreamSynchronize(0);
+        gpu_check(ierr);
 
 #endif
         // CopyToCPU Standard Recursive Doubling on GPU
         MPIL_Set_allreduce_algorithm(ALLREDUCE_CTC_RECURSIVE_DOUBLING);
         MPIL_Allreduce(local_data_d, allreduce_d, s, MPI_INT, MPI_SUM, xcomm);
-        gpuMemcpyAsync(device_data.data(), allreduce_d, s*sizeof(int), gpuMemcpyDeviceToHost, 0);
-        gpuStreamSynchronize(0);
+        ierr = gpuMemcpyAsync(device_data.data(), allreduce_d, 
+                s*sizeof(int), gpuMemcpyDeviceToHost, 0);
+        gpu_check(ierr);
+        ierr = gpuStreamSynchronize(0);
+        gpu_check(ierr);
         compare_allreduce_results(pmpi, device_data, s);
-        gpuMemsetAsync(allreduce_d, 0, s*sizeof(int), 0);
-        gpuStreamSynchronize(0);
+        ierr = gpuMemsetAsync(allreduce_d, 0, s*sizeof(int), 0);
+        gpu_check(ierr);
+        ierr = gpuStreamSynchronize(0);
+        gpu_check(ierr);
 
         // CopyToCPU Node-Aware Dissemination on GPU
         MPIL_Set_allreduce_algorithm(ALLREDUCE_CTC_DISSEMINATION_LOC);
         MPIL_Allreduce(local_data_d, allreduce_d, s, MPI_INT, MPI_SUM, xcomm);
-        gpuMemcpyAsync(device_data.data(), allreduce_d, s*sizeof(int), gpuMemcpyDeviceToHost, 0);
-        gpuStreamSynchronize(0);
+        ierr = gpuMemcpyAsync(device_data.data(), allreduce_d, 
+                s*sizeof(int), gpuMemcpyDeviceToHost, 0);
+        gpu_check(ierr);
+        ierr = gpuStreamSynchronize(0);
+        gpu_check(ierr);
         compare_allreduce_results(pmpi, device_data, s);
-        gpuMemsetAsync(allreduce_d, 0, s*sizeof(int), 0);
-        gpuStreamSynchronize(0);
+        ierr = gpuMemsetAsync(allreduce_d, 0, s*sizeof(int), 0);
+        gpu_check(ierr);
+        ierr = gpuStreamSynchronize(0);
+        gpu_check(ierr);
 
         // CopyToCPU NUMA-Aware Dissemination on GPU
         MPIL_Set_allreduce_algorithm(ALLREDUCE_CTC_DISSEMINATION_ML);
         MPIL_Allreduce(local_data_d, allreduce_d, s, MPI_INT, MPI_SUM, xcomm);
-        gpuMemcpyAsync(device_data.data(), allreduce_d, s*sizeof(int), gpuMemcpyDeviceToHost, 0);
-        gpuStreamSynchronize(0);
+        ierr = gpuMemcpyAsync(device_data.data(), allreduce_d, 
+                s*sizeof(int), gpuMemcpyDeviceToHost, 0);
+        gpu_check(ierr);
+        ierr = gpuStreamSynchronize(0);
+        gpu_check(ierr);
         compare_allreduce_results(pmpi, device_data, s);
-        gpuMemsetAsync(allreduce_d, 0, s*sizeof(int), 0);
-        gpuStreamSynchronize(0);
+        ierr = gpuMemsetAsync(allreduce_d, 0, s*sizeof(int), 0);
+        gpu_check(ierr);
+        ierr = gpuStreamSynchronize(0);
+        gpu_check(ierr);
 
         // CopyToCPU HIGH-Radix Dissemination on GPU
         MPIL_Set_allreduce_algorithm(ALLREDUCE_CTC_DISSEMINATION_RADIX);
         MPIL_Allreduce(local_data_d, allreduce_d, s, MPI_INT, MPI_SUM, xcomm);
-        gpuMemcpyAsync(device_data.data(), allreduce_d, s*sizeof(int), gpuMemcpyDeviceToHost, 0);
-        gpuStreamSynchronize(0);
+        ierr = gpuMemcpyAsync(device_data.data(), allreduce_d, 
+                s*sizeof(int), gpuMemcpyDeviceToHost, 0);
+        gpu_check(ierr);
+        ierr = gpuStreamSynchronize(0);
+        gpu_check(ierr);
         compare_allreduce_results(pmpi, device_data, s);
-        gpuMemsetAsync(allreduce_d, 0, s*sizeof(int), 0);
-        gpuStreamSynchronize(0);
+        ierr = gpuMemsetAsync(allreduce_d, 0, s*sizeof(int), 0);
+        gpu_check(ierr);
+        ierr = gpuStreamSynchronize(0);
+        gpu_check(ierr);
     }
 
-    gpuFree(local_data_d);
-    gpuFree(allreduce_d);
+    ierr = gpuFree(local_data_d);
+    gpu_check(ierr);
+    ierr = gpuFree(allreduce_d);
+    gpu_check(ierr);
 
     MPIL_Comm_free(&xcomm);
 

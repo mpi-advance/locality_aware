@@ -7,8 +7,7 @@
 #include <set>
 #include <vector>
 
-#include "communicator/MPIL_Comm.hpp"
-#include "heterogeneous/gpu_utils.h"
+#include "gpu_utils.h"
 #include "locality_aware.h"
 
 void compare_alltoall_results(std::vector<int>& pmpi_alltoall,
@@ -54,14 +53,14 @@ int main(int argc, char** argv)
     MPIL_Comm_init(&xcomm, MPI_COMM_WORLD);
     MPIL_Comm_device_init(xcomm);
 
-    int n_gpus;
-    gpuGetDeviceCount(&n_gpus);
-    gpuSetDevice(xcomm->rank_gpu);
+    int ierr;
 
     int* local_data_d;
     int* alltoall_d;
-    gpuMalloc((void**)&local_data_d, max_s * num_procs * sizeof(int));
-    gpuMalloc((void**)&alltoall_d, max_s * num_procs * sizeof(int));
+    ierr = gpuMalloc((void**)&local_data_d, max_s * num_procs * sizeof(int));
+    gpu_check(ierr);
+    ierr = gpuMalloc((void**)&alltoall_d, max_s * num_procs * sizeof(int));
+    gpu_check(ierr);
 
     for (int i = 0; i < max_i; i++)
     {
@@ -75,10 +74,14 @@ int main(int argc, char** argv)
                 local_data[i * s + j] = rank * 10000 + i * 100 + j;
             }
         }
-        gpuMemcpy(local_data_d,
+        ierr = gpuMemcpyAsync(local_data_d,
                   local_data.data(),
                   s * num_procs * sizeof(int),
-                  gpuMemcpyHostToDevice);
+                  gpuMemcpyHostToDevice,
+                  0);
+        gpu_check(ierr);
+        ierr = gpuStreamSynchronize(0);
+        gpu_check(ierr);
 
         // Standard Alltoall
         PMPI_Alltoall(local_data.data(),
@@ -97,56 +100,93 @@ int main(int argc, char** argv)
 
         // Standard GPU Alltoall
         PMPI_Alltoall(local_data_d, s, MPI_INT, alltoall_d, s, MPI_INT, MPI_COMM_WORLD);
-        gpuMemcpy(device_data.data(),
+        ierr = gpuMemcpyAsync(device_data.data(),
                   alltoall_d,
                   s * num_procs * sizeof(int),
-                  gpuMemcpyDeviceToHost);
+                  gpuMemcpyDeviceToHost,
+                  0);
+        gpu_check(ierr);
+        ierr = gpuStreamSynchronize(0);
+        gpu_check(ierr);
         compare_alltoall_results(pmpi_alltoall, device_data, s);
-        gpuMemset(alltoall_d, 0, s * num_procs * sizeof(int));
+        ierr = gpuMemsetAsync(alltoall_d, 0, s * num_procs * sizeof(int), 0);
+        gpu_check(ierr);
+        ierr = gpuStreamSynchronize(0);
+        gpu_check(ierr);
 
         // GPU-Aware Pairwise Alltoall
         MPIL_Set_alltoall_algorithm(ALLTOALL_GPU_PAIRWISE);
         MPIL_Alltoall(local_data_d, s, MPI_INT, alltoall_d, s, MPI_INT, xcomm);
-        gpuMemcpy(device_data.data(),
+        ierr = gpuMemcpyAsync(device_data.data(),
                   alltoall_d,
                   s * num_procs * sizeof(int),
-                  gpuMemcpyDeviceToHost);
+                  gpuMemcpyDeviceToHost,
+                  0);
+        gpu_check(ierr);
+        ierr = gpuStreamSynchronize(0);
+        gpu_check(ierr);
         compare_alltoall_results(pmpi_alltoall, device_data, s);
-        gpuMemset(alltoall_d, 0, s * num_procs * sizeof(int));
+        ierr = gpuMemsetAsync(alltoall_d, 0, s * num_procs * sizeof(int), 0);
+        gpu_check(ierr);
+        ierr = gpuStreamSynchronize(0);
+        gpu_check(ierr);
 
         // GPU-Aware Nonblocking Alltoall
         MPIL_Set_alltoall_algorithm(ALLTOALL_GPU_NONBLOCKING);
         MPIL_Alltoall(local_data_d, s, MPI_INT, alltoall_d, s, MPI_INT, xcomm);
-        gpuMemcpy(device_data.data(),
+        ierr = gpuMemcpyAsync(device_data.data(),
                   alltoall_d,
                   s * num_procs * sizeof(int),
-                  gpuMemcpyDeviceToHost);
+                  gpuMemcpyDeviceToHost,
+                  0);
+        gpu_check(ierr);
+        ierr = gpuStreamSynchronize(0);
+        gpu_check(ierr);
         compare_alltoall_results(pmpi_alltoall, device_data, s);
-        gpuMemset(alltoall_d, 0, s * num_procs * sizeof(int));
+        ierr = gpuMemsetAsync(alltoall_d, 0, s * num_procs * sizeof(int), 0);
+        gpu_check(ierr);
+        ierr = gpuStreamSynchronize(0);
+        gpu_check(ierr);
 
         // Copy-to-CPU Pairwise Alltoall
         MPIL_Set_alltoall_algorithm(ALLTOALL_CTC_PAIRWISE);
         MPIL_Alltoall(local_data_d, s, MPI_INT, alltoall_d, s, MPI_INT, xcomm);
-        gpuMemcpy(device_data.data(),
+        ierr = gpuMemcpyAsync(device_data.data(),
                   alltoall_d,
                   s * num_procs * sizeof(int),
-                  gpuMemcpyDeviceToHost);
+                  gpuMemcpyDeviceToHost,
+                  0);
+        gpu_check(ierr);
+        ierr = gpuStreamSynchronize(0);
+        gpu_check(ierr);
         compare_alltoall_results(pmpi_alltoall, device_data, s);
-        gpuMemset(alltoall_d, 0, s * num_procs * sizeof(int));
+        ierr = gpuMemsetAsync(alltoall_d, 0, s * num_procs * sizeof(int), 0);
+        gpu_check(ierr);
+        ierr = gpuStreamSynchronize(0);
+        gpu_check(ierr);
 
         // Copy-to-CPU Nonblocking Alltoall
         MPIL_Set_alltoall_algorithm(ALLTOALL_CTC_NONBLOCKING);
         MPIL_Alltoall(local_data_d, s, MPI_INT, alltoall_d, s, MPI_INT, xcomm);
-        gpuMemcpy(device_data.data(),
+        ierr = gpuMemcpyAsync(device_data.data(),
                   alltoall_d,
                   s * num_procs * sizeof(int),
-                  gpuMemcpyDeviceToHost);
+                  gpuMemcpyDeviceToHost,
+                  0);
+        gpu_check(ierr);
+        ierr = gpuStreamSynchronize(0);
+        gpu_check(ierr);
         compare_alltoall_results(pmpi_alltoall, device_data, s);
-        gpuMemset(alltoall_d, 0, s * num_procs * sizeof(int));
+        ierr = gpuMemsetAsync(alltoall_d, 0, s * num_procs * sizeof(int), 0);
+        gpu_check(ierr);
+        ierr = gpuStreamSynchronize(0);
+        gpu_check(ierr);
     }
 
-    gpuFree(local_data_d);
-    gpuFree(alltoall_d);
+    ierr = gpuFree(local_data_d);
+    gpu_check(ierr);
+    ierr = gpuFree(alltoall_d);
+    gpu_check(ierr);
 
     MPIL_Comm_free(&xcomm);
 
