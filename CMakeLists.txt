@@ -68,7 +68,7 @@ endif()
 
 if (ENABLE_UNIT_TESTS)
     enable_testing()
-	set(TEST_PROCS "16" CACHE STRING "Number of processes to use when making ctests")
+	set(TEST_PROCS "4" CACHE STRING "Number of processes to use when making ctests")
 endif()
 
 # Flag == TRUE means TEST
@@ -86,16 +86,10 @@ function(make_executable filename flag)
 
 	if(${flag})
 		set(locality_test_name ${exec_name}_Test)
-	    if(ENABLE_UNIT_TESTS)
-		    add_test(NAME ${locality_test_name} 
-                COMMAND ${MPIRUN} -n ${TEST_PROCS} ./${exec_name} 
-                ${TEST_MATRIX_FILE})
-	    endif()
+		add_test(NAME ${locality_test_name} COMMAND ${MPIRUN} -n ${TEST_PROCS} ./${exec_name} ${TEST_MATRIX_FILE})
 	else()
-		set(locality_test_name ${exec_name}_Benchmark)
 		install(TARGETS ${exec_name} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
 	endif()
-
 
 endfunction()
 
