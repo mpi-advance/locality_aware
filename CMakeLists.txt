@@ -84,14 +84,16 @@ function(make_executable filename flag)
 
 	if(${flag})
 		set(locality_test_name ${exec_name}_Test)
+	    if(ENABLE_UNIT_TESTS)
+		    add_test(NAME ${locality_test_name} 
+                COMMAND ${MPIRUN} -n ${TEST_PROCS} ./${exec_name} 
+                ${TEST_MATRIX_FILE})
+	    endif()
 	else()
 		set(locality_test_name ${exec_name}_Benchmark)
 		install(TARGETS ${exec_name} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
 	endif()
 
-	if(ENABLE_UNIT_TESTS)
-		add_test(NAME ${locality_test_name} COMMAND ${MPIRUN} -n ${TEST_PROCS} ./${exec_name} ${TEST_MATRIX_FILE})
-	endif()
 
 endfunction()
 
