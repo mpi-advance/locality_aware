@@ -12,6 +12,11 @@ int MPIL_Allgather(const void* sendbuf,
                    MPI_Datatype recvtype,
                    MPIL_Comm* comm)
 {
+    if (sendcount == 0) 
+    {
+        return MPI_SUCCESS;
+    }
+
     allgather_ftn method;
     bool gpu_aware = false;
     bool copy_to_cpu = false;
