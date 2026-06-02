@@ -11,6 +11,11 @@ int MPIL_Allreduce(const void* sendbuf,
                    MPI_Op op,
                    MPIL_Comm* comm)
 {
+    if (count == 0)
+    {
+        return MPI_SUCCESS;
+    }
+
     allreduce_ftn method;
     bool gpu_aware = false;
     bool copy_to_cpu = false;

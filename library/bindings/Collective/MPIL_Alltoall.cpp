@@ -16,6 +16,11 @@ int MPIL_Alltoall(const void* sendbuf,
                   MPI_Datatype recvtype,
                   MPIL_Comm* mpi_comm)
 {
+    if (sendcount == 0) 
+    {
+        return MPI_SUCCESS;
+    }
+
     alltoall_ftn method;
     bool gpu_aware = false;
     bool copy_to_cpu = false;
