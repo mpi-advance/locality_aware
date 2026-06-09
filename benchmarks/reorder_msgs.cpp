@@ -70,8 +70,6 @@ void par_spmv(ParMat<int>& A,
             std::vector<MPI_Request>& recv_req,
             MPIL_Comm* xcomm)
 {
-    int idx;
-
     // Pack sendbuf
     for (int i = 0; i < A.send_comm.size_msgs; i++)
         sendbuf[i] = x[A.send_comm.idx[i]];
