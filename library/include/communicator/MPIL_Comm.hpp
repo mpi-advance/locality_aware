@@ -1,7 +1,7 @@
 #ifndef MPIL_COMM_H
 #define MPIL_COMM_H
 
-#include <mpi.h>
+#include "global_comms.hpp"
 
 /** @brief Struct capable of maintaining multiple request and communicators for library
  * operations.
@@ -22,9 +22,9 @@ typedef struct _MPIL_Comm
 
     // For hierarchical collectives
     /**@brief Communicator for communicating inside the node**/
-    MPI_Comm local_comm;
+    Communicator::CachedComm local_comm;
     /**@brief Communicator containing leader process on each node**/
-    MPI_Comm group_comm;
+    Communicator::CachedComm group_comm;
 
     /**@brief Communicator containing a single leader and its subordinates**/
     MPI_Comm leader_comm;
@@ -126,25 +126,45 @@ int initialize_topo_communicator(MPIL_Comm* xcomm, int ppn_override = 0)
     int rank;
     MPI_Comm_rank(xcomm->global_comm, &rank);
 
-    if (ppn_override > 0)
-    {  // Split communicator on a custom number of PPN
-        int color = (NUMA) ? rank % ppn_override : rank / ppn_override;
-        MPI_Comm_split(xcomm->global_comm, color, rank, &(xcomm->local_comm));
+    if (Communicator::cached_local_comms.contains({xcomm->global_comm, ppn_override}))
+    {
+        xcomm->local_comm =
+            Communicator::cached_local_comms.at({xcomm->global_comm, ppn_override});
     }
     else
-    {  // Split global comm into local (per node) communicators
-        MPI_Comm_split_type(xcomm->global_comm,
-                            MPI_COMM_TYPE_SHARED,
-                            rank,
-                            MPI_INFO_NULL,
-                            &(xcomm->local_comm));
+    {
+        if (ppn_override > 0)
+        {  // Split communicator on a custom number of PPN
+            int color = (NUMA) ? rank % ppn_override : rank / ppn_override;
+            MPI_Comm_split(xcomm->global_comm, color, rank, xcomm->local_comm);
+        }
+        else
+        {  // Split global comm into local (per node) communicators
+            MPI_Comm_split_type(xcomm->global_comm,
+                                MPI_COMM_TYPE_SHARED,
+                                rank,
+                                MPI_INFO_NULL,
+                                xcomm->local_comm);
+        }
+        Communicator::cached_local_comms.insert(
+            {{xcomm->global_comm, ppn_override}, xcomm->local_comm});
     }
 
-    int local_rank;
-    MPI_Comm_rank(xcomm->local_comm, &local_rank);
+    if (Communicator::cached_group_comms.contains({xcomm->global_comm, ppn_override}))
+    {
+        xcomm->group_comm =
+            Communicator::cached_group_comms.at({xcomm->global_comm, ppn_override});
+    }
+    else
+    {
+        int local_rank;
+        MPI_Comm_rank(xcomm->local_comm, &local_rank);
 
-    // Split global comm into group (per local rank) communicators
-    MPI_Comm_split(xcomm->global_comm, local_rank, rank, &(xcomm->group_comm));
+        // Split global comm into group (per local rank) communicators
+        MPI_Comm_split(xcomm->global_comm, local_rank, rank, xcomm->group_comm);
+        Communicator::cached_group_comms.insert(
+            {{xcomm->global_comm, ppn_override}, xcomm->group_comm});
+    }
 
     return MPI_SUCCESS;
 }
@@ -161,6 +181,8 @@ int initialize_topo_communicator(MPIL_Comm* xcomm, int ppn_override = 0)
  * @return MPI_SUCCESS
  **/
 int initialize_rank_mapping(MPIL_Comm* xcomm);
+
+int free_rank_mapping(MPIL_Comm* xcomm);
 
 /** @brief Gets current tag from xcomm then increments MPIL_Comm::tag
         @details

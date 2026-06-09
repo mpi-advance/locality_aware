@@ -7,8 +7,8 @@ int initialize_comm_object(MPIL_Comm** xcomm_ptr, MPI_Comm global_comm)
     MPIL_Comm* xcomm   = (MPIL_Comm*)malloc(sizeof(MPIL_Comm));
     xcomm->global_comm = global_comm;
 
-    xcomm->local_comm = MPI_COMM_NULL;
-    xcomm->group_comm = MPI_COMM_NULL;
+    new (&xcomm->local_comm) Communicator::CachedComm(MPI_COMM_NULL);
+    new (&xcomm->group_comm) Communicator::CachedComm(MPI_COMM_NULL);
 
     xcomm->leader_comm       = MPI_COMM_NULL;
     xcomm->leader_group_comm = MPI_COMM_NULL;
@@ -98,6 +98,20 @@ int initialize_rank_mapping(MPIL_Comm* xcomm)
     MPI_Comm_size(xcomm->local_comm, &(xcomm->ppn));
     xcomm->num_nodes = ((num_procs - 1) / xcomm->ppn) + 1;
     xcomm->rank_node = get_node(xcomm, rank);
+
+    return MPI_SUCCESS;
+}
+
+int free_rank_mapping(MPIL_Comm* xcomm)
+{
+    free(xcomm->global_rank_to_local);
+    xcomm->global_rank_to_local = NULL;
+
+    free(xcomm->global_rank_to_node);
+    xcomm->global_rank_to_node = NULL;
+
+    free(xcomm->ordered_global_ranks);
+    xcomm->ordered_global_ranks = NULL;
 
     return MPI_SUCCESS;
 }

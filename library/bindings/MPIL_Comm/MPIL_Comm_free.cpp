@@ -13,16 +13,24 @@ int MPIL_Comm_free(MPIL_Comm** xcomm_ptr)
         xcomm->requests = NULL;
     }
 
+    free(xcomm->statuses);
+    xcomm->statuses = NULL;
+
     if (xcomm->neighbor_comm != MPI_COMM_NULL)
     {
         MPI_Comm_free(&(xcomm->neighbor_comm));
         xcomm->neighbor_comm = MPI_COMM_NULL;
     }
 
+    xcomm->local_comm.~CachedComm();
+    xcomm->group_comm.~CachedComm();
     MPIL_Comm_topo_free(xcomm);
+
     MPIL_Comm_leader_free(xcomm);
     MPIL_Comm_win_free(xcomm);
     MPIL_Comm_device_free(xcomm);
+
+    free_rank_mapping(xcomm);
 
     free(xcomm);
 
