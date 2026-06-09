@@ -7,6 +7,9 @@ int initialize_comm_object(MPIL_Comm** xcomm_ptr, MPI_Comm global_comm)
     MPIL_Comm* xcomm   = (MPIL_Comm*)malloc(sizeof(MPIL_Comm));
     xcomm->global_comm = global_comm;
 
+    /* Because these are a C++ object, and xcomm is created from malloc,
+    * we need to tell C++ where to do the new so the constructor is actually
+    * called to initialize the shared_ptrs. */
     new (&xcomm->local_comm) Communicator::CachedComm(MPI_COMM_NULL);
     new (&xcomm->group_comm) Communicator::CachedComm(MPI_COMM_NULL);
 

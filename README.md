@@ -8,7 +8,7 @@ The locality_aware library is a straightforward CMake projects with modest depen
 ## Software Dependencies
 - CMake 3.21
 - C 11
-- C++ 11
+- C++ 20
 - MPI
 - HIP or CUDA for GPU-based optimizations, if enabled
 

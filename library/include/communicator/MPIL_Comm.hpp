@@ -21,9 +21,9 @@ typedef struct _MPIL_Comm
     MPI_Comm neighbor_comm;
 
     // For hierarchical collectives
-    /**@brief Communicator for communicating inside the node**/
+    /**@brief Reference-counted MPI_Comm for communicating inside the node**/
     Communicator::CachedComm local_comm;
-    /**@brief Communicator containing leader process on each node**/
+    /**@brief Reference-counted MPI_Comm containing leader process on each node**/
     Communicator::CachedComm group_comm;
 
     /**@brief Communicator containing a single leader and its subordinates**/
@@ -114,11 +114,17 @@ int initialize_comm_object(MPIL_Comm** xcomm, MPI_Comm global_comm);
  * and used as the color for the MPI_Comm_split. The calculation of the the "node" is
  * determined by the templated parameter. If the template is false, "rank/ppn_override" is
  * used; if the template is true "rank % ppn_override" is used.
+ * 
+ * If the pairing of the MPIL_Comm::global_comm and the provided ppn_override have been used before,
+ * this method will bypass the calls to create a new MPI Communicator and will instead pull out the 
+ * appropriate communicator from Communicator::cached_local_comms to fill MPIL_Comm::local_comm and
+ * Communicator::cached_group_comms to fill MPIL_Comm::group_comm.
  * @tparam NUMA Controls how the grouping is made in the case that a PPN override is used.
  * @param [in, out] xcomm The ::_MPIL_Comm to store the topology communicators into.
  * @param [in] ppn_override Optional integer to determine how many processes are node.
  * If set, overrides default creation of MPIL_Comm::local_comm.
  * @return MPI_SUCCESS
+ * @sa Communicator::CachedComm
  **/
 template <bool NUMA = false>
 int initialize_topo_communicator(MPIL_Comm* xcomm, int ppn_override = 0)
@@ -182,15 +188,19 @@ int initialize_topo_communicator(MPIL_Comm* xcomm, int ppn_override = 0)
  **/
 int initialize_rank_mapping(MPIL_Comm* xcomm);
 
+/** @brief Free the arrays associated with process mapping inside an :_MPIL_Comm object
+ * @details More specifically, this method will free MPIL_Comm::global_rank_to_local,
+ * MPIL_Comm::global_rank_to_node, and MPIL_Comm::ordered_global_ranks.
+ * @return MPI_SUCCESS
+ **/
 int free_rank_mapping(MPIL_Comm* xcomm);
 
 /** @brief Gets current tag from xcomm then increments MPIL_Comm::tag
-        @details
-          Invoked externally by MPIL_Comm_get_tag
-        @param [in, out] xcomm communicator to query and updated
-        @param [out] tag value of xcomm->tag before the operations
-        @return MPI_SUCCESS
-**/
+ * @details Invoked externally by MPIL_Comm_get_tag
+ * @param [in, out] xcomm communicator to query and updated
+ * @param [out] tag value of xcomm->tag before the operations
+ * @return MPI_SUCCESS
+ **/
 int get_tag(MPIL_Comm* xcomm, int* tag);
 
 #endif
