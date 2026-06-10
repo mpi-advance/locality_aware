@@ -2,6 +2,7 @@
 #define MPIL_REQUEST_H
 
 #include <mpi.h>
+#include "utils/MPIL_Alloc.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -59,6 +60,8 @@ struct _MPIL_Request
      * during first iteration **/
     int reorder;
 
+    MPIL_Free_ftn free_ftn;
+
 #ifdef GPU
     /** @brief Allocated cpu-based send buffers for copy-to-cpu algorithms **/
     void* cpu_sendbuf;
@@ -69,6 +72,7 @@ struct _MPIL_Request
     int (*start_function)(struct _MPIL_Request* request);
     /** @brief Function pointer to MPIL_Wait or MPIL_neighbor_wait **/
     int (*wait_function)(struct _MPIL_Request* request, MPI_Status* status);
+
 };
 
 /** @brief Constructor for ::MPIL_Request. Initializes most members to 0. */
