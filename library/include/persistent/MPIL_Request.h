@@ -8,13 +8,12 @@
 extern "C" {
 #endif
 
-typedef struct _MPIL_Request MPIL_Request;
 /** @brief A custom MPI_Request struct used for the library's persistent collectives
  * @details For external users, there is limited direct access to class members through
  * API calls. Contains multiple requests and buffers to manage complex communication.
  * Contains function pointer to appropriate start and wait functions.
  */
-struct _MPIL_Request
+typedef struct _MPIL_Request
 {
     /** @brief Number of messages **/
     int n_msgs;
@@ -46,11 +45,11 @@ struct _MPIL_Request
 
     // Pointers to MPI_Requests for aggregated communication
     /** @brief Fully local communication **/
-    MPIL_Request* local_L_request;
+    _MPIL_Request* local_L_request;
     /** @brief Initial local aggregation **/
-    MPIL_Request* local_S_request;
+    _MPIL_Request* local_S_request;
     /** @brief Final local disaggrgation **/
-    MPIL_Request* local_R_request;
+    _MPIL_Request* local_R_request;
 
     /** @brief Number of bytes per receive object, locality-aware only **/
     int recv_size;
@@ -72,8 +71,7 @@ struct _MPIL_Request
     int (*start_function)(struct _MPIL_Request* request);
     /** @brief Function pointer to MPIL_Wait or MPIL_neighbor_wait **/
     int (*wait_function)(struct _MPIL_Request* request, MPI_Status* status);
-
-};
+} MPIL_Request;
 
 /** @brief Constructor for ::MPIL_Request. Initializes most members to 0. */
 void init_request(MPIL_Request** request_ptr);

@@ -1,7 +1,7 @@
 #include "collective/alltoall.h"
 #include "locality_aware.h"
 #ifdef GPU
-#include "heterogeneous/gpu_alltoall.h"
+#include "heterogeneous/gpu_collective.h"
 #endif
 
 #ifdef __cplusplus
@@ -16,23 +16,35 @@ int MPIL_Alltoall(const void* sendbuf,
                   MPI_Datatype recvtype,
                   MPIL_Comm* mpi_comm)
 {
+    if (sendcount == 0) 
+    {
+        return MPI_SUCCESS;
+    }
+
     alltoall_ftn method;
+    bool gpu_aware = false;
+    bool copy_to_cpu = false;
 
     switch (mpil_alltoall_implementation)
     {
-#if defined(GPU) && defined(GPU_AWARE)
-
+#if defined(GPU) 
+#if defined(GPU_AWARE)
         case ALLTOALL_GPU_PAIRWISE:
-            method = gpu_aware_alltoall_pairwise;
+            method = alltoall_pairwise;
+            gpu_aware = true;
             break;
         case ALLTOALL_GPU_NONBLOCKING:
-            method = gpu_aware_alltoall_nonblocking;
+            method = alltoall_nonblocking;
+            gpu_aware = true;
             break;
+#endif
         case ALLTOALL_CTC_PAIRWISE:
-            method = copy_to_cpu_alltoall_pairwise;
+            method = alltoall_pairwise;
+            copy_to_cpu = true;
             break;
         case ALLTOALL_CTC_NONBLOCKING:
-            method = copy_to_cpu_alltoall_nonblocking;
+            method = alltoall_nonblocking;
+            copy_to_cpu = true;
             break;
 #endif
         case ALLTOALL_PAIRWISE:
@@ -78,6 +90,19 @@ int MPIL_Alltoall(const void* sendbuf,
             method = alltoall_pmpi;
             break;
     }
+
+#if defined(GPU)
+    if (gpu_aware)
+    {
+        return gpu_aware_collective(method, sendbuf, sendcount,
+                    sendtype, recvbuf, recvcount, recvtype, mpi_comm);
+    }
+    else if (copy_to_cpu)
+    {
+        return copy_to_cpu_alltoall(method, sendbuf, sendcount,
+                    sendtype, recvbuf, recvcount, recvtype, mpi_comm);
+    }
+#endif
 
     return method(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, mpi_comm);
 }

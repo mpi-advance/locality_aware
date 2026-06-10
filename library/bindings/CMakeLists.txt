@@ -2,6 +2,8 @@ target_sources(locality_aware PRIVATE
 	global_defaults.cpp
 	Collective/MPIL_Alltoall.cpp
 	Collective/MPIL_Alltoallv.cpp
+    Collective/MPIL_Allreduce.cpp
+    Collective/MPIL_Allgather.cpp
 	Collective/MPIL_Alltoall_crs.cpp
 	Collective/MPIL_Alltoallv_crs.cpp
 	MPIL_Alloc/MPIL_Alloc.cpp
@@ -27,13 +29,15 @@ add_subdirectory(MPIL_Comm)
 if(USE_GPU)
 	get_property(GPU_SOURCES GLOBAL PROPERTY GPU_SOURCES_GLOBAL)
 	set_property(GLOBAL APPEND PROPERTY GPU_SOURCES_GLOBAL  
-		"${CMAKE_CURRENT_SOURCE_DIR}/Collective/MPIL_Alltoall.c"
-		"${CMAKE_CURRENT_SOURCE_DIR}/Collective/MPIL_Alltoallv.c"
-		"${CMAKE_CURRENT_SOURCE_DIR}/Collective/MPIL_Alltoall_crs.c"
-		"${CMAKE_CURRENT_SOURCE_DIR}/Collective/MPIL_Alltoallv_crs.c"
-		"${CMAKE_CURRENT_SOURCE_DIR}/MPIL_Comm/MPIL_Comm_device_init.c"
-		"${CMAKE_CURRENT_SOURCE_DIR}/MPIL_Comm/MPIL_Comm_device_free.c"
-		"${CMAKE_CURRENT_SOURCE_DIR}/MPIL_Request/MPIL_Request_free.c"
+		"${CMAKE_CURRENT_SOURCE_DIR}/Collective/MPIL_Alltoall.cpp"
+		"${CMAKE_CURRENT_SOURCE_DIR}/Collective/MPIL_Alltoallv.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/Collective/MPIL_Allgather.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/Collective/MPIL_Allreduce.cpp"
+		"${CMAKE_CURRENT_SOURCE_DIR}/Collective/MPIL_Alltoall_crs.cpp"
+		"${CMAKE_CURRENT_SOURCE_DIR}/Collective/MPIL_Alltoallv_crs.cpp"
+		"${CMAKE_CURRENT_SOURCE_DIR}/MPIL_Comm/MPIL_Comm_device_init.cpp"
+		"${CMAKE_CURRENT_SOURCE_DIR}/MPIL_Comm/MPIL_Comm_device_free.cpp"
+		"${CMAKE_CURRENT_SOURCE_DIR}/MPIL_Request/MPIL_Request_free.cpp"
 	)
 endif()
 

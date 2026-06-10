@@ -75,6 +75,46 @@ enum AlltoallvMethod
     ALLTOALLV_PMPI
 };
 
+enum AllreduceMethod
+{
+#if defined(GPU)
+#if defined(GPU_AWARE)
+    ALLREDUCE_GPU_RECURSIVE_DOUBLING,
+    ALLREDUCE_GPU_DISSEMINATION_LOC,
+    ALLREDUCE_GPU_DISSEMINATION_ML,
+    ALLREDUCE_GPU_DISSEMINATION_RADIX,
+    ALLREDUCE_GPU_PMPI,
+#endif
+    ALLREDUCE_CTC_RECURSIVE_DOUBLING,
+    ALLREDUCE_CTC_DISSEMINATION_LOC,
+    ALLREDUCE_CTC_DISSEMINATION_ML,
+    ALLREDUCE_CTC_DISSEMINATION_RADIX,
+    ALLREDUCE_CTC_PMPI,
+#endif
+    ALLREDUCE_RECURSIVE_DOUBLING,
+    ALLREDUCE_DISSEMINATION_LOC,
+    ALLREDUCE_DISSEMINATION_ML,
+    ALLREDUCE_DISSEMINATION_RADIX,
+    ALLREDUCE_PMPI
+};
+
+enum AllgatherMethod
+{
+#if defined(GPU)
+#if defined(GPU_AWARE)
+    ALLGATHER_GPU_RING,
+    ALLGATHER_GPU_BRUCK,
+    ALLGATHER_GPU_PMPI,
+#endif
+    ALLGATHER_CTC_RING,
+    ALLGATHER_CTC_BRUCK,
+    ALLGATHER_CTC_PMPI,
+#endif
+    ALLGATHER_RING,
+    ALLGATHER_BRUCK,
+    ALLGATHER_PMPI
+};
+
 /** @brief Enumeration of implemented neighborhood alltoall algorithms @ingroup
  * alg_enum**/
 enum NeighborAlltoallvMethod
@@ -118,10 +158,13 @@ enum AlltoallvCRSMethod
  */
 extern enum AlltoallMethod mpil_alltoall_implementation;
 extern enum AlltoallvMethod mpil_alltoallv_implementation;
+extern enum AllreduceMethod mpil_allreduce_implementation;
+extern enum AllgatherMethod mpil_allgather_implementation;
 extern enum NeighborAlltoallvMethod mpil_neighbor_alltoallv_implementation;
 extern enum NeighborAlltoallvInitMethod mpil_neighbor_alltoallv_init_implementation;
 extern enum AlltoallCRSMethod mpil_alltoall_crs_implementation;
 extern enum AlltoallvCRSMethod mpil_alltoallv_crs_implementation;
+extern int mpil_collective_radix;
 /**@}*/
 
 /** \defgroup global_setters algorithm_set_functions
@@ -135,11 +178,14 @@ extern enum AlltoallvCRSMethod mpil_alltoallv_crs_implementation;
  */
 int MPIL_Set_alltoall_algorithm(enum AlltoallMethod algorithm);
 int MPIL_Set_alltoallv_algorithm(enum AlltoallvMethod algorithm);
+int MPIL_Set_allreduce_algorithm(enum AllreduceMethod algorithm);
+int MPIL_Set_allgather_algorithm(enum AllgatherMethod algorithm);
 int MPIL_Set_alltoallv_neighbor_alogorithm(enum NeighborAlltoallvMethod algorithm);
 int MPIL_Set_alltoallv_neighbor_init_alogorithm(
     enum NeighborAlltoallvInitMethod algorithm);
 int MPIL_Set_alltoall_crs(enum AlltoallCRSMethod algorithm);
 int MPIL_Set_alltoallv_crs(enum AlltoallvCRSMethod algorithm);
+int MPIL_Set_collective_radix(int radix);
 /**@}*/
 
 /**@brief Initialize the locality_aware library (and create some communicators).
@@ -356,6 +402,31 @@ int MPIL_Alltoallv(const void* sendbuf,
                    const int rdispls[],
                    MPI_Datatype recvtype,
                    MPIL_Comm* comm);
+
+/** @brief Wrapper around MPI_Allgather.
+ *  @details
+ *  Defaults to ALLGATHER_BRUCK
+ *	@ingroup collective_func
+ */
+int MPIL_Allgather(const void* sendbuf,
+                    int sendcount, 
+                    MPI_Datatype sendtype,
+                    void* recvbuf,
+                    int recvcount,
+                    MPI_Datatype recvtype,
+                    MPIL_Comm* comm);
+
+/** @brief Wrapper around MPI_Allreduce.
+ *  @details
+ *  Defaults to ALLREDUCE_RECURSIVE_DOUBLING
+ *	@ingroup collective_func
+ */
+int MPIL_Allreduce(const void* sendbuf,
+                    void* recvbuf,
+                    int count,
+                    MPI_Datatype datatype,
+                    MPI_Op op,
+                    MPIL_Comm* comm);
 
 /** @brief Wrapper around MPI_Neighbor_alltoallv
  *	@ingroup collective_func
