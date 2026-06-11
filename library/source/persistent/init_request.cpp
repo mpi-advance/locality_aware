@@ -29,6 +29,12 @@ void init_request(MPIL_Request** request_ptr)
     request->recv_size  = 0;
     request->block_size = 1;
 
+    request->count = 0;
+    request->local_comm = MPI_COMM_NULL;
+    request->num_ops = 0;
+
+    request->tmpbuf = NULL;
+
 #ifdef GPU
     request->cpu_sendbuf = NULL;
     request->cpu_recvbuf = NULL;

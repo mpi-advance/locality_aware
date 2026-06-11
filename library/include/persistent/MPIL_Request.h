@@ -58,6 +58,16 @@ typedef struct _MPIL_Request
      * during first iteration **/
     int reorder;
 
+    /** @brief Variables needed for computation within persistent allreduce operations **/
+    int count;
+    MPI_Datatype datatype;
+    MPI_Op op;
+    MPI_Comm global_comm;
+    MPI_Comm local_comm;
+    int num_ops;
+
+    void* tmpbuf;
+
 #ifdef GPU
     /** @brief Allocated cpu-based send buffers for copy-to-cpu algorithms **/
     void* cpu_sendbuf;

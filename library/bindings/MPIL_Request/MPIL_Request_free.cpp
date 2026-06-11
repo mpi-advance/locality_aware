@@ -64,18 +64,21 @@ int MPIL_Request_free(MPIL_Request** request_ptr)
     }
 
 
+    if (request->tmpbuf)
+    {
+        MPIL_Free(request->tmpbuf);
+    }
+
 // TODO : for safety, may want to check if allocated with malloc?
 #ifdef GPU  // Assuming cpu buffers allocated in pinned memory
     int ierr;
     if (request->cpu_sendbuf)
     {
-        ierr = gpuFreeHost(request->cpu_sendbuf);
-        gpu_check(ierr);
+        MPIL_Free(request->cpu_sendbuf);
     }
     if (request->cpu_recvbuf)
     {
-        ierr = gpuFreeHost(request->cpu_recvbuf);
-        gpu_check(ierr);
+        MPIL_Free(request->cpu_recvbuf);
     }
 #endif
 

@@ -122,7 +122,7 @@ int main(int argc, char** argv)
                            std_comm);
 
     // Simple Persistent MPI Advance Implementation
-    MPIL_Set_alltoallv_neighbor_init_alogorithm(NEIGHBOR_ALLTOALLV_INIT_STANDARD);
+    MPIL_Set_alltoallv_neighbor_init_algorithm(NEIGHBOR_ALLTOALLV_INIT_STANDARD);
     std::fill(mpix_recv_vals.begin(), mpix_recv_vals.end(), 0);
     MPIL_Neighbor_alltoallv_init(alltoallv_send_vals.data(),
                                  send_data.counts.data(),
@@ -141,7 +141,7 @@ int main(int argc, char** argv)
     compare_neighbor_alltoallv_results(
         pmpi_recv_vals, mpix_recv_vals, recv_data.size_msgs);
 
-    MPIL_Set_alltoallv_neighbor_init_alogorithm(NEIGHBOR_ALLTOALLV_INIT_LOCALITY);
+    MPIL_Set_alltoallv_neighbor_init_algorithm(NEIGHBOR_ALLTOALLV_INIT_LOCALITY);
     std::fill(mpix_recv_vals.begin(), mpix_recv_vals.end(), 0);
     MPIL_Neighbor_alltoallv_init(alltoallv_send_vals.data(),
                                  send_data.counts.data(),
@@ -160,7 +160,7 @@ int main(int argc, char** argv)
     compare_neighbor_alltoallv_results(
         pmpi_recv_vals, mpix_recv_vals, recv_data.size_msgs);
 
-    MPIL_Set_alltoallv_neighbor_init_alogorithm(NEIGHBOR_ALLTOALLV_INIT_STANDARD);
+    MPIL_Set_alltoallv_neighbor_init_algorithm(NEIGHBOR_ALLTOALLV_INIT_STANDARD);
     std::fill(mpix_recv_vals.begin(), mpix_recv_vals.end(), 0);
     MPIL_Neighbor_alltoallv_init_ext(alltoallv_send_vals.data(),
                                      send_data.counts.data(),
@@ -181,7 +181,7 @@ int main(int argc, char** argv)
     compare_neighbor_alltoallv_results(
         pmpi_recv_vals, mpix_recv_vals, recv_data.size_msgs);
 
-    MPIL_Set_alltoallv_neighbor_init_alogorithm(NEIGHBOR_ALLTOALLV_INIT_LOCALITY);
+    MPIL_Set_alltoallv_neighbor_init_algorithm(NEIGHBOR_ALLTOALLV_INIT_LOCALITY);
     std::fill(mpix_recv_vals.begin(), mpix_recv_vals.end(), 0);
     MPIL_Neighbor_alltoallv_init_ext(alltoallv_send_vals.data(),
                                      send_data.counts.data(),

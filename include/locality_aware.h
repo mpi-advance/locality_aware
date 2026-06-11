@@ -37,11 +37,15 @@ extern MPIL_Comm* MPIL_COMM_WORLD;
 /** @brief Enumeration of implemented alltoall algorithms @ingroup alg_enum**/
 enum AlltoallMethod
 {
-#if defined(GPU) && defined(GPU_AWARE)
+#if defined(GPU) 
+#if defined(GPU_AWARE)
     ALLTOALL_GPU_PAIRWISE,
     ALLTOALL_GPU_NONBLOCKING,
+    ALLTOALL_GPU_PMPI,
+#endif
     ALLTOALL_CTC_PAIRWISE,
     ALLTOALL_CTC_NONBLOCKING,
+    ALLTOALL_CTC_PMPI,
 #endif
     ALLTOALL_PAIRWISE,
     ALLTOALL_NONBLOCKING,
@@ -62,11 +66,15 @@ enum AlltoallMethod
 /** @brief Enumeration of implemented alltoallv algorithms @ingroup alg_enum**/
 enum AlltoallvMethod
 {
-#if defined(GPU) && defined(GPU_AWARE)
+#if defined(GPU) 
+#if defined(GPU_AWARE)
     ALLTOALLV_GPU_PAIRWISE,
     ALLTOALLV_GPU_NONBLOCKING,
+    ALLTOALLV_GPU_PMPI,
+#endif
     ALLTOALLV_CTC_PAIRWISE,
     ALLTOALLV_CTC_NONBLOCKING,
+    ALLTOALLV_CTC_PMPI,
 #endif
     ALLTOALLV_PAIRWISE,
     ALLTOALLV_NONBLOCKING,
@@ -115,6 +123,108 @@ enum AllgatherMethod
     ALLGATHER_PMPI
 };
 
+/** @brief Enumeration of implemented alltoall algorithms @ingroup alg_enum**/
+enum AlltoallInitMethod
+{
+#if defined(GPU) 
+#if defined(GPU_AWARE)
+    ALLTOALL_INIT_GPU_PAIRWISE,
+    ALLTOALL_INIT_GPU_NONBLOCKING,
+#if defined(MPI4)
+    ALLTOALL_INIT_GPU_PMPI,
+#endif
+#endif
+    ALLTOALL_INIT_CTC_PAIRWISE,
+    ALLTOALL_INIT_CTC_NONBLOCKING,
+#if defined(MPI4)
+    ALLTOALL_INIT_CTC_PMPI,
+#endif
+#endif
+    ALLTOALL_INIT_PAIRWISE,
+    ALLTOALL_INIT_NONBLOCKING,
+#if defined(MPI4)
+    ALLTOALL_INIT_PMPI
+#endif
+
+};
+
+/** @brief Enumeration of implemented alltoallv algorithms @ingroup alg_enum**/
+enum AlltoallvInitMethod
+{
+#if defined(GPU) 
+#if defined(GPU_AWARE)
+    ALLTOALLV_INIT_GPU_PAIRWISE,
+    ALLTOALLV_INIT_GPU_NONBLOCKING,
+#if defined(MPI4)
+    ALLTOALLV_INIT_GPU_PMPI,
+#endif
+#endif
+    ALLTOALLV_INIT_CTC_PAIRWISE,
+    ALLTOALLV_INIT_CTC_NONBLOCKING,
+#if defined(MPI4)
+    ALLTOALLV_INIT_CTC_PMPI,
+#endif
+#endif
+    ALLTOALLV_INIT_PAIRWISE,
+    ALLTOALLV_INIT_NONBLOCKING,
+#if defined(MPI4)
+    ALLTOALLV_INIT_PMPI
+#endif
+};
+
+enum AllreduceInitMethod
+{
+#if defined(GPU)
+#if defined(GPU_AWARE)
+    ALLREDUCE_INIT_GPU_RECURSIVE_DOUBLING,
+    ALLREDUCE_INIT_GPU_DISSEMINATION_LOC,
+    ALLREDUCE_INIT_GPU_DISSEMINATION_ML,
+    ALLREDUCE_INIT_GPU_DISSEMINATION_RADIX,
+#if defined(MPI4)
+    ALLREDUCE_INIT_GPU_PMPI,
+#endif
+#endif
+    ALLREDUCE_INIT_CTC_RECURSIVE_DOUBLING,
+    ALLREDUCE_INIT_CTC_DISSEMINATION_LOC,
+    ALLREDUCE_INIT_CTC_DISSEMINATION_ML,
+    ALLREDUCE_INIT_CTC_DISSEMINATION_RADIX,
+#if defined(MPI4)
+    ALLREDUCE_INIT_CTC_PMPI,
+#endif
+#endif
+    ALLREDUCE_INIT_RECURSIVE_DOUBLING,
+    ALLREDUCE_INIT_DISSEMINATION_LOC,
+    ALLREDUCE_INIT_DISSEMINATION_ML,
+    ALLREDUCE_INIT_DISSEMINATION_RADIX,
+#if defined(MPI4)
+    ALLREDUCE_INIT_PMPI
+#endif
+};
+
+enum AllgatherInitMethod
+{
+#if defined(GPU)
+#if defined(GPU_AWARE)
+    ALLGATHER_INIT_GPU_RING,
+    ALLGATHER_INIT_GPU_BRUCK,
+#if defined(MPI4)
+    ALLGATHER_INIT_GPU_PMPI,
+#endif
+#endif
+    ALLGATHER_INIT_CTC_RING,
+    ALLGATHER_INIT_CTC_BRUCK,
+#if defined(MPI4)
+    ALLGATHER_INIT_CTC_PMPI,
+#endif
+#endif
+    ALLGATHER_INIT_RING,
+    ALLGATHER_INIT_BRUCK,
+#if defined(MPI4)
+    ALLGATHER_INIT_PMPI
+#endif
+};
+
+
 /** @brief Enumeration of implemented neighborhood alltoall algorithms @ingroup
  * alg_enum**/
 enum NeighborAlltoallvMethod
@@ -160,6 +270,10 @@ extern enum AlltoallMethod mpil_alltoall_implementation;
 extern enum AlltoallvMethod mpil_alltoallv_implementation;
 extern enum AllreduceMethod mpil_allreduce_implementation;
 extern enum AllgatherMethod mpil_allgather_implementation;
+extern enum AlltoallInitMethod mpil_alltoall_init_implementation;
+extern enum AlltoallvInitMethod mpil_alltoallv_init_implementation;
+extern enum AllreduceInitMethod mpil_allreduce_init_implementation;
+extern enum AllgatherInitMethod mpil_allgather_init_implementation;
 extern enum NeighborAlltoallvMethod mpil_neighbor_alltoallv_implementation;
 extern enum NeighborAlltoallvInitMethod mpil_neighbor_alltoallv_init_implementation;
 extern enum AlltoallCRSMethod mpil_alltoall_crs_implementation;
@@ -180,8 +294,12 @@ int MPIL_Set_alltoall_algorithm(enum AlltoallMethod algorithm);
 int MPIL_Set_alltoallv_algorithm(enum AlltoallvMethod algorithm);
 int MPIL_Set_allreduce_algorithm(enum AllreduceMethod algorithm);
 int MPIL_Set_allgather_algorithm(enum AllgatherMethod algorithm);
-int MPIL_Set_alltoallv_neighbor_alogorithm(enum NeighborAlltoallvMethod algorithm);
-int MPIL_Set_alltoallv_neighbor_init_alogorithm(
+int MPIL_Set_alltoall_init_algorithm(enum AlltoallInitMethod algorithm);
+int MPIL_Set_alltoallv_init_algorithm(enum AlltoallvInitMethod algorithm);
+int MPIL_Set_allreduce_init_algorithm(enum AllreduceInitMethod algorithm);
+int MPIL_Set_allgather_init_algorithm(enum AllgatherInitMethod algorithm);
+int MPIL_Set_alltoallv_neighbor_algorithm(enum NeighborAlltoallvMethod algorithm);
+int MPIL_Set_alltoallv_neighbor_init_algorithm(
     enum NeighborAlltoallvInitMethod algorithm);
 int MPIL_Set_alltoall_crs(enum AlltoallCRSMethod algorithm);
 int MPIL_Set_alltoallv_crs(enum AlltoallvCRSMethod algorithm);
