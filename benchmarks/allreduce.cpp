@@ -125,7 +125,7 @@ int main(int argc, char* argv[])
         {
             MPI_Barrier(MPI_COMM_WORLD);
             t0 = MPI_Wtime();
-            for (int i = 0; i < 10; i++)
+            for (int j = 0; j < 10; j++)
             {
                 PMPI_Allreduce(send_data.data(), pmpi_allreduce.data(),
                         s, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
@@ -171,7 +171,7 @@ int main(int argc, char* argv[])
         {
             MPI_Barrier(MPI_COMM_WORLD);
             t0 = MPI_Wtime();
-            for (int i = 0; i < 10; i++)
+            for (int j = 0; j < 10; j++)
             {
                 MPIL_Allreduce(send_data.data(), pmpi_allreduce.data(),
                         s, MPI_DOUBLE, MPI_SUM, xcomm);
@@ -216,7 +216,7 @@ int main(int argc, char* argv[])
         {
             MPI_Barrier(MPI_COMM_WORLD);
             t0 = MPI_Wtime();
-            for (int i = 0; i < 10; i++)
+            for (int j = 0; j < 10; j++)
             {
                 MPIL_Allreduce(send_data.data(), pmpi_allreduce.data(),
                         s, MPI_DOUBLE, MPI_SUM, xcomm);
@@ -262,7 +262,7 @@ int main(int argc, char* argv[])
         {
             MPI_Barrier(MPI_COMM_WORLD);
             t0 = MPI_Wtime();
-            for (int i = 0; i < 10; i++)
+            for (int j = 0; j < 10; j++)
             {
                 MPIL_Allreduce(send_data.data(), pmpi_allreduce.data(),
                         s, MPI_DOUBLE, MPI_SUM, xcomm);

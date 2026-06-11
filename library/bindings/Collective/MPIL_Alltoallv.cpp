@@ -19,28 +19,30 @@ int MPIL_Alltoallv(const void* sendbuf,
                    MPIL_Comm* mpi_comm)
 {
     alltoallv_ftn method;
-    bool gpu_aware = false;
+#if defined(GPU)
+    bool gpu_aware   = false;
     bool copy_to_cpu = false;
+#endif
 
     switch (mpil_alltoallv_implementation)
     {
 #if defined(GPU)
 #if defined(GPU_AWARE)
         case ALLTOALLV_GPU_PAIRWISE:
-            method = alltoallv_pairwise;
+            method    = alltoallv_pairwise;
             gpu_aware = true;
             break;
         case ALLTOALLV_GPU_NONBLOCKING:
-            method = alltoallv_nonblocking;
+            method    = alltoallv_nonblocking;
             gpu_aware = true;
             break;
 #endif
         case ALLTOALLV_CTC_PAIRWISE:
-            method = alltoallv_pairwise;
+            method      = alltoallv_pairwise;
             copy_to_cpu = true;
             break;
         case ALLTOALLV_CTC_NONBLOCKING:
-            method = alltoallv_nonblocking;
+            method      = alltoallv_nonblocking;
             copy_to_cpu = true;
             break;
 #endif
@@ -67,15 +69,29 @@ int MPIL_Alltoallv(const void* sendbuf,
 #if defined(GPU)
     if (gpu_aware)
     {
-        return gpu_aware_collective(method, sendbuf, sendcounts,
-                sdispls, sendtype, recvbuf, recvcounts, rdispls,
-                recvtype, mpi_comm);
+        return gpu_aware_collective(method,
+                                    sendbuf,
+                                    sendcounts,
+                                    sdispls,
+                                    sendtype,
+                                    recvbuf,
+                                    recvcounts,
+                                    rdispls,
+                                    recvtype,
+                                    mpi_comm);
     }
     else if (copy_to_cpu)
     {
-        return copy_to_cpu_alltoallv(method, sendbuf, sendcounts,
-                sdispls, sendtype, recvbuf, recvcounts, rdispls,
-                recvtype, mpi_comm);
+        return copy_to_cpu_alltoallv(method,
+                                     sendbuf,
+                                     sendcounts,
+                                     sdispls,
+                                     sendtype,
+                                     recvbuf,
+                                     recvcounts,
+                                     rdispls,
+                                     recvtype,
+                                     mpi_comm);
     }
 #endif
 
