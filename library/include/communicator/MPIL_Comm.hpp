@@ -152,6 +152,7 @@ int initialize_topo_communicator(MPIL_Comm* xcomm, int ppn_override = 0)
     MPI_Group global_group;
     MPI_Comm_group(xcomm->global_comm, &global_group);
 
+    /* Lambda for searching for if a particular group/ppn combo has been used before. */
     auto search_function = [global_group,
                             ppn_override](const Communicator::MapPairType& mpt) {
         if (std::get<1>(mpt.first) != ppn_override)
@@ -161,6 +162,7 @@ int initialize_topo_communicator(MPIL_Comm* xcomm, int ppn_override = 0)
 
         int result;
         MPI_Group_compare(global_group, std::get<0>(mpt.first), &result);
+        /* Currently only care about MPI_IDENT */
         return (result == MPI_IDENT);
     };
 
@@ -169,38 +171,39 @@ int initialize_topo_communicator(MPIL_Comm* xcomm, int ppn_override = 0)
                                         search_function);
 
     if (Communicator::cached_local_comms.end() != local_comm_iter)
-    {
+    { /* Used cached entry, so we can free the MPI_Group */
         MPI_Group_free(&global_group);
         xcomm->local_comm = local_comm_iter->second;
     }
     else
     {
         if (ppn_override > 0)
-        {  // Split communicator on a custom number of PPN
+        { /* Split communicator on a custom number of PPN */
             int color = (NUMA) ? rank % ppn_override : rank / ppn_override;
             MPI_Comm_split(xcomm->global_comm, color, rank, xcomm->local_comm);
         }
         else
-        {  // Split global comm into local (per node) communicators
+        { /* Split global comm into local (per node) communicators */
             MPI_Comm_split_type(xcomm->global_comm,
                                 MPI_COMM_TYPE_SHARED,
                                 rank,
                                 MPI_INFO_NULL,
                                 xcomm->local_comm);
         }
+        /* Cache new local communicator into map for reuse */
         Communicator::cached_local_comms.push_back(
             {{global_group, ppn_override}, xcomm->local_comm});
     }
 
-    // Get the group again, since it was either freed above, or cached (which will be
-    // freed at end of program)
+    /* Get the group again, since it was either freed above, or cached (which will be
+     * freed at end of program) */
     MPI_Comm_group(xcomm->global_comm, &global_group);
     auto group_comm_iter = std ::find_if(Communicator::cached_group_comms.begin(),
                                          Communicator::cached_group_comms.end(),
                                          search_function);
 
     if (Communicator::cached_group_comms.end() != group_comm_iter)
-    {
+    { /* Used cached entry, so we can free the MPI_Group */
         MPI_Group_free(&global_group);
         xcomm->group_comm = group_comm_iter->second;
     }
@@ -208,8 +211,8 @@ int initialize_topo_communicator(MPIL_Comm* xcomm, int ppn_override = 0)
     {
         int local_rank;
         MPI_Comm_rank(xcomm->local_comm, &local_rank);
-        // Split global comm into group (per local rank) communicators
         MPI_Comm_split(xcomm->global_comm, local_rank, rank, xcomm->group_comm);
+        /* Cache new group (per local rank) communicator into map for reuse */
         Communicator::cached_group_comms.push_back(
             {{global_group, ppn_override}, xcomm->group_comm});
     }
