@@ -1,6 +1,8 @@
 #ifndef MPIL_COMM_H
 #define MPIL_COMM_H
 
+#include <algorithm>
+
 #include "global_comms.hpp"
 
 /** @brief Struct capable of maintaining multiple request and communicators for library
@@ -114,11 +116,25 @@ int initialize_comm_object(MPIL_Comm** xcomm, MPI_Comm global_comm);
  * and used as the color for the MPI_Comm_split. The calculation of the the "node" is
  * determined by the templated parameter. If the template is false, "rank/ppn_override" is
  * used; if the template is true "rank % ppn_override" is used.
- * 
- * If the pairing of the MPIL_Comm::global_comm and the provided ppn_override have been used before,
- * this method will bypass the calls to create a new MPI Communicator and will instead pull out the 
- * appropriate communicator from Communicator::cached_local_comms to fill MPIL_Comm::local_comm and
+ *
+ * If the pairing of the MPIL_Comm::global_comm and the provided ppn_override have been
+ * used before, this method will bypass the calls to create a new MPI Communicator and
+ * will instead pull out the appropriate communicator from
+ * Communicator::cached_local_comms to fill MPIL_Comm::local_comm and
  * Communicator::cached_group_comms to fill MPIL_Comm::group_comm.
+ *
+ * To determine if a global_comm has been used before, the MPI_Group of the MPI_Comm is
+ * used. MPI_Groups are used instead of MPI_Comm since 1) duping communicators is a
+ * collective operation and 2) users could free the MPI_Comm used inside the
+ * ::MPIL_Comm::global_comm, which would result in potential segfaults on future
+ * MPI_Comm_compare calls. Since MPI_Group creation is local, and we do not care about the
+ * "context" of an MPI_Comm, we can get, store, and compare groups instead. Currently, the
+ * comparison is done with the help of std::find_if, and only checks for MPI_IDENT that
+ * comes from MPI_Group_compare.
+ *
+ * This method will free any MPI_Group that does not end up cached; cached MPI_Group
+ * objects will be freed via Communicator::clear_comm_caches in MPIL_Finalize.
+ *
  * @tparam NUMA Controls how the grouping is made in the case that a PPN override is used.
  * @param [in, out] xcomm The ::_MPIL_Comm to store the topology communicators into.
  * @param [in] ppn_override Optional integer to determine how many processes are node.
@@ -132,10 +148,30 @@ int initialize_topo_communicator(MPIL_Comm* xcomm, int ppn_override = 0)
     int rank;
     MPI_Comm_rank(xcomm->global_comm, &rank);
 
-    if (Communicator::cached_local_comms.contains({xcomm->global_comm, ppn_override}))
+    // Get the group, since we will compare those
+    MPI_Group global_group;
+    MPI_Comm_group(xcomm->global_comm, &global_group);
+
+    auto search_function = [global_group,
+                            ppn_override](const Communicator::MapPairType& mpt) {
+        if (std::get<1>(mpt.first) != ppn_override)
+        {
+            return false;
+        }
+
+        int result;
+        MPI_Group_compare(global_group, std::get<0>(mpt.first), &result);
+        return (result == MPI_IDENT);
+    };
+
+    auto local_comm_iter = std::find_if(Communicator::cached_local_comms.begin(),
+                                        Communicator::cached_local_comms.end(),
+                                        search_function);
+
+    if (Communicator::cached_local_comms.end() != local_comm_iter)
     {
-        xcomm->local_comm =
-            Communicator::cached_local_comms.at({xcomm->global_comm, ppn_override});
+        MPI_Group_free(&global_group);
+        xcomm->local_comm = local_comm_iter->second;
     }
     else
     {
@@ -152,24 +188,30 @@ int initialize_topo_communicator(MPIL_Comm* xcomm, int ppn_override = 0)
                                 MPI_INFO_NULL,
                                 xcomm->local_comm);
         }
-        Communicator::cached_local_comms.insert(
-            {{xcomm->global_comm, ppn_override}, xcomm->local_comm});
+        Communicator::cached_local_comms.push_back(
+            {{global_group, ppn_override}, xcomm->local_comm});
     }
 
-    if (Communicator::cached_group_comms.contains({xcomm->global_comm, ppn_override}))
+    // Get the group again, since it was either freed above, or cached (which will be
+    // freed at end of program)
+    MPI_Comm_group(xcomm->global_comm, &global_group);
+    auto group_comm_iter = std ::find_if(Communicator::cached_group_comms.begin(),
+                                         Communicator::cached_group_comms.end(),
+                                         search_function);
+
+    if (Communicator::cached_group_comms.end() != group_comm_iter)
     {
-        xcomm->group_comm =
-            Communicator::cached_group_comms.at({xcomm->global_comm, ppn_override});
+        MPI_Group_free(&global_group);
+        xcomm->group_comm = group_comm_iter->second;
     }
     else
     {
         int local_rank;
         MPI_Comm_rank(xcomm->local_comm, &local_rank);
-
         // Split global comm into group (per local rank) communicators
         MPI_Comm_split(xcomm->global_comm, local_rank, rank, xcomm->group_comm);
-        Communicator::cached_group_comms.insert(
-            {{xcomm->global_comm, ppn_override}, xcomm->group_comm});
+        Communicator::cached_group_comms.push_back(
+            {{global_group, ppn_override}, xcomm->group_comm});
     }
 
     return MPI_SUCCESS;

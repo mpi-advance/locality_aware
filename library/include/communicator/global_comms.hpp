@@ -4,8 +4,8 @@
 #include <mpi.h>
 
 #include <iostream>
-#include <map>
 #include <memory>
+#include <vector>
 
 namespace Communicator
 {
@@ -99,10 +99,20 @@ namespace Communicator
         std::shared_ptr<MPI_Comm> my_comm;
     };
 
-    /** @brief Map of cached local (per-node) MPI communicators */
-    extern std::map<std::tuple<MPI_Comm, int>, CachedComm> cached_local_comms;
-    /** @brief Map of cached group (rank per-node) MPI communicators */
-    extern std::map<std::tuple<MPI_Comm, int>, CachedComm> cached_group_comms;
+    /** @brief A helper type to emulate a map "key" inside a vector */
+    using KeyTypes = std::tuple<MPI_Group, int>;
+    /** @brief The type of the cached comms "map" to be stored inside a vector */
+    using MapPairType = std::pair<KeyTypes, CachedComm>;
+
+    /** @brief "Map" of cached local (per-node) MPI communicators */
+    extern std::vector<MapPairType> cached_local_comms;
+    /** @brief "Map" of cached group (rank per-node) MPI communicators */
+    extern std::vector<MapPairType> cached_group_comms;
+
+    /** @brief Destructor for the MPI Groups stores inside ::cached_local_comms and
+     * ::cached_group_comms.
+     **/
+    void clear_comm_caches();
 
 }  // namespace Communicator
 

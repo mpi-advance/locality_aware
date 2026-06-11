@@ -9,8 +9,7 @@ int MPIL_Finalize()
 {
     MPIL_Comm_free(&MPIL_COMM_WORLD);
 
-    Communicator::cached_local_comms.clear();
-    Communicator::cached_group_comms.clear();
+    Communicator::clear_comm_caches();
 
     return MPI_SUCCESS;
 }
