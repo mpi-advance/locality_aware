@@ -78,7 +78,7 @@ int alltoallv_init(const void* sendbuf,
     return MPI_SUCCESS;
 }
 
-int alltoallv_pairwise_init(const void* sendbuf,
+int alltoallv_init_pairwise(const void* sendbuf,
                        const int sendcounts[],
                        const int sdispls[],
                        MPI_Datatype sendtype,
@@ -99,7 +99,7 @@ int alltoallv_pairwise_init(const void* sendbuf,
     return MPI_SUCCESS;
 }
 
-int alltoallv_nonblocking_init(const void* sendbuf,
+int alltoallv_init_nonblocking(const void* sendbuf,
                        const int sendcounts[],
                        const int sdispls[],
                        MPI_Datatype sendtype,

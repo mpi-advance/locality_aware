@@ -31,6 +31,7 @@ void compare_results(std::vector<int> pmpi, std::vector<int>& mpil, int s)
 int main(int argc, char** argv)
 {
     MPI_Init(&argc, &argv);
+    MPIL_Init(MPI_COMM_WORLD);
 
     int rank, num_procs;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -47,7 +48,6 @@ int main(int argc, char** argv)
 
     MPIL_Comm* mpil_comm;
     MPIL_Comm_init(&mpil_comm, MPI_COMM_WORLD);
-    MPIL_Comm_update_locality(mpil_comm, 4);
 
     for (int i = 0; i < max_i; i++)
     {
@@ -120,6 +120,7 @@ int main(int argc, char** argv)
 
     MPIL_Comm_free(&mpil_comm);
 
+    MPIL_Finalize();
     MPI_Finalize();
     return 0;
 }  // end of main() //

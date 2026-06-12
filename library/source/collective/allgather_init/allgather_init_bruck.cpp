@@ -5,7 +5,7 @@
 // Implements the Bruck allgather algorithm
 // Note: current implementation will not work for non-contiguous datatypes
 // To work with non-contig data, need to get extent for recvbuf to index into it
-int allgather_bruck_init(const void* sendbuf,
+int allgather_init_bruck(const void* sendbuf,
                    int sendcount,
                    MPI_Datatype sendtype,
                    void* recvbuf,

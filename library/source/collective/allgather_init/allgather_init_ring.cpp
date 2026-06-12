@@ -3,7 +3,7 @@
 #include "locality_aware.h"
 
 // Calls underlying MPI implementation
-int allgather_ring_init(const void* sendbuf,
+int allgather_init_ring(const void* sendbuf,
                    int sendcount,
                    MPI_Datatype sendtype,
                    void* recvbuf,
