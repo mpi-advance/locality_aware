@@ -120,15 +120,19 @@ int allgather_init_bruck(const void* sendbuf,
 
 int allgather_bruck_start(MPIL_Request* request)
 {
+    int gpu_error;
+
 #if defined(GPU)
 if (request->gpu_sendbuf)
 {
 #if defined(APU)
     memcpy(request->tmp_gpubuf, request->gpu_sendbuf, request->size_sends);
 #else
-    gpuMemcpyAsync(request->tmp_gpubuf, request->gpu_sendbuf, request->size_sends, 
+    gpu_error = gpuMemcpyAsync(request->tmp_gpubuf, request->gpu_sendbuf, request->size_sends, 
             gpuMemcpyDeviceToHost, 0);
-    gpuStreamSynchronize(0);
+    gpu_check(gpu_error);
+    gpu_error = gpuStreamSynchronize(0);
+    gpu_check(gpu_error);
 #endif
 }
 #endif
@@ -139,6 +143,8 @@ if (request->gpu_sendbuf)
 
 int allgather_bruck_wait(MPIL_Request* request, MPI_Status* status)
 {
+    int gpu_error;
+
     if (request->local_L_request->n_msgs)
         MPI_Waitall(request->local_L_request->n_msgs, request->local_L_request->requests,
                 MPI_STATUSES_IGNORE);
@@ -171,9 +177,11 @@ if (request->gpu_recvbuf)
 #if defined(APU)
     memcpy(request->gpu_recvbuf, request->recvbuf, request->size_recvs);
 #else
-    gpuMemcpyAsync(request->gpu_recvbuf, request->recvbuf, request->size_recvs, 
+    gpu_error = gpuMemcpyAsync(request->gpu_recvbuf, request->recvbuf, request->size_recvs, 
             gpuMemcpyHostToDevice, 0);
-    gpuStreamSynchronize(0);
+    gpu_check(gpu_error);
+    gpu_error = gpuStreamSynchronize(0);
+    gpu_check(gpu_error);
 #endif
 }
 #endif
