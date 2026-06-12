@@ -1,4 +1,5 @@
 #include "collective/allgather_init.h"
+#include "heterogeneous/gpu_utils.h"
 #include "locality_aware.h"
 
 // Calls underlying MPI implementation

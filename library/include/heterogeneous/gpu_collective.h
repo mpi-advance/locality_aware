@@ -2,6 +2,8 @@
 #define MPI_ADVANCE_GPU_COLLECTIVE_H
 
 #include "gpu_utils.h"
+#include "persistent/MPIL_Request.h"
+#include "locality_aware.h"
 
 /************************************************
  ***** GPU-Aware Collective Wrapper *************
@@ -35,8 +37,8 @@ int copy_to_cpu_allreduce(Ftn f,
     int bytes;
     MPI_Type_size(datatype, &bytes);
 
-    void* cpu_sendbuf = MPIL_Alloc(count*bytes);
-    void* cpu_recvbuf = MPIL_Alloc(count*bytes);
+    void* cpu_sendbuf = malloc(count*bytes);
+    void* cpu_recvbuf = malloc(count*bytes);
 
 #if defined(APU)
     memcpy(cpu_sendbuf, sendbuf, count*bytes);
@@ -87,8 +89,8 @@ int copy_to_cpu_allgather(Ftn f,
     MPI_Type_size(sendtype, &send_bytes);
     MPI_Type_size(recvtype, &recv_bytes);
 
-    void* cpu_sendbuf = MPIL_Alloc(sendcount*send_bytes);
-    void* cpu_recvbuf = MPIL_Alloc(recvcount*num_procs*recv_bytes);
+    void* cpu_sendbuf = malloc(sendcount*send_bytes);
+    void* cpu_recvbuf = malloc(recvcount*num_procs*recv_bytes);
 
 #if defined(APU)
     memcpy(cpu_sendbuf, sendbuf, sendcount*send_bytes);
@@ -140,8 +142,8 @@ int copy_to_cpu_alltoall(Ftn f,
     MPI_Type_size(sendtype, &send_bytes);
     MPI_Type_size(recvtype, &recv_bytes);
 
-    void* cpu_sendbuf = MPIL_Alloc(sendcount*num_procs*send_bytes);
-    void* cpu_recvbuf = MPIL_Alloc(recvcount*num_procs*recv_bytes);
+    void* cpu_sendbuf = malloc(sendcount*num_procs*send_bytes);
+    void* cpu_recvbuf = malloc(recvcount*num_procs*recv_bytes);
 
 #if defined(APU)
     memcpy(cpu_sendbuf, sendbuf, sendcount*num_procs*send_bytes);
@@ -204,8 +206,8 @@ int copy_to_cpu_alltoallv(Ftn f,
     MPI_Type_size(sendtype, &send_bytes);
     MPI_Type_size(recvtype, &recv_bytes);
 
-    void* cpu_sendbuf = alloc(sendsize*send_bytes);
-    void* cpu_recvbuf = alloc(recvsize*recv_bytes);
+    void* cpu_sendbuf = malloc(sendsize*send_bytes);
+    void* cpu_recvbuf = malloc(recvsize*recv_bytes);
 
 #if defined(APU)
     memcpy(cpu_sendbuf, sendbuf, sendsize*send_bytes);
@@ -323,14 +325,16 @@ int copy_to_cpu_allgather_init(Ftn f,
 }
 
 template <typename Ftn>
-int copy_to_cpu_alltoall(Ftn f,
+int copy_to_cpu_alltoall_init(Ftn f,
         const void* sendbuf,
         const int sendcount,
         MPI_Datatype sendtype,
         void* recvbuf,
         const int recvcount,
         MPI_Datatype recvtype,
-        MPIL_Comm* comm)
+        MPIL_Comm* comm,
+        MPIL_Info* info,
+        MPIL_Request** req_ptr)
 {
     int ierr = 0;
     int gpu_error;
@@ -363,7 +367,7 @@ int copy_to_cpu_alltoall(Ftn f,
 }
 
 template <typename Ftn>
-int copy_to_cpu_alltoallv(Ftn f,
+int copy_to_cpu_alltoallv_init(Ftn f,
             const void* sendbuf,
             const int sendcounts[],
             const int sdispls[],
@@ -372,7 +376,9 @@ int copy_to_cpu_alltoallv(Ftn f,
             const int recvcounts[],
             const int rdispls[],
             MPI_Datatype recvtype,
-            MPIL_Comm* comm)
+            MPIL_Comm* comm,
+            MPIL_Info* info,
+            MPIL_Request** req_ptr)
 {
     int ierr = 0;
     int gpu_error;

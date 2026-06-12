@@ -1,4 +1,5 @@
 #include "persistent/pmpi_persistent.h"
+#include "heterogeneous/gpu_utils.h"
 
 int pmpi_start(MPIL_Request* request)
 {

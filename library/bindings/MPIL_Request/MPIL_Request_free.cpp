@@ -63,6 +63,18 @@ int MPIL_Request_free(MPIL_Request** request_ptr)
         request->size_recvs = 0;
     }
 
+    // Added with MPI_Comm_dup, so need to free
+    // TODO: now that we have cached communicators, 
+    // can we avoid this dup??
+    if (request->global_comm != MPI_COMM_NULL)
+    {
+        MPI_Comm_free(&(request->global_comm));
+    }
+    if (request->local_comm != MPI_COMM_NULL)
+    {
+        MPI_Comm_free(&(request->local_comm));
+    }
+
 
     if (request->tmpbuf)
     {
@@ -71,15 +83,11 @@ int MPIL_Request_free(MPIL_Request** request_ptr)
 
 // TODO : for safety, may want to check if allocated with malloc?
 #ifdef GPU  // Assuming cpu buffers allocated in pinned memory
-    int ierr;
-    if (request->cpu_sendbuf)
-    {
-        MPIL_Free(request->cpu_sendbuf);
-    }
-    if (request->cpu_recvbuf)
-    {
-        MPIL_Free(request->cpu_recvbuf);
-    }
+    if (request->gpu_sendbuf)
+        MPIL_Free(request->tmp_gpubuf);
+
+    if (request->gpu_recvbuf)
+        MPIL_Free(request->recvbuf);
 #endif
 
     free(request);

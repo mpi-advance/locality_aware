@@ -31,13 +31,15 @@ void init_request(MPIL_Request** request_ptr)
 
     request->count = 0;
     request->local_comm = MPI_COMM_NULL;
+    request->global_comm = MPI_COMM_NULL;
     request->num_ops = 0;
 
     request->tmpbuf = NULL;
 
 #ifdef GPU
-    request->cpu_sendbuf = NULL;
-    request->cpu_recvbuf = NULL;
+    request->tmp_gpubuf = NULL;
+    request->gpu_sendbuf = NULL;
+    request->gpu_recvbuf = NULL;
 #endif
 
     *request_ptr = request;

@@ -1,4 +1,5 @@
 #include "collective/alltoall_init.h"
+#include "heterogeneous/gpu_utils.h"
 #include "locality_aware.h"
 
 int alltoall_init(const void* sendbuf,
