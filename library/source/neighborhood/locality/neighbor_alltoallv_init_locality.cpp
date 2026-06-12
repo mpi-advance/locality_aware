@@ -18,6 +18,26 @@ int neighbor_alltoallv_init_locality(const void* sendbuffer,
                                      MPIL_Info* info,
                                      MPIL_Request** request_ptr)
 {
+    neighbor_alltoallv_init_locality_helper(sendbuffer, sendcounts, sdispls,
+            sendtype, recvbuffer, recvcounts, rdispls, recvtype, topo, comm,
+            info, request_ptr, MPIL_Alloc, MPIL_Free);
+}
+
+int neighbor_alltoallv_init_locality_helper(const void* sendbuffer,
+                                     const int sendcounts[],
+                                     const int sdispls[],
+                                     MPI_Datatype sendtype,
+                                     void* recvbuffer,
+                                     const int recvcounts[],
+                                     const int rdispls[],
+                                     MPI_Datatype recvtype,
+                                     MPIL_Topo* topo,
+                                     MPIL_Comm* comm,
+                                     MPIL_Info* info,
+                                     MPIL_Request** request_ptr,
+                                     MPIL_Alloc_ftn alloc_ftn,
+                                     MPIL_Free_ftn free_ftn)
+{
     int rank;
     MPI_Comm_rank(comm->global_comm, &rank);
 
@@ -98,7 +118,7 @@ int neighbor_alltoallv_init_locality(const void* sendbuffer,
                                  topo,
                                  comm);
 
-    int err = neighbor_alltoallv_init_locality_ext(sendbuffer,
+    int err = neighbor_alltoallv_init_locality_ext_helper(sendbuffer,
                                                    sendcounts,
                                                    sdispls,
                                                    global_send_indices,
@@ -111,7 +131,9 @@ int neighbor_alltoallv_init_locality(const void* sendbuffer,
                                                    topo,
                                                    comm,
                                                    info,
-                                                   request_ptr);
+                                                   request_ptr,
+                                                   alloc_ftn,
+                                                   free_ftn);
 
     free(global_send_indices);
     free(global_recv_indices);

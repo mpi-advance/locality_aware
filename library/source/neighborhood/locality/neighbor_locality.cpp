@@ -37,7 +37,8 @@ void init_locality(const int n_sends,
                    const MPI_Datatype sendtype,
                    const MPI_Datatype recvtype,
                    MPIL_Comm* mpil_comm,
-                   MPIL_Request* request)
+                   MPIL_Request* request, 
+                   MPIL_Alloc_ftn alloc_ftn)
 {
     CommData* local_L_send_data = (CommData*)calloc(1, sizeof(CommData));
     CommData* local_L_recv_data = (CommData*)calloc(1, sizeof(CommData));
@@ -182,7 +183,8 @@ void init_locality(const int n_sends,
                             local_L_recv_data->size_msgs,
                             local_L_recv_data->indices,
                             recv_size,
-                            recvbuffer);
+                            recvbuffer, 
+                            alloc_ftn);
 
     // Initialize packing buffers for Local_S
     init_packing_buffers(request->local_S_request,
@@ -193,7 +195,8 @@ void init_locality(const int n_sends,
                             local_S_recv_data->size_msgs,
                             NULL,
                             send_size,
-                            NULL);
+                            NULL,
+                            alloc_ftn);
 
     // Initialize packing buffers for global
     init_packing_buffers(request,
@@ -204,7 +207,8 @@ void init_locality(const int n_sends,
                             global_recv_data->size_msgs,
                             NULL,
                             recv_size,
-                            NULL);
+                            NULL,
+                            alloc_ftn);
 
     // Initialize packing buffers for Local_R
     init_packing_buffers(request->local_R_request,
@@ -215,7 +219,8 @@ void init_locality(const int n_sends,
                             local_R_recv_data->size_msgs,
                             local_R_recv_data->indices,
                             recv_size,
-                            recvbuffer);
+                            recvbuffer,
+                            alloc_ftn);
 
 
 

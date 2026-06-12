@@ -13,12 +13,12 @@ void init_neighbor_request(MPIL_Request** request_ptr)
 
 void init_packing_buffers(MPIL_Request* request, int size_sends, int* send_indices, 
         int send_size, const void* _sendbuf, int size_recvs, int* recv_indices, 
-        int recv_size, void* _recvbuf)
+        int recv_size, void* _recvbuf, MPIL_Alloc_ftn alloc_ftn)
 {
     if (size_sends)
     {
         request->size_sends = size_sends;
-        request->tmp_sendbuf = (char*)malloc(size_sends * send_size);
+        alloc_ftn(&(request->tmp_sendbuf), size_sends * send_size);
         request->sendbuf = _sendbuf;
         request->send_size = send_size;
 
@@ -33,7 +33,7 @@ void init_packing_buffers(MPIL_Request* request, int size_sends, int* send_indic
     if (size_recvs)
     {
         request->size_recvs = size_recvs;
-        request->tmp_recvbuf = (char*)malloc(size_recvs * recv_size);
+        alloc_ftn(&(request->tmp_recvbuf), size_recvs * recv_size);
         request->recvbuf = _recvbuf;
         request->recv_size = recv_size;
 
