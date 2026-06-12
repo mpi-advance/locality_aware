@@ -23,7 +23,7 @@ int MPIL_Alltoall_init(const void* sendbuf,
         return MPI_SUCCESS;
     }
 
-    alltoall_ftn method;
+    alltoall_init_ftn method;
     bool gpu_aware = false;
     bool copy_to_cpu = false;
 

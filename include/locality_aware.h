@@ -546,6 +546,68 @@ int MPIL_Allreduce(const void* sendbuf,
                     MPI_Op op,
                     MPIL_Comm* comm);
 
+/** @brief Wrapper around MPI_Alltoall_init.
+ *  @details
+ *  Defaults to pairwise exchange
+ *  @ingroup collective_func
+ */
+int MPIL_Alltoall_init(const void* sendbuf,
+                  const int sendcount,
+                  MPI_Datatype sendtype,
+                  void* recvbuf,
+                  const int recvcount,
+                  MPI_Datatype recvtype,
+                  MPIL_Comm* comm,
+                  MPIL_Info* info,
+                  MPIL_Request** req_ptr);
+
+/** @brief Wrapper around MPI_Alltoallv_init.
+ *  @details
+ *  Defaults to pairwise exchange
+ *  @ingroup collective_func
+ */
+int MPIL_Alltoallv_init(const void* sendbuf,
+                   const int sendcounts[],
+                   const int sdispls[],
+                   MPI_Datatype sendtype,
+                   void* recvbuf,
+                   const int recvcounts[],
+                   const int rdispls[],
+                   MPI_Datatype recvtype,
+                   MPIL_Comm* comm,
+                   MPIL_Info* info,
+                   MPIL_Request** req_ptr);
+
+/** @brief Wrapper around MPI_Allgather_init.
+ *  @details
+ *  Defaults to ALLGATHER_BRUCK
+ *  @ingroup collective_func
+ */
+int MPIL_Allgather_init(const void* sendbuf,
+                    int sendcount,
+                    MPI_Datatype sendtype,
+                    void* recvbuf,
+                    int recvcount,
+                    MPI_Datatype recvtype,
+                    MPIL_Comm* comm,
+                    MPIL_Info* info,
+                    MPIL_Request** req_ptr);
+
+/** @brief Wrapper around MPI_Allreduce_init.
+ *  @details
+ *  Defaults to ALLREDUCE_RECURSIVE_DOUBLING
+ *  @ingroup collective_func
+ */
+int MPIL_Allreduce_init(const void* sendbuf,
+                    void* recvbuf,
+                    int count,
+                    MPI_Datatype datatype,
+                    MPI_Op op,
+                    MPIL_Comm* comm,
+                    MPIL_Info* info,
+                    MPIL_Request** req_ptr);
+
+
 /** @brief Wrapper around MPI_Neighbor_alltoallv
  *	@ingroup collective_func
  */

@@ -19,7 +19,7 @@ int MPIL_Allgather_init(const void* sendbuf,
         return MPI_SUCCESS;
     }
 
-    allgather_ftn method;
+    allgather_init_ftn method;
     bool gpu_aware = false;
     bool copy_to_cpu = false;
 

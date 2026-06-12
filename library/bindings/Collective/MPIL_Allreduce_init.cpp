@@ -4,7 +4,7 @@
 #include "heterogeneous/gpu_collective.h"
 #endif
 
-int MPIL_Allreduce(const void* sendbuf,
+int MPIL_Allreduce_init(const void* sendbuf,
                    void* recvbuf, 
                    int count,
                    MPI_Datatype datatype,
@@ -18,7 +18,7 @@ int MPIL_Allreduce(const void* sendbuf,
         return MPI_SUCCESS;
     }
 
-    allreduce_ftn method;
+    allreduce_init_ftn method;
     bool gpu_aware = false;
     bool copy_to_cpu = false;
 

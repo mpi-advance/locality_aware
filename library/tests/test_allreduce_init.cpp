@@ -86,7 +86,7 @@ int main(int argc, char** argv)
 
 
         std::fill(mpil_allreduce.begin(), mpil_allreduce.end(), 0);
-        MPIL_Set_allreduce_init_algorithm(ALLREDUCE_RECURSIVE_DOUBLING);
+        MPIL_Set_allreduce_init_algorithm(ALLREDUCE_INIT_RECURSIVE_DOUBLING);
         MPIL_Allreduce_init(local_data.data(),
                             mpil_allreduce.data(),
                             s, 
@@ -102,7 +102,7 @@ int main(int argc, char** argv)
 
 
         std::fill(mpil_allreduce.begin(), mpil_allreduce.end(), 0);
-        MPIL_Set_allreduce_init_algorithm(ALLREDUCE_DISSEMINATION_LOC);
+        MPIL_Set_allreduce_init_algorithm(ALLREDUCE_INIT_DISSEMINATION_LOC);
         MPIL_Allreduce_init(local_data.data(),
                             mpil_allreduce.data(),
                             s, 
@@ -118,7 +118,7 @@ int main(int argc, char** argv)
 
         
         std::fill(mpil_allreduce.begin(), mpil_allreduce.end(), 0);
-        MPIL_Set_allreduce_init_algorithm(ALLREDUCE_DISSEMINATION_ML);
+        MPIL_Set_allreduce_init_algorithm(ALLREDUCE_INIT_DISSEMINATION_ML);
         MPIL_Allreduce_init(local_data.data(),
                             mpil_allreduce.data(),
                             s, 
@@ -134,7 +134,7 @@ int main(int argc, char** argv)
 
 
         std::fill(mpil_allreduce.begin(), mpil_allreduce.end(), 0);
-        MPIL_Set_allreduce_init_algorithm(ALLREDUCE_DISSEMINATION_RADIX);
+        MPIL_Set_allreduce_init_algorithm(ALLREDUCE_INIT_DISSEMINATION_RADIX);
         MPIL_Allreduce_init(local_data.data(),
                             mpil_allreduce.data(),
                             s, 
@@ -151,7 +151,7 @@ int main(int argc, char** argv)
 
 #if defined(MPI4)
         std::fill(mpil_allreduce.begin(), mpil_allreduce.end(), 0);
-        MPIL_Set_allreduce_init_algorithm(ALLREDUCE_PMPI);
+        MPIL_Set_allreduce_init_algorithm(ALLREDUCE_INIT_PMPI);
         MPIL_Allreduce_init(local_data.data(),
                             mpil_allreduce.data(),
                             s, 
