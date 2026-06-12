@@ -57,6 +57,11 @@ int main(int argc, char** argv)
     MPIL_Comm_init(&xcomm, MPI_COMM_WORLD);
     MPIL_Comm_device_init(xcomm);
 
+    MPIL_Info* info;
+    MPIL_Info_init(&info);
+
+    MPIL_Request* request;
+
     int ierr;
 
     int* local_data_d;
@@ -105,7 +110,7 @@ int main(int argc, char** argv)
                       MPI_COMM_WORLD);
 
         // Pairwise Alltoall
-        MPIL_Set_alltoallv_algorithm(ALLTOALLV_PAIRWISE);
+        MPIL_Set_alltoall_algorithm(ALLTOALL_PAIRWISE);
         MPIL_Alltoallv(local_data.data(),
                       sendcounts.data(),
                       sdispls.data(),
@@ -145,7 +150,7 @@ int main(int argc, char** argv)
         if (rank == 0) printf("PMPI equivalent on CPU and GPU\n");
 
         // GPU-Aware Pairwise Alltoall
-        MPIL_Set_alltoallv_algorithm(ALLTOALLV_GPU_PAIRWISE);
+        MPIL_Set_alltoallv_init_algorithm(ALLTOALLV_INIT_GPU_PAIRWISE);
         MPIL_Alltoallv(local_data_d,
                     sendcounts.data(),
                     sdispls.data(),
@@ -154,7 +159,12 @@ int main(int argc, char** argv)
                     recvcounts.data(),
                     rdispls.data(),
                     MPI_INT,
-                    xcomm);
+                    xcomm,
+                    info,
+                    &request);
+        MPIL_Start(request);
+        MPIL_Wait(request, MPI_STATUS_IGNORE);
+        MPIL_Request_free(&request);
         ierr = gpuMemcpyAsync(device_data.data(),
                   alltoall_d,
                   s * num_procs * sizeof(int),
@@ -171,7 +181,7 @@ int main(int argc, char** argv)
         if (rank == 0) printf("GPU Pairwise equivalent to PMPI\n");
 
         // GPU-Aware Nonblocking Alltoall
-        MPIL_Set_alltoallv_algorithm(ALLTOALLV_GPU_NONBLOCKING);
+        MPIL_Set_alltoallv_init_algorithm(ALLTOALLV_INIT_GPU_NONBLOCKING);
         MPIL_Alltoallv(local_data_d,
                     sendcounts.data(),
                     sdispls.data(),
@@ -180,7 +190,12 @@ int main(int argc, char** argv)
                     recvcounts.data(),
                     rdispls.data(),
                     MPI_INT,
-                    xcomm);
+                    xcomm,
+                    info,
+                    &request);
+        MPIL_Start(request);
+        MPIL_Wait(request, MPI_STATUS_IGNORE);
+        MPIL_Request_free(&request);
         ierr = gpuMemcpyAsync(device_data.data(),
                   alltoall_d,
                   s * num_procs * sizeof(int),
@@ -195,10 +210,9 @@ int main(int argc, char** argv)
         ierr = gpuStreamSynchronize(0);
         gpu_check(ierr);
         if (rank == 0) printf("GPU Nonblocking equivalent to PMPI\n");
-#endif
 
-        // Copy-to-CPU Pairwise Alltoall
-        MPIL_Set_alltoallv_algorithm(ALLTOALLV_CTC_PAIRWISE);
+#if defined(MPI4)
+        MPIL_Set_alltoallv_init_algorithm(ALLTOALLV_INIT_GPU_PMPI);
         MPIL_Alltoallv(local_data_d,
                     sendcounts.data(),
                     sdispls.data(),
@@ -207,7 +221,46 @@ int main(int argc, char** argv)
                     recvcounts.data(),
                     rdispls.data(),
                     MPI_INT,
-                    xcomm);
+                    xcomm,
+                    info,
+                    &request);
+        MPIL_Start(request);
+        MPIL_Wait(request, MPI_STATUS_IGNORE);
+        MPIL_Request_free(&request);
+        ierr = gpuMemcpyAsync(device_data.data(),
+                  alltoall_d,
+                  s * num_procs * sizeof(int),
+                  gpuMemcpyDeviceToHost,
+                  0);
+        gpu_check(ierr);
+        ierr = gpuStreamSynchronize(0);
+        gpu_check(ierr);
+        compare_alltoall_results(pmpi_alltoall, device_data, s);
+        ierr = gpuMemsetAsync(alltoall_d, 0, s * num_procs * sizeof(int), 0);
+        gpu_check(ierr);
+        ierr = gpuStreamSynchronize(0);
+        gpu_check(ierr);
+        if (rank == 0) printf("GPU MPIL PMPI equivalent to PMPI\n");
+
+#endif
+#endif
+
+        // Copy-to-CPU Pairwise Alltoall
+        MPIL_Set_alltoallv_init_algorithm(ALLTOALLV_INIT_CTC_PAIRWISE);
+        MPIL_Alltoallv(local_data_d,
+                    sendcounts.data(),
+                    sdispls.data(),
+                    MPI_INT,
+                    alltoall_d,
+                    recvcounts.data(),
+                    rdispls.data(),
+                    MPI_INT,
+                    xcomm,
+                    info,
+                    &request);
+        MPIL_Start(request);
+        MPIL_Wait(request, MPI_STATUS_IGNORE);
+        MPIL_Request_free(&request);
         ierr = gpuMemcpyAsync(device_data.data(),
                   alltoall_d,
                   s * num_procs * sizeof(int),
@@ -224,7 +277,7 @@ int main(int argc, char** argv)
         if (rank == 0) printf("C2C pairwise equivalent to PMPI\n");
 
         // Copy-to-CPU Nonblocking Alltoall
-        MPIL_Set_alltoallv_algorithm(ALLTOALLV_CTC_NONBLOCKING);
+        MPIL_Set_alltoallv_init_algorithm(ALLTOALLV_INIT_CTC_NONBLOCKING);
         MPIL_Alltoallv(local_data_d,
                     sendcounts.data(),
                     sdispls.data(),
@@ -233,7 +286,12 @@ int main(int argc, char** argv)
                     recvcounts.data(),
                     rdispls.data(),
                     MPI_INT,
-                    xcomm);
+                    xcomm,
+                    info,
+                    &request);
+        MPIL_Start(request);
+        MPIL_Wait(request, MPI_STATUS_IGNORE);
+        MPIL_Request_free(&request);
         ierr = gpuMemcpyAsync(device_data.data(),
                   alltoall_d,
                   s * num_procs * sizeof(int),
@@ -248,6 +306,38 @@ int main(int argc, char** argv)
         ierr = gpuStreamSynchronize(0);
         gpu_check(ierr);
         if (rank == 0) printf("C2C nonblocking equivalent to PMPI\n");
+
+#if defined(MPI4)
+        MPIL_Set_alltoallv_init_algorithm(ALLTOALLV_INIT_CTC_PMPI);
+        MPIL_Alltoallv(local_data_d,
+                    sendcounts.data(),
+                    sdispls.data(),
+                    MPI_INT,
+                    alltoall_d,
+                    recvcounts.data(),
+                    rdispls.data(),
+                    MPI_INT,
+                    xcomm,
+                    info,
+                    &request);
+        MPIL_Start(request);
+        MPIL_Wait(request, MPI_STATUS_IGNORE);
+        MPIL_Request_free(&request);
+        ierr = gpuMemcpyAsync(device_data.data(),
+                  alltoall_d,
+                  s * num_procs * sizeof(int),
+                  gpuMemcpyDeviceToHost,
+                  0);
+        gpu_check(ierr);
+        ierr = gpuStreamSynchronize(0);
+        gpu_check(ierr);
+        compare_alltoall_results(pmpi_alltoall, device_data, s);
+        ierr = gpuMemsetAsync(alltoall_d, 0, s * num_procs * sizeof(int), 0);
+        gpu_check(ierr);
+        ierr = gpuStreamSynchronize(0);
+        gpu_check(ierr);
+        if (rank == 0) printf("C2C PMPI equivalent to PMPI\n");
+#endif
     }
 
     ierr = gpuFree(local_data_d);
@@ -255,6 +345,7 @@ int main(int argc, char** argv)
     ierr = gpuFree(alltoall_d);
     gpu_check(ierr);
 
+    MPIL_Info_free(&info);
     MPIL_Comm_free(&xcomm);
 
     MPIL_Finalize();
