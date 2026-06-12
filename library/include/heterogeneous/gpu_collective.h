@@ -204,8 +204,8 @@ int copy_to_cpu_alltoallv(Ftn f,
     MPI_Type_size(sendtype, &send_bytes);
     MPI_Type_size(recvtype, &recv_bytes);
 
-    void* cpu_sendbuf = MPIL_Alloc(sendsize*send_bytes);
-    void* cpu_recvbuf = MPIL_Alloc(recvsize*recv_bytes);
+    void* cpu_sendbuf = alloc(sendsize*send_bytes);
+    void* cpu_recvbuf = alloc(recvsize*recv_bytes);
 
 #if defined(APU)
     memcpy(cpu_sendbuf, sendbuf, sendsize*send_bytes);

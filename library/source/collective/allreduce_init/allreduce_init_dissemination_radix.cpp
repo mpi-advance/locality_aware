@@ -141,10 +141,10 @@ if (request->gpu_sendbuf)
 {
 #if defined(APU)
     memcpy(request->tmp_gpubuf, request->gpu_sendbuf, 
-            request->count*type_size);
+            request->size_sends);
 #else
     gpuMemcpyAsync(request->tmp_gpubuf, request->gpu_sendbuf, 
-            request->count*type_size, gpuMemcpyDeviceToHost, 0);
+            request->size_sends, gpuMemcpyDeviceToHost, 0);
     gpuStreamSynchronize(0);
 #endif
 }
@@ -222,10 +222,10 @@ if (request->gpu_recvbuf)
 {
 #if defined(APU)
     memcpy(request->gpu_recvbuf, request->recvbuf, 
-            request->count*type_size);
+            request->size_recvs);
 #else
     gpuMemcpyAsync(request->gpu_recvbuf, request->recvbuf, 
-            request->count*type_size, gpuMemcpyHostToDevice, 0);
+            request->size_recvs, gpuMemcpyHostToDevice, 0);
     gpuStreamSynchronize(0);
 #endif
 }
