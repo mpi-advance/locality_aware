@@ -164,14 +164,17 @@ if (request->gpu_recvbuf)
 int alltoall_pairwise_start(MPIL_Request* request)
 {
 #if defined(GPU)
+int gpu_error;
 if (request->gpu_sendbuf)
 {
 #if defined(APU)
     memcpy(request->tmp_gpubuf, request->gpu_sendbuf, request->size_sends);
 #else
-    gpuMemcpyAsync(request->tmp_gpubuf, request->gpu_sendbuf, request->size_sends, 
+    gpu_error = gpuMemcpyAsync(request->tmp_gpubuf, request->gpu_sendbuf, request->size_sends, 
             gpuMemcpyDeviceToHost, 0);
-    gpuStreamSynchronize(0);
+    gpu_check(gpu_error);
+    gpu_error = gpuStreamSynchronize(0);
+    gpu_check(gpu_error);
 #endif
 }
 #endif
@@ -191,14 +194,17 @@ int alltoall_pairwise_wait(MPIL_Request* request, MPI_Status* status)
         MPI_Waitall(2, &(request->requests[i]), MPI_STATUSES_IGNORE);
     }
 #if defined(GPU)
+int gpu_error;
 if (request->gpu_recvbuf)
 {
 #if defined(APU)
     memcpy(request->gpu_recvbuf, request->recvbuf, request->size_recvs);
 #else
-    gpuMemcpyAsync(request->gpu_recvbuf, request->recvbuf, request->size_recvs, 
+    gpu_error = gpuMemcpyAsync(request->gpu_recvbuf, request->recvbuf, request->size_recvs, 
             gpuMemcpyHostToDevice, 0);
-    gpuStreamSynchronize(0);
+    gpu_check(gpu_error);
+    gpu_error = gpuStreamSynchronize(0);
+    gpu_check(gpu_error);
 #endif
 }
 #endif
