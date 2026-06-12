@@ -44,6 +44,8 @@ int allgather_init_bruck(const void* sendbuf,
     request->start_function = allgather_bruck_start;
     request->wait_function  = allgather_bruck_wait;
 
+    request->recvbuf = recvbuf;
+
     int tag;
     get_tag(comm, &tag);
 

@@ -43,7 +43,9 @@ int allgather_init_ring(const void* sendbuf,
 
     request->start_function = allgather_ring_start;
     request->wait_function = allgather_ring_wait;
-    
+
+    request->recvbuf = recvbuf;    
+
     // Send sendbuf to myself, instead of memcpy, to work on GPU
     if (sendbuf != MPI_IN_PLACE)
     {
