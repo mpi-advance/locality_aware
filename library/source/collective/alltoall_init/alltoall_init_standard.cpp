@@ -61,7 +61,7 @@ int alltoall_init(const void* sendbuf,
     return MPI_SUCCESS;
 }
 
-int alltoall_pairwise_init(const void* sendbuf,
+int alltoall_init_pairwise(const void* sendbuf,
         const int sendcount,
         MPI_Datatype sendtype,
         void* recvbuf,
@@ -81,7 +81,7 @@ int alltoall_pairwise_init(const void* sendbuf,
     return MPI_SUCCESS;
 }
 
-int alltoall_nonblocking_init(const void* sendbuf,
+int alltoall_init_nonblocking(const void* sendbuf,
         const int sendcount,
         MPI_Datatype sendtype,
         void* recvbuf,

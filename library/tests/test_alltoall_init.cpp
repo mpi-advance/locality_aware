@@ -106,7 +106,7 @@ int main(int argc, char** argv)
 
         // Persistent Alltoall - Pairwise
         std::fill(mpil_alltoall.begin(), mpil_alltoall.end(), 0);
-        MPIL_Set_alltoall_init_algorithm(ALLTOALL_PAIRWISE);
+        MPIL_Set_alltoall_init_algorithm(ALLTOALL_INIT_PAIRWISE);
         MPIL_Alltoall_init(local_data.data(),
                       s,
                       MPI_INT,
@@ -123,7 +123,7 @@ int main(int argc, char** argv)
 
         // Persistent Alltoall - Nonblocking
         std::fill(mpil_alltoall.begin(), mpil_alltoall.end(), 0);
-        MPIL_Set_alltoall_init_algorithm(ALLTOALL_NONBLOCKING);
+        MPIL_Set_alltoall_init_algorithm(ALLTOALL_INIT_NONBLOCKING);
         MPIL_Alltoall_init(local_data.data(),
                       s,
                       MPI_INT,
@@ -138,9 +138,10 @@ int main(int argc, char** argv)
         MPIL_Request_free(&mpil_request);
         compare_alltoall_results(pmpi_alltoall, mpil_alltoall, s);
 
-        // Persistent Alltoall - RMA
+#if defined(MPI4)
+        // Persistent Alltoall - PMPI
         std::fill(mpil_alltoall.begin(), mpil_alltoall.end(), 0);
-        MPIL_Set_alltoall_init_algorithm(ALLTOALL_RMA);
+        MPIL_Set_alltoall_init_algorithm(ALLTOALL_INIT_PMPI);
         MPIL_Alltoall_init(local_data.data(),
                       s,
                       MPI_INT,
@@ -154,6 +155,7 @@ int main(int argc, char** argv)
         MPIL_Wait(mpil_request, MPI_STATUS_IGNORE);
         MPIL_Request_free(&mpil_request);
         compare_alltoall_results(pmpi_alltoall, mpil_alltoall, s);
+#endif
     }
 
     MPIL_Info_free(&mpil_info);

@@ -4,7 +4,7 @@
 #include <string.h>
 #include <math.h>
 
-int allreduce_dissemination_radix_init(const void* sendbuf,
+int allreduce_init_dissemination_radix(const void* sendbuf,
                                  void* recvbuf,
                                  int count,
                                  MPI_Datatype datatype,
