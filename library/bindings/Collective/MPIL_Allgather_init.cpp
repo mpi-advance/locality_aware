@@ -70,7 +70,7 @@ int MPIL_Allgather_init(const void* sendbuf,
 #endif
         default:
 #if defined(MPI4)
-            method = allgather_pmpi;
+            method = allgather_init_pmpi;
 #else
             if (sendcount > 1024)
             {

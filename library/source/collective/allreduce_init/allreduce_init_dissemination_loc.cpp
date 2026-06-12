@@ -94,8 +94,8 @@ int allreduce_init_dissemination_ml(const void* sendbuf,
 
     return allreduce_init_dissemination_loc_core(
                    sendbuf, recvbuf, count, datatype, op,
-                   comm->global_comm, comm->group_comm,
-                   comm->local_comm, tag, info, req_ptr);
+                   comm->global_comm, comm->leader_group_comm,
+                   comm->leader_comm, tag, info, req_ptr);
 }
 
 
