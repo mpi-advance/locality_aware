@@ -70,8 +70,6 @@ void par_spmv(ParMat<int>& A,
             std::vector<MPI_Request>& recv_req,
             MPIL_Comm* xcomm)
 {
-    int idx;
-
     // Pack sendbuf
     for (int i = 0; i < A.send_comm.size_msgs; i++)
         sendbuf[i] = x[A.send_comm.idx[i]];
@@ -283,11 +281,7 @@ int main(int argc, char* argv[])
 
     // Read suitesparse matrix
     ParMat<int> A;
-    int file_error = readParMatrix(filename, A);
-    if (file_error)
-    {
-        return 1;
-    }
+    readParMatrix(filename, A);
 
     // Form Communication Package (A.send_comm, A.recv_comm)
     form_comm(A);

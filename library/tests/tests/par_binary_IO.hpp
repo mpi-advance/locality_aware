@@ -32,7 +32,7 @@ void endian_swap(T* objp)
 }
 
 template <typename U>
-int readParMatrix(const char* filename, ParMat<U>& A)
+void readParMatrix(const char* filename, ParMat<U>& A)
 {
     int rank, num_procs;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -58,22 +58,25 @@ int readParMatrix(const char* filename, ParMat<U>& A)
     FILE* ifile = fopen(filename, "rb");
     if (ifile == NULL)
     {
-        printf("Error openning file\n");
-        return 1;
+        printf("Error opening file\n");
+        MPI_Abort(MPI_COMM_WORLD, 1);
     }
     if (fseek(ifile, 0, SEEK_SET))
     {
         printf("Error seeking beginning of file\n");
+        MPI_Abort(MPI_COMM_WORLD, 1);
     }
 
     n_items_read = fread(&code, sizeof_int32, 1, ifile);
     if (n_items_read == EOF)
     {
         printf("EOF reading code\n");
+        MPI_Abort(MPI_COMM_WORLD, 1);
     }
     if (ferror(ifile))
     {
         printf("Error reading code\n");
+        MPI_Abort(MPI_COMM_WORLD, 1);
     }
     if (code != PETSC_MAT_CODE)
     {
@@ -85,28 +88,34 @@ int readParMatrix(const char* filename, ParMat<U>& A)
     if (n_items_read == EOF)
     {
         printf("EOF reading code\n");
+        MPI_Abort(MPI_COMM_WORLD, 1);
     }
     if (ferror(ifile))
     {
         printf("Error reading N\n");
+        MPI_Abort(MPI_COMM_WORLD, 1);
     }
     n_items_read = fread(&global_num_cols, sizeof_int32, 1, ifile);
     if (n_items_read == EOF)
     {
         printf("EOF reading code\n");
+        MPI_Abort(MPI_COMM_WORLD, 1);
     }
     if (ferror(ifile))
     {
         printf("Error reading M\n");
+        MPI_Abort(MPI_COMM_WORLD, 1);
     }
     n_items_read = fread(&global_nnz, sizeof_int32, 1, ifile);
     if (n_items_read == EOF)
     {
         printf("EOF reading code\n");
+        MPI_Abort(MPI_COMM_WORLD, 1);
     }
     if (ferror(ifile))
     {
         printf("Error reading nnz\n");
+        MPI_Abort(MPI_COMM_WORLD, 1);
     }
 
     if (is_little_endian)
@@ -234,6 +243,7 @@ int readParMatrix(const char* filename, ParMat<U>& A)
     if (fseek(ifile, pos, SEEK_SET))
     {
         printf("Error seeking pos\n");
+        MPI_Abort(MPI_COMM_WORLD, 1);
     }
     for (int i = 0; i < A.local_rows; i++)
     {
@@ -241,10 +251,12 @@ int readParMatrix(const char* filename, ParMat<U>& A)
         if (n_items_read == EOF)
         {
             printf("EOF reading code\n");
+            MPI_Abort(MPI_COMM_WORLD, 1);
         }
         if (ferror(ifile))
         {
             printf("Error reading row_size\n");
+            MPI_Abort(MPI_COMM_WORLD, 1);
         }
         if (is_little_endian)
         {
@@ -264,6 +276,7 @@ int readParMatrix(const char* filename, ParMat<U>& A)
     if (fseek(ifile, pos, SEEK_SET))
     {
         printf("Error seeking pos\n");
+        MPI_Abort(MPI_COMM_WORLD, 1);
     }
     for (int i = 0; i < nnz; i++)
     {
@@ -271,10 +284,12 @@ int readParMatrix(const char* filename, ParMat<U>& A)
         if (n_items_read == EOF)
         {
             printf("EOF reading code\n");
+            MPI_Abort(MPI_COMM_WORLD, 1);
         }
         if (ferror(ifile))
         {
             printf("Error reading col idx\n");
+            MPI_Abort(MPI_COMM_WORLD, 1);
         }
         if (is_little_endian)
         {
@@ -287,6 +302,7 @@ int readParMatrix(const char* filename, ParMat<U>& A)
     if (fseek(ifile, pos, SEEK_SET))
     {
         printf("Error seeking pos\n");
+        MPI_Abort(MPI_COMM_WORLD, 1);
     }
     for (int i = 0; i < nnz; i++)
     {
@@ -294,10 +310,12 @@ int readParMatrix(const char* filename, ParMat<U>& A)
         if (n_items_read == EOF)
         {
             printf("EOF reading code\n");
+            MPI_Abort(MPI_COMM_WORLD, 1);
         }
         if (ferror(ifile))
         {
             printf("Error reading value\n");
+            MPI_Abort(MPI_COMM_WORLD, 1);
         }
         if (is_little_endian)
         {
@@ -369,8 +387,6 @@ int readParMatrix(const char* filename, ParMat<U>& A)
     }
 
     A.off_proc.n_cols = A.off_proc_num_cols;
-
-    return 0;
 }
 
 #endif

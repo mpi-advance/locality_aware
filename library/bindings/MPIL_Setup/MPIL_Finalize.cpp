@@ -8,6 +8,9 @@ extern "C" {
 int MPIL_Finalize()
 {
     MPIL_Comm_free(&MPIL_COMM_WORLD);
+
+    Communicator::clear_comm_caches();
+
     return MPI_SUCCESS;
 }
 
