@@ -214,6 +214,11 @@ int allreduce_init_dissemination_loc_core(const void* sendbuf,
 
 int allreduce_dissemination_loc_start(MPIL_Request* request)
 {
+    if (request == NULL)
+    {
+        return MPI_SUCCESS;
+    }
+
     MPIL_Request* local_L_request = request->local_L_request;
     MPIL_Request* local_S_request = request->local_S_request;
     MPIL_Request* local_R_request = request->local_R_request;
@@ -222,15 +227,18 @@ int allreduce_dissemination_loc_start(MPIL_Request* request)
     MPI_Type_size(request->datatype, &type_size);
 
 #if defined(GPU)
+int gpu_error;
 if (request->gpu_sendbuf)
 {
 // tmp_sendbuf is same as sendbuf, but not const
 #if defined(APU)
     memcpy(request->tmp_gpubuf, request->gpu_sendbuf, request->size_recvs);
 #else
-    gpuMemcpyAsync(request->tmp_gpubuf, request->gpu_sendbuf, 
+    gpu_error = gpuMemcpyAsync(request->tmp_gpubuf, request->gpu_sendbuf, 
             request->size_recvs, gpuMemcpyDeviceToHost, 0);
-    gpuStreamSynchronize(0);
+    gpu_check(gpu_error);
+    gpu_error = gpuStreamSynchronize(0);
+    gpu_check(gpu_error);
 #endif
 }
 #endif
@@ -300,12 +308,15 @@ int allreduce_dissemination_loc_wait(MPIL_Request* request, MPI_Status* status)
 #if defined(GPU)
 if (request->gpu_recvbuf)
 {
+    int gpu_error;
 #if defined(APU)
     memcpy(request->gpu_recvbuf, request->recvbuf, request->size_recvs);
 #else
-    gpuMemcpyAsync(request->gpu_recvbuf, request->recvbuf, 
+    gpu_error = gpuMemcpyAsync(request->gpu_recvbuf, request->recvbuf, 
             request->size_recvs, gpuMemcpyHostToDevice, 0);
-    gpuStreamSynchronize(0);
+    gpu_check(gpu_error);
+    gpu_error = gpuStreamSynchronize(0);
+    gpu_check(gpu_error);
 #endif
 }
 #endif    
