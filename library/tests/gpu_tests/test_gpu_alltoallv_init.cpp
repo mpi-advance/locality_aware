@@ -151,7 +151,7 @@ int main(int argc, char** argv)
 
         // GPU-Aware Pairwise Alltoall
         MPIL_Set_alltoallv_init_algorithm(ALLTOALLV_INIT_GPU_PAIRWISE);
-        MPIL_Alltoallv(local_data_d,
+        MPIL_Alltoallv_init(local_data_d,
                     sendcounts.data(),
                     sdispls.data(),
                     MPI_INT,
@@ -182,7 +182,7 @@ int main(int argc, char** argv)
 
         // GPU-Aware Nonblocking Alltoall
         MPIL_Set_alltoallv_init_algorithm(ALLTOALLV_INIT_GPU_NONBLOCKING);
-        MPIL_Alltoallv(local_data_d,
+        MPIL_Alltoallv_init(local_data_d,
                     sendcounts.data(),
                     sdispls.data(),
                     MPI_INT,
@@ -213,7 +213,7 @@ int main(int argc, char** argv)
 
 #if defined(MPI4)
         MPIL_Set_alltoallv_init_algorithm(ALLTOALLV_INIT_GPU_PMPI);
-        MPIL_Alltoallv(local_data_d,
+        MPIL_Alltoallv_init(local_data_d,
                     sendcounts.data(),
                     sdispls.data(),
                     MPI_INT,
@@ -247,7 +247,7 @@ int main(int argc, char** argv)
 
         // Copy-to-CPU Pairwise Alltoall
         MPIL_Set_alltoallv_init_algorithm(ALLTOALLV_INIT_CTC_PAIRWISE);
-        MPIL_Alltoallv(local_data_d,
+        MPIL_Alltoallv_init(local_data_d,
                     sendcounts.data(),
                     sdispls.data(),
                     MPI_INT,
@@ -278,7 +278,7 @@ int main(int argc, char** argv)
 
         // Copy-to-CPU Nonblocking Alltoall
         MPIL_Set_alltoallv_init_algorithm(ALLTOALLV_INIT_CTC_NONBLOCKING);
-        MPIL_Alltoallv(local_data_d,
+        MPIL_Alltoallv_init(local_data_d,
                     sendcounts.data(),
                     sdispls.data(),
                     MPI_INT,
@@ -309,7 +309,7 @@ int main(int argc, char** argv)
 
 #if defined(MPI4)
         MPIL_Set_alltoallv_init_algorithm(ALLTOALLV_INIT_CTC_PMPI);
-        MPIL_Alltoallv(local_data_d,
+        MPIL_Alltoallv_init(local_data_d,
                     sendcounts.data(),
                     sdispls.data(),
                     MPI_INT,

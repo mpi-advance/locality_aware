@@ -184,7 +184,7 @@ int main(int argc, char** argv)
         if (rank == 0) printf("MPIL High Radix equivalent to PMPI on GPU\n");
 
 #if defined(MPI4)
-        // HIGH-Radix Dissemination on GPU
+        // PMPI Dissemination on GPU
         MPIL_Set_allreduce_init_algorithm(ALLREDUCE_INIT_GPU_PMPI);
         MPIL_Allreduce_init(local_data_d, allreduce_d, s, MPI_INT, MPI_SUM, xcomm, info, &request);
         MPIL_Start(request);

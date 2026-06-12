@@ -102,7 +102,7 @@ int main(int argc, char** argv)
         MPIL_Alltoall(
             local_data.data(), s, MPI_INT, mpix_alltoall.data(), s, MPI_INT, xcomm);
         compare_alltoall_results(pmpi_alltoall, mpix_alltoall, s);
-        if (rank == 0) printf("MPIL and PMPI equivalent on GPUs\n");
+        if (rank == 0) printf("MPIL and PMPI equivalent on CPUs\n");
 
 #if defined(GPU_AWARE)
         // Standard GPU Alltoall
