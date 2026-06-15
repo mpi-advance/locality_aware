@@ -68,8 +68,12 @@ int neighbor_alltoallv_locality(const void* sendbuf,
     {
         new_proc_idx[src_tmp[i]] = i;
     }
-    for (int i = 0; i < recv_nnz; i++)
+    for (int i = 0; i < topo->indegree; i++)
     {
+        if (recvcounts[i] == 0)
+        {
+            continue;
+        }
         proc = topo->sources[i];
         idx  = new_proc_idx[proc];
         memcpy(&(recvvals[rdispls[i] * recv_bytes]),

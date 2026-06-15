@@ -23,7 +23,7 @@ int neighbor_alltoallv_init_locality_ext(const void* sendbuffer,
                                          MPIL_Info* info,
                                          MPIL_Request** request_ptr)
 {
-    neighbor_alltoallv_init_locality_ext_helper(sendbuffer, sendcounts, 
+    return neighbor_alltoallv_init_locality_ext_helper(sendbuffer, sendcounts, 
             sdispls, global_sindices, sendtype, recvbuffer, recvcounts,
             rdispls, global_rindices, recvtype, topo, comm, info, request_ptr,
             MPIL_Alloc, MPIL_Free);

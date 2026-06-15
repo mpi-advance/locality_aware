@@ -139,6 +139,7 @@ int copy_to_cpu_neighbor_alltoallv_init(Ftn f,
 
     MPIL_Request* request = *req_ptr;
     request->tmp_gpubuf = cpu_sendbuf;
+    request->recvbuf = cpu_recvbuf;
     request->gpu_sendbuf = sendbuf;
     request->gpu_recvbuf = recvbuf;
     request->size_sends = send_size * send_bytes;
