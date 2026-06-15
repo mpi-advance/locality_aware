@@ -87,9 +87,12 @@ int copy_to_cpu_neighbor_alltoallv(Ftn f,
 
     free(cpu_sendbuf);
     free(cpu_recvbuf);
+
+    return ierr;
 }
 
 
+template <typename Ftn>
 int copy_to_cpu_neighbor_alltoallv_init(Ftn f,
                                 const void* sendbuf,
                                 const int sendcounts[],
@@ -141,9 +144,11 @@ int copy_to_cpu_neighbor_alltoallv_init(Ftn f,
     request->size_sends = send_size * send_bytes;
     request->size_recvs = recv_size * recv_bytes;
 
+    return ierr;
 }
 
 
+template <typename Ftn>
 int copy_to_cpu_neighbor_alltoallv_init_ext(Ftn f,
                                 const void* sendbuf,
                                 const int sendcounts[],
@@ -197,6 +202,7 @@ int copy_to_cpu_neighbor_alltoallv_init_ext(Ftn f,
     request->size_sends = send_size * send_bytes;
     request->size_recvs = recv_size * recv_bytes;
 
+    return ierr;
 }
 
 

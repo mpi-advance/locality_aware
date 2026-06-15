@@ -85,7 +85,7 @@ void test_matrix(const char* filename)
                 gpuMemcpyHostToDevice);
     }
 
-    communicate(A, send_vals, mpix, MPI_INT);
+    communicate(A, send_vals, mpil, MPI_INT);
 
     MPI_Comm std_comm;
     MPIL_Comm* xcomm;
@@ -165,14 +165,14 @@ void test_matrix(const char* filename)
                                  A.send_comm.counts.data(),
                                  A.send_comm.ptr.data(),
                                  MPI_INT,
-                                 mpix_recv_vals.data(),
+                                 mpil.data(),
                                  A.recv_comm.counts.data(),
                                  A.recv_comm.ptr.data(),
                                  MPI_INT,
                                  topo,
                                  xcomm);
     compare_neighbor_alltoallv_results(
-        pmpi, mpix, A.recv_comm.size_msgs);
+        pmpi, mpil, A.recv_comm.size_msgs);
 
 #if defined(GPU_AWARE)
 
@@ -192,7 +192,7 @@ void test_matrix(const char* filename)
     gpuMemcpy(mpix.data(), gpu_recvbuf, A.recv_comm.size_msgs*sizeof(int),
             gpuMemcpyDeviceToHost);
     compare_neighbor_alltoallv_results(
-        pmpi, mpix, A.recv_comm.size_msgs);
+        pmpi, mpil, A.recv_comm.size_msgs);
 
     // Locality MPIL_Nieghbor collective on GPU
     MPIL_Set_alltoallv_neighbor_algorithm(NEIGHBOR_ALLTOALLV_GPU_LOCALITY);
@@ -210,7 +210,7 @@ void test_matrix(const char* filename)
     gpuMemcpy(mpix.data(), gpu_recvbuf, A.recv_comm.size_msgs*sizeof(int),
             gpuMemcpyDeviceToHost);
     compare_neighbor_alltoallv_results(
-        pmpi, mpix, A.recv_comm.size_msgs);
+        pmpi, mpil, A.recv_comm.size_msgs);
 
 #endif
 
@@ -231,7 +231,7 @@ void test_matrix(const char* filename)
     gpuMemcpy(mpix.data(), gpu_recvbuf, A.recv_comm.size_msgs*sizeof(int),
             gpuMemcpyDeviceToHost);
     compare_neighbor_alltoallv_results(
-        pmpi, mpix, A.recv_comm.size_msgs);
+        pmpi, mpil, A.recv_comm.size_msgs);
 
     // Locality MPIL_Nieghbor collective on GPU
     MPIL_Set_alltoallv_neighbor_algorithm(NEIGHBOR_ALLTOALLV_CTC_LOCALITY);
@@ -249,7 +249,7 @@ void test_matrix(const char* filename)
     gpuMemcpy(mpix.data(), gpu_recvbuf, A.recv_comm.size_msgs*sizeof(int),
             gpuMemcpyDeviceToHost);
     compare_neighbor_alltoallv_results(
-        pmpi, mpix, A.recv_comm.size_msgs);
+        pmpi, mpil, A.recv_comm.size_msgs);
 
 
     if (A.recv_comm.size_msgs)

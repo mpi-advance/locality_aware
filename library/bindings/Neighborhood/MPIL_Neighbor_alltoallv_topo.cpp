@@ -30,7 +30,7 @@ int MPIL_Neighbor_alltoallv_topo(const void* sendbuf,
             gpu_aware = true;
             break;
         case NEIGHBOR_ALLTOALLV_GPU_LOCALITY:
-            method = neighor_alltoallv_locality;
+            method = neighbor_alltoallv_locality;
             gpu_aware = true;
             break;
 #endif
@@ -39,7 +39,7 @@ int MPIL_Neighbor_alltoallv_topo(const void* sendbuf,
             copy_to_cpu = true;
             break;
         case NEIGHBOR_ALLTOALLV_CTC_LOCALITY:
-            method = neighor_alltoallv_locality;
+            method = neighbor_alltoallv_locality;
             copy_to_cpu = true;
             break;
 #endif

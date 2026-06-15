@@ -67,7 +67,9 @@ int MPIL_Neighbor_alltoallv_init_topo(const void* sendbuf,
                 rdispls,
                 recvtype,
                 topo,
-                comm);
+                comm,
+                info,
+                request_ptr);
     }
     else if (copy_to_cpu)
     {
@@ -81,7 +83,9 @@ int MPIL_Neighbor_alltoallv_init_topo(const void* sendbuf,
                 rdispls,
                 recvtype,
                 topo,
-                comm);
+                comm,
+                info,
+                request_ptr);
     }
     return method(sendbuf,
                   sendcounts,
