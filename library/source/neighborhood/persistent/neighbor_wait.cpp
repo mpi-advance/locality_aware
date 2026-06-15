@@ -51,5 +51,21 @@ int neighbor_wait(MPIL_Request* request, MPI_Status* status)
         MPIL_Wait(request->local_L_request, MPI_STATUS_IGNORE);
      }
 
+#if defined(GPU)
+    if (request->gpu_recvbuf)
+    {
+        int gpu_error;
+#if defined(APU)
+        memcpy(request->gpu_recvbuf, request->recvbuf, request->size_recvs);
+#else
+        gpu_error = gpuMemcpyAsync(request->gpu_recvbuf, request->recvbuf, request->size_recvs, 
+                gpuMemcpyHostToDevice, 0);
+        gpu_check(gpu_error);
+        gpu_error = gpuStreamSynchronize(0);
+        gpu_check(gpu_error);
+#endif
+    }
+#endif
+
     return ierr;
 }

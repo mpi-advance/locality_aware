@@ -12,6 +12,23 @@ int neighbor_start(MPIL_Request* request)
         return 0;
     }
 
+#if defined(GPU)
+    int gpu_error;
+    if (request->gpu_sendbuf)
+    {
+#if defined(APU)
+        memcpy(request->tmp_gpubuf, request->gpu_sendbuf, request->size_sends);
+#else
+        gpu_error = gpuMemcpyAsync(request->tmp_gpubuf, request->gpu_sendbuf, request->size_sends, 
+                gpuMemcpyDeviceToHost, 0);
+        gpu_check(gpu_error);
+        gpu_error = gpuStreamSynchronize(0);
+        gpu_check(gpu_error);
+#endif
+    }
+#endif
+
+
     int ierr = 0;
     int idx;
 
