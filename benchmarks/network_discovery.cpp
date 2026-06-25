@@ -1,209 +1,149 @@
-#include <mpi.h>
+#include "mpi.h"
 
-#include "mpi_advance.h"
-
-double* network_discovery(char* send_buffer, char* recv_buffer, int size, int tag, int num_iterations)
+class PingPong
 {
-    int rank, num_procs;
-    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-    MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
+    public:
 
-    int proc;
-    MPI_Status status;
-
-    double* times = (double*) malloc(num_procs * sizeof(double));
-    times[0] = 0.0;
-    for (int i = 0; i < num_procs - 1; i++)
+    PingPong(int _proc, MPI_Request* _request, int _even_odd)
     {
-        int dist = i / 2 + 1;
-        // warm up
-        if ((rank / dist) % 2 == i % 2)
+        proc = _proc;
+        request = _request;
+        tag = 0;
+        even_odd = _even_odd;
+        time = 0;
+        sendbuf = 1;
+        recvbuf = 0;
+    }
+
+    void start(int _n_iter)
+    {
+        n_iter = _n_iter;
+        time = MPI_Wtime();
+        step();
+    }
+
+    void ping()
+    {
+        MPI_Isend(&sendbuf, 1, MPI_FLOAT, proc, tag++, MPI_COMM_WORLD, request);
+    }
+
+    void pong()
+    {
+        MPI_Irecv(&recvbuf, 1, MPI_FLOAT, proc, tag++, MPI_COMM_WORLD, request);
+    }
+
+    int step()
+    {
+        if (tag / 2 == n_iter)
         {
-            proc = (rank + dist) % num_procs;
-            MPI_Send(send_buffer, size, MPI_CHAR, proc, tag, MPI_COMM_WORLD);
-            MPI_Recv(recv_buffer, size, MPI_CHAR, proc, tag, MPI_COMM_WORLD, &status);
+            time = MPI_Wtime() - time;
+            return 0;
+        }
+
+        if (tag % 2 == even_odd)
+        {
+            ping();
         }
         else
         {
-            proc = (rank - dist + num_procs) % num_procs;
-            MPI_Recv(recv_buffer, size, MPI_CHAR, proc, tag, MPI_COMM_WORLD, &status);
-            MPI_Send(send_buffer, size, MPI_CHAR, proc, tag, MPI_COMM_WORLD);   
+            pong();
         }
 
-
-        double t0 = MPI_Wtime();
-        for (int j = 0; j < num_iterations; j++)
-        {
-            if ((rank / dist) % 2 == i % 2)
-            {
-                MPI_Send(send_buffer, size, MPI_CHAR, proc, tag, MPI_COMM_WORLD);
-                MPI_Recv(recv_buffer, size, MPI_CHAR, proc, tag, MPI_COMM_WORLD, &status);
-            }
-            else
-            {
-                MPI_Recv(recv_buffer, size, MPI_CHAR, proc, tag, MPI_COMM_WORLD, &status);
-                MPI_Send(send_buffer, size, MPI_CHAR, proc, tag, MPI_COMM_WORLD);   
-            }
-        }
-        times[proc] = MPI_Wtime() - t0 / (2. * num_iterations);
+        return 1;
     }
 
-    return times;
-}
-
-double* network_discovery2(char* send_buffer, char* recv_buffer, int size, int tag, int num_iterations)
-{
-    int rank, num_procs;
-    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-    MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
-    MPI_Status status;
-
-    double* times = (double*) malloc(num_procs * sizeof(double));
-    times[rank] = 0.0;
-    for (int i = 0; i < num_procs; i++)
-    {
-        for (int j = i + 1; j < num_procs; j++)
-        {
-            if (rank == i)
-            {
-                // warm up
-                MPI_Send(send_buffer, size, MPI_CHAR, j, tag, MPI_COMM_WORLD);
-                MPI_Recv(recv_buffer, size, MPI_CHAR, j, tag, MPI_COMM_WORLD, &status);
-
-                double t0 = MPI_Wtime();
-                for (int k = 0; k < num_iterations; k++)
-                {
-                    MPI_Send(send_buffer, size, MPI_CHAR, j, tag, MPI_COMM_WORLD);
-                    MPI_Recv(recv_buffer, size, MPI_CHAR, j, tag, MPI_COMM_WORLD, &status);
-                }
-
-                times[j] = (MPI_Wtime() - t0) / (2. * num_iterations);
-            }
-            else if (rank == j)
-            {
-                // warm up
-                MPI_Recv(recv_buffer, size, MPI_CHAR, i, tag, MPI_COMM_WORLD, &status);
-                MPI_Send(send_buffer, size, MPI_CHAR, i, tag, MPI_COMM_WORLD);
-
-                double t0 = MPI_Wtime();
-                for (int k = 0; k < num_iterations; k++)
-                {
-                    MPI_Recv(recv_buffer, size, MPI_CHAR, i, tag, MPI_COMM_WORLD, &status);
-                    MPI_Send(send_buffer, size, MPI_CHAR, i, tag, MPI_COMM_WORLD);
-                }
-
-                times[i] = (MPI_Wtime() - t0) / (2. * num_iterations);
-            }
-        }
-    }
-
-    return times;
-}
-
-double* pingPong(char* send_buffer, char* recv_buffer, int size, int tag, int num_iterations)
-{
-    int rank, num_procs;
-    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-    MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
 
     int proc;
-    MPI_Status status;
+    int even_odd;
+    float sendbuf;
+    float recvbuf;
+    MPI_Request* request;
+    int tag;
+    double time;
+    int n_iter;
+};
 
-    double* times = (double*) malloc(num_procs * sizeof(double));
-    times[0] = 0.0;
-    for (int i = 1; i < num_procs - 1; i++)
+void dual_ping_pongs(PingPong** ping_pong, MPI_Request* req, int n_iter)
+{
+    // Start both ping pongs
+    ping_pong[0]->start(n_iter);
+    ping_pong[1]->start(n_iter);
+
+    // Progress the ping pongs until n_iter iterations complete
+    int active = 1;
+    int idx;
+    while (active)
     {
-        // warm up
-        if (rank == 0)
-        {
-            MPI_Send(send_buffer, size, MPI_CHAR, i, tag, MPI_COMM_WORLD);
-            MPI_Recv(recv_buffer, size, MPI_CHAR, i, tag, MPI_COMM_WORLD, &status);
-        }
-        else if (rank == i)
-        {
-            MPI_Recv(recv_buffer, size, MPI_CHAR, 0, tag, MPI_COMM_WORLD, &status);
-            MPI_Send(send_buffer, size, MPI_CHAR, 0, tag, MPI_COMM_WORLD);
-        }
+        // Wait for the current step of either ping pong to complete
+        MPI_Waitany(2, req, &idx, MPI_STATUS_IGNORE);
 
-        // test
-        double t0 = MPI_Wtime();
-        for (int j = 0; j < num_iterations; j++)
-        {
-            if (rank == 0)
-            {
-                MPI_Send(send_buffer, size, MPI_CHAR, i, tag, MPI_COMM_WORLD);
-                MPI_Recv(recv_buffer, size, MPI_CHAR, i, tag, MPI_COMM_WORLD, &status);
-            }
-            else if (rank == i)
-            {
-                MPI_Recv(recv_buffer, size, MPI_CHAR, 0, tag, MPI_COMM_WORLD, &status);
-                MPI_Send(send_buffer, size, MPI_CHAR, 0, tag, MPI_COMM_WORLD);
-            }
-        }
-
-        times[i] = MPI_Wtime() - t0 / (2. * num_iterations);
+        // Progress that ping pong
+        active = ping_pong[idx]->step();
     }
 
-    return times;
+    // Once a ping pong complete, progress only the other ping pong
+    idx = (idx + 1) % 2;
+    active = 1;
+    while (active)
+    {
+        MPI_Wait(&(req[idx]), MPI_STATUS_IGNORE);
+        active = ping_pong[idx]->step();
+    }
 }
 
 int main(int argc, char* argv[])
 {
     MPI_Init(&argc, &argv);
 
-    MPIX_Comm *xcomm;
-    MPIX_Comm_init(&xcomm, MPI_COMM_WORLD);
-
     int rank, num_procs;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
 
-    int tag;
-    MPIX_Comm_tag(xcomm, &tag);
+    int send_proc, recv_proc;
 
-    int max_p = 11;
-    int max_size = 1 << (max_p-1);
-    char* send_buffer = (char*) malloc(num_procs * max_size * sizeof(char));
-    char* recv_buffer = (char*) malloc(num_procs * max_size * sizeof(char));
-    // double* times = (double*)malloc(num_procs * sizeof(double));
-    // for (int k = 0; k < max_p; k++)
-    // {
+    PingPong* ping_pong[2];
+    MPI_Request req[2];
+
+    double times[num_procs];
+    times[rank] = 0.0;
+    for (int i = 1; i < num_procs; i++)
+    {
+        send_proc = (rank + i) % num_procs;
+        recv_proc = (rank - i + num_procs) % num_procs;
+
+        // Initialize Ping Pongs
+        // I time ping_pong[0] and only participate in ping_pong[1]
+        ping_pong[0] = new PingPong(send_proc, &(req[0]), 0);
+        ping_pong[1] = new PingPong(recv_proc, &(req[1]), 1);
+
+        // Warm-Up
+        dual_ping_pongs(ping_pong, req, 1);
+
+        // Time 100 Iterations
+        dual_ping_pongs(ping_pong, req, 100000);
+	//        printf("Ping Pong [%d to %d]: %e\n", rank, send_proc, ping_pong[0]->time);
+        times[send_proc] = ping_pong[0]->time;
+        delete ping_pong[0];
+        delete ping_pong[1];
+    }
+
     double* adjacencyMatrix = (double*) malloc(num_procs * num_procs * sizeof(double));
-    int k = 0;
-        int size = 1 << k;
-        // double* times = pingPong(send_buffer, recv_buffer, size, tag, 100);
-        double* times = network_discovery2(send_buffer, recv_buffer, size, tag, 100);
-        MPI_Allgather(times, num_procs, MPI_DOUBLE, adjacencyMatrix, num_procs, MPI_DOUBLE, MPI_COMM_WORLD);
-        if (rank == 0)
-        {
-            printf("Adjacency matrix (message size: %d)\n", size);
-            for (int i = 0; i < num_procs; i++)
-            {
-                printf("%.10lf\t", times[i]);                    
-            }
+    MPI_Gather(times, num_procs, MPI_DOUBLE, adjacencyMatrix, num_procs, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+    
+    if (rank == 0)
+    {
+        printf("Adjacency Matrix\n\n");
+	for (int i = 0; i < num_procs; i++)
+	  {
+	    for (int j = 0; j < num_procs; j++)
+	      {
+		printf("%.10lf\t", adjacencyMatrix[i * num_procs + j]);
+	      }
+	    printf("\n");
+	  }
+    }
 
-            printf("\n");
-        }
-
-        free(times);
-        free(adjacencyMatrix);
-    // }
-    free(send_buffer);
-    free(recv_buffer);
-
-    MPI_Barrier(MPI_COMM_WORLD);
-
-    MPI_Comm node_comm;
-    MPI_Comm_split_type(MPI_COMM_WORLD, MPI_COMM_TYPE_SHARED, 0, MPI_INFO_NULL, &node_comm);
-
-    int node_rank, ppn;
-    MPI_Comm_rank(node_comm, &node_rank);
-    MPI_Comm_size(node_comm, &ppn);
-
-    MPI_Comm group_comm;
-    MPI_Comm_split(MPI_COMM_WORLD, node_rank, rank, &group_comm);
-
-    int node;
-    MPI_Comm_rank(group_comm, &node);
-    //   printf("Rank %d has local rank %d of %d on node %d\n", rank, node_rank, ppn, node);
+    MPI_Finalize();
+    
+    return 0;
 }
