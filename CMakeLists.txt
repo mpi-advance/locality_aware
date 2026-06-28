@@ -116,6 +116,7 @@ install(FILES ${heterogeneous_HEADERS} DESTINATION ${CMAKE_INSTALL_PREFIX}/inclu
 if (ENABLE_UNIT_TESTS)
     enable_testing()
     add_subdirectory(src/collective/tests)
+    add_subdirectory(src/communicator/tests)
     add_subdirectory(src/neighborhood/tests)
     if (USE_GPU)
         add_subdirectory(src/heterogeneous/tests)
