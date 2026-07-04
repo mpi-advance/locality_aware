@@ -66,112 +66,11 @@ double* network_discovery(MPIX_Comm* xcomm, int size, int tag, int num_iteration
     return times;
 }
 
-// double* network_discovery(MPIX_Comm* xcomm, int size, int tag, int num_iterations)
-// {
-//     int rank, num_procs;
-//     MPI_Comm_rank(xcomm->global_comm, &rank);
-//     MPI_Comm_size(xcomm->global_comm, &num_procs);
-    
-//     double* averageDistances = (double*) calloc(num_procs, sizeof(double));
-
-//     char* send_buffer = (char*) malloc(num_procs * size * sizeof(char));
-//     char* recv_buffer = (char*) malloc(num_procs * size * sizeof(char));
-
-//     int send_proc, recv_proc;
-//     int send_pos, recv_pos;
-//     MPI_Status status;
-//     averageDistances[rank] = 0.0;
-//     for (int i = 1; i < num_procs; i++)
-//     {
-//         send_proc = rank + i;
-//         if (send_proc >= num_procs)
-//             send_proc -= num_procs;
-        
-//         recv_proc = rank - i;
-//         if (recv_proc < 0)
-//             recv_proc += num_procs;
-
-//         send_pos = send_proc * sizeof(char);
-//         recv_pos = recv_proc * sizeof(char); 
-
-//         // Warm up
-//         MPI_Sendrecv(send_buffer + send_pos,
-//                      1,
-//                      MPI_CHAR, 
-//                      send_proc,
-//                      tag,
-//                      recv_buffer + recv_pos,
-//                      1,
-//                      MPI_CHAR,
-//                      recv_proc,
-//                      tag,
-//                      xcomm->global_comm,
-//                      &status);
-
-//         double t0 = MPI_Wtime();
-//         for (int j = 0; j < num_iterations; j++)
-//         {
-//             MPI_Sendrecv(send_buffer + send_pos,
-//                         1,
-//                         MPI_CHAR, 
-//                         send_proc,
-//                         tag,
-//                         recv_buffer + recv_pos,
-//                         1,
-//                         MPI_CHAR,
-//                         recv_proc,
-//                         tag,
-//                         xcomm->global_comm,
-//                         &status);
-//         }
-
-//         averageDistances[send_proc] = (MPI_Wtime() - t0) / (2. * (double) num_iterations);
-
-//         // MPI_Sendrecv(send_buffer + recv_pos,
-//         //              1,
-//         //              MPI_CHAR,
-//         //              recv_proc,
-//         //              tag,
-//         //              recv_buffer + send_pos,
-//         //              1,
-//         //              MPI_CHAR,
-//         //              send_proc,
-//         //              tag,
-//         //              xcomm->global_comm, 
-//         //              &status);
-
-//         // t0 = MPI_Wtime();
-//         // for (int j = 0; j < num_iterations; j++)
-//         // {
-//         //     MPI_Sendrecv(send_buffer + recv_pos,
-//         //                 1,
-//         //                 MPI_CHAR,
-//         //                 recv_proc,
-//         //                 tag,
-//         //                 recv_buffer + send_pos,
-//         //                 1,
-//         //                 MPI_CHAR,
-//         //                 send_proc,
-//         //                 tag,
-//         //                 xcomm->global_comm, 
-//         //                 &status);
-//         // }
-
-//         // averageDistances[recv_proc] = (MPI_Wtime() - t0) / (2. * (double) num_iterations);
-
-//     }
-
-//     double* adjacencyMatrix = (double*) malloc(num_procs * num_procs * sizeof(double));
-//     MPI_Allgather(averageDistances, num_procs, MPI_DOUBLE, adjacencyMatrix, num_procs, MPI_DOUBLE, xcomm->global_comm);
-
-//     return adjacencyMatrix;
-// }
-
 bool balancedBellmanFord(double* adjacencyMatrix, 
                          int* clusterMembership, 
                          int* centerNodes, 
                          double* shortestPathToCenter,
-                         int* predecessorsInCluster, 
+                         int* predecessorInCluster, 
                          int* numAsPredecessor, 
                          int* clusterSizes,
                          int numProcs,
@@ -188,28 +87,57 @@ bool balancedBellmanFord(double* adjacencyMatrix,
         {
             for (int j = 0; j < numProcs; j++)
             {
-                int iClusterSize= clusterSizes[clusterMembership[i]];
-                int jClusterSize = clusterSizes[clusterMembership[j]];
+                if (adjacencyMatrix[i * numProcs + j] == 0.0) {
+                    continue;
+                }
+
+                if (clusterMembership[i] < 0) 
+                {
+                    continue;
+                }
+
+                int iCluster = clusterMembership[i];
+                int jCluster = clusterMembership[j];
                 bool shouldSwitch = false;
                 if (shortestPathToCenter[i] + adjacencyMatrix[i * numProcs + j] < shortestPathToCenter[j])
-                    shouldSwitch = true;
-                
-                // the algorithm says similar, should we use approximate equals here? what would the tolerance be?
-                if (shortestPathToCenter[i] + adjacencyMatrix[i * numProcs + j] == shortestPathToCenter[j]) 
                 {
-                    if (iClusterSize + 1 < jClusterSize && numAsPredecessor[j] == 0)
-                        shouldSwitch = true;
+                    shouldSwitch = true;
+                }
+
+                int iClusterSize = iCluster >= 0 ? clusterSizes[clusterMembership[i]] : 0;
+                int jClusterSize = jCluster >= 0 ? clusterSizes[clusterMembership[j]] : 0;
+                
+                if (jCluster > -1){
+                    if (abs((shortestPathToCenter[i] + adjacencyMatrix[i * numProcs + j]) - shortestPathToCenter[j]) < 1e-14) 
+                    {
+                        if (jClusterSize > iClusterSize + 1) 
+                        {
+                            if (numAsPredecessor[j] == 0)
+                            {
+                                shouldSwitch = true;
+                            }
+                        }
+                    }
                 }
 
                 if (shouldSwitch)
                 {
-                    clusterSizes[clusterMembership[i]] = iClusterSize + 1;
-                    clusterSizes[clusterMembership[j]] = jClusterSize - 1;
-                    clusterMembership[j] = clusterMembership[i];
+                    if (jCluster >= 0) 
+                    {
+                        clusterSizes[jCluster]--;   
+                    }
+
+                    if (predecessorInCluster[j] >= 0)
+                    {
+                        numAsPredecessor[predecessorInCluster[j]]--;
+                    }
+                    
+                    clusterMembership[j] = iCluster;
                     shortestPathToCenter[j] = shortestPathToCenter[i] + adjacencyMatrix[i * numProcs + j];
-                    numAsPredecessor[i] += 1;
-                    numAsPredecessor[predecessorsInCluster[j]] -= 1;
-                    predecessorsInCluster[j] = i;
+                    predecessorInCluster[j] = i;
+
+                    clusterSizes[clusterMembership[j]]++;
+                    numAsPredecessor[predecessorInCluster[j]]++;
                     changed = true;
                     done = false;
                 }
@@ -239,6 +167,8 @@ void clusteredFloydWarshall(double* adjacencyMatrix,
             for (int j = 0; j < clusterSizes[a]; j++)
             {
                 int end = clusters[a][j];
+                shortestPathDistances[start * numProcs + end] = INFINITY;
+                predecessors[start * numProcs + end] = 0;
                 if (adjacencyMatrix[start * numProcs + end] > 0)
                 {
                     shortestPathDistances[start * numProcs + end] = adjacencyMatrix[start * numProcs + end];
@@ -253,7 +183,6 @@ void clusteredFloydWarshall(double* adjacencyMatrix,
                 }
                 else
                 {
-                    // this should never happen on a fully connected graph
                     shortestPathDistances[start * numProcs + end] = INFINITY;
                     predecessors[start * numProcs + end] = -1;
                 }

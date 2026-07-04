@@ -6,6 +6,17 @@
 
 double* network_discovery(MPIX_Comm* xcomm, int size, int tag, int num_iterations); // This is only exposed temporarily for some scaling studies
 
+bool balancedBellmanFord(double* adjacencyMatrix, 
+                         int* clusterMembership, 
+                         int* centerNodes, 
+                         double* shortestPathToCenter,
+                         int* predecessorsInCluster, 
+                         int* numAsPredecessor, 
+                         int* clusterSizes,
+                         int numProcs,
+                         int numClusters,
+                         int maxIterations);
+
 void balancedLloydClustering(double* adjacencyMatrix,
                              int** clusterCenters,
                              int** clusterMembership,
