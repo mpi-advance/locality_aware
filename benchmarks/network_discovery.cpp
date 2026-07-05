@@ -2,6 +2,8 @@
 
 #include "mpi_advance.h"
 
+#include <stdlib.h>
+#include <stdio.h>
 class PingPong
 {
     public:
