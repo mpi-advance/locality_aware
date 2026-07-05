@@ -1,4 +1,6 @@
-#include "mpi.h"
+#include <mpi.h>
+
+#include "mpi_advance.h"
 
 class PingPong
 {
@@ -91,6 +93,55 @@ void dual_ping_pongs(PingPong** ping_pong, MPI_Request* req, int n_iter)
     }
 }
 
+double* naive_network_discovery(char* send_buffer, char* recv_buffer, int size, int tag, int num_iterations)
+{
+    int rank, num_procs;
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
+    MPI_Status status;
+
+    double* times = (double*) malloc(num_procs * sizeof(double));
+    times[rank] = 0.0;
+    for (int i = 0; i < num_procs; i++)
+    {
+        for (int j = i + 1; j < num_procs; j++)
+        {
+            if (rank == i)
+            {
+                // warm up
+                MPI_Send(send_buffer, size, MPI_CHAR, j, tag, MPI_COMM_WORLD);
+                MPI_Recv(recv_buffer, size, MPI_CHAR, j, tag, MPI_COMM_WORLD, &status);
+
+                double t0 = MPI_Wtime();
+                for (int k = 0; k < num_iterations; k++)
+                {
+                    MPI_Send(send_buffer, size, MPI_CHAR, j, tag, MPI_COMM_WORLD);
+                    MPI_Recv(recv_buffer, size, MPI_CHAR, j, tag, MPI_COMM_WORLD, &status);
+                }
+
+                times[j] = (MPI_Wtime() - t0) / (2. * num_iterations);
+            }
+            else if (rank == j)
+            {
+                // warm up
+                MPI_Recv(recv_buffer, size, MPI_CHAR, i, tag, MPI_COMM_WORLD, &status);
+                MPI_Send(send_buffer, size, MPI_CHAR, i, tag, MPI_COMM_WORLD);
+
+                double t0 = MPI_Wtime();
+                for (int k = 0; k < num_iterations; k++)
+                {
+                    MPI_Recv(recv_buffer, size, MPI_CHAR, i, tag, MPI_COMM_WORLD, &status);
+                    MPI_Send(send_buffer, size, MPI_CHAR, i, tag, MPI_COMM_WORLD);
+                }
+
+                times[i] = (MPI_Wtime() - t0) / (2. * num_iterations);
+            }
+        }
+    }
+
+    return times;
+}
+
 int main(int argc, char* argv[])
 {
     MPI_Init(&argc, &argv);
@@ -142,6 +193,56 @@ int main(int argc, char* argv[])
 	    printf("\n");
 	  }
     }
+
+    int max_p = 11;
+    int max_size = 1 << (max_p - 1);
+    char* send_buffer = (char*) malloc(num_procs * max_size * sizeof(char));
+    char* recv_buffer = (char*) malloc(num_procs * max_size * sizeof(char));
+
+
+    int k = 0;
+    int size = 1 << k;
+
+    MPIX_Comm *xcomm;
+    MPIX_Comm_init(&xcomm, MPI_COMM_WORLD);
+
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
+
+    int tag;
+    MPIX_Comm_tag(xcomm, &tag);
+
+    double* times2 = naive_network_discovery(send_buffer, recv_buffer, size, tag, 100000);
+    MPI_Allgather(times, num_procs, MPI_DOUBLE, adjacencyMatrix, num_procs, MPI_DOUBLE, MPI_COMM_WORLD);
+    if (rank == 0)
+    {
+        printf("Adjacency matrix (message size: %d)\n", size);
+        for (int i = 0; i < num_procs; i++)
+        {
+            printf("%.10lf\t", times2[i]);
+        }
+
+        printf("\n");
+    }
+
+    free(times);
+    free(recv_buffer);
+    free(send_buffer);
+
+    MPI_Barrier(MPI_COMM_WORLD);
+
+    MPI_Comm node_comm;
+    MPI_Comm_split_type(MPI_COMM_WORLD, MPI_COMM_TYPE_SHARED, 0, MPI_INFO_NULL, &node_comm);
+
+    int node_rank, ppn;
+    MPI_Comm_rank(node_comm, &node_rank);
+    MPI_Comm_size(node_comm, &ppn);
+
+    MPI_Comm group_comm;
+    MPI_Comm_split(MPI_COMM_WORLD, node_rank, rank, &group_comm);
+
+    int node;
+    MPI_Comm_rank(group_comm, &node);
 
     MPI_Finalize();
     
