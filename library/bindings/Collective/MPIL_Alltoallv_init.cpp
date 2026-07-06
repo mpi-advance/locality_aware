@@ -21,8 +21,10 @@ int MPIL_Alltoallv_init(const void* sendbuf,
                    MPIL_Request** req_ptr)
 {
     alltoallv_init_ftn method;
-    bool gpu_aware = false;
+#if defined(GPU)
+    bool gpu_aware   = false;
     bool copy_to_cpu = false;
+#endif
 
     switch (mpil_alltoallv_init_implementation)
     {
