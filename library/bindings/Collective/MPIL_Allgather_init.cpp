@@ -20,8 +20,10 @@ int MPIL_Allgather_init(const void* sendbuf,
     }
 
     allgather_init_ftn method;
-    bool gpu_aware = false;
+#if defined(GPU)
+    bool gpu_aware   = false;
     bool copy_to_cpu = false;
+#endif
 
     switch (mpil_allgather_init_implementation)
     {
