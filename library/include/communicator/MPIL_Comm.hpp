@@ -153,7 +153,7 @@ int initialize_topo_communicator(MPIL_Comm* xcomm, int ppn_override = 0)
     MPI_Comm_group(xcomm->global_comm, &global_group);
 
     /* Lambda for searching for if a particular group/ppn combo has been used before. */
-    auto search_function = [global_group,
+    auto search_function = [&global_group,
                             ppn_override](const Communicator::MapPairType& mpt) {
         if (std::get<1>(mpt.first) != ppn_override)
         {

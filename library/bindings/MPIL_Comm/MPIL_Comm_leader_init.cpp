@@ -17,7 +17,7 @@ int MPIL_Comm_leader_init(MPIL_Comm* xcomm, int procs_per_leader)
     MPI_Comm_group(xcomm->global_comm, &global_group);
 
     /* Lambda for searching for if a particular group/ppn combo has been used before. */
-    auto search_function = [global_group,
+    auto search_function = [&global_group,
                             procs_per_leader](const Communicator::MapPairType& mpt) {
         if (std::get<1>(mpt.first) != procs_per_leader)
         {

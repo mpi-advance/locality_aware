@@ -89,15 +89,13 @@ int allreduce_init_dissemination_ml(const void* sendbuf,
         num_leaders = ppn;
     }
 
+    int ppl;
     if (comm->leader_comm != MPI_COMM_NULL)
     {   
-        int ppl;
         MPI_Comm_size(comm->leader_comm, &ppl);
-        if (ppn / num_leaders != ppl)
-            MPIL_Comm_leader_free(comm);
     }
 
-    if (comm->leader_comm == MPI_COMM_NULL)
+    if (comm->leader_comm == MPI_COMM_NULL || ppn / num_leaders != ppl)
     {
         MPIL_Comm_leader_init(comm, num_leaders);
     }
