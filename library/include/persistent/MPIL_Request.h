@@ -3,6 +3,8 @@
 
 #include <mpi.h>
 
+#include "communicator/global_comms.hpp"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -62,8 +64,7 @@ typedef struct _MPIL_Request
     int count;
     MPI_Datatype datatype;
     MPI_Op op;
-    MPI_Comm global_comm;
-    MPI_Comm local_comm;
+    Communicator::CachedComm local_comm;
     int num_ops;
 
     void* tmpbuf;

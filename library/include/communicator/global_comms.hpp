@@ -109,6 +109,13 @@ namespace Communicator
     /** @brief "Map" of cached group (rank per-node) MPI communicators */
     extern std::vector<MapPairType> cached_group_comms;
 
+    /** @brief "Map" of cached local (per-node) MPI communicators */
+    extern std::vector<MapPairType> cached_leader_comms;
+    /** @brief "Map" of cached group (rank per-node) MPI communicators */
+    extern std::vector<MapPairType> cached_leader_group_comms;
+    /** @brief "Map" of cached group (rank per-node) MPI communicators */
+    extern std::vector<MapPairType> cached_leader_local_comms;
+
     /** @brief Destructor for the MPI Groups stores inside ::cached_local_comms and
      * ::cached_group_comms.
      **/

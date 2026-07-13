@@ -29,11 +29,11 @@ typedef struct _MPIL_Comm
     Communicator::CachedComm group_comm;
 
     /** @brief Communicator containing a single leader and its subordinates **/
-    MPI_Comm leader_comm;
+    Communicator::CachedComm leader_comm;
     /** @brief Communicator containing all leaders **/
-    MPI_Comm leader_group_comm;
+    Communicator::CachedComm leader_group_comm;
     /** @brief Communicator containing all leaders on a single node **/
-    MPI_Comm leader_local_comm;
+    Communicator::CachedComm leader_local_comm;
 
     /** @brief Number of nodes in comm **/
     int num_nodes;

@@ -34,9 +34,11 @@ int allreduce_init_dissemination_loc(const void* sendbuf,
 
     // Locality-Aware only works if ppn is even on all processes
     if (num_nodes * ppn != num_procs)
+    {
         return allreduce_init_recursive_doubling(
                 sendbuf, recvbuf, count, datatype, op, comm,
                 info, req_ptr);
+    }
 
     return allreduce_init_dissemination_loc_core(sendbuf, recvbuf, count,
             datatype, op, comm->global_comm, comm->group_comm, 
@@ -74,14 +76,19 @@ int allreduce_init_dissemination_ml(const void* sendbuf,
 
     // Locality-Aware only works if ppn is even on all processes
     if (num_nodes * ppn != num_procs)
+    {
         return allreduce_init_recursive_doubling(
                 sendbuf, recvbuf, count, datatype, op, comm,
                 info, req_ptr);
+    }
 
     // Convert to le/ader_comm (4 leaders per node)
     int num_leaders = 4;
     if (ppn < num_leaders)
+    {
         num_leaders = ppn;
+    }
+
     if (comm->leader_comm != MPI_COMM_NULL)
     {   
         int ppl;
@@ -89,8 +96,11 @@ int allreduce_init_dissemination_ml(const void* sendbuf,
         if (ppn / num_leaders != ppl)
             MPIL_Comm_leader_free(comm);
     }
+
     if (comm->leader_comm == MPI_COMM_NULL)
+    {
         MPIL_Comm_leader_init(comm, num_leaders);
+    }
 
     return allreduce_init_dissemination_loc_core(
                    sendbuf, recvbuf, count, datatype, op,
@@ -105,8 +115,8 @@ int allreduce_init_dissemination_loc_core(const void* sendbuf,
                                  MPI_Datatype datatype,
                                  MPI_Op op,
                                  MPI_Comm global_comm, 
-                                 MPI_Comm group_comm,
-                                 MPI_Comm local_comm,
+                                 Communicator::CachedComm group_comm,
+                                 Communicator::CachedComm local_comm,
                                  int tag,
                                  MPIL_Info* info,
                                  MPIL_Request** req_ptr)
@@ -146,7 +156,7 @@ int allreduce_init_dissemination_loc_core(const void* sendbuf,
     request->start_function = allreduce_dissemination_loc_start;
     request->wait_function  = allreduce_dissemination_loc_wait;
 
-    MPI_Comm_dup(local_comm, &(request->local_comm));
+    request->local_comm = local_comm;
 
     request->count = count;
     request->op = op;
@@ -250,10 +260,14 @@ if (request->gpu_sendbuf)
             request->datatype, request->op, request->local_comm);
 
     if (local_L_request->n_msgs)
+    {
         MPI_Startall(local_L_request->n_msgs, local_L_request->requests);
+    }
 
     if (local_S_request->n_msgs)
+    {
         MPI_Startall(local_S_request->n_msgs, local_S_request->requests);
+    }
 
     return MPI_SUCCESS;
 }
@@ -271,11 +285,14 @@ int allreduce_dissemination_loc_wait(MPIL_Request* request, MPI_Status* status)
         return 0;
 
     if (local_L_request->n_msgs)
+    {
         MPI_Waitall(local_L_request->n_msgs, local_L_request->requests, MPI_STATUSES_IGNORE);
+    }
 
     if (local_S_request->n_msgs)
     {
-        MPI_Waitall(local_S_request->n_msgs, local_S_request->requests, MPI_STATUSES_IGNORE);             MPI_Reduce_local(request->tmpbuf, request->recvbuf, request->count,
+        MPI_Waitall(local_S_request->n_msgs, local_S_request->requests, MPI_STATUSES_IGNORE);             
+        MPI_Reduce_local(request->tmpbuf, request->recvbuf, request->count,
                 request->datatype, request->op);
     }
 

@@ -13,9 +13,9 @@ int initialize_comm_object(MPIL_Comm** xcomm_ptr, MPI_Comm global_comm)
     new (&xcomm->local_comm) Communicator::CachedComm(MPI_COMM_NULL);
     new (&xcomm->group_comm) Communicator::CachedComm(MPI_COMM_NULL);
 
-    xcomm->leader_comm       = MPI_COMM_NULL;
-    xcomm->leader_group_comm = MPI_COMM_NULL;
-    xcomm->leader_local_comm = MPI_COMM_NULL;
+    new (&xcomm->leader_comm) Communicator::CachedComm(MPI_COMM_NULL);
+    new (&xcomm->leader_group_comm) Communicator::CachedComm(MPI_COMM_NULL);
+    new (&xcomm->leader_local_comm) Communicator::CachedComm(MPI_COMM_NULL);
 
     xcomm->neighbor_comm = MPI_COMM_NULL;
 

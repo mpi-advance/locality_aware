@@ -30,8 +30,7 @@ void init_request(MPIL_Request** request_ptr)
     request->block_size = 1;
 
     request->count = 0;
-    request->local_comm = MPI_COMM_NULL;
-    request->global_comm = MPI_COMM_NULL;
+    new (&request->local_comm) Communicator::CachedComm(MPI_COMM_NULL);
     request->num_ops = 0;
 
     request->tmpbuf = NULL;

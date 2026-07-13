@@ -33,17 +33,13 @@ int alltoall_locality_aware(alltoall_helper_ftn f,
         }
         int procs_per_group = ppn / groups_per_node;
 
+        int ppg = 0;
         if (comm->leader_comm != MPI_COMM_NULL)
         {
-            int ppg;
             MPI_Comm_size(comm->leader_comm, &ppg);
-            if (ppg != procs_per_group)
-            {
-                MPI_Comm_free(&(comm->leader_comm));
-            }
         }
 
-        if (comm->leader_comm == MPI_COMM_NULL)
+        if (comm->leader_comm == MPI_COMM_NULL || ppg != procs_per_group)
         {
             MPIL_Comm_leader_init(comm, procs_per_group);
         }

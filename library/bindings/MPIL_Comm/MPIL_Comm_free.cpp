@@ -26,6 +26,9 @@ int MPIL_Comm_free(MPIL_Comm** xcomm_ptr)
     xcomm->group_comm.~CachedComm();
     MPIL_Comm_topo_free(xcomm);
 
+    xcomm->leader_comm.~CachedComm();
+    xcomm->leader_group_comm.~CachedComm();
+    xcomm->leader_local_comm.~CachedComm();
     MPIL_Comm_leader_free(xcomm);
     MPIL_Comm_win_free(xcomm);
     MPIL_Comm_device_free(xcomm);

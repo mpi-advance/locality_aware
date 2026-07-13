@@ -63,18 +63,7 @@ int MPIL_Request_free(MPIL_Request** request_ptr)
         request->size_recvs = 0;
     }
 
-    // Added with MPI_Comm_dup, so need to free
-    // TODO: now that we have cached communicators, 
-    // can we avoid this dup??
-    if (request->global_comm != MPI_COMM_NULL)
-    {
-        MPI_Comm_free(&(request->global_comm));
-    }
-    if (request->local_comm != MPI_COMM_NULL)
-    {
-        MPI_Comm_free(&(request->local_comm));
-    }
-
+    request->local_comm.~CachedComm();
 
     if (request->tmpbuf)
     {

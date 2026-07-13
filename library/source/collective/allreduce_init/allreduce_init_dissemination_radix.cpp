@@ -58,7 +58,6 @@ int allreduce_init_dissemination_radix(const void* sendbuf,
     request->datatype = datatype;
     request->sendbuf = sendbuf;
     request->recvbuf = recvbuf;
-    MPI_Comm_dup(comm->global_comm, &(request->global_comm));
     MPIL_Alloc(&(request->tmpbuf), radix*type_size*count*num_procs);
 
 

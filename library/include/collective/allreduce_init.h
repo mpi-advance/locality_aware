@@ -152,8 +152,8 @@ int allreduce_init_dissemination_loc_core(
                                  MPI_Datatype datatype,
                                  MPI_Op op,
                                  MPI_Comm global_comm,
-                                 MPI_Comm group_comm,
-                                 MPI_Comm local_comm,
+                                 Communicator::CachedComm group_comm,
+                                 Communicator::CachedComm local_comm,
                                  int tag,
                                  MPIL_Info* info,
                                  MPIL_Request** req_ptr);
