@@ -18,8 +18,10 @@ int MPIL_Neighbor_alltoallv_topo(const void* sendbuf,
                                  MPIL_Comm* comm)
 {
     neighbor_alltoallv_ftn method;
-    bool gpu_aware = false;
+#if defined(GPU)
+    bool gpu_aware   = false;
     bool copy_to_cpu = false;
+#endif
 
     switch (mpil_neighbor_alltoallv_implementation)
     {
