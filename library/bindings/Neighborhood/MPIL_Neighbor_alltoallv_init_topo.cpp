@@ -55,6 +55,8 @@ int MPIL_Neighbor_alltoallv_init_topo(const void* sendbuf,
             break;
     }
 
+#if defined(GPU)
+#if defined(GPU_AWARE)
     if (gpu_aware)
     {
         return gpu_aware_neighbor_collective(method,
@@ -71,7 +73,8 @@ int MPIL_Neighbor_alltoallv_init_topo(const void* sendbuf,
                 info,
                 request_ptr);
     }
-    else if (copy_to_cpu)
+#endif
+    if (copy_to_cpu)
     {
         return copy_to_cpu_neighbor_alltoallv_init(method,
                 sendbuf,
@@ -87,6 +90,7 @@ int MPIL_Neighbor_alltoallv_init_topo(const void* sendbuf,
                 info,
                 request_ptr);
     }
+#endif
     return method(sendbuf,
                   sendcounts,
                   sdispls,
