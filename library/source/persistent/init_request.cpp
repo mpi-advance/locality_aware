@@ -29,9 +29,16 @@ void init_request(MPIL_Request** request_ptr)
     request->recv_size  = 0;
     request->block_size = 1;
 
+    request->count = 0;
+    new (&request->local_comm) Communicator::CachedComm(MPI_COMM_NULL);
+    request->num_ops = 0;
+
+    request->tmpbuf = NULL;
+
 #ifdef GPU
-    request->cpu_sendbuf = NULL;
-    request->cpu_recvbuf = NULL;
+    request->tmp_gpubuf = NULL;
+    request->gpu_sendbuf = NULL;
+    request->gpu_recvbuf = NULL;
 #endif
 
     *request_ptr = request;

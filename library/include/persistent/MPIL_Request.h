@@ -3,6 +3,8 @@
 
 #include <mpi.h>
 
+#include "communicator/global_comms.hpp"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -58,11 +60,21 @@ typedef struct _MPIL_Request
      * during first iteration **/
     int reorder;
 
+    /** @brief Variables needed for computation within persistent allreduce operations **/
+    int count;
+    MPI_Datatype datatype;
+    MPI_Op op;
+    Communicator::CachedComm local_comm;
+    int num_ops;
+
+    void* tmpbuf;
+
 #ifdef GPU
+    void* tmp_gpubuf;
     /** @brief Allocated cpu-based send buffers for copy-to-cpu algorithms **/
-    void* cpu_sendbuf;
+    const void* gpu_sendbuf;
     /** @brief Allocated cpu-based receive buffers for copy-to-cpu algorithms **/
-    void* cpu_recvbuf;
+    void* gpu_recvbuf;
 #endif
     /** @brief Function pointer to MPIL_Start or MPIL_neighbor_start **/
     int (*start_function)(struct _MPIL_Request* request);

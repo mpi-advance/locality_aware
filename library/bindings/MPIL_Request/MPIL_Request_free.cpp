@@ -63,20 +63,20 @@ int MPIL_Request_free(MPIL_Request** request_ptr)
         request->size_recvs = 0;
     }
 
+    request->local_comm.~CachedComm();
+
+    if (request->tmpbuf)
+    {
+        MPIL_Free(request->tmpbuf);
+    }
 
 // TODO : for safety, may want to check if allocated with malloc?
 #ifdef GPU  // Assuming cpu buffers allocated in pinned memory
-    int ierr;
-    if (request->cpu_sendbuf)
-    {
-        ierr = gpuFreeHost(request->cpu_sendbuf);
-        gpu_check(ierr);
-    }
-    if (request->cpu_recvbuf)
-    {
-        ierr = gpuFreeHost(request->cpu_recvbuf);
-        gpu_check(ierr);
-    }
+    if (request->gpu_sendbuf)
+        MPIL_Free(request->tmp_gpubuf);
+
+    if (request->gpu_recvbuf)
+        MPIL_Free(request->recvbuf);
 #endif
 
     free(request);

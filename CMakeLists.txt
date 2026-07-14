@@ -28,6 +28,7 @@ endif()
 option(USE_CUDA "Enable NVIDIA CUDA support" OFF)
 option(USE_HIP "Enable AMD HIP support" OFF)
 option(GPU_AWARE "Use GPU-Aware MPI, if GPU support is enabled" ON)
+option(USE_APU "System has APUs" OFF)
 option(ENABLE_UNIT_TESTS "Enable unit testing" ON)
 option(BENCHMARKS "Enable benchmarks" ON)
 
@@ -35,6 +36,9 @@ set(MPIRUN "mpirun" CACHE STRING "MPIRUN command")
 
 # Find MPI
 find_package(MPI REQUIRED)
+if(MPI_VERSION VERSION_GREATER_EQUAL "4.0")
+    add_definitions(-DMPI4)
+endif()
 set(EXTERNAL_LIBS "MPI::MPI_CXX")
 
 # Set default language of .cpp files
@@ -64,6 +68,10 @@ if (USE_CUDA OR USE_HIP)
 	  message(STATUS "HIP support enabled")
 	  target_compile_definitions(locality_aware PUBLIC HIP)
 	endif()
+
+    if (USE_APU)
+        add_definitions(-DAPU)
+    endif()
 endif()
 
 if (ENABLE_UNIT_TESTS)
@@ -78,10 +86,10 @@ function(make_executable filename flag)
 	add_executable(${exec_name} ${filename})
 	# Need the "math" library (m) for the C test to work correctly
 	target_link_libraries(${exec_name} locality_aware m)
-	
-	target_include_directories(${exec_name} PRIVATE 
+
+	target_include_directories(${exec_name} PRIVATE
 		$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/library/tests/tests>)
-    target_include_directories(${exec_name} PRIVATE 
+    target_include_directories(${exec_name} PRIVATE
 		$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/library/include/heterogeneous>)
 
 	if(${flag})

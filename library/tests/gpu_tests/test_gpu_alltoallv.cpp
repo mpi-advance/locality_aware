@@ -105,7 +105,7 @@ int main(int argc, char** argv)
                       MPI_COMM_WORLD);
 
         // Pairwise Alltoall
-        MPIL_Set_alltoall_algorithm(ALLTOALL_PAIRWISE);
+        MPIL_Set_alltoallv_algorithm(ALLTOALLV_PAIRWISE);
         MPIL_Alltoallv(local_data.data(),
                       sendcounts.data(),
                       sdispls.data(),
@@ -145,7 +145,7 @@ int main(int argc, char** argv)
         if (rank == 0) printf("PMPI equivalent on CPU and GPU\n");
 
         // GPU-Aware Pairwise Alltoall
-        MPIL_Set_alltoall_algorithm(ALLTOALL_GPU_PAIRWISE);
+        MPIL_Set_alltoallv_algorithm(ALLTOALLV_GPU_PAIRWISE);
         MPIL_Alltoallv(local_data_d,
                     sendcounts.data(),
                     sdispls.data(),
@@ -171,7 +171,7 @@ int main(int argc, char** argv)
         if (rank == 0) printf("GPU Pairwise equivalent to PMPI\n");
 
         // GPU-Aware Nonblocking Alltoall
-        MPIL_Set_alltoall_algorithm(ALLTOALL_GPU_NONBLOCKING);
+        MPIL_Set_alltoallv_algorithm(ALLTOALLV_GPU_NONBLOCKING);
         MPIL_Alltoallv(local_data_d,
                     sendcounts.data(),
                     sdispls.data(),
@@ -198,7 +198,7 @@ int main(int argc, char** argv)
 #endif
 
         // Copy-to-CPU Pairwise Alltoall
-        MPIL_Set_alltoall_algorithm(ALLTOALL_CTC_PAIRWISE);
+        MPIL_Set_alltoallv_algorithm(ALLTOALLV_CTC_PAIRWISE);
         MPIL_Alltoallv(local_data_d,
                     sendcounts.data(),
                     sdispls.data(),
@@ -224,7 +224,7 @@ int main(int argc, char** argv)
         if (rank == 0) printf("C2C pairwise equivalent to PMPI\n");
 
         // Copy-to-CPU Nonblocking Alltoall
-        MPIL_Set_alltoall_algorithm(ALLTOALL_CTC_NONBLOCKING);
+        MPIL_Set_alltoallv_algorithm(ALLTOALLV_CTC_NONBLOCKING);
         MPIL_Alltoallv(local_data_d,
                     sendcounts.data(),
                     sdispls.data(),

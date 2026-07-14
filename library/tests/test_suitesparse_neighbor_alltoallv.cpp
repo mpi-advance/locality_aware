@@ -163,7 +163,7 @@ void test_matrix(const char* filename)
 
     // 2. Node-Aware Communication
     std::fill(mpix_recv_vals.begin(), mpix_recv_vals.end(), 0);
-    MPIL_Set_alltoallv_neighbor_alogorithm(NEIGHBOR_ALLTOALLV_STANDARD);
+    MPIL_Set_alltoallv_neighbor_algorithm(NEIGHBOR_ALLTOALLV_STANDARD);
     MPIL_Neighbor_alltoallv(alltoallv_send_vals.data(),
                             A.send_comm.counts.data(),
                             A.send_comm.ptr.data(),
@@ -179,7 +179,7 @@ void test_matrix(const char* filename)
 
     // 3. MPI Advance - Optimized Communication
     std::fill(mpix_recv_vals.begin(), mpix_recv_vals.end(), 0);
-    MPIL_Set_alltoallv_neighbor_alogorithm(NEIGHBOR_ALLTOALLV_LOCALITY);
+    MPIL_Set_alltoallv_neighbor_algorithm(NEIGHBOR_ALLTOALLV_LOCALITY);
     MPIL_Neighbor_alltoallv(alltoallv_send_vals.data(),
                             A.send_comm.counts.data(),
                             A.send_comm.ptr.data(),

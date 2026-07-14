@@ -4,6 +4,10 @@ target_sources(locality_aware PRIVATE
 	Collective/MPIL_Alltoallv.cpp
     Collective/MPIL_Allreduce.cpp
     Collective/MPIL_Allgather.cpp
+    Collective/MPIL_Alltoall_init.cpp
+    Collective/MPIL_Alltoallv_init.cpp
+    Collective/MPIL_Allreduce_init.cpp
+    Collective/MPIL_Allgather_init.cpp
 	Collective/MPIL_Alltoall_crs.cpp
 	Collective/MPIL_Alltoallv_crs.cpp
 	MPIL_Alloc/MPIL_Alloc.cpp
@@ -33,6 +37,10 @@ if(USE_GPU)
 		"${CMAKE_CURRENT_SOURCE_DIR}/Collective/MPIL_Alltoallv.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/Collective/MPIL_Allgather.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/Collective/MPIL_Allreduce.cpp"
+		"${CMAKE_CURRENT_SOURCE_DIR}/Collective/MPIL_Alltoall_init.cpp"
+		"${CMAKE_CURRENT_SOURCE_DIR}/Collective/MPIL_Alltoallv_init.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/Collective/MPIL_Allgather_init.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/Collective/MPIL_Allreduce_init.cpp"
 		"${CMAKE_CURRENT_SOURCE_DIR}/Collective/MPIL_Alltoall_crs.cpp"
 		"${CMAKE_CURRENT_SOURCE_DIR}/Collective/MPIL_Alltoallv_crs.cpp"
 		"${CMAKE_CURRENT_SOURCE_DIR}/MPIL_Comm/MPIL_Comm_device_init.cpp"

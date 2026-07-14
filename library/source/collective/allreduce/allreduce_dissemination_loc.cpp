@@ -80,16 +80,12 @@ int allreduce_dissemination_ml(const void* sendbuf,
 
     // Convert to leader_comm (4 leaders per node)
     int num_leaders = 4;
+    int ppl;
     if (comm->leader_comm != MPI_COMM_NULL)
     {
-        int ppl;
         MPI_Comm_size(comm->leader_comm, &ppl);
-        if (ppn / num_leaders != ppl)
-        {
-            MPIL_Comm_leader_free(comm);
-        }
     }
-    if (comm->leader_comm == MPI_COMM_NULL)
+    if (comm->leader_comm == MPI_COMM_NULL || ppn / num_leaders != ppl)
         MPIL_Comm_leader_init(comm, ppn / num_leaders);
 
     return allreduce_dissemination_loc_core(
