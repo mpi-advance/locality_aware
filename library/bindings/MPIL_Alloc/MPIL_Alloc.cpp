@@ -29,7 +29,6 @@ int MPIL_GPU_Alloc(void** pointer, const int bytes)
     {
         gpuMalloc((void**)pointer, bytes);
     }
-    gpuDeviceSynchronize();
 
     return MPI_SUCCESS;
 }
