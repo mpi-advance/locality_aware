@@ -23,6 +23,73 @@ int MPIL_Neighbor_alltoallv_init_ext_topo(const void* sendbuf,
 {
     switch (mpil_neighbor_alltoallv_init_implementation)
     {
+#if defined(GPU)
+#if defined(GPU_AWARE)
+        case NEIGHBOR_ALLTOALLV_INIT_GPU_STANDARD:
+            return gpu_aware_neighbor_collective(neighbor_alltoallv_init_standard,
+                                                    sendbuf,
+                                                    sendcounts,
+                                                    sdispls,
+                                                    sendtype,
+                                                    recvbuf,
+                                                    recvcounts,
+                                                    rdispls,
+                                                    recvtype,
+                                                    topo,
+                                                    comm,
+                                                    info,
+                                                    request_ptr);
+        case NEIGHBOR_ALLTOALLV_INIT_GPU_LOCALITY:
+            return gpu_aware_neighbor_collective(neighbor_alltoallv_init_locality_ext,
+                                                        sendbuf,
+                                                        sendcounts,
+                                                        sdispls,
+                                                        global_sindices,
+                                                        sendtype,
+                                                        recvbuf,
+                                                        recvcounts,
+                                                        rdispls,
+                                                        global_rindices,
+                                                        recvtype,
+                                                        topo,
+                                                        comm,
+                                                        info,
+                                                        request_ptr);
+#endif
+
+        case NEIGHBOR_ALLTOALLV_INIT_CTC_STANDARD:
+            return copy_to_cpu_neighbor_alltoallv_init(neighbor_alltoallv_init_standard,
+                                                    sendbuf,
+                                                    sendcounts,
+                                                    sdispls,
+                                                    sendtype,
+                                                    recvbuf,
+                                                    recvcounts,
+                                                    rdispls,
+                                                    recvtype,
+                                                    topo,
+                                                    comm,
+                                                    info,
+                                                    request_ptr);
+        case NEIGHBOR_ALLTOALLV_INIT_CTC_LOCALITY:
+            return copy_to_cpu_neighbor_alltoallv_init(neighbor_alltoallv_init_locality_ext,
+                                                        sendbuf,
+                                                        sendcounts,
+                                                        sdispls,
+                                                        global_sindices,
+                                                        sendtype,
+                                                        recvbuf,
+                                                        recvcounts,
+                                                        rdispls,
+                                                        global_rindices,
+                                                        recvtype,
+                                                        topo,
+                                                        comm,
+                                                        info,
+                                                        request_ptr);
+#endif
+
+
         case NEIGHBOR_ALLTOALLV_INIT_STANDARD:
             return neighbor_alltoallv_init_standard(sendbuf,
                                                     sendcounts,

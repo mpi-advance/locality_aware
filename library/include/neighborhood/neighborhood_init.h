@@ -67,6 +67,22 @@ int neighbor_alltoallv_init_locality(const void* sendbuf,
                                      MPIL_Info* info,
                                      MPIL_Request** request_ptr);
 
+int neighbor_alltoallv_init_locality_helper(const void* sendbuf,
+                                     const int sendcounts[],
+                                     const int sdispls[],
+                                     MPI_Datatype sendtype,
+                                     void* recvbuf,
+                                     const int recvcounts[],
+                                     const int rdispls[],
+                                     MPI_Datatype recvtype,
+                                     MPIL_Topo* topo,
+                                     MPIL_Comm* comm,
+                                     MPIL_Info* info,
+                                     MPIL_Request** request_ptr,
+                                     MPIL_Alloc_ftn alloc_ftn,
+                                     MPIL_Free_ftn free_ftn);
+
+
 int neighbor_alltoallv_init_locality_ext(const void* sendbuffer,
                                          const int sendcounts[],
                                          const int sdispls[],
@@ -81,6 +97,24 @@ int neighbor_alltoallv_init_locality_ext(const void* sendbuffer,
                                          MPIL_Comm* comm,
                                          MPIL_Info* info,
                                          MPIL_Request** request_ptr);
+
+int neighbor_alltoallv_init_locality_ext_helper(const void* sendbuffer,
+                                         const int sendcounts[],
+                                         const int sdispls[],
+                                         const long global_sindices[],
+                                         MPI_Datatype sendtype,
+                                         void* recvbuffer,
+                                         const int recvcounts[],
+                                         const int rdispls[],
+                                         const long global_rindices[],
+                                         MPI_Datatype recvtype,
+                                         MPIL_Topo* topo,
+                                         MPIL_Comm* comm,
+                                         MPIL_Info* info,
+                                         MPIL_Request** request_ptr,
+                                         MPIL_Alloc_ftn alloc_ftn,
+                                         MPIL_Free_ftn free_ftn);
+
 
 void init_locality(const int n_sends,
                    const int* send_procs,
@@ -97,7 +131,8 @@ void init_locality(const int n_sends,
                    const MPI_Datatype sendtype,
                    const MPI_Datatype recvtype,
                    MPIL_Comm* mpil_comm,
-                   MPIL_Request* request);
+                   MPIL_Request* request,
+                   MPIL_Alloc_ftn alloc_ftn);
 
 
 void init_packing_buffers(MPIL_Request* request, 
@@ -108,7 +143,8 @@ void init_packing_buffers(MPIL_Request* request,
                             int size_recvs, 
                             int* recv_indices, 
                             int recv_size, 
-                            void* _recvbuf);
+                            void* _recvbuf,
+                            MPIL_Alloc_ftn alloc_ftn);
 
 
 #ifdef __cplusplus

@@ -2,6 +2,7 @@
 #define MPIL_REQUEST_H
 
 #include <mpi.h>
+#include "utils/MPIL_Alloc.h"
 
 #include "communicator/global_comms.hpp"
 
@@ -68,6 +69,7 @@ typedef struct _MPIL_Request
     int num_ops;
 
     void* tmpbuf;
+    MPIL_Free_ftn free_ftn;
 
 #ifdef GPU
     void* tmp_gpubuf;
