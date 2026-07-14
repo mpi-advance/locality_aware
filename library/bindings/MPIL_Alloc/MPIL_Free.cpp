@@ -18,10 +18,7 @@ int MPIL_Free(void* pointer)
 #if defined(GPU)
 int MPIL_GPU_Free(void* pointer)
 {
-    if (pointer != nullptr)
-    {
-        gpuFree(pointer);
-    }
+    gpuFree(pointer);
 
     return MPI_SUCCESS;
 }
