@@ -34,4 +34,18 @@ void clusteredFloydWarshall(double* adjacencyMatrix,
                             int* predecessors,
                             int numProcs);
 
+// exposed for testing only
+bool centerNodes(double* adjacencyMatrix, 
+                 int numProcs,
+                 int* clusterMembership,
+                 int numClusters,
+                 int* clusterCenters,
+                 double* shortestPathToCenter,
+                 int* clusterCenterPredecessors,
+                 int* numAsPredecessor,
+                 double* shortestPathWithinCluster,
+                 int* predecessors,
+                 int** clusters,
+                 int* clusterSizes);
+
 #endif // CLUSTERING_H
