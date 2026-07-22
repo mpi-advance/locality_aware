@@ -322,7 +322,7 @@ void balancedLloydClustering(double* adjacencyMatrix,
     {
         clusterCenters[0][a] = rand() % numProcs;
         int nodeIndex = clusterCenters[0][a];
-        shortestPathToCenter[a] = 0;
+        shortestPathToCenter[nodeIndex] = 0;
         clusterMembership[0][nodeIndex] = a;
         predecessorInCluster[nodeIndex] = nodeIndex;
         numAsPredecessor[nodeIndex] = 1;
@@ -355,7 +355,7 @@ void balancedLloydClustering(double* adjacencyMatrix,
         for (int i = 0; i < numProcs; i++)
         {
             int cluster = clusterMembership[0][i];
-            printf("i: %d, cluster: %d, positionInCluster: %d\n", i, cluster, positionInCluster[cluster]);
+            // printf("i: %d, cluster: %d, positionInCluster: %d\n", i, cluster, positionInCluster[cluster]);
             // clusters[cluster][positionInCluster[cluster]] = i;
             // positionInCluster[cluster]++;
         }

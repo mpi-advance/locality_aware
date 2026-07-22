@@ -107,11 +107,6 @@ int main()
     printf("Testing predecessors\n");
     testArrays(predecessors.data(), expectedPredecessors, numProcs * numProcs);
 
-    printf("[DEBUG] clusteredFloydWarshall completed successfully\n");
-    fflush(stdout);
-    printf("[DEBUG] Calling balancedBellmanFord...\n");
-    fflush(stdout);
-
     int clusterCenters[2] = {0, 5};
     std::vector<double> shortestPathToCenter(numProcs, INFINITY);
     std::fill(clusterMembership.begin(), clusterMembership.end(), -1);
@@ -226,6 +221,28 @@ int main()
                           clusterSizes.data());
 
     numErrors += testArrays(clusterCenters, expectedClusterCenters, 2);
+
+    int* newClusterCenters = (int*) malloc(numClusters * sizeof(int));
+    int* newClusterMembership = (int*) malloc(numProcs * sizeof(int));
+    balancedLloydClustering(adjacencyMatrix,
+                            &newClusterCenters,
+                            &newClusterMembership,
+                            1000,
+                            1000,
+                            numProcs,
+                            numClusters);
+
+    printf("Cluster Centers after balanced Lloyd clustering:\n%d\n%d\n", 
+        newClusterCenters[0], newClusterCenters[1]);
+
+    printf("Cluster Membership:\n");
+    for (int i = 0; i < numProcs; i++) 
+    {
+        printf("%d: %d\n", i, newClusterMembership[i]);
+    }
+
+    free(newClusterCenters);
+    free(newClusterMembership);
 
     if (numErrors == 0) 
     {
