@@ -186,14 +186,14 @@ int main(int argc, char* argv[])
     if (rank == 0)
     {
         printf("Adjacency Matrix\n\n");
-	for (int i = 0; i < num_procs; i++)
-	  {
-	    for (int j = 0; j < num_procs; j++)
-	      {
-		printf("%.10lf\t", adjacencyMatrix[i * num_procs + j]);
-	      }
-	    printf("\n");
-	  }
+        for (int i = 0; i < num_procs; i++)
+        {
+            for (int j = 0; j < num_procs; j++)
+            {
+                printf("%.10lf\t", adjacencyMatrix[i * num_procs + j]);
+            }
+            printf("\n");
+        }
     }
 
     int max_p = 11;
@@ -214,37 +214,37 @@ int main(int argc, char* argv[])
     int tag;
     MPIX_Comm_tag(xcomm, &tag);
 
-    double* times2 = naive_network_discovery(send_buffer, recv_buffer, size, tag, 100000);
-    MPI_Allgather(times, num_procs, MPI_DOUBLE, adjacencyMatrix, num_procs, MPI_DOUBLE, MPI_COMM_WORLD);
-    if (rank == 0)
-    {
-        printf("Adjacency matrix (message size: %d)\n", size);
-        for (int i = 0; i < num_procs; i++)
-        {
-            printf("%.10lf\t", times2[i]);
-        }
+    // double* times2 = naive_network_discovery(send_buffer, recv_buffer, size, tag, 100000);
+    // MPI_Allgather(times, num_procs, MPI_DOUBLE, adjacencyMatrix, num_procs, MPI_DOUBLE, MPI_COMM_WORLD);
+    // if (rank == 0)
+    // {
+    //     printf("Adjacency matrix (message size: %d)\n", size);
+    //     for (int i = 0; i < num_procs; i++)
+    //     {
+    //         printf("%.10lf\t", times2[i]);
+    //     }
 
-        printf("\n");
-    }
+    //     printf("\n");
+    // }
 
-    free(times);
-    free(recv_buffer);
-    free(send_buffer);
+    // free(times);
+    // free(recv_buffer);
+    // free(send_buffer);
 
-    MPI_Barrier(MPI_COMM_WORLD);
+    // MPI_Barrier(MPI_COMM_WORLD);
 
-    MPI_Comm node_comm;
-    MPI_Comm_split_type(MPI_COMM_WORLD, MPI_COMM_TYPE_SHARED, 0, MPI_INFO_NULL, &node_comm);
+    // MPI_Comm node_comm;
+    // MPI_Comm_split_type(MPI_COMM_WORLD, MPI_COMM_TYPE_SHARED, 0, MPI_INFO_NULL, &node_comm);
 
-    int node_rank, ppn;
-    MPI_Comm_rank(node_comm, &node_rank);
-    MPI_Comm_size(node_comm, &ppn);
+    // int node_rank, ppn;
+    // MPI_Comm_rank(node_comm, &node_rank);
+    // MPI_Comm_size(node_comm, &ppn);
 
-    MPI_Comm group_comm;
-    MPI_Comm_split(MPI_COMM_WORLD, node_rank, rank, &group_comm);
+    // MPI_Comm group_comm;
+    // MPI_Comm_split(MPI_COMM_WORLD, node_rank, rank, &group_comm);
 
-    int node;
-    MPI_Comm_rank(group_comm, &node);
+    // int node;
+    // MPI_Comm_rank(group_comm, &node);
 
     MPI_Finalize();
     
