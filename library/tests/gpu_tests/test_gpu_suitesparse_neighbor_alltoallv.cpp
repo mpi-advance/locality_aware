@@ -9,9 +9,11 @@
 #include <vector>
 
 #include "locality_aware.h"
-#include "tests/common.hpp"
-#include "tests/par_binary_IO.hpp"
-#include "tests/sparse_mat.hpp"
+#include "gpu_utils.h"
+
+#include "common.hpp"
+#include "par_binary_IO.hpp"
+#include "sparse_mat.hpp"
 
 void compare_neighbor_alltoallv_results(std::vector<int>& pmpi_recv_vals,
                                         std::vector<int>& mpix_recv_vals,
@@ -155,12 +157,12 @@ void test_matrix(const char* filename)
         delete[] recv_counts;
     }
     compare_neighbor_alltoallv_results(
-        pmpi, mpix, A.recv_comm.size_msgs);
+        pmpi, mpil, A.recv_comm.size_msgs);
 
 
     // Standard MPIL_Neighbor collective on CPU
     MPIL_Set_alltoallv_neighbor_algorithm(NEIGHBOR_ALLTOALLV_STANDARD);
-    std::fill(mpix.begin(), mpix.end(), 0);
+    std::fill(mpil.begin(), mpil.end(), 0);
     MPIL_Neighbor_alltoallv_topo(alltoallv_send_vals.data(),
                                  A.send_comm.counts.data(),
                                  A.send_comm.ptr.data(),
@@ -189,7 +191,7 @@ void test_matrix(const char* filename)
                                  MPI_INT,
                                  topo,
                                  xcomm);
-    gpuMemcpy(mpix.data(), gpu_recvbuf, A.recv_comm.size_msgs*sizeof(int),
+    gpuMemcpy(mpil.data(), gpu_recvbuf, A.recv_comm.size_msgs*sizeof(int),
             gpuMemcpyDeviceToHost);
     compare_neighbor_alltoallv_results(
         pmpi, mpil, A.recv_comm.size_msgs);
@@ -207,7 +209,7 @@ void test_matrix(const char* filename)
                                  MPI_INT,
                                  topo,
                                  xcomm);
-    gpuMemcpy(mpix.data(), gpu_recvbuf, A.recv_comm.size_msgs*sizeof(int),
+    gpuMemcpy(mpil.data(), gpu_recvbuf, A.recv_comm.size_msgs*sizeof(int),
             gpuMemcpyDeviceToHost);
     compare_neighbor_alltoallv_results(
         pmpi, mpil, A.recv_comm.size_msgs);
@@ -228,7 +230,7 @@ void test_matrix(const char* filename)
                                  MPI_INT,
                                  topo,
                                  xcomm);
-    gpuMemcpy(mpix.data(), gpu_recvbuf, A.recv_comm.size_msgs*sizeof(int),
+    gpuMemcpy(mpil.data(), gpu_recvbuf, A.recv_comm.size_msgs*sizeof(int),
             gpuMemcpyDeviceToHost);
     compare_neighbor_alltoallv_results(
         pmpi, mpil, A.recv_comm.size_msgs);
@@ -246,19 +248,18 @@ void test_matrix(const char* filename)
                                  MPI_INT,
                                  topo,
                                  xcomm);
-    gpuMemcpy(mpix.data(), gpu_recvbuf, A.recv_comm.size_msgs*sizeof(int),
+    gpuMemcpy(mpil.data(), gpu_recvbuf, A.recv_comm.size_msgs*sizeof(int),
             gpuMemcpyDeviceToHost);
     compare_neighbor_alltoallv_results(
         pmpi, mpil, A.recv_comm.size_msgs);
 
-
     if (A.recv_comm.size_msgs)
     {
-        gpuFree(&gpu_recvbuf);
+        gpuFree(gpu_recvbuf);
     }
     if (A.send_comm.size_msgs)
     {
-        gpuFree(&gpu_sendbuf);
+        gpuFree(gpu_sendbuf);
     }    
 
     MPIL_Topo_free(&topo);

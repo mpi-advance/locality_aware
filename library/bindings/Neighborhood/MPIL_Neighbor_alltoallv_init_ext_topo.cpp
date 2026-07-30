@@ -2,6 +2,10 @@
 #include "locality_aware.h"
 #include "neighborhood/neighborhood_init.h"
 
+#if defined(GPU)
+#include "heterogeneous/gpu_neighbor_collective.h"
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -72,7 +76,7 @@ int MPIL_Neighbor_alltoallv_init_ext_topo(const void* sendbuf,
                                                     info,
                                                     request_ptr);
         case NEIGHBOR_ALLTOALLV_INIT_CTC_LOCALITY:
-            return copy_to_cpu_neighbor_alltoallv_init(neighbor_alltoallv_init_locality_ext,
+            return copy_to_cpu_neighbor_alltoallv_init_ext(neighbor_alltoallv_init_locality_ext,
                                                         sendbuf,
                                                         sendcounts,
                                                         sdispls,

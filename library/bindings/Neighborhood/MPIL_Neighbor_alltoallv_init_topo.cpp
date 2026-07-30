@@ -1,6 +1,10 @@
 #include "locality_aware.h"
 #include "neighborhood/neighborhood_init.h"
 
+#if defined(GPU)
+#include "heterogeneous/gpu_neighbor_collective.h"
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif

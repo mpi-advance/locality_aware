@@ -5,6 +5,10 @@
 #include "neighborhood/neighborhood_init.h"
 #include "persistent/MPIL_Request.h"
 
+#if defined(GPU)
+#include "heterogeneous/gpu_utils.h"
+#endif
+
 int neighbor_start(MPIL_Request* request)
 {
     if (request == NULL)
@@ -13,12 +17,12 @@ int neighbor_start(MPIL_Request* request)
     }
 
 #if defined(GPU)
-    int gpu_error;
     if (request->gpu_sendbuf)
     {
 #if defined(APU)
         memcpy(request->tmp_gpubuf, request->gpu_sendbuf, request->size_sends);
 #else
+        int gpu_error;
         gpu_error = gpuMemcpyAsync(request->tmp_gpubuf, request->gpu_sendbuf, request->size_sends, 
                 gpuMemcpyDeviceToHost, 0);
         gpu_check(gpu_error);
@@ -53,9 +57,11 @@ int neighbor_start(MPIL_Request* request)
             for (int i = 0; i < request->size_sends; i++)
             {
                 idx = request->send_indices[i];
-                memcpy((char*)(request->tmp_sendbuf) + (i*request->send_size), 
-                        (char*)(request->sendbuf) + (idx*request->send_size), 
-                        request->send_size);        
+                MPI_Sendrecv((char*)(request->sendbuf) + (idx*request->send_size),
+                        request->send_size, MPI_BYTE, 0, 0, 
+                        (char*)(request->tmp_sendbuf) + (i*request->send_size),
+                        request->send_size, MPI_BYTE, 0, 0, 
+                        MPI_COMM_SELF, MPI_STATUS_IGNORE);
             }
         }
         ierr += MPI_Startall(request->n_msgs, request->requests);

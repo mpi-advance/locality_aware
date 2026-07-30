@@ -1,5 +1,9 @@
 #include "locality_aware.h"
 
+#if defined(GPU)
+#include "heterogeneous/gpu_utils.h"
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
