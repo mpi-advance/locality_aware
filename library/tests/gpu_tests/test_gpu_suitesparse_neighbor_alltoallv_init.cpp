@@ -53,6 +53,8 @@ void test_matrix(const char* filename)
     void* gpu_sendbuf = NULL;
     void* gpu_recvbuf = NULL;
 
+    int ierr;
+
     if (A.on_proc.n_cols)
     {
         send_vals.resize(A.on_proc.n_cols);
@@ -68,23 +70,26 @@ void test_matrix(const char* filename)
         pmpi.resize(A.recv_comm.size_msgs);
         mpil.resize(A.recv_comm.size_msgs);
         device_data.resize(A.recv_comm.size_msgs);
-        gpuMalloc(&gpu_recvbuf, A.recv_comm.size_msgs * sizeof(int));
+        ierr = gpuMalloc(&gpu_recvbuf, A.recv_comm.size_msgs * sizeof(int));
+        gpu_check(ierr);
     }
 
     if (A.send_comm.size_msgs)
     {
         alltoallv_send_vals.resize(A.send_comm.size_msgs);
         send_indices.resize(A.send_comm.size_msgs);
-        gpuMalloc(&gpu_sendbuf, A.send_comm.size_msgs * sizeof(int));
+        ierr = gpuMalloc(&gpu_sendbuf, A.send_comm.size_msgs * sizeof(int));
+        gpu_check(ierr);
         for (int i = 0; i < A.send_comm.size_msgs; i++)
         {
             idx                    = A.send_comm.idx[i];
             alltoallv_send_vals[i] = send_vals[idx];
             send_indices[i]        = A.send_comm.idx[i] + A.first_col;
         }
-        gpuMemcpy(gpu_sendbuf, alltoallv_send_vals.data(), 
+        ierr = gpuMemcpy(gpu_sendbuf, alltoallv_send_vals.data(), 
                 A.send_comm.size_msgs * sizeof(int),
                 gpuMemcpyHostToDevice);
+        gpu_check(ierr);
     }
 
     communicate(A, send_vals, mpil, MPI_INT);
@@ -188,7 +193,8 @@ void test_matrix(const char* filename)
 #if defined(GPU_AWARE)
     // Standard MPIL_Nieghbor persistent collective on GPU
     MPIL_Set_alltoallv_neighbor_init_algorithm(NEIGHBOR_ALLTOALLV_INIT_GPU_STANDARD);
-    gpuMemset(gpu_recvbuf, 0, A.recv_comm.size_msgs*sizeof(int));
+    ierr = gpuMemset(gpu_recvbuf, 0, A.recv_comm.size_msgs*sizeof(int));
+    gpu_check(ierr);
     MPIL_Neighbor_alltoallv_init_topo(gpu_sendbuf,
                                  A.send_comm.counts.data(),
                                  A.send_comm.ptr.data(),
@@ -204,14 +210,16 @@ void test_matrix(const char* filename)
     MPIL_Start(xrequest);
     MPIL_Wait(xrequest, MPI_STATUS_IGNORE);
     MPIL_Request_free(&xrequest);
-    gpuMemcpy(mpil.data(), gpu_recvbuf, A.recv_comm.size_msgs*sizeof(int),
+    ierr = gpuMemcpy(mpil.data(), gpu_recvbuf, A.recv_comm.size_msgs*sizeof(int),
             gpuMemcpyDeviceToHost);
+    gpu_check(ierr);
     compare_neighbor_alltoallv_results(
         pmpi, mpil, A.recv_comm.size_msgs);
 
     // Locality MPIL_Nieghbor collective on GPU
     MPIL_Set_alltoallv_neighbor_init_algorithm(NEIGHBOR_ALLTOALLV_INIT_GPU_LOCALITY);
-    gpuMemset(gpu_recvbuf, 0, A.recv_comm.size_msgs*sizeof(int));
+    ierr = gpuMemset(gpu_recvbuf, 0, A.recv_comm.size_msgs*sizeof(int));
+    gpu_check(ierr);
     MPIL_Neighbor_alltoallv_init_topo(gpu_sendbuf,
                                  A.send_comm.counts.data(),
                                  A.send_comm.ptr.data(),
@@ -227,15 +235,17 @@ void test_matrix(const char* filename)
     MPIL_Start(xrequest);
     MPIL_Wait(xrequest, MPI_STATUS_IGNORE);
     MPIL_Request_free(&xrequest);
-    gpuMemcpy(mpil.data(), gpu_recvbuf, A.recv_comm.size_msgs*sizeof(int),
+    ierr = gpuMemcpy(mpil.data(), gpu_recvbuf, A.recv_comm.size_msgs*sizeof(int),
             gpuMemcpyDeviceToHost);
+    gpu_check(ierr);
     compare_neighbor_alltoallv_results(
         pmpi, mpil, A.recv_comm.size_msgs);
 
 
     // Extended: Standard MPIL_Nieghbor persistent collective on GPU
     MPIL_Set_alltoallv_neighbor_init_algorithm(NEIGHBOR_ALLTOALLV_INIT_GPU_STANDARD);
-    gpuMemset(gpu_recvbuf, 0, A.recv_comm.size_msgs*sizeof(int));
+    ierr = gpuMemset(gpu_recvbuf, 0, A.recv_comm.size_msgs*sizeof(int));
+    gpu_check(ierr);
     MPIL_Neighbor_alltoallv_init_ext_topo(gpu_sendbuf,
                                  A.send_comm.counts.data(),
                                  A.send_comm.ptr.data(),
@@ -253,14 +263,16 @@ void test_matrix(const char* filename)
     MPIL_Start(xrequest);
     MPIL_Wait(xrequest, MPI_STATUS_IGNORE);
     MPIL_Request_free(&xrequest);
-    gpuMemcpy(mpil.data(), gpu_recvbuf, A.recv_comm.size_msgs*sizeof(int),
+    ierr = gpuMemcpy(mpil.data(), gpu_recvbuf, A.recv_comm.size_msgs*sizeof(int),
             gpuMemcpyDeviceToHost);
+    gpu_check(ierr);
     compare_neighbor_alltoallv_results(
         pmpi, mpil, A.recv_comm.size_msgs);
 
     // Extended: Locality MPIL_Nieghbor collective on GPU
     MPIL_Set_alltoallv_neighbor_init_algorithm(NEIGHBOR_ALLTOALLV_INIT_GPU_LOCALITY);
-    gpuMemset(gpu_recvbuf, 0, A.recv_comm.size_msgs*sizeof(int));
+    ierr = gpuMemset(gpu_recvbuf, 0, A.recv_comm.size_msgs*sizeof(int));
+    gpu_check(ierr);
     MPIL_Neighbor_alltoallv_init_ext_topo(gpu_sendbuf,
                                  A.send_comm.counts.data(),
                                  A.send_comm.ptr.data(),
@@ -278,8 +290,9 @@ void test_matrix(const char* filename)
     MPIL_Start(xrequest);
     MPIL_Wait(xrequest, MPI_STATUS_IGNORE);
     MPIL_Request_free(&xrequest);
-    gpuMemcpy(mpil.data(), gpu_recvbuf, A.recv_comm.size_msgs*sizeof(int),
+    ierr = gpuMemcpy(mpil.data(), gpu_recvbuf, A.recv_comm.size_msgs*sizeof(int),
             gpuMemcpyDeviceToHost);
+    gpu_check(ierr);
     compare_neighbor_alltoallv_results(
         pmpi, mpil, A.recv_comm.size_msgs);
 #endif
@@ -287,7 +300,8 @@ void test_matrix(const char* filename)
 
     // Standard MPIL_Nieghbor persistent collective on GPU
     MPIL_Set_alltoallv_neighbor_init_algorithm(NEIGHBOR_ALLTOALLV_INIT_CTC_STANDARD);
-    gpuMemset(gpu_recvbuf, 0, A.recv_comm.size_msgs*sizeof(int));
+    ierr = gpuMemset(gpu_recvbuf, 0, A.recv_comm.size_msgs*sizeof(int));
+    gpu_check(ierr);
     MPIL_Neighbor_alltoallv_init_topo(gpu_sendbuf,
                                  A.send_comm.counts.data(),
                                  A.send_comm.ptr.data(),
@@ -303,14 +317,16 @@ void test_matrix(const char* filename)
     MPIL_Start(xrequest);
     MPIL_Wait(xrequest, MPI_STATUS_IGNORE);
     MPIL_Request_free(&xrequest);
-    gpuMemcpy(mpil.data(), gpu_recvbuf, A.recv_comm.size_msgs*sizeof(int),
+    ierr = gpuMemcpy(mpil.data(), gpu_recvbuf, A.recv_comm.size_msgs*sizeof(int),
             gpuMemcpyDeviceToHost);
+    gpu_check(ierr);
     compare_neighbor_alltoallv_results(
         pmpi, mpil, A.recv_comm.size_msgs);
 
     // Locality MPIL_Nieghbor collective on GPU
     MPIL_Set_alltoallv_neighbor_init_algorithm(NEIGHBOR_ALLTOALLV_INIT_CTC_LOCALITY);
-    gpuMemset(gpu_recvbuf, 0, A.recv_comm.size_msgs*sizeof(int));
+    ierr = gpuMemset(gpu_recvbuf, 0, A.recv_comm.size_msgs*sizeof(int));
+    gpu_check(ierr);
     MPIL_Neighbor_alltoallv_init_topo(gpu_sendbuf,
                                  A.send_comm.counts.data(),
                                  A.send_comm.ptr.data(),
@@ -326,15 +342,17 @@ void test_matrix(const char* filename)
     MPIL_Start(xrequest);
     MPIL_Wait(xrequest, MPI_STATUS_IGNORE);
     MPIL_Request_free(&xrequest);
-    gpuMemcpy(mpil.data(), gpu_recvbuf, A.recv_comm.size_msgs*sizeof(int),
+    ierr = gpuMemcpy(mpil.data(), gpu_recvbuf, A.recv_comm.size_msgs*sizeof(int),
             gpuMemcpyDeviceToHost);
+    gpu_check(ierr);
     compare_neighbor_alltoallv_results(
         pmpi, mpil, A.recv_comm.size_msgs);
 
 
     // Extended: Standard MPIL_Nieghbor persistent collective on GPU
     MPIL_Set_alltoallv_neighbor_init_algorithm(NEIGHBOR_ALLTOALLV_INIT_CTC_STANDARD);
-    gpuMemset(gpu_recvbuf, 0, A.recv_comm.size_msgs*sizeof(int));
+    ierr = gpuMemset(gpu_recvbuf, 0, A.recv_comm.size_msgs*sizeof(int));
+    gpu_check(ierr);
     MPIL_Neighbor_alltoallv_init_ext_topo(gpu_sendbuf,
                                  A.send_comm.counts.data(),
                                  A.send_comm.ptr.data(),
@@ -352,14 +370,16 @@ void test_matrix(const char* filename)
     MPIL_Start(xrequest);
     MPIL_Wait(xrequest, MPI_STATUS_IGNORE);
     MPIL_Request_free(&xrequest);
-    gpuMemcpy(mpil.data(), gpu_recvbuf, A.recv_comm.size_msgs*sizeof(int),
+    ierr = gpuMemcpy(mpil.data(), gpu_recvbuf, A.recv_comm.size_msgs*sizeof(int),
             gpuMemcpyDeviceToHost);
+    gpu_check(ierr);
     compare_neighbor_alltoallv_results(
         pmpi, mpil, A.recv_comm.size_msgs);
 
     // Extended: Locality MPIL_Nieghbor collective on GPU
     MPIL_Set_alltoallv_neighbor_init_algorithm(NEIGHBOR_ALLTOALLV_INIT_CTC_LOCALITY);
-    gpuMemset(gpu_recvbuf, 0, A.recv_comm.size_msgs*sizeof(int));
+    ierr = gpuMemset(gpu_recvbuf, 0, A.recv_comm.size_msgs*sizeof(int));
+    gpu_check(ierr);
     MPIL_Neighbor_alltoallv_init_ext_topo(gpu_sendbuf,
                                  A.send_comm.counts.data(),
                                  A.send_comm.ptr.data(),
@@ -377,18 +397,21 @@ void test_matrix(const char* filename)
     MPIL_Start(xrequest);
     MPIL_Wait(xrequest, MPI_STATUS_IGNORE);
     MPIL_Request_free(&xrequest);
-    gpuMemcpy(mpil.data(), gpu_recvbuf, A.recv_comm.size_msgs*sizeof(int),
+    ierr = gpuMemcpy(mpil.data(), gpu_recvbuf, A.recv_comm.size_msgs*sizeof(int),
             gpuMemcpyDeviceToHost);
+    gpu_check(ierr);
     compare_neighbor_alltoallv_results(
         pmpi, mpil, A.recv_comm.size_msgs);
 
     if (A.recv_comm.size_msgs)
     {
-        gpuFree(gpu_recvbuf);
+        ierr = gpuFree(gpu_recvbuf);
+        gpu_check(ierr);
     }
     if (A.send_comm.size_msgs)
     {
-        gpuFree(gpu_sendbuf);
+        ierr = gpuFree(gpu_sendbuf);
+        gpu_check(ierr);
     }    
 
     MPIL_Topo_free(&topo);
