@@ -23,6 +23,29 @@ int neighbor_alltoallv_init_locality_ext(const void* sendbuffer,
                                          MPIL_Info* info,
                                          MPIL_Request** request_ptr)
 {
+    return neighbor_alltoallv_init_locality_ext_helper(sendbuffer, sendcounts, 
+            sdispls, global_sindices, sendtype, recvbuffer, recvcounts,
+            rdispls, global_rindices, recvtype, topo, comm, info, request_ptr,
+            MPIL_Alloc, MPIL_Free);
+}
+
+int neighbor_alltoallv_init_locality_ext_helper(const void* sendbuffer,
+                                         const int sendcounts[],
+                                         const int sdispls[],
+                                         const long global_sindices[],
+                                         MPI_Datatype sendtype,
+                                         void* recvbuffer,
+                                         const int recvcounts[],
+                                         const int rdispls[],
+                                         const long global_rindices[],
+                                         MPI_Datatype recvtype,
+                                         MPIL_Topo* topo,
+                                         MPIL_Comm* comm,
+                                         MPIL_Info* info,
+                                         MPIL_Request** request_ptr,
+                                         MPIL_Alloc_ftn alloc_ftn,
+                                         MPIL_Free_ftn free_ftn)
+{
     if (comm->local_comm == MPI_COMM_NULL)
     {
         MPIL_Comm_topo_init(comm);
@@ -99,8 +122,10 @@ int neighbor_alltoallv_init_locality_ext(const void* sendbuffer,
                   sendtype,
                   recvtype,
                   comm,  // communicator used in dist_graph_create_adjacent
-                  request);
+                  request,
+                  alloc_ftn);
 
+    request->free_ftn = free_ftn;
 
     *request_ptr = request;
 

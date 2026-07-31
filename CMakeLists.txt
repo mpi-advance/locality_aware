@@ -41,6 +41,7 @@ if(MPI_VERSION VERSION_GREATER_EQUAL "4.0")
 endif()
 set(EXTERNAL_LIBS "MPI::MPI_CXX")
 
+
 # Set default language of .cpp files
 set(locality_aware_LANG CXX)
 add_library(locality_aware "")
@@ -91,6 +92,7 @@ function(make_executable filename flag)
 		$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/library/tests/tests>)
     target_include_directories(${exec_name} PRIVATE
 		$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/library/include/heterogeneous>)
+    add_compile_definitions(TEST_DATA_DIR="${CMAKE_SOURCE_DIR}/test_data")
 
 	if(${flag})
 		set(locality_test_name ${exec_name}_Test)

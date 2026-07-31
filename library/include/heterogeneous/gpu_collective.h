@@ -32,7 +32,6 @@ int copy_to_cpu_allreduce(Ftn f,
                 MPIL_Comm* comm)
 {
     int ierr = 0;
-    int gpu_error = 0;
 
     int bytes;
     MPI_Type_size(datatype, &bytes);
@@ -43,6 +42,7 @@ int copy_to_cpu_allreduce(Ftn f,
 #if defined(APU)
     memcpy(cpu_sendbuf, sendbuf, count*bytes);
 #else
+    int gpu_error = 0;
     gpu_error = gpuMemcpyAsync(cpu_sendbuf, sendbuf, count*bytes,
             gpuMemcpyDeviceToHost, 0);
     gpu_check(gpu_error);
@@ -80,7 +80,6 @@ int copy_to_cpu_allgather(Ftn f,
                 MPIL_Comm* comm)
 {
     int ierr = 0;
-    int gpu_error;
 
     int num_procs;
     MPI_Comm_size(comm->global_comm, &num_procs);
@@ -95,6 +94,7 @@ int copy_to_cpu_allgather(Ftn f,
 #if defined(APU)
     memcpy(cpu_sendbuf, sendbuf, sendcount*send_bytes);
 #else
+    int gpu_error;
     gpu_error = gpuMemcpyAsync(cpu_sendbuf, sendbuf, sendcount*send_bytes,
             gpuMemcpyDeviceToHost, 0);
     gpu_check(gpu_error);
@@ -133,7 +133,6 @@ int copy_to_cpu_alltoall(Ftn f,
         MPIL_Comm* comm)
 {
     int ierr = 0;
-    int gpu_error;
 
     int num_procs;
     MPI_Comm_size(comm->global_comm, &num_procs);
@@ -148,6 +147,7 @@ int copy_to_cpu_alltoall(Ftn f,
 #if defined(APU)
     memcpy(cpu_sendbuf, sendbuf, sendcount*num_procs*send_bytes);
 #else
+    int gpu_error;
     gpu_error = gpuMemcpyAsync(cpu_sendbuf, sendbuf, 
             sendcount*num_procs*send_bytes,
             gpuMemcpyDeviceToHost, 0);
@@ -189,7 +189,6 @@ int copy_to_cpu_alltoallv(Ftn f,
             MPIL_Comm* comm)
 {
     int ierr = 0;
-    int gpu_error;
 
     int num_procs;
     MPI_Comm_size(comm->global_comm, &num_procs);
@@ -212,6 +211,7 @@ int copy_to_cpu_alltoallv(Ftn f,
 #if defined(APU)
     memcpy(cpu_sendbuf, sendbuf, sendsize*send_bytes);
 #else
+    int gpu_error;
     gpu_error = gpuMemcpyAsync(cpu_sendbuf, sendbuf, 
             sendsize*send_bytes,
             gpuMemcpyDeviceToHost, 0);
@@ -259,7 +259,6 @@ int copy_to_cpu_allreduce_init(Ftn f,
                 MPIL_Request** req_ptr)
 {
     int ierr = 0;
-    int gpu_error = 0;
 
     int bytes;
     MPI_Type_size(datatype, &bytes);
@@ -294,7 +293,6 @@ int copy_to_cpu_allgather_init(Ftn f,
                 MPIL_Request** req_ptr)
 {
     int ierr = 0;
-    int gpu_error;
 
     int num_procs;
     MPI_Comm_size(comm->global_comm, &num_procs);
@@ -337,7 +335,6 @@ int copy_to_cpu_alltoall_init(Ftn f,
         MPIL_Request** req_ptr)
 {
     int ierr = 0;
-    int gpu_error;
 
     int num_procs;
     MPI_Comm_size(comm->global_comm, &num_procs);
@@ -381,7 +378,6 @@ int copy_to_cpu_alltoallv_init(Ftn f,
             MPIL_Request** req_ptr)
 {
     int ierr = 0;
-    int gpu_error;
 
     int num_procs;
     MPI_Comm_size(comm->global_comm, &num_procs);

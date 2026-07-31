@@ -81,8 +81,8 @@ void test_matrix(const char* filename)
     MPI_Status status;
     MPIL_Comm* xcomm;
     MPIL_Request* xrequest;
-    MPIL_Info* xinfo;
 
+    MPIL_Info* xinfo;
     MPIL_Info_init(&xinfo);
 
     int* s = A.recv_comm.procs.data();

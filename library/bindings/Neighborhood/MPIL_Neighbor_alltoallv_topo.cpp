@@ -2,6 +2,10 @@
 #include "locality_aware.h"
 #include "neighborhood/neighbor.h"
 
+#if defined(GPU)
+#include "heterogeneous/gpu_neighbor_collective.h"
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -18,9 +22,33 @@ int MPIL_Neighbor_alltoallv_topo(const void* sendbuf,
                                  MPIL_Comm* comm)
 {
     neighbor_alltoallv_ftn method;
+#if defined(GPU)
+    bool gpu_aware   = false;
+    bool copy_to_cpu = false;
+#endif
 
     switch (mpil_neighbor_alltoallv_implementation)
     {
+#if defined(GPU)
+#if defined(GPU_AWARE)
+        case NEIGHBOR_ALLTOALLV_GPU_STANDARD:
+            method = neighbor_alltoallv_standard;
+            gpu_aware = true;
+            break;
+        case NEIGHBOR_ALLTOALLV_GPU_LOCALITY:
+            method = neighbor_alltoallv_locality;
+            gpu_aware = true;
+            break;
+#endif
+        case NEIGHBOR_ALLTOALLV_CTC_STANDARD:
+            method = neighbor_alltoallv_standard;
+            copy_to_cpu = true;
+            break;
+        case NEIGHBOR_ALLTOALLV_CTC_LOCALITY:
+            method = neighbor_alltoallv_locality;
+            copy_to_cpu = true;
+            break;
+#endif
         case NEIGHBOR_ALLTOALLV_STANDARD:
             method = neighbor_alltoallv_standard;
             break;
@@ -32,6 +60,38 @@ int MPIL_Neighbor_alltoallv_topo(const void* sendbuf,
             break;
     }
 
+#if defined(GPU)
+#if defined(GPU_AWARE)
+    if (gpu_aware)
+    {
+        return gpu_aware_neighbor_collective(method,
+                sendbuf,
+                sendcounts,
+                sdispls,
+                sendtype,
+                recvbuf,
+                recvcounts,
+                rdispls,
+                recvtype,
+                topo,
+                comm);
+    }
+#endif
+    if (copy_to_cpu)
+    {
+        return copy_to_cpu_neighbor_alltoallv(method,
+                sendbuf,
+                sendcounts,
+                sdispls,
+                sendtype,
+                recvbuf, 
+                recvcounts,
+                rdispls,
+                recvtype,
+                topo,
+                comm);
+    }
+#endif
     return method(sendbuf,
                   sendcounts,
                   sdispls,

@@ -68,13 +68,24 @@ int neighbor_alltoallv_locality(const void* sendbuf,
     {
         new_proc_idx[src_tmp[i]] = i;
     }
-    for (int i = 0; i < recv_nnz; i++)
+    for (int i = 0; i < topo->indegree; i++)
     {
+        if (recvcounts[i] == 0)
+        {
+            continue;
+        }
         proc = topo->sources[i];
         idx  = new_proc_idx[proc];
-        memcpy(&(recvvals[rdispls[i] * recv_bytes]),
-               &(recvvals_tmp[rdispls_tmp[idx] * recv_bytes]),
-               recvcounts[i] * recv_bytes);
+        MPI_Sendrecv(&(recvvals_tmp[rdispls_tmp[idx] * recv_bytes]),
+                recvcounts[i]*recv_bytes,
+                MPI_BYTE, 
+                0, 0,
+                &(recvvals[rdispls[i] * recv_bytes]),
+                recvcounts[i]*recv_bytes,
+                MPI_BYTE,
+                0, 0,
+                MPI_COMM_SELF, 
+                MPI_STATUS_IGNORE);
     }
     free(new_proc_idx);
 
