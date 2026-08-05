@@ -14,4 +14,5 @@ target_sources(locality_aware PRIVATE
     standard/neighbor_alltoallv_collective.cpp
 	standard/neighbor_alltoallv_init_standard.cpp
     standard/neighbor_alltoallv_init_collective.cpp
+    standard/neighbor_alltoallv_init_rma.cpp
 )

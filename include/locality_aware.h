@@ -258,7 +258,8 @@ enum NeighborAlltoallvInitMethod
 #endif
     NEIGHBOR_ALLTOALLV_INIT_STANDARD,
     NEIGHBOR_ALLTOALLV_INIT_LOCALITY,
-    NEIGHBOR_ALLTOALLV_INIT_COLL_A2A
+    NEIGHBOR_ALLTOALLV_INIT_COLL_A2A,
+    NEIGHBOR_ALLTOALLV_INIT_RMA
 };
 
 /** @brief Enumeration of implemented alltoall compressed row storage algorithms @ingroup

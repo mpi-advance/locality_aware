@@ -206,6 +206,48 @@ void test_matrix(const char* filename)
     compare_neighbor_alltoallv_results(
         pmpi_recv_vals, mpix_recv_vals, A.recv_comm.size_msgs);
 
+    // 4. MPI Advance - COLLECTIVE    
+    MPIL_Set_alltoallv_neighbor_init_algorithm(NEIGHBOR_ALLTOALLV_INIT_COLL_A2A);
+    std::fill(mpix_recv_vals.begin(), mpix_recv_vals.end(), 0);
+    MPIL_Neighbor_alltoallv_init(alltoallv_send_vals.data(),
+                                 A.send_comm.counts.data(),
+                                 A.send_comm.ptr.data(),
+                                 MPI_INT,
+                                 mpix_recv_vals.data(),
+                                 A.recv_comm.counts.data(),
+                                 A.recv_comm.ptr.data(),
+                                 MPI_INT,
+                                 xcomm,
+                                 xinfo,
+                                 &xrequest);
+
+    MPIL_Start(xrequest);
+    MPIL_Wait(xrequest, &status);
+    MPIL_Request_free(&xrequest);
+    compare_neighbor_alltoallv_results(
+        pmpi_recv_vals, mpix_recv_vals, A.recv_comm.size_msgs);
+
+    // 5. MPI Advance - RMA
+    MPIL_Set_alltoallv_neighbor_init_algorithm(NEIGHBOR_ALLTOALLV_INIT_RMA);
+    std::fill(mpix_recv_vals.begin(), mpix_recv_vals.end(), 0);
+    MPIL_Neighbor_alltoallv_init(alltoallv_send_vals.data(),
+                                 A.send_comm.counts.data(),
+                                 A.send_comm.ptr.data(),
+                                 MPI_INT,
+                                 mpix_recv_vals.data(),
+                                 A.recv_comm.counts.data(),
+                                 A.recv_comm.ptr.data(),
+                                 MPI_INT,
+                                 xcomm,
+                                 xinfo,
+                                 &xrequest);
+
+    MPIL_Start(xrequest);
+    MPIL_Wait(xrequest, &status);
+    MPIL_Request_free(&xrequest);
+    compare_neighbor_alltoallv_results(
+        pmpi_recv_vals, mpix_recv_vals, A.recv_comm.size_msgs);
+
     // Standard from Extended Interface
     MPIL_Set_alltoallv_neighbor_init_algorithm(NEIGHBOR_ALLTOALLV_INIT_STANDARD);
     std::fill(mpix_recv_vals.begin(), mpix_recv_vals.end(), 0);
