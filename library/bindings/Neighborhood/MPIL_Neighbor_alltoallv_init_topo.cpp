@@ -62,6 +62,9 @@ int MPIL_Neighbor_alltoallv_init_topo(const void* sendbuf,
         case NEIGHBOR_ALLTOALLV_INIT_RMA:
             method = neighbor_alltoallv_init_rma;
             break;
+        case NEIGHBOR_ALLTOALLV_INIT_PSCW:
+            method = neighbor_alltoallv_init_pscw;
+            break;
         default:
             method = neighbor_alltoallv_init_standard;
             break;

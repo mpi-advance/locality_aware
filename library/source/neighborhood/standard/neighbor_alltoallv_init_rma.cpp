@@ -164,7 +164,7 @@ if (request->gpu_sendbuf)
         MPI_Put(send_buffer + request->sdispls[i],
                 request->put_bytes[i],
                 MPI_BYTE,
-                request->put_procs[i],,
+                request->put_procs[i],
                 request->put_displs[i],
                 request->put_bytes[i],
                 MPI_BYTE,

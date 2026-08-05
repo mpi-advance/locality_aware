@@ -170,6 +170,9 @@ int neighbor_alltoallv_init_rma_helper(const void* sendbuf,
                                      MPIL_Info* info,
                                      MPIL_Request** request_ptr);
 
+int neighbor_rma_start(MPIL_Request* request);
+int neighbor_rma_wait(MPIL_Request* request, MPI_Status* status);
+
 int neighbor_pscw_start(MPIL_Request* request);
 int neighbor_pscw_wait(MPIL_Request* request, MPI_Status* status);
 

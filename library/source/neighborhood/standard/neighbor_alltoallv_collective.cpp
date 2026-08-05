@@ -82,10 +82,6 @@ int neighbor_alltoallv_coll_a2a(const void* sendbuf,
     for (int i = 0; i < topo->indegree; i++)
     {
         proc = topo->sources[i];
-        memcpy(&(char_recvbuf[rdispls[i]*rbytes]),
-                &(coll_recvbuf[coll_rdispls[proc]*rbytes]),
-                coll_recvcounts[proc]*rbytes);
-
         MPI_Sendrecv(&(coll_recvbuf[coll_rdispls[proc]*rbytes]),
                 coll_recvcounts[proc],
                 recvtype,
