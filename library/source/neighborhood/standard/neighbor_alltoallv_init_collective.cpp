@@ -23,6 +23,8 @@ int neighbor_alltoallv_init_coll_a2a(const void* sendbuf,
     int tag;
     MPIL_Comm_tag(comm, &tag);
 
+    init_request(&(request->local_S_request));
+    init_request(&(request->local_R_request));
     allocate_requests(topo->outdegree*2, request->local_S_request);
     allocate_requests(topo->indegree*2, request->local_R_request);
 
