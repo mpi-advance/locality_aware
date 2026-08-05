@@ -87,6 +87,19 @@ int MPIL_Request_free(MPIL_Request** request_ptr)
     {
         free(request->put_bytes);
     }
+    if (request->n_puts && request->put_procs)
+    {
+        free(request->put_procs);
+    }
+
+    if (request->src_group != MPI_GROUP_NULL)
+    {
+        MPI_Group_free(&(request->src_group));
+    }
+    if (request->dest_group != MPI_GROUP_NULL)
+    {
+        MPI_Group_free(&(request->dest_group));
+    }
 
     request->local_comm.~CachedComm();
 

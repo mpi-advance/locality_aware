@@ -90,6 +90,10 @@ typedef struct _MPIL_Request
     int* put_displs;
     /** @brief array of bytes per put **/
     int* put_bytes;
+    /** @brief array of bytes per put **/
+    int* put_procs;
+    MPI_Group src_group;
+    MPI_Group dest_group;
 
 
 #ifdef GPU

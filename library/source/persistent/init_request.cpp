@@ -43,6 +43,9 @@ void init_request(MPIL_Request** request_ptr)
     request->sdispls = NULL;
     request->put_displs = NULL;
     request->put_bytes = NULL;
+    request->put_procs = NULL;
+    request->src_group = MPI_GROUP_NULL;
+    request->dest_group = MPI_GROUP_NULL;
 
 #ifdef GPU
     request->tmp_gpubuf = NULL;
