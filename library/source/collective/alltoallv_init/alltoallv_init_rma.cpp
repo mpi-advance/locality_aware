@@ -42,10 +42,14 @@ int alltoallv_init_rma(const void* sendbuf,
 
     for (int i = 0; i < num_procs; i++)
     {
-        request->sdispls[i] = sdispls[i];
+        request->sdispls[i] = sdispls[i] * send_bytes;
         request->put_bytes[i] = sendcounts[i] * send_bytes;
     }
     MPIL_Alltoall(rdispls, 1, MPI_INT, request->put_displs, 1, MPI_INT, comm);
+    for (int i = 0; i < num_procs; i++)
+    {
+        request->put_displs[i] *= recv_bytes;
+    }
 
     *req_ptr = request;
 
