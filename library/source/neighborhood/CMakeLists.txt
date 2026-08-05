@@ -11,5 +11,7 @@ target_sources(locality_aware PRIVATE
 	persistent/neighbor_start.cpp
 	persistent/neighbor_wait.cpp
 	standard/neighbor_alltoallv_standard.cpp
+    standard/neighbor_alltoallv_collective.cpp
 	standard/neighbor_alltoallv_init_standard.cpp
+    standard/neighbor_alltoallv_init_collective.cpp
 )

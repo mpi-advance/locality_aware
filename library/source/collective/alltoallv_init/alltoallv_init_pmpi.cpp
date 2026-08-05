@@ -12,7 +12,7 @@ int alltoallv_init_pmpi(const void* sendbuf,
                    MPI_Datatype recvtype,
                    MPIL_Comm* comm,
                    MPIL_Info* info,
-                   MPiL_Request** req_ptr)
+                   MPIL_Request** req_ptr)
 {
     MPIL_Request* request;
     init_request(&request);

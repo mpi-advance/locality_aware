@@ -48,6 +48,28 @@ int neighbor_alltoallv_locality(const void* sendbuf,
                                 MPIL_Topo* topo,
                                 MPIL_Comm* comm);
 
+int neighbor_alltoallv_coll_a2a(const void* sendbuf,
+                                const int sendcounts[],
+                                const int sdispls[],
+                                MPI_Datatype sendtype,
+                                void* recvbuf,
+                                const int recvcounts[],
+                                const int rdispls[],
+                                MPI_Datatype recvtype,
+                                MPIL_Topo* topo,
+                                MPIL_Comm* comm);
+
+int neighbor_alltoallv_coll_ag(const void* sendbuf,
+                                const int sendcounts[],
+                                const int sdispls[],
+                                MPI_Datatype sendtype,
+                                void* recvbuf,
+                                const int recvcounts[],
+                                const int rdispls[],
+                                MPI_Datatype recvtype,
+                                MPIL_Topo* topo,
+                                MPIL_Comm* comm);
+
 #ifdef __cplusplus
 }
 #endif
