@@ -84,8 +84,13 @@ typedef struct _MPIL_Request
     int win_alloc;
     /** @brief number of puts **/
     int n_puts;
+    /** @brief array of send displacements **/
+    int* sdispls;
     /** @brief array of put displacements **/
     int* put_displs;
+    /** @brief array of bytes per put **/
+    int* put_bytes;
+
 
 #ifdef GPU
     void* tmp_gpubuf;

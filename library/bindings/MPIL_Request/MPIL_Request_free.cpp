@@ -75,9 +75,17 @@ int MPIL_Request_free(MPIL_Request** request_ptr)
     request->win_bytes      = 0;
     request->win_type_bytes = 0;
     request->win_alloc      = 0;
+    if (request->n_puts && request->sdispls)
+    {
+        free(request->sdispls);
+    }
     if (request->n_puts && request->put_displs)
     {
         free(request->put_displs);
+    }
+    if (request->n_puts && request->put_bytes)
+    {
+        free(request->put_bytes);
     }
 
     request->local_comm.~CachedComm();

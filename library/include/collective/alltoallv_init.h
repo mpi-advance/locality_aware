@@ -84,6 +84,20 @@ int alltoallv_init_nonblocking(const void* sendbuf,
                           MPIL_Comm* comm,
                           MPIL_Info* info,
                           MPIL_Request** req_ptr);
+
+int alltoallv_init_rma(const void* sendbuf,
+                          const int sendcounts[],
+                          const int sdispls[],
+                          MPI_Datatype sendtype,
+                          void* recvbuf,
+                          const int recvcounts[],
+                          const int rdispls[],
+                          MPI_Datatype recvtype,
+                          MPIL_Comm* comm,
+                          MPIL_Info* info,
+                          MPIL_Request** req_ptr);
+int alltoallv_rma_start(MPIL_Request* request);
+int alltoallv_rma_wait(MPIL_Request* request, MPI_Status* status);
 						  
 						  
 #if defined(MPI4)

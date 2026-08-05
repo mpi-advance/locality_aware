@@ -168,6 +168,7 @@ enum AlltoallvInitMethod
 #endif
     ALLTOALLV_INIT_PAIRWISE,
     ALLTOALLV_INIT_NONBLOCKING,
+    ALLTOALLV_INIT_RMA,
 #if defined(MPI4)
     ALLTOALLV_INIT_PMPI
 #endif

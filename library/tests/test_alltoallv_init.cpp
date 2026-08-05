@@ -153,6 +153,25 @@ int main(int argc, char** argv)
         MPIL_Request_free(&mpil_request);
         compare_alltoallv_results(pmpi_alltoallv, mpil_alltoallv, s);
 
+        // Persistent MPIL Alltoallv - RMA
+        std::fill(mpil_alltoallv.begin(), mpil_alltoallv.end(), 0);
+        MPIL_Set_alltoallv_init_algorithm(ALLTOALLV_INIT_RMA);
+        MPIL_Alltoallv_init(local_data.data(),
+                       sizes.data(),
+                       displs.data(),
+                       MPI_INT,
+                       mpil_alltoallv.data(),
+                       sizes.data(),
+                       displs.data(),
+                       MPI_INT,
+                       xcomm,
+                       mpil_info,
+                       &mpil_request);
+        MPIL_Start(mpil_request);
+        MPIL_Wait(mpil_request, MPI_STATUS_IGNORE);
+        MPIL_Request_free(&mpil_request);
+        compare_alltoallv_results(pmpi_alltoallv, mpil_alltoallv, s);
+
 
 #if defined(MPI4)
         // Persistent MPIL Alltoallv - PMPI

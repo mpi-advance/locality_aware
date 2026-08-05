@@ -40,7 +40,9 @@ void init_request(MPIL_Request** request_ptr)
     request->win_bytes = 0;
     request->win_type_bytes = 0;
     request->n_puts = 0;
+    request->sdispls = NULL;
     request->put_displs = NULL;
+    request->put_bytes = NULL;
 
 #ifdef GPU
     request->tmp_gpubuf = NULL;
