@@ -132,7 +132,7 @@ void test_matrix(const char* filename)
     compare_alltoallv_results(pmpi_recv_vals, mpil_recv_vals, A.recv_comm.size_msgs);
 
     // Persistent MPIL Alltoallv - Default
-    std::fill(mpil_alltoallv.begin(), mpil_alltoallv.end(), 0);
+    std::fill(mpil_recv_vals.begin(), mpil_recv_vals.end(), 0);
     MPIL_Alltoallv_init(alltoallv_send_vals.data(),
                    sendcounts.data(),
                    sdispls.data(),
@@ -147,11 +147,11 @@ void test_matrix(const char* filename)
     MPIL_Start(mpil_request);
     MPIL_Wait(mpil_request, MPI_STATUS_IGNORE);
     MPIL_Request_free(&mpil_request);
-    compare_alltoallv_results(pmpi_recv_vals, mpil_recv_vals, s);
+    compare_alltoallv_results(pmpi_recv_vals, mpil_recv_vals, A.recv_comm.size_msgs);
 
 
     // Persistent MPIL Alltoallv - Pairwise
-    std::fill(mpil_alltoallv.begin(), mpil_alltoallv.end(), 0);
+    std::fill(mpil_recv_vals.begin(), mpil_recv_vals.end(), 0);
     MPIL_Set_alltoallv_init_algorithm(ALLTOALLV_INIT_PAIRWISE);    
     MPIL_Alltoallv_init(alltoallv_send_vals.data(),
                    sendcounts.data(),
@@ -167,10 +167,10 @@ void test_matrix(const char* filename)
     MPIL_Start(mpil_request);
     MPIL_Wait(mpil_request, MPI_STATUS_IGNORE);
     MPIL_Request_free(&mpil_request);
-    compare_alltoallv_results(pmpi_recv_vals, mpil_recv_vals, s);
+    compare_alltoallv_results(pmpi_recv_vals, mpil_recv_vals, A.recv_comm.size_msgs);
 
     // Persistent MPIL Alltoallv - Nonblocking 
-    std::fill(mpil_alltoallv.begin(), mpil_alltoallv.end(), 0);
+    std::fill(mpil_recv_vals.begin(), mpil_recv_vals.end(), 0);
     MPIL_Set_alltoallv_init_algorithm(ALLTOALLV_INIT_NONBLOCKING);    
     MPIL_Alltoallv_init(alltoallv_send_vals.data(),
                    sendcounts.data(),
@@ -186,10 +186,10 @@ void test_matrix(const char* filename)
     MPIL_Start(mpil_request);
     MPIL_Wait(mpil_request, MPI_STATUS_IGNORE);
     MPIL_Request_free(&mpil_request);
-    compare_alltoallv_results(pmpi_recv_vals, mpil_recv_vals, s);
+    compare_alltoallv_results(pmpi_recv_vals, mpil_recv_vals, A.recv_comm.size_msgs);
 
     // Persistent MPIL Alltoallv - RMA
-    std::fill(mpil_alltoallv.begin(), mpil_alltoallv.end(), 0);
+    std::fill(mpil_recv_vals.begin(), mpil_recv_vals.end(), 0);
     MPIL_Set_alltoallv_init_algorithm(ALLTOALLV_INIT_RMA);    
     MPIL_Alltoallv_init(alltoallv_send_vals.data(),
                    sendcounts.data(),
@@ -205,12 +205,12 @@ void test_matrix(const char* filename)
     MPIL_Start(mpil_request);
     MPIL_Wait(mpil_request, MPI_STATUS_IGNORE);
     MPIL_Request_free(&mpil_request);
-    compare_alltoallv_results(pmpi_recv_vals, mpil_recv_vals, s);
+    compare_alltoallv_results(pmpi_recv_vals, mpil_recv_vals, A.recv_comm.size_msgs);
 
 
 #if defined(MPI4)
     // Persistent MPIL Alltoallv - PMPI
-    std::fill(mpil_alltoallv.begin(), mpil_alltoallv.end(), 0);
+    std::fill(mpil_recv_vals.begin(), mpil_recv_vals.end(), 0);
     MPIL_Set_alltoallv_init_algorithm(ALLTOALLV_INIT_PMPI);    
     MPIL_Alltoallv_init(alltoallv_send_vals.data(),
                    sendcounts.data(),
@@ -226,7 +226,7 @@ void test_matrix(const char* filename)
     MPIL_Start(mpil_request);
     MPIL_Wait(mpil_request, MPI_STATUS_IGNORE);
     MPIL_Request_free(&mpil_request);
-    compare_alltoallv_results(pmpi_recv_vals, mpil_recv_vals, s);
+    compare_alltoallv_results(pmpi_recv_vals, mpil_recv_vals, A.recv_comm.size_msgs);
 #endif
 
 

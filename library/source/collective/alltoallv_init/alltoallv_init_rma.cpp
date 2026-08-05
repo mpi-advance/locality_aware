@@ -1,4 +1,4 @@
-#include "collective/alltoall_init.h"
+#include "collective/alltoallv_init.h"
 #include "locality_aware.h"
 
 // NOTE: No GPU-Aware Version, but Copy To CPU would work
@@ -21,8 +21,8 @@ int alltoallv_init_rma(const void* sendbuf,
     MPIL_Request* request;
     init_request(&request);
     
-    request->start_function = alltoall_rma_start;
-    request->wait_function = alltoall_rma_wait;
+    request->start_function = alltoallv_rma_start;
+    request->wait_function = alltoallv_rma_wait;
 
     int send_bytes, recv_bytes;
     MPI_Type_size(sendtype, &send_bytes);
