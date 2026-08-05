@@ -46,9 +46,18 @@ int neighbor_alltoallv_coll_a2a(const void* sendbuf,
     for (int i = 0; i < topo->outdegree; i++)
     {
         proc = topo->destinations[i];
-        memcpy(&(coll_sendbuf[coll_sdispls[proc]*sbytes]),
-                &(char_sendbuf[sdispls[i]*sbytes]),
-                coll_sendcounts[proc]*sbytes);
+        MPI_Sendrecv(&(char_sendbuf[sdispls[i]*sbytes]),
+                coll_sendcounts[proc],
+                sendtype,
+                0, 
+                0,
+                &(coll_sendbuf[coll_sdispls[proc]*sbytes]),
+                coll_sendcounts[proc],
+                sendtype, 
+                0,
+                0,
+                MPI_COMM_SELF, 
+                MPI_STATUS_IGNORE);
     }
 
 
@@ -76,6 +85,21 @@ int neighbor_alltoallv_coll_a2a(const void* sendbuf,
         memcpy(&(char_recvbuf[rdispls[i]*rbytes]),
                 &(coll_recvbuf[coll_rdispls[proc]*rbytes]),
                 coll_recvcounts[proc]*rbytes);
+
+        MPI_Sendrecv(&(coll_recvbuf[coll_rdispls[proc]*rbytes]),
+                coll_recvcounts[proc],
+                recvtype,
+                0, 
+                0,
+                &(char_recvbuf[rdispls[i]*rbytes]),
+                coll_recvcounts[proc],
+                recvtype, 
+                0,
+                0,
+                MPI_COMM_SELF, 
+                MPI_STATUS_IGNORE);
+
+
     }
 
 

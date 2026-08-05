@@ -193,6 +193,22 @@ void test_matrix(const char* filename)
     compare_neighbor_alltoallv_results(
         pmpi_recv_vals, mpix_recv_vals, A.recv_comm.size_msgs);
 
+
+    std::fill(mpix_recv_vals.begin(), mpix_recv_vals.end(), 0);
+    MPIL_Set_alltoallv_neighbor_algorithm(NEIGHBOR_ALLTOALLV_COLL_A2A);
+    MPIL_Neighbor_alltoallv(alltoallv_send_vals.data(),
+                            A.send_comm.counts.data(),
+                            A.send_comm.ptr.data(),
+                            MPI_INT,
+                            mpix_recv_vals.data(),
+                            A.recv_comm.counts.data(),
+                            A.recv_comm.ptr.data(),
+                            MPI_INT,
+                            xcomm);
+
+    compare_neighbor_alltoallv_results(
+        pmpi_recv_vals, mpix_recv_vals, A.recv_comm.size_msgs);
+
     // MPIL_Topo_free(&topo);
     MPIL_Info_free(&xinfo);
     MPIL_Comm_free(&xcomm);

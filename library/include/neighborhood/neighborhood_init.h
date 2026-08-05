@@ -128,46 +128,10 @@ int neighbor_alltoallv_init_coll_a2a(const void* sendbuf,
                                      MPIL_Info* info,
                                      MPIL_Request** request_ptr);
 
-int neighbor_alltoallv_init_coll_a2a_helper(const void* sendbuf,
-                                     const int sendcounts[],
-                                     const int sdispls[],
-                                     MPI_Datatype sendtype,
-                                     void* recvbuf,
-                                     const int recvcounts[],
-                                     const int rdispls[],
-                                     MPI_Datatype recvtype,
-                                     MPIL_Topo* topo,
-                                     MPI_Comm comm,
-                                     MPIL_Info* info,
-                                     int tag,
-                                     MPIL_Request* request);
 
-int neighbor_alltoallv_init_coll_ag(const void* sendbuf,
-                                     const int sendcounts[],
-                                     const int sdispls[],
-                                     MPI_Datatype sendtype,
-                                     void* recvbuf,
-                                     const int recvcounts[],
-                                     const int rdispls[],
-                                     MPI_Datatype recvtype,
-                                     MPIL_Topo* topo,
-                                     MPIL_Comm* comm,
-                                     MPIL_Info* info,
-                                     MPIL_Request** request_ptr);
+int neighbor_a2a_start(MPIL_Request* request);
+int neighbor_a2a_wait(MPIL_Request* request, MPI_Status* status);
 
-int neighbor_alltoallv_init_coll_ag_helper(const void* sendbuf,
-                                     const int sendcounts[],
-                                     const int sdispls[],
-                                     MPI_Datatype sendtype,
-                                     void* recvbuf,
-                                     const int recvcounts[],
-                                     const int rdispls[],
-                                     MPI_Datatype recvtype,
-                                     MPIL_Topo* topo,
-                                     MPI_Comm comm,
-                                     MPIL_Info* info,
-                                     int tag,
-                                     MPIL_Request* request);
 
 
 void init_locality(const int n_sends,
