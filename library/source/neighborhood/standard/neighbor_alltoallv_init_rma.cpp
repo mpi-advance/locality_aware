@@ -40,7 +40,7 @@ int neighbor_alltoallv_init_rma_helper(const void* sendbuf,
     request->put_procs = (int*)malloc(topo->outdegree*sizeof(int));
 
     int bytes = 0;
-    for (int i = 0; i < topo->outdegree; i++)
+    for (int i = 0; i < topo->indegree; i++)
         bytes += (recvcounts[i] * recv_bytes);
     MPIL_Request_win_init(request, recvbuf, bytes, 1, comm->global_comm);
 
@@ -55,7 +55,7 @@ int neighbor_alltoallv_init_rma_helper(const void* sendbuf,
     std::vector<MPI_Request> req(topo->outdegree + topo->indegree);
     for (int i = 0; i < topo->outdegree; i++)
     {
-        MPI_Irecv(&(request->put_bytes[i]), 1, MPI_INT, topo->destinations[i],
+        MPI_Irecv(&(request->put_displs[i]), 1, MPI_INT, topo->destinations[i],
                 tag, comm->global_comm, &(req[i]));
     } 
     for (int i = 0; i < topo->indegree; i++)
