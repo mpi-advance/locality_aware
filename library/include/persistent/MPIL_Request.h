@@ -71,6 +71,22 @@ typedef struct _MPIL_Request
     void* tmpbuf;
     MPIL_Free_ftn free_ftn;
 
+    // Variables for persistent operations that use RMA (e.g. RMA collectives)
+    /**@brief MPI_window if using sync**/
+    MPI_Win win;
+    /**@brief Buffer for MPI_window**/
+    char* win_array;
+    /**@brief Size of win_array in bytes**/
+    int win_bytes;
+    /**@brief Size of the datatype in win_array in bytes**/
+    int win_type_bytes;
+    /** @brief Indicates whether win_array was allocated as part of Win allocate*/
+    int win_alloc;
+    /** @brief number of puts **/
+    int n_puts;
+    /** @brief array of put displacements **/
+    int* put_displs;
+
 #ifdef GPU
     void* tmp_gpubuf;
     /** @brief Allocated cpu-based send buffers for copy-to-cpu algorithms **/

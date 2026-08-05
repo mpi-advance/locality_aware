@@ -63,6 +63,23 @@ int MPIL_Request_free(MPIL_Request** request_ptr)
         request->size_recvs = 0;
     }
 
+    // Free RMA variables
+    if (request->win != MPI_WIN_NULL)
+    {
+        MPI_Win_free(&(request->win));
+    }
+    if (request->win_array != NULL && !request->win_alloc)
+    {
+        MPI_Free_mem(request->win_array);
+    }
+    request->win_bytes      = 0;
+    request->win_type_bytes = 0;
+    request->win_alloc      = 0;
+    if (request->n_puts && request->put_displs)
+    {
+        free(request->put_displs);
+    }
+
     request->local_comm.~CachedComm();
 
     if (request->tmpbuf)

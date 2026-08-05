@@ -142,6 +142,7 @@ enum AlltoallInitMethod
 #endif
     ALLTOALL_INIT_PAIRWISE,
     ALLTOALL_INIT_NONBLOCKING,
+    ALLTOALL_INIT_RMA,
 #if defined(MPI4)
     ALLTOALL_INIT_PMPI
 #endif
@@ -487,6 +488,13 @@ int MPIL_Request_free(MPIL_Request** request);
 
 /** @brief Set reorder value of request to value **/
 int MPIL_Request_reorder(MPIL_Request* request, int value);
+
+/** @brief creates MPI window and associated array of size bytes **/
+int MPIL_Request_win_init(MPIL_Request*, void* ptr,
+        int bytes, int type_bytes, MPI_Comm comm);
+
+/** @brief frees MPI window and associated array **/
+int MPIL_Request_win_free(MPIL_Request*);
 
 /** @brief Wrapper around MPI_Dist_graph_create_adjacent. */
 int MPIL_Dist_graph_create_adjacent(MPI_Comm comm_old,

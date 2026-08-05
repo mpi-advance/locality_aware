@@ -35,6 +35,13 @@ void init_request(MPIL_Request** request_ptr)
 
     request->tmpbuf = NULL;
 
+    request->win       = MPI_WIN_NULL;
+    request->win_array = NULL;
+    request->win_bytes = 0;
+    request->win_type_bytes = 0;
+    request->n_puts = 0;
+    request->put_displs = NULL;
+
 #ifdef GPU
     request->tmp_gpubuf = NULL;
     request->gpu_sendbuf = NULL;

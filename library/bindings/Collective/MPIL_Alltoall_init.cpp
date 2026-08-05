@@ -70,6 +70,9 @@ int MPIL_Alltoall_init(const void* sendbuf,
         case ALLTOALL_INIT_NONBLOCKING:
             method = alltoall_init_nonblocking;
             break;
+        case ALLTOALL_INIT_RMA:
+            method = alltoall_init_rma;
+            break;
 #if defined(MPI4)
         case ALLTOALL_INIT_PMPI:
             method = alltoall_init_pmpi;
