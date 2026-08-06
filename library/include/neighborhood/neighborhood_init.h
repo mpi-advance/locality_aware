@@ -15,6 +15,8 @@ int neighbor_start(MPIL_Request* request);
 int neighbor_wait(MPIL_Request* request, MPI_Status* status);
 int neighbor_a2a_start(MPIL_Request* request);
 int neighbor_a2a_wait(MPIL_Request* request, MPI_Status* status);
+int neighbor_ag_start(MPIL_Request* request);
+int neighbor_ag_wait(MPIL_Request* request, MPI_Status* status);
 int neighbor_rma_start(MPIL_Request* request);
 int neighbor_rma_wait(MPIL_Request* request, MPI_Status* status);
 int neighbor_pscw_start(MPIL_Request* request);

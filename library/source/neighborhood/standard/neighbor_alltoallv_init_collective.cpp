@@ -170,6 +170,7 @@ int neighbor_alltoallv_init_coll_ag(const void* sendbuffer,
         {
             sidx_to_pos[idx] = i;
             send_idx.push_back(i);
+            unique_sindices.push_back(idx);
         }
     }
 
@@ -200,9 +201,16 @@ int neighbor_alltoallv_init_coll_ag(const void* sendbuffer,
     for (int i = 0; i < topo->indegree; i++)
         recv_size += recvcounts[i];
 
-
-    std::vector<int> recv_idx(recv_size);
     std::map<long, int> ridx_to_pos;
+    for (int i = 0; i < recv_size; i++)
+    {
+        long idx = global_rindices[i];
+        if (ridx_to_pos.find(idx) == ridx_to_pos.end())
+        {
+            ridx_to_pos[idx] = i;
+        }
+    }
+    std::vector<int> recv_idx(recv_size);
     for (int i = 0; i < total_size; i++)
     {
         long idx = gathered_buf[i];
@@ -227,6 +235,11 @@ int neighbor_alltoallv_init_coll_ag(const void* sendbuffer,
     MPI_Allgatherv_init(request->tmp_sendbuf, request->size_sends, sendtype,
             request->tmp_recvbuf, proc_sizes.data(), proc_displs.data(), recvtype,
             comm->global_comm, MPI_INFO_NULL, &(request->requests[0]));
+
+    request->start_function = neighbor_ag_start;
+    request->wait_function = neighbor_ag_wait;
+
+    *request_ptr = request;
     
 
     return MPI_SUCCESS;
@@ -343,12 +356,13 @@ if (request->gpu_sendbuf)
     char* tmp_send_buffer = (char*)request->tmp_sendbuf;
     for (int i = 0; i < request->size_sends; i++)
     {
-        MPI_Sendrecv(&(tmp_send_buffer[i*request->send_size]),
+        MPI_Sendrecv(
+                &(send_buffer[request->send_indices[i]*request->send_size]),
                 request->send_size,
                 MPI_BYTE,
                 0,
                 0,
-                &(send_buffer[request->send_indices[i]*request->send_size]),
+                &(tmp_send_buffer[i*request->send_size]),
                 request->send_size, 
                 MPI_BYTE, 
                 0, 
@@ -375,12 +389,13 @@ int neighbor_ag_wait(MPIL_Request* request, MPI_Status* status)
     char* tmp_recv_buffer = (char*)request->tmp_recvbuf;
     for (int i = 0; i < request->size_recvs; i++)
     {
-        MPI_Sendrecv(&(recv_buffer[i*request->recv_size]),
+        MPI_Sendrecv(
+                &(tmp_recv_buffer[request->recv_indices[i]*request->recv_size]),
                 request->recv_size,
                 MPI_BYTE,
                 0,
                 0,
-                &(tmp_recv_buffer[request->recv_indices[i]*request->recv_size]),
+                &(recv_buffer[i*request->recv_size]),
                 request->recv_size, 
                 MPI_BYTE, 
                 0, 
