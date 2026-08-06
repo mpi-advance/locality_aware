@@ -241,7 +241,7 @@ enum NeighborAlltoallvMethod
 #endif
     NEIGHBOR_ALLTOALLV_STANDARD,
     NEIGHBOR_ALLTOALLV_LOCALITY,
-    NEIGHBOR_ALLTOALLV_COLL_A2A
+    NEIGHBOR_ALLTOALLV_COLL
 };
 
 /** @brief Enumeration of implemented neighborhood alltoallv algorithms @ingroup
@@ -258,7 +258,7 @@ enum NeighborAlltoallvInitMethod
 #endif
     NEIGHBOR_ALLTOALLV_INIT_STANDARD,
     NEIGHBOR_ALLTOALLV_INIT_LOCALITY,
-    NEIGHBOR_ALLTOALLV_INIT_COLL_A2A,
+    NEIGHBOR_ALLTOALLV_INIT_COLL,
     NEIGHBOR_ALLTOALLV_INIT_RMA,
     NEIGHBOR_ALLTOALLV_INIT_PSCW
 };

@@ -56,7 +56,7 @@ int MPIL_Neighbor_alltoallv_init_topo(const void* sendbuf,
         case NEIGHBOR_ALLTOALLV_INIT_LOCALITY:
             method = neighbor_alltoallv_init_locality;
             break;
-        case NEIGHBOR_ALLTOALLV_INIT_COLL_A2A:
+        case NEIGHBOR_ALLTOALLV_INIT_COLL:
             method = neighbor_alltoallv_init_coll_a2a;
             break;
         case NEIGHBOR_ALLTOALLV_INIT_RMA:

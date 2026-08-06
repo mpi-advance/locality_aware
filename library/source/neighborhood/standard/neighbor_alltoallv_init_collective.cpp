@@ -263,9 +263,9 @@ int neighbor_alltoallv_init_coll_ag(const void* sendbuffer,
     int total_size = proc_displs[num_procs];
 
     std::vector<long> gathered_buf(total_size);
-    MPI_Allgatherv_init(unique_sindices.data(), local_size, MPI_LONG,
+    MPI_Allgatherv(unique_sindices.data(), local_size, MPI_LONG,
         gathered_buf.data(), proc_sizes.data(), proc_displs.data(), MPI_LONG,
-        comm->global_comm, MPI_INFO_NULL, &(request->requests[0]));
+        comm->global_comm);
     
     int recv_size = 0;
     for (int i = 0; i < topo->indegree; i++)
@@ -299,6 +299,12 @@ int neighbor_alltoallv_init_coll_ag(const void* sendbuffer,
 
     request->send_size = sbytes;
     request->recv_size = rbytes;
+    request->sendbuf = sendbuf;
+    request->recvbuf = recvbuf;
+
+    MPI_Allgatherv_init(request->tmp_sendbuf, request->size_sends, sendtype,
+            request->tmp_recvbuf, proc_sizes.data(), proc_displs.data(), recvtype,
+            comm->global_comm, MPI_INFO_NULL, &(request->requests[0]));
     
 
     return MPI_SUCCESS;
