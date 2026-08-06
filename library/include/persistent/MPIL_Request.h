@@ -43,7 +43,6 @@ typedef struct _MPIL_Request
     int size_recvs;
     /** @brief size of sendtype **/
     int send_size;
-    /** @brief size of recvtype **/
 
     // Pointers to MPI_Requests for aggregated communication
     /** @brief Fully local communication **/
