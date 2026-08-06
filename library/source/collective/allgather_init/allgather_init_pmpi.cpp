@@ -1,3 +1,4 @@
+#include "persistent/pmpi_persistent.h"
 #include "collective/allgather_init.h"
 
 #if defined(MPI4)

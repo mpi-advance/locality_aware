@@ -1,3 +1,4 @@
+#include "persistent/pmpi_persistent.h"
 #include "collective/allreduce_init.h"
 
 #if defined(MPI4)
@@ -9,7 +10,7 @@ int allreduce_init_pmpi(const void* sendbuf,
                    MPI_Op op,
                    MPIL_Comm* comm,
                    MPIL_Info* info,
-                   MPiL_Request** req_ptr)
+                   MPIL_Request** req_ptr)
 {
     MPIL_Request* request;
     init_request(&request);

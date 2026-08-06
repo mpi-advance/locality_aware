@@ -1,3 +1,4 @@
+#include "persistent/pmpi_persistent.h"
 #include "collective/alltoall_init.h"
 
 #if defined(MPI4)
@@ -8,7 +9,9 @@ int alltoall_init_pmpi(const void* sendbuf,
                   void* recvbuf,
                   const int recvcount,
                   MPI_Datatype recvtype,
-                  MPIL_Comm* comm)
+                  MPIL_Comm* comm,
+                  MPIL_Info* info,
+                  MPIL_Request** req_ptr)
 {
     MPIL_Request* request;
     init_request(&request);

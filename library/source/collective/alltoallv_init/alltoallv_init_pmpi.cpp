@@ -1,3 +1,4 @@
+#include "persistent/pmpi_persistent.h"
 #include "collective/alltoallv_init.h"
 
 #if defined(MPI4)

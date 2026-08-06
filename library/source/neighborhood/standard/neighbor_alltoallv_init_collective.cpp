@@ -3,6 +3,7 @@
 #include "neighborhood/MPIL_Topo.h"
 #include "neighborhood/neighborhood_init.h"
 #include "persistent/MPIL_Request.h"
+#include <map>
 
 int neighbor_alltoallv_init_coll_a2a(const void* sendbuf,
                                      const int sendcounts[],
@@ -128,6 +129,112 @@ int neighbor_alltoallv_init_coll_a2a(const void* sendbuf,
     return ierr;
 }
 
+#if defined(MPI4)
+int neighbor_alltoallv_init_coll_ag(const void* sendbuffer,
+                                         const int sendcounts[],
+                                         const int sdispls[],
+                                         const long global_sindices[],
+                                         MPI_Datatype sendtype,
+                                         void* recvbuffer,
+                                         const int recvcounts[],
+                                         const int rdispls[],
+                                         const long global_rindices[],
+                                         MPI_Datatype recvtype,
+                                         MPIL_Topo* topo,
+                                         MPIL_Comm* comm,
+                                         MPIL_Info* info,
+                                         MPIL_Request** request_ptr)
+{
+    int num_procs;
+    MPI_Comm_size(comm->global_comm, &num_procs);
+
+    MPIL_Request* request;
+    init_request(&request);
+    allocate_requests(1, request);
+
+    int sbytes, rbytes;
+    MPI_Type_size(sendtype, &sbytes);
+    MPI_Type_size(recvtype, &rbytes);
+
+    std::vector<long> unique_sindices;
+    int send_size = 0;
+    for (int i = 0; i < topo->outdegree; i++)
+        send_size += sendcounts[i];
+
+    std::vector<int> send_idx;
+    std::map<long, int> sidx_to_pos;
+    for (int i = 0; i < send_size; i++)
+    {
+        long idx = global_sindices[i];
+        if (sidx_to_pos.find(idx) == sidx_to_pos.end())
+        {
+            sidx_to_pos[idx] = i;
+            send_idx.push_back(i);
+        }
+    }
+
+    request->size_sends = send_idx.size();
+    request->send_indices = (int*)malloc(request->size_sends*sizeof(int));
+    for (int i = 0; i < request->size_sends; i++)
+        request->send_indices[i] = send_idx[i];
+    request->tmp_sendbuf = malloc(request->size_sends*sbytes);
+
+    int local_size = unique_sindices.size();
+    std::vector<int> proc_sizes(num_procs);
+    MPI_Allgather(&local_size, 1, MPI_INT, proc_sizes.data(), 1, MPI_INT, comm->global_comm);
+
+    std::vector<int> proc_displs(num_procs+1);
+    proc_displs[0] = 0;
+    for (int i = 0; i < num_procs; i++)
+    {
+        proc_displs[i+1] = proc_displs[i] + proc_sizes[i];
+    }
+    int total_size = proc_displs[num_procs];
+
+    std::vector<long> gathered_buf(total_size);
+    MPI_Allgatherv(unique_sindices.data(), local_size, MPI_LONG,
+        gathered_buf.data(), proc_sizes.data(), proc_displs.data(), MPI_LONG,
+        comm->global_comm);
+    
+    int recv_size = 0;
+    for (int i = 0; i < topo->indegree; i++)
+        recv_size += recvcounts[i];
+
+
+    std::vector<int> recv_idx(recv_size);
+    std::map<long, int> ridx_to_pos;
+    for (int i = 0; i < total_size; i++)
+    {
+        long idx = gathered_buf[i];
+        if (ridx_to_pos.find(idx) != ridx_to_pos.end())
+        {
+            int pos = ridx_to_pos[idx];
+            recv_idx[pos] = i;
+        }        
+    }
+
+    request->size_recvs = recv_size;
+    request->recv_indices = (int*)malloc(recv_size*sizeof(int));
+    for (int i = 0; i < request->size_recvs; i++)
+        request->recv_indices[i] = recv_idx[i];
+    request->tmp_recvbuf = malloc(total_size*rbytes);
+
+    request->send_size = sbytes;
+    request->recv_size = rbytes;
+    request->sendbuf = sendbuffer;
+    request->recvbuf = recvbuffer;
+
+    MPI_Allgatherv_init(request->tmp_sendbuf, request->size_sends, sendtype,
+            request->tmp_recvbuf, proc_sizes.data(), proc_displs.data(), recvtype,
+            comm->global_comm, MPI_INFO_NULL, &(request->requests[0]));
+    
+
+    return MPI_SUCCESS;
+}
+#endif
+
+
+
 int neighbor_a2a_start(MPIL_Request* request)
 {
     if (request == NULL)
@@ -203,113 +310,10 @@ if (request->gpu_recvbuf)
 }
 
 
-#if defined(MPI4)
-int neighbor_alltoallv_init_coll_ag(const void* sendbuffer,
-                                         const int sendcounts[],
-                                         const int sdispls[],
-                                         const long global_sindices[],
-                                         MPI_Datatype sendtype,
-                                         void* recvbuffer,
-                                         const int recvcounts[],
-                                         const int rdispls[],
-                                         const long global_rindices[],
-                                         MPI_Datatype recvtype,
-                                         MPIL_Topo* topo,
-                                         MPIL_Comm* comm,
-                                         MPIL_Info* info,
-                                         MPIL_Request** request_ptr)
-{
-    MPIL_Request* request;
-    init_request(&request);
-    allocate_requests(1, request);
 
-    int sbytes, rbytes;
-    MPI_Type_size(sendtype, &sbytes);
-    MPI_Type_size(recvtype, &rbytes);
 
-    std::vector<long> unique_sindices;
-    int send_size = 0;
-    for (int i = 0; i < topo->outdegree; i++)
-        send_size += sendcounts[i];
 
-    std::vector<int> send_idx;
-    std::map<long, int> sidx_to_pos;
-    for (int i = 0; i < send_size; i++)
-    {
-        long idx = global_sindices[i];
-        if (sidx_to_pos.find(idx) == sidx_to_pos.end())
-        {
-            sidx_to_pos[idx] = i;
-            send_idx.push_back(i);
-        }
-    }
 
-    request->size_sends = send_idx.size();
-    request->send_indices = (int*)malloc(request->size_sends*sizeof(int));
-    for (int i = 0; i < request->size_sends; i++)
-        request->send_indices[i] = send_idx[i];
-    request->tmp_sendbuf = malloc(request->size_sends*sbytes);
-
-    int local_size = unique_sindices.size();
-    std::vector<int> proc_sizes(num_procs);
-    MPI_Allgather(&local_size, 1, MPI_INT, proc_sizes.data(), 1, MPI_INT, comm->global_comm);
-
-    std::vector<int> proc_displs(num_procs+1);
-    proc_displs[0] = 0;
-    for (int i = 0; i < num_procs; i++)
-    {
-        proc_displs[i+1] = proc_displs[i] + proc_sizes[i];
-    }
-    int total_size = proc_displs[num_procs];
-
-    std::vector<long> gathered_buf(total_size);
-    MPI_Allgatherv(unique_sindices.data(), local_size, MPI_LONG,
-        gathered_buf.data(), proc_sizes.data(), proc_displs.data(), MPI_LONG,
-        comm->global_comm);
-    
-    int recv_size = 0;
-    for (int i = 0; i < topo->indegree; i++)
-        recv_size += recvcounts[i];
-
-    std::map<long, int> ridx_to_pos;
-    for (int i = 0; i < recv_size; i++)
-    {
-        long idx = global_sindices[i];
-        if (ridx_to_pos.find(idx) == ridx_to_pos.end())
-        {
-            ridx_to_pos[idx] = i;
-        }
-    }
-    std::vector<int> recv_idx(recv_size);
-    for (int i = 0; i < total_size; i++)
-    {
-        long recv_idx = gathered_buf[i];
-        if (ridx_to_pos.find(idx) != ridx_to_pos.end())
-        {
-            int pos = ridx_to_pos[idx];
-            recv_idx[pos] = i;
-        }        
-    }
-
-    request->size_recvs = recv_size;
-    request->recv_indices = (int*)malloc(recv_size*sizeof(int));
-    for (int i = 0; i < request->size_recvs; i++)
-        request->recv_indices[i] = recv_idx[i];
-    request->tmp_recvbuf = malloc(total_size*rbytes);
-
-    request->send_size = sbytes;
-    request->recv_size = rbytes;
-    request->sendbuf = sendbuf;
-    request->recvbuf = recvbuf;
-
-    MPI_Allgatherv_init(request->tmp_sendbuf, request->size_sends, sendtype,
-            request->tmp_recvbuf, proc_sizes.data(), proc_displs.data(), recvtype,
-            comm->global_comm, MPI_INFO_NULL, &(request->requests[0]));
-    
-
-    return MPI_SUCCESS;
-}
-#endif
 
 
 int neighbor_ag_start(MPIL_Request* request)

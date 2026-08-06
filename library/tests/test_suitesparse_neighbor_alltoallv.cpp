@@ -195,7 +195,7 @@ void test_matrix(const char* filename)
 
 
     std::fill(mpix_recv_vals.begin(), mpix_recv_vals.end(), 0);
-    MPIL_Set_alltoallv_neighbor_algorithm(NEIGHBOR_ALLTOALLV_COLL_A2A);
+    MPIL_Set_alltoallv_neighbor_algorithm(NEIGHBOR_ALLTOALLV_COLL);
     MPIL_Neighbor_alltoallv(alltoallv_send_vals.data(),
                             A.send_comm.counts.data(),
                             A.send_comm.ptr.data(),

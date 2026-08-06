@@ -122,6 +122,7 @@ int MPIL_Neighbor_alltoallv_init_ext_topo(const void* sendbuf,
                                                         comm,
                                                         info,
                                                         request_ptr);
+#if defined(MPI4)
         case NEIGHBOR_ALLTOALLV_INIT_COLL:
             return neighbor_alltoallv_init_coll_ag(sendbuf,
                                                         sendcounts,
@@ -137,6 +138,7 @@ int MPIL_Neighbor_alltoallv_init_ext_topo(const void* sendbuf,
                                                         comm,
                                                         info,
                                                         request_ptr);
+#endif
         default:
             return neighbor_alltoallv_init_standard(sendbuf,
                                                     sendcounts,

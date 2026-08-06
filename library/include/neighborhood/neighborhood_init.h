@@ -289,6 +289,8 @@ int neighbor_alltoallv_init_locality_ext_helper(const void* sendbuffer,
                                          MPIL_Free_ftn free_ftn);
 
 
+
+#if defined(MPI4)
 /** @brief Call the extended collective implementation of 
  * a neighborhood alltoallv.  All unique indices to be sent
  * are gathered among all processes with an Allgatherv.
@@ -322,6 +324,8 @@ int neighbor_alltoallv_init_coll_ag(const void* sendbuffer,
                                          MPIL_Comm* comm,
                                          MPIL_Info* info,
                                          MPIL_Request** request_ptr);
+#endif
+
 
 void init_locality(const int n_sends,
                    const int* send_procs,
