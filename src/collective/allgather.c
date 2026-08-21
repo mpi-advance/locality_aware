@@ -307,7 +307,6 @@ int allgather_multileader_locality_aware(const void* sendbuf,
     MPI_Gather(sendbuf, sendcount, sendtype, local_send_buffer, sendcount, sendtype, 0, comm.leader_comm);
 
     // 2. Allgather between leaders
-    MPI_Barrier(comm.global_comm);
     if (leader_rank == 0)
     {
         MPI_Allgather(local_send_buffer, procs_per_leader * sendcount, sendtype, recv_buffer, procs_per_leader * sendcount, sendtype, comm.group_comm);
