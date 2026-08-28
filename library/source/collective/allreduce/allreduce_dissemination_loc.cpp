@@ -80,6 +80,8 @@ int allreduce_dissemination_ml(const void* sendbuf,
 
     // Convert to leader_comm (4 leaders per node)
     int num_leaders = 4;
+    if (ppn < num_leaders)
+        num_leaders = ppn;
     int ppl;
     if (comm->leader_comm != MPI_COMM_NULL)
     {
