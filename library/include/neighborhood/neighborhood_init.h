@@ -15,8 +15,6 @@ int neighbor_start(MPIL_Request* request);
 int neighbor_wait(MPIL_Request* request, MPI_Status* status);
 int neighbor_a2a_start(MPIL_Request* request);
 int neighbor_a2a_wait(MPIL_Request* request, MPI_Status* status);
-int neighbor_ag_start(MPIL_Request* request);
-int neighbor_ag_wait(MPIL_Request* request, MPI_Status* status);
 int neighbor_rma_start(MPIL_Request* request);
 int neighbor_rma_wait(MPIL_Request* request, MPI_Status* status);
 int neighbor_pscw_start(MPIL_Request* request);
@@ -290,43 +288,6 @@ int neighbor_alltoallv_init_locality_ext_helper(const void* sendbuffer,
                                          MPIL_Alloc_ftn alloc_ftn,
                                          MPIL_Free_ftn free_ftn);
 
-
-
-#if defined(MPI4)
-/** @brief Call the extended collective implementation of 
- * a neighborhood alltoallv.  All unique indices to be sent
- * are gathered among all processes with an Allgatherv.
- * This operation has memory constraints, and should only be 
- * used for smaller and denser matrices (e.g. coarse levels of AMG).
- * @param [in] sendbuf buffer containing data to send
- * @param [in] sendcounts int* number of items per send
- * @param [in] sdispls int* displacement per send
- * @param [in] global_sindices long* global indices being sent
- * @param [in] sendtype MPI_Datatype in sendbuff
- * @param [out] recvbuf buffer to receive messages
- * @param [in] recvcounts int* number of items per recv
- * @param [in] rdispls int* displacement per recv
- * @param [in] global_rindices long* global indices being recvd
- * @param [in] recvtype MPI_Datatype in recvbuff
- * @param [in] comm MPIL_Comm used for context
- * @param [in] info MPIL_Info used for hints
- * @param [out] req_ptr MPIL_Request** for persistent request object
- **/
-int neighbor_alltoallv_init_coll_ag(const void* sendbuffer,
-                                         const int sendcounts[],
-                                         const int sdispls[],
-                                         const long global_sindices[],
-                                         MPI_Datatype sendtype,
-                                         void* recvbuffer,
-                                         const int recvcounts[],
-                                         const int rdispls[],
-                                         const long global_rindices[],
-                                         MPI_Datatype recvtype,
-                                         MPIL_Topo* topo,
-                                         MPIL_Comm* comm,
-                                         MPIL_Info* info,
-                                         MPIL_Request** request_ptr);
-#endif
 
 
 void init_locality(const int n_sends,
