@@ -64,6 +64,15 @@ int allgather_init_bruck(const void* sendbuf,
         MPI_Recv_init(request->tmpbuf, recvcount, recvtype, rank, tag,
                 comm->global_comm, &(local_L_request->requests[local_L_request->n_msgs++]));
     }
+    else
+    {
+        MPI_Send_init(_recvbuf + (rank * count_bytes), recvcount, 
+                recvtype, rank, tag,
+                comm->global_comm, &(local_L_request->requests[local_L_request->n_msgs++]));
+        MPI_Recv_init(request->tmpbuf, recvcount, recvtype, rank, tag,
+                comm->global_comm, &(local_L_request->requests[local_L_request->n_msgs++]));
+    }
+    
 
     int log_procs = (int)log2(num_procs);
     int log2_num_procs = 1 << log_procs;    

@@ -137,8 +137,19 @@ int allreduce_dissemination_loc_core(
     char* tmpbuf = (char*)malloc(type_size*count);
     char* tmp_recvbuf = (char*)malloc(type_size*count);
 
-    PMPI_Allreduce(sendbuf, tmp_recvbuf, count, datatype,
-            op, local_comm);
+    if (sendbuf == MPI_IN_PLACE)
+    {
+        MPI_Sendrecv(recvbuf, count, datatype, rank, tag, 
+                tmp_recvbuf, count, datatype, rank, tag, 
+                global_comm, MPI_STATUS_IGNORE);
+        PMPI_Allreduce(MPI_IN_PLACE, tmp_recvbuf, count,
+                datatype, op, local_comm);
+    }
+    else
+    {
+        PMPI_Allreduce(sendbuf, tmp_recvbuf, count, datatype,
+                op, local_comm);
+    }
 
     if (rank_node >= max_node)
     {

@@ -44,10 +44,18 @@ int allreduce_dissemination_radix(const void* sendbuf,
 
     // Send `sendbuf` into `recvbuf` (Sendrecv to work on CPU or GPU)
     if (sendbuf != MPI_IN_PLACE)
+    {
         MPI_Sendrecv(sendbuf, count, datatype, rank, tag, 
                 tmp_recvbuf, count, datatype, rank, tag, comm->global_comm,
                 MPI_STATUS_IGNORE);
-
+    }
+    else
+    {
+        MPI_Sendrecv(recvbuf, count, datatype, rank, tag, 
+                tmp_recvbuf, count, datatype, rank, tag, comm->global_comm,
+                MPI_STATUS_IGNORE);
+    }
+        
     if (rank >= max_proc)
     {
         int proc = rank - max_proc;

@@ -97,7 +97,7 @@ int allreduce_init_dissemination_ml(const void* sendbuf,
 
     if (comm->leader_comm == MPI_COMM_NULL || ppn / num_leaders != ppl)
     {
-        MPIL_Comm_leader_init(comm, num_leaders);
+        MPIL_Comm_leader_init(comm, ppn/num_leaders);
     }
 
     return allreduce_init_dissemination_loc_core(
