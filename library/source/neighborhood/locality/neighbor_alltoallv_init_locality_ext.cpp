@@ -126,6 +126,9 @@ int neighbor_alltoallv_init_locality_ext_helper(const void* sendbuffer,
                   alloc_ftn);
 
     request->free_ftn = free_ftn;
+    request->local_L_request->free_ftn = free_ftn;
+    request->local_S_request->free_ftn = free_ftn;
+    request->local_R_request->free_ftn = free_ftn;
 
     *request_ptr = request;
 

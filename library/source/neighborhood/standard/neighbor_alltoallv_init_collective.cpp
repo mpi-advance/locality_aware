@@ -56,8 +56,8 @@ int neighbor_alltoallv_init_coll_a2a(const void* sendbuf,
     {
         coll_sdispls[i+1] = coll_sdispls[i] + coll_sendcounts[i];
     }
-    char* coll_sendbuf = (char*)malloc(coll_sdispls[num_procs]*sbytes);
-    int* coll_sindices = (int*)malloc(coll_sdispls[num_procs]*sizeof(int));
+    char* coll_sendbuf;
+    MPIL_Alloc(&coll_sendbuf, coll_sdispls[num_procs]*sbytes);
 
     // First, will need to repack sendbuf to tmp_sendbuf
     for (int i = 0; i < topo->outdegree; i++)
@@ -89,8 +89,8 @@ int neighbor_alltoallv_init_coll_a2a(const void* sendbuf,
     {
         coll_rdispls[i+1] = coll_rdispls[i] + coll_recvcounts[i];
     }
-    char* coll_recvbuf = (char*)malloc(coll_rdispls[num_procs]*rbytes);
-    int* coll_rindices = (int*)malloc(coll_rdispls[num_procs]*sizeof(int));
+    char* coll_recvbuf;
+    MPIL_Alloc(&coll_recvbuf, coll_rdispls[num_procs]*rbytes);
 
     // Next will call MPI_Alltoallv_init on repacked data
     ierr = MPIL_Alltoallv_init(coll_sendbuf, coll_sendcounts.data(), coll_sdispls.data(), sendtype,
@@ -120,6 +120,7 @@ int neighbor_alltoallv_init_coll_a2a(const void* sendbuf,
 
     request->tmp_sendbuf = coll_sendbuf;
     request->tmp_recvbuf = coll_recvbuf;
+    request->free_ftn = MPIL_Free;
 
     request->start_function = neighbor_a2a_start;
     request->wait_function = neighbor_a2a_wait;
@@ -178,7 +179,7 @@ int neighbor_alltoallv_init_coll_ag(const void* sendbuffer,
     request->send_indices = (int*)malloc(request->size_sends*sizeof(int));
     for (int i = 0; i < request->size_sends; i++)
         request->send_indices[i] = send_idx[i];
-    request->tmp_sendbuf = malloc(request->size_sends*sbytes);
+    MPIL_Alloc(&(request->tmp_sendbuf), request->size_sends*sbytes);
 
     int local_size = unique_sindices.size();
     std::vector<int> proc_sizes(num_procs);
@@ -225,12 +226,13 @@ int neighbor_alltoallv_init_coll_ag(const void* sendbuffer,
     request->recv_indices = (int*)malloc(recv_size*sizeof(int));
     for (int i = 0; i < request->size_recvs; i++)
         request->recv_indices[i] = recv_idx[i];
-    request->tmp_recvbuf = malloc(total_size*rbytes);
+    MPIL_Alloc(&(request->tmp_recvbuf), total_size*rbytes);
 
     request->send_size = sbytes;
     request->recv_size = rbytes;
     request->sendbuf = sendbuffer;
     request->recvbuf = recvbuffer;
+    request->free_ftn = MPIL_Free;
 
     MPI_Allgatherv_init(request->tmp_sendbuf, request->size_sends, sendtype,
             request->tmp_recvbuf, proc_sizes.data(), proc_displs.data(), recvtype,

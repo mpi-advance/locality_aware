@@ -34,11 +34,13 @@ void init_request(MPIL_Request** request_ptr)
     request->num_ops = 0;
 
     request->tmpbuf = NULL;
+    request->free_ftn = NULL;
 
     request->win       = MPI_WIN_NULL;
     request->win_array = NULL;
     request->win_bytes = 0;
     request->win_type_bytes = 0;
+    request->win_alloc = 0;
     request->n_puts = 0;
     request->sdispls = NULL;
     request->put_displs = NULL;
