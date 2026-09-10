@@ -3,6 +3,7 @@
 #include "neighborhood/MPIL_Topo.h"
 #include "neighborhood/neighborhood_init.h"
 #include "persistent/MPIL_Request.h"
+#include "heterogeneous/gpu_utils.h"
 #include <map>
 
 int neighbor_alltoallv_init_coll_a2a(const void* sendbuf,
