@@ -106,7 +106,7 @@ int copy_to_cpu_allgather(Ftn f,
             cpu_recvbuf, recvcount, recvtype, comm);
 
 #if defined(APU)
-    memcpy(recvbuf, cpu_recvbuf, recvcount*num_procs*recvbytes);
+    memcpy(recvbuf, cpu_recvbuf, recvcount*num_procs*recv_bytes);
 #else
     gpu_error = gpuMemcpyAsync(recvbuf, cpu_recvbuf, 
             recvcount*num_procs*recv_bytes,
@@ -160,7 +160,7 @@ int copy_to_cpu_alltoall(Ftn f,
             cpu_recvbuf, recvcount, recvtype, comm);
 
 #if defined(APU)
-    memcpy(recvbuf, cpu_recvbuf, recvcount*num_procs*recvbytes);
+    memcpy(recvbuf, cpu_recvbuf, recvcount*num_procs*recv_bytes);
 #else
     gpu_error = gpuMemcpyAsync(recvbuf, cpu_recvbuf, 
             recvcount*num_procs*recv_bytes,
@@ -224,7 +224,7 @@ int copy_to_cpu_alltoallv(Ftn f,
             cpu_recvbuf, recvcounts, rdispls, recvtype, comm);
 
 #if defined(APU)
-    memcpy(recvbuf, cpu_recvbuf, recvsize*recvbytes);
+    memcpy(recvbuf, cpu_recvbuf, recvsize*recv_bytes);
 #else
     gpu_error = gpuMemcpyAsync(recvbuf, cpu_recvbuf, 
             recvsize*recv_bytes,
