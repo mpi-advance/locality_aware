@@ -454,9 +454,9 @@ int MPIL_Comm_update_locality(MPIL_Comm* xcomm, int ppn);
 int MPIL_Comm_tag(MPIL_Comm* comm, int* tag);
 
 /** @brief Returns rank of global communicator **/
-int MPIL_Comm_rank(MPIL_Comm* xcomm, int* rank);
+int MPIL_Comm_global_rank(MPIL_Comm* xcomm, int* rank);
 /** @brief Returns size of global communicator **/
-int MPIL_Comm_size(MPIL_Comm* xcomm, int* size);
+int MPIL_Comm_global_size(MPIL_Comm* xcomm, int* size);
 
 /** @brief Returns rank of local communicator, if it exists.  
  * Returns -1 if no local communicator **/

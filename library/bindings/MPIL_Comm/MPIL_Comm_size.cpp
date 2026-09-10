@@ -1,7 +1,7 @@
 #include "communicator/MPIL_Comm.hpp"
 #include "locality_aware.h"
 
-int MPIL_Comm_size(MPIL_Comm* xcomm, int* size)
+int MPIL_Comm_global_size(MPIL_Comm* xcomm, int* size)
 {
     MPI_Comm_size(xcomm->global_comm, size);
     return MPI_SUCCESS;

@@ -101,14 +101,14 @@ int alltoall_nonblocking_wait(MPIL_Request* request, MPI_Status* status);
  * @param [out] req_ptr MPIL_Request** for persistent request object
  **/
 int alltoall_init_rma(const void* sendbuf,
-                         const int sendcount,
-                         MPI_Datatype sendtype,
-                         void* recvbuf,
-                         const int recvcount,
-                         MPI_Datatype recvtype,
-                         MPIL_Comm* comm,
-                         MPIL_Info* info,
-                         MPIL_Request** req_ptr);
+                      const int sendcount,
+                      MPI_Datatype sendtype,
+                      void* recvbuf,
+                      const int recvcount,
+                      MPI_Datatype recvtype,
+                      MPIL_Comm* comm,
+                      MPIL_Info* info,
+                      MPIL_Request** req_ptr);
 int alltoall_rma_start(MPIL_Request* request);
 int alltoall_rma_wait(MPIL_Request* request, MPI_Status* status);
 

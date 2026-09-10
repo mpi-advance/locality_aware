@@ -1,7 +1,7 @@
 #include "communicator/MPIL_Comm.hpp"
 #include "locality_aware.h"
 
-int MPIL_Comm_rank(MPIL_Comm* xcomm, int* rank)
+int MPIL_Comm_global_rank(MPIL_Comm* xcomm, int* rank)
 {
     MPI_Comm_rank(xcomm->global_comm, rank);
     return MPI_SUCCESS;
