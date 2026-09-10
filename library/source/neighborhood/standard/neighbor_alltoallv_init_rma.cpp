@@ -2,6 +2,7 @@
 #include "locality_aware.h"
 #include "neighborhood/neighborhood_init.h"
 #include "collective/alltoallv_init.h"
+#include "heterogeneous/gpu_utils.h"
 #include "string.h"
 
 int neighbor_alltoallv_init_rma_helper(const void* sendbuf,
