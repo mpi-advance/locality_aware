@@ -93,6 +93,20 @@ int MPIL_Neighbor_alltoallv_init_ext_topo(const void* sendbuf,
                                                         request_ptr);
 #endif
 
+        case NEIGHBOR_ALLTOALLV_INIT_COLL:
+            return neighbor_alltoallv_init_coll_a2a(sendbuf,
+                                                    sendcounts,
+                                                    sdispls,
+                                                    sendtype,
+                                                    recvbuf,
+                                                    recvcounts,
+                                                    rdispls,
+                                                    recvtype,
+                                                    topo,
+                                                    comm,
+                                                    info,
+                                                    request_ptr);
+
 
         case NEIGHBOR_ALLTOALLV_INIT_STANDARD:
             return neighbor_alltoallv_init_standard(sendbuf,
@@ -122,23 +136,6 @@ int MPIL_Neighbor_alltoallv_init_ext_topo(const void* sendbuf,
                                                         comm,
                                                         info,
                                                         request_ptr);
-#if defined(MPI4)
-        case NEIGHBOR_ALLTOALLV_INIT_COLL:
-            return neighbor_alltoallv_init_coll_a2a(sendbuf,
-                                                    sendcounts,
-                                                    sdispls,
-                                                    global_sindices,
-                                                    sendtype,
-                                                    recvbuf,
-                                                    recvcounts,
-                                                    rdispls,
-                                                    global_rindices,
-                                                    recvtype,
-                                                    topo,
-                                                    comm,
-                                                    info,
-                                                    request_ptr);
-#endif
         default:
             return neighbor_alltoallv_init_standard(sendbuf,
                                                     sendcounts,
